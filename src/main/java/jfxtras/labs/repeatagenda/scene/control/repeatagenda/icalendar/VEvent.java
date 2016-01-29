@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -318,15 +319,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     // this method is called by dateTimeStartlistener
     private void changeStartToLocalDate(LocalDate newValue)
     {
-//        // Change dateTimeEnd
-//        if (endPriority == EndPriority.DTEND)
-//        {
-//            long daysToAdd = getDurationInNanos()/NANOS_IN_DAY;
-//            lastTimeBasedDuration = getDurationInNanos();
-//            Temporal dtEnd = newValue.plus(daysToAdd+1, ChronoUnit.DAYS);
-//            setDateTimeEnd(dtEnd);
-//        }
-        
         // Change ExDates to LocalDate
         if (getExDate() != null)
         {
@@ -751,29 +743,31 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         case WITH_EXISTING_REPEAT:
             if (! vEvent.equals(vEventOriginal)) // if changes occurred
             {
-                List<VComponent<U>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent);
+//                List<VComponent<U>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent); // this version is experimental (edits related vComponents as a group), not currently used
+                List<VComponent<U>> relatedVComponents = Arrays.asList(vEvent);
                 Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
                 String one = VComponent.temporalToStringPretty(startInstance);
                 choices.put(ChangeDialogOption.ONE, one);
                 if (! vEvent.isIndividual())
                 {
                     {
-                        String future = VComponent.relativesRangeToString(relatedVComponents, startInstance);
+                        String future = VComponent.rangeToString(relatedVComponents, startInstance);
+//                        String future = VComponent.temporalToStringPretty(vEvent.lastStartTemporal());
                         choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
                     }
-                    String all = VComponent.relativesRangeToString(relatedVComponents);
+                    String all = VComponent.rangeToString(vEvent);
                     choices.put(ChangeDialogOption.ALL, all);
                 }
-
                 
                 ChangeDialogOption changeResponse = ICalendarUtilities.repeatChangeDialog(choices);
                 switch (changeResponse)
                 {
                 case ALL:
-                    Collection<VComponent<U>> editList = VComponent.findRelatedVComponents(vComponents, vEvent);
-                    if (relatedVComponents.size() == 1) updateAppointments(vEvent, instances);
-                    else
+                    if (relatedVComponents.size() == 1)
                     {
+                        updateAppointments(vEvent, instances);
+                    } else
+                    { // this version is experimental (edits related vComponents as a group), not currently used
                         relatedVComponents.stream().forEach(v -> 
                         {
                             // Copy ExDates
@@ -827,6 +821,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         }
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
         if (incrementSequence) vEvent.incrementSequence();
+        vComponents.stream().forEach(System.out::println);
 //        System.out.println(vEvent);
     }
     

@@ -28,6 +28,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Monthly;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Yearly;
+import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public abstract class ICalendarTestAbstract extends AgendaTestAbstract
@@ -39,8 +40,8 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
             -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
     public final Comparator<Appointment> getAppointmentComparator() { return APPOINTMENT_COMPARATOR; }
     
-    private final static Class<ICalendarAgenda.AppointmentImplLocal2> clazz = ICalendarAgenda.AppointmentImplLocal2.class;
-    public Class<ICalendarAgenda.AppointmentImplLocal2> getClazz() { return clazz; }
+    private final static Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
+    public Class<Agenda.AppointmentImplLocal> getClazz() { return clazz; }
     
     public void refresh(List<VComponent<Appointment>> vComponents, List<Appointment> appointments)
     {

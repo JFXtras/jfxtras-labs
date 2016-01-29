@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
@@ -97,6 +98,7 @@ public class ICalendarAgenda extends Agenda
     // listen for additions to appointments from agenda. This listener must be removed and added back when a change
     // in the time range  occurs.
     private ListChangeListener<Appointment> appointmentsListener;
+    private ListChangeListener<Appointment> appointmentsListener2;
     private ListChangeListener<VComponent<Appointment>> vComponentsListener; // listen for changes to vComponents.
     
     // Default edit popup callback - this callback replaces Agenda's default edit popup
@@ -162,36 +164,84 @@ public class ICalendarAgenda extends Agenda
     private final Map<Appointment, Temporal> appointmentRecurrenceIDMap = new WeakHashMap<>();
     /* map matches appointment to VComponent that made it */
     private final Map<Appointment, VComponent<Appointment>> appointmentVComponentMap = new WeakHashMap<>();
+    
     /*
      * Default appointment changed (like drag-n-drop) callback
      * allows dialog to prompt user for change to all, this-and-future or all for repeating VComponents
      */
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
+        if (appointmentVComponentMap.get(appointment) == null)
+        {
+            Optional<VComponent<Appointment>> vo = vComponents.stream().filter(v -> v.instances().contains(appointment)).findAny();
+            if (vo.isPresent()) appointmentVComponentMap.put(appointment, vo.get());
+            else throw new RuntimeException("Can't edit appointment.  VComponent not found in map");
+        }
+        final VEvent<Appointment> vEvent = (VEvent<Appointment>) appointmentVComponentMap.get(appointment);
+        System.out.println("Vevent changes:" + vEvent + " " + vComponents.size() + " " + appointmentVComponentMap.size());
+        VEvent<Appointment> vEventOriginal = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
+
+        // TODO - NEEDS WORK
+        // Change to and from whole day - these changes must be to ALL
+//        final boolean isTemporalChanged;
+//        if (appointment.isWholeDay())
+//        {
+//            if (! vEvent.isWholeDay())
+//            { // change time-based vEvent to whole day
+//                System.out.println("change to whole day");
+//                LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
+//                vEvent.setDateTimeStart(newDateTimeStart);
+//                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).plus(1, ChronoUnit.DAYS);
+//                vEvent.setDateTimeEnd(newDateTimeEnd);
+//                isTemporalChanged = true;
+////                Temporal t = appointmentRecurrenceIDMap.get(appointment);
+////                long dayShift = ChronoUnit.DAYS.between(t, newDateTimeStart);
+////                appointmentRecurrenceIDMap.put(appointment, LocalDate.from(t));
+//            } else isTemporalChanged = false;
+//        } else // appointment is not whole day
+//        {
+//            if (vEvent.isWholeDay())
+//            { // change vEvent from whole day to time-based
+//                System.out.println("change from whole day");
+//                LocalDateTime newDateTimeStart = appointment.getStartLocalDateTime();
+//                vEvent.setDateTimeStart(newDateTimeStart);
+//                LocalDateTime newDateTimeEnd = appointment.getEndLocalDateTime();
+//                vEvent.setDateTimeEnd(newDateTimeEnd);
+//                isTemporalChanged = true;
+////                Temporal t = appointmentRecurrenceIDMap.get(appointment);
+////                LocalTime = 
+////                long dayShift = ChronoUnit.DAYS.between(t, newDateTimeStart);
+////                appointmentRecurrenceIDMap.put(appointment, LocalDate.from(t));
+//            } else isTemporalChanged = false;
+//        }
+        
         Temporal startInstance = (appointment.isWholeDay()) ? appointment.getStartLocalDateTime().toLocalDate() : appointment.getStartLocalDateTime();
         Temporal endInstance = (appointment.isWholeDay()) ? appointment.getEndLocalDateTime().toLocalDate() : appointment.getEndLocalDateTime();
         Temporal startOriginalInstance = appointmentRecurrenceIDMap.get(appointment);
-        VEvent<Appointment> vEvent = (VEvent<Appointment>) appointmentVComponentMap.get(appointment);
-        VEvent<Appointment> vEventOriginal = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
-
+  
         // apply changes to vEvent Note: only changes date and time.  If other types of changes become possible then add to the below list.
         // start and end
-        long nanos = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
-        Temporal startNew = VComponent.addNanos(vEvent.getDateTimeStart(), nanos);
-        vEvent.setDateTimeStart(startNew);        
-        long duration = ChronoUnit.NANOS.between(startInstance, endInstance);
-
-        switch (vEvent.getEndPriority())
+        // TODO - DOESN'T WORK FOR TEMPORAL CHANGES
+//        if (! isTemporalChanged)
         {
-        case DTEND:
-            Temporal endNew = VComponent.addNanos(startNew, duration);
-            vEvent.setDateTimeEnd(endNew);
-            break;
-        case DURATION:
-            vEvent.setDurationInNanos(duration);
-            break;
+            long nanosShift = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
+            Temporal startNew = VComponent.addNanos(vEvent.getDateTimeStart(), nanosShift);
+            vEvent.setDateTimeStart(startNew);        
+            long duration = ChronoUnit.NANOS.between(startInstance, endInstance);
+            switch (vEvent.getEndPriority())
+            {
+            case DTEND:
+                Temporal endNew = VComponent.addNanos(startNew, duration);
+                vEvent.setDateTimeEnd(endNew);
+                break;
+            case DURATION:
+                vEvent.setDurationInNanos(duration);
+                break;
+            }
         }
         
+        appointments().removeListener(appointmentsListener);
+        vComponents().removeListener(vComponentsListener);
         VEvent.saveChange(
                   vEvent
                 , vEventOriginal
@@ -200,10 +250,19 @@ public class ICalendarAgenda extends Agenda
                 , startInstance
                 , endInstance
                 , appointments());
+        appointments().addListener(appointmentsListener);
+        vComponents().addListener(vComponentsListener);
         
-        System.out.println("appt changed callback:" + appointment.getStartLocalDateTime() + " " + startOriginalInstance);
-        vComponents.size();
-        vComponents.stream().forEach(System.out::println);
+        // TODO - UPDATE MAPS WHEN running MAKEINSTANCES - how to get handle on map there?
+        /// If that isn't possible then I need to update all related vEvents
+        
+        // how appointment are added
+        // 1. running makeInstances
+            // 1.1 changing date range
+            // 1.2 editing VComponent
+        // 2. drag-n-drop new one
+//        vEvent.instances().forEach(a -> appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime())); // populate recurrence-id map
+//        vEvent.instances().forEach(a -> appointmentVComponentMap.put(a, vEvent)); // populate appointment-vComponent map
         return null;
     };
     
@@ -225,7 +284,7 @@ public class ICalendarAgenda extends Agenda
         
         setAppointmentChangedCallback(appointmentChangedCallback);
 
-        // Makes a new VComponent when an appointment is drawn on Agenda.
+        // Ensures VComponent are synched with appointments.
         appointmentsListener = (ListChangeListener.Change<? extends Appointment> change) ->
         {
             while (change.next())
@@ -243,6 +302,8 @@ public class ICalendarAgenda extends Agenda
                                 newVComponent.setStartRange(startRange);
                                 newVComponent.setEndRange(endRange);
                                 newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
+                                appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime()); // populate recurrence-id map
+                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
                                 vComponents().removeListener(vComponentsListener);
                                 vComponents().add(newVComponent);
                                 vComponents().addListener(vComponentsListener);
@@ -330,6 +391,27 @@ public class ICalendarAgenda extends Agenda
 
         // Listen for changes to appointments (additions and deletions)
         appointments().addListener(appointmentsListener);
+        
+        // Keeps appointmentRecurrenceIDMap and appointmentVComponentMap synched with appointments
+        ListChangeListener<Appointment> appointmentsListener2 = (ListChangeListener.Change<? extends Appointment> change) ->
+        {
+            while (change.next())
+            {
+                if (change.wasAdded())
+                {
+                    change.getAddedSubList()
+                            .stream()
+                            .forEach(a -> 
+                            { // make new VComponent(s)
+                                appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime()); // populate recurrence-id map
+//                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
+                                // TODO - IF I MOVE INSTANCE MAKING TO HERE - EITHER CALLBACK OR LISTENER THEN I CAN UPDATE
+                                // BOTH MAPS HERE
+                            });
+                }
+            }
+        };
+        appointments().addListener(appointmentsListener2);
 
         // Listen for changes to vComponents (additions and deletions)
         vComponents().addListener(vComponentsListener);
@@ -474,35 +556,31 @@ public class ICalendarAgenda extends Agenda
         }
     }
     
-    /** used for unit testing - equals method required */
-    static public class AppointmentImplLocal2 extends Agenda.AppointmentImplLocal
-    {
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if((obj == null) || (obj.getClass() != getClass())) {
-                return false;
-            }
-          AppointmentImplLocal2 testObj = (AppointmentImplLocal2) obj;
-
-          boolean startEquals = getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
-          boolean endEquals = getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
-          boolean descriptionEquals = (getDescription() == null) ?
-                  (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-          boolean locationEquals = (getLocation() == null) ?
-                  (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
-          boolean summaryEquals = (getSummary() == null) ?
-                  (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-          boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
-                  (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-
-                  //          System.out.println("RepeatableAppointmentImplBase equals1 " + descriptionEquals + " " + locationEquals 
-//                  + " " + summaryEquals + " " +  " " + appointmentGroupEquals + " " + repeatEquals + " " + getRepeat() + " " + testObj.getRepeat());
-          return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals 
-                  && startEquals && endEquals;
-      }
-
-    }
+//    /** used for unit testing - equals method required */
+//    static public class AppointmentImplLocal2 extends Agenda.AppointmentImplLocal
+//    {
+//        @Override
+//        public boolean equals(Object obj) {
+//            if (obj == this) return true;
+//            if((obj == null) || (obj.getClass() != getClass())) {
+//                return false;
+//            }
+//            AppointmentImplLocal2 testObj = (AppointmentImplLocal2) obj;
+//
+//            boolean startEquals = getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
+//            boolean endEquals = getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
+//            boolean descriptionEquals = (getDescription() == null) ?
+//                    (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+//            boolean locationEquals = (getLocation() == null) ?
+//                    (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+//            boolean summaryEquals = (getSummary() == null) ?
+//                    (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+//            boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
+//                    (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
+//            return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals 
+//                    && startEquals && endEquals;
+//        }
+//    }
     
     /**
      * Class implementing Appointment that includes an icon Pane field for easy rendering of

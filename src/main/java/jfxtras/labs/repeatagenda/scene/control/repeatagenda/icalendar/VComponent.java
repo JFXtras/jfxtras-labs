@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -622,15 +623,38 @@ public interface VComponent<T>
 
     // TODO - PROBABLY THESE METHODS SHOULD GO TO ICALENDARUTILITIES
     /**
-     * For ALL edit option
+     * Makes easy-to-read string of date range for the VComponents
+     * For ALL edit option (one VComponent)
      * 
-     * @param relatives - list of all related VComponents
+     * @param vComponent
+     * @return - easy-to-read string of date range for the VComponents
+     */
+    static <U> String rangeToString(VComponent<U> vComponent)
+    {
+        return rangeToString(Arrays.asList(vComponent));
+    }
+    /**
+     * Makes easy-to-read string of date range for the VComponents
+     * Beginning of range is parameter start
+     * For ALL edit option (one VComponent)
+     * 
+     * @param vComponent
      * @param start - Temporal start date or date/time
      * @return - easy-to-read string of date range for the VComponents
      */
-    static <U> String relativesRangeToString(Collection<VComponent<U>> relatives)
+    static <U> String rangeToString(VComponent<U> vComponent, Temporal start)
     {
-        return relativesRangeToString(relatives, null);
+        return rangeToString(Arrays.asList(vComponent), start);
+    }
+    /**
+     * For ALL edit option (list of VComponents)
+     * 
+     * @param relatives - list of all related VComponents
+     * @return - easy-to-read string of date range for the VComponents
+     */
+    static <U> String rangeToString(Collection<VComponent<U>> relatives)
+    {
+        return rangeToString(relatives, null);
     }
     /**
      * For THIS_AND_FUTURE_ALL edit option
@@ -639,7 +663,7 @@ public interface VComponent<T>
      * @param start - Temporal start date or date/time
      * @return - easy-to-read string of date range for the VComponents
      */
-    static <U> String relativesRangeToString(Collection<VComponent<U>> relatives, Temporal start)
+    static <U> String rangeToString(Collection<VComponent<U>> relatives, Temporal start)
     {
         if (relatives.size() == 0) return null;
         Iterator<VComponent<U>> i = relatives.iterator();

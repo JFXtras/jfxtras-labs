@@ -10,8 +10,10 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ChangeListener;
@@ -351,14 +353,27 @@ public class AppointmentEditController
                 appointment.getStartLocalDateTime().toLocalDate()
               : appointment.getStartLocalDateTime();
                 
-        Collection<VComponent<Appointment>> recurrenceSet = VComponent.findRelatedVComponents(vComponents, vEvent);
-        int count = VComponent.countVComponents(recurrenceSet);
+//        Collection<VComponent<Appointment>> recurrenceSet = VComponent.findRelatedVComponents(vComponents, vEvent);
+//        int count = VComponent.countVComponents(recurrenceSet);
+        int count = vEvent.instances().size();
         if (count == 1)
         {
             vComponents.remove(vEvent);
         } else // more than one instance
         {
-            ChangeDialogOption changeResponse = ICalendarUtilities.repeatChangeDialog(null);
+            Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
+            String one = VComponent.temporalToStringPretty(startTextField.getLocalDateTime());
+            choices.put(ChangeDialogOption.ONE, one);
+            if (! vEvent.isIndividual())
+            {
+                {
+                    String future = VComponent.rangeToString(vEvent, startTextField.getLocalDateTime());
+                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+                }
+                String all = VComponent.rangeToString(vEvent);
+                choices.put(ChangeDialogOption.ALL, all);
+            }
+            ChangeDialogOption changeResponse = ICalendarUtilities.repeatChangeDialog(choices);
             switch (changeResponse)
             {
             case ALL:
