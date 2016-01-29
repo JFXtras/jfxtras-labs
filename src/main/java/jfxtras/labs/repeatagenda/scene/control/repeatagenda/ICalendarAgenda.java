@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -215,30 +216,57 @@ public class ICalendarAgenda extends Agenda
 //            } else isTemporalChanged = false;
 //        }
         
-        Temporal startInstance = (appointment.isWholeDay()) ? appointment.getStartLocalDateTime().toLocalDate() : appointment.getStartLocalDateTime();
-        Temporal endInstance = (appointment.isWholeDay()) ? appointment.getEndLocalDateTime().toLocalDate() : appointment.getEndLocalDateTime();
+//        Temporal startInstance = (appointment.isWholeDay()) ? LocalDate.from(appointment.getStartLocalDateTime()) : appointment.getStartLocalDateTime();
+//        Temporal endInstance = (appointment.isWholeDay()) ?  LocalDate.from(appointment.getEndLocalDateTime()) : appointment.getEndLocalDateTime();
+        final Temporal startInstance;
+        final Temporal endInstance;
+        if (appointment.isWholeDay())
+        {
+            startInstance = LocalDate.from(appointment.getStartLocalDateTime()).atStartOfDay();
+            endInstance = LocalDate.from(appointment.getEndLocalDateTime()).plus(1, ChronoUnit.DAYS).atStartOfDay();
+        } else
+        {
+            startInstance = appointment.getStartLocalDateTime();
+            endInstance = appointment.getEndLocalDateTime();
+        }
+//        Temporal startInstance = appointment.getStartLocalDateTime();
+//        Temporal endInstance = appointment.getEndLocalDateTime();
         Temporal startOriginalInstance = appointmentRecurrenceIDMap.get(appointment);
   
         // apply changes to vEvent Note: only changes date and time.  If other types of changes become possible then add to the below list.
         // start and end
         // TODO - DOESN'T WORK FOR TEMPORAL CHANGES
 //        if (! isTemporalChanged)
+        final Temporal startNew;
+        final long duration;
+        if (appointment.isWholeDay())
+        {
+            long daysShift = ChronoUnit.DAYS.between(LocalDate.from(startOriginalInstance), startInstance);
+            startNew = LocalDate.from(vEvent.getDateTimeStart()).plus(daysShift, ChronoUnit.DAYS);
+            vEvent.setDateTimeStart(startNew);
+            duration = ChronoUnit.DAYS.between(startInstance, endInstance) * VComponent.NANOS_IN_DAY;
+            vEvent.setStartRange(LocalDate.from(vEvent.getStartRange()));
+            vEvent.setEndRange(LocalDate.from(vEvent.getEndRange()));
+        } else
         {
             long nanosShift = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
-            Temporal startNew = VComponent.addNanos(vEvent.getDateTimeStart(), nanosShift);
+            startNew = VComponent.addNanos(vEvent.getDateTimeStart(), nanosShift);
             vEvent.setDateTimeStart(startNew);        
-            long duration = ChronoUnit.NANOS.between(startInstance, endInstance);
-            switch (vEvent.getEndPriority())
-            {
-            case DTEND:
-                Temporal endNew = VComponent.addNanos(startNew, duration);
-                vEvent.setDateTimeEnd(endNew);
-                break;
-            case DURATION:
-                vEvent.setDurationInNanos(duration);
-                break;
-            }
+            duration = ChronoUnit.NANOS.between(startInstance, endInstance);
         }
+        switch (vEvent.getEndPriority())
+        {
+        case DTEND:
+            Temporal endNew = VComponent.addNanos(startNew, duration);
+            vEvent.setDateTimeEnd(endNew);
+            break;
+        case DURATION:
+            vEvent.setDurationInNanos(duration);
+            break;
+        }
+//        System.out.println("DTEND:" + vEvent.getDateTimeStart() + " " + vEvent.getDateTimeEnd());
+//        
+//        System.out.println("dates: " + startOriginalInstance + " " + startInstance + " " + endInstance);
         
         appointments().removeListener(appointmentsListener);
         vComponents().removeListener(vComponentsListener);

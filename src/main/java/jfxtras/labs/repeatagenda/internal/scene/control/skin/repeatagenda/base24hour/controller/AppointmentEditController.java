@@ -230,10 +230,8 @@ public class AppointmentEditController
                 LocalDateTime end = LocalDate.from(endTextField.getLocalDateTime()).plus(1, ChronoUnit.DAYS).atStartOfDay();
                 endTextField.setLocalDateTime(end);
 
-                LocalDate newStartRange = LocalDate.from(vEvent.getStartRange());
-                LocalDate newEndRange = LocalDate.from(vEvent.getEndRange());
-                vEvent.setStartRange(newStartRange);
-                vEvent.setEndRange(newEndRange);
+                vEvent.setStartRange(LocalDate.from(vEvent.getStartRange()));
+                vEvent.setEndRange(LocalDate.from(vEvent.getEndRange()));
             } else
             {
                 final LocalDateTime start;

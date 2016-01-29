@@ -728,7 +728,11 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     {
         final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
         boolean incrementSequence = true;
-        System.out.println("rrule: " + rruleType);
+        System.out.println("DTEND:" + vEvent.getDateTimeStart() + " " + vEvent.getDateTimeEnd());
+        System.out.println("dates: " + startOriginalInstance + " " + startInstance + " " + endInstance);
+        System.out.println("range: " + vEvent.getStartRange() + " " + vEvent.getEndRange());
+//        System.out.println("rrule: " + rruleType);
+//        System.out.println("vEvent: " + vEvent);
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
@@ -821,7 +825,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         }
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
         if (incrementSequence) vEvent.incrementSequence();
-        vComponents.stream().forEach(System.out::println);
+//        vComponents.stream().forEach(System.out::println);
 //        System.out.println(vEvent);
     }
     
@@ -882,8 +886,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         instances.clear();
         instances.addAll(instancesTemp);
         vComponents.add(vEventOriginal); // TODO - LET LISTENER ADD NEW APPOINTMENTS OR ADD THEM HERE?
-
-        System.out.println(vEventOriginal);
     }
     
     /*
