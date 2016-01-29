@@ -30,9 +30,9 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 
-public final class ICalendarUtilities
+public final class ICalendarAgendaEditUtilities
 {
-    private ICalendarUtilities() {}
+    private ICalendarAgendaEditUtilities() {}
 
     /**
      * This alert inquires how to apply changes (one, all or this-and-future)
@@ -152,7 +152,7 @@ public final class ICalendarUtilities
           , Temporal endInstance
           , Collection<U> instances)
     {
-        final RRuleType rruleType = ICalendarUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
+        final RRuleType rruleType = ICalendarAgendaEditUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
         boolean incrementSequence = true;
         System.out.println("DTEND:" + vEvent.getDateTimeStart() + " " + vEvent.getDateTimeEnd());
         System.out.println("dates: " + startOriginalInstance + " " + startInstance + " " + endInstance);
@@ -189,7 +189,7 @@ public final class ICalendarUtilities
                     choices.put(ChangeDialogOption.ALL, all);
                 }
                 
-                ChangeDialogOption changeResponse = ICalendarUtilities.editChangeDialog(choices);
+                ChangeDialogOption changeResponse = ICalendarAgendaEditUtilities.editChangeDialog(choices);
                 switch (changeResponse)
                 {
                 case ALL:

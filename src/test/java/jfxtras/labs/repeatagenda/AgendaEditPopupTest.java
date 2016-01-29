@@ -35,7 +35,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableController;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -59,8 +59,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     @Override
     public Parent getRootNode()
     {
-        Parent p = super.getRootNode();
-        return p;
+        return super.getRootNode();
     }
         
     // edit non-repeatable elements
@@ -1221,7 +1220,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         // delete VComponent
         click("#deleteAppointmentButton");
         ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
-        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.CANCEL));
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
         click("#edit_dialog_button_ok");
 
         // check return to original state

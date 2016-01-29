@@ -32,8 +32,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -302,7 +302,7 @@ public class AppointmentEditController
     
     @FXML private void handleSave()
     {
-        ICalendarUtilities.saveChange(
+        ICalendarAgendaEditUtilities.saveChange(
                 vEvent
               , vEventOriginal
               , vComponents
@@ -372,15 +372,16 @@ public class AppointmentEditController
                 String all = VComponent.rangeToString(vEvent);
                 choices.put(ChangeDialogOption.ALL, all);
             }
-            ChangeDialogOption changeResponse = ICalendarUtilities.deleteChangeDialog(choices);
+            ChangeDialogOption changeResponse = ICalendarAgendaEditUtilities.deleteChangeDialog(choices);
             switch (changeResponse)
             {
             case ALL:
-                String found = (count > 1) ? Integer.toString(count) : "infinite";
-                if (ICalendarUtilities.confirmDelete(found))
-                {
+//                String found = (count > 1) ? Integer.toString(count) : "infinite";
+//                if (ICalendarUtilities.confirmDelete(found))
+//                {
                     vComponents.remove(vEvent);
-                }
+                    appointments.removeAll(vEvent.instances());
+//                }
                 break;
             case CANCEL:
                 break;

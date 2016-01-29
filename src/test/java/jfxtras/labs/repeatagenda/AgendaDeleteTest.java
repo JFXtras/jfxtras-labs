@@ -10,7 +10,7 @@ import org.junit.Test;
 import javafx.scene.Parent;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarUtilities;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -40,7 +40,7 @@ public class AgendaDeleteTest extends AgendaTestAbstract
         assertEquals(1, agenda.appointments().size());
         Appointment appointment = agenda.appointments().get(0);
 
-        final ICalendarUtilities.WindowCloseType result = vEvent.delete(
+        final ICalendarAgendaEditUtilities.WindowCloseType result = vEvent.delete(
                 appointment.getStartLocalDateTime()
 //              , appointments
               , agenda.vComponents()
