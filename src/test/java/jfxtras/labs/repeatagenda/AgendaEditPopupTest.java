@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -1167,7 +1166,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
         
         // Open edit popup
-        move("#hourLine11"); // open edit popup
+        move("#hourLine11");
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
 
@@ -1188,6 +1187,45 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         assertEquals(vExpected, v);
         assertEquals("Daily1 Summary", v.getSummary());
         assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeStart());
+    }
+    
+    @Test
+    //@Ignore
+    public void canDeleteIndividualEdit()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getIndividual1()));
+        
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+
+        // delete VComponent
+        click("#deleteAppointmentButton");
+
+        // check return to original state
+        assertEquals(0, agenda.vComponents().size());
+    }
+    
+    @Test
+    //@Ignore
+    public void canDeleteSeriesEdit()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
+        
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+
+        // delete VComponent
+        click("#deleteAppointmentButton");
+        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.CANCEL));
+        click("#edit_dialog_button_ok");
+
+        // check return to original state
+        assertEquals(0, agenda.vComponents().size());
     }
     
     @Test
@@ -1218,6 +1256,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         closeCurrentWindow();
     }
     
+    // edit appointments made by drawing on Agenda
     private void renderAppointmentByDragging()
     {;
         Assert.assertEquals(0, agenda.appointments().size());
@@ -1325,19 +1364,19 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                 ));
         Assert.assertEquals(expectedDates, dates);
     }
-    
-    public static ArrayList<Node> getAllNodes(Parent root) {
-        ArrayList<Node> nodes = new ArrayList<Node>();
-        addAllDescendents(root, nodes);
-        return nodes;
-    }
-
-    private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
-        for (Node node : parent.getChildrenUnmodifiable()) {
-            nodes.add(node);
-            if (node instanceof Parent)
-                addAllDescendents((Parent)node, nodes);
-        }
-    }
+     
+//    public static ArrayList<Node> getAllNodes(Parent root) {
+//        ArrayList<Node> nodes = new ArrayList<Node>();
+//        addAllDescendents(root, nodes);
+//        return nodes;
+//    }
+//
+//    private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
+//        for (Node node : parent.getChildrenUnmodifiable()) {
+//            nodes.add(node);
+//            if (node instanceof Parent)
+//                addAllDescendents((Parent)node, nodes);
+//        }
+//    }
 
 }

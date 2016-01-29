@@ -302,7 +302,7 @@ public class AppointmentEditController
     
     @FXML private void handleSave()
     {
-        VEvent.saveChange(
+        ICalendarUtilities.saveChange(
                 vEvent
               , vEventOriginal
               , vComponents
@@ -357,6 +357,7 @@ public class AppointmentEditController
         if (count == 1)
         {
             vComponents.remove(vEvent);
+            appointments.remove(appointment);
         } else // more than one instance
         {
             Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
@@ -371,7 +372,7 @@ public class AppointmentEditController
                 String all = VComponent.rangeToString(vEvent);
                 choices.put(ChangeDialogOption.ALL, all);
             }
-            ChangeDialogOption changeResponse = ICalendarUtilities.repeatChangeDialog(choices);
+            ChangeDialogOption changeResponse = ICalendarUtilities.deleteChangeDialog(choices);
             switch (changeResponse)
             {
             case ALL:

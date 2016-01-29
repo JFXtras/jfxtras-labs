@@ -182,42 +182,6 @@ public class ICalendarAgenda extends Agenda
         System.out.println("Vevent changes:" + vEvent + " " + vComponents.size() + " " + appointmentVComponentMap.size());
         VEvent<Appointment> vEventOriginal = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
 
-        // TODO - NEEDS WORK
-        // Change to and from whole day - these changes must be to ALL
-//        final boolean isTemporalChanged;
-//        if (appointment.isWholeDay())
-//        {
-//            if (! vEvent.isWholeDay())
-//            { // change time-based vEvent to whole day
-//                System.out.println("change to whole day");
-//                LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
-//                vEvent.setDateTimeStart(newDateTimeStart);
-//                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).plus(1, ChronoUnit.DAYS);
-//                vEvent.setDateTimeEnd(newDateTimeEnd);
-//                isTemporalChanged = true;
-////                Temporal t = appointmentRecurrenceIDMap.get(appointment);
-////                long dayShift = ChronoUnit.DAYS.between(t, newDateTimeStart);
-////                appointmentRecurrenceIDMap.put(appointment, LocalDate.from(t));
-//            } else isTemporalChanged = false;
-//        } else // appointment is not whole day
-//        {
-//            if (vEvent.isWholeDay())
-//            { // change vEvent from whole day to time-based
-//                System.out.println("change from whole day");
-//                LocalDateTime newDateTimeStart = appointment.getStartLocalDateTime();
-//                vEvent.setDateTimeStart(newDateTimeStart);
-//                LocalDateTime newDateTimeEnd = appointment.getEndLocalDateTime();
-//                vEvent.setDateTimeEnd(newDateTimeEnd);
-//                isTemporalChanged = true;
-////                Temporal t = appointmentRecurrenceIDMap.get(appointment);
-////                LocalTime = 
-////                long dayShift = ChronoUnit.DAYS.between(t, newDateTimeStart);
-////                appointmentRecurrenceIDMap.put(appointment, LocalDate.from(t));
-//            } else isTemporalChanged = false;
-//        }
-        
-//        Temporal startInstance = (appointment.isWholeDay()) ? LocalDate.from(appointment.getStartLocalDateTime()) : appointment.getStartLocalDateTime();
-//        Temporal endInstance = (appointment.isWholeDay()) ?  LocalDate.from(appointment.getEndLocalDateTime()) : appointment.getEndLocalDateTime();
         final Temporal startInstance;
         final Temporal endInstance;
         if (appointment.isWholeDay())
@@ -234,9 +198,7 @@ public class ICalendarAgenda extends Agenda
         Temporal startOriginalInstance = appointmentRecurrenceIDMap.get(appointment);
   
         // apply changes to vEvent Note: only changes date and time.  If other types of changes become possible then add to the below list.
-        // start and end
-        // TODO - DOESN'T WORK FOR TEMPORAL CHANGES
-//        if (! isTemporalChanged)
+        // change start and end date/time
         final Temporal startNew;
         final long duration;
         if (appointment.isWholeDay())
@@ -264,13 +226,10 @@ public class ICalendarAgenda extends Agenda
             vEvent.setDurationInNanos(duration);
             break;
         }
-//        System.out.println("DTEND:" + vEvent.getDateTimeStart() + " " + vEvent.getDateTimeEnd());
-//        
-//        System.out.println("dates: " + startOriginalInstance + " " + startInstance + " " + endInstance);
         
         appointments().removeListener(appointmentsListener);
         vComponents().removeListener(vComponentsListener);
-        VEvent.saveChange(
+        ICalendarUtilities.saveChange(
                   vEvent
                 , vEventOriginal
                 , vComponents
@@ -281,16 +240,8 @@ public class ICalendarAgenda extends Agenda
         appointments().addListener(appointmentsListener);
         vComponents().addListener(vComponentsListener);
         
-        // TODO - UPDATE MAPS WHEN running MAKEINSTANCES - how to get handle on map there?
-        /// If that isn't possible then I need to update all related vEvents
+        if (vEvent.equals(vEventOriginal)) refresh(); // refresh if canceled
         
-        // how appointment are added
-        // 1. running makeInstances
-            // 1.1 changing date range
-            // 1.2 editing VComponent
-        // 2. drag-n-drop new one
-//        vEvent.instances().forEach(a -> appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime())); // populate recurrence-id map
-//        vEvent.instances().forEach(a -> appointmentVComponentMap.put(a, vEvent)); // populate appointment-vComponent map
         return null;
     };
     

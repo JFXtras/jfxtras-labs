@@ -8,11 +8,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ 
                 AgendaRenderVComponentsTest.class
               , AgendaRenderAppointmentsTest.class
+              , AgendaChangeTest.class
               , AgendaEditPopupTest.class
               , ICalendarCopyTest.class
               , ICalendarDateTest.class
-//              , ICalendarDeleteTest.class
-//              , ICalendarEditTest.class
               , ICalendarEqualsTest.class
               , MakeAppointmentsTest.class
               , ICalendarParseTest.class
