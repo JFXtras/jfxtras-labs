@@ -1229,6 +1229,56 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     
     @Test
     //@Ignore
+    public void canDeleteSeriesThisAndFutureEdit()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+
+        // delete VComponent
+        click("#deleteAppointmentButton");
+        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE));
+        click("#edit_dialog_button_ok");
+        
+        // verify VComponent changes
+        assertEquals(1, agenda.vComponents().size());
+        VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
+        expectedV1.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
+        assertEquals(expectedV1, v);
+    }
+    
+    @Test
+    //@Ignore
+    public void canDeleteSeriesWithRecurrencesEdit()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
+        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+
+        // delete VComponent
+        click("#deleteAppointmentButton");
+        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE));
+        click("#edit_dialog_button_ok");
+        
+        // verify VComponent changes
+        assertEquals(1, agenda.vComponents().size());
+        VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
+        expectedV1.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
+        assertEquals(expectedV1, v);
+    }
+    
+    @Test
+    //@Ignore
     public void canEditVComponent2()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -379,8 +380,12 @@ public class AppointmentEditController
 //                String found = (count > 1) ? Integer.toString(count) : "infinite";
 //                if (ICalendarUtilities.confirmDelete(found))
 //                {
-                    vComponents.remove(vEvent);
-                    appointments.removeAll(vEvent.instances());
+                List<VComponent<Appointment>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent);
+                vComponents.removeAll(relatedVComponents);
+                List<Appointment> appointmentsToRemove = relatedVComponents.stream()
+                        .flatMap(v -> v.instances().stream())
+                        .collect(Collectors.toList());
+                appointments.removeAll(appointmentsToRemove);
 //                }
                 break;
             case CANCEL:

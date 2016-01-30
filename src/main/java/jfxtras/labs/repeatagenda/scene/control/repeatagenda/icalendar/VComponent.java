@@ -595,6 +595,25 @@ public interface VComponent<T>
 
     /**
      * Return list of all related VComponents that make up entire recurrence set.
+     * List also contains all VComponents that share the same UID.
+     * 
+     * Used to edit or delete entire recurrence set.
+     * 
+     * @param vComponents : collection of all VComponents
+     * @param vComponent : VComponent to match to parent, children and branches
+     * @return
+     */
+    static <U> List<VComponent<U>> findRelatedVComponents(Collection<VComponent<U>> vComponents, VComponent<U> vComponent)
+    {
+        String uid = vComponent.getUniqueIdentifier();
+        return vComponents.stream()
+                .filter(v -> v.getUniqueIdentifier().equals(uid))
+                .collect(Collectors.toList());
+    }
+
+    
+    /**
+     * Return list of all related VComponents that make up entire recurrence set.
      * List also contains input parameter vComponent, parent, children,
      * or branches.
      * 
@@ -604,7 +623,8 @@ public interface VComponent<T>
      * @param vComponent : VComponent to match to parent, children and branches
      * @return
      */
-    static <U> List<VComponent<U>> findRelatedVComponents(Collection<VComponent<U>> vComponents, VComponent<U> vComponent)
+    @Deprecated // matched by relatedTo - too inclusive.  Will be probably deleted in future.
+    static <U> List<VComponent<U>> findRelatedVComponents2(Collection<VComponent<U>> vComponents, VComponent<U> vComponent)
     {
         final String uid = (vComponent.getRelatedTo() != null) ? vComponent.getRelatedTo() : vComponent.getUniqueIdentifier();
         System.out.println("uid:" + uid + " " + vComponents.size());

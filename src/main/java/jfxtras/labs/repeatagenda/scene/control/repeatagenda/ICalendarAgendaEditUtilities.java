@@ -197,7 +197,7 @@ public final class ICalendarAgendaEditUtilities
                     {
                         updateAppointments(vEvent, instances);
                     } else
-                    { // this version is experimental (edits related vComponents as a group), not currently used
+                    { // this version is experimental (edits related vComponents as a group), not currently used (there will always be 1 relatedVComponent now)
                         relatedVComponents.stream().forEach(v -> 
                         {
                             // Copy ExDates
