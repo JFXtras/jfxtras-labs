@@ -505,9 +505,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     }
     
     /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. 
-     * @param <U> instance type
      * */
-    private static <U> void copy(VEvent<U> source, VEvent<U> destination)
+    private static void copy(VEvent<?> source, VEvent<?> destination)
     {
         destination.setDescription(source.getDescription());
         destination.setDurationInNanos(source.getDurationInNanos());
@@ -519,7 +518,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     public void copyTo(VComponent<T> destination)
     {
         super.copyTo(destination);
-        copy(this, (VEvent<T>) destination);
+        copy(this, (VEvent<?>) destination);
     }
     
     @Override
@@ -609,7 +608,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      * @param strings
      * @return
      */
-    protected static <U> VEvent<U> parseVEvent(VEvent<U> vEvent, List<String> strings)
+    protected static VEvent<?> parseVEvent(VEvent<?> vEvent, List<String> strings)
     {
         // Test for correct beginning and end, then remove
         if (! strings.get(0).equals("BEGIN:VEVENT"))
@@ -690,7 +689,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 }
             }
         }
-        return (VEvent<U>) VComponentAbstract.parseVComponent(vEvent, strings);
+        return (VEvent<?>) VComponentAbstract.parseVComponent(vEvent, strings);
     }
     
     public static enum EndPriority

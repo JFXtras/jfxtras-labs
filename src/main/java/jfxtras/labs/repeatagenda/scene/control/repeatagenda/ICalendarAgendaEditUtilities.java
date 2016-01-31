@@ -293,9 +293,10 @@ public final class ICalendarAgendaEditUtilities
         vEvent.setRRule(null);
         vEvent.setDateTimeRecurrence(startOriginalInstance);
         vEvent.setDateTimeStamp(LocalDateTime.now());
+        vEvent.setParent(vEventOriginal);
    
               // Add recurrence to original vEvent
-        vEventOriginal.getRRule().getRecurrences().add(vEvent);
+        vEventOriginal.getRRule().recurrences().add(vEvent);
 
         // Check for validity
         if (! vEvent.isValid()) throw new RuntimeException(vEvent.makeErrorString());
@@ -386,10 +387,10 @@ public final class ICalendarAgendaEditUtilities
         }
 
         // Split instance dates between this and newVEvent
-        if (vEvent.getRRule().getRecurrences() != null)
+        if (vEvent.getRRule().recurrences() != null)
         {
-            vEvent.getRRule().getRecurrences().clear();
-            final Iterator<VComponent<?>> recurrenceIterator = vEvent.getRRule().getRecurrences().iterator();
+            vEvent.getRRule().recurrences().clear();
+            final Iterator<VComponent<?>> recurrenceIterator = vEvent.getRRule().recurrences().iterator();
             while (recurrenceIterator.hasNext())
             {
                 VComponent<?> d = recurrenceIterator.next();
@@ -397,7 +398,7 @@ public final class ICalendarAgendaEditUtilities
                 {
                     recurrenceIterator.remove();
                 } else {
-                    vEvent.getRRule().getRecurrences().add(d);
+                    vEvent.getRRule().recurrences().add(d);
                 }
             }
         }

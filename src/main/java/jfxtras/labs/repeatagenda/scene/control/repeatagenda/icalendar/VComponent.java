@@ -130,6 +130,7 @@ public interface VComponent<T>
     String getRelatedTo();
     void setRelatedTo(String uid);
     
+    // TODO - NOT IMPLEMENTED YET
     /**
      * Use Google UID extension instead of RELATED-TO to express 
      */
@@ -143,6 +144,10 @@ public interface VComponent<T>
      */
     Temporal getDateTimeRecurrence();
     void setDateTimeRecurrence(Temporal dtRecurrence);
+    
+    /** If VComponent has RECURRENCE-ID this returns its parent object */
+    VComponent<T> getParent();
+    void setParent(VComponent<T> v);
     
     /**
      * RDATE: Set of date/times for recurring events, to-dos, journal entries.
@@ -306,6 +311,7 @@ public interface VComponent<T>
         if (getDateTimeStamp() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.");
         if (getUniqueIdentifier() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  UID must not be null.");
         if (getRRule() != null) errorsBuilder.append(getRRule().makeErrorString(this));
+        System.out.println("getDateTimeStart():" + getDateTimeStart());
         Temporal t1 = stream(getDateTimeStart()).findFirst().get();
         final Temporal first;
         if (getExDate() != null)

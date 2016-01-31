@@ -27,7 +27,6 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.repeatagenda.ICalendarTestAbstract;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.LocalDatePicker;
 import jfxtras.scene.control.agenda.Agenda;
@@ -218,8 +217,11 @@ public class CalendarController {
 //            agenda.appointmentGroups().addAll(data.appointmentGroups());
 //        }
 //        agenda.vComponents().add(ICalendarTestAbstract.getDailyWithException1());
-        VEventImpl daily1 = ICalendarTestAbstract.getDaily1();
-        agenda.vComponents().add(daily1);
+//        VEventImpl daily1 = ICalendarTestAbstract.getDaily1();
+//        agenda.vComponents().add(daily1);
+        
+        agenda.vComponents().addAll(ICalendarTestAbstract.getRecurrenceSetDaily1());
+        
 
         //        agenda.vComponents().addAll(data.getVComponents());
     }

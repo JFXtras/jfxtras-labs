@@ -1143,7 +1143,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(0);
         VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(1);
         VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
-        expectedV1.getRRule().getRecurrences().add(v2);
+        expectedV1.getRRule().recurrences().add(v2);
         assertEquals(expectedV1, v1);
 
         VEvent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1();
@@ -1317,7 +1317,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Assert.assertEquals(1, agenda.vComponents().size());
         Assert.assertEquals("2015-11-11T10:00", agenda.appointments().get(0).getStartLocalDateTime().toString() );
         Assert.assertEquals("2015-11-11T12:00", agenda.appointments().get(0).getEndLocalDateTime().toString() );
-        find("#AppointmentRegularBodyPane2015-11-11/0"); // validate that the pane has the expected id
+        assertFind("#AppointmentRegularBodyPane2015-11-11/0"); // validate that the pane has the expected id
     }
         
     @Test

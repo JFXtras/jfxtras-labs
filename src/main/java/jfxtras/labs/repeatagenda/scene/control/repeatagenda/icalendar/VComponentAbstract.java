@@ -127,6 +127,7 @@ instances into one property internally.
  * 
  * @author David Bal
  * @param <U>
+ * @param <U>
  * @see VEvent
  *
  */
@@ -159,7 +160,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public StringProperty categoriesProperty() { return categoriesProperty; }
     final private StringProperty categoriesProperty = new SimpleStringProperty(this, CATEGORIES_NAME);
+    @Override
     public String getCategories() { return categoriesProperty.get(); }
+    @Override
     public void setCategories(String value) { categoriesProperty.set(value); }
 //    public T withCategories(String value) { setCategories(value); return (T)this; }
     
@@ -180,7 +183,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
     private StringProperty comment;
     private String _comment;
+    @Override
     public String getComment() { return (comment == null) ? _comment : comment.get(); }
+    @Override
     public void setComment(String comment)
     {
         if (this.comment == null)
@@ -200,7 +205,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public ObjectProperty<LocalDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
     final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, CREATED_NAME);
+    @Override
     public LocalDateTime getDateTimeCreated() { return dateTimeCreated.get(); }
+    @Override
     public void setDateTimeCreated(LocalDateTime dtCreated) { this.dateTimeCreated.set(dtCreated); }
     
     /**
@@ -210,7 +217,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public ObjectProperty<LocalDateTime> dateTimeStampProperty() { return dateTimeStamp; }
     final private ObjectProperty<LocalDateTime> dateTimeStamp = new SimpleObjectProperty<>(this, DATE_TIME_STAMP_NAME);
+    @Override
     public LocalDateTime getDateTimeStamp() { return dateTimeStamp.get(); }
+    @Override
     public void setDateTimeStamp(LocalDateTime dtStamp) { this.dateTimeStamp.set(dtStamp); }
     
     /**
@@ -220,6 +229,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Can contain either a LocalDate (DATE) or LocalDateTime (DATE-TIME)
      * @SEE VDateTime
      */
+    @Override
     public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
     final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, DATE_TIME_START_NAME);
     @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
@@ -238,7 +248,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
     private ObjectProperty<EXDate> exDate;
     private EXDate _exDate;
+    @Override
     public EXDate getExDate() { return (exDate == null) ? _exDate : exDate.getValue(); }
+    @Override
     public void setExDate(EXDate exDate)
     {
         if (this.exDate == null)
@@ -257,7 +269,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public ObjectProperty<LocalDateTime> dateTimeLastModifiedProperty() { return dateTimeLastModified; }
     final private ObjectProperty<LocalDateTime> dateTimeLastModified = new SimpleObjectProperty<LocalDateTime>(this, LAST_MODIFIED_NAME);
+    @Override
     public LocalDateTime getDateTimeLastModified() { return dateTimeLastModified.getValue(); }
+    @Override
     public void setDateTimeLastModified(LocalDateTime dtLastModified) { this.dateTimeLastModified.set(dtLastModified); }
     
     /**
@@ -269,7 +283,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public StringProperty locationProperty(){ return locationProperty; }
     final private StringProperty locationProperty = new SimpleStringProperty(this, LOCATION_NAME);
+    @Override
     public String getLocation() { return locationProperty.getValue(); }
+    @Override
     public void setLocation(String value) { locationProperty.setValue(value); }
 //    public T withLocation(String value) { setLocation(value); return (T)this; }
 
@@ -285,7 +301,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
     private ObjectProperty<RDate> rDate;
     private RDate _rDate;
+    @Override
     public RDate getRDate() { return (rDate == null) ? _rDate : rDate.getValue(); }
+    @Override
     public void setRDate(RDate rDate)
     {
         if (this.rDate == null)
@@ -299,14 +317,19 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 
     public StringProperty relatedToProperty() { return relatedTo; }
     final private StringProperty relatedTo = new SimpleStringProperty(this, RELATED_TO_NAME);
+    @Override
     public String getRelatedTo() { return relatedTo.getValue(); }
+    @Override
     public void setRelatedTo(String s) { relatedTo.set(s); }
     
+    // TODO - I may implement Google UID recurrence for segments of recurrence set
     /**
      * Use Google UID extension instead of RELATED-TO to express 
      */
+    @Override
     public boolean isGoogleRecurrenceUID() { return googleRecurrenceUID; };
     private boolean googleRecurrenceUID = false; // default to not using Google system
+    @Override
     public void setGoogleRecurrenceUID(boolean b) { googleRecurrenceUID = b; };
     
     /**
@@ -336,6 +359,11 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         }
     }
     
+    @Override
+    public VComponent<T> getParent() { return parent; }
+    private VComponent<T> parent;
+    public void setParent(VComponent<T> v) { parent = v; }
+    
     /**
      * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
      * If event is not repeating value is null
@@ -347,7 +375,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
     private ObjectProperty<RRule> rRule;
     private RRule _rRule;
+    @Override
     public RRule getRRule() { return (rRule == null) ? _rRule : rRule.get(); }
+    @Override
     public void setRRule(RRule rRule)
     {
         if (this.rRule == null)
@@ -373,9 +403,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 
        SEQUENCE:2
      */
+    @Override
     public IntegerProperty sequenceProperty() { return sequenceProperty; }
     final private IntegerProperty sequenceProperty = new SimpleIntegerProperty(this, SEQUENCE_NAME, 0);
+    @Override
     public int getSequence() { return sequenceProperty.get(); }
+    @Override
     public void setSequence(int value)
     {
         if (value < 0) throw new IllegalArgumentException("Sequence value must be greater than zero");
@@ -391,7 +424,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * */
     public StringProperty summaryProperty() { return summaryProperty; }
     final private StringProperty summaryProperty = new SimpleStringProperty(this, SUMMARY_NAME);
+    @Override
     public String getSummary() { return summaryProperty.get(); }
+    @Override
     public void setSummary(String value) { summaryProperty.set(value); }
 //    public T withSummary(String value) { setSummary(value); return (T)this; } 
     
@@ -403,13 +438,16 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      */
     public StringProperty uniqueIdentifierProperty() { return uniqueIdentifier; }
     final private StringProperty uniqueIdentifier = new SimpleStringProperty(this, UNIQUE_IDENTIFIER_NAME);
+    @Override
     public String getUniqueIdentifier() { return uniqueIdentifier.getValue(); }
+    @Override
     public void setUniqueIdentifier(String s) { uniqueIdentifier.set(s); }
     /** Set uniqueIdentifier by calling uidGeneratorCallback */
     public void setUniqueIdentifier() { setUniqueIdentifier(getUidGeneratorCallback().call(null)); } 
 //    public T withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return (T)this; }
     
     /** Callback for creating unique uid values  */
+    @Override
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
@@ -418,6 +456,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };
+    @Override
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
     
     /** Method to convert DTSTART or DTEND to LocalDateTime
@@ -515,7 +554,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     @Override
     public void copyTo(VComponent<T> destination)
     {
-        copy(this, (VComponentAbstract<T>) destination);
+        copy(this, (VComponentAbstract<?>) destination);
     }
 
     @Override
@@ -621,7 +660,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * @param strings - list of properties
      * @return
      */
-    protected static <U> VComponentAbstract<U> parseVComponent(VComponentAbstract<U> vComponent, List<String> strings)
+    protected static VComponentAbstract<?> parseVComponent(VComponentAbstract<?> vComponent, List<String> strings)
     {
         Iterator<String> stringsIterator = strings.iterator();
         while (stringsIterator.hasNext())

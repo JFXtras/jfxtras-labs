@@ -16,6 +16,7 @@ import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -167,7 +168,7 @@ public class ICalendarAgenda extends Agenda
     private final Map<Appointment, VComponent<Appointment>> appointmentVComponentMap = new WeakHashMap<>();
     
     /*
-     * Default appointment changed (like drag-n-drop) callback
+     * Default appointment changed callback (actions like drag-n-drop)
      * allows dialog to prompt user for change to all, this-and-future or all for repeating VComponents
      */
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
@@ -193,8 +194,6 @@ public class ICalendarAgenda extends Agenda
             startInstance = appointment.getStartLocalDateTime();
             endInstance = appointment.getEndLocalDateTime();
         }
-//        Temporal startInstance = appointment.getStartLocalDateTime();
-//        Temporal endInstance = appointment.getEndLocalDateTime();
         Temporal startOriginalInstance = appointmentRecurrenceIDMap.get(appointment);
   
         // apply changes to vEvent Note: only changes date and time.  If other types of changes become possible then add to the below list.
@@ -250,7 +249,7 @@ public class ICalendarAgenda extends Agenda
     {
         super();
         
-//        appointments().addListener((InvalidationListener) (obs) -> System.out.println("appointments chagned:"));
+        appointments().addListener((InvalidationListener) (obs) -> System.out.println("appointments chagned:"));
         
         // override Agenda appointmentGroups
         appointmentGroups().clear();
@@ -330,7 +329,7 @@ public class ICalendarAgenda extends Agenda
                                             })
                                             .findFirst()
                                             .get();
-                                    parent.getRRule().getRecurrences().add(v);
+                                    parent.getRRule().recurrences().add(v);
                                 }
                             });
                     appointments().removeListener(appointmentsListener);
@@ -401,16 +400,16 @@ public class ICalendarAgenda extends Agenda
         // LISTEN FOR AGENDA RANGE CHANGES
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
+            System.out.println("Vcomponents:" + vComponents().size());
+            vComponents().stream().forEach(System.out::println);
             this.dateTimeRange = dateTimeRange;
             if (dateTimeRange != null)
-            {
-                // Remove instances and appointments
-                vComponents().stream().forEach(v -> v.instances().clear());
-        
+            {        
                 appointments().removeListener(appointmentsListener); // remove appointmentListener to prevent making extra vEvents during refresh
                 appointments().clear();
                 vComponents().stream().forEach(v ->
                 {
+                    v.instances().clear(); // Remove instances and appointments
                     LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
                     LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
                     Collection<Appointment> newAppointments = v.makeInstances(start, end);

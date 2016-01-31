@@ -120,6 +120,14 @@ public class VEventImpl extends VEvent<Appointment>
 //    public VEventImpl withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
     public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
     
+    // Fluent methods
+    public VEventImpl withRRule(RRule r) { setRRule(r); return this; }
+    public VEventImpl withDateTimeRecurrence(Temporal t) { setDateTimeRecurrence(t); return this; }
+    public VEventImpl withDateTimeStamp(LocalDateTime t) { setDateTimeStamp(t); return this; }
+    public VEventImpl withDateTimeStart(Temporal t) { setDateTimeStart(t); return this; }
+    public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
+    public VEventImpl withSequence(int i) { setSequence(i); return this; }
+    
     /*
      * CONSTRUCTORS
      */
@@ -195,7 +203,7 @@ public class VEventImpl extends VEvent<Appointment>
             return false;
         }
         VEventImpl testObj = (VEventImpl) obj;
-        System.out.println("getAppointmentClass:" + getAppointmentClass().getSimpleName() + " " + testObj.getAppointmentClass().getSimpleName());
+//        System.out.println("getAppointmentClass:" + getAppointmentClass().getSimpleName() + " " + testObj.getAppointmentClass().getSimpleName());
         boolean appointmentClassEquals = (getAppointmentClass() == null) ?
                 (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
         boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
@@ -495,10 +503,10 @@ public class VEventImpl extends VEvent<Appointment>
                     }
 
                     // Split instance dates between this and newVEvent
-                    if (getRRule().getRecurrences() != null)
+                    if (getRRule().recurrences() != null)
                     {
-                        getRRule().getRecurrences().clear();
-                        final Iterator<VComponent<?>> recurrenceIterator = vEventOld.getRRule().getRecurrences().iterator();
+                        getRRule().recurrences().clear();
+                        final Iterator<VComponent<?>> recurrenceIterator = vEventOld.getRRule().recurrences().iterator();
                         while (recurrenceIterator.hasNext())
                         {
                             VComponent<?> d = recurrenceIterator.next();
@@ -506,7 +514,7 @@ public class VEventImpl extends VEvent<Appointment>
                             {
                                 recurrenceIterator.remove();
                             } else {
-                                getRRule().getRecurrences().add(d);
+                                getRRule().recurrences().add(d);
                             }
                         }
                     }
@@ -553,7 +561,7 @@ public class VEventImpl extends VEvent<Appointment>
     
                     // modify this VEvent for recurrence
                     vEventOld.copyTo(this);                
-                    getRRule().getRecurrences().add(newVEvent);
+                    getRRule().recurrences().add(newVEvent);
                     break;
                 }
             }

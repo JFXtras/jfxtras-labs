@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -348,6 +349,7 @@ public class AppointmentEditController
 
     @FXML private void handleDeleteButton()
     {
+        // TODO - SHOULD THIS METHOD MOVE TO UTILITIES CLASS?
         Temporal dateOrDateTime = (appointment.isWholeDay()) ? 
                 appointment.getStartLocalDateTime().toLocalDate()
               : appointment.getStartLocalDateTime();
@@ -380,8 +382,21 @@ public class AppointmentEditController
 //                String found = (count > 1) ? Integer.toString(count) : "infinite";
 //                if (ICalendarUtilities.confirmDelete(found))
 //                {
-                List<VComponent<Appointment>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent);
+//                List<VComponent<Appointment>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent);
+                List<VComponent<Appointment>> relatedVComponents = new ArrayList<>();
+                if (vEvent.getDateTimeRecurrence() == null)
+                { // is parent
+                    relatedVComponents.addAll((Collection<? extends VComponent<Appointment>>) vEvent.getRRule().recurrences());
+                    relatedVComponents.add(vEvent);
+                } else
+                { // is child (recurrence).  Find parent delete all children
+                    relatedVComponents.addAll((Collection<? extends VComponent<Appointment>>) vEvent.getParent().getRRule().recurrences());
+                    relatedVComponents.add(vEvent.getParent());
+                }
+                System.out.println("removing:");
+                relatedVComponents.stream().forEach(v -> vComponents.remove(v));
                 vComponents.removeAll(relatedVComponents);
+                System.out.println("removed:");
                 List<Appointment> appointmentsToRemove = relatedVComponents.stream()
                         .flatMap(v -> v.instances().stream())
                         .collect(Collectors.toList());

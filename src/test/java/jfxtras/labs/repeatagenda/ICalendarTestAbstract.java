@@ -653,6 +653,36 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
      *  Branches have RELATED-TO
      */
     
+    public static Collection<VComponent<Appointment>> getRecurrenceSetDaily1()
+    {
+        Set<VComponent<Appointment>> recurrenceSet = new LinkedHashSet<>();
+        VEventImpl parent = getDaily1();
+
+        VEventImpl child1 = getDaily1()
+                .withRRule(null)
+                .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 10, 10, 0))
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 10, 15, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 10, 17, 0));
+
+        VEventImpl child2 = getDaily1()
+                .withRRule(null)
+                .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 12, 10, 0))
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 13, 6, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 13, 7, 0));
+                
+        recurrenceSet.add(parent);
+        recurrenceSet.add(child1);
+        recurrenceSet.add(child2);
+        parent.getRRule().recurrences().add(child1);
+        parent.getRRule().recurrences().add(child2);
+
+        return recurrenceSet;
+
+    }
+
+    
+    // TODO below methods are not being use - may be deleted in future
+    
     // branch of getDaily6
     protected static VEventImpl getBranch1()
     {
@@ -700,7 +730,7 @@ public abstract class ICalendarTestAbstract extends AgendaTestAbstract
         recurrenceSet.add(branch1);
         recurrenceSet.add(branch2);
         recurrenceSet.add(child);
-        parent.getRRule().getRecurrences().add(child);
+        parent.getRRule().recurrences().add(child);
 
         return recurrenceSet;
     }

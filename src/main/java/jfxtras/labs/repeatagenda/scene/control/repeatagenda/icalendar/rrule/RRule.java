@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.ResourceBundle;
@@ -117,10 +118,10 @@ public class RRule
      * the recurrence instance.  The UID matches the UID of the parent calendar component.
      * See 3.8.4.4 of RFC 5545 iCalendar
      */
-    public Set<VComponent<?>> getRecurrences() { return recurrences; }
+    public Set<VComponent<?>> recurrences() { return recurrences; }
     private Set<VComponent<?>> recurrences = new HashSet<>();
-    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
-    public RRule withRecurrences(Set<VComponent<?>> temporal) { setRecurrences(temporal); return this; }
+//    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
+    public RRule withRecurrences(VComponent<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
     /** Deep copy all fields from source to destination */
     private static void copy(RRule source, RRule destination)
@@ -136,17 +137,17 @@ public class RRule
                 e.printStackTrace();
             }
         }
-        Iterator<VComponent<?>> i = source.getRecurrences().iterator();
+        Iterator<VComponent<?>> i = source.recurrences().iterator();
         while (i.hasNext())
         {
-            destination.getRecurrences().add(i.next());
+            destination.recurrences().add(i.next());
         }
     }
     
     /** Deep copy all fields from this to destination */
     public void copyTo(RRule destination)
     {
-        copy(this, (RRule) destination);
+        copy(this, destination);
     }
 
     @Override
@@ -162,8 +163,8 @@ public class RRule
                 (testObj.getCount() == null) : getCount().equals(testObj.getCount());
         boolean frequencyEquals = (getFrequency() == null) ?
                 (testObj.getFrequency() == null) : getFrequency().equals(testObj.getFrequency());
-        boolean recurrencesEquals = (getRecurrences() == null) ?
-                (testObj.getRecurrences() == null) : getRecurrences().equals(testObj.getRecurrences());
+        boolean recurrencesEquals = (recurrences() == null) ?
+                (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());
 
         System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals);
         return countEquals && frequencyEquals && recurrencesEquals;
@@ -359,11 +360,11 @@ public class RRule
 //                .map(v -> v.getDateTimeRecurrence())
 //                .findAny(t -> t.equals(d))
 //                .isPresent();
-        Stream<Temporal> filteredStream = (getRecurrences().size() == 0) ?
+        Stream<Temporal> filteredStream = (recurrences().size() == 0) ?
                 getFrequency().stream(start) :
                 getFrequency().stream(start).filter(t -> 
                 {
-                    return ! getRecurrences().stream()
+                    return ! recurrences().stream()
                             .map(v -> v.getDateTimeRecurrence())
                             .filter(t2 -> t2.equals(t))
                             .findAny()
