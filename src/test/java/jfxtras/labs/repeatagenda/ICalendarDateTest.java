@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
@@ -1057,6 +1058,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     }
     
     @Test
+    @Ignore
     public void canFindRecurrenceSet1()
     {
         List<VComponent<Appointment>> vComponents = new ArrayList<>();

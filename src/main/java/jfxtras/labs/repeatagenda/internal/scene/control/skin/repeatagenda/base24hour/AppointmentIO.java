@@ -20,8 +20,8 @@ import org.xml.sax.SAXException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.IOUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentGroupImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.IOUtilities;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 
@@ -104,7 +104,7 @@ public final class AppointmentIO {
                     int myCount = (appointmentGroupCount.get(groupNodeCounter) == null)
                             ? 0 : appointmentGroupCount.get(groupNodeCounter);
     
-                    AppointmentGroupImpl aGroup = new AppointmentGroupImpl()
+                    AppointmentGroupImpl aGroup = new AppointmentGroupImpl(null)
                         .withDescription(IOUtilities.myGet(groupAttributes, "name", errorMessage))
                         .withStyleClass(IOUtilities.myGet(groupAttributes, "style", errorMessage));
     //                    .withAppointmentCount(myCount);

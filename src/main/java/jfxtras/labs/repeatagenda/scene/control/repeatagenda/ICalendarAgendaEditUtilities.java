@@ -154,10 +154,10 @@ public final class ICalendarAgendaEditUtilities
     {
         final RRuleType rruleType = ICalendarAgendaEditUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
         boolean incrementSequence = true;
-        System.out.println("DTEND:" + vEvent.getDateTimeStart() + " " + vEvent.getDateTimeEnd());
-        System.out.println("dates: " + startOriginalInstance + " " + startInstance + " " + endInstance);
-        System.out.println("range: " + vEvent.getStartRange() + " " + vEvent.getEndRange());
-//        System.out.println("rrule: " + rruleType);
+//        System.out.println("DTEND:" + vEvent.getDateTimeStart() + " " + vEvent.getDateTimeEnd());
+//        System.out.println("dates: " + startOriginalInstance + " " + startInstance + " " + endInstance);
+//        System.out.println("range: " + vEvent.getStartRange() + " " + vEvent.getEndRange());
+        System.out.println("rrule: " + rruleType);
 //        System.out.println("vEvent: " + vEvent);
         switch (rruleType)
         {

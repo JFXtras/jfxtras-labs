@@ -47,7 +47,9 @@ import jfxtras.util.NodeUtil;
  */
 public class ICalendarAgenda extends Agenda
 {
-    private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+
+    private static String AGENDA_STYLE_SHEET = ICalendarAgenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+//    private static String AGENDA_STYLE_SHEET = ICalendarAgenda.class.getResource("/jfxtras/labs/repeatagenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
     
     // default appointment group list
     // if any element has been edited the edit list must be added to appointmentGroups
@@ -55,7 +57,7 @@ public class ICalendarAgenda extends Agenda
         = javafx.collections.FXCollections.observableArrayList(
                 IntStream
                 .range(0, 24)
-                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl()
+                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl(AGENDA_STYLE_SHEET)
                        .withStyleClass("group" + i)
                        .withDescription("group" + (i < 10 ? "0" : "") + i))
                 .collect(Collectors.toList()));
@@ -174,13 +176,13 @@ public class ICalendarAgenda extends Agenda
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
         if (appointmentVComponentMap.get(appointment) == null)
-        {
+        { // add appointment to map if not present.  Can occur if multiple edits occur.
             Optional<VComponent<Appointment>> vo = vComponents.stream().filter(v -> v.instances().contains(appointment)).findAny();
             if (vo.isPresent()) appointmentVComponentMap.put(appointment, vo.get());
             else throw new RuntimeException("Can't edit appointment.  VComponent not found in map");
         }
         final VEvent<Appointment> vEvent = (VEvent<Appointment>) appointmentVComponentMap.get(appointment);
-        System.out.println("Vevent changes:" + vEvent + " " + vComponents.size() + " " + appointmentVComponentMap.size());
+//        System.out.println("Vevent changes:" + vEvent + " " + vComponents.size() + " " + appointmentVComponentMap.size());
         VEvent<Appointment> vEventOriginal = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
 
         final Temporal startInstance;
@@ -215,7 +217,7 @@ public class ICalendarAgenda extends Agenda
             vEvent.setDateTimeStart(startNew);        
             duration = ChronoUnit.NANOS.between(startInstance, endInstance);
         }
-        switch (vEvent.getEndPriority())
+        switch (vEvent.endPriority())
         {
         case DTEND:
             Temporal endNew = VComponent.addNanos(startNew, duration);
@@ -225,6 +227,7 @@ public class ICalendarAgenda extends Agenda
             vEvent.setDurationInNanos(duration);
             break;
         }
+        System.out.println("start, end:" + vEvent.getDateTimeStart() + " " + vEvent.getDateTimeEnd());
         
         appointments().removeListener(appointmentsListener);
         vComponents().removeListener(vComponentsListener);
@@ -248,8 +251,18 @@ public class ICalendarAgenda extends Agenda
     public ICalendarAgenda()
     {
         super();
-        
         appointments().addListener((InvalidationListener) (obs) -> System.out.println("appointments chagned:"));
+        
+//        String AGENDA_STYLE_SHEET = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+       
+//        ObservableList<AppointmentGroup> appointmentGroups
+//        = javafx.collections.FXCollections.observableArrayList(
+//                IntStream
+//                .range(0, 24)
+//                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl(this.getUserAgentStylesheet())
+//                       .withStyleClass("group" + i)
+//                       .withDescription("group" + (i < 10 ? "0" : "") + i))
+//                .collect(Collectors.toList()));
         
         // override Agenda appointmentGroups
         appointmentGroups().clear();
@@ -566,6 +579,9 @@ public class ICalendarAgenda extends Agenda
      */
     static public class AppointmentGroupImpl implements AppointmentGroup
     {
+        private String styleSheet;
+        public AppointmentGroupImpl(String styleSheet) { this.styleSheet = styleSheet; }        
+        
         /** Description: */
         public ObjectProperty<String> descriptionProperty() { return descriptionObjectProperty; }
         final private ObjectProperty<String> descriptionObjectProperty = new SimpleObjectProperty<String>(this, "description");
@@ -596,7 +612,7 @@ public class ICalendarAgenda extends Agenda
             icon = new Pane();
             icon.setPrefSize(20, 20);
 //            icon.getStyleClass().add(Agenda.class.getSimpleName());
-            icon.getStylesheets().add(AGENDA_STYLE_CLASS);
+            icon.getStylesheets().add(styleSheet);
             icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
         }
 
@@ -614,10 +630,5 @@ public class ICalendarAgenda extends Agenda
     public void setResourceBundle(ResourceBundle resources) {
         Settings.setup(resources);
     }
-
-//    public static RepeatableAppointment AppointmentFactory(RepeatableAppointment source) {
-//        
-//        return null;
-//    }
         
 }

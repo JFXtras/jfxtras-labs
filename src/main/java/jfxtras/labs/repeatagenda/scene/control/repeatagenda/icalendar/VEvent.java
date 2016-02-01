@@ -243,7 +243,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     private boolean isDateTimeEndWholeDay() { return getDateTimeEnd() instanceof LocalDate; }
 
     /** Indicates end option, DURATION or DTEND. */
-    public EndPriority getEndPriority() { return endPriority; }
+    public EndPriority endPriority() { return endPriority; }
     private EndPriority endPriority;
 
     
@@ -411,12 +411,12 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             {
                 if (newClass.equals(LocalDate.class)) // change to LocalDate
                 {
-                    System.out.println("change to localDate:");
+//                    System.out.println("change to localDate:");
 //                    lastStartTime = LocalTime.from(oldValue);
                     changeStartToLocalDate((LocalDate) newValue);
                 } else if (newClass.equals(LocalDateTime.class)) // change to LocalDateTime
                 {
-                    System.out.println("change to localDateTime:");
+//                    System.out.println("change to localDateTime:");
                     changeStartToLocalDateTime((LocalDateTime) newValue);
                 }
             }
@@ -527,13 +527,24 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         @SuppressWarnings("unchecked")
         VEvent<T> testObj = (VEvent<T>) obj;
 
-        boolean descriptionEquals = (getDescription() == null) ?
-                (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-        boolean durationEquals = (getDurationInNanos() == null) ?
-                (testObj.getDurationInNanos() == null) : getDurationInNanos().equals(testObj.getDurationInNanos());
-        System.out.println("VEvent: " + descriptionEquals + " " + durationEquals);
+        boolean descriptionEquals = (getDescription() == null) ? (testObj.getDescription() == null)
+                : getDescription().equals(testObj.getDescription());
+        final boolean endEquals;
+        switch (endPriority())
+        {
+        case DTEND:
+            endEquals = getDateTimeEnd().equals(testObj.getDateTimeEnd());
+            break;
+        case DURATION:
+            endEquals = getDurationInNanos().equals(testObj.getDurationInNanos());
+            break;
+        default:
+            endEquals = false; // shouldn't get here
+            break;
+        }
+        System.out.println("VEvent: " + descriptionEquals + " " + endEquals);
         // don't need to check getDateTimeEnd because it is bound to duration
-        return super.equals(obj) && descriptionEquals && durationEquals;
+        return super.equals(obj) && descriptionEquals && endEquals;
     }
     
     /** Make iCalendar compliant string of VEvent calendar component.

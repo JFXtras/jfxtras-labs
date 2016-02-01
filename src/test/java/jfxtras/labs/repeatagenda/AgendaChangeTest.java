@@ -26,25 +26,24 @@ public class AgendaChangeTest extends AgendaTestAbstract
     
     @Test
     //@Ignore
-    public void canChangeOne()
+    public void canDragAndDropAppointment()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
         
         // move one appointment
         assertFind("#AppointmentRegularBodyPane2015-11-11/0");
-        move("#hourLine11"); // the pane is beneath the mouse now since it runs from 10 to 12
+        move("#hourLine11");
         press(MouseButton.PRIMARY);
         move("#hourLine15");
         release(MouseButton.PRIMARY);
 
-        // delete VComponent
+        // change dialog
         ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ONE));
         click("#edit_dialog_button_ok");
 
         // check return to original state
         assertEquals(2, agenda.vComponents().size());
-        agenda.appointments().stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(6, agenda.appointments().size());
         Collections.sort(agenda.vComponents(), VComponent.VCOMPONENT_COMPARATOR);
         VComponent<Appointment> v1 = agenda.vComponents().get(0);
@@ -52,8 +51,6 @@ public class AgendaChangeTest extends AgendaTestAbstract
         RRule r = ICalendarTestAbstract.getDaily1().getRRule().withRecurrences(v2);
         VComponent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1()
                 .withRRule(r);
-        System.out.println(expectedV1);
-        System.out.println(v1);
         assertEquals(expectedV1, v1);
         
         VComponent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1()
@@ -64,5 +61,36 @@ public class AgendaChangeTest extends AgendaTestAbstract
                 .withDateTimeStamp(v2.getDateTimeStamp())
                 .withSequence(1);
         assertEquals(expectedV2, v2);
+    }
+    
+    @Test
+    //@Ignore
+    public void canExpandAppoindment()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
+        
+        // expand time
+        move("#AppointmentRegularBodyPane2015-11-11/0 .DurationDragger"); 
+        press(MouseButton.PRIMARY);
+        move("#hourLine15");
+        release(MouseButton.PRIMARY);
+        
+        // delete VComponent
+        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
+        click("#edit_dialog_button_ok");
+
+        // check return to original state
+        assertEquals(1, agenda.vComponents().size());
+        agenda.appointments().stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+        assertEquals(6, agenda.appointments().size());
+        VComponent<Appointment> v1 = agenda.vComponents().get(0);
+        VComponent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 14, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 15, 0));
+        System.out.println(expectedV1);
+        System.out.println(v1);
+        assertEquals(expectedV1, v1);
+        
     }
 }
