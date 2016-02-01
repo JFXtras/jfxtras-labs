@@ -3,7 +3,11 @@ package jfxtras.labs.repeatagenda;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -61,6 +65,37 @@ public class AgendaChangeTest extends AgendaTestAbstract
                 .withDateTimeStamp(v2.getDateTimeStamp())
                 .withSequence(1);
         assertEquals(expectedV2, v2);
+        
+        // check appointment dates
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 10, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 14, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 14, 10, 0)
+              ));
+        List<LocalDateTime> startDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getStartLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(expectedDates, startDates);
+        
+        List<LocalDateTime> expectedEndDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 11, 0)
+              , LocalDateTime.of(2015, 11, 10, 11, 0)
+              , LocalDateTime.of(2015, 11, 11, 15, 0)
+              , LocalDateTime.of(2015, 11, 12, 11, 0)
+              , LocalDateTime.of(2015, 11, 13, 11, 0)
+              , LocalDateTime.of(2015, 11, 14, 11, 0)
+              ));
+        List<LocalDateTime> endDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getEndLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(expectedEndDates, endDates);
     }
     
     @Test
@@ -86,11 +121,40 @@ public class AgendaChangeTest extends AgendaTestAbstract
         assertEquals(6, agenda.appointments().size());
         VComponent<Appointment> v1 = agenda.vComponents().get(0);
         VComponent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 14, 0))
-                .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 15, 0));
-        System.out.println(expectedV1);
-        System.out.println(v1);
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 15, 0))
+                .withSequence(1);
         assertEquals(expectedV1, v1);
         
+        // check appointment dates
+        List<LocalDateTime> expectedStartDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 10, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 14, 10, 0)
+              ));
+        List<LocalDateTime> startDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getStartLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(expectedStartDates, startDates);
+
+        List<LocalDateTime> expectedEndDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 15, 0)
+              , LocalDateTime.of(2015, 11, 10, 15, 0)
+              , LocalDateTime.of(2015, 11, 11, 15, 0)
+              , LocalDateTime.of(2015, 11, 12, 15, 0)
+              , LocalDateTime.of(2015, 11, 13, 15, 0)
+              , LocalDateTime.of(2015, 11, 14, 15, 0)
+              ));
+        List<LocalDateTime> endDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getEndLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(expectedEndDates, endDates);
     }
 }
