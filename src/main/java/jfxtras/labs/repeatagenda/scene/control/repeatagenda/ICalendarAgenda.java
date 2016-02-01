@@ -26,7 +26,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditPopupLoader;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.LittlePopupLoader;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.selectOneLoader;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
@@ -140,12 +140,12 @@ public class ICalendarAgenda extends Agenda
     };
 
     /*
-     * Default little popup that opens when clicking on one appointment.
+     * Default popup that opens when clicking on one appointment.
      * allows editing summary and buttons to open edit popup and delete
      */
-    private Callback<Appointment, Void> littlePopupCallback = (Appointment appointment) ->
+    private Callback<Appointment, Void> oneAppointmentSelectedCallback = (Appointment appointment) ->
     {
-        LittlePopupLoader popup = new LittlePopupLoader(appointment, appointments(), this);
+        selectOneLoader popup = new selectOneLoader(this, appointment, appointments());
         System.out.println("sizes " + NodeUtil.screenY(this) + " " + this.getHeight());
 //      this.setX(NodeUtil.screenX(pane));
 //      this.setY(NodeUtil.screenY(pane) - pane.getHeight());
@@ -274,6 +274,7 @@ public class ICalendarAgenda extends Agenda
         Settings.setup(resources);
         
         setAppointmentChangedCallback(appointmentChangedCallback);
+        setOneAppointmentSelectedCallback(oneAppointmentSelectedCallback);
 
         // Ensures VComponent are synched with appointments.
         appointmentsListener = (ListChangeListener.Change<? extends Appointment> change) ->

@@ -13,18 +13,20 @@ import javafx.scene.control.TextField;
 import javafx.stage.Popup;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
  * @author David Bal
  *
  */
-public class LittlePopupController {
+public class SelectOneController {
     
 //    private Pane pane;
     private Collection<Appointment> appointments;
     private Collection<VComponent<Appointment>> repeats;
 //    private Map<Appointment, Repeat> repeatMap;
+    private Agenda agenda;
     private Appointment appointment;
     private Popup popup;
     
@@ -40,11 +42,13 @@ public class LittlePopupController {
    }
 
     public void setupData(
-            Appointment appointment
+            Agenda agenda
+          , Appointment appointment
           , Collection<Appointment> appointments
           , Popup popup) {
 
 //        this.pane = pane;
+        this.agenda = agenda;
         this.appointment = appointment;
         this.appointments = appointments;
         this.repeats = repeats;
@@ -62,7 +66,11 @@ public class LittlePopupController {
         });
     }
     
-    @FXML private void handleEditAppointment() {
+    @FXML private void handleEditAppointment()
+    {
+        // TODO - HOW DO I RUN THIS HERE?
+        // NEED LISTENERS
+        agenda.getEditAppointmentCallback().call(appointment);
 //        AppointmentMenu appointmentMenu = new AppointmentMenu(pane, appointment, layoutHelp);
 //        appointmentMenu.showMenu(null);
     }
