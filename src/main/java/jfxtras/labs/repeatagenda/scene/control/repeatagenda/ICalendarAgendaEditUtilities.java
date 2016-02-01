@@ -60,10 +60,10 @@ public final class ICalendarAgendaEditUtilities
         
         // set id for testing
         dialog.getDialogPane().setId("edit_dialog");
-        List<Node> buttons = getAllNodes(dialog.getDialogPane(), Button.class);
+        List<Node> buttons = getMatchingNodes(dialog.getDialogPane(), Button.class);
         ((Button) buttons.get(0)).setId("edit_dialog_button_ok");
         ((Button) buttons.get(1)).setId("edit_dialog_button_cancel");
-        ComboBox<ChangeDialogOption> comboBox = (ComboBox<ChangeDialogOption>) getAllNodes(dialog.getDialogPane(), ComboBox.class).get(0);
+        ComboBox<ChangeDialogOption> comboBox = (ComboBox<ChangeDialogOption>) getMatchingNodes(dialog.getDialogPane(), ComboBox.class).get(0);
         comboBox.setId("edit_dialog_combobox");
 
 //        comboBox.setConverter(new StringConverter<ChangeDialogOption>()
@@ -591,14 +591,14 @@ public final class ICalendarAgendaEditUtilities
     }
     
     
-    public static List<Node> getAllNodes(Parent root, Class<? extends Node> matchClass)
+    public static List<Node> getMatchingNodes(Parent root, Class<? extends Node> matchClass)
     {
         List<Node> nodes = new ArrayList<>();
-        addAllDescendents(root, nodes, matchClass);
+        addMatchingDescendents(root, nodes, matchClass);
         return nodes;
     }
 
-    private static void addAllDescendents(Parent parent, List<Node> nodes, Class<? extends Node> matchClass)
+    private static void addMatchingDescendents(Parent parent, List<Node> nodes, Class<? extends Node> matchClass)
     {
         if (parent instanceof ButtonBar)
         {
@@ -606,7 +606,7 @@ public final class ICalendarAgendaEditUtilities
             {
 //                System.out.println(node.getClass().getSimpleName() + " " + matchClass);
                 if (node.getClass().equals(matchClass)) nodes.add(node);
-                if (node instanceof Parent) addAllDescendents((Parent)node, nodes, matchClass);
+                if (node instanceof Parent) addMatchingDescendents((Parent)node, nodes, matchClass);
             }
         } else
         {
@@ -614,9 +614,36 @@ public final class ICalendarAgendaEditUtilities
             {
 //                System.out.println(node.getClass().getSimpleName() + " " + matchClass);
                 if (node.getClass().equals(matchClass)) nodes.add(node);
-                if (node instanceof Parent) addAllDescendents((Parent)node, nodes, matchClass);
+                if (node instanceof Parent) addMatchingDescendents((Parent)node, nodes, matchClass);
             }
         }
     }
+    
+    public static List<Node> getAllNodes(Parent root)
+    {
+        List<Node> nodes = new ArrayList<>();
+        addAllDescendents(root, nodes);
+        return nodes;
+    }
+    
+    private static void addAllDescendents(Parent parent, List<Node> nodes)
+    {
+        if (parent instanceof ButtonBar)
+        {
+            for (Node node : ((ButtonBar) parent).getButtons())
+            {
+                nodes.add(node);
+                if (node instanceof Parent) addAllDescendents((Parent)node, nodes);
+            }
+        } else
+        {
+            for (Node node : parent.getChildrenUnmodifiable())
+            {
+                nodes.add(node);
+                if (node instanceof Parent) addAllDescendents((Parent)node, nodes);
+            }
+        }
+    }
+
 
 }

@@ -19,14 +19,16 @@ import java.util.stream.IntStream;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditPopupLoader;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.selectOneLoader;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.SelectOneLoader;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
@@ -99,10 +101,13 @@ public class ICalendarAgenda extends Agenda
     private Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback = null; // TODO - NOT IMPLEMENTED YET
     public void setAppointmentGroupWriteCallback(Callback<Collection<AppointmentGroup>, Void> appointmentWriteCallback) { this.appointmentGroupWriteCallback = appointmentGroupWriteCallback; }
 
-    // listen for additions to appointments from agenda. This listener must be removed and added back when a change
-    // in the time range  occurs.
+    /*
+     * PRIVATE APPOINTMENT AND VCOMPONENT LISTENERS 
+     * Keeps appointments and vComponents synchronized.
+     * listen for additions to appointments from agenda. This listener must be removed and added back when a change
+     * in the time range  occurs.
+     */
     private ListChangeListener<Appointment> appointmentsListener;
-    private ListChangeListener<Appointment> appointmentsListener2;
     private ListChangeListener<VComponent<Appointment>> vComponentsListener; // listen for changes to vComponents.
     
     // Default edit popup callback - this callback replaces Agenda's default edit popup
@@ -145,11 +150,21 @@ public class ICalendarAgenda extends Agenda
      */
     private Callback<Appointment, Void> oneAppointmentSelectedCallback = (Appointment appointment) ->
     {
-        selectOneLoader popup = new selectOneLoader(this, appointment, appointments());
-        System.out.println("sizes " + NodeUtil.screenY(this) + " " + this.getHeight());
-//      this.setX(NodeUtil.screenX(pane));
-//      this.setY(NodeUtil.screenY(pane) - pane.getHeight());
-        popup.show(this, NodeUtil.screenX(this) + this.getWidth()/2, NodeUtil.screenY(this) + this.getHeight()/2);
+        Pane bodyPane = appointmentBodyPaneMap().get(appointment);
+        SelectOneLoader popup = new SelectOneLoader(this, appointment, appointments());
+        
+//        Popup popup = new Popup();
+//        popup.setAutoFix(true);
+//        popup.setAutoHide(true);
+//        popup.setHideOnEscape(true);
+//        Label l = new Label("some text");
+//        popup.getContent().add(l);
+        
+//        System.out.println("sizes " + NodeUtil.screenY(this) + " " + this.getHeight());
+//        popup.show(bodyPane, NodeUtil.screenX(bodyPane), NodeUtil.screenY(bodyPane));
+        popup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
+        ChangeListener<? super Boolean> listener = (obs, oldValue, newValue) -> System.out.println("focus changed");
+        popup.focusedProperty().addListener(listener);
         System.out.println("add new appointment drawn popup");
         return null;
     };
@@ -163,11 +178,14 @@ public class ICalendarAgenda extends Agenda
         return null;
     };
     
-    /* map stores start date/time of Appointments as they are made so I can get the original date/time
+    /* 
+     * Match up maps
+     * 
+     * map stores start date/time of Appointments as they are made so I can get the original date/time
      * if Agenda changes one (e.g. drag-n-drop).  The original is needed for RECURRENCE-ID.  */
     private final Map<Appointment, Temporal> appointmentRecurrenceIDMap = new WeakHashMap<>();
-    /* map matches appointment to VComponent that made it */
-    private final Map<Appointment, VComponent<Appointment>> appointmentVComponentMap = new WeakHashMap<>();
+    private final Map<Appointment, VComponent<Appointment>> appointmentVComponentMap = new WeakHashMap<>(); /* map matches appointment to VComponent that made it */
+    private final Map<Node, Appointment> nodeAppointmentMap = new WeakHashMap<>(); // matches up appointment pane to Appointment object - needed for popup setup
     
     /*
      * Default appointment changed callback (actions like drag-n-drop)
@@ -294,12 +312,14 @@ public class ICalendarAgenda extends Agenda
                                 newVComponent.setStartRange(startRange);
                                 newVComponent.setEndRange(endRange);
                                 newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
-                                appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime()); // populate recurrence-id map
-                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
                                 vComponents().removeListener(vComponentsListener);
                                 vComponents().add(newVComponent);
                                 vComponents().addListener(vComponentsListener);
-                                System.out.println("newVComponent:" + newVComponent);
+
+                                // put data in maps
+                                appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime()); // populate recurrence-id map
+                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
+//                                System.out.println("newVComponent:" + newVComponent);
                             });
                     if (change.getAddedSubList().size() == 1)
                     { // Open little popup - edit, delete
@@ -415,7 +435,7 @@ public class ICalendarAgenda extends Agenda
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
             System.out.println("Vcomponents:" + vComponents().size());
-            vComponents().stream().forEach(System.out::println);
+//            vComponents().stream().forEach(System.out::println);
             this.dateTimeRange = dateTimeRange;
             if (dateTimeRange != null)
             {        
@@ -428,15 +448,27 @@ public class ICalendarAgenda extends Agenda
                     LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
                     Collection<Appointment> newAppointments = v.makeInstances(start, end);
                     appointments().addAll(newAppointments);
-                    newAppointments.stream().forEach(a -> appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime())); // populate recurrence-id map
-                    newAppointments.stream().forEach(a -> appointmentVComponentMap.put(a, v)); // populate appointment-vComponent map
+                    newAppointments.stream().forEach(a ->
+                    {
+                        appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime()); // populate recurrence-id map
+                        appointmentVComponentMap.put(a, v); // populate appointment-vComponent map
+//                        nodeAppointmentMap.put(findAppointmentNode(a), a); // populate node-appointment map
+                    });
                 });
                 appointments().addListener(appointmentsListener); // add back appointmentListener
             }
             return null; // return argument for the Callback
         });
-        
-    }
+    } // end of constructor
+    
+//    private Node findAppointmentNode(Appointment a)
+//    {
+//        GuiTest.find("#AppointmentRegularBodyPane2015-11-11/0"
+//        List<Node> nodes = ICalendarAgendaEditUtilities.getAllNodes(this);
+//        System.out.println("nodes:" + nodes.size());
+//        nodes.stream().forEach(System.out::println);
+//        return null;
+//    }
     
 //    /** Example Appointment class with overridden equals method used by unit testing */
 //    static public class AppointmentImplLocal2 extends AppointmentImplLocal

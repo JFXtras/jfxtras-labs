@@ -16,47 +16,46 @@ import jfxtras.util.NodeUtil;
  * Default little popup that opens when clicking on one appointment.
  * allows editing summary and buttons to open edit popup and delete
  */
-public class selectOneLoader extends Popup {
+public class SelectOneLoader extends Popup {
 
-    private AnchorPane appointmentManage;
+    private AnchorPane selectOne;
     
-    public selectOneLoader(
+    public SelectOneLoader(
               Agenda agenda
             , Appointment appointment
             , Collection<Appointment> appointments)
-    {
-        
+    {       
         // LOAD FXML
-        FXMLLoader appointmentManageLoader = new FXMLLoader();
-        appointmentManageLoader.setLocation(selectOneLoader.class.getResource("view/SelectOne.fxml"));
-        appointmentManageLoader.setResources(Settings.resources);
+        FXMLLoader selectOneLoader = new FXMLLoader();
+        selectOneLoader.setLocation(SelectOneLoader.class.getResource("view/SelectOne.fxml"));
+        selectOneLoader.setResources(Settings.resources);
         try {
-            appointmentManage = appointmentManageLoader.load();
+            selectOne = selectOneLoader.load();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        SelectOneController popupController = appointmentManageLoader.getController();
-        popupController.setupData(agenda, appointment, appointments, this);
+        SelectOneController popupController = selectOneLoader.getController();
+        popupController.setupData(agenda, appointment, appointments);
 //        AppointmentManageController.setupData(appointment, layoutHelp, newStage);
 //        Scene scene2 = new Scene(appointmentMenuPane);
         
         System.out.println("sizes " + NodeUtil.screenY(agenda));// + " " + node.getHeight());
 
         
-        this.setAutoFix(true);
-        this.setAutoHide(true);
-        this.setHideOnEscape(true);
-        this.getContent().add(appointmentManage);
+        setAutoFix(true);
+        setAutoHide(true);
+        setHideOnEscape(true);
+        getContent().add(selectOne);
         
-        this.setX(NodeUtil.screenX(agenda));
-        this.setY(NodeUtil.screenY(agenda)); // - node.getHeight());
+//        setX(NodeUtil.screenX(agenda));
+//        setY(NodeUtil.screenY(agenda)); // - node.getHeight());
 //        layoutHelp.skinnable.getUserAgentStylesheet();
         
 //        appointmentManage.getStyleClass().add("Agenda" + "Popup");
         
-        this.setOnHidden( (windowEvent) -> {
-            System.out.println("close menage popup");
+        setOnHidden( (windowEvent) -> {
+            System.out.println("close select one popup");
         });
         
         

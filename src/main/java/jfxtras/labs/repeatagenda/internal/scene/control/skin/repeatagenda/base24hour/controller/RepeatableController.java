@@ -917,7 +917,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         
         // set id for testing
         alert.getDialogPane().setId("last_day_of_week_alert");
-        List<Node> buttons = ICalendarAgendaEditUtilities.getAllNodes(alert.getDialogPane(), Button.class);
+        List<Node> buttons = ICalendarAgendaEditUtilities.getMatchingNodes(alert.getDialogPane(), Button.class);
         ((Button) buttons.get(0)).setId("last_day_of_week_alert_button_ok");
         
         alert.showAndWait();

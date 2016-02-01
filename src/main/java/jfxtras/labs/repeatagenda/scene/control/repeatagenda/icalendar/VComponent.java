@@ -311,7 +311,7 @@ public interface VComponent<T>
         if (getDateTimeStamp() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTAMP must not be null.");
         if (getUniqueIdentifier() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  UID must not be null.");
         if (getRRule() != null) errorsBuilder.append(getRRule().makeErrorString(this));
-        System.out.println("getDateTimeStart():" + getDateTimeStart());
+//        System.out.println("getDateTimeStart():" + getDateTimeStart());
         Temporal t1 = stream(getDateTimeStart()).findFirst().get();
         final Temporal first;
         if (getExDate() != null)
