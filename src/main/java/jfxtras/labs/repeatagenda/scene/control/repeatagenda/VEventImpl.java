@@ -34,7 +34,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.Appo
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.WindowCloseType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
@@ -661,7 +661,7 @@ public class VEventImpl extends VEvent<Appointment>
             case ONE:
                 if (getExDate() == null)
                 {
-                    setExDate(new EXDate(dateOrDateTime));
+                    setExDate(new ExDate(dateOrDateTime));
                 } else
                 {
                     getExDate().getTemporals().add(dateOrDateTime);

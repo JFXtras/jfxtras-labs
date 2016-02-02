@@ -30,6 +30,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
@@ -37,7 +38,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VCom
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -52,7 +53,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  * @author David Bal
  * @see RepeatableController
  */
-public class AppointmentEditController
+public class AppointmentEditController extends Pane
 {
 //    private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0); // default start time used when a whole-day event gets a time
     
@@ -406,7 +407,7 @@ public class AppointmentEditController
             case CANCEL:
                 break;
             case ONE:
-                if (vEvent.getExDate() == null) vEvent.setExDate(new EXDate(dateOrDateTime));
+                if (vEvent.getExDate() == null) vEvent.setExDate(new ExDate(dateOrDateTime));
                 else vEvent.getExDate().getTemporals().add(dateOrDateTime);
                 appointments.removeIf(a -> a.getStartLocalDateTime().equals(appointment.getStartLocalDateTime()));
                 break;

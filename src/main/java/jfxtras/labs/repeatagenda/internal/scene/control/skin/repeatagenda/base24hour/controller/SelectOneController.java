@@ -47,6 +47,7 @@ public class SelectOneController extends Rectangle
     @FXML public void initialize()
     {
         nameTextField.setFocusTraversable(false); // this is the only way I can avoid having this text field focused when popup opens.  If it is focused then escape doesn't close popup.
+//        anchorPane.requestFocus();
     }
 
     public void setupData(

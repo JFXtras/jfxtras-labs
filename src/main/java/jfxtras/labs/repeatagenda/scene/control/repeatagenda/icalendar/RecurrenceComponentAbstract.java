@@ -17,7 +17,7 @@ import javafx.collections.ObservableSet;
 /** For EXDate and RDate
  * Stores either date or date-time values
  * @param <T> either EXDate or RDate
- * @see EXDate
+ * @see ExDate
  * @see RDate
  * */
 public abstract class RecurrenceComponentAbstract<T> implements RecurrenceComponent

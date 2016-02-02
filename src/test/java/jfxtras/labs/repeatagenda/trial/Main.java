@@ -78,7 +78,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Repeatable Agenda Demo");
         primaryStage.show();
-	    
+        
         // TODO - I/O AFTER SETUP
 //        // I/O and setup
 //        ObservableList<AppointmentGroup> appointmentGroups = null;

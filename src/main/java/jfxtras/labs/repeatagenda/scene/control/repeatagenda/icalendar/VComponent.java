@@ -99,8 +99,8 @@ public interface VComponent<T>
      * 3.8.5.1, RFC 5545 iCalendar
      * Is rarely used, so employs lazy initialization.
      */
-    EXDate getExDate();
-    void setExDate(EXDate exDate);
+    ExDate getExDate();
+    void setExDate(ExDate exDate);
 
     /**
      * LAST-MODIFIED: Date-Time Last Modified, from RFC 5545 iCalendar 3.8.7.3 page 138

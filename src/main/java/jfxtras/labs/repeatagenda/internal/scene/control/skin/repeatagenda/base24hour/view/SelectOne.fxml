@@ -11,19 +11,13 @@
    <children>
       <VBox fx:id="vBox" layoutY="7.0" spacing="5.0" styleClass="simple-border" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
          <children>
-            <Label text="manage appointment">
-               <styleClass>
-                  <String fx:value="bordered-titled-title" />
-                  <String fx:value="background3" />
-               </styleClass>
-            </Label>
             <HBox alignment="CENTER_LEFT" spacing="5.0">
                <children>
                   <Label text="Name" />
-                  <TextField fx:id="nameTextField" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="nameTextField" editable="false" HBox.hgrow="ALWAYS" />
                </children>
                <VBox.margin>
-                  <Insets />
+                  <Insets top="7.0" />
                </VBox.margin>
             </HBox>
             <Label fx:id="appointmentTimeLabel" text="Label" />

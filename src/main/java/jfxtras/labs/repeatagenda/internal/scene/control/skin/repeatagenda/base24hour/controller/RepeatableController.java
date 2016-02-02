@@ -53,7 +53,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
@@ -852,7 +852,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     {
         Temporal d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
-        if (vComponent.getExDate() == null) vComponent.setExDate(new EXDate());
+        if (vComponent.getExDate() == null) vComponent.setExDate(new ExDate());
         vComponent.getExDate().getTemporals().add(d);
         makeExceptionDates();
         Collections.sort(exceptionsListView.getItems(),VComponent.TEMPORAL_COMPARATOR); // Maintain sorted list

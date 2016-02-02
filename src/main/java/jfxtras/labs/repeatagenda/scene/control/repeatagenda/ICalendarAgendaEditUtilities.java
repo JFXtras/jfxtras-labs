@@ -25,7 +25,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.EXDate;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
@@ -206,7 +206,7 @@ public final class ICalendarAgendaEditUtilities
                                 if (vEvent.getExDate() == null)
                                 { // make new EXDate object for destination if necessary
                                     try {
-                                        EXDate newEXDate = v.getExDate().getClass().newInstance();
+                                        ExDate newEXDate = v.getExDate().getClass().newInstance();
                                         vEvent.setExDate(newEXDate);
                                     } catch (InstantiationException | IllegalAccessException e) {
                                         e.printStackTrace();

@@ -73,8 +73,9 @@ public class CalendarController {
     
     boolean editDone = false;
     
-    @FXML public void initialize() {
-               
+    @FXML public void initialize()
+    {
+//        agenda.setKeyHandler();
         // ResouceBundle
 //        Locale myLocale = Locale.getDefault();
 //        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);

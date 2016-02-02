@@ -11,11 +11,11 @@ import java.util.stream.Stream;
  * @author David Bal
  *
  */
-public class EXDate extends RecurrenceComponentAbstract<EXDate>
+public class ExDate extends RecurrenceComponentAbstract<ExDate>
 {    
     // CONSTRUCTORS
-    public EXDate() { }
-    public EXDate(Temporal... dateOrDateTime) { super(dateOrDateTime); }
+    public ExDate() { }
+    public ExDate(Temporal... dateOrDateTime) { super(dateOrDateTime); }
     
     /** Remove date/times in exDates set */
     public Stream<Temporal> stream(Stream<Temporal> inStream, Temporal startTemporal)

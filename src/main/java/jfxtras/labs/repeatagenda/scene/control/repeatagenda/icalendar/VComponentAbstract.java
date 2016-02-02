@@ -241,17 +241,17 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * 3.8.5.1, RFC 5545 iCalendar
      * Is rarely used, so employs lazy initialization.
      */
-    public ObjectProperty<EXDate> exDateProperty()
+    public ObjectProperty<ExDate> exDateProperty()
     {
         if (exDate == null) exDate = new SimpleObjectProperty<>(this, EXCEPTION_DATE_TIMES_NAME, _exDate);
         return exDate;
     }
-    private ObjectProperty<EXDate> exDate;
-    private EXDate _exDate;
+    private ObjectProperty<ExDate> exDate;
+    private ExDate _exDate;
     @Override
-    public EXDate getExDate() { return (exDate == null) ? _exDate : exDate.getValue(); }
+    public ExDate getExDate() { return (exDate == null) ? _exDate : exDate.getValue(); }
     @Override
-    public void setExDate(EXDate exDate)
+    public void setExDate(ExDate exDate)
     {
         if (this.exDate == null)
         {
@@ -527,7 +527,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             if (destination.getExDate() == null)
             { // make new EXDate object for destination if necessary
                 try {
-                    EXDate newEXDate = source.getExDate().getClass().newInstance();
+                    ExDate newEXDate = source.getExDate().getClass().newInstance();
                     destination.setExDate(newEXDate);
                 } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
@@ -696,7 +696,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 Collection<Temporal> dateTimeCollection = RecurrenceComponentAbstract.parseDates(value);
                 if (vComponent.getExDate() == null)
                 {
-                    vComponent.setExDate(new EXDate());
+                    vComponent.setExDate(new ExDate());
                 }                  
                 vComponent.getExDate().getTemporals().addAll(dateTimeCollection);
                 stringsIterator.remove();

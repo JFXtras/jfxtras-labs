@@ -69,6 +69,7 @@ public class EditPopupLoader extends Stage {
               , veventWriteCallback
               , this);
         Scene scene = new Scene(appointmentPopup);
+        setResizable(false);
         setScene(scene);
 
         //        groupNameEdited.bindBidirectional(appointmentEditController.groupNameEditedProperty());
