@@ -8,7 +8,6 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -16,7 +15,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 /** makes a group of colored squares used to select appointment group */
 public class AppointmentGroupGridPane extends GridPane
 {
-private Pane[] lPane;
+private Node[] lPane;
 
 /** Index of selected AppointmentGroup */
 public IntegerProperty appointmentGroupSelectedProperty() { return appointmentGroupSelected; }
@@ -36,7 +35,7 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
      this.getStyleClass().add("AppointmentGroups");
      this.setHgap(2);
      this.setVgap(2);
-     lPane = new Pane[appointmentGroups.size()];
+     lPane = new Node[appointmentGroups.size()];
      
      int lCnt = 0;
      for (AppointmentGroup lAppointmentGroup : appointmentGroups)

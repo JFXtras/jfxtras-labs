@@ -40,13 +40,12 @@
 
 .background3 {
     -fx-background-color: gainsboro;
-    -fx-fill: #AC725E;
 }
 
 .simple-border {
   -fx-border-color: black;
   -fx-border-width: 1;
-  -fx-padding: 0 10 10 10;
+  -fx-padding: 0 10 0 10;
 }
 
 .simple-border:disabled {
@@ -61,7 +60,7 @@
 
 .bordered-titled-border {
   -fx-content-display: top;
-  -fx-padding: 0 10 10 10;
+  -fx-padding: 0 10 0 10;
   -fx-background-color: transparent;
   -fx-border-color: black;
   -fx-border-width: 1;

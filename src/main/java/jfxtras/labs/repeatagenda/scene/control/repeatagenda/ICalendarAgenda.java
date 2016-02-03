@@ -22,11 +22,14 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.Dialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditPopupLoader;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentEditLoader;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.SelectOneLoader;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -49,7 +52,6 @@ import jfxtras.util.NodeUtil;
  */
 public class ICalendarAgenda extends Agenda
 {
-
     private static String AGENDA_STYLE_SHEET = ICalendarAgenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
 //    private static String AGENDA_STYLE_SHEET = ICalendarAgenda.class.getResource("/jfxtras/labs/repeatagenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
     
@@ -124,7 +126,7 @@ public class ICalendarAgenda extends Agenda
     {
         VComponent<Appointment> vComponent = findVComponent(appointment); // Match appointment to VComponent
         appointments().removeListener(appointmentsListener); // remove listener to prevent making extra vEvents during edit
-        Stage editPopup = new EditPopupLoader(
+        Stage editPopup = new AppointmentEditLoader(
                   appointment
                 , vComponent
                 , this
@@ -132,6 +134,7 @@ public class ICalendarAgenda extends Agenda
                 , repeatWriteCallback // write repeat callback initialized to null
                 , a -> { this.refresh(); return null; }); // refresh agenda
         
+        editPopup.getScene().getStylesheets().add(getUserAgentStylesheet());
         // remove listeners during edit (to prevent making extra vEvents and appointments)
         editPopup.setOnShowing((windowEvent) -> 
         {
@@ -164,9 +167,15 @@ public class ICalendarAgenda extends Agenda
      * Default simple edit popup that opens after new appointment is created.
      * allows editing summary and buttons to save and open regular edit popup
      */
-    private Callback<Appointment, Void> simpleEditCallback = (Appointment appointment) ->
+    private Callback<Appointment, Boolean> newAppointmentCallback = (Appointment appointment) ->
     {
-        System.out.println("simple edit");
+        //TODO - USE DIALOG INSTEAD OF POPUP
+        Dialog newAppointmentDialog = new NewAppointmentDialog(appointment, DEFAULT_APPOINTMENT_GROUPS, Settings.resources);
+        newAppointmentDialog.getDialogPane().getStylesheets().add(getUserAgentStylesheet());
+        newAppointmentDialog.showAndWait();
+//        Pane bodyPane = appointmentBodyPaneMap().get(appointment);
+//        Popup popup = new NewAppointmentLoader(this, appointment, appointments());
+//        popup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
         return null;
     };
         
@@ -245,7 +254,7 @@ public class ICalendarAgenda extends Agenda
     {
         super();
         appointments().addListener((InvalidationListener) (obs) -> System.out.println("appointments chagned:"));
-        
+
         // setup event listener to delete selected appointments when Agenda is added to a scene
         sceneProperty().addListener((obs, oldValue, newValue) ->
         {
@@ -276,34 +285,36 @@ public class ICalendarAgenda extends Agenda
         setSelectOneAppointmentCallback(oneAppointmentSelectedCallback);
 
         // Ensures VComponent are synched with appointments.
+        // Are assigned here instead of when defined because it removes the vComponentsListener
+        // which can't be done before its defined.
         appointmentsListener = (ListChangeListener.Change<? extends Appointment> change) ->
         {
             while (change.next())
             {
                 if (change.wasAdded())
                 {
-                    change.getAddedSubList().stream().forEach(a -> 
-                            { // make new VComponent(s)
-                                VComponent<Appointment> newVComponent = VComponentFactory
-                                        .newVComponent(getVEventClass(), a, appointmentGroups());
-                                LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
-                                LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
-                                newVComponent.setStartRange(startRange);
-                                newVComponent.setEndRange(endRange);
-                                newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
-                                vComponents().removeListener(vComponentsListener);
-                                vComponents().add(newVComponent);
-                                vComponents().addListener(vComponentsListener);
-
-                                // put data in maps
-                                appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime()); // populate recurrence-id map
-                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
-//                                System.out.println("newVComponent:" + newVComponent);
-                            });
                     if (change.getAddedSubList().size() == 1)
                     { // Open little popup - edit, delete
-                        simpleEditCallback.call(change.getAddedSubList().get(0));
-                    }
+                        boolean save = newAppointmentCallback.call(change.getAddedSubList().get(0));
+                        // need returned button selection - save, more options 
+                        // boolean?
+                        Appointment a = change.getAddedSubList().get(0);
+                        VComponent<Appointment> newVComponent = VComponentFactory
+                                .newVComponent(getVEventClass(), a, appointmentGroups());
+                        LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
+                        LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
+                        newVComponent.setStartRange(startRange);
+                        newVComponent.setEndRange(endRange);
+                        newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
+                        vComponents().removeListener(vComponentsListener);
+                        vComponents().add(newVComponent);
+                        vComponents().addListener(vComponentsListener);
+
+                        // put data in maps
+                        appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime()); // populate recurrence-id map
+                        appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
+                    
+                    } else throw new RuntimeException("Adding multiple appointments not supported");
                 }
                 if (change.wasRemoved())
                 {
@@ -635,14 +646,15 @@ public class ICalendarAgenda extends Agenda
             return this; 
         }
         
-        private Pane icon;
-        public Pane getIcon() { return icon; }
+        private Rectangle icon;
+//        private Pane icon;
+        public Node getIcon() { return icon; }
         void makeIcon()
         {
-            icon = new Pane();
-            icon.setPrefSize(20, 20);
+            icon = new Rectangle(20, 20);
+//            icon.setPrefSize(20, 20);
 //            icon.getStyleClass().add(Agenda.class.getSimpleName());
-            icon.getStylesheets().add(styleSheet);
+//            icon.getStylesheets().add(styleSheet);
             icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
         }
 

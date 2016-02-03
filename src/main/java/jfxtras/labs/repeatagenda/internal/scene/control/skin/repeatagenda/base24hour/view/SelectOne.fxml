@@ -14,7 +14,7 @@
             <HBox alignment="CENTER_LEFT" spacing="5.0">
                <children>
                   <Label text="Name" />
-                  <TextField fx:id="nameTextField" editable="false" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="nameLabel" HBox.hgrow="ALWAYS" />
                </children>
                <VBox.margin>
                   <Insets top="7.0" />

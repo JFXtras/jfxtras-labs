@@ -101,13 +101,13 @@ public final class ICalendarAgendaEditUtilities
      * @return
      */
     public static ChangeDialogOption editChangeDialog(Map<ChangeDialogOption, String> choices)
-  {
+    {
         ResourceBundle resources = Settings.resources;
         return changeDialog(resources.getString("dialog.repeat.change.title")
                 , resources.getString("dialog.repeat.change.content")
                 , resources.getString("dialog.repeat.change.header")
                 , choices);
-  }
+    }
     
     /**
      * This alert inquires how to apply delete changes (one, all or this-and-future)
@@ -118,13 +118,13 @@ public final class ICalendarAgendaEditUtilities
      * @return
      */
     public static ChangeDialogOption deleteChangeDialog(Map<ChangeDialogOption, String> choices)
-  {
+    {
         ResourceBundle resources = Settings.resources;
         return changeDialog(resources.getString("dialog.repeat.delete.title")
                 , resources.getString("dialog.repeat.delete.content")
                 , resources.getString("dialog.repeat.delete.header")
                 , choices);
-  }
+    }
     
     
     /**

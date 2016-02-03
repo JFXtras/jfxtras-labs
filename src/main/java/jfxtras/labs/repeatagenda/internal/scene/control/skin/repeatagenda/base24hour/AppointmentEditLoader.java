@@ -24,13 +24,13 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * @author David Bal
  * @see AppointmentEditController
  */
-public class EditPopupLoader extends Stage {
+public class AppointmentEditLoader extends Stage {
 
     private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
 //    private ObjectProperty<WindowCloseType> popupCloseType = new SimpleObjectProperty<WindowCloseType>(WindowCloseType.X); // default to X, meaning click on X to close window)
 
     // CONSTRUCTOR
-    public EditPopupLoader(
+    public AppointmentEditLoader(
               Appointment appointment // selected instance
             , VComponent<Appointment> vComponent
             , ICalendarAgenda agenda
@@ -48,7 +48,7 @@ public class EditPopupLoader extends Stage {
         
         // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
-        appointmentMenuLoader.setLocation(EditPopupLoader.class.getResource("view/AppointmentEdit.fxml"));
+        appointmentMenuLoader.setLocation(AppointmentEditLoader.class.getResource("view/AppointmentEdit.fxml"));
         appointmentMenuLoader.setResources(Settings.resources);
         Control appointmentPopup = null;
         try {

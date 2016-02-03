@@ -106,7 +106,7 @@ dialog.repeat.change.future.this.day = This and future events, this day only
 dialog.repeat.change.future.all.days = This and future events. all days
 
 dialog.event.new.title = New Event
-dialog.event.new.header = Create New Event?
+dialog.event.new.title = Create New Event?
 dialog.event.new.create = Create Event
 dialog.event.new.edit = Advanced Edit
 
