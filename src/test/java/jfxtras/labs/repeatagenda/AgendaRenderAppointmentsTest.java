@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -31,7 +31,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
             agenda.appointments().add( new Agenda.AppointmentImplLocal()
                     .withStartLocalDateTime(LocalDateTime.of(2015, 11, 11, 10, 0))
                     .withEndLocalDateTime(LocalDateTime.of(2015, 11, 11, 12, 0))
-                .withAppointmentGroup(appointmentGroupMap.get("group01"))
+                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(1))
             );
         });
                 
@@ -57,7 +57,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
             agenda.appointments().add( new Agenda.AppointmentImplLocal()
                 .withStartLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T10:00"))
                 .withEndLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T12:00"))
-                .withAppointmentGroup(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS.get(0))
+                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(0))
             );
         });
 

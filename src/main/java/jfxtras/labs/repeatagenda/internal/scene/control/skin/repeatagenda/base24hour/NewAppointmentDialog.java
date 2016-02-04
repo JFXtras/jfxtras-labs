@@ -100,7 +100,9 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
                     setText(null);
                 } else
                 {
-                    Node icon = new Rectangle(20,20);
+                    Rectangle icon = new Rectangle(20,20);
+                    icon.setArcWidth(6);
+                    icon.setArcHeight(6);
                     icon.getStyleClass().add(item.getStyleClass());
                     setGraphic(icon);
                     setText(item.getDescription());

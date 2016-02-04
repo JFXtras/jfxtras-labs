@@ -51,7 +51,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -917,7 +917,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         
         // set id for testing
         alert.getDialogPane().setId("last_day_of_week_alert");
-        List<Node> buttons = ICalendarAgendaEditUtilities.getMatchingNodes(alert.getDialogPane(), Button.class);
+        List<Node> buttons = ICalendarAgendaUtilities.getMatchingNodes(alert.getDialogPane(), Button.class);
         ((Button) buttons.get(0)).setId("last_day_of_week_alert_button_ok");
         
         alert.showAndWait();

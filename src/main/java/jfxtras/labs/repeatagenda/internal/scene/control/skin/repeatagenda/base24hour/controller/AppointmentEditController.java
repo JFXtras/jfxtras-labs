@@ -35,8 +35,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.ChangeDialogOption;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -285,6 +285,7 @@ public class AppointmentEditController extends Pane
                 Integer i = appointmentGroupGridPane.getAppointmentGroupSelected();
                 String newText = appointmentGroups.get(i).getDescription();
                 groupTextField.setText(newText);
+                System.out.println("appointmentGroup1:" + newSelection);
 //                groupNameEdited.set(true); // TODO - HANDLE APPOINTMENT GROUP I/O
             });
         // store group name changes by each character typed
@@ -294,7 +295,8 @@ public class AppointmentEditController extends Pane
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
             vEvent.setCategories(newSelection);
-            // TODO - ensure groupTextField is unique description text
+            System.out.println("appointmentGroup2:" + newSelection);
+            // TODO - ensure groupTextField has unique description text
 //            groupNameEdited.set(true);
         });
         appointmentGroupGridPane.setupData(vComponent, appointmentGroups);
@@ -305,7 +307,7 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleSave()
     {
-        ICalendarAgendaEditUtilities.saveChange(
+        ICalendarAgendaUtilities.saveChange(
                 vEvent
               , vEventOriginal
               , vComponents
@@ -376,7 +378,7 @@ public class AppointmentEditController extends Pane
                 String all = VComponent.rangeToString(vEvent);
                 choices.put(ChangeDialogOption.ALL, all);
             }
-            ChangeDialogOption changeResponse = ICalendarAgendaEditUtilities.deleteChangeDialog(choices);
+            ChangeDialogOption changeResponse = ICalendarAgendaUtilities.deleteChangeDialog(choices);
             switch (changeResponse)
             {
             case ALL:

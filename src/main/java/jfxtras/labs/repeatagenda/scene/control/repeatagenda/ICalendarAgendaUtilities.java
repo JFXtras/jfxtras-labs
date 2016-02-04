@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -29,11 +31,20 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
+import jfxtras.scene.control.agenda.Agenda;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-public final class ICalendarAgendaEditUtilities
+public final class ICalendarAgendaUtilities
 {
-    private ICalendarAgendaEditUtilities() {}
+    private ICalendarAgendaUtilities() {}
 
+    final public static List<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
+    = IntStream.range(0, 24)
+               .mapToObj(i -> new Agenda.AppointmentGroupImpl()
+                     .withStyleClass("group" + i)
+                     .withDescription("group" + (i < 10 ? "0" : "") + i))
+               .collect(Collectors.toList());
+    
     /**
      * This alert inquires how to apply changes (one, all or this-and-future)
      * Can provide a custom choiceList, or omit the list and use the default choices.
@@ -43,6 +54,7 @@ public final class ICalendarAgendaEditUtilities
      * @return
      */
 //    public static ChangeDialogOption repeatChangeDialog(ChangeDialogOption...choiceList)
+    // TODO - MOVE THIS INTO A NEW CLASS EXTENDING DIALOG
     private static ChangeDialogOption changeDialog(
               String title
             , String content
@@ -152,7 +164,7 @@ public final class ICalendarAgendaEditUtilities
           , Temporal endInstance
           , Collection<U> instances)
     {
-        final RRuleType rruleType = ICalendarAgendaEditUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
+        final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(vEvent.getRRule(), vEventOriginal.getRRule());
         boolean incrementSequence = true;
 //        System.out.println("DTEND:" + vEvent.getDateTimeStart() + " " + vEvent.getDateTimeEnd());
 //        System.out.println("dates: " + startOriginalInstance + " " + startInstance + " " + endInstance);
@@ -189,7 +201,7 @@ public final class ICalendarAgendaEditUtilities
                     choices.put(ChangeDialogOption.ALL, all);
                 }
                 
-                ChangeDialogOption changeResponse = ICalendarAgendaEditUtilities.editChangeDialog(choices);
+                ChangeDialogOption changeResponse = ICalendarAgendaUtilities.editChangeDialog(choices);
                 switch (changeResponse)
                 {
                 case ALL:

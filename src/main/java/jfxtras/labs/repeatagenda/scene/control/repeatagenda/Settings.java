@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.ChangeDialogOption;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
 
 

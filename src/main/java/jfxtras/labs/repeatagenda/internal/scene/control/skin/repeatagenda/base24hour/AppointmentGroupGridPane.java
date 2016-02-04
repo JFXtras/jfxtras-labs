@@ -8,7 +8,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Pane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -40,8 +40,19 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
      int lCnt = 0;
      for (AppointmentGroup lAppointmentGroup : appointmentGroups)
      {
-         Rectangle icon = new Rectangle(20, 20);
+         // TODO - MAYBE I SHOULD GO BACK TO PANE?
+         // RECTANGLE DOESN'T GET BORDER
+         // DO I REALLY WANT ROUNDED EDGES HERE?
+         // TODO - EVEN WITH PANE THE BORDER ISN'T WORKING THERE IS A 1-PIXEL OVERLAP
+         // HOW ABOUT PUTTING WHITE CHECK IN MIDDLE?
+         Pane icon = new Pane();
+         icon.setPrefSize(20, 20);
          icon.getStyleClass().add(lAppointmentGroup.getStyleClass());
+//         Rectangle rectangle = new Rectangle(20, 20);
+//         rectangle.setArcWidth(6);
+//         rectangle.setArcHeight(6);
+//         rectangle.getStyleClass().add(lAppointmentGroup.getStyleClass());
+//         icon.getChildren().add(rectangle);
          icons[lCnt] = icon;
          this.add(icons[lCnt], lCnt % 12, lCnt / 12 );
 

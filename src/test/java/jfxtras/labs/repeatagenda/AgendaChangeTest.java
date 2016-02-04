@@ -14,7 +14,7 @@ import org.junit.Test;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.ChangeDialogOption;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.scene.control.agenda.Agenda.Appointment;

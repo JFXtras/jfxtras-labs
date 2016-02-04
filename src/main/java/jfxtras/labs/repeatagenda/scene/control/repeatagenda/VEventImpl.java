@@ -31,9 +31,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.ChangeDialogOption;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.RRuleType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaEditUtilities.WindowCloseType;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.RRuleType;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.WindowCloseType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -74,8 +74,8 @@ public class VEventImpl extends VEvent<Appointment>
     /** appointmentGroups from Agenda.  It is used to synch categories to appointmentGroup, 
      * which is needed by the makeAppointment method 
      * @see #makeInstances() */
-    public ObservableList<AppointmentGroup> getAppointmentGroups() { return appointmentGroups; }
-    final private ObservableList<AppointmentGroup> appointmentGroups;
+    public List<AppointmentGroup> getAppointmentGroups() { return appointmentGroups; }
+    final private List<AppointmentGroup> appointmentGroups;
 
     /* below listeners ensures appointmentGroup description and categories match.  
      * added to categoriesProperty and appointmentGroups by the constructor.
@@ -140,7 +140,7 @@ public class VEventImpl extends VEvent<Appointment>
         copy(vevent, this);
     }
     
-    public VEventImpl(ObservableList<AppointmentGroup> appointmentGroups)
+    public VEventImpl(List<AppointmentGroup> appointmentGroups)
     {
         super();
         this.appointmentGroups = appointmentGroups;
@@ -273,7 +273,7 @@ public class VEventImpl extends VEvent<Appointment>
     
     /** Make new VEventImpl and populate properties by parsing a list of strings 
      * @param <E>*/
-    public static VEventImpl parseVEvent(List<String> strings, ObservableList<AppointmentGroup> appointmentGroups)
+    public static VEventImpl parseVEvent(List<String> strings, List<AppointmentGroup> appointmentGroups)
     {
         VEventImpl vEvent = new VEventImpl(appointmentGroups);
         VEvent.parseVEvent(vEvent, strings); // parse VEvent properties into vEvent
@@ -282,7 +282,7 @@ public class VEventImpl extends VEvent<Appointment>
     
     /** Make new VEventImpl and populate properties by parsing a string with properties separated
      * a by lineSeparator (new line) */
-    public static VEventImpl parseVEvent(String strings, ObservableList<AppointmentGroup> appointmentGroups)
+    public static VEventImpl parseVEvent(String strings, List<AppointmentGroup> appointmentGroups)
     {
         List<String> stringsList = Arrays
                 .stream(strings.split(System.lineSeparator()))

@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -51,20 +50,7 @@ import jfxtras.util.NodeUtil;
  *
  */
 public class ICalendarAgenda extends Agenda
-{
-//    private static String AGENDA_STYLE_SHEET = ICalendarAgenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
-//    private static String AGENDA_STYLE_SHEET = ICalendarAgenda.class.getResource("/jfxtras/labs/repeatagenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
-    
-    // default appointment group list
-    // if any element has been edited the edit list must be added to appointmentGroups
-    final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
-        = javafx.collections.FXCollections.observableArrayList(
-                IntStream.range(0, 24)
-                         .mapToObj(i -> new Agenda.AppointmentGroupImpl()
-                               .withStyleClass("group" + i)
-                               .withDescription("group" + (i < 10 ? "0" : "") + i))
-                         .collect(Collectors.toList()));
-
+{   
     private LocalDateTimeRange dateTimeRange; // date range of current skin, set when localDateTimeRangeCallback fires
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
     
@@ -120,7 +106,7 @@ public class ICalendarAgenda extends Agenda
     private ListChangeListener<VComponent<Appointment>> vComponentsListener; // listen for changes to vComponents.
     
     // Default edit popup callback - this callback replaces Agenda's default edit popup
-    // has controls for repeatable events
+    // It has controls for repeatable events
     private Callback<Appointment, Void> iCalendarEditPopupCallback = (Appointment appointment) ->
     {
         VComponent<Appointment> vComponent = findVComponent(appointment); // Match appointment to VComponent
@@ -146,15 +132,18 @@ public class ICalendarAgenda extends Agenda
             appointments().addListener(appointmentsListener);
             vComponents().addListener(vComponentsListener);
         });
+        System.out.println("new v:" + vComponent);
         return null;
     };
     public Callback<Appointment, Void> getICalendarEditPopupCallback() { return iCalendarEditPopupCallback; }
 
-    /*
-     * Default popup that opens when clicking on one appointment.
-     * allows editing summary and buttons to open edit popup and delete
+    // TODO - ORGANIZE ALL CALLBACKS IN ONE PLACE
+    /** selectOneAppointmentCallback:
+     * When one appointment is selected this callback is run.  It can be used to open a popup to provide edit,
+     * delete or other edit options.
      */
-    private SelectOneLoader oneSelectedPopup;
+    public Callback<Appointment, Void> getOneAppointmentSelectedCallback() { return oneAppointmentSelectedCallback; }
+    private SelectOneLoader oneSelectedPopup; // TODO - is this necessary?
     private Callback<Appointment, Void> oneAppointmentSelectedCallback = (Appointment appointment) ->
     {
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
@@ -162,6 +151,7 @@ public class ICalendarAgenda extends Agenda
         oneSelectedPopup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
         return null;
     };
+    public void setOneAppointmentSelectedCallback(Callback<Appointment, Void> c) { oneAppointmentSelectedCallback = c; }
 
     /*
      * Default simple edit popup that opens after new appointment is created.
@@ -236,7 +226,7 @@ public class ICalendarAgenda extends Agenda
         
         appointments().removeListener(appointmentsListener);
         vComponents().removeListener(vComponentsListener);
-        ICalendarAgendaEditUtilities.saveChange(
+        ICalendarAgendaUtilities.saveChange(
                   vEvent
                 , vEventOriginal
                 , vComponents
@@ -285,7 +275,7 @@ public class ICalendarAgenda extends Agenda
         Settings.setup(resources);
         
         setChangedAppointmentCallback(appointmentChangedCallback);
-        setSelectOneAppointmentCallback(oneAppointmentSelectedCallback);
+//        setSelectOneAppointmentCallback(oneAppointmentSelectedCallback);
 
         // Ensures VComponent are synched with appointments.
         // Are assigned here instead of when defined because it removes the vComponentsListener
@@ -424,6 +414,23 @@ public class ICalendarAgenda extends Agenda
 
         // Listen for changes to appointments (additions and deletions)
         appointments().addListener(appointmentsListener);
+        
+        /*
+         * Open select-one appointment popup
+         * listen for changes to selectedAppointments, if only one run callback.
+         */
+        ListChangeListener<Appointment> selectedAppointmentListener = (ListChangeListener.Change<? extends Appointment> change) ->
+        {
+            while (change.next())
+            {
+                if (change.wasAdded() && (selectedAppointments().size() == 1))
+                {
+                    Appointment appointment = selectedAppointments().get(0);
+                    getOneAppointmentSelectedCallback().call(appointment);
+                }
+            }
+        };
+        selectedAppointments().addListener(selectedAppointmentListener);
         
         // Keeps appointmentRecurrenceIDMap and appointmentVComponentMap synched with appointments
         ListChangeListener<Appointment> appointmentsListener2 = (ListChangeListener.Change<? extends Appointment> change) ->

@@ -3,13 +3,12 @@ package jfxtras.labs.repeatagenda;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -17,7 +16,7 @@ import jfxtras.test.JFXtrasGuiTest;
 
 public class AgendaTestAbstract extends JFXtrasGuiTest
 {
-    final protected Map<String, Agenda.AppointmentGroup> appointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
+//    final protected Map<String, Agenda.AppointmentGroup> appointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
     public static LocalDateTime dateTimeStamp;
     
     @Override
@@ -30,9 +29,9 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
         // setup appointment groups       
         agenda = new ICalendarAgenda();
         agenda.setDisplayedLocalDateTime(LocalDate.of(2015, 11, 8).atStartOfDay());
-        agenda.setPrefSize(1000, 800);       
-//        agenda.appointmentGroups().clear();
-//        agenda.appointmentGroups().addAll(ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS);
+        agenda.setPrefSize(1000, 800);
+        agenda.appointmentGroups().clear();
+        agenda.appointmentGroups().addAll(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         
 //        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
 //            appointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);
