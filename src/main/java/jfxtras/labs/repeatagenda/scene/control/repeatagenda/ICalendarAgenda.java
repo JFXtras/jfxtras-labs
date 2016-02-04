@@ -27,6 +27,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentEditLoader;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.SelectOneLoader;
@@ -156,7 +157,7 @@ public class ICalendarAgenda extends Agenda
     private SelectOneLoader oneSelectedPopup;
     private Callback<Appointment, Void> oneAppointmentSelectedCallback = (Appointment appointment) ->
     {
-        Pane bodyPane = appointmentBodyPaneMap().get(appointment);
+        Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
         oneSelectedPopup = new SelectOneLoader(this, appointment, appointments());
         oneSelectedPopup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
         return null;
