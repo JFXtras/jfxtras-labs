@@ -20,20 +20,14 @@ import org.xml.sax.SAXException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentGroupImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.IOUtilities;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-
-/**
- * Utility methods for Agenda appointments IO
- * marshal - writes all appointments from KarateData.appointmentMap to file
- * unmarshal - reads all appointments from file to KarateData.appointmentMap
- * @author David Bal
- */
+// TODO - OUT OF DATE - DOESN'T USE ICALENDAR
 
 // TODO - FOLLOW OTHER DATA IO PATTERN - MARSHAL AND UNMARSHAL GETS NEW OBJECT
 // readMap for reading whole map 
+@Deprecated
 public final class AppointmentIO {
     
     private AppointmentIO() {}
@@ -104,11 +98,11 @@ public final class AppointmentIO {
                     int myCount = (appointmentGroupCount.get(groupNodeCounter) == null)
                             ? 0 : appointmentGroupCount.get(groupNodeCounter);
     
-                    AppointmentGroupImpl aGroup = new AppointmentGroupImpl(null)
-                        .withDescription(IOUtilities.myGet(groupAttributes, "name", errorMessage))
-                        .withStyleClass(IOUtilities.myGet(groupAttributes, "style", errorMessage));
+//                    AppointmentGroupImpl aGroup = new AppointmentGroupImpl(null)
+//                        .withDescription(IOUtilities.myGet(groupAttributes, "name", errorMessage))
+//                        .withStyleClass(IOUtilities.myGet(groupAttributes, "style", errorMessage));
     //                    .withAppointmentCount(myCount);
-                    appointmentGroups.add(aGroup);
+//                    appointmentGroups.add(aGroup);
     
                 }
             }

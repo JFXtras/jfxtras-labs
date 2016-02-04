@@ -16,20 +16,19 @@ import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Dialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentEditLoader;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.SelectOneLoader;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -52,19 +51,18 @@ import jfxtras.util.NodeUtil;
  */
 public class ICalendarAgenda extends Agenda
 {
-    private static String AGENDA_STYLE_SHEET = ICalendarAgenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+//    private static String AGENDA_STYLE_SHEET = ICalendarAgenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
 //    private static String AGENDA_STYLE_SHEET = ICalendarAgenda.class.getResource("/jfxtras/labs/repeatagenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
     
     // default appointment group list
     // if any element has been edited the edit list must be added to appointmentGroups
     final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
         = javafx.collections.FXCollections.observableArrayList(
-                IntStream
-                .range(0, 24)
-                .mapToObj(i -> new ICalendarAgenda.AppointmentGroupImpl(AGENDA_STYLE_SHEET)
-                       .withStyleClass("group" + i)
-                       .withDescription("group" + (i < 10 ? "0" : "") + i))
-                .collect(Collectors.toList()));
+                IntStream.range(0, 24)
+                         .mapToObj(i -> new Agenda.AppointmentGroupImpl()
+                               .withStyleClass("group" + i)
+                               .withDescription("group" + (i < 10 ? "0" : "") + i))
+                         .collect(Collectors.toList()));
 
     private LocalDateTimeRange dateTimeRange; // date range of current skin, set when localDateTimeRangeCallback fires
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
@@ -135,7 +133,7 @@ public class ICalendarAgenda extends Agenda
                 , a -> { this.refresh(); return null; }); // refresh agenda
         
         editPopup.getScene().getStylesheets().add(getUserAgentStylesheet());
-        // remove listeners during edit (to prevent making extra vEvents and appointments)
+        // remove listeners during edit (to prevent creating extra vEvents when making appointments)
         editPopup.setOnShowing((windowEvent) -> 
         {
             appointments().removeListener(appointmentsListener);
@@ -149,6 +147,7 @@ public class ICalendarAgenda extends Agenda
         });
         return null;
     };
+    public Callback<Appointment, Void> getICalendarEditPopupCallback() { return iCalendarEditPopupCallback; }
 
     /*
      * Default popup that opens when clicking on one appointment.
@@ -165,19 +164,22 @@ public class ICalendarAgenda extends Agenda
 
     /*
      * Default simple edit popup that opens after new appointment is created.
+     * For example, this is done by drawing an appointment in Agenda.
      * allows editing summary and buttons to save and open regular edit popup
+     * 
+     * to skip the callback, replace with a stub that always returns ButtonData.OK_DONE
      */
-    private Callback<Appointment, Boolean> newAppointmentCallback = (Appointment appointment) ->
+    private Callback<Appointment, ButtonData> newAppointmentDrawnCallback = (Appointment appointment) ->
     {
-        //TODO - USE DIALOG INSTEAD OF POPUP
-        Dialog newAppointmentDialog = new NewAppointmentDialog(appointment, DEFAULT_APPOINTMENT_GROUPS, Settings.resources);
+            // TODO - CAN I REMOVE RETURN ARGUMENT FROM CALLBACK - IT WOULD BE CONSISTENT WITH OTHERS
+        Dialog<ButtonData> newAppointmentDialog = new NewAppointmentDialog(appointment, appointmentGroups(), iCalendarEditPopupCallback, Settings.resources);
         newAppointmentDialog.getDialogPane().getStylesheets().add(getUserAgentStylesheet());
-        newAppointmentDialog.showAndWait();
-//        Pane bodyPane = appointmentBodyPaneMap().get(appointment);
-//        Popup popup = new NewAppointmentLoader(this, appointment, appointments());
-//        popup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
-        return null;
+        Optional<ButtonData> result = newAppointmentDialog.showAndWait();
+        ButtonData button = result.isPresent() ? result.get() : ButtonData.CANCEL_CLOSE;
+        return button;
     };
+    public Callback<Appointment, ButtonData> getNewAppointmentDrawnCallback() { return newAppointmentDrawnCallback; }
+    public void setNewAppointmentDrawnCallback(Callback<Appointment, ButtonData> c) { newAppointmentDrawnCallback = c; }
         
     /*
      * Default changed appointment callback (handles drag-n-drop and expend end time)
@@ -272,9 +274,9 @@ public class ICalendarAgenda extends Agenda
             }
         });
         
-        // override Agenda appointmentGroups
-        appointmentGroups().clear();
-        appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
+//        // override Agenda appointmentGroups
+//        appointmentGroups().clear();
+//        appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
 
         // setup i18n resource bundle
         Locale myLocale = Locale.getDefault();
@@ -295,26 +297,46 @@ public class ICalendarAgenda extends Agenda
                 {
                     if (change.getAddedSubList().size() == 1)
                     { // Open little popup - edit, delete
-                        boolean save = newAppointmentCallback.call(change.getAddedSubList().get(0));
-                        // need returned button selection - save, more options 
-                        // boolean?
                         Appointment a = change.getAddedSubList().get(0);
-                        VComponent<Appointment> newVComponent = VComponentFactory
-                                .newVComponent(getVEventClass(), a, appointmentGroups());
-                        LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
-                        LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
-                        newVComponent.setStartRange(startRange);
-                        newVComponent.setEndRange(endRange);
-                        newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
-                        vComponents().removeListener(vComponentsListener);
-                        vComponents().add(newVComponent);
-                        vComponents().addListener(vComponentsListener);
+                        String originalSummary = a.getSummary();
+                        AppointmentGroup originalAppointmentGroup = a.getAppointmentGroup();
+                        ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0));
 
-                        // put data in maps
-                        appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime()); // populate recurrence-id map
-                        appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
-                    
-                    } else throw new RuntimeException("Adding multiple appointments not supported");
+                        // check outback from newAppointmentCallback (runs NewAppointmentDialog by default)
+                        switch (button)
+                        {
+                        case CANCEL_CLOSE:
+                            appointments().remove(a);
+                            refresh();
+                            break;
+                        case OK_DONE: // assumes newAppointmentCallback can only edit summary and appointmentGroup
+                            if (! (a.getSummary().equals(originalSummary)) || ! (a.getAppointmentGroup().equals(originalAppointmentGroup)))
+                            {
+                                Platform.runLater(() -> refresh());
+                            }
+                        case OTHER:
+                            VComponent<Appointment> newVComponent = VComponentFactory
+                                    .newVComponent(getVEventClass(), a, appointmentGroups());
+                            LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
+                            LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
+                            newVComponent.setStartRange(startRange);
+                            newVComponent.setEndRange(endRange);
+                            newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
+                            vComponents().removeListener(vComponentsListener);
+                            vComponents().add(newVComponent);
+                            vComponents().addListener(vComponentsListener);
+                            // put data in maps
+                            appointmentRecurrenceIDMap.put(a, a.getStartLocalDateTime()); // populate recurrence-id map
+                            appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
+                            break;
+                        default:
+                            throw new RuntimeException("unknown button type:" + button);
+                        }
+                        if (button == ButtonData.OTHER) // edit appointment
+                        {
+                            iCalendarEditPopupCallback.call(a);
+                        }
+                    } else throw new RuntimeException("Adding multiple appointments at once not supported");
                 }
                 if (change.wasRemoved())
                 {
@@ -325,6 +347,7 @@ public class ICalendarAgenda extends Agenda
                         if (v.getExDate() == null) v.setExDate(new ExDate());
                         Temporal t = (a.isWholeDay()) ? LocalDate.from(a.getStartLocalDateTime()) : a.getStartLocalDateTime();
                         v.getExDate().getTemporals().add(t);
+                        if (v.isRecurrenceSetEmpty()) vComponents().remove(v);
                     });
                 }
             }
@@ -614,56 +637,57 @@ public class ICalendarAgenda extends Agenda
 //        }
 //    }
     
-    /**
-     * Class implementing Appointment that includes an icon Pane field for easy rendering of
-     * color boxes representing each AppointmentGroup
-     */
-    static public class AppointmentGroupImpl implements AppointmentGroup
-    {
-        private String styleSheet;
-        public AppointmentGroupImpl(String styleSheet) { this.styleSheet = styleSheet; }        
-        
-        /** Description: */
-        public ObjectProperty<String> descriptionProperty() { return descriptionObjectProperty; }
-        final private ObjectProperty<String> descriptionObjectProperty = new SimpleObjectProperty<String>(this, "description");
-        @Override
-        public String getDescription() { return descriptionObjectProperty.getValue(); }
-        @Override
-        public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
-        public AppointmentGroupImpl withDescription(String value) { setDescription(value); return this; } 
-                
-        /** StyleClass: */
-        public ObjectProperty<String> styleClassProperty() { return styleClassObjectProperty; }
-        final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
-        @Override
-        public String getStyleClass() { return styleClassObjectProperty.getValue(); }
-        @Override
-        public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
-        public AppointmentGroupImpl withStyleClass(String value)
-        {
-            setStyleClass(value);
-            makeIcon();
-            return this; 
-        }
-        
-        private Rectangle icon;
-//        private Pane icon;
-        public Node getIcon() { return icon; }
-        void makeIcon()
-        {
-            icon = new Rectangle(20, 20);
-//            icon.setPrefSize(20, 20);
-//            icon.getStyleClass().add(Agenda.class.getSimpleName());
-//            icon.getStylesheets().add(styleSheet);
-            icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
-        }
-
-//        private int key = 0;
-//        public int getKey() { return key; }
-//        public void setKey(int key) { this.key = key; }
-//        public AppointmentGroupImpl withKey(int key) {setKey(key); return this; }
-        
-        }
+//    /**
+//     * Class implementing Appointment that includes an icon Pane field for easy rendering of
+//     * color boxes representing each AppointmentGroup
+//     */
+//    @Deprecated
+//    static public class AppointmentGroupImpl implements AppointmentGroup
+//    {
+//        private String styleSheet;
+//        public AppointmentGroupImpl(String styleSheet) { this.styleSheet = styleSheet; }        
+//        
+//        /** Description: */
+//        public ObjectProperty<String> descriptionProperty() { return descriptionObjectProperty; }
+//        final private ObjectProperty<String> descriptionObjectProperty = new SimpleObjectProperty<String>(this, "description");
+//        @Override
+//        public String getDescription() { return descriptionObjectProperty.getValue(); }
+//        @Override
+//        public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
+//        public AppointmentGroupImpl withDescription(String value) { setDescription(value); return this; } 
+//                
+//        /** StyleClass: */
+//        public ObjectProperty<String> styleClassProperty() { return styleClassObjectProperty; }
+//        final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
+//        @Override
+//        public String getStyleClass() { return styleClassObjectProperty.getValue(); }
+//        @Override
+//        public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
+//        public AppointmentGroupImpl withStyleClass(String value)
+//        {
+//            setStyleClass(value);
+//            makeIcon();
+//            return this; 
+//        }
+//        
+//        private Node icon;
+////        private Pane icon;
+//        public Node getIcon() { return icon; }
+//        void makeIcon()
+//        {
+//            icon = new Rectangle(20, 20);
+////            icon.setPrefSize(20, 20);
+////            icon.getStyleClass().add(Agenda.class.getSimpleName());
+////            icon.getStylesheets().add(styleSheet);
+//            icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
+//        }
+//
+////        private int key = 0;
+////        public int getKey() { return key; }
+////        public void setKey(int key) { this.key = key; }
+////        public AppointmentGroupImpl withKey(int key) {setKey(key); return this; }
+//        
+//        }
     
     
 

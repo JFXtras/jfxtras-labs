@@ -81,7 +81,8 @@ public class SelectOneController extends Rectangle
 
     @FXML private void handleDeleteAppointment()
     {
-        popup.hide();
+        appointments.remove(appointment);
+//        popup.hide();
 //        RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
 //        RepeatableUtilities.deleteAppointments(appointment, appointments, repeats);
 

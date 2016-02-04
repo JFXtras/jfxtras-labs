@@ -348,6 +348,13 @@ public interface VComponent<T>
         } else throw new RuntimeException("VComponent stream has no elements");
     }
     
+    /** Returns true if VComponent has zero instances in recurrence set */
+    default boolean isRecurrenceSetEmpty()
+    {
+        Iterator<Temporal> i = stream(getDateTimeStart()).iterator();
+        return ! i.hasNext();
+    }
+    
     /**
      * Make easy-to-read date range string
      * 

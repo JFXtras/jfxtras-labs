@@ -8,14 +8,14 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
+import javafx.scene.shape.Rectangle;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /** makes a group of colored squares used to select appointment group */
 public class AppointmentGroupGridPane extends GridPane
 {
-private Node[] lPane;
+private Node[] icons;
 
 /** Index of selected AppointmentGroup */
 public IntegerProperty appointmentGroupSelectedProperty() { return appointmentGroupSelected; }
@@ -35,20 +35,22 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
      this.getStyleClass().add("AppointmentGroups");
      this.setHgap(2);
      this.setVgap(2);
-     lPane = new Node[appointmentGroups.size()];
+     icons = new Node[appointmentGroups.size()];
      
      int lCnt = 0;
      for (AppointmentGroup lAppointmentGroup : appointmentGroups)
      {
-         lPane[lCnt] = ((ICalendarAgenda.AppointmentGroupImpl) lAppointmentGroup).getIcon();
-         this.add(lPane[lCnt], lCnt % 12, lCnt / 12 );
+         Rectangle icon = new Rectangle(20, 20);
+         icon.getStyleClass().add(lAppointmentGroup.getStyleClass());
+         icons[lCnt] = icon;
+         this.add(icons[lCnt], lCnt % 12, lCnt / 12 );
 
          // tooltip
          updateToolTip(lCnt, appointmentGroups);
 
          // mouse 
-         setupMouseOverAsBusy(lPane[lCnt]);
-         lPane[lCnt].setOnMouseClicked( (mouseEvent) ->
+         setupMouseOverAsBusy(icons[lCnt]);
+         icons[lCnt].setOnMouseClicked( (mouseEvent) ->
          {
              mouseEvent.consume(); // consume before anything else, in case there is a problem in the handling
              appointmentGroupSelected.set(appointmentGroups.indexOf(lAppointmentGroup));
@@ -81,19 +83,19 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
 
  // blue border in selection
  private void unsetLPane(int i) {
-     lPane[i].setStyle("-fx-border-color: WHITE");
+     icons[i].setStyle("-fx-border-color: WHITE");
  }
  private void setLPane(int i) {
       final String cssDefault = "-fx-border-color: blue;\n"
              + "-fx-border-insets: -1;\n"
              + "-fx-border-width: 2;\n";
-     lPane[i].setStyle(cssDefault);
+     icons[i].setStyle(cssDefault);
  }
  
  public void updateToolTip(int i, List<AppointmentGroup> appointmentGroups) {
      AppointmentGroup a = appointmentGroups.get(i);
      if (a.getDescription() != "" && a.getDescription() != null) {
-         Tooltip.install(lPane[i], new Tooltip(a.getDescription()));
+         Tooltip.install(icons[i], new Tooltip(a.getDescription()));
      } 
  }
 
