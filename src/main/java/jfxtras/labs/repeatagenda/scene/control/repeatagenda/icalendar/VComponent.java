@@ -385,6 +385,7 @@ public interface VComponent<T>
      *          
      * return String representing start and end of VComponent.
      */
+ // TODO - PUT THESE METHODS ELSEWHERE - NOT NEEDED BY ICALENDAR - USED BY ICALENDARAGENDA???
     default String rangeToString() { return rangeToString(getDateTimeStart()); }
 
     /** returns the last date or date/time of the series.  If infinite returns null */

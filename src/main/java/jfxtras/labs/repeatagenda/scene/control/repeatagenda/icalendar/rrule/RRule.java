@@ -227,7 +227,8 @@ public class RRule
     {
         if (resource.containsKey("once")) once = resource.getString("once");
     }
-    
+    // TODO - Should this method be here?  Should I extend RRule and leave only ICalendar methods in
+    // original, and put Agenda-related methods in extended one?
     public String summary(Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();

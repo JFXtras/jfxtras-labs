@@ -36,7 +36,6 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
 {
     /**
      * 
-     * 
      * @param appointment : new appointment made by Agenda
      * @param appointmentGroups : categories
      * @param resources : bundle with language-specific strings
@@ -47,7 +46,6 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
           , Callback<Appointment, Void> iCalendarEditPopupCallback
           , ResourceBundle resources)
     {
-//        getDialogPane().getStylesheets().add(ICalendarAgenda.AGENDA_STYLE_SHEET);
         initModality(Modality.APPLICATION_MODAL);
         setTitle(resources.getString("dialog.event.new.title"));
         DateTimeFormatter startFormatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.start"));
@@ -56,12 +54,15 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
         String end = endFormatter.format(appointment.getEndLocalDateTime());
         String appointmentTime = start + end + " ";
         setHeaderText(appointmentTime);
-        appointmentGroups.get(5).setDescription("test description");
         
         // Buttons
         ButtonType createButton = new ButtonType(resources.getString("dialog.event.new.create"), ButtonData.OK_DONE);
         ButtonType editButton = new ButtonType(resources.getString("dialog.event.new.edit"), ButtonData.OTHER);
-        getDialogPane().getButtonTypes().addAll(createButton, editButton, ButtonType.CANCEL);
+        ButtonType cancelButton = new ButtonType(resources.getString("cancel"), ButtonData.CANCEL_CLOSE);
+        getDialogPane().getButtonTypes().addAll(createButton, editButton, cancelButton);
+        getDialogPane().lookupButton(createButton).setId("createButton");
+        getDialogPane().lookupButton(editButton).setId("editButton");
+        getDialogPane().lookupButton(cancelButton).setId("cancelButton");
         
         // Edit Summary and appointmentGroup
         GridPane grid = new GridPane();
@@ -69,13 +70,16 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        TextField summary = new TextField(appointment.getSummary());
-        summary.setPromptText(resources.getString("new.event"));
-        summary.textProperty().addListener((obs, oldValue, newValue) -> appointment.setSummary(newValue));
+        TextField summaryTextField = new TextField(appointment.getSummary());
+        summaryTextField.setId("summaryTextField");
+        summaryTextField.setPromptText(resources.getString("new.event"));
+        summaryTextField.textProperty().addListener((obs, oldValue, newValue) -> appointment.setSummary(newValue));
         
-        ComboBox<AppointmentGroup> comboBox = new ComboBox<>();
-        comboBox.setItems(appointmentGroups);
-        comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> 
+        ComboBox<AppointmentGroup> appointmentGroupComboBox = new ComboBox<>();
+        appointmentGroupComboBox.setId("appointmentGroupComboBox");
+        appointmentGroupComboBox.setItems(appointmentGroups);
+        appointmentGroupComboBox.getSelectionModel().select(appointment.getAppointmentGroup());
+        appointmentGroupComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> 
                 appointment.setAppointmentGroup(newSelection)); 
         
         // Can't use below map because it results in an error: after clicking on a selection the graphic disappears.
@@ -109,27 +113,18 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
                 }
             }
         };
-        comboBox.setCellFactory(cellFactory);
-        comboBox.setButtonCell(cellFactory.call(null));
+        appointmentGroupComboBox.setCellFactory(cellFactory);
+        appointmentGroupComboBox.setButtonCell(cellFactory.call(null));
 
         grid.add(new Label(resources.getString("summary")), 0, 0);
-        grid.add(summary, 1, 0);
+        grid.add(summaryTextField, 1, 0);
         grid.add(new Label(resources.getString("category")), 0, 1);
-        grid.add(comboBox, 1, 1);
+        grid.add(appointmentGroupComboBox, 1, 1);
         
         getDialogPane().setContent(grid);
 
-        Platform.runLater(() -> summary.requestFocus()); // Request focus on the summary field by default.
+        Platform.runLater(() -> summaryTextField.requestFocus()); // Request focus on the summary field by default.
         
         setResultConverter(dialogButton -> dialogButton.getButtonData());
-//        {
-//            return dialogButton;
-////            if (dialogButton == createButton) return appointment;
-////            if (dialogButton == editButton)
-////            {
-////                iCalendarEditPopupCallback.call(appointment);
-////            }
-//            return null;
-//        });
     }
 }
