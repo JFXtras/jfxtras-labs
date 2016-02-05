@@ -34,6 +34,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
@@ -158,7 +159,9 @@ public class AppointmentEditController extends Pane
         } else throw new DateTimeException("Illegal Temporal type (" + input.getClass().getSimpleName() + ").  Only LocalDate and LocalDateTime are supported)");
     }
     
-    @FXML public void initialize() { }
+    @FXML public void initialize()
+    {
+    }
     
     public void setupData(
               Appointment appointment
@@ -170,6 +173,13 @@ public class AppointmentEditController extends Pane
             , Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback
             , Stage popup)
     {
+        appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.iCalendarStyleSheet);
+
+        appointmentGroupGridPane.getStylesheets().stream().forEach(System.out::println);
+        System.out.println("done sheets:" + appointmentGroupGridPane.getStylesheets().size());
+//        Image img = new Image("check-icon");
+//        ImageView check = new ImageView(img);
+
         startOriginalInstance = appointment.getStartLocalDateTime();
         dateTimeInstanceEndOriginal = appointment.getEndLocalDateTime();
         this.appointment = appointment;        

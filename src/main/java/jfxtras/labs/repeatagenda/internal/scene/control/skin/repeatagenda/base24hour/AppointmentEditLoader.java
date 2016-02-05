@@ -58,7 +58,10 @@ public class AppointmentEditLoader extends Stage {
         }
         appointmentPopup.setId("editAppointmentPopup");
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
-
+        Scene scene = new Scene(appointmentPopup);
+        scene.getStylesheets().addAll(ICalendarAgenda.iCalendarStyleSheet);
+        System.out.println("scene sheets:" + scene.getStylesheets().size());
+        
         appointmentEditController.setupData(
                 appointment
               , vComponent
@@ -68,7 +71,7 @@ public class AppointmentEditLoader extends Stage {
               , agenda.appointmentGroups()
               , veventWriteCallback
               , this);
-        Scene scene = new Scene(appointmentPopup);
+
         setResizable(false);
         setScene(scene);
 

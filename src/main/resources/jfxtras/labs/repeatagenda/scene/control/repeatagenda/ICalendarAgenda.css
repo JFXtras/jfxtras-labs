@@ -40,12 +40,13 @@
 
 .background3 {
     -fx-background-color: gainsboro;
+    -fx-fill: #AC725E;
 }
 
 .simple-border {
   -fx-border-color: black;
   -fx-border-width: 1;
-  -fx-padding: 0 10 0 10;
+  -fx-padding: 0 10 10 10;
 }
 
 .simple-border:disabled {
@@ -60,7 +61,7 @@
 
 .bordered-titled-border {
   -fx-content-display: top;
-  -fx-padding: 0 10 0 10;
+  -fx-padding: 0 10 10 10;
   -fx-background-color: transparent;
   -fx-border-color: black;
   -fx-border-width: 1;
@@ -94,4 +95,8 @@
 	-fx-background-radius: 5,5,4,3;
 	-fx-padding: 0.766667em 0.733333em 0.75em 0.733333em;
 	-fx-text-fill: -fx-text-base-color;
+}
+
+.check-icon {
+	-fx-image: url("check.png");
 }

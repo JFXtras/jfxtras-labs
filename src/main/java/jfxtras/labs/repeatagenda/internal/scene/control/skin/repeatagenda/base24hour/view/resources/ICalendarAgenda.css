@@ -96,3 +96,7 @@
 	-fx-padding: 0.766667em 0.733333em 0.75em 0.733333em;
 	-fx-text-fill: -fx-text-base-color;
 }
+
+.EditPopup .check-icon {
+	-fx-image: url("check.png");
+}

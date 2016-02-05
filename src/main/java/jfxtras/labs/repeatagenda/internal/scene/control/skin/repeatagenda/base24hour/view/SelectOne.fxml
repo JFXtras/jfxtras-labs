@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="anchorPane" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.SelectOneController">
+<AnchorPane fx:id="anchorPane" stylesheets="@resources/ICalendarAgenda.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.SelectOneController">
    <children>
       <VBox fx:id="vBox" layoutY="7.0" spacing="5.0" styleClass="simple-border" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
          <children>

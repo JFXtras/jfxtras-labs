@@ -16,7 +16,6 @@ import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -51,6 +50,8 @@ import jfxtras.util.NodeUtil;
  */
 public class ICalendarAgenda extends Agenda
 {   
+    public final static String iCalendarStyleSheet = ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();
+    
     private LocalDateTimeRange dateTimeRange; // date range of current skin, set when localDateTimeRangeCallback fires
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
     
@@ -77,7 +78,7 @@ public class ICalendarAgenda extends Agenda
     Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
     public void setAppointmentClass(Class<? extends Appointment> clazz) { appointmentClass = clazz; }
 
-    /** Callback for creating unique identifier values 
+    /** Callback for creating unique identifier values
      * @see VComponent#getUidGeneratorCallback() */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
     private static Integer nextKey = 0;
@@ -118,8 +119,10 @@ public class ICalendarAgenda extends Agenda
                 , appointmentGroupWriteCallback
                 , repeatWriteCallback // write repeat callback initialized to null
                 , a -> { this.refresh(); return null; }); // refresh agenda
-        
-        editPopup.getScene().getStylesheets().add(getUserAgentStylesheet());
+
+        editPopup.getScene().getStylesheets().addAll(getUserAgentStylesheet(), iCalendarStyleSheet);
+//        System.out.println("sheets:" + editPopup.getScene().getStylesheets().size());
+//        editPopup.getScene().getStylesheets().stream().forEach(System.out::println);
         // remove listeners during edit (to prevent creating extra vEvents when making appointments)
         editPopup.setOnShowing((windowEvent) -> 
         {
@@ -246,7 +249,9 @@ public class ICalendarAgenda extends Agenda
     public ICalendarAgenda()
     {
         super();
-        appointments().addListener((InvalidationListener) (obs) -> System.out.println("appointments chagned:"));
+//        return Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+        
+//        appointments().addListener((InvalidationListener) (obs) -> System.out.println("appointments chagned:"));
 
         // setup event listener to delete selected appointments when Agenda is added to a scene
         sceneProperty().addListener((obs, oldValue, newValue) ->

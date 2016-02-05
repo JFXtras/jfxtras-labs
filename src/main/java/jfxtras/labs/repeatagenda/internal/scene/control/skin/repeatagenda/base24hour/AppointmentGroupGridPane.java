@@ -7,15 +7,19 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /** makes a group of colored squares used to select appointment group */
 public class AppointmentGroupGridPane extends GridPane
 {
-private Node[] icons;
+private Pane[] icons;
+final private ImageView checkIcon = new ImageView();
 
 /** Index of selected AppointmentGroup */
 public IntegerProperty appointmentGroupSelectedProperty() { return appointmentGroupSelected; }
@@ -23,36 +27,33 @@ private IntegerProperty appointmentGroupSelected = new SimpleIntegerProperty(-1)
 public void setAppointmentGroupSelected(Integer i) { appointmentGroupSelected.set(i); }
 public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.getValue(); }   
  
- public AppointmentGroupGridPane() {
- }
+public AppointmentGroupGridPane()
+{
+    checkIcon.getStyleClass().add("check-icon");
+}
 
- public AppointmentGroupGridPane(VComponent vComponent, List<AppointmentGroup> appointmentGroups) {
-     setupData(vComponent, appointmentGroups);
- }
+public AppointmentGroupGridPane(VComponent<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
+{
+    this();
+    setupData(vComponent, appointmentGroups);
+}
  
- public void setupData(VComponent vComponent, List<AppointmentGroup> appointmentGroups)
+ public void setupData(VComponent<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
  {
-     this.getStyleClass().add("AppointmentGroups");
-     this.setHgap(2);
-     this.setVgap(2);
-     icons = new Node[appointmentGroups.size()];
+     setHgap(3);
+     setVgap(3);
+     icons = new Pane[appointmentGroups.size()];
      
      int lCnt = 0;
      for (AppointmentGroup lAppointmentGroup : appointmentGroups)
      {
-         // TODO - MAYBE I SHOULD GO BACK TO PANE?
-         // RECTANGLE DOESN'T GET BORDER
-         // DO I REALLY WANT ROUNDED EDGES HERE?
-         // TODO - EVEN WITH PANE THE BORDER ISN'T WORKING THERE IS A 1-PIXEL OVERLAP
-         // HOW ABOUT PUTTING WHITE CHECK IN MIDDLE?
          Pane icon = new Pane();
-         icon.setPrefSize(20, 20);
-         icon.getStyleClass().add(lAppointmentGroup.getStyleClass());
-//         Rectangle rectangle = new Rectangle(20, 20);
-//         rectangle.setArcWidth(6);
-//         rectangle.setArcHeight(6);
-//         rectangle.getStyleClass().add(lAppointmentGroup.getStyleClass());
-//         icon.getChildren().add(rectangle);
+         icon.setPrefSize(24, 24);
+         Rectangle rectangle = new Rectangle(24, 24);
+         rectangle.setArcWidth(6);
+         rectangle.setArcHeight(6);
+         rectangle.getStyleClass().add(lAppointmentGroup.getStyleClass());
+         icon.getChildren().add(rectangle);
          icons[lCnt] = icon;
          this.add(icons[lCnt], lCnt % 12, lCnt / 12 );
 
@@ -93,14 +94,12 @@ public Integer getAppointmentGroupSelected() { return appointmentGroupSelected.g
  }
 
  // blue border in selection
- private void unsetLPane(int i) {
-     icons[i].setStyle("-fx-border-color: WHITE");
+ private void unsetLPane(int i)
+ {
+     icons[i].getChildren().remove(checkIcon);
  }
  private void setLPane(int i) {
-      final String cssDefault = "-fx-border-color: blue;\n"
-             + "-fx-border-insets: -1;\n"
-             + "-fx-border-width: 2;\n";
-     icons[i].setStyle(cssDefault);
+     icons[i].getChildren().add(checkIcon);
  }
  
  public void updateToolTip(int i, List<AppointmentGroup> appointmentGroups) {
