@@ -135,9 +135,9 @@ public final class Settings
         REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.MONTHLY, resourcesIn.getString("month"));
         REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.YEARLY, resourcesIn.getString("year"));
 
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ONE, resources.getString("dialog.repeat.change.one"));
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ALL, resources.getString("dialog.repeat.change.all"));
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE, resources.getString("dialog.repeat.change.future"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ONE, resources.getString("dialog.one"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ALL, resources.getString("dialog.all"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE, resources.getString("dialog.future"));
 //        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.SEGMENT, resources.getString("dialog.repeat.change.segment"));
 //        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, resources.getString("dialog.repeat.change.future.segment"));
 //        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, resources.getString("dialog.repeat.change.future.all"));

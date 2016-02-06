@@ -27,6 +27,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -55,29 +56,31 @@ public final class ICalendarAgendaUtilities
      */
 //    public static ChangeDialogOption repeatChangeDialog(ChangeDialogOption...choiceList)
     // TODO - MOVE THIS INTO A NEW CLASS EXTENDING DIALOG
+    @Deprecated
     private static ChangeDialogOption changeDialog(
               String title
             , String content
             , String header
             , Map<ChangeDialogOption, String> choices)
     {       
-        List<ChangeDialogOption> choiceList = (choices == null) ? 
-                new ArrayList<>(Arrays.asList(ChangeDialogOption.threeOptions())) // default choices
-              : new ArrayList<>(choices.keySet());
+        List<ChangeDialogOption> choiceList = new ArrayList<>(choices.keySet());
                
         ChoiceDialog<ChangeDialogOption> dialog = new ChoiceDialog<>(null, choiceList);
         dialog.setTitle(title);
         dialog.setContentText(content);
         dialog.setHeaderText(header);
-        
+//        dialog.getDialogPane()
         // set id for testing
         dialog.getDialogPane().setId("edit_dialog");
         List<Node> buttons = getMatchingNodes(dialog.getDialogPane(), Button.class);
         ((Button) buttons.get(0)).setId("edit_dialog_button_ok");
         ((Button) buttons.get(1)).setId("edit_dialog_button_cancel");
         ComboBox<ChangeDialogOption> comboBox = (ComboBox<ChangeDialogOption>) getMatchingNodes(dialog.getDialogPane(), ComboBox.class).get(0);
+        getMatchingNodes(dialog.getDialogPane(), ComboBox.class).get(0).setId("editComboBox");
         comboBox.setId("edit_dialog_combobox");
 
+        dialog.getDialogPane().getChildrenUnmodifiable().stream().forEach(System.out::println);
+        
 //        comboBox.setConverter(new StringConverter<ChangeDialogOption>()
 //        {
 //            @Override public String toString(ChangeDialogOption change)
@@ -112,12 +115,13 @@ public final class ICalendarAgendaUtilities
      * @param choiceList
      * @return
      */
+    @Deprecated
     public static ChangeDialogOption editChangeDialog(Map<ChangeDialogOption, String> choices)
     {
         ResourceBundle resources = Settings.resources;
-        return changeDialog(resources.getString("dialog.repeat.change.title")
-                , resources.getString("dialog.repeat.change.content")
-                , resources.getString("dialog.repeat.change.header")
+        return changeDialog(resources.getString("dialog.edit.title")
+                , resources.getString("dialog.edit.content")
+                , resources.getString("dialog.edit.header")
                 , choices);
     }
     
@@ -129,12 +133,13 @@ public final class ICalendarAgendaUtilities
      * @param choiceList
      * @return
      */
+    @Deprecated
     public static ChangeDialogOption deleteChangeDialog(Map<ChangeDialogOption, String> choices)
     {
         ResourceBundle resources = Settings.resources;
-        return changeDialog(resources.getString("dialog.repeat.delete.title")
-                , resources.getString("dialog.repeat.delete.content")
-                , resources.getString("dialog.repeat.delete.header")
+        return changeDialog(resources.getString("dialog.delete.title")
+                , resources.getString("dialog.delete.content")
+                , resources.getString("dialog.delete.header")
                 , choices);
     }
     
@@ -194,14 +199,15 @@ public final class ICalendarAgendaUtilities
                 {
                     {
                         String future = VComponent.rangeToString(relatedVComponents, startInstance);
-//                        String future = VComponent.temporalToStringPretty(vEvent.lastStartTemporal());
                         choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
                     }
                     String all = VComponent.rangeToString(vEvent);
                     choices.put(ChangeDialogOption.ALL, all);
                 }
-                
-                ChangeDialogOption changeResponse = ICalendarAgendaUtilities.editChangeDialog(choices);
+                EditChoiceDialog dialog = new EditChoiceDialog(choices, Settings.resources);                
+                Optional<ChangeDialogOption> result = dialog.showAndWait();
+                ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
+//                ChangeDialogOption changeResponse = ICalendarAgendaUtilities.editChangeDialog(choices);
                 switch (changeResponse)
                 {
                 case ALL:
@@ -495,74 +501,14 @@ public final class ICalendarAgendaUtilities
      */
     public enum ChangeDialogOption
     {
-        ONE("Individual event:")                 // individual instance
-//      , SEGMENT("Segment of events:")             // one part of a multi-part series
-      , ALL("Whole series:")                 // entire series
-      , THIS_AND_FUTURE("This and future events") // same as THIS_AND_FUTURE_ALL, but has a shorter text.  It is used when THIS_AND_FUTURE_SEGMENT does not appear
-//      , THIS_AND_FUTURE_SEGMENT("This event and future events in this segment:")     // all instances from this time forward
-//      , THIS_AND_FUTURE_ALL("This event and future events in whole series:")     // all instances from this time forward
-      , CANCEL("Cancel and do nothing");             // do nothing
-// TODO - REPLACE WITH BUNDLE TEXTS
-        private String text;
-        
-        ChangeDialogOption(String s) { text =  s; }
-        public String getText() { return text; }
-        
+        ONE                  // individual instance
+      , ALL                  // entire series
+      , THIS_AND_FUTURE      // same as THIS_AND_FUTURE_ALL, but has a shorter text.  It is used when THIS_AND_FUTURE_SEGMENT does not appear
+      , CANCEL;             // do nothing
+                
         @Override
         public String toString() {
             return Settings.REPEAT_CHANGE_CHOICES.get(this);
-        }
-        
-        /** for one-part repeatable events */
-        private static ChangeDialogOption[] threeOptions()
-        {
-            return new ChangeDialogOption[] {
-                    ONE
-                  , ALL
-                  , THIS_AND_FUTURE
-            };
-        }
-        
-//        public String toStringSingular()
-//        {
-//            switch (this)
-//            {
-//            case ONE:
-//                return Settings.REPEAT_CHANGE_CHOICES.get(ONE);
-//            case SEGMENT:
-//                return Settings.REPEAT_CHANGE_CHOICES.get(SEGMENT);
-//            case ALL:
-//                return Settings.REPEAT_CHANGE_CHOICES.get(ALL);
-//            case THIS_AND_FUTURE_SEGMENT:
-//                return Settings.REPEAT_CHANGE_CHOICES.get(THIS_AND_FUTURE_SEGMENT);
-//            case THIS_AND_FUTURE_ALL:
-//                return Settings.REPEAT_CHANGE_CHOICES.get(THIS_AND_FUTURE_ALL);
-//            default:
-//                return null;                
-//            }
-//        }
-//        
-//        /** For multi-part repeatable events */
-//        private static ChangeDialogOption[] fourOptions()
-//        {
-//            return new ChangeDialogOption[] {
-//                    ONE
-//                  , SEGMENT
-//                  , ALL
-//                  , THIS_AND_FUTURE
-//            };
-//        }
-//        
-//        public static ChangeDialogOption[] selectChoices(int choices)
-//        {
-//            if (choices == 3) return threeOptions();
-//            if (choices == 4) return fourOptions();
-//            return null;
-//        }
-
-        public static void ONE(String one2) {
-            // TODO Auto-generated method stub
-            
         }
     }
     

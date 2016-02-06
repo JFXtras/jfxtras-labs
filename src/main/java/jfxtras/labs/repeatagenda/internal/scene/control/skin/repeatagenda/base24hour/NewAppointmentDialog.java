@@ -58,11 +58,10 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
         // Buttons
         ButtonType createButton = new ButtonType(resources.getString("dialog.event.new.create"), ButtonData.OK_DONE);
         ButtonType editButton = new ButtonType(resources.getString("dialog.event.new.edit"), ButtonData.OTHER);
-        ButtonType cancelButton = new ButtonType(resources.getString("cancel"), ButtonData.CANCEL_CLOSE);
-        getDialogPane().getButtonTypes().addAll(createButton, editButton, cancelButton);
+        getDialogPane().getButtonTypes().addAll(createButton, editButton, ButtonType.CANCEL);
         getDialogPane().lookupButton(createButton).setId("createButton");
         getDialogPane().lookupButton(editButton).setId("editButton");
-        getDialogPane().lookupButton(cancelButton).setId("cancelButton");
+        getDialogPane().lookupButton(ButtonType.CANCEL).setId("cancelButton");
         
         // Edit Summary and appointmentGroup
         GridPane grid = new GridPane();

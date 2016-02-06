@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
@@ -388,7 +390,11 @@ public class AppointmentEditController extends Pane
                 String all = VComponent.rangeToString(vEvent);
                 choices.put(ChangeDialogOption.ALL, all);
             }
-            ChangeDialogOption changeResponse = ICalendarAgendaUtilities.deleteChangeDialog(choices);
+            DeleteChoiceDialog dialog = new DeleteChoiceDialog(choices, Settings.resources);        
+            Optional<ChangeDialogOption> result = dialog.showAndWait();
+            ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
+            System.out.println("changeResponse:" + changeResponse + " " + result.isPresent());
+//            ChangeDialogOption changeResponse = ICalendarAgendaUtilities.deleteChangeDialog(choices);
             switch (changeResponse)
             {
             case ALL:

@@ -42,9 +42,9 @@ public class AgendaChangeTest extends AgendaTestAbstract
         release(MouseButton.PRIMARY);
 
         // change dialog
-        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ONE));
-        click("#edit_dialog_button_ok");
+        click("#changeDialogOkButton");
 
         // check return to original state
         assertEquals(2, agenda.vComponents().size());
@@ -111,9 +111,9 @@ public class AgendaChangeTest extends AgendaTestAbstract
         release(MouseButton.PRIMARY);
         
         // delete VComponent
-        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
-        click("#edit_dialog_button_ok");
+        click("#changeDialogOkButton");
 
         // check return to original state
         assertEquals(1, agenda.vComponents().size());

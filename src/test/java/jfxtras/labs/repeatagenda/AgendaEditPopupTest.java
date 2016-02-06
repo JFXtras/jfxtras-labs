@@ -336,9 +336,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
         TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.WEEKLY));
         click("#saveRepeatButton");
-        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse(() -> c.getSelectionModel().select(ChangeDialogOption.ALL));
-        click("#edit_dialog_button_ok");
+        click("#changeDialogOkButton");
         List<LocalDateTime> dates = agenda.appointments()
                 .stream()
                 .map(a -> a.getStartLocalDateTime())
@@ -1076,9 +1076,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
        // save changes to THIS AND FUTURE
        click("#saveAppointmentButton");
-       ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+       ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE));
-       click("#edit_dialog_button_ok");
+       click("#changeDialogOkButton");
 
        // verify VComponent changes
        assertEquals(2, agenda.vComponents().size());
@@ -1133,9 +1133,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // save changes
         click("#saveAppointmentButton");
-        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ONE));
-        click("#edit_dialog_button_ok");
+        click("#changeDialogOkButton");
         
         // verify VComponent changes
         assertEquals(2, agenda.vComponents().size());
@@ -1177,9 +1177,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // cancel changes
         click("#saveAppointmentButton");
-        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.CANCEL));
-        click("#edit_dialog_button_ok");
+        click("#changeDialogOkButton");
         
         // check return to original state
         VEventImpl vExpected = ICalendarTestAbstract.getDaily1();
@@ -1219,9 +1219,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // delete VComponent
         click("#deleteAppointmentButton");
-        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
-        click("#edit_dialog_button_ok");
+        click("#changeDialogOkButton");
 
         // check return to original state
         assertEquals(0, agenda.vComponents().size());
@@ -1241,9 +1241,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // delete VComponent
         click("#deleteAppointmentButton");
-        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE));
-        click("#edit_dialog_button_ok");
+        click("#changeDialogOkButton");
         
         // verify VComponent changes
         assertEquals(1, agenda.vComponents().size());
@@ -1266,9 +1266,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // delete VComponent
         click("#deleteAppointmentButton");
-        ComboBox<ChangeDialogOption> c = find("#edit_dialog_combobox");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE));
-        click("#edit_dialog_button_ok");
+        click("#changeDialogOkButton");
         
         // verify VComponent changes
         assertEquals(1, agenda.vComponents().size());
