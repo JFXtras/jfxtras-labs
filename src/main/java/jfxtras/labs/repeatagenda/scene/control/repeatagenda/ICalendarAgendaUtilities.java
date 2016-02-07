@@ -27,6 +27,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -160,7 +161,7 @@ public final class ICalendarAgendaUtilities
      * @param endInstance
      * @param instances
      */
-    public static <U> void saveChange(
+    public static <U> void handleEditVComponents(
             VEvent<U> vEvent
           , VEvent<U> vEventOriginal
           , Collection<VComponent<U>> vComponents
@@ -453,6 +454,102 @@ public final class ICalendarAgendaUtilities
 //        System.out.println("vComponents:" + vComponents.size());
     }
     
+    /**
+     * @param <U>
+     * 
+     */
+    public static <U> void handleDelete(
+            VEvent<U> vEvent
+          , Collection<VComponent<U>> vComponents
+          , Temporal startOriginalInstance
+          , Temporal startInstance
+          , U instance
+          , Collection<U> instances
+)
+    {
+        int count = vEvent.instances().size();
+        if (count == 1)
+        {
+            vComponents.remove(vEvent);
+            instances.remove(instance);
+        } else // more than one instance
+        {
+            Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
+            String one = VComponent.temporalToStringPretty(startInstance);
+            choices.put(ChangeDialogOption.ONE, one);
+            if (! vEvent.isIndividual())
+            {
+                {
+                    String future = VComponent.rangeToString(vEvent, startInstance);
+                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+                }
+                String all = VComponent.rangeToString(vEvent);
+                choices.put(ChangeDialogOption.ALL, all);
+            }
+            DeleteChoiceDialog dialog = new DeleteChoiceDialog(choices, Settings.resources);        
+            Optional<ChangeDialogOption> result = dialog.showAndWait();
+            ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
+            System.out.println("changeResponse:" + changeResponse + " " + result.isPresent());
+//            ChangeDialogOption changeResponse = ICalendarAgendaUtilities.deleteChangeDialog(choices);
+            switch (changeResponse)
+            {
+            case ALL:
+//                String found = (count > 1) ? Integer.toString(count) : "infinite";
+//                if (ICalendarUtilities.confirmDelete(found))
+//                {
+//                List<VComponent<Appointment>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent);
+                List<VComponent<U>> relatedVComponents = new ArrayList<>();
+                if (vEvent.getDateTimeRecurrence() == null)
+                { // is parent
+                    relatedVComponents.addAll((Collection<? extends VComponent<U>>) vEvent.getRRule().recurrences());
+                    relatedVComponents.add(vEvent);
+                } else
+                { // is child (recurrence).  Find parent delete all children
+                    relatedVComponents.addAll((Collection<? extends VComponent<U>>) vEvent.getParent().getRRule().recurrences());
+                    relatedVComponents.add(vEvent.getParent());
+                }
+                System.out.println("removing:");
+                relatedVComponents.stream().forEach(v -> vComponents.remove(v));
+                vComponents.removeAll(relatedVComponents);
+                System.out.println("removed:");
+                List<U> appointmentsToRemove = relatedVComponents.stream()
+                        .flatMap(v -> v.instances().stream())
+                        .collect(Collectors.toList());
+                instances.removeAll(appointmentsToRemove);
+//                }
+                break;
+            case CANCEL:
+                break;
+            case ONE:
+                if (vEvent.getExDate() == null) vEvent.setExDate(new ExDate(startOriginalInstance));
+                else vEvent.getExDate().getTemporals().add(startOriginalInstance);
+                instances.removeIf(a -> a.equals(instance));
+                break;
+//            case SEGMENT:
+//                System.out.println("delete segment");
+//                break;
+            case THIS_AND_FUTURE:
+                if (vEvent.getRRule().getCount() == 0) vEvent.getRRule().setCount(0);
+                Temporal previousDay = startOriginalInstance.minus(1, ChronoUnit.DAYS);
+                Temporal untilNew = (vEvent.isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
+                vEvent.getRRule().setUntil(untilNew);
+                // TODO - am i deleteing instances?
+                // Remove old appointments, add back ones
+                Collection<U> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+                instancesTemp.addAll(instances);
+                instancesTemp.removeIf(a -> vEvent.instances().stream().anyMatch(a2 -> a2 == a));
+                vEvent.instances().clear(); // clear vEvent's outdated collection of appointments
+                instancesTemp.addAll(vEvent.makeInstances()); // add vEventOld part of new appointments
+                instances.clear();
+                instances.addAll(instancesTemp);
+
+                System.out.println("until:" + untilNew);
+                break;
+            default:
+                break;
+            }
+        }
+    }
     
     /**
      * Alert to confirm delete appointments

@@ -229,7 +229,7 @@ public class ICalendarAgenda extends Agenda
         
         appointments().removeListener(appointmentsListener);
         vComponents().removeListener(vComponentsListener);
-        ICalendarAgendaUtilities.saveChange(
+        ICalendarAgendaUtilities.handleEditVComponents(
                   vEvent
                 , vEventOriginal
                 , vComponents
