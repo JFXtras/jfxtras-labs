@@ -358,19 +358,10 @@ public class AppointmentEditController extends Pane
 
     @FXML private void handleDeleteButton()
     {
-        
-//        VEvent<U> vEvent
-//        , Collection<VComponent<U>> vComponents
-//        , Temporal startOriginalInstance
-//        , Temporal startInstance
-//        , U instance
-//        , Collection<U> instances
-
-        ICalendarAgendaUtilities.handleDelete(
-                vEvent
-              , vComponents
-              , startOriginalInstance
-              , startTextField.getLocalDateTime()
+        LocalDateTime startInstance = startTextField.getLocalDateTime();
+        vEvent.handleDelete(
+                vComponents
+              , startInstance
               , appointment
               , appointments);
         popup.close();

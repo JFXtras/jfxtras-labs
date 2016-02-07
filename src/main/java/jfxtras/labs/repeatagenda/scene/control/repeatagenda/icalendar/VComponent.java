@@ -292,6 +292,21 @@ public interface VComponent<T>
     Collection<T> instances();
     
     /**
+     * Deletes a VComponent.  For a VComponent with a recurrence rule (RRULE) the user is given a dialog
+     * to select ONE, THIS_AND_FUTURE, or ALL instances to delete.
+     * 
+     * @param vComponents - main collection of all VComponents
+     * @param startInstance - start date or date/time of instance
+     * @param instance - selected recurrence instance
+     * @param instances - collection of all instances across all VComponents
+     */
+    void handleDelete(
+            Collection<VComponent<T>> vComponents
+          , Temporal startInstance
+          , T instance
+          , Collection<T> instances);
+    
+    /**
      * Copies this object into destination object
      * 
      * @param destination
