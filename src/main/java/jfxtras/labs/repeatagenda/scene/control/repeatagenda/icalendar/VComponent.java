@@ -292,6 +292,25 @@ public interface VComponent<T>
     Collection<T> instances();
     
     /**
+     * Edits a VComponent.  For a VComponent with a recurrence rule (RRULE) the user is given a dialog
+     * to select ONE, THIS_AND_FUTURE, or ALL instances to edit.
+     * 
+     * @param vEventOriginal
+     * @param vComponents
+     * @param startOriginalInstance
+     * @param startInstance
+     * @param endInstance
+     * @param instances
+     */
+    void handleEdit(
+            VComponent<T> vEventOriginal
+          , Collection<VComponent<T>> vComponents
+          , Temporal startOriginalInstance
+          , Temporal startInstance
+          , Temporal endInstance
+          , Collection<T> instances);
+    
+    /**
      * Deletes a VComponent.  For a VComponent with a recurrence rule (RRULE) the user is given a dialog
      * to select ONE, THIS_AND_FUTURE, or ALL instances to delete.
      * 

@@ -32,7 +32,6 @@ import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -313,14 +312,21 @@ public class AppointmentEditController extends Pane
     {
         LocalDateTime startInstance = startTextField.getLocalDateTime();
         LocalDateTime endInstance = endTextField.getLocalDateTime();
-        ICalendarAgendaUtilities.handleEditVComponents(
-                vEvent
-              , vEventOriginal
-              , vComponents
-              , startOriginalInstance
-              , startInstance
-              , endInstance
-              , appointments);
+        vEvent.handleEdit(
+                vEventOriginal
+                , vComponents
+                , startOriginalInstance
+                , startInstance
+                , endInstance
+                , appointments);
+//        ICalendarAgendaUtilities.handleEditVComponents(
+//                vEvent
+//              , vEventOriginal
+//              , vComponents
+//              , startOriginalInstance
+//              , startInstance
+//              , endInstance
+//              , appointments);
         popup.close();
     }
 
@@ -365,84 +371,6 @@ public class AppointmentEditController extends Pane
               , appointment
               , appointments);
         popup.close();
-//        // TODO - SHOULD THIS METHOD MOVE TO UTILITIES CLASS?
-//        Temporal dateOrDateTime = (appointment.isWholeDay()) ? 
-//                appointment.getStartLocalDateTime().toLocalDate()
-//              : appointment.getStartLocalDateTime();
-//                
-////        Collection<VComponent<Appointment>> recurrenceSet = VComponent.findRelatedVComponents(vComponents, vEvent);
-////        int count = VComponent.countVComponents(recurrenceSet);
-//        int count = vEvent.instances().size();
-//        if (count == 1)
-//        {
-//            vComponents.remove(vEvent);
-//            appointments.remove(appointment);
-//        } else // more than one instance
-//        {
-//            Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-//            String one = VComponent.temporalToStringPretty(startTextField.getLocalDateTime());
-//            choices.put(ChangeDialogOption.ONE, one);
-//            if (! vEvent.isIndividual())
-//            {
-//                {
-//                    String future = VComponent.rangeToString(vEvent, startTextField.getLocalDateTime());
-//                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
-//                }
-//                String all = VComponent.rangeToString(vEvent);
-//                choices.put(ChangeDialogOption.ALL, all);
-//            }
-//            DeleteChoiceDialog dialog = new DeleteChoiceDialog(choices, Settings.resources);        
-//            Optional<ChangeDialogOption> result = dialog.showAndWait();
-//            ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
-//            System.out.println("changeResponse:" + changeResponse + " " + result.isPresent());
-////            ChangeDialogOption changeResponse = ICalendarAgendaUtilities.deleteChangeDialog(choices);
-//            switch (changeResponse)
-//            {
-//            case ALL:
-////                String found = (count > 1) ? Integer.toString(count) : "infinite";
-////                if (ICalendarUtilities.confirmDelete(found))
-////                {
-////                List<VComponent<Appointment>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, vEvent);
-//                List<VComponent<Appointment>> relatedVComponents = new ArrayList<>();
-//                if (vEvent.getDateTimeRecurrence() == null)
-//                { // is parent
-//                    relatedVComponents.addAll((Collection<? extends VComponent<Appointment>>) vEvent.getRRule().recurrences());
-//                    relatedVComponents.add(vEvent);
-//                } else
-//                { // is child (recurrence).  Find parent delete all children
-//                    relatedVComponents.addAll((Collection<? extends VComponent<Appointment>>) vEvent.getParent().getRRule().recurrences());
-//                    relatedVComponents.add(vEvent.getParent());
-//                }
-//                System.out.println("removing:");
-//                relatedVComponents.stream().forEach(v -> vComponents.remove(v));
-//                vComponents.removeAll(relatedVComponents);
-//                System.out.println("removed:");
-//                List<Appointment> appointmentsToRemove = relatedVComponents.stream()
-//                        .flatMap(v -> v.instances().stream())
-//                        .collect(Collectors.toList());
-//                appointments.removeAll(appointmentsToRemove);
-////                }
-//                break;
-//            case CANCEL:
-//                break;
-//            case ONE:
-//                if (vEvent.getExDate() == null) vEvent.setExDate(new ExDate(dateOrDateTime));
-//                else vEvent.getExDate().getTemporals().add(dateOrDateTime);
-//                appointments.removeIf(a -> a.getStartLocalDateTime().equals(appointment.getStartLocalDateTime()));
-//                break;
-////            case SEGMENT:
-////                System.out.println("delete segment");
-////                break;
-//            case THIS_AND_FUTURE:
-//                if (vEvent.getRRule().getCount() == 0) vEvent.getRRule().setCount(0);
-//                vEvent.getRRule().setUntil(dateOrDateTime);
-//                System.out.println("until:" + dateOrDateTime);
-//                break;
-//            default:
-//                break;
-//            }
-//        }
-//        popup.close();
     }
     
     // Displays an alert notifying UNTIL date is not an occurrence and changed to 

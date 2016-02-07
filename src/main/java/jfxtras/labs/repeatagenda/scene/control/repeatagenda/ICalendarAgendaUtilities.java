@@ -246,8 +246,11 @@ public final class ICalendarAgendaUtilities
                                 } else if (vEvent.getDateTimeStart() instanceof LocalDate)
                                 {
                                     startNew = v.getDateTimeStart();
+                                    long shift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), startNew);
+                                    endNew = vEvent.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
                                 } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
                                 vEvent.setDateTimeStart(startNew);
+                                vEvent.setDateTimeEnd(endNew);
                             }
                         });
                     }
