@@ -310,8 +310,10 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleSave()
     {
-        LocalDateTime startInstance = startTextField.getLocalDateTime();
-        LocalDateTime endInstance = endTextField.getLocalDateTime();
+        LocalDateTime start = startTextField.getLocalDateTime();
+        Temporal startInstance = (vEvent.isWholeDay()) ? LocalDate.from(start) : start;
+        LocalDateTime end = endTextField.getLocalDateTime();
+        Temporal endInstance = (vEvent.isWholeDay()) ? LocalDate.from(end) : end;
         vEvent.handleEdit(
                 vEventOriginal
                 , vComponents
@@ -319,14 +321,6 @@ public class AppointmentEditController extends Pane
                 , startInstance
                 , endInstance
                 , appointments);
-//        ICalendarAgendaUtilities.handleEditVComponents(
-//                vEvent
-//              , vEventOriginal
-//              , vComponents
-//              , startOriginalInstance
-//              , startInstance
-//              , endInstance
-//              , appointments);
         popup.close();
     }
 

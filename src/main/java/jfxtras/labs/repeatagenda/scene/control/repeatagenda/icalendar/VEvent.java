@@ -515,14 +515,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
           , Temporal endInstance
           , Collection<T> instances)
     {
-        if (isWholeDay())
-        {
-            LocalDate end = LocalDate.from(endInstance);
-            this.setDateTimeEnd(end);
-        } else
-        {
-            this.setDateTimeEnd(endInstance);
-        }
+        Temporal endNew = (isWholeDay()) ?  LocalDate.from(endInstance) : endInstance;
+        setDateTimeEnd(endNew);
         super.editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
     }
 
@@ -535,8 +529,9 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
           , Collection<T> instances)
     {
         long shift = ChronoUnit.DAYS.between(getDateTimeStart(), startInstance);
-        Temporal endNew = this.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
-        this.setDateTimeEnd(endNew);  
+        Temporal endNew = getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
+        setDateTimeEnd(endNew);
+        System.out.println("endNew:" + endNew);
         super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, instances);
     }
     
