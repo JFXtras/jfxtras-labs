@@ -115,8 +115,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         locationTextField.setText("new location");
         assertEquals("new location", v.getLocation());
-        
-        appointmentGroupGridPane.setAppointmentGroupSelected(11);
+
+        TestUtil.runThenWaitForPaintPulse(() -> appointmentGroupGridPane.setAppointmentGroupSelected(11));
         assertEquals("group11", v.getCategories());
         
         groupTextField.setText("new group name");

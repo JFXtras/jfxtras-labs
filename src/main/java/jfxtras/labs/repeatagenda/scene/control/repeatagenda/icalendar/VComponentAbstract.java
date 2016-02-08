@@ -655,13 +655,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         Temporal untilNew = (isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
         vComponentOriginal.getRRule().setUntil(untilNew);
         
-        // Adjust new VEvent
-//        long shift = ChronoUnit.DAYS.between(getDateTimeStart(), startInstance);
-//        if (this instanceof VEvent)
-//        {
-//            Temporal endNew = ((VEvent<T>) this).getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
-//            ((VEvent<T>) this).setDateTimeEnd(endNew);
-//        }
         setDateTimeStart(startInstance);
         setUniqueIdentifier();
         String relatedUID = (vComponentOriginal.getRelatedTo() == null) ? vComponentOriginal.getUniqueIdentifier() : vComponentOriginal.getRelatedTo();
