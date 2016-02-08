@@ -229,14 +229,13 @@ public class ICalendarAgenda extends Agenda
         
         appointments().removeListener(appointmentsListener);
         vComponents().removeListener(vComponentsListener);
-        ICalendarAgendaUtilities.handleEditVComponents(
-                  vEvent
-                , vEventOriginal
-                , vComponents
-                , startOriginalInstance
-                , startInstance
-                , endInstance
-                , appointments());
+        vEvent.handleEdit(
+                vEventOriginal
+              , vComponents
+              , startOriginalInstance
+              , startInstance
+              , endInstance
+              , appointments());
         appointments().addListener(appointmentsListener);
         vComponents().addListener(vComponentsListener);
         
