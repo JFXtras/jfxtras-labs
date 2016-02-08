@@ -496,22 +496,26 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         return date.atStartOfDay();
     }
     
+    // CONSTRUCTORS
+    /** Copy constructor */
+    public VComponentAbstract(VComponentAbstract<T> vcomponent)
+    {
+        copy(vcomponent, this);
+    }
+    
+    public VComponentAbstract() { }
+    
     @Override
     public void handleEdit(
-            VComponent<T> vEventOriginal
+            VComponent<T> vComponentOriginal
           , Collection<VComponent<T>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
           , Collection<T> instances)
     {
-        final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vEventOriginal.getRRule());
+        final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
         boolean incrementSequence = true;
-//        System.out.println("DTEND:" + getDateTimeStart() + " " + getDateTimeEnd());
-//        System.out.println("dates: " + startOriginalInstance + " " + startInstance + " " + endInstance);
-//        System.out.println("range: " + getStartRange() + " " + getEndRange());
-        System.out.println("rrule: " + rruleType);
-//        System.out.println("vEvent: " + this);
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
@@ -521,12 +525,11 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             // fall through
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
-            if (! equals(vEventOriginal)) updateAppointments(instances);
+            if (! equals(vComponentOriginal)) updateAppointments(instances);
             break;
         case WITH_EXISTING_REPEAT:
-            if (! equals(vEventOriginal)) // if changes occurred
+            if (! equals(vComponentOriginal)) // if changes occurred
             {
-//                List<VComponent<T>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, this); // this version is experimental (edits related vComponents as a group), not currently used
                 List<VComponent<T>> relatedVComponents = Arrays.asList(this);
                 Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
                 String one = VComponent.temporalToStringPretty(startInstance);
@@ -543,7 +546,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 EditChoiceDialog dialog = new EditChoiceDialog(choices, Settings.resources);                
                 Optional<ChangeDialogOption> result = dialog.showAndWait();
                 ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
-//                ChangeDialogOption changeResponse = ICalendarAgendaUtilities.editChangeDialog(choices);
                 switch (changeResponse)
                 {
                 case ALL:
@@ -553,55 +555,17 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                     } else
                     {
                         throw new RuntimeException("Only 1 relatedVComponents currently supported");
-//                    { // this version is experimental (edits related vComponents as a group), not currently used (there will always be 1 relatedVComponent now)
-//                        relatedVComponents.stream().forEach(v -> 
-//                        {
-//                            // Copy ExDates
-//                            if (v.getExDate() != null)
-//                            {
-//                                if (getExDate() == null)
-//                                { // make new EXDate object for destination if necessary
-//                                    try {
-//                                        ExDate newEXDate = v.getExDate().getClass().newInstance();
-//                                        setExDate(newEXDate);
-//                                    } catch (InstantiationException | IllegalAccessException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                              }
-//                              v.getExDate().getTemporals().addAll(v.getExDate().getTemporals());
-//                            }
-//                            // update start and end dates
-//                            if (VComponent.isBefore(v.getDateTimeStart(), getDateTimeStart()))
-//                            {
-//                                final Temporal startNew;
-//                                final Temporal endNew;
-//                                if (getDateTimeStart() instanceof LocalDateTime)
-//                                {
-//                                    LocalTime startTime = LocalTime.from(getDateTimeStart());
-//                                    startNew = LocalDate.from(v.getDateTimeStart()).atTime(startTime);
-//                                    long shift = ChronoUnit.DAYS.between(getDateTimeStart(), startNew);
-//                                    endNew = getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
-//                                } else if (getDateTimeStart() instanceof LocalDate)
-//                                {
-//                                    startNew = v.getDateTimeStart();
-//                                    long shift = ChronoUnit.DAYS.between(getDateTimeStart(), startNew);
-//                                    endNew = getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
-//                                } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
-//                                setDateTimeStart(startNew);
-//                                setDateTimeEnd(endNew);
-//                            }
-//                        });
                     }
                     break;
                 case CANCEL:
-                    vEventOriginal.copyTo(this); // return to original this
+                    vComponentOriginal.copyTo(this); // return to original this
                     incrementSequence = false;
                     break;
                 case THIS_AND_FUTURE:
-                    editThisAndFuture(vEventOriginal, vComponents, startOriginalInstance, startInstance, instances);
+                    editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, instances);
                     break;
                 case ONE:
-                    editOne(vEventOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
+                    editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
                     break;
                 default:
                     break;
@@ -610,8 +574,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         }
         if (! isValid()) throw new RuntimeException(makeErrorString());
         if (incrementSequence) incrementSequence();
-//        vComponents.stream().forEach(System.out::println);
-//        System.out.println(vEvent);
     }
     
     private void updateAppointments(Collection<T> instances)
@@ -625,11 +587,13 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         instances.addAll(instancesTemp);
     }
     
-    /*
+    /**
      * Edit one instance of a VEvent with a RRule.  The instance becomes a new VEvent without a RRule
      * as with the same UID as the parent and a recurrence-id for the replaced date or date/time.
+     * 
+     * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
      */
-    private void editOne(
+    protected void editOne(
             VComponent<T> vEventOriginal
           , Collection<VComponent<T>> vComponents
           , Temporal startOriginalInstance
@@ -641,18 +605,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         {
             LocalDate start = LocalDate.from(startInstance);
             setDateTimeStart(start);
-            if (this instanceof VEvent) // TODO - CAN I DO THIS ANOTHER WAY?
-            {
-                LocalDate end = LocalDate.from(endInstance);
-                ((VEvent<T>) this).setDateTimeEnd(end);
-            }
         } else
         {
             setDateTimeStart(startInstance);
-            if (this instanceof VEvent)
-            {
-                ((VEvent<T>) this).setDateTimeEnd(endInstance);
-            }
         }
         setRRule(null);
         setDateTimeRecurrence(startOriginalInstance);
@@ -679,35 +634,37 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         vComponents.add(vEventOriginal); // TODO - LET LISTENER ADD NEW APPOINTMENTS OR ADD THEM HERE?
     }
     
-    /*
+    /**
      * Changing this and future instances in VComponent is done by ending the previous
      * VComponent with a UNTIL date or date/time and starting a new VComponent from 
      * the selected instance.  EXDATE, RDATE and RECURRENCES are split between both
      * VComponents.  vEventNew has new settings, vEvent has former settings.
+     * 
+     * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
      */
-    private  void editThisAndFuture(
-            VComponent<T> vEventOriginal
+    protected void editThisAndFuture(
+            VComponent<T> vComponentOriginal
           , Collection<VComponent<T>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Collection<T> instances)
     {
         // adjust original VEvent
-        if (vEventOriginal.getRRule().getCount() != null) vEventOriginal.getRRule().setCount(0);
+        if (vComponentOriginal.getRRule().getCount() != null) vComponentOriginal.getRRule().setCount(0);
         Temporal previousDay = startOriginalInstance.minus(1, ChronoUnit.DAYS);
         Temporal untilNew = (isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
-        vEventOriginal.getRRule().setUntil(untilNew);
+        vComponentOriginal.getRRule().setUntil(untilNew);
         
         // Adjust new VEvent
-        long shift = ChronoUnit.DAYS.between(getDateTimeStart(), startInstance);
-        if (this instanceof VEvent)
-        {
-            Temporal endNew = ((VEvent<T>) this).getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
-            ((VEvent<T>) this).setDateTimeEnd(endNew);
-        }
+//        long shift = ChronoUnit.DAYS.between(getDateTimeStart(), startInstance);
+//        if (this instanceof VEvent)
+//        {
+//            Temporal endNew = ((VEvent<T>) this).getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
+//            ((VEvent<T>) this).setDateTimeEnd(endNew);
+//        }
         setDateTimeStart(startInstance);
         setUniqueIdentifier();
-        String relatedUID = (vEventOriginal.getRelatedTo() == null) ? vEventOriginal.getUniqueIdentifier() : vEventOriginal.getRelatedTo();
+        String relatedUID = (vComponentOriginal.getRelatedTo() == null) ? vComponentOriginal.getUniqueIdentifier() : vComponentOriginal.getRelatedTo();
         setRelatedTo(relatedUID);
         setDateTimeStamp(LocalDateTime.now());
         System.out.println("unti2l:" + getRRule().getUntil());
@@ -772,7 +729,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         // Modify COUNT for the edited vEvent
         if (getRRule().getCount() > 0)
         {
-            int countInOrginal = vEventOriginal.makeInstances().size();
+            int countInOrginal = vComponentOriginal.makeInstances().size();
             int countInNew = getRRule().getCount() - countInOrginal;
 //            final int newCount = (int) instances()
 //                    .stream()
@@ -782,15 +739,15 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             getRRule().setCount(countInNew);
         }
         
-        if (! vEventOriginal.isValid()) throw new RuntimeException(vEventOriginal.makeErrorString());
-        vComponents.add(vEventOriginal);
+        if (! vComponentOriginal.isValid()) throw new RuntimeException(vComponentOriginal.makeErrorString());
+        vComponents.add(vComponentOriginal);
 
         // Remove old appointments, add back ones
         Collection<T> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         instancesTemp.addAll(instances);
-        instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
-        vEventOriginal.instances().clear(); // clear vEvent outdated collection of appointments
-        instancesTemp.addAll(vEventOriginal.makeInstances()); // make new appointments and add to main collection (added to vEvent's collection in makeAppointments)
+        instancesTemp.removeIf(a -> vComponentOriginal.instances().stream().anyMatch(a2 -> a2 == a));
+        vComponentOriginal.instances().clear(); // clear vEvent outdated collection of appointments
+        instancesTemp.addAll(vComponentOriginal.makeInstances()); // make new appointments and add to main collection (added to vEvent's collection in makeAppointments)
         instances().clear(); // clear vEvent's outdated collection of appointments
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
         instances.clear();
@@ -800,15 +757,14 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 //        System.out.println("vEvent:" + vEvent);
 //        System.out.println("vComponents:" + vComponents.size());
     }
-      
+     
     
     @Override
     public void handleDelete(
             Collection<VComponent<T>> vComponents
           , Temporal startInstance
           , T instance
-          , Collection<T> instances
-)
+          , Collection<T> instances)
     {
         int count = this.instances().size();
         if (count == 1)
@@ -892,17 +848,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 break;
             }
         }
-    }
-
-    // CONSTRUCTORS
-    /** Copy constructor */
-    public VComponentAbstract(VComponentAbstract<T> vcomponent)
-    {
-        copy(vcomponent, this);
-    }
-    
-    public VComponentAbstract()
-    {
     }
 
     /** Deep copy all fields from source to destination */
@@ -999,6 +944,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals
                 && sequenceEquals;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return super.hashCode();
     }
 
     /** Make map of properties and string values for toString method in subclasses (like VEvent)

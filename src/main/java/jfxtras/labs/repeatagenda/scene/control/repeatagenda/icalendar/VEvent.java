@@ -4,8 +4,10 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -504,6 +506,40 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
 //        durationInNanosProperty().addListener(durationlistener); // synch duration with dateTimeEnd
     }
     
+    @Override // edit end date or date/time
+    protected void editOne(
+            VComponent<T> vComponentOriginal
+          , Collection<VComponent<T>> vComponents
+          , Temporal startOriginalInstance
+          , Temporal startInstance
+          , Temporal endInstance
+          , Collection<T> instances)
+    {
+        if (isWholeDay())
+        {
+            LocalDate end = LocalDate.from(endInstance);
+            this.setDateTimeEnd(end);
+        } else
+        {
+            this.setDateTimeEnd(endInstance);
+        }
+        super.editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
+    }
+
+    @Override // edit end date or date/time
+    protected void editThisAndFuture(
+            VComponent<T> vComponentOriginal
+          , Collection<VComponent<T>> vComponents
+          , Temporal startOriginalInstance
+          , Temporal startInstance
+          , Collection<T> instances)
+    {
+        long shift = ChronoUnit.DAYS.between(getDateTimeStart(), startInstance);
+        Temporal endNew = this.getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
+        this.setDateTimeEnd(endNew);  
+        super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, instances);
+    }
+    
     /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. 
      * */
     private static void copy(VEvent<?> source, VEvent<?> destination)
@@ -545,6 +581,12 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         System.out.println("VEvent: " + descriptionEquals + " " + endEquals);
         // don't need to check getDateTimeEnd because it is bound to duration
         return super.equals(obj) && descriptionEquals && endEquals;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return super.hashCode();
     }
     
     /** Make iCalendar compliant string of VEvent calendar component.
