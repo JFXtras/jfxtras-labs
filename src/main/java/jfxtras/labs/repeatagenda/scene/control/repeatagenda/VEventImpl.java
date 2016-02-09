@@ -64,6 +64,7 @@ public class VEventImpl extends VEvent<Appointment>
     private ObjectProperty<AppointmentGroup> appointmentGroup = new SimpleObjectProperty<AppointmentGroup>(this, "CATEGORIES");
     public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup.set(appointmentGroup); }
     public AppointmentGroup getAppointmentGroup() { return appointmentGroup.get(); }
+    public VEventImpl withAppointmentGroup(AppointmentGroup appointmentGroup) { setAppointmentGroup(appointmentGroup); return this; }
 
     /** appointmentGroups from Agenda.  It is used to synch categories to appointmentGroup, 
      * which is needed by the makeAppointment method 
@@ -100,7 +101,7 @@ public class VEventImpl extends VEvent<Appointment>
     public Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
     private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImplLocal.class; // default Appointment class
     public void setAppointmentClass(Class<? extends Appointment> appointmentClass) { this.appointmentClass = appointmentClass; }
-//    public VEventImpl withAppointmentClass(Class<? extends RepeatableAppointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
+    public VEventImpl withAppointmentClass(Class<? extends Appointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
     /**
      * The currently generated instances of the recurrence set.
@@ -115,12 +116,16 @@ public class VEventImpl extends VEvent<Appointment>
     public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
     
     // Fluent methods
-    public VEventImpl withRRule(RRule r) { setRRule(r); return this; }
     public VEventImpl withDateTimeRecurrence(Temporal t) { setDateTimeRecurrence(t); return this; }
     public VEventImpl withDateTimeStamp(LocalDateTime t) { setDateTimeStamp(t); return this; }
     public VEventImpl withDateTimeStart(Temporal t) { setDateTimeStart(t); return this; }
     public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
+    public VEventImpl withDescription(String s) { setDescription(s); return this; }
+    public VEventImpl withDurationInNanos(Long l) { setDurationInNanos(l); return this; }
+    public VEventImpl withRRule(RRule r) { setRRule(r); return this; }
     public VEventImpl withSequence(int i) { setSequence(i); return this; }
+    public VEventImpl withSummary(String s) { setSummary(s); return this; }
+    public VEventImpl withUniqueIdentifier(String s) { setUniqueIdentifier(s); return this; }
     
     /*
      * CONSTRUCTORS
@@ -189,6 +194,7 @@ public class VEventImpl extends VEvent<Appointment>
         copy(this, (VEventImpl) destination);
     }
     
+    // TODO - EITHER REMOVE OR OVERRIDE HASHCODE
     @Override
     public boolean equals(Object obj)
     {

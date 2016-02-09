@@ -12,10 +12,11 @@ import org.junit.runners.Suite.SuiteClasses;
               , AgendaEditPopupTest.class
               , ICalendarCopyTest.class
               , ICalendarDateTest.class
+              , ICalendarEditTest.class
               , ICalendarEqualsTest.class
-              , MakeAppointmentsTest.class
               , ICalendarParseTest.class
               , ICalendarToStringTest.class
+              , MakeAppointmentsTest.class
               })
 public class AllTests {
 

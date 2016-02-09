@@ -504,7 +504,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
     
     public VComponentAbstract() { }
-    
+
     @Override
     public void handleEdit(
             VComponent<T> vComponentOriginal
@@ -513,6 +513,36 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
           , Temporal startInstance
           , Temporal endInstance
           , Collection<T> instances)
+    {
+        Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback = (choices) ->
+        {
+            EditChoiceDialog dialog = new EditChoiceDialog(choices, Settings.resources);                
+            Optional<ChangeDialogOption> result = dialog.showAndWait();
+            return (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
+        };
+        handleEdit(
+                vComponentOriginal
+              , vComponents
+              , startOriginalInstance
+              , startInstance
+              , endInstance
+              , instances
+              , dialogCallback);
+    }
+    
+    /*
+     * Use this method directly only for testing.
+     * Pass a dialogCallback that returns the ChangeDialogOption options being tested.
+     * For example (m) -> ChangeDialogOption.ALL
+     */
+    public void handleEdit(
+            VComponent<T> vComponentOriginal
+          , Collection<VComponent<T>> vComponents
+          , Temporal startOriginalInstance
+          , Temporal startInstance
+          , Temporal endInstance
+          , Collection<T> instances
+          , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
     {
         final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
         boolean incrementSequence = true;
@@ -543,9 +573,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                     String all = VComponent.rangeToString(this);
                     choices.put(ChangeDialogOption.ALL, all);
                 }
-                EditChoiceDialog dialog = new EditChoiceDialog(choices, Settings.resources);                
-                Optional<ChangeDialogOption> result = dialog.showAndWait();
-                ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
+                ChangeDialogOption changeResponse = dialogCallback.call(choices);
+//                EditChoiceDialog dialog = new EditChoiceDialog(choices, Settings.resources);                
+//                Optional<ChangeDialogOption> result = dialog.showAndWait();
+//                ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
                 switch (changeResponse)
                 {
                 case ALL:
