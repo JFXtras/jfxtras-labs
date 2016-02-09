@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
 
-
+// TODO - SHOULD THIS CLASS BE ON THE INTERNAL SIDE?
 public final class Settings
 {
     public Settings() {}

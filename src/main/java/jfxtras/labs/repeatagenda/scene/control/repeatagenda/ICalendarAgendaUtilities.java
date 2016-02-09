@@ -33,7 +33,7 @@ public final class ICalendarAgendaUtilities
         ONE                  // individual instance
       , ALL                  // entire series
       , THIS_AND_FUTURE      // same as THIS_AND_FUTURE_ALL, but has a shorter text.  It is used when THIS_AND_FUTURE_SEGMENT does not appear
-      , CANCEL;             // do nothing
+      , CANCEL;              // do nothing
                 
         @Override
         public String toString() {

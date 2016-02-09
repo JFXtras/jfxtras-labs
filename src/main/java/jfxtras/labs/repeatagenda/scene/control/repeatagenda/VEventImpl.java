@@ -195,29 +195,29 @@ public class VEventImpl extends VEvent<Appointment>
     }
     
     // TODO - EITHER REMOVE OR OVERRIDE HASHCODE
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        VEventImpl testObj = (VEventImpl) obj;
-//        System.out.println("getAppointmentClass:" + getAppointmentClass().getSimpleName() + " " + testObj.getAppointmentClass().getSimpleName());
-        boolean appointmentClassEquals = (getAppointmentClass() == null) ?
-                (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
-        boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
-                (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-//        boolean dateTimeRangeStartEquals = (getStartRange() == null) ?
-//                (testObj.getStartRange() == null) : getStartRange().equals(testObj.getStartRange());
-//        boolean dateTimeRangeEndEquals = (getEndRange() == null) ?
-//                (testObj.getEndRange() == null) : getEndRange().equals(testObj.getEndRange());
-//        boolean appointmentsEquals = (appointments() == null) ?
-//                (testObj.appointments() == null) : appointments().equals(testObj.appointments());
-        System.out.println("VEventImpl: " + appointmentClassEquals + " " +  appointmentGroupEquals + " "
-                + " ");// + appointmentsEquals);
-        return super.equals(obj) && appointmentClassEquals && appointmentGroupEquals;
-    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (obj == this) return true;
+//        if((obj == null) || (obj.getClass() != getClass())) {
+//            return false;
+//        }
+//        VEventImpl testObj = (VEventImpl) obj;
+////        System.out.println("getAppointmentClass:" + getAppointmentClass().getSimpleName() + " " + testObj.getAppointmentClass().getSimpleName());
+//        boolean appointmentClassEquals = (getAppointmentClass() == null) ?
+//                (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
+//        boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
+//                (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
+////        boolean dateTimeRangeStartEquals = (getStartRange() == null) ?
+////                (testObj.getStartRange() == null) : getStartRange().equals(testObj.getStartRange());
+////        boolean dateTimeRangeEndEquals = (getEndRange() == null) ?
+////                (testObj.getEndRange() == null) : getEndRange().equals(testObj.getEndRange());
+////        boolean appointmentsEquals = (appointments() == null) ?
+////                (testObj.appointments() == null) : appointments().equals(testObj.appointments());
+//        System.out.println("VEventImpl: " + appointmentClassEquals + " " +  appointmentGroupEquals + " "
+//                + " ");// + appointmentsEquals);
+//        return super.equals(obj) && appointmentClassEquals && appointmentGroupEquals;
+//    }
     
 //    @Override
 //    public Stream<Temporal> stream(Temporal startTemporal)

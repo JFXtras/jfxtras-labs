@@ -398,37 +398,37 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         copy(this, (VEvent<?>) destination);
     }
     
-    @Override
-    public boolean equals(Object obj)
-    {
-        @SuppressWarnings("unchecked")
-        VEvent<T> testObj = (VEvent<T>) obj;
-
-        boolean descriptionEquals = (getDescription() == null) ? (testObj.getDescription() == null)
-                : getDescription().equals(testObj.getDescription());
-        final boolean endEquals;
-        switch (endPriority())
-        {
-        case DTEND:
-            endEquals = getDateTimeEnd().equals(testObj.getDateTimeEnd());
-            break;
-        case DURATION:
-            endEquals = getDurationInNanos().equals(testObj.getDurationInNanos());
-            break;
-        default:
-            endEquals = false; // shouldn't get here
-            break;
-        }
-        System.out.println("VEvent: " + descriptionEquals + " " + endEquals);
-        // don't need to check getDateTimeEnd because it is bound to duration
-        return super.equals(obj) && descriptionEquals && endEquals;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        return super.hashCode();
-    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        @SuppressWarnings("unchecked")
+//        VEvent<T> testObj = (VEvent<T>) obj;
+//
+//        boolean descriptionEquals = (getDescription() == null) ? (testObj.getDescription() == null)
+//                : getDescription().equals(testObj.getDescription());
+//        final boolean endEquals;
+//        switch (endPriority())
+//        {
+//        case DTEND:
+//            endEquals = getDateTimeEnd().equals(testObj.getDateTimeEnd());
+//            break;
+//        case DURATION:
+//            endEquals = getDurationInNanos().equals(testObj.getDurationInNanos());
+//            break;
+//        default:
+//            endEquals = false; // shouldn't get here
+//            break;
+//        }
+//        System.out.println("VEvent: " + descriptionEquals + " " + endEquals);
+//        // don't need to check getDateTimeEnd because it is bound to duration
+//        return super.equals(obj) && descriptionEquals && endEquals;
+//    }
+//    
+//    @Override
+//    public int hashCode()
+//    {
+//        return super.hashCode();
+//    }
     
     /** Make iCalendar compliant string of VEvent calendar component.
      * This method should be overridden by an implementing class if that

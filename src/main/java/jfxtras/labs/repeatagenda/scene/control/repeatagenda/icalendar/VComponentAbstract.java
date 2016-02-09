@@ -29,7 +29,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.DeleteChoiceDialog;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.RRuleType;
@@ -504,37 +503,8 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
     
     public VComponentAbstract() { }
-
-    @Override
-    public void handleEdit(
-            VComponent<T> vComponentOriginal
-          , Collection<VComponent<T>> vComponents
-          , Temporal startOriginalInstance
-          , Temporal startInstance
-          , Temporal endInstance
-          , Collection<T> instances)
-    {
-        Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback = (choices) ->
-        {
-            EditChoiceDialog dialog = new EditChoiceDialog(choices, Settings.resources);                
-            Optional<ChangeDialogOption> result = dialog.showAndWait();
-            return (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
-        };
-        handleEdit(
-                vComponentOriginal
-              , vComponents
-              , startOriginalInstance
-              , startInstance
-              , endInstance
-              , instances
-              , dialogCallback);
-    }
     
-    /*
-     * Use this method directly only for testing.
-     * Pass a dialogCallback that returns the ChangeDialogOption options being tested.
-     * For example (m) -> ChangeDialogOption.ALL
-     */
+    @Override
     public void handleEdit(
             VComponent<T> vComponentOriginal
           , Collection<VComponent<T>> vComponents
@@ -574,9 +544,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                     choices.put(ChangeDialogOption.ALL, all);
                 }
                 ChangeDialogOption changeResponse = dialogCallback.call(choices);
-//                EditChoiceDialog dialog = new EditChoiceDialog(choices, Settings.resources);                
-//                Optional<ChangeDialogOption> result = dialog.showAndWait();
-//                ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
                 switch (changeResponse)
                 {
                 case ALL:
@@ -935,47 +902,47 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         copy(this, (VComponentAbstract<?>) destination);
     }
 
-    @Override
-    public boolean equals(Object obj)
-    {
-        @SuppressWarnings("unchecked")
-        VComponentAbstract<T> testObj = (VComponentAbstract<T>) obj;
-
-        boolean categoriesEquals = (getCategories() == null) ?
-                (testObj.getCategories() == null) : getCategories().equals(testObj.getCategories());
-        boolean commentEquals = (getComment() == null) ?
-                (testObj.getComment() == null) : getComment().equals(testObj.getComment());
-        boolean dateTimeStampEquals = (getDateTimeStamp() == null) ?
-                (testObj.getDateTimeStamp() == null) : getDateTimeStamp().equals(testObj.getDateTimeStamp());
-        boolean dateTimeStartEquals = (getDateTimeStart() == null) ?
-                (testObj.getDateTimeStart() == null) : getDateTimeStart().equals(testObj.getDateTimeStart());
-        boolean locationEquals = (getLocation() == null) ?
-                (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
-        boolean sequenceEquals = getSequence() == testObj.getSequence();
-        boolean summaryEquals = (getSummary() == null) ?
-                (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-        boolean uniqueIdentifierEquals = (getUniqueIdentifier() == null) ?
-                (testObj.getUniqueIdentifier() == null) : getUniqueIdentifier().equals(testObj.getUniqueIdentifier());
-        boolean relatedToEquals = (getRelatedTo() == null) ?
-                (testObj.getRelatedTo() == null) : getRelatedTo().equals(testObj.getRelatedTo());
-        boolean rruleEquals = (getRRule() == null) ?
-                (testObj.getRRule() == null) : getRRule().equals(testObj.getRRule());
-        boolean eXDatesEquals = (getExDate() == null) ?
-                (testObj.getExDate() == null) : getExDate().equals(testObj.getExDate());
-        boolean rDatesEquals = (getRDate() == null) ?
-                (testObj.getRDate() == null) : getRDate().equals(testObj.getRDate());
-        System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStampEquals + " " + dateTimeStartEquals + " " 
-                + locationEquals + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals + " " + eXDatesEquals + " " + rDatesEquals);
-        return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
-                && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals
-                && sequenceEquals;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        return super.hashCode();
-    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        @SuppressWarnings("unchecked")
+//        VComponentAbstract<T> testObj = (VComponentAbstract<T>) obj;
+//
+//        boolean categoriesEquals = (getCategories() == null) ?
+//                (testObj.getCategories() == null) : getCategories().equals(testObj.getCategories());
+//        boolean commentEquals = (getComment() == null) ?
+//                (testObj.getComment() == null) : getComment().equals(testObj.getComment());
+//        boolean dateTimeStampEquals = (getDateTimeStamp() == null) ?
+//                (testObj.getDateTimeStamp() == null) : getDateTimeStamp().equals(testObj.getDateTimeStamp());
+//        boolean dateTimeStartEquals = (getDateTimeStart() == null) ?
+//                (testObj.getDateTimeStart() == null) : getDateTimeStart().equals(testObj.getDateTimeStart());
+//        boolean locationEquals = (getLocation() == null) ?
+//                (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+//        boolean sequenceEquals = getSequence() == testObj.getSequence();
+//        boolean summaryEquals = (getSummary() == null) ?
+//                (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+//        boolean uniqueIdentifierEquals = (getUniqueIdentifier() == null) ?
+//                (testObj.getUniqueIdentifier() == null) : getUniqueIdentifier().equals(testObj.getUniqueIdentifier());
+//        boolean relatedToEquals = (getRelatedTo() == null) ?
+//                (testObj.getRelatedTo() == null) : getRelatedTo().equals(testObj.getRelatedTo());
+//        boolean rruleEquals = (getRRule() == null) ?
+//                (testObj.getRRule() == null) : getRRule().equals(testObj.getRRule());
+//        boolean eXDatesEquals = (getExDate() == null) ?
+//                (testObj.getExDate() == null) : getExDate().equals(testObj.getExDate());
+//        boolean rDatesEquals = (getRDate() == null) ?
+//                (testObj.getRDate() == null) : getRDate().equals(testObj.getRDate());
+//        System.out.println("Vcomponent equals: " + categoriesEquals + " " + commentEquals + " " + dateTimeStampEquals + " " + dateTimeStartEquals + " " 
+//                + locationEquals + " " + summaryEquals + " " + uniqueIdentifierEquals + " " + rruleEquals + " " + eXDatesEquals + " " + rDatesEquals);
+//        return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
+//                && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals
+//                && sequenceEquals;
+//    }
+//    
+//    @Override
+//    public int hashCode()
+//    {
+//        return super.hashCode();
+//    }
 
     /** Make map of properties and string values for toString method in subclasses (like VEvent)
      * Used by toString method in subclasses */

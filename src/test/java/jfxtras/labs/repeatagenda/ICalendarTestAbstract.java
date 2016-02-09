@@ -6,9 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
@@ -36,23 +34,65 @@ public abstract class ICalendarTestAbstract
     public final static long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
     
     // Comparator for tree sort
-    private final Comparator<Appointment> APPOINTMENT_COMPARATOR = (a1, a2)
-            -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
-    public final Comparator<Appointment> getAppointmentComparator() { return APPOINTMENT_COMPARATOR; }
+//    private final Comparator<Appointment> APPOINTMENT_COMPARATOR = (a1, a2)
+//            -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
+//    public final Comparator<Appointment> getAppointmentComparator() { return APPOINTMENT_COMPARATOR; }
     
     private final static Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
     public Class<Agenda.AppointmentImplLocal> getClazz() { return clazz; }
     
-    public void refresh(List<VComponent<Appointment>> vComponents, List<Appointment> appointments)
+    protected static <T> boolean isEqualTo(VEventImpl v1, VEventImpl v2)
     {
-        vComponents.stream().forEach(v -> v.instances().clear());   
-        appointments.clear();
-        vComponents.stream().forEach(r ->
+        // VComponentAbstract properties
+        boolean categoriesEquals = (v1.getCategories() == null) ? (v2.getCategories() == null) : v1.getCategories().equals(v2.getCategories());
+        boolean commentEquals = (v1.getComment() == null) ? (v2.getComment() == null) : v1.getComment().equals(v2.getComment());
+        boolean dateTimeStampEquals = (v1.getDateTimeStamp() == null) ? (v2.getDateTimeStamp() == null) : v1.getDateTimeStamp().equals(v2.getDateTimeStamp());
+        boolean dateTimeStartEquals = (v1.getDateTimeStart() == null) ? (v2.getDateTimeStart() == null) : v1.getDateTimeStart().equals(v2.getDateTimeStart());
+        boolean locationEquals = (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
+        boolean sequenceEquals = v1.getSequence() == v2.getSequence();
+        boolean summaryEquals = (v1.getSummary() == null) ? (v2.getSummary() == null) : v1.getSummary().equals(v2.getSummary());
+        boolean uniqueIdentifierEquals = (v1.getUniqueIdentifier() == null) ? (v2.getUniqueIdentifier() == null) : v1.getUniqueIdentifier().equals(v2.getUniqueIdentifier());
+        boolean relatedToEquals = (v1.getRelatedTo() == null) ? (v2.getRelatedTo() == null) : v1.getRelatedTo().equals(v2.getRelatedTo());
+        boolean rruleEquals = (v1.getRRule() == null) ? (v2.getRRule() == null) : v1.getRRule().equals(v2.getRRule()); // goes deeper
+        boolean eXDatesEquals = (v1.getExDate() == null) ? (v2.getExDate() == null) : v1.getExDate().equals(v2.getExDate()); // goes deeper
+        boolean rDatesEquals = (v1.getRDate() == null) ? (v2.getRDate() == null) : v1.getRDate().equals(v2.getRDate()); // goes deeper
+        
+        // VEvent properties
+        boolean descriptionEquals = (v1.getDescription() == null) ? (v2.getDescription() == null)
+                : v1.getDescription().equals(v2.getDescription());
+        final boolean endEquals;
+        switch (v1.endPriority())
         {
-            Collection<Appointment> newAppointments = r.makeInstances();
-            appointments.addAll(newAppointments);
-        });
+        case DTEND:
+            endEquals = v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
+            break;
+        case DURATION:
+            endEquals = v1.getDurationInNanos().equals(v2.getDurationInNanos());
+            break;
+        default:
+            endEquals = false; // shouldn't get here
+            break;
+        }
+        
+        // VEventImpl properties
+        boolean appointmentClassEquals = (v1.getAppointmentClass() == null) ? (v2.getAppointmentClass() == null) : v1.getAppointmentClass().equals(v2.getAppointmentClass());
+        boolean appointmentGroupEquals = (v1.getAppointmentGroup() == null) ? (v2.getAppointmentGroup() == null) : v1.getAppointmentGroup().equals(v2.getAppointmentGroup());
+
+        return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
+                && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals
+                && sequenceEquals && descriptionEquals && endEquals && appointmentClassEquals && appointmentGroupEquals;
     }
+    
+//    public void refresh(List<VComponent<Appointment>> vComponents, List<Appointment> appointments)
+//    {
+//        vComponents.stream().forEach(v -> v.instances().clear());   
+//        appointments.clear();
+//        vComponents.stream().forEach(r ->
+//        {
+//            Collection<Appointment> newAppointments = r.makeInstances();
+//            appointments.addAll(newAppointments);
+//        });
+//    }
     
     /** FREQ=YEARLY; */
     protected VEventImpl getYearly1()

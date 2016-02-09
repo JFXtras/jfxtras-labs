@@ -14,12 +14,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 
@@ -292,23 +294,27 @@ public interface VComponent<T>
     Collection<T> instances();
     
     /**
-     * Edits a VComponent.  For a VComponent with a recurrence rule (RRULE) the user is given a dialog
-     * to select ONE, THIS_AND_FUTURE, or ALL instances to edit.
+     * Handles how an edited VComponent is processed.  For a VComponent with a recurrence rule (RRULE)
+     * the user is given a dialog to select ONE, THIS_AND_FUTURE, or ALL instances to edit.
+     * For a VComponent without a RRULE there is no dialog.
      * 
-     * @param vEventOriginal
-     * @param vComponents
-     * @param startOriginalInstance
-     * @param startInstance
-     * @param endInstance
-     * @param instances
+     * @param vComponentOriginal - copy of this VComponent before changes
+     * @param vComponents - the collection of VComponents that this VComponent belongs to
+     * @param startOriginalInstance - date or date/time of selected instance before changes
+     * @param startInstance - date or date/time of selected instance after changes
+     * @param endInstance - date or date/time of selected instance after changes
+     * @param instances - all instances being rendered by all VComponents
+     * @param dialogCallback - callback to generate dialog to select ONE, THIS_AND_FUTURE, or ALL.
+     *    Can be replaced by a stub for testing (e.g. (m) -> ChangeDialogOption.ALL).
      */
     void handleEdit(
-            VComponent<T> vEventOriginal
+            VComponent<T> vComponentOriginal
           , Collection<VComponent<T>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
-          , Collection<T> instances);
+          , Collection<T> instances
+          , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback);
     
     /**
      * Deletes a VComponent.  For a VComponent with a recurrence rule (RRULE) the user is given a dialog
@@ -319,6 +325,7 @@ public interface VComponent<T>
      * @param instance - selected recurrence instance
      * @param instances - collection of all instances across all VComponents
      */
+    // TODO - ADD DIALOG CALLBACK HERE
     void handleDelete(
             Collection<VComponent<T>> vComponents
           , Temporal startInstance
@@ -463,7 +470,7 @@ public interface VComponent<T>
     };
     
     /**
-     * Sorts VComponents by DTSTART
+     * Sorts VComponents by DTSTART date/time
      */
     final static Comparator<? super VComponent<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
     {

@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentEditLoader;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.SelectOneLoader;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
@@ -239,7 +240,8 @@ public class ICalendarAgenda extends Agenda
               , startOriginalInstance
               , startInstance
               , endInstance
-              , appointments());
+              , appointments()
+              , ICalendarUtilities.EDIT_DIALOG_CALLBACK);
         appointments().addListener(appointmentsListener);
         vComponents().addListener(vComponentsListener);
         
@@ -442,13 +444,13 @@ public class ICalendarAgenda extends Agenda
                             });
                 } else if (change.wasRemoved())
                 {
-//                    change.getRemoved()
-//                            .stream()
-//                            .forEach(a -> 
-//                            { // remove map entries
-//                                appointmentRecurrenceIDMap.remove(System.identityHashCode(a));
-//                                appointmentVComponentMap.remove(System.identityHashCode(a));
-//                            });
+                    change.getRemoved()
+                            .stream()
+                            .forEach(a -> 
+                            { // remove map entries
+                                appointmentStartOriginalMap.remove(System.identityHashCode(a));
+                                appointmentVComponentMap.remove(System.identityHashCode(a));
+                            });
                 }
             }
         };
