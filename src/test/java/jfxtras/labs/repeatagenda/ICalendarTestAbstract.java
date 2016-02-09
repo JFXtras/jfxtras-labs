@@ -31,7 +31,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
-public abstract class ICalendarTestAbstract// extends AgendaTestAbstract
+public abstract class ICalendarTestAbstract
 {
     public final static long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
     
