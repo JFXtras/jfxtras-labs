@@ -60,6 +60,7 @@ public abstract class ICalendarTestAbstract
         // VEvent properties
         boolean descriptionEquals = (v1.getDescription() == null) ? (v2.getDescription() == null)
                 : v1.getDescription().equals(v2.getDescription());
+        boolean endPriorityEquals = v1.endPriority().equals(v2.endPriority());
         final boolean endEquals;
         switch (v1.endPriority())
         {
@@ -80,7 +81,7 @@ public abstract class ICalendarTestAbstract
 
         if (categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals
-                && sequenceEquals && descriptionEquals && endEquals && appointmentClassEquals && appointmentGroupEquals)
+                && sequenceEquals && descriptionEquals && endPriorityEquals && endEquals && appointmentClassEquals && appointmentGroupEquals)
         {
             return true;
         } else

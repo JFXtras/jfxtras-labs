@@ -515,17 +515,16 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
     {
         final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
+        System.out.println("rruleType" + rruleType);
         boolean incrementSequence = true;
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
-            setRRule(null);
-            setRDate(null);
-            setExDate(null);
+            becomingIndividual(vComponentOriginal, startInstance, endInstance);
             // fall through
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
-            if (! equals(vComponentOriginal)) updateAppointments(instances);
+            if (! equals(vComponentOriginal)) updateInstances(instances);
             break;
         case WITH_EXISTING_REPEAT:
             if (! equals(vComponentOriginal)) // if changes occurred
@@ -549,7 +548,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 case ALL:
                     if (relatedVComponents.size() == 1)
                     {
-                        updateAppointments(instances);
+                        updateInstances(instances);
                     } else
                     {
                         throw new RuntimeException("Only 1 relatedVComponents currently supported");
@@ -574,7 +573,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         if (incrementSequence) incrementSequence();
     }
     
-    private void updateAppointments(Collection<T> instances)
+    private void updateInstances(Collection<T> instances)
     {
         Collection<T> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         instancesTemp.addAll(instances);
@@ -583,6 +582,18 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         instancesTemp.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
         instances.clear();
         instances.addAll(instancesTemp);
+    }
+    
+    protected void becomingIndividual(VComponent<T> vComponentOriginal, Temporal startInstance, Temporal endInstance)
+    {
+        setRRule(null);
+        setRDate(null);
+        setExDate(null);
+        if (vComponentOriginal.getRRule() != null)
+        { // RRULE was removed, update DTSTART
+            setDateTimeStart(startInstance);
+        }
+
     }
     
     /**

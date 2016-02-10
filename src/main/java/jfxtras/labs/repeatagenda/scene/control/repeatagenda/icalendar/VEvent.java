@@ -351,7 +351,17 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         };
         dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
     }
-    
+
+    @Override
+    protected void becomingIndividual(VComponent<T> vComponentOriginal, Temporal startInstance, Temporal endInstance)
+    {
+        super.becomingIndividual(vComponentOriginal, startInstance, endInstance);
+        if ((vComponentOriginal.getRRule() != null) && (endPriority() == EndPriority.DTEND))
+        { // RRULE was removed, update DTEND
+            setDateTimeEnd(endInstance);
+        }
+    }
+
     @Override // edit end date or date/time
     protected void editOne(
             VComponent<T> vComponentOriginal
@@ -361,7 +371,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
           , Temporal endInstance
           , Collection<T> instances)
     {
-        // TODO - ACCOMODATE DURATION
         switch (endPriority())
         {
         case DTEND:
