@@ -15,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import jfxtras.labs.repeatagenda.ICalendarEditTest;
 import jfxtras.labs.repeatagenda.trial.controller.CalendarController;
 
 public class Main extends Application {
@@ -70,9 +71,9 @@ public class Main extends Application {
         CalendarController controller = mainLoader.getController();
         controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
         
-//        MakeAppointmentsTest r = new MakeAppointmentsTest();
-//        r.makeAppointmentsDailyTest1();
-//        System.exit(0);
+        ICalendarEditTest r = new ICalendarEditTest();
+        r.editFutureTimeAndDateDaily1();
+        System.exit(0);
         
         Scene scene = new Scene(root, 1366, 768);
         primaryStage.setScene(scene);

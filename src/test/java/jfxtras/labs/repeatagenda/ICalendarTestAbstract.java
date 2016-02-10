@@ -78,9 +78,20 @@ public abstract class ICalendarTestAbstract
         boolean appointmentClassEquals = (v1.getAppointmentClass() == null) ? (v2.getAppointmentClass() == null) : v1.getAppointmentClass().equals(v2.getAppointmentClass());
         boolean appointmentGroupEquals = (v1.getAppointmentGroup() == null) ? (v2.getAppointmentGroup() == null) : v1.getAppointmentGroup().equals(v2.getAppointmentGroup());
 
-        return categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
+        if (categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
                 && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals
-                && sequenceEquals && descriptionEquals && endEquals && appointmentClassEquals && appointmentGroupEquals;
+                && sequenceEquals && descriptionEquals && endEquals && appointmentClassEquals && appointmentGroupEquals)
+        {
+            return true;
+        } else
+        {
+            throw new RuntimeException("VEvent not Equal:"
+                    + System.lineSeparator()
+                    + "expecting:" + System.lineSeparator()
+                    + v1 + System.lineSeparator()
+                    + "but was:" + System.lineSeparator()
+                    + v2);
+        }
     }
     
 //    public void refresh(List<VComponent<Appointment>> vComponents, List<Appointment> appointments)
@@ -461,7 +472,6 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
-//        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDescription("Daily1 Description");
         vEvent.setSummary("Daily1 Summary");

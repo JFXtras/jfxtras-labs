@@ -122,6 +122,7 @@ public class VEventImpl extends VEvent<Appointment>
     public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
     public VEventImpl withDescription(String s) { setDescription(s); return this; }
     public VEventImpl withDurationInNanos(Long l) { setDurationInNanos(l); return this; }
+    public VEventImpl withRelatedTo(String s) { setRelatedTo(s); return this; }
     public VEventImpl withRRule(RRule r) { setRRule(r); return this; }
     public VEventImpl withSequence(int i) { setSequence(i); return this; }
     public VEventImpl withSummary(String s) { setSummary(s); return this; }

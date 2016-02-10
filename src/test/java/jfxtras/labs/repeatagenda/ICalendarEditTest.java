@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -33,7 +32,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     @Test
     public void editAllDateTimeDaily()
     {
-        VEventImpl vEvent = ICalendarTestAbstract.getDaily2();
+        VEventImpl vEvent = getDaily2();
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<VComponent<Appointment>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
@@ -77,19 +76,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(expectedDates, madeDates);
 
         // Check edited VEvent
-        VEventImpl expectedVEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withAppointmentClass(getClazz())
-                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
+        VEventImpl expectedVEvent = getDaily2()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 45))
-                .withDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0))
-                .withDescription("Daily2 Description")
                 .withDurationInNanos(4500L * NANOS_IN_SECOND)
-                .withRRule(new RRule()
-                        .withCount(6)
-                        .withFrequency(new Daily().withInterval(3)))
-                .withSequence(1)
-                .withSummary("Daily2 Summary")
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+                .withSequence(1);
 
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent)); // check to see if repeat rule changed correctly
         assertEquals(3, appointments.size()); // check if there are only two appointments
@@ -111,7 +101,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         appointments.addAll(newAppointments);
         assertEquals(3, appointments.size()); // check if there are only 3 appointments
         VEventImpl vEventOriginal = new VEventImpl(vEvent);
-
         
         // select appointment and apply changes
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -136,7 +125,9 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , endInstance
               , appointments
               , (m) -> ChangeDialogOption.ONE);
-        
+
+        assertEquals(2, vComponents.size());
+
         List<LocalDateTime> madeDates = appointments.stream()
                 .map(a -> a.getStartLocalDateTime())
                 .sorted()
@@ -147,90 +138,104 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , LocalDateTime.of(2015, 11, 21, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
-        
+
         Collections.sort(vComponents, VComponent.VCOMPONENT_COMPARATOR);
-        assertEquals(2, vComponents.size());
-        
         VEventImpl vEvent0 = (VEventImpl) vComponents.get(0);
         VEventImpl vEvent1 = (VEventImpl) vComponents.get(1);
-        VEventImpl expectedVEvent0 = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withAppointmentClass(getClazz())
-                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 00))
-                .withDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0))
-                .withDescription("Daily2 Description")
-                .withDurationInNanos(5400L * NANOS_IN_SECOND)
+        VEventImpl expectedVEvent0 = getDaily2()
                 .withRRule(new RRule()
                         .withCount(6)
                         .withFrequency(new Daily().withInterval(3))
-                        .withRecurrences(vEvent1))
-                .withSummary("Daily2 Summary")
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+                        .withRecurrences(vEvent1));
         assertTrue(vEventIsEqualTo(expectedVEvent0, vEvent0));
         
-        VEventImpl expectedVEvent1 = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withAppointmentClass(getClazz())
-                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
+        VEventImpl expectedVEvent1 = getDaily2()
                 .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 15, 10, 0))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 16, 9, 45))
                 .withDateTimeStamp(vEvent1.getDateTimeStamp())
-                .withDescription("Daily2 Description")
                 .withDurationInNanos(4500L * NANOS_IN_SECOND)
                 .withRRule(null)
-                .withSequence(1)
-                .withSummary("Daily2 Summary")
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+                .withSequence(1);
         assertTrue(vEventIsEqualTo(expectedVEvent1, vEvent1));
-
-        // TODO - CHECK RECURRENCE ID
     }
 
-    // 
-// @Test  // TODO - FINISH TEST
-// @Ignore // I'm removing edit and delete methods so this test is obsolete
-// public void editFutureTimeAndDateDaily1()
-// {
-//     VEventImpl vevent = getDaily1();
-//     List<VComponent<Appointment>> vevents = new ArrayList<>(Arrays.asList(vevent));
-//     LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
-//     LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
-//     List<Appointment> appointments = new ArrayList<Appointment>();
-//     Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
-//     appointments.addAll(newAppointments);
-//     assertEquals(7, appointments.size()); // check if there are only 3 appointments
-//     VEventImpl veventOld = new VEventImpl(vevent);
-//     
-//     // select appointment (get recurrence date)
-//     Iterator<Appointment> appointmentIterator = appointments.iterator();
-//     appointmentIterator.next(); // skip first
-//     appointmentIterator.next(); // skip second
-//     Appointment selectedAppointment = (Appointment) appointmentIterator.next();
-//     LocalDateTime dateTimeOriginal = selectedAppointment.getStartLocalDateTime();
-//     
-//     // apply changes
-//     LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate();
-//     selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
-//     selectedAppointment.setEndLocalDateTime(newDate.atTime(11, 0)); // change end time
-//     LocalDateTime dateTimeNew = selectedAppointment.getStartLocalDateTime();
-//     long startShift = ChronoUnit.NANOS.between(dateTimeOriginal, dateTimeNew);
-//     Temporal dtStart = vevent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
-//     long duration = ChronoUnit.NANOS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
-//     vevent.setDateTimeStart(dtStart);
-//     vevent.setDurationInNanos(duration);
-//     
-//     // Edit
-//     WindowCloseType windowCloseType = vevent.edit(
-//             dateTimeOriginal
-//           , dateTimeNew
-//           , veventOld               // original VEvent
-//           , appointments            // collection of all appointments
-//           , vevents                 // collection of all VEvents
-//           , a -> ChangeDialogOption.THIS_AND_FUTURE                   // answer to edit dialog
-//           , null);                  // VEvents I/O callback
-//     appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime() + " " + a.getEndLocalDateTime()));
-//     assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-//
-// }
+    @Test
+    public void editFutureTimeAndDateDaily1()
+    {
+        VEventImpl vEvent = getDaily1();
+        List<VComponent<Appointment>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vEvent.makeInstances(start, end);
+        appointments.addAll(newAppointments);
+        assertEquals(7, appointments.size()); // check if there are only 3 appointments
+        VEventImpl vEventOriginal = new VEventImpl(vEvent);
+        
+        // select appointment (get recurrence date)
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        appointmentIterator.next(); // skip first
+        appointmentIterator.next(); // skip second
+        Appointment selectedAppointment = appointmentIterator.next();
+        LocalDateTime startOriginalInstance = selectedAppointment.getStartLocalDateTime();
+        
+        // apply changes
+        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate();
+        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(newDate.atTime(10, 30)); // change end time
+        LocalDateTime startInstance = selectedAppointment.getStartLocalDateTime();
+        LocalDateTime endInstance = selectedAppointment.getEndLocalDateTime();
+        long startShift = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
+        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
+        long duration = ChronoUnit.NANOS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        Temporal dtEnd = dtStart.plus(duration, ChronoUnit.NANOS);
+        vEvent.setDateTimeStart(dtStart);
+        vEvent.setDateTimeEnd(dtEnd);
+
+        vEvent.handleEdit(
+                vEventOriginal
+              , vComponents
+              , startOriginalInstance
+              , startInstance
+              , endInstance
+              , appointments
+              , (m) -> ChangeDialogOption.THIS_AND_FUTURE);
+        
+        assertEquals(2, vComponents.size());
+        
+        List<LocalDateTime> madeDates = appointments.stream()
+                .map(a -> a.getStartLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 16, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 9, 45)
+              , LocalDateTime.of(2015, 11, 18, 9, 45)
+              , LocalDateTime.of(2015, 11, 19, 9, 45)
+              , LocalDateTime.of(2015, 11, 20, 9, 45)
+              , LocalDateTime.of(2015, 11, 21, 9, 45)
+                ));
+        assertEquals(expectedDates, madeDates);
+        
+        Collections.sort(vComponents, VComponent.VCOMPONENT_COMPARATOR);
+        VEventImpl vEvent0 = (VEventImpl) vComponents.get(0);
+        VEventImpl vEvent1 = (VEventImpl) vComponents.get(1);
+        VEventImpl expectedVEvent0 = getDaily1()
+                .withRRule(new RRule()
+                        .withFrequency(new Daily())
+                        .withUntil(LocalDateTime.of(2015, 11, 16, 23, 59, 59)));
+        assertTrue(vEventIsEqualTo(expectedVEvent0, vEvent0));
+        
+        VEventImpl expectedVEvent1 = getDaily1()
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 17, 10, 30))
+                .withDateTimeStamp(vEvent1.getDateTimeStamp())
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 17, 9, 45))
+                .withRelatedTo("20150110T080000-0@jfxtras.org")
+                .withSequence(1)
+                .withUniqueIdentifier(vEvent1.getUniqueIdentifier());
+        assertTrue(vEventIsEqualTo(expectedVEvent1, vEvent1));
+    }
 // 
 // /**
 //  * Tests editing THIS_AND_FUTURE events of a daily repeat event changing date and time
