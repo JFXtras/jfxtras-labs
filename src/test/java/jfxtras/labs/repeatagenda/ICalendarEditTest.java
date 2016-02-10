@@ -91,7 +91,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withSummary("Daily2 Summary")
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
 
-        assertEquals(expectedVEvent, vEvent); // check to see if repeat rule changed correctly
+        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent)); // check to see if repeat rule changed correctly
         assertEquals(3, appointments.size()); // check if there are only two appointments
     }
 

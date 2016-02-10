@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,9 +16,9 @@ import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.TestUtil;
 
 public class AgendaChangeTest extends AgendaTestAbstract
@@ -50,21 +51,21 @@ public class AgendaChangeTest extends AgendaTestAbstract
         assertEquals(2, agenda.vComponents().size());
         assertEquals(6, agenda.appointments().size());
         Collections.sort(agenda.vComponents(), VComponent.VCOMPONENT_COMPARATOR);
-        VComponent<Appointment> v1 = agenda.vComponents().get(0);
-        VComponent<Appointment> v2 = agenda.vComponents().get(1);
-        RRule r = ICalendarTestAbstract.getDaily1().getRRule().withRecurrences(v2);
-        VComponent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1()
+        VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
+        VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
+        RRule r = ICalendarTestAbstract.getDaily1().getRRule().withRecurrences(v1);
+        VEventImpl expectedV0 = ICalendarTestAbstract.getDaily1()
                 .withRRule(r);
-        assertEquals(expectedV1, v1);
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV0, v0));
         
-        VComponent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1()
+        VEventImpl expectedV1 = ICalendarTestAbstract.getDaily1()
                 .withRRule(null)
                 .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 11, 10, 0))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 14, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 15, 0))
-                .withDateTimeStamp(v2.getDateTimeStamp())
+                .withDateTimeStamp(v1.getDateTimeStamp())
                 .withSequence(1);
-        assertEquals(expectedV2, v2);
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
         
         // check appointment dates
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -119,12 +120,12 @@ public class AgendaChangeTest extends AgendaTestAbstract
         assertEquals(1, agenda.vComponents().size());
         agenda.appointments().stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(6, agenda.appointments().size());
-        VComponent<Appointment> v1 = agenda.vComponents().get(0);
-        VComponent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1()
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
+        VEventImpl expectedV = ICalendarTestAbstract.getDaily1()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 15, 0))
                 .withSequence(1);
-        assertEquals(expectedV1, v1);
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV, v));
         
         // check appointment dates
         List<LocalDateTime> expectedStartDates = new ArrayList<LocalDateTime>(Arrays.asList(

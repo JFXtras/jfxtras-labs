@@ -1083,20 +1083,20 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
        // verify VComponent changes
        assertEquals(2, agenda.vComponents().size());
        agenda.vComponents().sort(VComponent.VCOMPONENT_COMPARATOR);
-       VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(0);
-       VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(1);
-       VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
-       expectedV1.getRRule().setUntil(LocalDateTime.of(2015, 11, 11, 9, 59, 59));
-       VEvent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1();
-       expectedV2.setSummary("new summary");
-       expectedV2.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
-       expectedV2.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
-       expectedV2.setRelatedTo("20150110T080000-0@jfxtras.org");
-       expectedV2.setUniqueIdentifier(v2.getUniqueIdentifier()); // uid is time-based so copy it to guarantee equality.
-       expectedV2.setDateTimeStamp(v2.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
-       expectedV2.setSequence(1);
-       assertEquals(expectedV1, v1);
-       assertEquals(expectedV2, v2);
+       VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
+       VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
+       VEventImpl expectedV0 = ICalendarTestAbstract.getDaily1();
+       expectedV0.getRRule().setUntil(LocalDateTime.of(2015, 11, 11, 9, 59, 59));
+       VEventImpl expectedV1 = ICalendarTestAbstract.getDaily1();
+       expectedV1.setSummary("new summary");
+       expectedV1.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
+       expectedV1.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
+       expectedV1.setRelatedTo("20150110T080000-0@jfxtras.org");
+       expectedV1.setUniqueIdentifier(v1.getUniqueIdentifier()); // uid is time-based so copy it to guarantee equality.
+       expectedV1.setDateTimeStamp(v1.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
+       expectedV1.setSequence(1);
+       assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV0, v0));
+       assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
 
        // verify Appointment changes
        { // verify added exceptions are not in exceptionComboBox list
@@ -1140,21 +1140,21 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         // verify VComponent changes
         assertEquals(2, agenda.vComponents().size());
         agenda.vComponents().sort(VComponent.VCOMPONENT_COMPARATOR);
-        VEvent<Appointment> v1 = (VEvent<Appointment>) agenda.vComponents().get(0);
-        VEvent<Appointment> v2 = (VEvent<Appointment>) agenda.vComponents().get(1);
-        VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
-        expectedV1.getRRule().recurrences().add(v2);
-        assertEquals(expectedV1, v1);
+        VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
+        VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
+        VEventImpl expectedV0 = ICalendarTestAbstract.getDaily1();
+        expectedV0.getRRule().recurrences().add(v1);
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV0, v0));
 
-        VEvent<Appointment> expectedV2 = ICalendarTestAbstract.getDaily1();
-        expectedV2.setSummary("new summary");
-        expectedV2.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
-        expectedV2.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
-        expectedV2.setDateTimeStamp(v2.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
-        expectedV2.setDateTimeRecurrence(LocalDateTime.of(2015, 11, 11, 10, 0));
-        expectedV2.setRRule(null);
-        expectedV2.setSequence(1);
-        assertEquals(expectedV2, v2);
+        VEventImpl expectedV1 = ICalendarTestAbstract.getDaily1();
+        expectedV1.setSummary("new summary");
+        expectedV1.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
+        expectedV1.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
+        expectedV1.setDateTimeStamp(v1.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
+        expectedV1.setDateTimeRecurrence(LocalDateTime.of(2015, 11, 11, 10, 0));
+        expectedV1.setRRule(null);
+        expectedV1.setSequence(1);
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
     }
     
     @Test
@@ -1162,7 +1162,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     public void canCancelEdit()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));       
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
         
         // Open edit popup
         move("#hourLine11");
@@ -1182,10 +1182,10 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         click("#changeDialogOkButton");
         
         // check return to original state
-        VEventImpl vExpected = ICalendarTestAbstract.getDaily1();
-        assertEquals(vExpected, v);
-        assertEquals("Daily1 Summary", v.getSummary());
-        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v.getDateTimeStart());
+        VEventImpl expectedV0 = ICalendarTestAbstract.getDaily1();
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV0, v0));
+        assertEquals("Daily1 Summary", v0.getSummary());
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v0.getDateTimeStart());
     }
     
     @Test
@@ -1232,7 +1232,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     public void canDeleteSeriesThisAndFutureEdit()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
         
         // Open edit popup
         move("#hourLine11");
@@ -1247,9 +1247,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // verify VComponent changes
         assertEquals(1, agenda.vComponents().size());
-        VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
-        expectedV1.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
-        assertEquals(expectedV1, v);
+        VEventImpl expectedV = ICalendarTestAbstract.getDaily1();
+        expectedV.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV, v));
     }
     
     @Test
@@ -1257,7 +1257,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     public void canDeleteSeriesWithRecurrencesEdit()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
         
         // Open edit popup
         move("#hourLine11");
@@ -1272,9 +1272,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // verify VComponent changes
         assertEquals(1, agenda.vComponents().size());
-        VEvent<Appointment> expectedV1 = ICalendarTestAbstract.getDaily1();
-        expectedV1.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
-        assertEquals(expectedV1, v);
+        VEventImpl expectedV = ICalendarTestAbstract.getDaily1();
+        expectedV.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV, v));
     }
     
     @Test

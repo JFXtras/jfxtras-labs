@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -16,7 +15,7 @@ public class ICalendarCopyTest extends ICalendarTestAbstract
 //        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
 //        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         VEventImpl veventCopy = new VEventImpl(vevent);
-        assertEquals(vevent, veventCopy); // check number of appointments
+        assertTrue(vEventIsEqualTo(vevent, veventCopy));
         assertTrue(vevent != veventCopy); // insure not same reference
     }
     
@@ -25,7 +24,7 @@ public class ICalendarCopyTest extends ICalendarTestAbstract
     {
         VEventImpl vevent = getWeekly3();
         VEventImpl veventCopy = new VEventImpl(vevent);
-        assertEquals(vevent, veventCopy); // check number of appointments
+        assertTrue(vEventIsEqualTo(vevent, veventCopy));
         assertTrue(vevent != veventCopy); // insure not same reference
     }
 }

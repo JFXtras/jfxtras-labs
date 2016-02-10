@@ -14,7 +14,6 @@ import org.junit.Test;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
@@ -141,8 +140,8 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "END:VEVENT";
         VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setAppointmentClass(getClazz());
-        VEvent expectedVEvent = getYearly1();
-        assertEquals(expectedVEvent, vEvent);
+        VEventImpl expectedVEvent = getYearly1();
+        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
 
     @Test
@@ -157,7 +156,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "END:VEVENT";
         VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         VEventImpl expectedVEvent = getDaily3();
-        assertEquals(expectedVEvent, vEvent);
+        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
     
     /** FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
@@ -176,7 +175,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "END:VEVENT";
         VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         VEventImpl expectedVEvent = getDaily6();
-        assertEquals(expectedVEvent, vEvent);
+        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
     
     /** Tests FREQ=YEARLY */
@@ -196,7 +195,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                 + "END:VEVENT";
         VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         VEventImpl expectedVEvent = getDailyWithException1();
-        assertEquals(expectedVEvent, vEvent);
+        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
 
     @Test
@@ -218,6 +217,6 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                           + "END:VEVENT";
     VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
     VEventImpl expectedVEvent = getWholeDayDaily1();
-    assertEquals(expectedVEvent, vEvent);
+    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
 }
