@@ -789,21 +789,21 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 //                if (ICalendarUtilities.confirmDelete(found))
 //                {
 //                List<VComponent<Appointment>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, this);
-                List<VComponent<T>> relatedVComponents = new ArrayList<>();
+                List<VComponent<?>> relatedVComponents = new ArrayList<>();
                 if (this.getDateTimeRecurrence() == null)
                 { // is parent
-                    relatedVComponents.addAll((Collection<? extends VComponent<T>>) this.getRRule().recurrences());
+                    relatedVComponents.addAll(this.getRRule().recurrences());
                     relatedVComponents.add(this);
                 } else
                 { // is child (recurrence).  Find parent delete all children
-                    relatedVComponents.addAll((Collection<? extends VComponent<T>>) this.getParent().getRRule().recurrences());
+                    relatedVComponents.addAll(this.getParent().getRRule().recurrences());
                     relatedVComponents.add(this.getParent());
                 }
                 System.out.println("removing:");
                 relatedVComponents.stream().forEach(v -> vComponents.remove(v));
                 vComponents.removeAll(relatedVComponents);
                 System.out.println("removed:");
-                List<T> appointmentsToRemove = relatedVComponents.stream()
+                List<?> appointmentsToRemove = relatedVComponents.stream()
                         .flatMap(v -> v.instances().stream())
                         .collect(Collectors.toList());
                 instances.removeAll(appointmentsToRemove);
