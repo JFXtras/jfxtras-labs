@@ -88,6 +88,14 @@ public class ByMonthDay extends ByRuleAbstract
     }
     
     @Override
+    public int hashCode()
+    {
+        int hash = 5;
+        hash = (31 * hash) + getDaysOfMonth().hashCode();
+        return hash;
+    }
+    
+    @Override
     public String toString()
     {
         String days = Arrays.stream(getDaysOfMonth())

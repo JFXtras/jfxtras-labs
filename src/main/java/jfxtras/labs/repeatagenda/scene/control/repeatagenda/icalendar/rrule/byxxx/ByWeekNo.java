@@ -96,6 +96,13 @@ public class ByWeekNo extends ByRuleAbstract
         return weekNumbersEquals;
     }
     
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = (31 * hash) + getWeekNumbers().hashCode();
+        return hash;
+    }
     
     @Override
     public String toString()

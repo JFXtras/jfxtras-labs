@@ -18,6 +18,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     
     /** INTERVAL: (RFC 5545 iCalendar 3.3.10, page 40) number of frequency periods to pass before new appointment */
     // Uses lazy initialization of property because often interval stays as the default value of 1
+    @Override
     public IntegerProperty intervalProperty()
     {
         if (interval == null) interval = new SimpleIntegerProperty(this, "interval", _interval);
@@ -88,9 +89,11 @@ public abstract class FrequencyAbstract<T> implements Frequency {
      * following FREQ=YEARLY;BYMONTH=3 it is MONTHS
      * following FREQ=YEARLY;BYMONTH=3;BYDAY=TH it is DAYS
      */
+    @Override
     public ObjectProperty<ChronoUnit> getChronoUnit() { return chronoUnit; };
     private ObjectProperty<ChronoUnit> chronoUnit;
     private final ChronoUnit initialChronoUnit;
+    @Override
     public void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit)
     {
         switch (chronoUnit.get())
@@ -111,6 +114,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     }
     
     
+    @Override
     public FrequencyType frequencyType() { return frequencyType; }
     final private FrequencyType frequencyType;
 
@@ -123,6 +127,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     }
 
 //    @Override
+    @Override
     public Stream<Temporal> stream(Temporal start)
     {
         getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream
@@ -166,6 +171,15 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         }
         System.out.println("frequency " + intervalEquals + " " + rulesEquals);
         return intervalEquals && rulesEquals;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = (31 * hash) + getInterval().hashCode();
+        hash = (31 * hash) + getByRules().hashCode();
+        return hash;
     }
     
     @Override

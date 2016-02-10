@@ -186,6 +186,14 @@ public class ByDay extends ByRuleAbstract
     }
     
     @Override
+    public int hashCode()
+    {
+        int hash = 11;
+        hash = (31 * hash) + getByDayPairs().hashCode();
+        return hash;
+    }
+    
+    @Override
     public String toString()
     {
         String days = Arrays.stream(getByDayPairs())
@@ -242,44 +250,14 @@ public class ByDay extends ByRuleAbstract
         case WEEKS:
             return inStream.flatMap(t -> 
             { // Expand to be byDayPairs days in current week
-                // TODO - REVISE - INEFFICIENT AND ACKWARD
-                // need all days in week - sun-sat
-                // include those matching
-                // first find first day of week (sunday)
-                // can i use week fields to get week num? then get first day of week?
-//                TemporalField fieldUS = WeekFields.of(Locale.FRANCE).dayOfWeek();
-//                System.out.println(t.with(fieldUS, 1)); // 2015-02-08 (Sunday)
-//                Temporal firstDayOfWeek = startTemporal.with(field, 1);
-//                for (int d=1; d<7; d++)
-//                {
-//                    DayOfWeek myDayOfWeek = DayOfWeek.from(startTemporal.with(field, d));
-////                    if (myDayOfWeek == )
-//                }
-
                 List<Temporal> dates = new ArrayList<>();
                 for (ByDayPair byDayPair : getByDayPairs())
                 {
                     int value = byDayPair.dayOfWeek.getValue() + firstDayOfWeekAdjustment;
                     int valueAdj = (value > 7) ? value-7 : value;
                     Temporal newTemporal = t.with(field, valueAdj);
-//                    System.out.println("newTemporal:" + newTemporal);
-//                    dates.add(newTemporal);
-//                    if (VComponent.isBefore(newTemporal, startTemporal)) System.out.println("TOO EARLY:");
                     if (! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
-//                    byDayPair.dayOfWeek;
                 }
-                
-//                int dayOfWeekValue = DayOfWeek.from(t).getValue() + firstDayOfWeekAdjustment;
-//                for (ByDayPair byDayPair : getByDayPairs())
-//                {
-//                    int value = byDayPair.dayOfWeek.getValue() + firstDayOfWeekAdjustment;
-//                    int valueAdj = (value > 7) ? value-7 : value;
-//                    int dayShift = valueAdj - dayOfWeekValue;
-//                    Temporal newTemporal = t.plus(dayShift, ChronoUnit.DAYS);
-////                    dates.add(newTemporal);
-////                    System.out.println("newTemporal:" + newTemporal + " " + startTemporal + " " + value + " " + valueAdj + " " + dayShift );
-//                    if (! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
-//                }
                 Collections.sort(dates, VComponent.TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
@@ -389,7 +367,17 @@ public class ByDay extends ByRuleAbstract
                     + " " + (ordinal == testObj.ordinal));
             return (dayOfWeek == testObj.dayOfWeek)
                     && (ordinal == testObj.ordinal);
-        }        
+        }
+        
+        @Override
+        public int hashCode()
+        {
+            int hash = 7;
+            hash = (31 * hash) + dayOfWeek.hashCode();
+            hash = (31 * hash) + ordinal;
+            return hash;
+        }
+        
     }
     
     /** Match up iCalendar 2-character day of week to Java Time DayOfWeek */

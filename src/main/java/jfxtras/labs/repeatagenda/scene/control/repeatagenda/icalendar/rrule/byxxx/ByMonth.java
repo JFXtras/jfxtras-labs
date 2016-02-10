@@ -71,6 +71,14 @@ public class ByMonth extends ByRuleAbstract
         boolean monthEquals = Arrays.equals(getMonths(), testObj.getMonths());
         return monthEquals;
     }
+    
+    @Override
+    public int hashCode()
+    {
+        int hash = 3;
+        hash = (31 * hash) + getMonths().hashCode();
+        return hash;
+    }
 
     @Override
     public String toString()

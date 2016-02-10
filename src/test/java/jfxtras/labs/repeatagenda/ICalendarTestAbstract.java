@@ -41,7 +41,7 @@ public abstract class ICalendarTestAbstract
     private final static Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
     public Class<Agenda.AppointmentImplLocal> getClazz() { return clazz; }
     
-    protected static <T> boolean isEqualTo(VEventImpl v1, VEventImpl v2)
+    protected static <T> boolean vEventIsEqualTo(VEventImpl v1, VEventImpl v2)
     {
         // VComponentAbstract properties
         boolean categoriesEquals = (v1.getCategories() == null) ? (v2.getCategories() == null) : v1.getCategories().equals(v2.getCategories());

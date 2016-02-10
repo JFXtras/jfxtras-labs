@@ -361,8 +361,20 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
           , Temporal endInstance
           , Collection<T> instances)
     {
-        Temporal endNew = (isWholeDay()) ?  LocalDate.from(endInstance) : endInstance;
-        setDateTimeEnd(endNew);
+        // TODO - ACCOMODATE DURATION
+        switch (endPriority())
+        {
+        case DTEND:
+            Temporal endNew = (isWholeDay()) ?  LocalDate.from(endInstance) : endInstance;
+            setDateTimeEnd(endNew);
+            break;
+        case DURATION:
+            long nanos = ChronoUnit.NANOS.between(startInstance, endInstance);
+            setDurationInNanos(nanos);
+            break;
+        default:
+            break;        
+        }
         super.editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
     }
 
@@ -388,6 +400,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         destination.setDescription(source.getDescription());
         destination.setDurationInNanos(source.getDurationInNanos());
         destination.setDateTimeEnd(source.getDateTimeEnd());
+        destination.endPriority = source.endPriority();
     }
 
     /** Deep copy all fields from this to destination */

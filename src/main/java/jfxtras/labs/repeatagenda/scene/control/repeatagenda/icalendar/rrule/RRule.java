@@ -159,15 +159,25 @@ public class RRule
         }
         RRule testObj = (RRule) obj;
 
-        boolean countEquals = (getCount() == null) ?
-                (testObj.getCount() == null) : getCount().equals(testObj.getCount());
-        boolean frequencyEquals = (getFrequency() == null) ?
-                (testObj.getFrequency() == null) : getFrequency().equals(testObj.getFrequency());
+        boolean countEquals = getCount().equals(testObj.getCount());
+        boolean frequencyEquals = getFrequency().equals(testObj.getFrequency()); // RRule requires a frequency
+//        boolean frequencyEquals = (getFrequency() == null) ?
+//                (testObj.getFrequency() == null) : getFrequency().equals(testObj.getFrequency());
         boolean recurrencesEquals = (recurrences() == null) ?
                 (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());
 
         System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals);
         return countEquals && frequencyEquals && recurrencesEquals;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = (31 * hash) + getCount().hashCode();
+        hash = (31 * hash) + getFrequency().hashCode();
+        hash = (31 * hash) + (recurrences() == null ? 0 : recurrences().hashCode());
+        return hash;
     }
 
     @Override
