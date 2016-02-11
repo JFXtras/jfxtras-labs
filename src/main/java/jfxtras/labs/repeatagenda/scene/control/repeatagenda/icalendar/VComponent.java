@@ -1,13 +1,23 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
+import static java.time.temporal.ChronoField.YEAR;
+
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.SignStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,6 +25,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,9 +45,22 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
 public interface VComponent<T>
 {
     static final long NANOS_IN_DAY = Duration.ofDays(1).toNanos();
-    final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd" + "'T'" + "HHmmss");
-    final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
-    final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HHmmss");
+    final static DateTimeFormatter DATE_FORMATTER = new DateTimeFormatterBuilder()
+            .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(MONTH_OF_YEAR, 2)
+            .appendValue(DAY_OF_MONTH, 2)
+            .toFormatter();
+    final static DateTimeFormatter TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .appendValue(HOUR_OF_DAY, 2)
+            .appendValue(MINUTE_OF_HOUR, 2)
+            .appendValue(SECOND_OF_MINUTE, 2)
+            .toFormatter();
+    final static DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .append(DATE_FORMATTER)
+            .appendLiteral('T')
+            .append(TIME_FORMATTER)
+            .toFormatter();
     
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -88,13 +113,14 @@ public interface VComponent<T>
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
     ObjectProperty<Temporal> dateTimeStartProperty(); // TODO - SHOULD I HAVE PROPERTIES HERE OR JUST IN ABSTRACT?
-    default void setDateTimeStart(Temporal dtStart)
-    {
-        boolean correctType = (dtStart instanceof LocalDate) || (dtStart instanceof LocalDateTime) || (dtStart == null);
-        if (! correctType) throw new IllegalArgumentException("DTStart type must be LocalDate or LocalDateTime, not: " + dtStart.getClass().getSimpleName());
-    };
-    /** Component is whole day if dateTimeStart (DTSTART) is of type LocalDate */
-    default boolean isWholeDay() { return (getDateTimeStart() instanceof LocalDate); }
+    void setDateTimeStart(Temporal dtStart);
+//    default void setDateTimeStart(Temporal dtStart)
+//    {
+//        boolean correctType = (dtStart instanceof LocalDate) || (dtStart instanceof LocalDateTime) || (dtStart == null);
+//        if (! correctType) throw new IllegalArgumentException("DTStart type must be LocalDate or LocalDateTime, not: " + dtStart.getClass().getSimpleName());
+//    };
+    /** Component is whole day if dateTimeStart (DTSTART) only contains a date (no time) */
+    default boolean isWholeDay() { return ! getDateTimeStart().isSupported(ChronoUnit.NANOS); }
         
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -341,6 +367,39 @@ public interface VComponent<T>
     
     // DEFAULT METHODS
     
+    /** Method to parse iCalendar date and date-time for following formats:
+     * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000
+     * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z
+     * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000
+     * 
+     * Based on ISO.8601.2004
+     */
+    default Temporal iCalendarDateTimeToLocalDateTime(String dt)
+    {
+        Pattern p = Pattern.compile("([0-9]+)");
+        Matcher m = p.matcher(dt);
+        List<String> tokens = new ArrayList<String>();
+        while (m.find())
+        {
+            String token = m.group(0);
+            tokens.add(token);
+        }
+        LocalDate date;
+        if (tokens.size() > 0)
+        {
+            String dateToken = tokens.get(0);
+            date = LocalDate.parse(dateToken);
+            date = LocalDate.parse(dateToken, VComponent.DATE_FORMATTER);
+        } else throw new DateTimeException("Invalid Date-Time string: " + dt);           
+        if (tokens.size() == 2)
+        { // find date if another token is available
+            String timeToken = tokens.get(1);
+            LocalTime time = LocalTime.parse(timeToken, VComponent.TIME_FORMATTER);
+            return LocalDateTime.of(date, time);
+        }
+        return date.atStartOfDay();
+    }
+    
     /**
      * Checks to see if object contains required properties.  Returns empty string if it is
      * valid.  Returns string of errors if not valid.
@@ -453,20 +512,15 @@ public interface VComponent<T>
     /*
      * UTILITY METHODS
      * 
-     * Below methods are used to handle dateTimeEnd and dateTimeStart as Temporal objects.  The allowed
-     * types are either LocalDate or LocalDateTime.  Using LocalDate indicates a whole day component.
+     * Below methods are used to handle dateTimeEnd and dateTimeStart as Temporal objects.  LocalDate
+     * objects are compared at start-of-day.
      */
     
     final static Comparator<Temporal> TEMPORAL_COMPARATOR = (t1, t2) -> 
     {
-        if ((t1 instanceof LocalDateTime) && (t2 instanceof LocalDateTime))
-        {
-            return ((LocalDateTime) t1).compareTo((LocalDateTime) t2);
-        } else if ((t1 instanceof LocalDate) && (t2 instanceof LocalDate))
-        {
-            return ((LocalDate) t1).compareTo((LocalDate) t2);
-        } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() +")");
+        LocalDateTime ld1 = (t1.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t1) : LocalDate.from(t1).atStartOfDay();
+        LocalDateTime ld2 = (t2.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t2) : LocalDate.from(t2).atStartOfDay();
+        return ld1.compareTo(ld2);
     };
     
     /**
@@ -474,14 +528,11 @@ public interface VComponent<T>
      */
     final static Comparator<? super VComponent<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
     {
-        if ((v1.getDateTimeStart() instanceof LocalDateTime) && (v2.getDateTimeStart() instanceof LocalDateTime))
-        {
-            return ((LocalDateTime) v1.getDateTimeStart()).compareTo((LocalDateTime) v2.getDateTimeStart());
-        } else if ((v1.getDateTimeStart() instanceof LocalDate) && (v2.getDateTimeStart() instanceof LocalDate))
-        {
-            return ((LocalDate) v1.getDateTimeStart()).compareTo((LocalDate) v2.getDateTimeStart());
-        } else throw new DateTimeException("DTSTART and DTEND must have same Temporal type("
-                + v1.getDateTimeStart().getClass().getSimpleName() + ", " + v2.getDateTimeStart().getClass().getSimpleName() +")");
+        Temporal t1 = v1.getDateTimeStart();
+        LocalDateTime ld1 = (t1.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t1) : LocalDate.from(t1).atStartOfDay();
+        Temporal t2 = v2.getDateTimeStart();
+        LocalDateTime ld2 = (t2.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t2) : LocalDate.from(t2).atStartOfDay();
+        return ld1.compareTo(ld2);
     };
     
     /** Parse iCalendar date or date/time string into LocalDate or LocalDateTime Temporal object */
@@ -515,29 +566,29 @@ public interface VComponent<T>
     static String temporalToString(Temporal temporal)
     {
         if (temporal == null) return null;
-        if (temporal instanceof LocalDate)
+        if (temporal.isSupported(ChronoUnit.NANOS))
+        {
+//            String d = DateTimeFormatter.ISO_LOCAL_DATE_TIME.;
+            return DATE_TIME_FORMATTER.format(temporal);
+        } else
         {
             return DATE_FORMATTER.format(temporal);
-        } else if (temporal instanceof LocalDateTime)
-        {
-            return DATE_TIME_FORMATTER.format(temporal);
-        } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported (" +
-                temporal + " of type " + temporal.getClass().getSimpleName() + ")");
+        }
     }
     
     /** formats by either LocalDate or LocalDateTime Temporal to an easy-to-read format
      * Example: Dec 5, 2015 - Feb 6, 2016
      *          Nov 12, 2015 - forever
      */
-    static String temporalToStringPretty(Temporal t)
+    static String temporalToStringPretty(Temporal temporal)
     {
-        if (t instanceof LocalDate)
+        if (temporal.isSupported(ChronoUnit.NANOS))
         {
-            return Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY.format(t);
-        } else if (t instanceof LocalDateTime)
+            return Settings.DATE_FORMAT_AGENDA_START.format(temporal);
+        } else
         {
-            return Settings.DATE_FORMAT_AGENDA_START.format(t);
-        } else return null;
+            return Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY.format(temporal);
+        }
     };
     
     /**
@@ -547,17 +598,16 @@ public interface VComponent<T>
      * @param temporal - either LocalDate or LocalDateTime type
      * @return LocalDateTime
      */
-    static LocalDateTime localDateTimeFromTemporal(TemporalAccessor temporal)
+    static LocalDateTime localDateTimeFromTemporal(Temporal temporal)
     {
         if (temporal == null) return null;
-        if (temporal instanceof LocalDate)
+        if (temporal.isSupported(ChronoUnit.NANOS))
         {
-            return ((LocalDate) temporal).atStartOfDay();
-        } else if (temporal instanceof LocalDateTime)
+            return LocalDateTime.from(temporal);
+        } else
         {
-            return (LocalDateTime) temporal;
-        } else throw new DateTimeException("Unable to obtain LocalDateTime from TemporalAccessor: " +
-                temporal + " of type " + temporal.getClass().getSimpleName());
+            return LocalDate.from(temporal).atStartOfDay();
+        }
     }
     
     /** Determines if Temporal is before t2
@@ -604,48 +654,13 @@ public interface VComponent<T>
      */
     static Temporal addNanos(Temporal temporal, long nanos)
     {
-        if (temporal instanceof LocalDate)
+        if (temporal.isSupported(ChronoUnit.NANOS))
         {
-            return temporal.plus(nanos/NANOS_IN_DAY, ChronoUnit.DAYS);
-//            return temporal.plus(nanos/NANOS_IN_DAY, ChronoUnit.DAYS);
-        } else if (temporal instanceof LocalDateTime)
+            return temporal.plus(nanos, ChronoUnit.NANOS);            
+        } else
         {
-            return temporal.plus(nanos, ChronoUnit.NANOS);
-        } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported (" +
-                temporal + " of type " + temporal.getClass().getSimpleName() + ")");        
-    }
-    
-    /**
-     * Converts value into Temporal of type clazz
-     * value must be LocalDate or LocalDateTime
-     * clazz must be LocalDate or LocalDateTime
-     * 
-     * @param value
-     * @param clazz
-     * @return
-     */
-    // TODO - CONSIDER REMOVING THIS METHOD - IS IT USEFUL?
-    static Temporal ofTemporal(Temporal value, Class<? extends Temporal> clazz)
-    {
-        if (value instanceof LocalDate)
-        {
-            if (clazz.equals(LocalDate.class))
-            {
-                return value;
-            } else if (clazz.equals(LocalDateTime.class))
-            {
-                return ((LocalDate) value).atStartOfDay();
-            } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
-        } else if (value instanceof LocalDateTime)
-        {
-            if (clazz.equals(LocalDate.class))
-            {
-                return ((LocalDateTime) value).toLocalDate();
-            } else if (clazz.equals(LocalDateTime.class))
-            {
-                return value;
-            } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
-        } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+            return temporal.plus(nanos/NANOS_IN_DAY, ChronoUnit.DAYS);            
+        }
     }
 
     /**

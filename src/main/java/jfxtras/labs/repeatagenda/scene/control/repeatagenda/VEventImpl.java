@@ -1,7 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -293,7 +292,7 @@ public class VEventImpl extends VEvent<Appointment>
 
     /**
      * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
-     * This is not a part of an iCalendar VEvent
+     * This property is not a part of the iCalendar standard
      */
     @Override
     public Temporal getStartRange() { return startRange; }
@@ -301,7 +300,7 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public void setStartRange(Temporal start)
     {
-        this.startRange = VComponent.ofTemporal(start, getDateTimeStart().getClass()); // store start as same type as dateTimeStart
+        startRange = start;
     }
     
     /**
@@ -313,8 +312,9 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public void setEndRange(Temporal end)
     {
-        this.endRange = VComponent.ofTemporal(end, getDateTimeStart().getClass()); // store start as same type as dateTimeStart
+        endRange = end;
     }
+
     /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
      * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
@@ -326,7 +326,6 @@ public class VEventImpl extends VEvent<Appointment>
     public List<Appointment> makeInstances()
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
-        boolean wholeDay = getStartRange() instanceof LocalDate;
         List<Appointment> madeAppointments = new ArrayList<>();
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
@@ -338,23 +337,23 @@ public class VEventImpl extends VEvent<Appointment>
             final long nanos;
 //            if (getDurationInNanos() == null)
 //            {
-                if (t instanceof LocalDate)
+                if (isWholeDay())
                 {
                     if (getDateTimeEnd() != null) nanos = ChronoUnit.DAYS.between(getDateTimeStart(), getDateTimeEnd()) * VComponent.NANOS_IN_DAY;
                     else if (getDurationInNanos() != null) nanos = getDurationInNanos();
                     else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
-                } else if (t instanceof LocalDateTime)
+                } else
                 {
                     if (getDateTimeEnd() != null) nanos = ChronoUnit.NANOS.between(getDateTimeStart(), getDateTimeEnd());
                     else if (getDurationInNanos() != null) nanos = getDurationInNanos();
                     else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
-                } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+                }
 //            } else nanos = getDurationInNanos();
             appt.setEndLocalDateTime(startLocalDateTime.plusNanos(nanos));
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());
             appt.setAppointmentGroup(getAppointmentGroup());
-            appt.setWholeDay(wholeDay);
+            appt.setWholeDay(isWholeDay());
             madeAppointments.add(appt);   // add appointments to return argument
             instances().add(appt); // add appointments to this repeat's collection
         });

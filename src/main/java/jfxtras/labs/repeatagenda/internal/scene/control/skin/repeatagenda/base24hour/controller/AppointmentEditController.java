@@ -1,7 +1,6 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
-import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -141,16 +140,16 @@ public class AppointmentEditController extends Pane
     {
         long dayShift = ChronoUnit.DAYS.between(oldSelection, newSelection);
         System.out.println("adjust:" + input + " " + dayShift);
-        if (input instanceof LocalDate)
-        {
-            return input.plus(dayShift, ChronoUnit.DAYS);
-        } else if (input instanceof LocalDateTime)
+        if (input.isSupported(ChronoUnit.NANOS))
         {
             LocalTime time = newSelection.toLocalTime();
             return LocalDate.from(input)
                     .atTime(time)
                     .plus(dayShift, ChronoUnit.DAYS);
-        } else throw new DateTimeException("Illegal Temporal type (" + input.getClass().getSimpleName() + ").  Only LocalDate and LocalDateTime are supported)");
+        } else
+        {
+            return input.plus(dayShift, ChronoUnit.DAYS); // whole day
+        }
     }
     
     @FXML public void initialize()
@@ -194,14 +193,14 @@ public class AppointmentEditController extends Pane
         if (vEvent.getDurationInNanos() != null)
         {
             final Temporal end;
-            if (vEvent.getDateTimeStart() instanceof LocalDate)
+            if (vEvent.isWholeDay())
             {
                 long days = vEvent.getDurationInNanos() / VComponent.NANOS_IN_DAY;
                 end = vEvent.getDateTimeStart().plus(days, ChronoUnit.DAYS);                
-            } else if (vEvent.getDateTimeStart() instanceof LocalDateTime)
+            } else
             {
                 end = vEvent.getDateTimeStart().plus(vEvent.getDurationInNanos(), ChronoUnit.NANOS);
-            } else throw new DateTimeException("Illegal Temporal type (" + vEvent.getDateTimeStart().getClass().getSimpleName() + ").  Only LocalDate and LocalDateTime are supported)");
+            }
             Long l = null;
             vEvent.setDurationInNanos(l);
             vEvent.setDateTimeEnd(end);
@@ -216,8 +215,7 @@ public class AppointmentEditController extends Pane
         locationTextField.textProperty().bindBidirectional(vEvent.locationProperty());
         
         // WHOLE DAY
-        boolean wholeDay = vEvent.getDateTimeStart() instanceof LocalDate;
-        wholeDayCheckBox.setSelected(wholeDay);       
+        wholeDayCheckBox.setSelected(vEvent.isWholeDay());       
         wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
             startTextField.localDateTimeProperty().removeListener(startTextListener);

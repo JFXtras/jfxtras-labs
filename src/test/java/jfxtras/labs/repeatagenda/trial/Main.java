@@ -15,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import jfxtras.labs.repeatagenda.ICalendarParseTest;
 import jfxtras.labs.repeatagenda.trial.controller.CalendarController;
 
 public class Main extends Application {
@@ -57,12 +58,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
-//	    Instant i = Instant.from(LocalDate.now());
-//        Instant i2 = Instant.from(LocalDateTime.now());
-//        System.out.println(i + " " + i2);
-//        
-//        System.exit(0);
-    
+
+	    
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));
@@ -70,9 +67,9 @@ public class Main extends Application {
         CalendarController controller = mainLoader.getController();
         controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
         
-//        ICalendarEditTest r = new ICalendarEditTest();
-//        r.editFutureTimeAndDateDaily1();
-//        System.exit(0);
+        ICalendarParseTest r = new ICalendarParseTest();
+        r.canParseDateTimeString1();
+        System.exit(0);
         
         Scene scene = new Scene(root, 1366, 768);
         primaryStage.setScene(scene);

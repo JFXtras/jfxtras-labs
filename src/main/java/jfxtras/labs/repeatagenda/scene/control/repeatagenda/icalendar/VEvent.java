@@ -240,7 +240,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         dateTimeEnd.set(dtEnd);
     }
     public Temporal getDateTimeEnd() { return dateTimeEnd.get(); }
-    private boolean isDateTimeEndWholeDay() { return getDateTimeEnd() instanceof LocalDate; }
 
     /** Indicates end option, DURATION or DTEND. */
     public EndPriority endPriority() { return endPriority; }
@@ -480,7 +479,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             switch (endPriority)
             {
             case DTEND:
-                String endPrefix = (getDateTimeEnd() instanceof LocalDate) ? "VALUE=DATE:" : "";
+                String endPrefix = isWholeDay() ? "VALUE=DATE:" : "";
                 properties.put(dateTimeEndProperty(), endPrefix + VComponent.temporalToString(getDateTimeEnd()));
                 break;
             case DURATION:
@@ -502,17 +501,22 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
-        boolean durationNull = getDurationInNanos() == null;
-        boolean endDateTimeNull = getDateTimeEnd() == null;
-        if (durationNull && endDateTimeNull && getDateTimeStart() != null && ! isDateTimeStartWholeDay()) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
+        boolean isDurationNull = getDurationInNanos() == null;
+        boolean isEndDateTimeNull = getDateTimeEnd() == null;
+        if (isDurationNull && isEndDateTimeNull)
+        {
+            errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
+        }
 
-        Boolean s = (getDateTimeStart() == null) ? null: isDateTimeStartWholeDay();
-        Boolean e = (getDateTimeEnd() == null) ? null: isDateTimeEndWholeDay();
-        if ((s != null) && (e != null) && ((s && !e) || (!s && e))) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DTSTART and DTEND must be both whole day or neither can be");
-
-        Class<? extends Temporal> startClass = getDateTimeStart().getClass();
-        Class<? extends Temporal> endClass = (getDateTimeEnd() != null) ? getDateTimeEnd().getClass() : startClass;
-        if (! startClass.equals(endClass)) errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DTSTART and DTEND must have the same Temporal type (" + startClass.getSimpleName() + "," + endClass.getSimpleName() + ")");
+        if (! isEndDateTimeNull)
+        {
+            Class<? extends Temporal> startClass = getDateTimeStart().getClass();
+            Class<? extends Temporal> endClass = getDateTimeEnd().getClass();
+            if (! startClass.equals(endClass))
+            {
+                errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTSTART and DTEND must be same Temporal type");
+            }
+        }
         
         return errorsBuilder.toString();
     }

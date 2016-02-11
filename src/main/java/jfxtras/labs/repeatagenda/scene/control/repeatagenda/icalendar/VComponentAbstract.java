@@ -1,9 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -15,8 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -241,8 +237,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
     final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, DATE_TIME_START_NAME);
     @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
-    @Override public void setDateTimeStart(Temporal dtStart) { VComponent.super.setDateTimeStart(dtStart); dateTimeStart.set(dtStart); }
-    boolean isDateTimeStartWholeDay() { return dateTimeStart.get() instanceof LocalDate; }
+    @Override
+    public void setDateTimeStart(Temporal dtStart) { dateTimeStart.set(dtStart); }
+//    boolean isDateTimeStartWholeDay() { return dateTimeStart.get() instanceof LocalDate; }
     
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -467,33 +464,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     };
     @Override
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
-    
-    /** Method to convert DTSTART or DTEND to LocalDateTime
-     * Currently ignores time zones */
-    public LocalDateTime iCalendarDateTimeToLocalDateTime(String dt)
-    {
-        Pattern p = Pattern.compile("([0-9]+)");
-        Matcher m = p.matcher(dt);
-        List<String> tokens = new ArrayList<String>();
-        while (m.find())
-        {
-            String token = m.group(0);
-            tokens.add(token);
-        }
-        LocalDate date;
-        if (tokens.size() > 0)
-        {
-            String dateToken = tokens.get(0);
-            date = LocalDate.parse(dateToken, VComponent.DATE_FORMATTER);
-        } else throw new DateTimeException("Invalid Date-Time string: " + dt);           
-        if (tokens.size() == 2)
-        { // find date if another token is available
-            String timeToken = tokens.get(1);
-            LocalTime time = LocalTime.parse(timeToken, VComponent.TIME_FORMATTER);
-            return LocalDateTime.of(date, time);
-        }
-        return date.atStartOfDay();
-    }
     
     // CONSTRUCTORS
     /** Copy constructor */
