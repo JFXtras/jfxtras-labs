@@ -633,7 +633,14 @@ public interface VComponent<T>
         if (temporal == null) return null;
         if (temporal.isSupported(ChronoUnit.NANOS))
         {
-            return LocalDateTime.from(temporal);
+            if (temporal instanceof ZonedDateTime)
+            {
+                ZonedDateTime z = ((ZonedDateTime) temporal).withZoneSameInstant(ZoneId.systemDefault());
+                return LocalDateTime.from(z);                
+            } else if (temporal instanceof LocalDateTime)
+            {
+                return LocalDateTime.from(temporal);                
+            } else throw new DateTimeException("Invalid temporal type:" + temporal.getClass().getSimpleName());
         } else
         {
             return LocalDate.from(temporal).atStartOfDay();

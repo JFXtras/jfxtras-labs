@@ -5,6 +5,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -623,6 +625,26 @@ public abstract class ICalendarTestAbstract
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule()
                 .withUntil(LocalDateTime.of(2015, 11, 29, 10, 0));
+        vEvent.setRRule(rule);
+        Frequency daily = new Daily()
+                .withInterval(2);
+        rule.setFrequency(daily);
+        return vEvent;
+    }
+    
+    public static VEventImpl getDailyUTC()
+    {
+        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        vEvent.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("UTC")));
+        vEvent.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneId.of("UTC")));
+        vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3));
+        vEvent.setDescription("Daily6 Description");
+        vEvent.setSummary("Daily6 Summary");
+        vEvent.setAppointmentClass(clazz);
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
+        RRule rule = new RRule()
+                .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneId.of("UTC")));
         vEvent.setRRule(rule);
         Frequency daily = new Daily()
                 .withInterval(2);

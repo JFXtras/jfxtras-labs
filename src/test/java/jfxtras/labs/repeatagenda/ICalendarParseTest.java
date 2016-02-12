@@ -173,7 +173,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
         expectedRRule.setFrequency(frequency);
         assertEquals(expectedRRule, rRule);
     }
-    
+        
     /** Tests FREQ=YEARLY */
     @Test
     public void canParseYearly1()

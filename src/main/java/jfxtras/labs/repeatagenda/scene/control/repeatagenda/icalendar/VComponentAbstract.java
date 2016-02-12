@@ -2,6 +2,8 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -477,12 +479,19 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     {
         if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
         {
-            if (start.isSupported(ChronoUnit.NANOS))
+            LocalDateTime dt = LocalDateTime.from(start);
+            if (getDateTimeStart() instanceof ZonedDateTime)
             {
-                startRange = LocalDateTime.from(start);                
+                ZoneId zone = (start instanceof ZonedDateTime) ? ZonedDateTime.from(start).getZone() : ZonedDateTime.from(getDateTimeStart()).getZone();
+                startRange = ZonedDateTime.of(dt, zone);
+                return;
+            } else if (getDateTimeStart() instanceof LocalDateTime)
+            {
+                startRange = dt;
+                return;
             } else
             {
-                throw new RuntimeException("Invalid startRange");
+                throw new RuntimeException("Invalid startRange:" + start);
             }
         } else
         {
@@ -501,12 +510,19 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     {
         if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
         {
-            if (end.isSupported(ChronoUnit.NANOS))
+            LocalDateTime dt = LocalDateTime.from(end);
+            if (getDateTimeStart() instanceof ZonedDateTime)
             {
-                endRange = LocalDateTime.from(end);                
+                ZoneId zone = (end instanceof ZonedDateTime) ? ZonedDateTime.from(end).getZone() : ZonedDateTime.from(getDateTimeStart()).getZone();
+                endRange = ZonedDateTime.of(dt, zone);
+                return;
+            } else if (getDateTimeStart() instanceof LocalDateTime)
+            {
+                endRange = dt;
+                return;
             } else
             {
-                throw new RuntimeException("Invalid endRange");
+                throw new RuntimeException("Invalid endRange:" + end);
             }
         } else
         {

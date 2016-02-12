@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -603,6 +605,32 @@ public class ICalendarDateTest extends ICalendarTestAbstract
               , LocalDateTime.of(2015, 11, 25, 10, 0)
               , LocalDateTime.of(2015, 11, 27, 10, 0)
               , LocalDateTime.of(2015, 11, 29, 10, 0)
+              ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
+    public void dailyStreamTestUTC()
+    {
+        VEventImpl e = getDailyUTC();
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
+                .map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()))
+                .map(z -> VComponent.localDateTimeFromTemporal(z))
+//                .peek(System.out::println)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 2, 0)
+              , LocalDateTime.of(2015, 11, 11, 2, 0)
+              , LocalDateTime.of(2015, 11, 13, 2, 0)
+              , LocalDateTime.of(2015, 11, 15, 2, 0)
+              , LocalDateTime.of(2015, 11, 17, 2, 0)
+              , LocalDateTime.of(2015, 11, 19, 2, 0)
+              , LocalDateTime.of(2015, 11, 21, 2, 0)
+              , LocalDateTime.of(2015, 11, 23, 2, 0)
+              , LocalDateTime.of(2015, 11, 25, 2, 0)
+              , LocalDateTime.of(2015, 11, 27, 2, 0)
+              , LocalDateTime.of(2015, 11, 29, 2, 0)
               ));
         assertEquals(expectedDates, madeDates);
     }
