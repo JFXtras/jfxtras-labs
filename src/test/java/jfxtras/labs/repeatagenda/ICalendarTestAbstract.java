@@ -45,9 +45,9 @@ public abstract class ICalendarTestAbstract
      * Tests equality between two VEventImpl objects.  Treats v1 as expected.  Produces a JUnit-like
      * exception is objects are not equal.
      * 
-     * @param v1
-     * @param v2
-     * @return
+     * @param v1 - expected VEventImpl
+     * @param v2 - actual VEventImpl
+     * @return - equality result
      */
     protected static <T> boolean vEventIsEqualTo(VEventImpl v1, VEventImpl v2)
     {
@@ -102,6 +102,26 @@ public abstract class ICalendarTestAbstract
                     + v2);
         }
     }
+    
+    /**
+     * Tests equality between two VEventImpl objects.  Treats v1 as expected.  Produces a JUnit-like
+     * exception is objects are not equal.
+     * 
+     * @param v1 - expected VEventImpl
+     * @param v2 - actual VEventImpl
+     * @return - equality result
+     */
+    protected static <T> boolean AppointmentIsEqualTo(Appointment a1, Appointment a2)
+    {
+        boolean startEquals = a1.getStartLocalDateTime().equals(a2.getStartLocalDateTime());
+        boolean endEquals = a1.getEndLocalDateTime().equals(a2.getEndLocalDateTime());
+        boolean descriptionEquals = (a1.getDescription() == null) ? (a2.getDescription() == null) : a1.getDescription().equals(a2.getDescription());
+        boolean locationEquals = (a1.getLocation() == null) ? (a2.getLocation() == null) : a1.getLocation().equals(a2.getLocation());
+        boolean summaryEquals = (a1.getSummary() == null) ? (a2.getSummary() == null) : a1.getSummary().equals(a2.getSummary());
+        boolean appointmentGroupEquals = (a1.getAppointmentGroup() == null) ? (a2.getAppointmentGroup() == null) : a1.getAppointmentGroup().equals(a2.getAppointmentGroup());
+        return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals && startEquals && endEquals;
+    }
+
     
 //    public void refresh(List<VComponent<Appointment>> vComponents, List<Appointment> appointments)
 //    {

@@ -29,11 +29,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         VEventImpl vevent = getDaily1();
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
-        List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
-        System.out.println("newAppointments:" + newAppointments.size());
-        newAppointments.forEach(a -> System.out.println(a.getStartLocalDateTime()));
-        appointments.addAll(newAppointments);       
+        List<Appointment> newAppointments = vevent.makeInstances(start, end);
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 15, 10, 0)
               , LocalDateTime.of(2015, 11, 16, 10, 0)
@@ -54,7 +50,11 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
                             .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3));
                 })
                 .collect(Collectors.toList());
-        assertEquals(expectedAppointments, appointments);
+        for (int i=0; i<expectedAppointments.size(); i++)
+        {
+            assertTrue(AppointmentIsEqualTo(expectedAppointments.get(i), newAppointments.get(i)));
+        }
+//        assertEquals(expectedAppointments, appointments);
     }
     
     /** FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR */
@@ -78,7 +78,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
-        assertEquals(expectedAppointment1, madeAppointment1); 
+        assertTrue(AppointmentIsEqualTo(expectedAppointment1, madeAppointment1)); 
         
         Appointment madeAppointment2 = appointmentIterator.next();
         Appointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
@@ -87,7 +87,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
-        assertEquals(expectedAppointment2, madeAppointment2);
+        assertTrue(AppointmentIsEqualTo(expectedAppointment2, madeAppointment2));
 
         Appointment madeAppointment3 = appointmentIterator.next();
         Appointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
@@ -96,7 +96,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
-        assertEquals(expectedAppointment3, madeAppointment3);     
+        assertTrue(AppointmentIsEqualTo(expectedAppointment3, madeAppointment3));     
     }
     
     @Test
@@ -119,6 +119,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         assertEquals(expectedDates, dates);
         
         assertTrue(appointments.stream().map(a -> a.isWholeDay()).allMatch(a -> a == true)); // verify all appointment are wholeDay
+        
 //        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
     }
 

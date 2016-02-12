@@ -27,10 +27,10 @@ public final class Settings
     public static DateTimeFormatter DATE_FORMAT2 = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy"); // fancy format for displaying
     public static DateTimeFormatter DATE_FORMAT_AGENDA = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static DateTimeFormatter DATE_FORMAT_AGENDA_EXCEPTION = DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a");
-    public static DateTimeFormatter DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy");
+    public static DateTimeFormatter DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY = DateTimeFormatter.ofPattern("EEE, MMMM d, yyyy");
     public static DateTimeFormatter DATE_FORMAT_AGENDA_DATEONLY = DateTimeFormatter.ofPattern("MMM d, yyyy");
     public static DateTimeFormatter DATE_FORMAT_AGENDA_MONTHDAY = DateTimeFormatter.ofPattern("MMMM d"); // for yearly summary
-    public static DateTimeFormatter DATE_FORMAT_AGENDA_START = DateTimeFormatter.ofPattern("EEE, dd MMMM, hh:mm a");
+    public static DateTimeFormatter DATE_FORMAT_AGENDA_START = DateTimeFormatter.ofPattern("EEE, MMMM, d, yyyy h:mm a");
     public static DateTimeFormatter DATE_FORMAT_AGENDA_END = DateTimeFormatter.ofPattern("-hh:mm a");
     public static DateTimeFormatter TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern("HH:mm");
 

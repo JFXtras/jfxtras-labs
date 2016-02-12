@@ -616,31 +616,31 @@ public class ICalendarAgenda extends Agenda
         }
     }
     
-//    /** used for unit testing - equals method required */
-//    static public class AppointmentImplLocal2 extends Agenda.AppointmentImplLocal
-//    {
-//        @Override
-//        public boolean equals(Object obj) {
-//            if (obj == this) return true;
-//            if((obj == null) || (obj.getClass() != getClass())) {
-//                return false;
-//            }
-//            AppointmentImplLocal2 testObj = (AppointmentImplLocal2) obj;
-//
-//            boolean startEquals = getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
-//            boolean endEquals = getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
-//            boolean descriptionEquals = (getDescription() == null) ?
-//                    (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-//            boolean locationEquals = (getLocation() == null) ?
-//                    (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
-//            boolean summaryEquals = (getSummary() == null) ?
-//                    (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-//            boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
-//                    (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-//            return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals 
-//                    && startEquals && endEquals;
-//        }
-//    }
+    /** used for unit testing - equals method required */
+    static public class AppointmentImplLocal2 extends Agenda.AppointmentImplLocal
+    {
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if((obj == null) || (obj.getClass() != getClass())) {
+                return false;
+            }
+            AppointmentImplLocal2 testObj = (AppointmentImplLocal2) obj;
+
+            boolean startEquals = getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
+            boolean endEquals = getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
+            boolean descriptionEquals = (getDescription() == null) ?
+                    (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+            boolean locationEquals = (getLocation() == null) ?
+                    (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+            boolean summaryEquals = (getSummary() == null) ?
+                    (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+            boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
+                    (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
+            return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals 
+                    && startEquals && endEquals;
+        }
+    }
     
 //    /**
 //     * Class implementing Appointment that includes an icon Pane field for easy rendering of
