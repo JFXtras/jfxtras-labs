@@ -291,31 +291,6 @@ public class VEventImpl extends VEvent<Appointment>
     }
 
     /**
-     * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
-     * This property is not a part of the iCalendar standard
-     */
-    @Override
-    public Temporal getStartRange() { return startRange; }
-    private Temporal startRange;
-    @Override
-    public void setStartRange(Temporal start)
-    {
-        startRange = start;
-    }
-    
-    /**
-     * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
-     */
-    @Override
-    public Temporal getEndRange() { return endRange; }
-    private Temporal endRange;
-    @Override
-    public void setEndRange(Temporal end)
-    {
-        endRange = end;
-    }
-
-    /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
      * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
      * @param <Appointment>
@@ -327,6 +302,7 @@ public class VEventImpl extends VEvent<Appointment>
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
+        System.out.println("types:" + getDateTimeStart() + " " + getStartRange());
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
         removedTooLate.forEach(t ->
@@ -335,20 +311,17 @@ public class VEventImpl extends VEvent<Appointment>
             Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
             appt.setStartLocalDateTime(startLocalDateTime);
             final long nanos;
-//            if (getDurationInNanos() == null)
-//            {
-                if (isWholeDay())
-                {
-                    if (getDateTimeEnd() != null) nanos = ChronoUnit.DAYS.between(getDateTimeStart(), getDateTimeEnd()) * VComponent.NANOS_IN_DAY;
-                    else if (getDurationInNanos() != null) nanos = getDurationInNanos();
-                    else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
-                } else
-                {
-                    if (getDateTimeEnd() != null) nanos = ChronoUnit.NANOS.between(getDateTimeStart(), getDateTimeEnd());
-                    else if (getDurationInNanos() != null) nanos = getDurationInNanos();
-                    else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
-                }
-//            } else nanos = getDurationInNanos();
+            if (isWholeDay())
+            {
+                if (getDateTimeEnd() != null) nanos = ChronoUnit.DAYS.between(getDateTimeStart(), getDateTimeEnd()) * VComponent.NANOS_IN_DAY;
+                else if (getDurationInNanos() != null) nanos = getDurationInNanos();
+                else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
+            } else
+            {
+                if (getDateTimeEnd() != null) nanos = ChronoUnit.NANOS.between(getDateTimeStart(), getDateTimeEnd());
+                else if (getDurationInNanos() != null) nanos = getDurationInNanos();
+                else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
+            }
             appt.setEndLocalDateTime(startLocalDateTime.plusNanos(nanos));
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());

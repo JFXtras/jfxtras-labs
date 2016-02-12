@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -103,10 +104,22 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
     {
         VEventImpl vevent = getWholeDayDaily3();
         vevent.setAppointmentClass(getClazz());
-        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2015, 11, 21, 0, 0);
-        List<Appointment> appointments = new ArrayList<Appointment>();
-        Collection<Appointment> newAppointments = vevent.makeInstances(start, end);
+        LocalDate start = LocalDate.of(2015, 11, 15);
+        LocalDate end = LocalDate.of(2015, 11, 21);
+        List<Appointment> appointments = vevent.makeInstances(start, end);
+
+        List<LocalDateTime> dates = appointments.stream()
+                .map(a -> a.getStartLocalDateTime())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 15, 0, 0)
+              , LocalDateTime.of(2015, 11, 18, 0, 0)
+              , LocalDateTime.of(2015, 11, 21, 0, 0)
+                ));        
+        assertEquals(expectedDates, dates);
+        
+        assertTrue(appointments.stream().map(a -> a.isWholeDay()).allMatch(a -> a == true)); // verify all appointment are wholeDay
+//        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
     }
 
 }

@@ -465,6 +465,55 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     @Override
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
     
+    /**
+     * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+     * This property is not a part of the iCalendar standard
+     */
+    @Override
+    public Temporal getStartRange() { return startRange; }
+    private Temporal startRange;
+    @Override
+    public void setStartRange(Temporal start)
+    {
+        if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
+        {
+            if (start.isSupported(ChronoUnit.NANOS))
+            {
+                startRange = LocalDateTime.from(start);                
+            } else
+            {
+                throw new RuntimeException("Invalid startRange");
+            }
+        } else
+        {
+            startRange = LocalDate.from(start);
+        }
+    }
+    
+    /**
+     * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+     */
+    @Override
+    public Temporal getEndRange() { return endRange; }
+    private Temporal endRange;
+    @Override
+    public void setEndRange(Temporal end)
+    {
+        if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
+        {
+            if (end.isSupported(ChronoUnit.NANOS))
+            {
+                endRange = LocalDateTime.from(end);                
+            } else
+            {
+                throw new RuntimeException("Invalid endRange");
+            }
+        } else
+        {
+            endRange = LocalDate.from(end);
+        }
+    }
+    
     // CONSTRUCTORS
     /** Copy constructor */
     public VComponentAbstract(VComponentAbstract<T> vcomponent)
