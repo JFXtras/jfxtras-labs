@@ -41,6 +41,14 @@ public abstract class ICalendarTestAbstract
     private final static Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
     public Class<Agenda.AppointmentImplLocal> getClazz() { return clazz; }
     
+    /**
+     * Tests equality between two VEventImpl objects.  Treats v1 as expected.  Produces a JUnit-like
+     * exception is objects are not equal.
+     * 
+     * @param v1
+     * @param v2
+     * @return
+     */
     protected static <T> boolean vEventIsEqualTo(VEventImpl v1, VEventImpl v2)
     {
         // VComponentAbstract properties
@@ -639,7 +647,7 @@ public abstract class ICalendarTestAbstract
         return vEvent;
     }
 
-    protected VEventImpl getRDate()
+    protected static VEventImpl getRDate()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));

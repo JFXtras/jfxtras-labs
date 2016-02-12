@@ -7,12 +7,19 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RecurrenceComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
@@ -48,24 +55,69 @@ public class ICalendarParseTest extends ICalendarTestAbstract
         assertTrue(v.getDurationInNanos() == (5400l * NANOS_IN_SECOND));
     }
 
-    /** tests converting ISO.8601.2004 date time string to LocalDateTime */
+    /** tests converting ISO.8601.2004 date string to LocalDate */
     @Test
-    public void canParseDateTimeString1()
+    public void canParseLocalDate()
     {
-        VEventImpl v = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        String duration = "TZID=America/New_York:19980119T020000";
-        LocalDateTime l = v.iCalendarDateTimeToLocalDateTime(duration);
-        assertEquals(l, LocalDateTime.of(1998, 1, 19, 2, 0));
+        String string = "19980704";
+        Temporal t = VComponent.parseTemporal(string);
+        assertEquals(t, LocalDate.of(1998, 7, 4));
+    }
+    
+    /** tests converting ISO.8601.2004 date-time string to LocalDateTime */
+    @Test
+    public void canParseLocalDateTime()
+    {
+        String string = "19980119T020000";
+        Temporal t = VComponent.parseTemporal(string);
+        assertEquals(t, LocalDateTime.of(1998, 1, 19, 2, 0));
+    }
+    
+    /** tests converting ISO.8601.2004 date-time UTC string to ZonedLocalDate */
+    @Test
+    public void canParseZonedDateTimeUTC()
+    {
+        String string = "19980119T020000Z";
+        Temporal t = VComponent.parseTemporal(string);
+        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(1998, 1, 19, 2, 0), ZoneId.of("Z").normalized()));
+    }
+    
+    /** tests converting ISO.8601.2004 date-time UTC string to ZonedLocalDate */
+    @Test
+    public void canParseZonedDateTime()
+    {
+        String string = "TZID=Europe/London:20160208T073000";
+        Temporal t = VComponent.parseTemporal(string);
+        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 7, 30), ZoneId.of("Europe/London")));
+    }
+    
+    @Test
+    public void canParseDateList()
+    {
+        String string = "19970101,19970120,19970217,19970421";
+        List<Temporal> expectedTemporals = new ArrayList<>(Arrays.asList(
+                LocalDate.of(1997, 1, 1)
+              , LocalDate.of(1997, 1, 20)
+              , LocalDate.of(1997, 2, 17)
+              , LocalDate.of(1997, 4, 21)
+                ));
+        List<Temporal> temporals = RecurrenceComponent.parseTemporals(string);
+        assertEquals(expectedTemporals, temporals);
     }
 
-    /** tests converting ISO.8601.2004 date string to LocalDateTime */
     @Test
-    public void canParseDateTimeString2()
+    public void canParseZonedDateTimeList()
     {
-        VEventImpl v = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        String duration = "VALUE=DATE:19980704";
-        LocalDateTime l = v.iCalendarDateTimeToLocalDateTime(duration);
-        assertEquals(l, LocalDateTime.of(1998, 7, 4, 0, 0));
+        String string = "TZID=Europe/London:20160208T073000,20160210T073000,20160209T073000,20160213T073000";
+        List<Temporal> expectedTemporals = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 7, 30), ZoneId.of("Europe/London"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 7, 30), ZoneId.of("Europe/London"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 7, 30), ZoneId.of("Europe/London"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 13, 7, 30), ZoneId.of("Europe/London"))
+                ));
+        List<Temporal> temporals = RecurrenceComponent.parseTemporals(string);
+        Collections.sort(temporals, VComponent.TEMPORAL_COMPARATOR);
+        assertEquals(expectedTemporals, temporals);
     }
     
     /** tests parsing RRULE:FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU */
@@ -196,14 +248,6 @@ public class ICalendarParseTest extends ICalendarTestAbstract
         VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         VEventImpl expectedVEvent = getDailyWithException1();
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
-    }
-
-    @Test
-    public void canParseDate1()
-    {
-        Temporal date = LocalDate.of(2015, 11, 15);
-        Temporal dateString = VComponent.parseTemporal("VALUE=DATE:20151115");
-        assertEquals(dateString, date);
     }
     
     @Test

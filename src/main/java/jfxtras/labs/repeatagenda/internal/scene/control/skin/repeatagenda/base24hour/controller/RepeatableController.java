@@ -55,7 +55,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtili
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
@@ -122,13 +121,7 @@ private ToggleGroup endGroup;
 
 private DateTimeFormatter getFormatter(Temporal t)
 {
-    if (t instanceof LocalDateTime)
-    {
-        return Settings.DATE_FORMAT_AGENDA_EXCEPTION;
-    } else if (t instanceof LocalDate)
-    {
-        return Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY;
-    } else throw new DateTimeException("Invalid Temporal type.  Must be LocalDate or LocalDateTime");
+    return t.isSupported(ChronoUnit.NANOS) ? Settings.DATE_FORMAT_AGENDA_EXCEPTION : Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY;
 }
 
 // DAY OF WEEK CHECKBOX LISTENER
@@ -340,10 +333,11 @@ private final ChangeListener<? super LocalDate> untilListener = (observable, old
 
 // Finds last occurrence on or before d
 // Ensures the Until date is an actual occurrence date
+// TODO - SHOULD THIS METHOD BE STATIC IN A UTILITY CLASS?
 private Temporal findUntil(Temporal d)
 {
     final Temporal timeAdjustedSelection;
-    if (vComponent.getDateTimeStart() instanceof LocalDateTime)
+    if (vComponent.getDateTimeStart().isSupported(ChronoUnit.NANOS))
     {
         LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
         timeAdjustedSelection = LocalDate.from(d).atTime(time);
@@ -480,18 +474,15 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     {
         if (oldValue != null)
         {
-            if (vComponent.getDateTimeStart() instanceof LocalDate)
-            {
-                vComponent.setDateTimeStart(newValue);
-            } else if (vComponent.getDateTimeStart() instanceof LocalDateTime)
+            if (vComponent.getDateTimeStart().isSupported(ChronoUnit.NANOS))
             {
                 long d = ChronoUnit.DAYS.between(oldValue, newValue);
                 Temporal start = vComponent.getDateTimeStart().plus(d, ChronoUnit.DAYS);
                 vComponent.setDateTimeStart(start);
-//                Temporal end = vComponent.getDateTimeEnd().plus(d, ChronoUnit.DAYS);
-//                vComponent.setDateTimeStart(end);
-                System.out.println("dates:" + d + " " + vComponent.getDateTimeStart() + " " + ((VEvent<T>) vComponent).getDateTimeEnd());
-            } else throw new DateTimeException("Illegal Temporal type.  Only LocalDate and LocalDateTime are supported)");
+            } else
+            {
+                vComponent.setDateTimeStart(newValue);                
+            }
             makeExceptionDates();
         }
     });

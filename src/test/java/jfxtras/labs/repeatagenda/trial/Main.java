@@ -68,7 +68,7 @@ public class Main extends Application {
         controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
         
         ICalendarParseTest r = new ICalendarParseTest();
-        r.canParseDateTimeString1();
+        r.canParseWholeDay1();
         System.exit(0);
         
         Scene scene = new Scene(root, 1366, 768);

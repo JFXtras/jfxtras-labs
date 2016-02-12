@@ -458,7 +458,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
-        String dateTime = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String dateTime = VComponent.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };
@@ -934,12 +934,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 
         if (getCategories() != null) properties.put(categoriesProperty(), getCategories().toString());
         if (getComment() != null) properties.put(commentProperty(), getComment().toString());
-        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeCreated()));
-        if (getDateTimeStamp() != null) properties.put(dateTimeStampProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeStamp())); // required property
-        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
+        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), VComponent.LOCAL_DATE_TIME_FORMATTER.format(getDateTimeCreated()));
+        if (getDateTimeStamp() != null) properties.put(dateTimeStampProperty(), VComponent.LOCAL_DATE_TIME_FORMATTER.format(getDateTimeStamp())); // required property
+        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VComponent.LOCAL_DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
         String startPrefix = (getDateTimeStart() instanceof LocalDate) ? "VALUE=DATE:" : "";
         if (getDateTimeStart() != null) properties.put(dateTimeStartProperty(), startPrefix + VComponent.temporalToString(getDateTimeStart()));
-        if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), VComponent.DATE_TIME_FORMATTER.format(getDateTimeLastModified()));
+        if (getDateTimeLastModified() != null) properties.put(dateTimeLastModifiedProperty(), VComponent.LOCAL_DATE_TIME_FORMATTER.format(getDateTimeLastModified()));
         if (getExDate() != null) properties.put(exDateProperty(), getExDate().toString());
         if (getLocation() != null) properties.put(locationProperty(), getLocation().toString());
         if (getRelatedTo() != null) properties.put(relatedToProperty(), getRelatedTo().toString());
@@ -1010,12 +1010,13 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(CREATED_NAME))
             { // CREATED
-                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
                 vComponent.setDateTimeCreated(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(DATE_TIME_STAMP_NAME))
             { // DTSTAMP
-                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
+// TODO                ZonedDateTime dateTime = ZonedDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(DATE_TIME_START_NAME))
@@ -1025,7 +1026,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(EXCEPTION_DATE_TIMES_NAME))
             { // EXDATE
-                Collection<Temporal> dateTimeCollection = RecurrenceComponentAbstract.parseDates(value);
+                Collection<Temporal> dateTimeCollection = RecurrenceComponent.parseTemporals(value);
                 if (vComponent.getExDate() == null)
                 {
                     vComponent.setExDate(new ExDate());
@@ -1034,12 +1035,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(LAST_MODIFIED_NAME))
             { // LAST-MODIFIED
-                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
                 vComponent.setDateTimeLastModified(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(RECURRENCE_DATE_TIMES_NAME))
             { // RDATE
-                Collection<Temporal> dateTimeCollection = RecurrenceComponentAbstract.parseDates(value);
+                Collection<Temporal> dateTimeCollection = RecurrenceComponent.parseTemporals(value);
                 if (vComponent.getRDate() == null)
                 {
                     vComponent.setRDate(new RDate());
@@ -1048,7 +1049,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(RECURRENCE_ID_NAME))
             { // RECURRENCE-ID
-                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.DATE_TIME_FORMATTER);
+                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
                 vComponent.setDateTimeRecurrence(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(RELATED_TO_NAME))

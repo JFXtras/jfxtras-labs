@@ -1343,7 +1343,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                 
         Assert.assertEquals(2, agenda.appointments().size());
         VComponent<Appointment> v = agenda.vComponents().get(0);
-        String dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(v.getDateTimeStamp());
+        String dateTimeStamp = VComponent.LOCAL_DATE_TIME_FORMATTER.format(v.getDateTimeStamp());
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
                 + "DTEND:20151111T120000" + System.lineSeparator()
@@ -1397,7 +1397,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         click("#saveRepeatButton");
         Assert.assertEquals(2, agenda.appointments().size());
         VComponent<Appointment> v = agenda.vComponents().get(0);
-        String dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(v.getDateTimeStamp());
+        String dateTimeStamp = VComponent.LOCAL_DATE_TIME_FORMATTER.format(v.getDateTimeStamp());
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
                 + "DTEND:20151111T120000" + System.lineSeparator()

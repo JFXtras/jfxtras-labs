@@ -85,7 +85,7 @@ public class ICalendarAgenda extends Agenda
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
-        String dateTime = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String dateTime = VComponent.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };

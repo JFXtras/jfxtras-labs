@@ -52,7 +52,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     @Ignore
     public void renderRegularAppointment2()
     {
-        String dateTimeStamp = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String dateTimeStamp = VComponent.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
         TestUtil.runThenWaitForPaintPulse( () -> {
             agenda.appointments().add( new Agenda.AppointmentImplLocal()
                 .withStartLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T10:00"))

@@ -2,8 +2,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -143,6 +141,13 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         }
         return true;
     }
+    
+    @Override
+    public int hashCode()
+    {
+        // TODO - ADD IMPLEMENTATION
+        return super.hashCode();
+    }
 
     @Override
     public String toString()
@@ -153,15 +158,6 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
                 .map(d -> VComponent.temporalToString(d) + ",")
                 .collect(Collectors.joining());
         return datesString.substring(0, datesString.length()-1); // remove last comma
-    }
-    
-    /** convert a comma delimited string of VComponent.FORMATTER dates to a List<LocalDateTime> */
-    public static Collection<Temporal> parseDates(String string)
-    {
-        return Arrays.asList(string.split(","))
-                     .stream()
-                     .map(s -> VComponent.parseTemporal(s))
-                     .collect(Collectors.toList());
     }
 
 }

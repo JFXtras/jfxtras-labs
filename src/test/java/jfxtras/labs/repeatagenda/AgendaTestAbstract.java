@@ -58,7 +58,7 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
         // override default UID generator callback 
         agenda.setUidGeneratorCallback((Void) ->
         {
-            String dateTime = VComponent.DATE_TIME_FORMATTER.format(LocalDateTime.of(2015, 11, 8, 0, 0));
+            String dateTime = VComponent.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.of(2015, 11, 8, 0, 0));
             String domain = "jfxtras.org";
             return dateTime + "-" + "0" + domain;
         });
