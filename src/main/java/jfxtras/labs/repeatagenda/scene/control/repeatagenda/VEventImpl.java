@@ -2,6 +2,8 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -116,7 +118,7 @@ public class VEventImpl extends VEvent<Appointment>
     
     // Fluent methods
     public VEventImpl withDateTimeRecurrence(Temporal t) { setDateTimeRecurrence(t); return this; }
-    public VEventImpl withDateTimeStamp(LocalDateTime t) { setDateTimeStamp(t); return this; }
+    public VEventImpl withDateTimeStamp(ZonedDateTime t) { setDateTimeStamp(t); return this; }
     public VEventImpl withDateTimeStart(Temporal t) { setDateTimeStart(t); return this; }
     public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
     public VEventImpl withDescription(String s) { setDescription(s); return this; }
@@ -165,7 +167,7 @@ public class VEventImpl extends VEvent<Appointment>
             setDateTimeEnd(appointment.getEndLocalDateTime());
             setDateTimeStart(appointment.getStartLocalDateTime());
         }
-        setDateTimeStamp(LocalDateTime.now());
+        setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setDescription(appointment.getDescription());
         setLocation(appointment.getLocation());
         setSummary(appointment.getSummary());

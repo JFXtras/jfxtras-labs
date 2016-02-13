@@ -5,7 +5,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -141,9 +141,9 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeCreated(LocalDateTime.of(2015, 11, 9, 8, 29));
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 11, 9, 8, 30));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC));
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDateTimeLastModified(LocalDateTime.of(2015, 11, 10, 18, 30));
+        vEvent.setDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20151109T082900-0@jfxtras.org");
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
@@ -365,7 +365,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(1997, 6, 13, 10, 0));
-        vEvent.setDateTimeStamp(LocalDateTime.of(1997, 9, 1, 8, 30));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(1997, 9, 1, 8, 30), ZoneOffset.UTC));
         vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
         vEvent.setUniqueIdentifier("19970901T083000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
@@ -385,7 +385,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 3, 10, 0));
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
@@ -439,7 +439,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
         vEvent.setAppointmentClass(clazz);
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule();
         vEvent.setRRule(rule);
@@ -507,7 +507,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDescription("Daily1 Description");
         vEvent.setSummary("Daily1 Summary");
         vEvent.setAppointmentClass(clazz);
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule();
         vEvent.setRRule(rule);
@@ -526,7 +526,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDescription("Daily2 Description");
         vEvent.setSummary("Daily2 Summary");
         vEvent.setAppointmentClass(clazz);
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule()
                 .withCount(6);
@@ -544,7 +544,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
         vEvent.setAppointmentClass(clazz);
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule()
                 .withCount(10);
@@ -600,7 +600,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDescription("Daily6 Description");
         vEvent.setSummary("Daily6 Summary");
         vEvent.setAppointmentClass(clazz);
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule()
                 .withUntil(LocalDateTime.of(2015, 12, 1, 9, 59, 59));
@@ -621,7 +621,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDescription("Daily6 Description");
         vEvent.setSummary("Daily6 Summary");
         vEvent.setAppointmentClass(clazz);
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule()
                 .withUntil(LocalDateTime.of(2015, 11, 29, 10, 0));
@@ -635,16 +635,16 @@ public abstract class ICalendarTestAbstract
     public static VEventImpl getDailyUTC()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        vEvent.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("UTC")));
-        vEvent.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneId.of("UTC")));
+        vEvent.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneOffset.UTC));
+        vEvent.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneOffset.UTC));
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDescription("Daily6 Description");
         vEvent.setSummary("Daily6 Summary");
         vEvent.setAppointmentClass(clazz);
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         RRule rule = new RRule()
-                .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneId.of("UTC")));
+                .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.UTC));
         vEvent.setRRule(rule);
         Frequency daily = new Daily()
                 .withInterval(2);
@@ -661,7 +661,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDescription("Individual Description");
         vEvent.setSummary("Individual Summary");
         vEvent.setAppointmentClass(clazz);
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         return vEvent;
@@ -672,7 +672,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 11));
         vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
@@ -705,7 +705,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
         vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         return vEvent;
@@ -717,7 +717,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
         vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule()
@@ -735,11 +735,12 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
         vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 11));
-        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 1, 10, 8, 0));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule()
+//                .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneOffset.UTC));
                 .withUntil(LocalDate.of(2015, 11, 24));
         vEvent.setRRule(rule);
         Frequency daily = new Daily()
@@ -782,31 +783,32 @@ public abstract class ICalendarTestAbstract
     }
 
     
-    // TODO below methods are not being use - may be deleted in future
+    // TODO GET Rid of branches - not using
+    // 
     
-    // branch of getDaily6
-    protected static VEventImpl getBranch1()
-    {
-        VEventImpl v = new VEventImpl(getDaily6());
-        v.setDateTimeStart(LocalDateTime.of(2015, 12, 1, 12, 0));
-        v.setDateTimeEnd(LocalDateTime.of(2015, 12, 1, 13, 0));
-        v.setRelatedTo(v.getUniqueIdentifier());
-        v.setUniqueIdentifier("20151201T080000-0@jfxtras.org");
-        v.getRRule().setUntil(LocalDateTime.of(2015, 12, 13, 11, 59, 59));
-        return v;
-    }
-    
-    // branch of getDaily6
-    protected static VEventImpl getBranch2()
-    {
-        VEventImpl v = new VEventImpl(getDaily6());
-        v.setDateTimeStart(LocalDateTime.of(2015, 12, 14, 6, 0));
-        v.setDateTimeEnd(LocalDateTime.of(2015, 12, 14, 8, 0));
-        v.setRelatedTo(v.getUniqueIdentifier());
-        v.setUniqueIdentifier("20151214T080000-0@jfxtras.org");
-        v.getRRule().setUntil(null);
-        return v;
-    }
+//    // branch of getDaily6
+//    protected static VEventImpl getBranch1()
+//    {
+//        VEventImpl v = new VEventImpl(getDaily6());
+//        v.setDateTimeStart(LocalDateTime.of(2015, 12, 1, 12, 0));
+//        v.setDateTimeEnd(LocalDateTime.of(2015, 12, 1, 13, 0));
+//        v.setRelatedTo(v.getUniqueIdentifier());
+//        v.setUniqueIdentifier("20151201T080000-0@jfxtras.org");
+//        v.getRRule().setUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 13, 11, 59, 59), ZoneOffset.UTC));
+//        return v;
+//    }
+//    
+//    // branch of getDaily6
+//    protected static VEventImpl getBranch2()
+//    {
+//        VEventImpl v = new VEventImpl(getDaily6());
+//        v.setDateTimeStart(LocalDateTime.of(2015, 12, 14, 6, 0));
+//        v.setDateTimeEnd(LocalDateTime.of(2015, 12, 14, 8, 0));
+//        v.setRelatedTo(v.getUniqueIdentifier());
+//        v.setUniqueIdentifier("20151214T080000-0@jfxtras.org");
+//        v.getRRule().setUntil(null);
+//        return v;
+//    }
 
     // child of getDaily6
     protected static VEventImpl getChild1()
@@ -823,13 +825,13 @@ public abstract class ICalendarTestAbstract
     {
         Set<VComponent<Appointment>> recurrenceSet = new LinkedHashSet<>();
         VEventImpl parent = getDaily6();
-        VEventImpl branch1 = getBranch1();
-        VEventImpl branch2 = getBranch2();
+//        VEventImpl branch1 = getBranch1();
+//        VEventImpl branch2 = getBranch2();
         VEventImpl child = getChild1();
         
         recurrenceSet.add(parent);
-        recurrenceSet.add(branch1);
-        recurrenceSet.add(branch2);
+//        recurrenceSet.add(branch1);
+//        recurrenceSet.add(branch2);
         recurrenceSet.add(child);
         parent.getRRule().recurrences().add(child);
 

@@ -5,13 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -615,7 +612,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventImpl e = getDailyUTC();
         List<Temporal> madeDates = e
                 .stream(e.getDateTimeStart())
-                .map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()))
+//                .map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()))
                 .map(z -> VComponent.localDateTimeFromTemporal(z))
 //                .peek(System.out::println)
                 .collect(Collectors.toList());
@@ -1035,42 +1032,42 @@ public class ICalendarDateTest extends ICalendarTestAbstract
      */
     // TODO - ARE THESE NECESSARY NOW?
 
-    @Test
-    public void canStreamBranch1()
-    {
-        VEventImpl e = getBranch1();
-        List<Temporal> madeDates = e
-                .stream(e.getDateTimeStart())
-                .collect(Collectors.toList());
-        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 12, 1, 12, 0)
-              , LocalDateTime.of(2015, 12, 3, 12, 0)
-              , LocalDateTime.of(2015, 12, 5, 12, 0)
-              , LocalDateTime.of(2015, 12, 7, 12, 0)
-              , LocalDateTime.of(2015, 12, 9, 12, 0)
-              , LocalDateTime.of(2015, 12, 11, 12, 0)
-              ));
-        assertEquals(expectedDates, madeDates);
-    }
-
-    @Test
-    public void canStreamBranch2()
-    {
-        VEventImpl e = getBranch2();
-        List<Temporal> madeDates = e
-                .stream(e.getDateTimeStart())
-                .limit(6)
-                .collect(Collectors.toList());
-        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 12, 14, 6, 0)
-              , LocalDateTime.of(2015, 12, 16, 6, 0)
-              , LocalDateTime.of(2015, 12, 18, 6, 0)
-              , LocalDateTime.of(2015, 12, 20, 6, 0)
-              , LocalDateTime.of(2015, 12, 22, 6, 0)
-              , LocalDateTime.of(2015, 12, 24, 6, 0)
-              ));
-        assertEquals(expectedDates, madeDates);
-    }
+//    @Test
+//    public void canStreamBranch1()
+//    {
+//        VEventImpl e = getBranch1();
+//        List<Temporal> madeDates = e
+//                .stream(e.getDateTimeStart())
+//                .collect(Collectors.toList());
+//        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+//                LocalDateTime.of(2015, 12, 1, 12, 0)
+//              , LocalDateTime.of(2015, 12, 3, 12, 0)
+//              , LocalDateTime.of(2015, 12, 5, 12, 0)
+//              , LocalDateTime.of(2015, 12, 7, 12, 0)
+//              , LocalDateTime.of(2015, 12, 9, 12, 0)
+//              , LocalDateTime.of(2015, 12, 11, 12, 0)
+//              ));
+//        assertEquals(expectedDates, madeDates);
+//    }
+//
+//    @Test
+//    public void canStreamBranch2()
+//    {
+//        VEventImpl e = getBranch2();
+//        List<Temporal> madeDates = e
+//                .stream(e.getDateTimeStart())
+//                .limit(6)
+//                .collect(Collectors.toList());
+//        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+//                LocalDateTime.of(2015, 12, 14, 6, 0)
+//              , LocalDateTime.of(2015, 12, 16, 6, 0)
+//              , LocalDateTime.of(2015, 12, 18, 6, 0)
+//              , LocalDateTime.of(2015, 12, 20, 6, 0)
+//              , LocalDateTime.of(2015, 12, 22, 6, 0)
+//              , LocalDateTime.of(2015, 12, 24, 6, 0)
+//              ));
+//        assertEquals(expectedDates, madeDates);
+//    }
     
     @Test
     public void canStreamChild1()
@@ -1086,22 +1083,22 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     }
     
     @Test
-    @Ignore
+    @Ignore // TODO - FIXTHIS - ONLY GET CHILD EVENTS
     public void canFindRecurrenceSet1()
     {
         List<VComponent<Appointment>> vComponents = new ArrayList<>();
         vComponents.add(getMonthly2());
-        vComponents.add(getBranch1());
+//        vComponents.add(getBranch1());
         vComponents.add(getDaily6());
-        VEventImpl branch2 = getBranch2();
-        vComponents.add(branch2);
+//        VEventImpl branch2 = getBranch2();
+//        vComponents.add(branch2);
         vComponents.add(getYearly1());
         vComponents.add(getChild1());
         vComponents.add(getWeekly3());
         
-        Collection<VComponent<Appointment>> rs = VComponent.findRelatedVComponents(vComponents, branch2);
-        assertEquals(4, rs.size());
+//        Collection<VComponent<Appointment>> rs = VComponent.findRelatedVComponents(vComponents, branch2);
+//        assertEquals(4, rs.size());
         
-        rs.iterator();
+//        rs.iterator();
     }
 }

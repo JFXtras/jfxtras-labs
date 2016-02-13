@@ -86,8 +86,8 @@ public class RRule
     /**
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
      * Must be same Temporal type as dateTimeStart (DTSTART)
+     * If DTSTART has time zone, then UNTIL must be UTC time.
      */
-    // Uses lazy initialization of property because often UNTIL stays as the default value of null
     public SimpleObjectProperty<Temporal> untilProperty()
     {
         if (until == null) until = new SimpleObjectProperty<Temporal>(this, UNTIL_NAME, _until);

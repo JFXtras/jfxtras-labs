@@ -57,7 +57,12 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
-	    
+
+//	    ZonedDateTime z = ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC);
+//	    ZonedDateTime z2 = ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("Z"));
+//	    ZonedDateTime z3 = ZonedDateTime.now();
+//
+//	    System.out.println(VComponent.ZONED_DATE_TIME_FORMATTER.format(z3));
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));
@@ -65,8 +70,8 @@ public class Main extends Application {
         CalendarController controller = mainLoader.getController();
         controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
         
-//        MakeAppointmentsTest r = new MakeAppointmentsTest();
-//        r.makeAppointmentsWholeDayTest1();
+//        ICalendarCopyTest r = new ICalendarCopyTest();
+//        r.canCopyVEvent2();
 //        System.exit(0);
         
         Scene scene = new Scene(root, 1366, 768);
