@@ -2,7 +2,6 @@ package jfxtras.labs.repeatagenda.trial;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
@@ -58,11 +57,15 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
-	    String zone = ZoneId.systemDefault().toString();
-	    System.out.println(zone);
-//	    ZonedDateTime z = ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC);
-//	    ZonedDateTime z2 = ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("Z"));
-//	    ZonedDateTime z3 = ZonedDateTime.now();
+//        ZonedDateTime z = ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC);
+//        ZonedDateTime z2 = ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("Z"));
+//        ZonedDateTime z3 = ZonedDateTime.now();
+//        LocalDate d = LocalDate.now();
+//
+//	    String s = VComponentAbstract.makeDateTimePropertyTag("TEST", d);
+//	    System.out.println(s);
+//        System.out.println(s + VComponent.temporalToString(d));
+//	    System.exit(0);
 //
 //	    System.out.println(VComponent.ZONED_DATE_TIME_FORMATTER.format(z3));
         // ROOT PANE
@@ -72,8 +75,8 @@ public class Main extends Application {
         CalendarController controller = mainLoader.getController();
         controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
         
-//        ICalendarCopyTest r = new ICalendarCopyTest();
-//        r.canCopyVEvent2();
+//        ICalendarParseTest r = new ICalendarParseTest();
+//        r.canParseYearly1();
 //        System.exit(0);
         
         Scene scene = new Scene(root, 1366, 768);

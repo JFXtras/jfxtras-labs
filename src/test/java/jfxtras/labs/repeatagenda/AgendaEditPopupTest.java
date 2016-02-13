@@ -1402,11 +1402,12 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Assert.assertEquals(2, agenda.appointments().size());
         VComponent<Appointment> v = agenda.vComponents().get(0);
         String dateTimeStamp = VComponent.temporalToString(v.getDateTimeStamp());
+        String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "DTEND:20151111T120000" + System.lineSeparator()
+                + "DTEND;TZID=" + zone + ":20151111T120000" + System.lineSeparator()
                 + "DTSTAMP:" + dateTimeStamp + System.lineSeparator()
-                + "DTSTART:20151111T100000" + System.lineSeparator()
+                + "DTSTART;TZID=" + zone + ":20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6" + System.lineSeparator()
                 + "SEQUENCE:1" + System.lineSeparator()
                 + "SUMMARY:New" + System.lineSeparator()

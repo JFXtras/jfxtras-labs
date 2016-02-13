@@ -73,6 +73,13 @@ public interface VComponent<T>
             .optionalEnd()
             .append(LOCAL_DATE_TIME_FORMATTER)
             .toFormatter();
+    final static DateTimeFormatter ZONE_FORMATTER = new DateTimeFormatterBuilder()
+            .optionalStart()
+            .appendLiteral("TZID=")
+            .parseCaseSensitive()
+            .appendZoneRegionId()
+            .optionalEnd()
+            .toFormatter();
 
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -101,9 +108,10 @@ public interface VComponent<T>
      * CREATED: Date-Time Created, from RFC 5545 iCalendar 3.8.7.1 page 136
      * This property specifies the date and time that the calendar information was created.
      * This is analogous to the creation date and time for a file in the file system.
+     * The value MUST be specified in the UTC time format.
      */
-    LocalDateTime getDateTimeCreated();
-    void setDateTimeCreated(LocalDateTime dtCreated);
+    ZonedDateTime getDateTimeCreated();
+    void setDateTimeCreated(ZonedDateTime dtCreated);
     
     /**
      * DTSTAMP: Date-Time Stamp, from RFC 5545 iCalendar 3.8.7.2 page 137
@@ -112,13 +120,7 @@ public interface VComponent<T>
      * The value MUST be specified in the UTC time format.
      */
     ZonedDateTime getDateTimeStamp();
-    default void setDateTimeStamp(ZonedDateTime dtStamp)
-    {
-        if ((dtStamp != null) && ! (dtStamp.getOffset().equals(ZoneOffset.UTC)))
-        {
-            throw new DateTimeException("dateTimeStamp (DTSTAMP) must be specified in the UTC time format (Z)");
-        }
-    };
+    void setDateTimeStamp(ZonedDateTime dtStamp);
     
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
@@ -171,6 +173,18 @@ public interface VComponent<T>
     String getLocation();
     void setLocation(String value);
 
+    /**
+     *  ORGANIZER: RFC 5545 iCalendar 3.8.4.3. page 111
+     * This property defines the organizer for a calendar component
+     * Example:
+     * ORGANIZER;CN=John Smith:mailto:jsmith@example.com
+     * 
+     * The property is stored as a simple string.  The implementation is
+     * responsible to extract any contained data elements such as CN, DIR, SENT-BY
+     * */
+    String getOrganizer();
+    void setOrganizer(String value);
+    
     /**
      * RELATED-TO: This property is used to represent a relationship or reference between
      * one calendar component and another.  By default, the property value points to another
@@ -647,7 +661,7 @@ public interface VComponent<T>
                 return ZONED_DATE_TIME_UTC_FORMATTER.format(temporal);
             } else
             {
-                return ZONED_DATE_TIME_FORMATTER.format(temporal);
+                return LOCAL_DATE_TIME_FORMATTER.format(temporal); // don't use ZONED_DATE_TIME_FORMATTER because time zone is added to property tag
             }
         } else if (temporal instanceof LocalDateTime)
         {

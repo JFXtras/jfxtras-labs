@@ -180,7 +180,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     {
         String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "CATEGORIES:group13" + System.lineSeparator()
-                              + "CREATED:20151109T082900" + System.lineSeparator()
+                              + "CREATED:20151109T082900Z" + System.lineSeparator()
                               + "DESCRIPTION:Yearly1 Description" + System.lineSeparator()
                               + "DTSTAMP:20151109T083000Z" + System.lineSeparator()
                               + "DTSTART:20151109T100000" + System.lineSeparator()

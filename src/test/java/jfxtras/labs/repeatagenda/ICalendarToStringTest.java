@@ -20,7 +20,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
         String madeString = e.toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "CATEGORIES:group13" + System.lineSeparator()
-                              + "CREATED:20151109T082900" + System.lineSeparator()
+                              + "CREATED:20151109T082900Z" + System.lineSeparator()
                               + "DESCRIPTION:Yearly1 Description" + System.lineSeparator()
                               + "DTSTAMP:20151109T083000Z" + System.lineSeparator()
                               + "DTSTART:20151109T100000" + System.lineSeparator()
@@ -142,9 +142,9 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     VEventImpl vEvent = getWholeDayDaily1();
     String madeString = vEvent.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
-                          + "DTEND:VALUE=DATE:20151112" + System.lineSeparator()
+                          + "DTEND;VALUE=DATE:20151112" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
-                          + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
+                          + "DTSTART;VALUE=DATE:20151109" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
     assertEquals(expectedString, madeString);
@@ -157,9 +157,9 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     String madeString = vEvent.toString();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "CATEGORIES:group06" + System.lineSeparator()
-                          + "DTEND:VALUE=DATE:20151111" + System.lineSeparator()
+                          + "DTEND;VALUE=DATE:20151111" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
-                          + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
+                          + "DTSTART;VALUE=DATE:20151109" + System.lineSeparator()
                           + "RRULE:FREQ=DAILY;INTERVAL=3;UNTIL=20151124" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";

@@ -8,10 +8,8 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
@@ -24,7 +22,6 @@ import java.util.stream.StreamSupport;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
@@ -237,34 +234,28 @@ public class VEventImpl extends VEvent<Appointment>
 ////        return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! VComponent.isAfter(a, getDateTimeRangeEnd()));
 //    }
     
-    /** Make iCalendar compliant string of VEvent calendar component */
-    @Override
-    public String toString()
-    {
-//        String errors = makeErrorString();
-//        if (! errors.equals("")) throw new RuntimeException(errors);
-        @SuppressWarnings("rawtypes")
-        Map<Property, String> properties = makePropertiesMap();
-        String propertiesString = properties.entrySet()
-                .stream() 
-                .map(p -> 
-                {
-                    return p.getKey().getName() + ":" + p.getValue() + System.lineSeparator();
-                })
-                .sorted()
-                .collect(Collectors.joining());
-        return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
-    }
+//    /** Make iCalendar compliant string of VEvent calendar component */
+//    @Override
+//    public String toString()
+//    {
+////        String errors = makeErrorString();
+////        if (! errors.equals("")) throw new RuntimeException(errors);
+//        List<String> properties = makePropertiesList();
+//        String propertiesString = properties.stream() 
+//                .map(p -> p + System.lineSeparator())
+//                .sorted()
+//                .collect(Collectors.joining());
+//        return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
+//    }
     
-    @SuppressWarnings("rawtypes")
-    @Override
-    protected Map<Property, String> makePropertiesMap()
-    {
-        Map<Property, String> properties = new HashMap<Property, String>();
-        properties.putAll(super.makePropertiesMap());
-//        if (getAppointmentGroup() != null) properties.put(appointmentGroupStyleClassProperty(), getAppointmentGroupStyleClass());
-        return properties;
-    }
+//    @Override
+//    protected List<String> makePropertiesList()
+//    {
+//        List<String> properties = new ArrayList<>();
+//        properties.addAll(super.makePropertiesList());
+////        if (getAppointmentGroup() != null) properties.put(appointmentGroupStyleClassProperty(), getAppointmentGroupStyleClass());
+//        return properties;
+//    }
     
     @Override
     public String makeErrorString()

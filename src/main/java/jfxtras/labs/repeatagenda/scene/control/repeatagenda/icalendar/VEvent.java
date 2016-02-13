@@ -8,17 +8,14 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -457,33 +454,33 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     @Override
     public String toString()
     {
-        @SuppressWarnings("rawtypes")
-        Map<Property, String> properties = makePropertiesMap();
-        String propertiesString = properties.entrySet()
-                .stream() 
-                .map(p -> p.getKey().getName() + ":" + p.getValue() + System.lineSeparator())
+        List<String> properties = makePropertiesList();
+        String propertiesString = properties.stream()
+                .map(p -> p + System.lineSeparator())
                 .sorted()
                 .collect(Collectors.joining());
         return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    protected Map<Property, String> makePropertiesMap()
+    protected List<String> makePropertiesList()
     {
-        Map<Property, String> properties = new HashMap<Property, String>();
-        properties.putAll(super.makePropertiesMap());
-        if ((getDescription() != null) && (! getDescription().equals(""))) properties.put(descriptionProperty(), getDescription());
+        List<String> properties = new ArrayList<>();
+        properties.addAll(super.makePropertiesList());
+        if ((getDescription() != null) && (! getDescription().equals("")))
+        {
+            properties.add(descriptionProperty().getName() + ":" + getDescription());
+        }
         if (endPriority != null)
         {
             switch (endPriority)
             {
             case DTEND:
-                String endPrefix = isWholeDay() ? "VALUE=DATE:" : "";
-                properties.put(dateTimeEndProperty(), endPrefix + VComponent.temporalToString(getDateTimeEnd()));
+                String tag = makeDateTimePropertyTag(dateTimeEndProperty().getName(), getDateTimeEnd());
+                properties.add(tag + VComponent.temporalToString(getDateTimeEnd()));
                 break;
             case DURATION:
-                properties.put(durationInNanosProperty(), getDurationAsString());
+                properties.add(durationInNanosProperty().getName() + ":" + getDurationAsString());
                 break;
             }
         }

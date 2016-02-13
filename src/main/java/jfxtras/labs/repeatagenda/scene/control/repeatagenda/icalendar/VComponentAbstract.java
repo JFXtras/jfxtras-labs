@@ -1,15 +1,16 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,7 +21,6 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -76,7 +76,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
        3.8.4.  Relationship Component Properties . . . . . . . . . . 108
          3.8.4.1.  Attendee  . . . . . . . . . . . . . . . . . . . . 108 - NO
          3.8.4.2.  Contact . . . . . . . . . . . . . . . . . . . . . 111 - NO
-         3.8.4.3.  Organizer . . . . . . . . . . . . . . . . . . . . 113 - NO
+         3.8.4.3.  Organizer . . . . . . . . . . . . . . . . . . . . 113 - Yes
          3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - Yes
          3.8.4.5.  Related To  . . . . . . . . . . . . . . . . . . . 117 - Yes
          3.8.4.6.  Uniform Resource Locator  . . . . . . . . . . . . 118 - NO
@@ -112,7 +112,7 @@ DTSTART - yes
 EXDATE - yes
 IANA-PROP - not implemented
 LAST-MOD - yes
-ORGANIZER - not implemented
+ORGANIZER - yes
 RDATE - yes
 RECURRENCE-ID - yes
 RELATED-TO - yes
@@ -147,6 +147,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     private static final String EXCEPTION_DATE_TIMES_NAME = "EXDATE";
     private static final String LAST_MODIFIED_NAME = "LAST-MODIFIED";
     private static final String LOCATION_NAME = "LOCATION";
+    private static final String ORGANIZER_NAME = "ORGANIZER";
     private static final String RECURRENCE_DATE_TIMES_NAME = "RDATE";
     private static final String RECURRENCE_ID_NAME = "RECURRENCE-ID";
     private static final String RECURRENCE_RULE_NAME = "RRULE";
@@ -209,12 +210,19 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * This property specifies the date and time that the calendar information was created.
      * This is analogous to the creation date and time for a file in the file system.
      */
-    public ObjectProperty<LocalDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
-    final private ObjectProperty<LocalDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, CREATED_NAME);
+    public ObjectProperty<ZonedDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
+    final private ObjectProperty<ZonedDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, CREATED_NAME);
     @Override
-    public LocalDateTime getDateTimeCreated() { return dateTimeCreated.get(); }
+    public ZonedDateTime getDateTimeCreated() { return dateTimeCreated.get(); }
     @Override
-    public void setDateTimeCreated(LocalDateTime dtCreated) { this.dateTimeCreated.set(dtCreated); }
+    public void setDateTimeCreated(ZonedDateTime dtCreated)
+    {
+        if ((dtCreated != null) && ! (dtCreated.getOffset().equals(ZoneOffset.UTC)))
+        {
+            throw new DateTimeException("dateTimeStamp (DTSTAMP) must be specified in the UTC time format (Z)");
+        }
+        this.dateTimeCreated.set(dtCreated);
+    }
     
     /**
      * DTSTAMP: Date-Time Stamp, from RFC 5545 iCalendar 3.8.7.2 page 137
@@ -228,7 +236,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     @Override
     public void setDateTimeStamp(ZonedDateTime dtStamp)
     {
-        VComponent.super.setDateTimeStamp(dtStamp);
+        if ((dtStamp != null) && ! (dtStamp.getOffset().equals(ZoneOffset.UTC)))
+        {
+            throw new DateTimeException("dateTimeStamp (DTSTAMP) must be specified in the UTC time format (Z)");
+        }
         this.dateTimeStamp.set(dtStamp);
     }
     
@@ -304,7 +315,36 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     public String getLocation() { return locationProperty.getValue(); }
     @Override
     public void setLocation(String value) { locationProperty.setValue(value); }
-//    public T withLocation(String value) { setLocation(value); return (T)this; }
+
+    /**
+     *  ORGANIZER: RFC 5545 iCalendar 3.8.4.3. page 111
+     * This property defines the organizer for a calendar component
+     * Example:
+     * ORGANIZER;CN=John Smith:mailto:jsmith@example.com
+     * 
+     * The property is stored as a simple string.  The implementation is
+     * responsible to extract any contained data elements such as CN, DIR, SENT-BY
+     * */
+    public StringProperty organizerProperty()
+    {
+        if (organizer == null) organizer = new SimpleStringProperty(this, ORGANIZER_NAME, _organizer);
+        return organizer;
+    }
+    private StringProperty organizer;
+    private String _organizer;
+    @Override
+    public String getOrganizer() { return (organizer == null) ? _organizer : organizer.get(); }
+    @Override
+    public void setOrganizer(String organizer)
+    {
+        if (this.organizer == null)
+        {
+            _organizer = organizer;
+        } else
+        {
+            this.organizer.set(organizer);            
+        }
+    }    
 
     /**
      * RDATE: Set of date/times for recurring events, to-dos, journal entries.
@@ -957,40 +997,101 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         copy(this, (VComponentAbstract<?>) destination);
     }
 
-    /** Make map of properties and string values for toString method in subclasses (like VEvent)
+    /** Make list of properties and string values for toString method in subclasses (like VEvent)
      * Used by toString method in subclasses */
-    @SuppressWarnings("rawtypes")
-    Map<Property, String> makePropertiesMap()
+    List<String> makePropertiesList()
     {
-        Map<Property, String> properties = new HashMap<Property, String>();
+        List<String> properties = new ArrayList<>();
 
-        if (getCategories() != null) properties.put(categoriesProperty(), getCategories().toString());
-        if (getComment() != null) properties.put(commentProperty(), getComment().toString());
-        if (getDateTimeCreated() != null) properties.put(dateTimeCreatedProperty(), VComponent.LOCAL_DATE_TIME_FORMATTER.format(getDateTimeCreated()));
+        if (getCategories() != null)
+        {
+            properties.add(categoriesProperty().getName() + ":" + getCategories().toString());
+        }
+        if (getComment() != null)
+        {
+            properties.add(commentProperty().getName() + ":" + getComment().toString());
+        }
+        if (getDateTimeCreated() != null)
+        {
+            properties.add(dateTimeCreatedProperty().getName() + ":" + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(getDateTimeCreated()));
+        }
         if (getDateTimeStamp() != null)
         {
-            properties.put(dateTimeStampProperty(), VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(getDateTimeStamp())); // required property
+            properties.add(dateTimeStampProperty().getName() + ":" + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(getDateTimeStamp()));
         }
-        if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VComponent.LOCAL_DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
-        String startPrefix = (getDateTimeStart() instanceof LocalDate) ? "VALUE=DATE:" : "";
-        // TODO - NEED TO FIX LACK OF SEMICOLON PROBLEM ? try to change property name?  get rid of properties - use string tags?
+        if (getDateTimeRecurrence() != null)
+        {
+            String tag = makeDateTimePropertyTag(dateTimeRecurrenceProperty().getName(), getDateTimeRecurrence());
+            properties.add(tag + VComponent.temporalToString(getDateTimeRecurrence()));
+        }
         if (getDateTimeStart() != null)
         {
-            properties.put(dateTimeStartProperty(), startPrefix + VComponent.temporalToString(getDateTimeStart()));
+            String tag = makeDateTimePropertyTag(dateTimeStartProperty().getName(), getDateTimeStart());
+            properties.add(tag + VComponent.temporalToString(getDateTimeStart()));
         }
         if (getDateTimeLastModified() != null)
         {
-            properties.put(dateTimeLastModifiedProperty(), VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(getDateTimeLastModified()));
+            properties.add(dateTimeLastModifiedProperty().getName() + ":" + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(getDateTimeLastModified()));
         }
-        if (getExDate() != null) properties.put(exDateProperty(), getExDate().toString());
-        if (getLocation() != null) properties.put(locationProperty(), getLocation().toString());
-        if (getRelatedTo() != null) properties.put(relatedToProperty(), getRelatedTo().toString());
-        if (getRDate() != null) properties.put(rDateProperty(), getRDate().toString());
-        if (getRRule() != null) properties.put(rRuleProperty(), getRRule().toString());
-        if (getSequence() != 0) properties.put(sequenceProperty(), Integer.toString(getSequence()));
-        if (getSummary() != null) properties.put(summaryProperty(), getSummary().toString());
-        if (getUniqueIdentifier() != null) properties.put(uniqueIdentifierProperty(), getUniqueIdentifier()); // required property
+        if (getExDate() != null)
+        {
+            properties.add(exDateProperty().getName() + ":" + getExDate().toString());
+        }
+        if (getLocation() != null)
+        {
+            properties.add(locationProperty().getName() + ":" + getLocation().toString());
+        }
+        if (getRelatedTo() != null)
+        {
+            properties.add(relatedToProperty().getName() + ":" + getRelatedTo().toString());
+        }
+        if (getRDate() != null)
+        {
+            properties.add(rDateProperty().getName() + ":" + getRDate().toString());
+        }
+        if (getRRule() != null)
+        {
+            properties.add(rRuleProperty().getName() + ":" + getRRule().toString());
+        }
+        if (getSequence() != 0)
+        {
+            properties.add(sequenceProperty().getName() + ":" + Integer.toString(getSequence()));
+        }
+        if (getSummary() != null)
+        {
+            properties.add(summaryProperty().getName() + ":" + getSummary().toString());
+        }
+        if (getUniqueIdentifier() != null)
+        {
+            properties.add(uniqueIdentifierProperty().getName() + ":" + getUniqueIdentifier()); // required property
+        }
         return properties;
+    }
+    
+    /*
+     * Generates iCalendar date-time property tags:
+     * Examples:
+     * DTEND;VALUE=DATE: (for LocalDate)
+     * DTSTART;TZID=Europe/London: (For non-UTC ZonedDateTime)
+     * LAST-MODIFIED: (For LocalDateTime and UTC ZonedDateTime)
+     */
+    protected static String makeDateTimePropertyTag(String propertyName, Temporal t)
+    {
+        if (t instanceof ZonedDateTime)
+        {
+            String zone = VComponent.ZONE_FORMATTER.format(t);
+            if (zone.isEmpty())
+            {
+                return propertyName + ":";                
+            } else
+            {
+                return propertyName + ";" + zone + ":";                
+            }
+        } else
+        {
+            String prefex = (t instanceof LocalDate) ? ";VALUE=DATE:" : ":";
+            return propertyName + prefex;
+        }
     }
     
     /** Convert a list of strings containing properties of a iCalendar component and
@@ -1018,7 +1119,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(CREATED_NAME))
             { // CREATED
-                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
+                ZonedDateTime dateTime = ZonedDateTime.parse(value, ZONED_DATE_TIME_UTC_FORMATTER);
                 vComponent.setDateTimeCreated(dateTime);
                 stringsIterator.remove();
             } else if (property.equals(DATE_TIME_STAMP_NAME))

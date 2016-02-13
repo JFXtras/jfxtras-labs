@@ -140,7 +140,7 @@ public abstract class ICalendarTestAbstract
     protected VEventImpl getYearly1()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        vEvent.setDateTimeCreated(LocalDateTime.of(2015, 11, 9, 8, 29));
+        vEvent.setDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC));
         vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC));
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
         vEvent.setDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC));
