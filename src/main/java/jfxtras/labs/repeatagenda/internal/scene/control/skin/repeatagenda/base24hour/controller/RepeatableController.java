@@ -1,7 +1,6 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
-import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -819,21 +818,23 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         Stream<Temporal> stream1 = vComponent.stream(dateTimeStart);
         Stream<Temporal> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
-        Class<? extends Temporal> clazz = vComponent.getDateTimeStart().getClass();
-        List<Temporal> exceptionDates = null;
-        if (clazz.equals(LocalDate.class))
-        {
-            exceptionDates = stream2
-                    .limit(EXCEPTION_CHOICE_LIMIT)
-//                    .map(d -> d.toLocalDate())
-                    .collect(Collectors.toList());
-        } else if (clazz.equals(LocalDateTime.class))
-        {
-            exceptionDates = stream2
-                    .limit(EXCEPTION_CHOICE_LIMIT)
-                    .collect(Collectors.toList());
-        } else throw new DateTimeException("Invalid Temporal class: " +
-                clazz.getSimpleName() + " Only LocalDate and LocalDateTime accepted.");
+//        Class<? extends Temporal> clazz = vComponent.getDateTimeStart().getClass();
+        List<Temporal> exceptionDates = stream2
+              .limit(EXCEPTION_CHOICE_LIMIT)
+              .collect(Collectors.toList());
+//        if (vComponent.getDateTimeStart() instanceof LocalDate)
+//        {
+//            exceptionDates = stream2
+//                    .limit(EXCEPTION_CHOICE_LIMIT)
+////                    .map(d -> d.toLocalDate())
+//                    .collect(Collectors.toList());
+//        } else if (vComponent.getDateTimeStart().isSupported(ChronoUnit.NANOS))
+//        {
+//            exceptionDates = stream2
+//                    .limit(EXCEPTION_CHOICE_LIMIT)
+//                    .collect(Collectors.toList());
+//        } else throw new DateTimeException("Invalid Temporal class: " +
+//                vComponent.getDateTimeStart().getClass().getSimpleName() + " Only LocalDate, LocalDateTime and ZonedDateTime accepted.");
 
         exceptionComboBox.getItems().clear();
         exceptionComboBox.getItems().addAll(exceptionDates);

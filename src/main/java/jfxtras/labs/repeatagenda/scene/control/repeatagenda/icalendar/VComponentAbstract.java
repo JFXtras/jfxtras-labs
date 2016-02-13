@@ -973,12 +973,11 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         }
         if (getDateTimeRecurrence() != null) properties.put(dateTimeRecurrenceProperty(), VComponent.LOCAL_DATE_TIME_FORMATTER.format(getDateTimeRecurrence()));
         String startPrefix = (getDateTimeStart() instanceof LocalDate) ? "VALUE=DATE:" : "";
+        // TODO - NEED TO FIX LACK OF SEMICOLON PROBLEM ? try to change property name?  get rid of properties - use string tags?
         if (getDateTimeStart() != null)
         {
             properties.put(dateTimeStartProperty(), startPrefix + VComponent.temporalToString(getDateTimeStart()));
         }
-        System.out.println("getDateTimeLastModified():" + getDateTimeLastModified() );
-
         if (getDateTimeLastModified() != null)
         {
             properties.put(dateTimeLastModifiedProperty(), VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(getDateTimeLastModified()));

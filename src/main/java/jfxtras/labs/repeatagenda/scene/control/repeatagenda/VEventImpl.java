@@ -151,6 +151,7 @@ public class VEventImpl extends VEvent<Appointment>
     
     /**
      * makes new VEventImpl by copying properties from appointment
+     * stores start and end date/times as ZonedDateTime in default zone
      * 
      * @param appointment - from Agenda
      */
@@ -164,8 +165,11 @@ public class VEventImpl extends VEvent<Appointment>
             setDateTimeStart(appointment.getStartLocalDateTime().toLocalDate());
         } else
         {
-            setDateTimeEnd(appointment.getEndLocalDateTime());
-            setDateTimeStart(appointment.getStartLocalDateTime());
+            ZoneId zone = ZoneId.systemDefault();
+            ZonedDateTime end = ZonedDateTime.of(appointment.getEndLocalDateTime(), zone);
+            setDateTimeEnd(end);
+            ZonedDateTime start = ZonedDateTime.of(appointment.getStartLocalDateTime(), zone);
+            setDateTimeStart(start);
         }
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setDescription(appointment.getDescription());
@@ -177,7 +181,7 @@ public class VEventImpl extends VEvent<Appointment>
     }
 
     /** Deep copy all fields from source to destination 
-     * @param <E>*/
+     * */
     private static void copy(VEventImpl source, VEventImpl destination)
     {
         destination.setAppointmentGroup(source.getAppointmentGroup());
@@ -237,13 +241,16 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public String toString()
     {
-        String errors = makeErrorString();
+//        String errors = makeErrorString();
 //        if (! errors.equals("")) throw new RuntimeException(errors);
         @SuppressWarnings("rawtypes")
         Map<Property, String> properties = makePropertiesMap();
         String propertiesString = properties.entrySet()
                 .stream() 
-                .map(p -> p.getKey().getName() + ":" + p.getValue() + System.lineSeparator())
+                .map(p -> 
+                {
+                    return p.getKey().getName() + ":" + p.getValue() + System.lineSeparator();
+                })
                 .sorted()
                 .collect(Collectors.joining());
         return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";

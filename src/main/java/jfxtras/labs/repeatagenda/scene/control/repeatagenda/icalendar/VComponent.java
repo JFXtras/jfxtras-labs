@@ -411,9 +411,18 @@ public interface VComponent<T>
              */
             if (getRRule().getUntil() != null)
             {
-                if ((getDateTimeStart() instanceof ZonedDateTime) && ! (getRRule().getUntil() instanceof ZonedDateTime))
+                if ((getDateTimeStart() instanceof ZonedDateTime))
                 {
-                    errorsBuilder.append(System.lineSeparator() + "Invalid RRule: UNTIL must be ZonedDateTime with UTC if DTSTART (dateTimeStart) is ZonedDateTime");
+                    if ((getRRule().getUntil() instanceof ZonedDateTime))
+                    {
+                        if (! ((ZonedDateTime) getRRule().getUntil()).getOffset().equals(ZoneOffset.UTC))
+                        {
+                            errorsBuilder.append(System.lineSeparator() + "Invalid RRule: UNTIL must be ZonedDateTime with UTC if DTSTART (dateTimeStart) is ZonedDateTime");
+                        }
+                    } else
+                    {
+                        errorsBuilder.append(System.lineSeparator() + "Invalid RRule: UNTIL must be ZonedDateTime if DTSTART (dateTimeStart) is ZonedDateTime");
+                    }
                 }
             }
         }

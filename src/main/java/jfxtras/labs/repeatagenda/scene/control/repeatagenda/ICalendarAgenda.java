@@ -311,12 +311,12 @@ public class ICalendarAgenda extends Agenda
                             appointments().remove(a);
                             refresh();
                             break;
-                        case OK_DONE: // assumes newAppointmentCallback can only edit summary and appointmentGroup
+                        case OK_DONE: // CREATE EVENT assumes newAppointmentCallback can only edit summary and appointmentGroup
                             if (! (a.getSummary().equals(originalSummary)) || ! (a.getAppointmentGroup().equals(originalAppointmentGroup)))
                             {
                                 Platform.runLater(() -> refresh());
                             }
-                        case OTHER:
+                        case OTHER: // ADVANCED EDIT
                             VComponent<Appointment> newVComponent = VComponentFactory
                                     .newVComponent(getVEventClass(), a, appointmentGroups());
                             LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
@@ -324,6 +324,7 @@ public class ICalendarAgenda extends Agenda
                             newVComponent.setStartRange(startRange);
                             newVComponent.setEndRange(endRange);
                             newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
+                            System.out.println(newVComponent);
                             vComponents().removeListener(vComponentsListener);
                             vComponents().add(newVComponent);
                             vComponents().addListener(vComponentsListener);

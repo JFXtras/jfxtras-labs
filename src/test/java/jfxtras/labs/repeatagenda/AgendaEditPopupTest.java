@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -1344,16 +1345,19 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Assert.assertEquals(2, agenda.appointments().size());
         VComponent<Appointment> v = agenda.vComponents().get(0);
         String dateTimeStamp = VComponent.temporalToString(v.getDateTimeStamp());
+        String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "DTEND:20151111T120000" + System.lineSeparator()
+                + "DTEND;TZID=" + zone + ":20151111T120000" + System.lineSeparator()
                 + "DTSTAMP:" + dateTimeStamp + System.lineSeparator()
-                + "DTSTART:20151111T100000" + System.lineSeparator()
+                + "DTSTART;TZID=" + zone + ":20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=WEEKLY;BYDAY=WE,FR,MO" + System.lineSeparator()
                 + "SEQUENCE:1" + System.lineSeparator()
                 + "SUMMARY:New" + System.lineSeparator()
                 + "UID:20151108T000000-0jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
+        System.out.println(expectedString);
+        System.out.println(v);
         Assert.assertEquals(expectedString, v.toString());
         
         List<LocalDateTime> dates = agenda.appointments()
