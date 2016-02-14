@@ -454,6 +454,12 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     @Override
     public String toString()
     {
+        return super.toString() + System.lineSeparator() + "[" + toComponentText() + "]";
+    }
+    
+    @Override
+    public String toComponentText()
+    {
         List<String> properties = makePropertiesList();
         String propertiesString = properties.stream()
                 .map(p -> p + System.lineSeparator())
@@ -551,7 +557,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             String line = stringsIterator.next();
             String property = line.substring(0, line.indexOf(":"));
             String value = line.substring(line.indexOf(":") + 1).trim();
-            System.out.println("value:" + value);
             if (value.isEmpty())
             { // skip empty properties
                 continue;
@@ -584,7 +589,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 {
                     throw new IllegalArgumentException("Invalid VEvent: DURATION can only be specified once.");                    
                 }
-            } else if (property.equals(DATE_TIME_END_NAME))
+            } else if (property.matches("^" + DATE_TIME_END_NAME + ".*"))
             { // DTEND
                 if (vEvent.getDateTimeEnd() == null)
                 {
@@ -592,8 +597,8 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     {
                         dTEndFound = true;
                         vEvent.endPriority = EndPriority.DTEND;
-                        Temporal dateTime = VComponent.parseTemporal(value);
-                        System.out.println("dateTime:" + dateTime);
+                        String dateTimeString = (property.contains(";")) ? line.substring(property.indexOf(";")+1) : value;
+                        Temporal dateTime = VComponent.parseTemporal(dateTimeString);
                         vEvent.setDateTimeEnd(dateTime);
                         stringsIterator.remove();
                     } else

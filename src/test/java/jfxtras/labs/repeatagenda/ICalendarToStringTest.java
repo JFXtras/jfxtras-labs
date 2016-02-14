@@ -17,7 +17,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void yearly1ToString()
     {
         VEventImpl e = getYearly1();
-        String madeString = e.toString();
+        String madeString = e.toComponentText();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "CATEGORIES:group13" + System.lineSeparator()
                               + "CREATED:20151109T082900Z" + System.lineSeparator()
@@ -39,7 +39,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
 
     VEventImpl e = getMonthly5();
-    String madeString = e.toString();
+    String madeString = e.toComponentText();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTSTAMP:19970901T083000Z" + System.lineSeparator()
                           + "DTSTART:19970613T100000" + System.lineSeparator()
@@ -56,7 +56,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
 
     VEventImpl e = getMonthly6();
-    String madeString = e.toString();
+    String madeString = e.toComponentText();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
                           + "DTSTART:20151103T100000" + System.lineSeparator()
@@ -72,7 +72,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void daily6ToString()
     {
     VEventImpl e = getDaily6();
-    String madeString = e.toString();
+    String madeString = e.toComponentText();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                         + "CATEGORIES:group03" + System.lineSeparator()
                         + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
@@ -90,7 +90,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void dailyUTCToString()
     {
     VEventImpl e = getDailyUTC();
-    String madeString = e.toString();
+    String madeString = e.toComponentText();
     System.out.println(madeString);
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                         + "CATEGORIES:group03" + System.lineSeparator()
@@ -112,7 +112,8 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
 
     VEventImpl e = getDailyWithException1();
-    String madeString = e.toString();
+    e.setExDatesOnOneLine(true);
+    String madeString = e.toComponentText();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "CATEGORIES:group03" + System.lineSeparator()
                           + "DESCRIPTION:Daily2 Description" + System.lineSeparator()
@@ -140,7 +141,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void canConvertWholeDay2()
     {
     VEventImpl vEvent = getWholeDayDaily1();
-    String madeString = vEvent.toString();
+    String madeString = vEvent.toComponentText();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTEND;VALUE=DATE:20151112" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
@@ -154,7 +155,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void canConvertWholeDay3()
     {
     VEventImpl vEvent = getWholeDayDaily3();
-    String madeString = vEvent.toString();
+    String madeString = vEvent.toComponentText();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "CATEGORIES:group06" + System.lineSeparator()
                           + "DTEND;VALUE=DATE:20151111" + System.lineSeparator()
@@ -172,7 +173,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
 //    public void canConvertBranch1ToString()
 //    {
 //    VEventImpl vEvent = getBranch1();
-//    String madeString = vEvent.toString();
+//    String madeString = vEvent.toComponentText();
 //    String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
 //                        + "CATEGORIES:group03" + System.lineSeparator()
 //                        + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
@@ -191,7 +192,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
 //    public void canConvertBranch2ToString()
 //    {
 //    VEventImpl vEvent = getBranch2();
-//    String madeString = vEvent.toString();
+//    String madeString = vEvent.toComponentText();
 //    String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
 //                        + "CATEGORIES:group03" + System.lineSeparator()
 //                        + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
@@ -210,7 +211,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     public void canConvertChild1ToString()
     {
     VEventImpl vEvent = getChild1();
-    String madeString = vEvent.toString();
+    String madeString = vEvent.toComponentText();
     System.out.println(madeString);
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                         + "CATEGORIES:group03" + System.lineSeparator()

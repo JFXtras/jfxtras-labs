@@ -26,6 +26,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
@@ -121,6 +122,7 @@ public class VEventImpl extends VEvent<Appointment>
     public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
     public VEventImpl withDescription(String s) { setDescription(s); return this; }
     public VEventImpl withDurationInNanos(Long l) { setDurationInNanos(l); return this; }
+    public VEventImpl withExDate(Temporal... t) { setExDate(new ExDate(t)); return this; }    
     public VEventImpl withRelatedTo(String s) { setRelatedTo(s); return this; }
     public VEventImpl withRRule(RRule r) { setRRule(r); return this; }
     public VEventImpl withSequence(int i) { setSequence(i); return this; }
@@ -243,7 +245,6 @@ public class VEventImpl extends VEvent<Appointment>
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
-        System.out.println("types:" + getDateTimeStart() + " " + getStartRange());
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
         removedTooLate.forEach(t ->
@@ -291,28 +292,6 @@ public class VEventImpl extends VEvent<Appointment>
         setStartRange(startRange);
         return makeInstances();
     }
-     
-//    private RRuleType getRRuleType(RRule rruleOld)
-//    {
-//        if (getRRule() == null)
-//        {
-//            if (rruleOld == null)
-//            { // doesn't have repeat or have old repeat either
-//                return RRuleType.INDIVIDUAL;
-//            } else {
-//                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
-//            }
-//        } else
-//        { // RRule != null
-//            if (rruleOld == null)
-//            {
-//                return RRuleType.WITH_NEW_REPEAT;                
-//            } else
-//            {
-//                return RRuleType.WITH_EXISTING_REPEAT;
-//            }
-//        }
-//    }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
     // will be obsolete with Java 9

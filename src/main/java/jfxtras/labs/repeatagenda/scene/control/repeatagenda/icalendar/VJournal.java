@@ -54,4 +54,10 @@ public class VJournal<T> extends VComponentAbstract<T>
         return null;
     }
 
+    @Override
+    public String toComponentText() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

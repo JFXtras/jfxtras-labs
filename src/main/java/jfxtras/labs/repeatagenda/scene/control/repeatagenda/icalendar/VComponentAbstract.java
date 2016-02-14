@@ -282,7 +282,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             this.exDate.set(exDate);
         }
     }
-
+    /** true = put all Temporals on one line, false = use one line for each Temporal */
+    public boolean isExDatesOnOneLine() { return exDatesOnOneLine; }
+    private boolean exDatesOnOneLine = false;
+    /** true = put all Temporals on one line, false = use one line for each Temporal */
+    public void setExDatesOnOneLine(boolean b) { exDatesOnOneLine = b; }
+    
     /**
      * LAST-MODIFIED: Date-Time Last Modified, from RFC 5545 iCalendar 3.8.7.3 page 138
      * This property specifies the date and time that the information associated with
@@ -931,7 +936,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 instances.clear();
                 instances.addAll(instancesTemp);
 
-                System.out.println("until:" + untilNew);
+//                System.out.println("until:" + untilNew);
                 break;
             default:
                 break;
@@ -1037,7 +1042,20 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         }
         if (getExDate() != null)
         {
-            properties.add(exDateProperty().getName() + ":" + getExDate().toString());
+            if (isExDatesOnOneLine())
+            {
+                Temporal firstTemporal = getExDate().getTemporals().iterator().next();
+                String tag = makeDateTimePropertyTag(exDateProperty().getName(), firstTemporal);
+                properties.add(tag + getExDate().toString());
+            } else
+            {
+                Temporal firstTemporal = getExDate().getTemporals().iterator().next();
+                String tag = makeDateTimePropertyTag(exDateProperty().getName(), firstTemporal);
+                getExDate().getTemporals().stream().forEach(t ->
+                {
+                    properties.add(tag + VComponent.temporalToString(t));
+                });
+            }
         }
         if (getLocation() != null)
         {
@@ -1049,7 +1067,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         }
         if (getRDate() != null)
         {
-            properties.add(rDateProperty().getName() + ":" + getRDate().toString());
+            Temporal firstTemporal = getRDate().getTemporals().iterator().next();
+            String tag = makeDateTimePropertyTag(rDateProperty().getName(), firstTemporal);
+            properties.add(tag + getRDate().toString());
         }
         if (getRRule() != null)
         {
@@ -1129,14 +1149,17 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 ZonedDateTime dateTime = ZonedDateTime.parse(value, ZONED_DATE_TIME_UTC_FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);
                 stringsIterator.remove();
-            } else if (property.equals(DATE_TIME_START_NAME))
+            } else if (property.matches("^" + DATE_TIME_START_NAME + ".*"))
             { // DTSTART
-                Temporal dateTime = VComponent.parseTemporal(value);
+                System.out.println("property:" + property + " "+ property.matches(";.*"));
+                String dateTimeString = (property.contains(";")) ? line.substring(property.indexOf(";")+1) : value;
+                Temporal dateTime = VComponent.parseTemporal(dateTimeString);
                 vComponent.setDateTimeStart(dateTime);
                 stringsIterator.remove();
-            } else if (property.equals(EXCEPTION_DATE_TIMES_NAME))
+            } else if (property.matches("^" + EXCEPTION_DATE_TIMES_NAME + ".*"))
             { // EXDATE
-                Collection<Temporal> dateTimeCollection = RecurrenceComponent.parseTemporals(value);
+                String dateTimeString = (property.contains(";")) ? line.substring(property.indexOf(";")+1) : value;
+                Collection<Temporal> dateTimeCollection = RecurrenceComponent.parseTemporals(dateTimeString);
                 if (vComponent.getExDate() == null)
                 {
                     vComponent.setExDate(new ExDate());
@@ -1148,9 +1171,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 ZonedDateTime dateTime = ZonedDateTime.parse(value, ZONED_DATE_TIME_UTC_FORMATTER);
                 vComponent.setDateTimeLastModified(dateTime);
                 stringsIterator.remove();
-            } else if (property.equals(RECURRENCE_DATE_TIMES_NAME))
+            } else if (property.matches("^" + RECURRENCE_DATE_TIMES_NAME + ".*"))
             { // RDATE
-                Collection<Temporal> dateTimeCollection = RecurrenceComponent.parseTemporals(value);
+                String dateTimeString = (property.contains(";")) ? line.substring(property.indexOf(";")+1) : value;
+                Collection<Temporal> dateTimeCollection = RecurrenceComponent.parseTemporals(dateTimeString);
                 if (vComponent.getRDate() == null)
                 {
                     vComponent.setRDate(new RDate());

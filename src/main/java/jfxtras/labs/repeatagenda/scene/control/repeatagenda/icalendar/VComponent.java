@@ -351,6 +351,25 @@ public interface VComponent<T>
     Collection<T> instances();
     
     /**
+     * returns string of all line-separated properties for calendar component.
+     * 
+     * Example:
+     * BEGIN:VEVENT
+     * DTSTART;TZID=America/Los_Angeles:20160214T080000
+     * DTEND;TZID=America/Los_Angeles:20160214T110000
+     * RRULE:FREQ=WEEKLY;BYDAY=SU,TU,FR
+     * DTSTAMP:20160214T022532Z
+     * UID:im8hmpakeigu3d85j3vq9q8bcc@google.com
+     * CREATED:20160214T022525Z
+     * LAST-MODIFIED:20160214T022525Z
+     * SUMMARY:test2
+     * END:VEVENT
+     * 
+     * @return
+     */
+    String toComponentText();
+    
+    /**
      * Handles how an edited VComponent is processed.  For a VComponent with a recurrence rule (RRULE)
      * the user is given a dialog to select ONE, THIS_AND_FUTURE, or ALL instances to edit.
      * For a VComponent without a RRULE there is no dialog.
@@ -574,7 +593,7 @@ public interface VComponent<T>
         final String form2 = "^[0-9]{8}T([0-9]{6})Z";
         final String form3 = "^(TZID=.*:)[0-9]{8}T([0-9]{6})";
         final String form4 = "^(VALUE=DATE:)?[0-9]{8}";
-        if (temporalString.matches("^VALUE=DATE-TIME:.*"))
+        if (temporalString.matches("^VALUE=DATE-TIME:.*")) // remove optional VALUE=DATE-TIME
         {
             temporalString = temporalString.substring(temporalString.indexOf("VALUE=DATE-TIME:")+"VALUE=DATE-TIME:".length()).trim();
         }

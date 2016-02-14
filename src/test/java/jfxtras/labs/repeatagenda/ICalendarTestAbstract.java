@@ -104,7 +104,7 @@ public abstract class ICalendarTestAbstract
                     + v2 + System.lineSeparator()
                     + "categoriesEquals:" + categoriesEquals + System.lineSeparator()
                     + "dateTimeStampEquals:" + dateTimeStampEquals + System.lineSeparator()
-                    + "dateTimeStartEquals:" + dateTimeStartEquals + System.lineSeparator()
+                    + "dateTimeStartEquals:" + dateTimeStartEquals + " " + v1.getDateTimeStart() + " " + v2.getDateTimeStart() + System.lineSeparator()
                     + "locationEquals:" + locationEquals + System.lineSeparator()
                     + "summaryEquals:" + summaryEquals + System.lineSeparator()
                     + "uniqueIdentifierEquals:" + uniqueIdentifierEquals + System.lineSeparator()
@@ -858,7 +858,7 @@ public abstract class ICalendarTestAbstract
     /* Example Google individual appointment */
     protected static VEventImpl getGoogleIndividual()
     {
-        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+        return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withAppointmentClass(clazz)
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 15, 0), ZoneOffset.UTC))
@@ -867,32 +867,42 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
                 .withSummary("test1")
                 .withUniqueIdentifier("vpqej26mlpg3adcncqqs7t7a34@google.com");
-        return vEvent;
     }
     
     /* Example Google repeatable appointment */
     protected static VEventImpl getGoogleRepeatable()
     {
-        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 10, 0), ZoneId.of("Europe/London")))
-                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 11, 4), ZoneOffset.UTC))
-                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 12, 30), ZoneId.of("Europe/London")))
-                .withSummary("test1")
-                .withUniqueIdentifier("3e7lgko2jhdmtdk28fodpjfhms@google.com");
-        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
-        vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 11));
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        vEvent.setAppointmentClass(clazz);
-        RRule rule = new RRule()
-//                .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneOffset.UTC));
-                .withUntil(LocalDate.of(2015, 11, 24));
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(3);
-        rule.setFrequency(daily);
-        return vEvent;
+        return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentClass(clazz)
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 11, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 8, 0), ZoneId.of("America/Los_Angeles")))
+                .withRRule(new RRule()
+                        .withFrequency(new Weekly()
+                                .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.TUESDAY, DayOfWeek.FRIDAY))))
+                .withSummary("test2")
+                .withUniqueIdentifier("im8hmpakeigu3d85j3vq9q8bcc@google.com");
     }
     
+    /* Example Google repeatable appointment with EXDATE*/
+    protected static VEventImpl getGoogleRepeatableWithExDates()
+    {
+        return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentClass(clazz)
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 6, 50, 24), ZoneOffset.UTC))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 15, 30), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 7, 22, 31), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
+                .withExDate(ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
+                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
+                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles")))
+                .withRRule(new RRule()
+                        .withFrequency(new Daily())
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneOffset.UTC)))
+                .withSummary("test3")
+                .withUniqueIdentifier("86801l7316n97h75cefk1ruc00@google.com");
+    }
 }

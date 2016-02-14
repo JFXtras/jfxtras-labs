@@ -54,4 +54,10 @@ public class VTodo<T> extends VComponentAbstract<T>
         return null;
     }
 
+    @Override
+    public String toComponentText() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

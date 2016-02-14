@@ -11,7 +11,7 @@ public interface RecurrenceComponent
     /** modified start date/time stream after applying changes (additions or removals) */
     public Stream<Temporal> stream(Stream<Temporal> inStream, Temporal startDateTime);
     
-    /** convert a comma delimited string of VComponent.FORMATTER dates to a List<LocalDateTime> */
+    /** parses a comma delimited string of of iCalendar date-times*/
     public static List<Temporal> parseTemporals(String string)
     {
         // find time zone id, if present

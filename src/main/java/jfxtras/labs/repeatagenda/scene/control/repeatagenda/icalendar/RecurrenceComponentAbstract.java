@@ -38,7 +38,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         checkTemporalTypes(firstClass);
     }
 
-    /** Class of encapsulated Temporal objects - LocalDate or LocalDateTime */
+    /** Class of encapsulated Temporal objects - LocalDate, LocalDateTime or ZonedDateTime */
     protected Class<? extends Temporal> temporalClass()
     {
         if (getTemporals().size() > 0)
@@ -72,29 +72,9 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     {
         boolean same =  getTemporals()
                 .stream()
-                .peek(v -> System.out.println(v.getClass().getName()))
                 .allMatch(v -> v.getClass().equals(clazz));
         if (! same) throw new IllegalArgumentException("Not all Temporal objects in VDateTime class of type:" + clazz.getSimpleName());
     }
-    
-//    @SuppressWarnings("unchecked")
-//    public T withDateTimes(LocalDateTime... dateTime)
-//    {
-//        for (LocalDateTime d : dateTime)
-//        {
-//            this.getVDateTimes().add(new VDateTime(d));
-//        }
-//        return (T) this;
-//    }
-//    @SuppressWarnings("unchecked")
-//    public T withDates(LocalDate... date)
-//    {
-//        for (LocalDate d : date)
-//        {
-//            this.getVDateTimes().add(new VDateTime(d));
-//        }
-//        return (T) this;
-//    }
     
     // CONSTRUCTORS
     public RecurrenceComponentAbstract() { }
