@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -68,8 +69,7 @@ public abstract class ICalendarTestAbstract
         boolean rDatesEquals = (v1.getRDate() == null) ? (v2.getRDate() == null) : v1.getRDate().equals(v2.getRDate()); // goes deeper
         
         // VEvent properties
-        boolean descriptionEquals = (v1.getDescription() == null) ? (v2.getDescription() == null)
-                : v1.getDescription().equals(v2.getDescription());
+        boolean descriptionEquals = (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
         boolean endPriorityEquals = v1.endPriority().equals(v2.endPriority());
         final boolean endEquals;
         switch (v1.endPriority())
@@ -101,7 +101,24 @@ public abstract class ICalendarTestAbstract
                     + "expecting:" + System.lineSeparator()
                     + v1 + System.lineSeparator()
                     + "but was:" + System.lineSeparator()
-                    + v2);
+                    + v2 + System.lineSeparator()
+                    + "categoriesEquals:" + categoriesEquals + System.lineSeparator()
+                    + "dateTimeStampEquals:" + dateTimeStampEquals + System.lineSeparator()
+                    + "dateTimeStartEquals:" + dateTimeStartEquals + System.lineSeparator()
+                    + "locationEquals:" + locationEquals + System.lineSeparator()
+                    + "summaryEquals:" + summaryEquals + System.lineSeparator()
+                    + "uniqueIdentifierEquals:" + uniqueIdentifierEquals + System.lineSeparator()
+                    + "rruleEquals:" + rruleEquals + System.lineSeparator()
+                    + "eXDatesEquals:" + eXDatesEquals + System.lineSeparator()
+                    + "rDatesEquals:" + rDatesEquals + System.lineSeparator()
+                    + "relatedToEquals:" + relatedToEquals + System.lineSeparator()
+                    + "sequenceEquals:" + sequenceEquals + System.lineSeparator()
+                    + "descriptionEquals:" + descriptionEquals + System.lineSeparator()
+                    + "endPriorityEquals:" + endPriorityEquals + System.lineSeparator()
+                    + "endEquals:" + endEquals + System.lineSeparator()
+                    + "appointmentClassEquals:" + appointmentClassEquals + System.lineSeparator()
+                    + "appointmentGroupEquals:" + appointmentGroupEquals + System.lineSeparator()                                        
+                    );
         }
     }
     
@@ -837,4 +854,45 @@ public abstract class ICalendarTestAbstract
 
         return recurrenceSet;
     }
+    
+    /* Example Google individual appointment */
+    protected static VEventImpl getGoogleIndividual()
+    {
+        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentClass(clazz)
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 15, 0), ZoneOffset.UTC))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 12, 30), ZoneOffset.UTC))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
+                .withSummary("test1")
+                .withUniqueIdentifier("vpqej26mlpg3adcncqqs7t7a34@google.com");
+        return vEvent;
+    }
+    
+    /* Example Google repeatable appointment */
+    protected static VEventImpl getGoogleRepeatable()
+    {
+        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 10, 0), ZoneId.of("Europe/London")))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 11, 4), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 12, 30), ZoneId.of("Europe/London")))
+                .withSummary("test1")
+                .withUniqueIdentifier("3e7lgko2jhdmtdk28fodpjfhms@google.com");
+        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
+        vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 11));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
+        vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
+        vEvent.setAppointmentClass(clazz);
+        RRule rule = new RRule()
+//                .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneOffset.UTC));
+                .withUntil(LocalDate.of(2015, 11, 24));
+        vEvent.setRRule(rule);
+        Frequency daily = new Daily()
+                .withInterval(3);
+        rule.setFrequency(daily);
+        return vEvent;
+    }
+    
 }

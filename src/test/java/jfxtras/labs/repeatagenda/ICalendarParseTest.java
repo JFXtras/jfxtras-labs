@@ -190,7 +190,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setAppointmentClass(getClazz());
         VEventImpl expectedVEvent = getYearly1();
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
@@ -206,7 +206,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         VEventImpl expectedVEvent = getDaily3();
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
@@ -225,7 +225,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "SUMMARY:Daily6 Summary" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         VEventImpl expectedVEvent = getDaily6();
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
@@ -245,7 +245,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                 + "SUMMARY:Daily2 Summary" + System.lineSeparator()
                 + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         VEventImpl expectedVEvent = getDailyWithException1();
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
@@ -259,8 +259,31 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                           + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
-    VEventImpl vEvent = VEventImpl.parseVEvent(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
     VEventImpl expectedVEvent = getWholeDayDaily1();
+    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    }
+    
+    @Test
+    public void canParseGoogleIndividual()
+    {
+    String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+            + "DTSTART:20160214T123000Z" + System.lineSeparator()
+            + "DTEND:20160214T150000Z" + System.lineSeparator()
+            + "DTSTAMP:20160214T022532Z" + System.lineSeparator()
+            + "UID:vpqej26mlpg3adcncqqs7t7a34@google.com" + System.lineSeparator()
+            + "CREATED:20160214T022513Z" + System.lineSeparator()
+            + "DESCRIPTION:" + System.lineSeparator()
+            + "LAST-MODIFIED:20160214T022513Z" + System.lineSeparator()
+            + "LOCATION:" + System.lineSeparator()
+            + "SEQUENCE:0" + System.lineSeparator()
+            + "STATUS:CONFIRMED" + System.lineSeparator()
+            + "SUMMARY:test1" + System.lineSeparator()
+            + "TRANSP:OPAQUE" + System.lineSeparator()
+            + "END:VEVENT";
+    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+    System.out.println(vEvent);
+    VEventImpl expectedVEvent = getGoogleIndividual();
     assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
 }

@@ -26,7 +26,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.RRuleType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
@@ -113,7 +112,9 @@ public class VEventImpl extends VEvent<Appointment>
 //    public VEventImpl withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
     public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
     
-    // Fluent methods
+    // Fluent methods for chaining
+    public VEventImpl withDateTimeCreated(ZonedDateTime t) { setDateTimeCreated(t); return this; }
+    public VEventImpl withDateTimeLastModified(ZonedDateTime t) { setDateTimeLastModified(t); return this; }
     public VEventImpl withDateTimeRecurrence(Temporal t) { setDateTimeRecurrence(t); return this; }
     public VEventImpl withDateTimeStamp(ZonedDateTime t) { setDateTimeStamp(t); return this; }
     public VEventImpl withDateTimeStart(Temporal t) { setDateTimeStart(t); return this; }
@@ -130,7 +131,8 @@ public class VEventImpl extends VEvent<Appointment>
      * CONSTRUCTORS
      */
     /** Copy constructor */
-    public VEventImpl(VEventImpl vevent) {
+    public VEventImpl(VEventImpl vevent)
+    {
         super(vevent);
         this.appointmentGroups = vevent.getAppointmentGroups();
         categoriesProperty().addListener(categoriesListener);
@@ -162,10 +164,9 @@ public class VEventImpl extends VEvent<Appointment>
             setDateTimeStart(appointment.getStartLocalDateTime().toLocalDate());
         } else
         {
-            ZoneId zone = ZoneId.systemDefault();
-            ZonedDateTime end = ZonedDateTime.of(appointment.getEndLocalDateTime(), zone);
+            ZonedDateTime end = ZonedDateTime.of(appointment.getEndLocalDateTime(), ZoneId.systemDefault());
             setDateTimeEnd(end);
-            ZonedDateTime start = ZonedDateTime.of(appointment.getStartLocalDateTime(), zone);
+            ZonedDateTime start = ZonedDateTime.of(appointment.getStartLocalDateTime(), ZoneId.systemDefault());
             setDateTimeStart(start);
         }
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
@@ -197,66 +198,6 @@ public class VEventImpl extends VEvent<Appointment>
         copy(this, (VEventImpl) destination);
     }
     
-    // TODO - EITHER REMOVE OR OVERRIDE HASHCODE
-//    @Override
-//    public boolean equals(Object obj)
-//    {
-//        if (obj == this) return true;
-//        if((obj == null) || (obj.getClass() != getClass())) {
-//            return false;
-//        }
-//        VEventImpl testObj = (VEventImpl) obj;
-////        System.out.println("getAppointmentClass:" + getAppointmentClass().getSimpleName() + " " + testObj.getAppointmentClass().getSimpleName());
-//        boolean appointmentClassEquals = (getAppointmentClass() == null) ?
-//                (testObj.getAppointmentClass() == null) : getAppointmentClass().equals(testObj.getAppointmentClass());
-//        boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
-//                (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-////        boolean dateTimeRangeStartEquals = (getStartRange() == null) ?
-////                (testObj.getStartRange() == null) : getStartRange().equals(testObj.getStartRange());
-////        boolean dateTimeRangeEndEquals = (getEndRange() == null) ?
-////                (testObj.getEndRange() == null) : getEndRange().equals(testObj.getEndRange());
-////        boolean appointmentsEquals = (appointments() == null) ?
-////                (testObj.appointments() == null) : appointments().equals(testObj.appointments());
-//        System.out.println("VEventImpl: " + appointmentClassEquals + " " +  appointmentGroupEquals + " "
-//                + " ");// + appointmentsEquals);
-//        return super.equals(obj) && appointmentClassEquals && appointmentGroupEquals;
-//    }
-    
-//    @Override
-//    public Stream<Temporal> stream(Temporal startTemporal)
-//    {
-//        return super.stream(startTemporal);
-////        Stream<Temporal> initialStream = super.stream(startTemporal);
-//        // filter away too early (with Java 9 takeWhile these statements can be combined into one chained statement for greater elegance)
-////        Stream<Temporal> filteredStream = initialStream
-////                .filter(a -> (getDateTimeRangeStart() == null) ? true : ! VComponent.isBefore(a, getDateTimeRangeStart()));
-//        // stop when too late
-////        return takeWhile(filteredStream, a -> (getDateTimeRangeEnd() == null) ? true : ! VComponent.isAfter(a, getDateTimeRangeEnd()));
-//    }
-    
-//    /** Make iCalendar compliant string of VEvent calendar component */
-//    @Override
-//    public String toString()
-//    {
-////        String errors = makeErrorString();
-////        if (! errors.equals("")) throw new RuntimeException(errors);
-//        List<String> properties = makePropertiesList();
-//        String propertiesString = properties.stream() 
-//                .map(p -> p + System.lineSeparator())
-//                .sorted()
-//                .collect(Collectors.joining());
-//        return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
-//    }
-    
-//    @Override
-//    protected List<String> makePropertiesList()
-//    {
-//        List<String> properties = new ArrayList<>();
-//        properties.addAll(super.makePropertiesList());
-////        if (getAppointmentGroup() != null) properties.put(appointmentGroupStyleClassProperty(), getAppointmentGroupStyleClass());
-//        return properties;
-//    }
-    
     @Override
     public String makeErrorString()
     {
@@ -271,9 +212,9 @@ public class VEventImpl extends VEvent<Appointment>
         return super.makeErrorString().equals("");
     }
     
-    /** Make new VEventImpl and populate properties by parsing a list of strings 
-     * @param <E>*/
-    public static VEventImpl parseVEvent(List<String> strings, List<AppointmentGroup> appointmentGroups)
+    /** Make new VEventImpl and populate properties by parsing a list of property strings 
+     * */
+    private static VEventImpl parse(List<String> strings, List<AppointmentGroup> appointmentGroups)
     {
         VEventImpl vEvent = new VEventImpl(appointmentGroups);
         VEvent.parseVEvent(vEvent, strings); // parse VEvent properties into vEvent
@@ -282,12 +223,12 @@ public class VEventImpl extends VEvent<Appointment>
     
     /** Make new VEventImpl and populate properties by parsing a string with properties separated
      * a by lineSeparator (new line) */
-    public static VEventImpl parseVEvent(String strings, List<AppointmentGroup> appointmentGroups)
+    public static VEventImpl parse(String string, List<AppointmentGroup> appointmentGroups)
     {
         List<String> stringsList = Arrays
-                .stream(strings.split(System.lineSeparator()))
+                .stream(string.split(System.lineSeparator()))
                 .collect(Collectors.toList());
-        return parseVEvent(stringsList, appointmentGroups);
+        return parse(stringsList, appointmentGroups);
     }
 
     /**
@@ -351,27 +292,27 @@ public class VEventImpl extends VEvent<Appointment>
         return makeInstances();
     }
      
-    private RRuleType getRRuleType(RRule rruleOld)
-    {
-        if (getRRule() == null)
-        {
-            if (rruleOld == null)
-            { // doesn't have repeat or have old repeat either
-                return RRuleType.INDIVIDUAL;
-            } else {
-                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
-            }
-        } else
-        { // RRule != null
-            if (rruleOld == null)
-            {
-                return RRuleType.WITH_NEW_REPEAT;                
-            } else
-            {
-                return RRuleType.WITH_EXISTING_REPEAT;
-            }
-        }
-    }
+//    private RRuleType getRRuleType(RRule rruleOld)
+//    {
+//        if (getRRule() == null)
+//        {
+//            if (rruleOld == null)
+//            { // doesn't have repeat or have old repeat either
+//                return RRuleType.INDIVIDUAL;
+//            } else {
+//                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
+//            }
+//        } else
+//        { // RRule != null
+//            if (rruleOld == null)
+//            {
+//                return RRuleType.WITH_NEW_REPEAT;                
+//            } else
+//            {
+//                return RRuleType.WITH_EXISTING_REPEAT;
+//            }
+//        }
+//    }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
     // will be obsolete with Java 9

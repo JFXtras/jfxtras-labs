@@ -256,7 +256,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
     @Override
     public void setDateTimeStart(Temporal dtStart) { dateTimeStart.set(dtStart); }
-//    boolean isDateTimeStartWholeDay() { return dateTimeStart.get() instanceof LocalDate; }
     
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -298,7 +297,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     @Override
     public void setDateTimeLastModified(ZonedDateTime dtLastModified)
     {
-        VComponent.super.setDateTimeLastModified(dtLastModified);
+        if (! dtLastModified.getOffset().equals(ZoneOffset.UTC))
+        {
+            throw new DateTimeException("dateTimeStamp (DTSTAMP) must be specified in the UTC time format (Z)");
+        }
         this.dateTimeLastModified.set(dtLastModified);
     }
     
@@ -1124,7 +1126,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(DATE_TIME_STAMP_NAME))
             { // DTSTAMP
-                System.out.println("DATE_TIME_STAMP_NAME:" + value);
                 ZonedDateTime dateTime = ZonedDateTime.parse(value, ZONED_DATE_TIME_UTC_FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);
                 stringsIterator.remove();
@@ -1144,7 +1145,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 stringsIterator.remove();
             } else if (property.equals(LAST_MODIFIED_NAME))
             { // LAST-MODIFIED
-                System.out.println("LAST_MODIFIED_NAME:" + value);
                 ZonedDateTime dateTime = ZonedDateTime.parse(value, ZONED_DATE_TIME_UTC_FORMATTER);
                 vComponent.setDateTimeLastModified(dateTime);
                 stringsIterator.remove();

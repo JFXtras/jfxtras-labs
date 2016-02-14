@@ -155,13 +155,7 @@ public interface VComponent<T>
      * The property value MUST be specified in the UTC time format.
      */
     ZonedDateTime getDateTimeLastModified();
-    default void setDateTimeLastModified(ZonedDateTime dtLastModified)
-    {
-        if (! dtLastModified.getOffset().equals(ZoneOffset.UTC))
-        {
-            throw new DateTimeException("dateTimeStamp (DTSTAMP) must be specified in the UTC time format (Z)");
-        }
-    };
+    void setDateTimeLastModified(ZonedDateTime dtLastModified);
     
     /**
      * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
@@ -605,41 +599,6 @@ public interface VComponent<T>
             throw new IllegalArgumentException("String does not match any DATE or DATE-TIME patterns: " + temporalString);
         }
     }
-    
-//    /** Method to parse iCalendar date and date-time for following formats:
-//     * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000
-//     * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z
-//     * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000
-//     * 
-//     * Based on ISO.8601.2004
-//     */
-//    @Deprecated
-//    // FOR LIST OF DATES?
-//    static Temporal parseTemporalString(String dt)
-//    {
-//        Pattern p = Pattern.compile("([0-9]+)");
-//        Matcher m = p.matcher(dt);
-//        List<String> tokens = new ArrayList<String>();
-//        while (m.find())
-//        {
-//            String token = m.group(0);
-//            tokens.add(token);
-//        }
-//        LocalDate date;
-//        if (tokens.size() > 0)
-//        {
-//            String dateToken = tokens.get(0);
-//            date = LocalDate.parse(dateToken);
-//            date = LocalDate.parse(dateToken, VComponent.LOCAL_DATE_FORMATTER);
-//        } else throw new DateTimeException("Invalid Date-Time string: " + dt);           
-//        if (tokens.size() == 2)
-//        { // find date if another token is available
-//            String timeToken = tokens.get(1);
-//            LocalTime time = LocalTime.parse(timeToken, VComponent.LOCAL_TIME_FORMATTER);
-//            return LocalDateTime.of(date, time);
-//        }
-//        return date.atStartOfDay();
-//    }
     
     /**
      * Convert temporal, either LocalDate or LocalDateTime to appropriate iCalendar string

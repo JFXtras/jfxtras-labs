@@ -527,7 +527,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      */
     protected static VEvent<?> parseVEvent(VEvent<?> vEvent, List<String> strings)
     {
-        // Test for correct beginning and end, then remove
+        // Test for BEGIN:VEVENT and END:VEVENT, then remove
         if (! strings.get(0).equals("BEGIN:VEVENT"))
         {
             throw new IllegalArgumentException("Invalid calendar component. First element must be BEGIN:VEVENT");
@@ -551,6 +551,11 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             String line = stringsIterator.next();
             String property = line.substring(0, line.indexOf(":"));
             String value = line.substring(line.indexOf(":") + 1).trim();
+            System.out.println("value:" + value);
+            if (value.isEmpty())
+            { // skip empty properties
+                continue;
+            }
             if (property.equals(DESCRIPTION_NAME))
             { // DESCRIPTION
                     if (vEvent.getDescription() == null)

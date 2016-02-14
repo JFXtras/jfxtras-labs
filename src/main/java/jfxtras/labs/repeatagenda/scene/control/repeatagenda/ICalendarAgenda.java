@@ -3,6 +3,8 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -299,12 +301,11 @@ public class ICalendarAgenda extends Agenda
                 {
                     if (change.getAddedSubList().size() == 1)
                     { // Open little popup - edit, delete
+                        ZonedDateTime created = ZonedDateTime.now(ZoneId.of("Z"));
                         Appointment a = change.getAddedSubList().get(0);
                         String originalSummary = a.getSummary();
                         AppointmentGroup originalAppointmentGroup = a.getAppointmentGroup();
-                        ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0));
-
-                        // check outback from newAppointmentCallback (runs NewAppointmentDialog by default)
+                        ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0)); // runs NewAppointmentDialog by default
                         switch (button)
                         {
                         case CANCEL_CLOSE:
@@ -324,6 +325,7 @@ public class ICalendarAgenda extends Agenda
                             newVComponent.setStartRange(startRange);
                             newVComponent.setEndRange(endRange);
                             newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
+                            newVComponent.setDateTimeCreated(created);
                             System.out.println(newVComponent);
                             vComponents().removeListener(vComponentsListener);
                             vComponents().add(newVComponent);
