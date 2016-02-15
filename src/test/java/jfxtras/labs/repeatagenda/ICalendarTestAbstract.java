@@ -905,4 +905,62 @@ public abstract class ICalendarTestAbstract
                 .withSummary("test3")
                 .withUniqueIdentifier("86801l7316n97h75cefk1ruc00@google.com");
     }
+    
+    /* Example Google repeatable appointment with 3 parts 
+     * Parent*/
+    protected static VEventImpl getGoogleRepeatablePart1()
+    {
+        return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentClass(clazz)
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 3), ZoneOffset.UTC))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 13, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 17), ZoneOffset.UTC))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 21, 36, 37), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 11, 0), ZoneId.of("America/Los_Angeles")))
+                .withRRule(new RRule()
+                        .withFrequency(new Daily())
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 2, 18, 18, 59, 59), ZoneOffset.UTC)))
+                .withSummary("test4")
+                .withUniqueIdentifier("mrrfvnj5acdcvn13273on9nrhs@google.com");
+    }
+    
+    /* Example Google repeatable appointment with 3 parts
+     * 
+     * This-and-future edit of Parent
+     * For this part, Google doesn't use RELATED-TO to establish the parent.
+     * Instead, Google adds a UTC date, like a RECURRENCE-ID, to the UID
+     * The special UID is converted to the RELATED-TO field internally */
+    protected static VEventImpl getGoogleRepeatablePart2()
+    {
+        return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentClass(clazz)
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 3), ZoneOffset.UTC))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 18, 14, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 17), ZoneOffset.UTC))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 21, 36, 37), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 18, 11, 0), ZoneId.of("America/Los_Angeles")))
+                .withRelatedTo("mrrfvnj5acdcvn13273on9nrhs@google.com")
+                .withRRule(new RRule()
+                        .withFrequency(new Daily())
+                        .withCount(6))
+                .withSummary("test5")
+                .withUniqueIdentifier("mrrfvnj5acdcvn13273on9nrhs_R20160218T190000@google.com");
+    }
+    
+    /* Example Google repeatable appointment with 3 parts 
+     * Recurrence */
+    protected static VEventImpl getGoogleRepeatablePart3()
+    {
+        return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentClass(clazz)
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 3), ZoneOffset.UTC))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 16, 9, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 21, 32, 26), ZoneOffset.UTC))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 21, 36, 37), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 16, 7, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeRecurrence(ZonedDateTime.of(LocalDateTime.of(2016, 2, 16, 11, 0), ZoneId.of("America/Los_Angeles")))
+                .withSequence(1)
+                .withSummary("test6")
+                .withUniqueIdentifier("mrrfvnj5acdcvn13273on9nrhs@google.com");
+    }
 }

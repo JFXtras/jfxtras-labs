@@ -506,7 +506,16 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     @Override
     public String getUniqueIdentifier() { return uniqueIdentifier.getValue(); }
     @Override
-    public void setUniqueIdentifier(String s) { uniqueIdentifier.set(s); }
+    public void setUniqueIdentifier(String s)
+    {
+        if ((s.matches("(.*)google\\.com")) && (s.matches("(.*)_R(.*)")))
+        {
+            String uid = s.substring(0, s.indexOf("_")) + "@google.com";
+            String recurrence = s.substring(s.indexOf("_"), s.indexOf("@"));
+            setRelatedTo(uid);
+        }
+        uniqueIdentifier.set(s);
+    }
     /** Set uniqueIdentifier by calling uidGeneratorCallback */
     public void setUniqueIdentifier() { setUniqueIdentifier(getUidGeneratorCallback().call(null)); } 
 //    public T withUniqueIdentifier(String uid) { setUniqueIdentifier(uid); return (T)this; }

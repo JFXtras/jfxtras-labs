@@ -331,8 +331,75 @@ public class ICalendarParseTest extends ICalendarTestAbstract
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
     VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-    System.out.println("vEvent:" + vEvent);
     VEventImpl expectedVEvent = getGoogleRepeatableWithExDates();
+    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    }
+    
+    @Test
+    public void canParseGoogleRepeatablePart1()
+    {
+    String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+            + "DTSTART;TZID=America/Los_Angeles:20160214T110000" + System.lineSeparator()
+            + "DTEND;TZID=America/Los_Angeles:20160214T130000" + System.lineSeparator()
+            + "RRULE:FREQ=DAILY;UNTIL=20160218T185959Z" + System.lineSeparator()
+            + "DTSTAMP:20160214T213637Z" + System.lineSeparator()
+            + "UID:mrrfvnj5acdcvn13273on9nrhs@google.com" + System.lineSeparator()
+            + "CREATED:20160214T193703Z" + System.lineSeparator()
+            + "DESCRIPTION:" + System.lineSeparator()
+            + "LAST-MODIFIED:20160214T193717Z" + System.lineSeparator()
+            + "LOCATION:" + System.lineSeparator()
+            + "SEQUENCE:0" + System.lineSeparator()
+            + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
+            + "SUMMARY:test4" + System.lineSeparator()
+            + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
+            + "END:VEVENT";
+    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+    VEventImpl expectedVEvent = getGoogleRepeatablePart1();
+    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    }
+    
+    @Test
+    public void canParseGoogleRepeatablePart2()
+    {
+    String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+            + "DTSTART;TZID=America/Los_Angeles:20160218T110000" + System.lineSeparator()
+            + "DTEND;TZID=America/Los_Angeles:20160218T140000" + System.lineSeparator()
+            + "RRULE:FREQ=DAILY;COUNT=6" + System.lineSeparator()
+            + "DTSTAMP:20160214T213637Z" + System.lineSeparator()
+            + "UID:mrrfvnj5acdcvn13273on9nrhs_R20160218T190000@google.com" + System.lineSeparator()
+            + "CREATED:20160214T193703Z" + System.lineSeparator()
+            + "DESCRIPTION:" + System.lineSeparator()
+            + "LAST-MODIFIED:20160214T193717Z" + System.lineSeparator()
+            + "LOCATION:" + System.lineSeparator()
+            + "SEQUENCE:0" + System.lineSeparator()
+            + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
+            + "SUMMARY:test5" + System.lineSeparator()
+            + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
+            + "END:VEVENT";
+    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+    VEventImpl expectedVEvent = getGoogleRepeatablePart2();
+    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    }
+    
+    @Test
+    public void canParseGoogleRepeatablePart3()
+    {
+    String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+            + "DTSTART;TZID=America/Los_Angeles:20160216T070000" + System.lineSeparator()
+            + "DTEND;TZID=America/Los_Angeles:20160216T090000" + System.lineSeparator()
+            + "DTSTAMP:20160214T213637Z" + System.lineSeparator()
+            + "UID:mrrfvnj5acdcvn13273on9nrhs@google.com" + System.lineSeparator()
+            + "CREATED:20160214T193703Z" + System.lineSeparator()
+            + "DESCRIPTION:" + System.lineSeparator()
+            + "LAST-MODIFIED:20160214T213226Z" + System.lineSeparator()
+            + "LOCATION:" + System.lineSeparator()
+            + "SEQUENCE:1" + System.lineSeparator()
+            + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
+            + "SUMMARY:test6" + System.lineSeparator()
+            + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
+            + "END:VEVENT";
+    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+    VEventImpl expectedVEvent = getGoogleRepeatablePart3();
     assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
 }

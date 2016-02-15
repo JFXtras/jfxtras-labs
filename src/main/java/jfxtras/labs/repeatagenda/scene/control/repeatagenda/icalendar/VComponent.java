@@ -353,19 +353,18 @@ public interface VComponent<T>
     /**
      * returns string of all line-separated properties for calendar component.
      * 
-     * Example:
-     * BEGIN:VEVENT
-     * DTSTART;TZID=America/Los_Angeles:20160214T080000
-     * DTEND;TZID=America/Los_Angeles:20160214T110000
-     * RRULE:FREQ=WEEKLY;BYDAY=SU,TU,FR
-     * DTSTAMP:20160214T022532Z
-     * UID:im8hmpakeigu3d85j3vq9q8bcc@google.com
-     * CREATED:20160214T022525Z
-     * LAST-MODIFIED:20160214T022525Z
-     * SUMMARY:test2
+     * Example:<br>
+     * BEGIN:VEVENT<br>
+     * DTSTART;TZID=America/Los_Angeles:20160214T080000<br>
+     * DTEND;TZID=America/Los_Angeles:20160214T110000<br>
+     * RRULE:FREQ=WEEKLY;BYDAY=SU,TU,FR<br>
+     * DTSTAMP:20160214T022532Z<br>
+     * UID:im8hmpakeigu3d85j3vq9q8bcc@google.com<br>
+     * CREATED:20160214T022525Z<br>
+     * LAST-MODIFIED:20160214T022525Z<br>
+     * SUMMARY:test2<br>
      * END:VEVENT
      * 
-     * @return
      */
     String toComponentText();
     
