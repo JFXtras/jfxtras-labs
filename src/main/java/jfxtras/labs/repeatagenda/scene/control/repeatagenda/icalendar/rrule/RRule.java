@@ -365,12 +365,6 @@ public class RRule
     public Stream<Temporal> stream(Temporal start)
     {
         // filter out recurrences
-//        Temporal d = null;
-//        getRecurrences().stream().map(v -> v.getDateTimeRecurrence()).filter(t -> t.equals(d)).findFirst().isPresent();
-//        getRecurrences().stream()
-//                .map(v -> v.getDateTimeRecurrence())
-//                .findAny(t -> t.equals(d))
-//                .isPresent();
         Stream<Temporal> filteredStream = (recurrences().size() == 0) ?
                 getFrequency().stream(start) :
                 getFrequency().stream(start).filter(t -> 

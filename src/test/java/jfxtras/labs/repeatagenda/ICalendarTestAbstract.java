@@ -8,8 +8,10 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
@@ -799,34 +801,6 @@ public abstract class ICalendarTestAbstract
 
     }
 
-    
-    // TODO GET Rid of branches - not using
-    // 
-    
-//    // branch of getDaily6
-//    protected static VEventImpl getBranch1()
-//    {
-//        VEventImpl v = new VEventImpl(getDaily6());
-//        v.setDateTimeStart(LocalDateTime.of(2015, 12, 1, 12, 0));
-//        v.setDateTimeEnd(LocalDateTime.of(2015, 12, 1, 13, 0));
-//        v.setRelatedTo(v.getUniqueIdentifier());
-//        v.setUniqueIdentifier("20151201T080000-0@jfxtras.org");
-//        v.getRRule().setUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 13, 11, 59, 59), ZoneOffset.UTC));
-//        return v;
-//    }
-//    
-//    // branch of getDaily6
-//    protected static VEventImpl getBranch2()
-//    {
-//        VEventImpl v = new VEventImpl(getDaily6());
-//        v.setDateTimeStart(LocalDateTime.of(2015, 12, 14, 6, 0));
-//        v.setDateTimeEnd(LocalDateTime.of(2015, 12, 14, 8, 0));
-//        v.setRelatedTo(v.getUniqueIdentifier());
-//        v.setUniqueIdentifier("20151214T080000-0@jfxtras.org");
-//        v.getRRule().setUntil(null);
-//        return v;
-//    }
-
     // child of getDaily6
     protected static VEventImpl getChild1()
     {
@@ -838,17 +812,13 @@ public abstract class ICalendarTestAbstract
         return v;
     }
     
-    protected static Collection<VComponent<Appointment>> getRecurrenceSet()
+    protected static List<VEventImpl> getDailyWithRecurrence()
     {
-        Set<VComponent<Appointment>> recurrenceSet = new LinkedHashSet<>();
+        List<VEventImpl> recurrenceSet = new ArrayList<>();
         VEventImpl parent = getDaily6();
-//        VEventImpl branch1 = getBranch1();
-//        VEventImpl branch2 = getBranch2();
         VEventImpl child = getChild1();
         
         recurrenceSet.add(parent);
-//        recurrenceSet.add(branch1);
-//        recurrenceSet.add(branch2);
         recurrenceSet.add(child);
         parent.getRRule().recurrences().add(child);
 
@@ -962,5 +932,18 @@ public abstract class ICalendarTestAbstract
                 .withSequence(1)
                 .withSummary("test6")
                 .withUniqueIdentifier("mrrfvnj5acdcvn13273on9nrhs@google.com");
+    }
+    
+    protected static List<VEventImpl> getGoogleRepeatableParts()
+    {
+        List<VEventImpl> vComponents = new ArrayList<>();
+        VEventImpl p1 = getGoogleRepeatablePart1();
+        VEventImpl p2 = getGoogleRepeatablePart2();
+        VEventImpl p3 = getGoogleRepeatablePart3();
+        vComponents.add(p1);
+        vComponents.add(p2);
+        vComponents.add(p3);
+        p1.getRRule().withRecurrences(p3);
+        return vComponents;
     }
 }

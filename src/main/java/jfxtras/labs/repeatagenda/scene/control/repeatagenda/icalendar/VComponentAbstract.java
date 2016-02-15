@@ -508,10 +508,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     @Override
     public void setUniqueIdentifier(String s)
     {
-        if ((s.matches("(.*)google\\.com")) && (s.matches("(.*)_R(.*)")))
+        if ((s != null) && (s.matches("(.*)google\\.com")) && (s.matches("(.*)_R(.*)")))
         {
             String uid = s.substring(0, s.indexOf("_")) + "@google.com";
-            String recurrence = s.substring(s.indexOf("_"), s.indexOf("@"));
+            String recurrence = s.substring(s.indexOf("_"), s.indexOf("@")); // not currently used
             setRelatedTo(uid);
         }
         uniqueIdentifier.set(s);
