@@ -729,24 +729,25 @@ public interface VComponent<T>
         } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }
     
-    /**
-     * Add value in chronoUnit to temporal
-     * Automatically converts nanos to days if temporal is LocalDate.
-     * 
-     * @param dateTimeStart
-     * @param startShiftInNanos
-     * @param days
-     */
-    static Temporal addNanos(Temporal temporal, long nanos)
-    {
-        if (temporal.isSupported(ChronoUnit.NANOS))
-        {
-            return temporal.plus(nanos, ChronoUnit.NANOS);            
-        } else
-        {
-            return temporal.plus(nanos/NANOS_IN_DAY, ChronoUnit.DAYS);            
-        }
-    }
+//    /**
+//     * Add value in chronoUnit to temporal
+//     * Automatically converts nanos to days if temporal is LocalDate.
+//     * 
+//     * @param dateTimeStart
+//     * @param startShiftInNanos
+//     * @param days
+//     */
+//    @Deprecated
+//    static Temporal addNanos(Temporal temporal, long nanos)
+//    {
+//        if (temporal.isSupported(ChronoUnit.NANOS))
+//        {
+//            return temporal.plus(nanos, ChronoUnit.NANOS);            
+//        } else
+//        {
+//            return temporal.plus(nanos/NANOS_IN_DAY, ChronoUnit.DAYS);            
+//        }
+//    }
 
     /**
      * Return list of all related VComponents that make up entire recurrence set.

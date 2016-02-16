@@ -1,8 +1,10 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -204,32 +206,52 @@ public class ICalendarAgenda extends Agenda
         // apply changes to vEvent Note: only changes date and time.  If other types of changes become possible then add to the below list.
         // change start and end date/time
         final Temporal startNew;
-        final long duration;
+//        final long duration;
+        
+        // set start date-time
+        Period shift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
         if (appointment.isWholeDay())
         {
-            long daysShift = ChronoUnit.DAYS.between(LocalDate.from(startOriginalInstance), startInstance);
-            startNew = LocalDate.from(vEvent.getDateTimeStart()).plus(daysShift, ChronoUnit.DAYS);
+//            long daysShift = ChronoUnit.DAYS.between(LocalDate.from(startOriginalInstance), startInstance);
+//            startNew = LocalDate.from(vEvent.getDateTimeStart()).plus(daysShift, ChronoUnit.DAYS);
+            startNew = vEvent.getDateTimeStart().plus(shift);
             vEvent.setDateTimeStart(startNew);
-            duration = ChronoUnit.DAYS.between(startInstance, endInstance) * VComponent.NANOS_IN_DAY;
-            vEvent.setStartRange(LocalDate.from(vEvent.getStartRange()));
-            vEvent.setEndRange(LocalDate.from(vEvent.getEndRange()));
+//            duration = ChronoUnit.DAYS.between(startInstance, endInstance) * VComponent.NANOS_IN_DAY;
+
+            // Convert range to LocalDate if necessary
+            if (! (vEvent.getStartRange() instanceof LocalDate))
+            {
+                vEvent.setStartRange(LocalDate.from(vEvent.getStartRange()));
+                vEvent.setEndRange(LocalDate.from(vEvent.getEndRange()));
+            }
         } else
         {
-            long nanosShift = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
-            System.out.println("minutes:" + nanosShift/1_000_000_000/60);
-            System.out.println("startNew:" + vEvent.getDateTimeStart());
-            startNew = VComponent.addNanos(vEvent.getDateTimeStart(), nanosShift);
+//            long nanosShift = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
+//            System.out.println("minutes:" + nanosShift/1_000_000_000/60);
+//            System.out.println("startNew:" + vEvent.getDateTimeStart());
+            startNew = vEvent.getDateTimeStart().plus(shift);
             vEvent.setDateTimeStart(startNew);
-            duration = ChronoUnit.NANOS.between(startInstance, endInstance);
+//            duration = ChronoUnit.NANOS.between(startInstance, endInstance);
         }
+        
+        // set end date-time or duration
+        final Duration duration = Duration.between(startInstance, endInstance);
         switch (vEvent.endPriority())
         {
         case DTEND:
-            Temporal endNew = VComponent.addNanos(startNew, duration);
+            Temporal endNew;
+            if (appointment.isWholeDay())
+            {
+                long days = duration.toDays();
+                endNew = startNew.plus(days, ChronoUnit.DAYS);                
+            } else
+            {
+                endNew = startNew.plus(duration);
+            }
             vEvent.setDateTimeEnd(endNew);
             break;
         case DURATION:
-            vEvent.setDurationInNanos(duration);
+                vEvent.setDurationInNanos(duration);
             break;
         }
         System.out.println("se2:" + startNew + " " );

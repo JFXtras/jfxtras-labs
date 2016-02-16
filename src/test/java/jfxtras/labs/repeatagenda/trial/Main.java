@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda.trial;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
@@ -58,16 +59,11 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
-//        ZonedDateTime z = ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC);
-//        ZonedDateTime z2 = ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("Z"));
-//        ZonedDateTime z3 = ZonedDateTime.now();
-//        LocalDate d = LocalDate.now();
-//	    String s = VComponentAbstract.makeDateTimePropertyTag("TEST", d);
-//	    System.out.println(s);
-//        System.out.println(s + VComponent.temporalToString(d));
-//	    System.exit(0);
-//
-//	    System.out.println(VComponent.ZONED_DATE_TIME_FORMATTER.format(z3));
+	    LocalDate d = LocalDate.now();
+	    Period du = Period.between(LocalDate.now().minusDays(2), LocalDate.now());
+	    System.out.println(d + " " + d.plus(du));
+	    System.exit(0);
+
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));
