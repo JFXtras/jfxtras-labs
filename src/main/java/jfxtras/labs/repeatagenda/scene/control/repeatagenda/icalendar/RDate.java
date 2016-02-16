@@ -21,7 +21,12 @@ import java.util.stream.StreamSupport;
 public class RDate extends RecurrenceComponentAbstract<RDate>
 {
 
+    // CONSTRUCTORS
+    public RDate() { }
+    public RDate(Temporal... dateOrDateTime) { super(dateOrDateTime); }
+    
     /** Add date/times in RDates set */
+    @Override
     public Stream<Temporal> stream(Stream<Temporal> inStream, Temporal startTemporal)
     {
         if (inStream == null)

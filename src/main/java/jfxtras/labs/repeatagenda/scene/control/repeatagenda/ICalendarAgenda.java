@@ -201,7 +201,7 @@ public class ICalendarAgenda extends Agenda
             endInstance = appointment.getEndLocalDateTime();
         }
         Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
-        System.out.println("se:" + startInstance + " " + endInstance + " " + startOriginalInstance);
+//        System.out.println("se:" + startInstance + " " + endInstance + " " + startOriginalInstance);
   
         // apply changes to vEvent Note: only changes date and time.  If other types of changes become possible then add to the below list.
         // change start and end date/time
@@ -251,7 +251,7 @@ public class ICalendarAgenda extends Agenda
             vEvent.setDateTimeEnd(endNew);
             break;
         case DURATION:
-                vEvent.setDurationInNanos(duration);
+                vEvent.setDuration(duration);
             break;
         }
         System.out.println("se2:" + startNew + " " );

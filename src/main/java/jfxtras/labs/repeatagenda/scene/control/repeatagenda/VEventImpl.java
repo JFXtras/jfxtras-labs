@@ -1,10 +1,11 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.time.DateTimeException;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
@@ -121,8 +123,9 @@ public class VEventImpl extends VEvent<Appointment>
     public VEventImpl withDateTimeStart(Temporal t) { setDateTimeStart(t); return this; }
     public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
     public VEventImpl withDescription(String s) { setDescription(s); return this; }
-    public VEventImpl withDurationInNanos(Long l) { setDurationInNanos(l); return this; }
-    public VEventImpl withExDate(Temporal... t) { setExDate(new ExDate(t)); return this; }    
+    public VEventImpl withDurationInNanos(Duration d) { setDuration(d); return this; }
+    public VEventImpl withExDate(ExDate e) { setExDate(e); return this; }
+    public VEventImpl withRDate(RDate r) { setRDate(r); return this; }
     public VEventImpl withRelatedTo(String s) { setRelatedTo(s); return this; }
     public VEventImpl withRRule(RRule r) { setRRule(r); return this; }
     public VEventImpl withSequence(int i) { setSequence(i); return this; }
@@ -252,19 +255,41 @@ public class VEventImpl extends VEvent<Appointment>
             LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(t);
             Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
             appt.setStartLocalDateTime(startLocalDateTime);
-            final long nanos;
-            if (isWholeDay())
+//            final long nanos;
+            final Duration duration;
+            switch (endPriority())
             {
-                if (getDateTimeEnd() != null) nanos = ChronoUnit.DAYS.between(getDateTimeStart(), getDateTimeEnd()) * VComponent.NANOS_IN_DAY;
-                else if (getDurationInNanos() != null) nanos = getDurationInNanos();
-                else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
-            } else
-            {
-                if (getDateTimeEnd() != null) nanos = ChronoUnit.NANOS.between(getDateTimeStart(), getDateTimeEnd());
-                else if (getDurationInNanos() != null) nanos = getDurationInNanos();
-                else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
+            case DTEND:
+                final Temporal startInclusive;
+                final Temporal endExclusive;
+                if (isWholeDay())
+                {
+                    startInclusive = LocalDate.from(getDateTimeStart()).atStartOfDay();
+                    endExclusive = LocalDate.from(getDateTimeEnd()).atStartOfDay();
+                } else
+                {
+                    startInclusive = getDateTimeStart();
+                    endExclusive = getDateTimeEnd();                    
+                }
+                duration = Duration.between(startInclusive, endExclusive);
+                break;
+            case DURATION:
+                duration = getDuration();
+                break;
+            default:
+                throw new RuntimeException("Unknown EndPriority."); // shoudn't get here - only two EndPriorities defined
             }
-            appt.setEndLocalDateTime(startLocalDateTime.plusNanos(nanos));
+//                if (getDateTimeEnd() != null) nanos = ChronoUnit.DAYS.between(getDateTimeStart(), getDateTimeEnd()) * VComponent.NANOS_IN_DAY;
+//                else if (getDurationInNanos() != null) nanos = getDurationInNanos();
+//                else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
+//            } else
+//            {
+//                if (getDateTimeEnd() != null) nanos = ChronoUnit.NANOS.between(getDateTimeStart(), getDateTimeEnd());
+//                else if (getDurationInNanos() != null) nanos = getDurationInNanos();
+//                else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
+//            }
+//            appt.setEndLocalDateTime(startLocalDateTime.plusNanos(nanos));
+            appt.setEndLocalDateTime(startLocalDateTime.plus(duration));
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());
             appt.setAppointmentGroup(getAppointmentGroup());

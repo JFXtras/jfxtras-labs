@@ -80,7 +80,7 @@ public abstract class ICalendarTestAbstract
             endEquals = v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
             break;
         case DURATION:
-            endEquals = v1.getDurationInNanos().equals(v2.getDurationInNanos());
+            endEquals = v1.getDuration().equals(v2.getDuration());
             break;
         default:
             endEquals = false; // shouldn't get here
@@ -165,7 +165,7 @@ public abstract class ICalendarTestAbstract
         vEvent.setDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC));
         vEvent.setUniqueIdentifier("20151109T082900-0@jfxtras.org");
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13));
-        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
+        vEvent.setDuration(Duration.ofHours(1));
         vEvent.setDescription("Yearly1 Description");
         vEvent.setSummary("Yearly1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -385,7 +385,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(1997, 6, 13, 10, 0));
         vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(1997, 9, 1, 8, 30), ZoneOffset.UTC));
-        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
+        vEvent.setDuration(Duration.ofHours(1));
         vEvent.setUniqueIdentifier("19970901T083000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -405,7 +405,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 3, 10, 0));
         vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
+        vEvent.setDuration(Duration.ofMinutes(90));
         vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
         vEvent.setAppointmentClass(clazz);
         RRule rule = new RRule();
@@ -454,7 +454,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2));
-        vEvent.setDurationInNanos(2700L * NANOS_IN_SECOND);
+        vEvent.setDuration(Duration.ofMinutes(45));
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -476,7 +476,7 @@ public abstract class ICalendarTestAbstract
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3));
-        vEvent.setDurationInNanos(2700L * NANOS_IN_SECOND);
+        vEvent.setDuration(Duration.ofMinutes(45));
         vEvent.setDescription("Weekly3 Description");
         vEvent.setSummary("Weekly3 Summary");
         vEvent.setAppointmentClass(clazz);
@@ -540,7 +540,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInNanos(5400L * NANOS_IN_SECOND);
+        vEvent.setDuration(Duration.ofMinutes(90));
         vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3));
         vEvent.setDescription("Daily2 Description");
         vEvent.setSummary("Daily2 Summary");
@@ -676,7 +676,7 @@ public abstract class ICalendarTestAbstract
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30));
-        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
+        vEvent.setDuration(Duration.ofMinutes(60));
         vEvent.setDescription("Individual Description");
         vEvent.setSummary("Individual Summary");
         vEvent.setAppointmentClass(clazz);
@@ -710,11 +710,12 @@ public abstract class ICalendarTestAbstract
 
     protected static VEventImpl getRDate()
     {
-        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDurationInNanos(3600L * NANOS_IN_SECOND);
-        RDate rDate = new RDate().withTemporals(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 14, 12, 0));
-        vEvent.setRDate(rDate);
+        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDurationInNanos(Duration.ofMinutes(60))
+                .withRDate(new RDate()
+                        .withTemporals(LocalDateTime.of(2015, 11, 12, 10, 0)
+                                     , LocalDateTime.of(2015, 11, 14, 12, 0)));
         return vEvent;
     }
     
@@ -866,9 +867,10 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 7, 22, 31), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
-                .withExDate(ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
+                .withExDate(new ExDate(
+                            ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
-                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles")))
+                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
                 .withRRule(new RRule()
                         .withFrequency(new Daily())
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneOffset.UTC)))

@@ -8,7 +8,6 @@ import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 
 import java.time.DateTimeException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -43,7 +42,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
  * */
 public interface VComponent<T>
 {
-    static final long NANOS_IN_DAY = Duration.ofDays(1).toNanos();
     final static DateTimeFormatter LOCAL_DATE_FORMATTER = new DateTimeFormatterBuilder()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendValue(MONTH_OF_YEAR, 2)

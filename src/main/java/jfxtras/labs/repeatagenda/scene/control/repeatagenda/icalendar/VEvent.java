@@ -83,12 +83,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
  * @see VEventImpl
  */
 public abstract class VEvent<T> extends VComponentAbstract<T>
-{   
-    private static final long NANOS_IN_WEEK = Duration.ofDays(7).toNanos();
-    private static final long NANOS_IN_HOUR = Duration.ofHours(1).toNanos();
-    private static final long NANOS_IN_MINUTE = Duration.ofMinutes(1).toNanos();
-    private static final long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
-    
+{      
     private static final String DESCRIPTION_NAME = "DESCRIPTION";
     private static final String DURATION_NAME = "DURATION";
     private static final String DATE_TIME_END_NAME = "DTEND";
@@ -105,58 +100,14 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     final private StringProperty description = new SimpleStringProperty(this, DESCRIPTION_NAME);
     public String getDescription() { return description.getValue(); }
     public void setDescription(String value) { description.setValue(value); }
-//    public T withDescription(String value) { setDescription(value); return (T)this; } 
     
     /** 
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
      * */
-    // TODO - CHANGE durationInNanos TO DURATION
-    final private ObjectProperty<Duration> durationInNanos = new SimpleObjectProperty<>(this, DURATION_NAME);
-    public ObjectProperty<Duration> durationInNanosProperty() { return durationInNanos; }
-    public Duration getDurationInNanos() { return durationInNanos.getValue(); }
-//    public String getDurationAsString()
-//    {
-//        StringBuilder duration = new StringBuilder("P");
-//        Long nanos = getDurationInNanos().toNanos();
-//
-//        Long weeks = nanos / NANOS_IN_WEEK;
-//        if (weeks > 0) duration.append(weeks + "W");
-//        nanos -= NANOS_IN_WEEK * weeks;
-//
-//        Long days = nanos / NANOS_IN_DAY;
-//        if (days > 0) duration.append(days + "D");
-//        nanos -= NANOS_IN_DAY * days;
-//
-//        Long hours = nanos / NANOS_IN_HOUR;
-//        boolean addedT = false;
-//        if (hours > 0)
-//        {
-//            addedT = true;
-//            duration.append("T");
-//            duration.append(hours + "H");
-//        }
-//        nanos -= NANOS_IN_HOUR * hours;
-//
-//        Long minutes = nanos / NANOS_IN_MINUTE;
-//        if (minutes > 0)
-//        {
-//            if (! addedT) duration.append("T");
-//            addedT = true;
-//            duration.append(minutes + "M");
-//        }
-//        nanos -= NANOS_IN_MINUTE * minutes;
-//
-//        if (nanos > 0)
-//        {
-//            if (! addedT) duration.append("T");
-//            addedT = true;
-//            Long seconds = nanos / NANOS_IN_SECOND;
-//            duration.append(seconds + "S");
-//        }
-//
-//        return duration.toString();
-//    }
-    public void setDurationInNanos(Duration duration)
+    final private ObjectProperty<Duration> duration = new SimpleObjectProperty<>(this, DURATION_NAME);
+    public ObjectProperty<Duration> durationProperty() { return duration; }
+    public Duration getDuration() { return duration.getValue(); }
+    public void setDuration(Duration duration)
     {
         if (duration == null)
         {
@@ -165,65 +116,9 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         {
             endPriority = EndPriority.DURATION;
         }
-        durationInNanos.set(duration);
-
-//        if (duration != null)
-//        {
-//            if (duration > 0) endPriority = EndPriority.DURATION;
-//            else if (duration == 0)
-//            {
-//                endPriority = null;
-//                duration = null;
-//            }
-//            else if (duration < 0) throw new IllegalArgumentException("Duration must be greater than zero.");
-//        }
-//        durationInNanos.set(duration);
+        this.duration.set(duration);
     }
-//    public void setDurationInNanos(String duration)
-//    { // parse ISO.8601.2004 period string into period of seconds (no support for Y (years) or M (months).
-//        long nanos = 0;
-//        Pattern p = Pattern.compile("([0-9]+)|([A-Z])");
-//        Matcher m = p.matcher(duration);
-//        List<String> tokens = new ArrayList<String>();
-//        while (m.find())
-//        {
-//            String token = m.group(0);
-//            tokens.add(token);
-//        }
-//        Iterator<String> tokenIterator = tokens.iterator();
-//        String firstString = tokenIterator.next();
-//        if (! tokenIterator.hasNext() || (! firstString.equals("P"))) throw new IllegalArgumentException("Invalid DURATION string (" + duration + "). Must begin with a P");
-//        boolean timeFlag = false;
-//        while (tokenIterator.hasNext())
-//        {
-//            String token = tokenIterator.next();
-//            if (token.matches("\\d+"))
-//            { // first value is a number means I got a data element
-//                int n = Integer.parseInt(token);
-//                String time = tokenIterator.next();
-//                if (time.equals("W"))
-//                { // weeks
-//                    nanos += n * NANOS_IN_WEEK;
-//                } else if (time.equals("D"))
-//                { // days
-//                    nanos += n * NANOS_IN_DAY;
-//                } else if (timeFlag && time.equals("H"))
-//                { // hours
-//                    nanos += n * NANOS_IN_HOUR;                   
-//                } else if (timeFlag && time.equals("M"))
-//                { // minutes
-//                    nanos += n * NANOS_IN_MINUTE;                                        
-//                } else if (timeFlag && time.equals("S"))
-//                { // seconds
-//                    nanos += n * NANOS_IN_SECOND;                    
-//                } else
-//                {
-//                    throw new IllegalArgumentException("Invalid DURATION string time element (" + time + "). Must begin with a P, or Time character T not found");
-//                }
-//            } else if (token.equals("T")) timeFlag = true; // proceeding elements will be hour, minute or second
-//        }
-//        durationInNanos.setValue(nanos);
-//    }
+
     private ChangeListener<? super Temporal> dateTimeStartlistener;
     
     /**
@@ -262,8 +157,10 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         setupListeners();
     }
     
-    // Change start, change Temporal type from LocalDateTime to LocalDate (changes to whole-day)
-    // this method is called by dateTimeStartlistener
+   /** Change start, change Temporal type from LocalDateTime to LocalDate (changes to whole-day)
+    * this method is called by dateTimeStartlistener
+    * @see #dateTimeStartlistener
+    */
     private void changeStartToLocalDate(LocalDate newValue)
     {
         // Change ExDates to LocalDate
@@ -296,8 +193,10 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         }
     }
 
-    // Change start, change Temporal type from LocalDate to LocalDateTime
-    // this method is called by dateTimeStartlistener
+   /** Change start, change Temporal type from LocalDate to LocalDateTime
+    * this method is called by dateTimeStartlistener
+    * @see #dateTimeStartlistener
+    */
     private void changeStartToLocalDateTime(LocalDateTime newValue)
     {        
         LocalTime time = LocalTime.from(newValue);
@@ -379,7 +278,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             setDateTimeEnd(endNew);
             break;
         case DURATION:
-            setDurationInNanos(Duration.between(startInstance, endInstance));
+            setDuration(Duration.between(startInstance, endInstance));
             break;
         default:
             break;        
@@ -407,7 +306,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     private static void copy(VEvent<?> source, VEvent<?> destination)
     {
         destination.setDescription(source.getDescription());
-        destination.setDurationInNanos(source.getDurationInNanos());
+        destination.setDuration(source.getDuration());
         destination.setDateTimeEnd(source.getDateTimeEnd());
         destination.endPriority = source.endPriority();
     }
@@ -490,7 +389,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 properties.add(tag + VComponent.temporalToString(getDateTimeEnd()));
                 break;
             case DURATION:
-                properties.add(durationInNanosProperty().getName() + ":" + getDurationInNanos().toString());
+                properties.add(durationProperty().getName() + ":" + getDuration().toString());
                 break;
             }
         }
@@ -508,7 +407,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.
-        boolean isDurationNull = getDurationInNanos() == null;
+        boolean isDurationNull = getDuration() == null;
         boolean isEndDateTimeNull = getDateTimeEnd() == null;
         if (isDurationNull && isEndDateTimeNull)
         {
@@ -577,13 +476,13 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                     }
             } else if (property.equals(DURATION_NAME))
             { // DURATION
-                if (vEvent.getDurationInNanos() == null)
+                if (vEvent.getDuration() == null)
                 {
                     if (dTEndFound == false)
                     {
                         durationFound = true;
                         vEvent.endPriority = EndPriority.DURATION;
-                        vEvent.setDurationInNanos(Duration.parse(value));
+                        vEvent.setDuration(Duration.parse(value));
                         stringsIterator.remove();
                     } else
                     {

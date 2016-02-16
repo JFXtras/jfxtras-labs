@@ -34,27 +34,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 
 public class ICalendarParseTest extends ICalendarTestAbstract
 {
-    /** tests converting ISO.8601.2004 duration string to duration in seconds */
-    @Test
-    public void canParseDurationString()
-    {
-        VEventImpl v = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        String duration = "P15DT5H0M20S";
-        v.setDurationInNanos(duration);
-        System.out.println(v.getDurationInNanos() + " " + (1314020l * NANOS_IN_SECOND));
-        assertTrue(v.getDurationInNanos() == (1314020l * NANOS_IN_SECOND));
-    }
-    
-    /** tests converting ISO.8601.2004 duration string to duration in seconds */
-    @Test
-    public void canParseDurationString2()
-    {
-        VEventImpl v = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        String duration = "PT1H30M";
-        v.setDurationInNanos(duration);
-        assertTrue(v.getDurationInNanos() == (5400l * NANOS_IN_SECOND));
-    }
-
     /** tests converting ISO.8601.2004 date string to LocalDate */
     @Test
     public void canParseLocalDate()

@@ -189,20 +189,19 @@ public class AppointmentEditController extends Pane
             repeatableTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
         }
 
-        // Convert duration to date/time end
-        if (vEvent.getDurationInNanos() != null)
+        // Convert duration to date/time end - this controller can't handle VEvents with duration
+        if (vEvent.getDuration() != null)
         {
             final Temporal end;
             if (vEvent.isWholeDay())
             {
-                long days = vEvent.getDurationInNanos() / VComponent.NANOS_IN_DAY;
+                long days = vEvent.getDuration().toDays();
                 end = vEvent.getDateTimeStart().plus(days, ChronoUnit.DAYS);                
             } else
             {
-                end = vEvent.getDateTimeStart().plus(vEvent.getDurationInNanos(), ChronoUnit.NANOS);
+                end = vEvent.getDateTimeStart().plus(vEvent.getDuration());
             }
-            Long l = null;
-            vEvent.setDurationInNanos(l);
+            vEvent.setDuration(null);
             vEvent.setDateTimeEnd(end);
         }
         

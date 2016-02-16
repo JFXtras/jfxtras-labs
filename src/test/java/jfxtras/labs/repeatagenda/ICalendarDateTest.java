@@ -978,9 +978,9 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     @Test // LocalDate
     public void canChangeFromWholeDay()
     {
-        VEventImpl v = getWholeDayDaily2();
-        v.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0)); // change to date/time
-        v.setDurationInNanos(3600L * NANOS_IN_SECOND);
+        VEventImpl v = getWholeDayDaily2()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDurationInNanos(Duration.ofMinutes(60));
         { // start date/time
             List<Temporal> madeDates = v                
                     .stream(v.getDateTimeStart())
@@ -997,10 +997,10 @@ public class ICalendarDateTest extends ICalendarTestAbstract
             assertEquals(expectedDates, madeDates);
         }
         { // end date/time
-            long nanos = v.getDurationInNanos();
+            Duration duration = v.getDuration();
             List<Temporal> madeDates = v                
                     .stream(v.getDateTimeStart())
-                    .map(t -> t.plus(nanos, ChronoUnit.NANOS)) // calculate end
+                    .map(t -> t.plus(duration)) // calculate end
                     .limit(6)
                     .collect(Collectors.toList());
             List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(

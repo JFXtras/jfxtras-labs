@@ -685,6 +685,15 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         instances.addAll(instancesTemp);
     }
     
+    /**
+     * Part of handleEdit.
+     * Changes a VComponent with a RRULE to be an individual,
+     * 
+     * @param vComponentOriginal
+     * @param startInstance
+     * @param endInstance
+     * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection, Callback)
+     */
     protected void becomingIndividual(VComponent<T> vComponentOriginal, Temporal startInstance, Temporal endInstance)
     {
         setRRule(null);
@@ -700,7 +709,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * Edit one instance of a VEvent with a RRule.  The instance becomes a new VEvent without a RRule
      * as with the same UID as the parent and a recurrence-id for the replaced date or date/time.
      * 
-     * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
+     * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
      */
     protected void editOne(
             VComponent<T> vEventOriginal
@@ -723,7 +732,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setParent(vEventOriginal);
    
-              // Add recurrence to original vEvent
+        // Add recurrence to original vEvent
         vEventOriginal.getRRule().recurrences().add(this);
 
         // Check for validity
@@ -740,7 +749,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
         instances.clear();
         instances.addAll(instancesTemp);
-        vComponents.add(vEventOriginal); // TODO - LET LISTENER ADD NEW APPOINTMENTS OR ADD THEM HERE?
+        vComponents.add(vEventOriginal);
     }
     
     /**
@@ -764,13 +773,11 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         Temporal untilNew = (isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
         vComponentOriginal.getRRule().setUntil(untilNew);
         
-        System.out.println("newstart:" + startInstance);
         setDateTimeStart(startInstance);
         setUniqueIdentifier();
         String relatedUID = (vComponentOriginal.getRelatedTo() == null) ? vComponentOriginal.getUniqueIdentifier() : vComponentOriginal.getRelatedTo();
         setRelatedTo(relatedUID);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
-        System.out.println("unti2l:" + getRRule().getUntil());
         
         // Split EXDates dates between this and newVEvent
         if (getExDate() != null)
@@ -834,11 +841,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         {
             int countInOrginal = vComponentOriginal.makeInstances().size();
             int countInNew = getRRule().getCount() - countInOrginal;
-//            final int newCount = (int) instances()
-//                    .stream()
-//                    .map(a -> a.getStartLocalDateTime())
-//                    .filter(d -> ! VComponent.isBefore(d, startInstance))
-//                    .count();
             getRRule().setCount(countInNew);
         }
         
@@ -855,10 +857,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
         instances.clear();
         instances.addAll(instancesTemp);
-        
-//        vComponents.stream().forEach(System.out::println);
-//        System.out.println("vEvent:" + vEvent);
-//        System.out.println("vComponents:" + vComponents.size());
     }
      
     
@@ -891,15 +889,9 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             DeleteChoiceDialog dialog = new DeleteChoiceDialog(choices, Settings.resources);        
             Optional<ChangeDialogOption> result = dialog.showAndWait();
             ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
-            System.out.println("changeResponse:" + changeResponse + " " + result.isPresent());
-//            ChangeDialogOption changeResponse = ICalendarAgendaUtilities.deleteChangeDialog(choices);
             switch (changeResponse)
             {
             case ALL:
-//                String found = (count > 1) ? Integer.toString(count) : "infinite";
-//                if (ICalendarUtilities.confirmDelete(found))
-//                {
-//                List<VComponent<Appointment>> relatedVComponents = VComponent.findRelatedVComponents(vComponents, this);
                 List<VComponent<?>> relatedVComponents = new ArrayList<>();
                 if (this.getDateTimeRecurrence() == null)
                 { // is parent
@@ -910,15 +902,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                     relatedVComponents.addAll(this.getParent().getRRule().recurrences());
                     relatedVComponents.add(this.getParent());
                 }
-                System.out.println("removing:");
                 relatedVComponents.stream().forEach(v -> vComponents.remove(v));
                 vComponents.removeAll(relatedVComponents);
-                System.out.println("removed:");
                 List<?> appointmentsToRemove = relatedVComponents.stream()
                         .flatMap(v -> v.instances().stream())
                         .collect(Collectors.toList());
                 instances.removeAll(appointmentsToRemove);
-//                }
                 break;
             case CANCEL:
                 break;
@@ -927,15 +916,12 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 else this.getExDate().getTemporals().add(startInstance);
                 instances.removeIf(a -> a.equals(instance));
                 break;
-//            case SEGMENT:
-//                System.out.println("delete segment");
-//                break;
             case THIS_AND_FUTURE:
                 if (this.getRRule().getCount() == 0) this.getRRule().setCount(0);
                 Temporal previousDay = startInstance.minus(1, ChronoUnit.DAYS);
                 Temporal untilNew = (this.isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
                 this.getRRule().setUntil(untilNew);
-                // TODO - am i deleteing instances?
+
                 // Remove old appointments, add back ones
                 Collection<T> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
                 instancesTemp.addAll(instances);
@@ -944,8 +930,6 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                 instancesTemp.addAll(this.makeInstances()); // add vEventOld part of new appointments
                 instances.clear();
                 instances.addAll(instancesTemp);
-
-//                System.out.println("until:" + untilNew);
                 break;
             default:
                 break;

@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -51,11 +52,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
         Temporal startInstance = selectedAppointment.getStartLocalDateTime();
         Temporal endInstance = selectedAppointment.getEndLocalDateTime();
-        long startShift = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
-        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
-        long duration = ChronoUnit.NANOS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        Duration startShift = Duration.between(startOriginalInstance, startInstance);
+        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
+        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
         vEvent.setDateTimeStart(dtStart);
-        vEvent.setDurationInNanos(duration);
+        vEvent.setDuration(duration);
         
         vEvent.handleEdit(
                   vComponentOriginal
@@ -78,7 +79,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Check edited VEvent
         VEventImpl expectedVEvent = getDaily2()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 45))
-                .withDurationInNanos(4500L * NANOS_IN_SECOND)
+                .withDurationInNanos(Duration.ofMinutes(75))
                 .withSequence(1);
 
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent)); // check to see if repeat rule changed correctly
@@ -111,11 +112,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
         LocalDateTime startInstance = selectedAppointment.getStartLocalDateTime();
         LocalDateTime endInstance = selectedAppointment.getEndLocalDateTime();
-        long startShift = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
-        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
-        long duration = ChronoUnit.NANOS.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        Duration startShift = Duration.between(startOriginalInstance, startInstance);
+        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
+        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
         vEvent.setDateTimeStart(dtStart);
-        vEvent.setDurationInNanos(duration);
+        vEvent.setDuration(duration);
         
         vEvent.handleEdit(
                 vEventOriginal
@@ -153,7 +154,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 15, 10, 0))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 16, 9, 45))
                 .withDateTimeStamp(vEvent1.getDateTimeStamp())
-                .withDurationInNanos(4500L * NANOS_IN_SECOND)
+                .withDurationInNanos(Duration.ofMinutes(75))
                 .withRRule(null)
                 .withSequence(1);
         assertTrue(vEventIsEqualTo(expectedVEvent1, vEvent1));
