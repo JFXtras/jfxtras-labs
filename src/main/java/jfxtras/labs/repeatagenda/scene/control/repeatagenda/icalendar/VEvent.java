@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -390,24 +391,78 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     {
         List<String> properties = new ArrayList<>();
         properties.addAll(super.makePropertiesList());
-        if ((getDescription() != null) && (! getDescription().equals("")))
+        Arrays.stream(VEventProperty.values())
+                .forEach(p ->
+                {
+                    String newLine = p.makeContentLine(this);
+                    if (newLine != null)
+                    {
+                        properties.add(newLine);
+                    }
+                });
+        return properties;
+    }
+    
+    /**
+     * Needed by parse methods in subclasses 
+     * 
+     * Convert a list of strings containing properties of a iCalendar component and
+     * populate its properties.  Used to make a new object from a List<String>.
+     * 
+     * @param vEvent
+     * @param strings - list of properties
+     * @return VComponent with parsed properties added
+     */
+    protected static VEvent<?> parseVEvent(VEvent<?> vEvent, List<String> strings)
+    {
+        // Test for BEGIN:VEVENT and END:VEVENT, then remove those lines
+        if (! strings.get(0).equals("BEGIN:VEVENT"))
         {
-            properties.add(descriptionProperty().getName() + ":" + getDescription());
+            throw new IllegalArgumentException("Invalid VEVENT. First line must be BEGIN:VEVENT");
+        } else
+        {
+            strings.remove(0);
         }
-        if (endPriority != null)
+        if (! strings.get(strings.size()-1).equals("END:VEVENT"))
         {
-            switch (endPriority)
+            throw new IllegalArgumentException("Invalid VEVENT. Last line must be END:VEVENT");
+        } else
+        {
+            strings.remove(strings.size()-1);
+        }
+        
+        Iterator<String> lineIterator = strings.iterator();
+        while (lineIterator.hasNext())
+        {
+            String line = lineIterator.next();
+            // identify iCalendar property ending index (property name must start at the beginning of the line)
+            int propertyValueSeparatorIndex = 0;
+            for (int i=0; i<line.length(); i++)
             {
-            case DTEND:
-                String tag = makeDateTimePropertyTag(dateTimeEndProperty().getName(), getDateTimeEnd());
-                properties.add(tag + VComponent.temporalToString(getDateTimeEnd()));
-                break;
-            case DURATION:
-                properties.add(durationProperty().getName() + ":" + getDuration().toString());
-                break;
+                if ((line.charAt(i) == ';') || (line.charAt(i) == ':'))
+                {
+                    propertyValueSeparatorIndex = i;
+                    break;
+                }
+            }
+            if (propertyValueSeparatorIndex == 0)
+            {
+                continue; // line doesn't contain a property, get next one
+            }
+            String propertyName = line.substring(0, propertyValueSeparatorIndex);
+            String value = line.substring(propertyValueSeparatorIndex + 1).trim();
+            if (value.isEmpty())
+            { // skip empty properties
+                continue;
+            }
+            VEventProperty property = VEventProperty.propertyFromString(propertyName);
+            boolean propertyFound = property.setVComponent(vEvent, value); // runs method in enum to set vComponent
+            if (propertyFound)
+            {
+                lineIterator.remove();                
             }
         }
-        return properties;
+        return (VEvent<?>) VComponentAbstract.parseVComponent(vEvent, strings);
     }
     
     /**
@@ -444,105 +499,15 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         return errorsBuilder.toString();
     }
     
-    /** This method should be called by a parse method in the implementing class that
-     * makes a new object and call this method to populate all the VEvent properties
-     *
-     * @param vEvent
-     * @param strings
-     * @return
-     */
-    protected static VEvent<?> parseVEvent(VEvent<?> vEvent, List<String> strings)
-    {
-        // Test for BEGIN:VEVENT and END:VEVENT, then remove
-        if (! strings.get(0).equals("BEGIN:VEVENT"))
-        {
-            throw new IllegalArgumentException("Invalid calendar component. First element must be BEGIN:VEVENT");
-        } else
-        {
-            strings.remove(0);
-        }
-        if (! strings.get(strings.size()-1).equals("END:VEVENT"))
-        {
-            throw new IllegalArgumentException("Invalid calendar component. Last element must be END:VEVENT");
-        } else
-        {
-            strings.remove(strings.size()-1);
-        }
-        
-        Iterator<String> stringsIterator = strings.iterator();
-        boolean dTEndFound = false;
-        boolean durationFound = false;
-        while (stringsIterator.hasNext())
-        {
-            String line = stringsIterator.next();
-            String property = line.substring(0, line.indexOf(":"));
-            String value = line.substring(line.indexOf(":") + 1).trim();
-            if (value.isEmpty())
-            { // skip empty properties
-                continue;
-            }
-            if (property.equals(DESCRIPTION_NAME))
-            { // DESCRIPTION
-                    if (vEvent.getDescription() == null)
-                    {
-                        vEvent.setDescription(value);
-                        stringsIterator.remove();
-                    } else
-                    {
-                        throw new IllegalArgumentException("Invalid VEvent: DESCRIPTION can only be specified once");
-                    }
-            } else if (property.equals(DURATION_NAME))
-            { // DURATION
-                if (vEvent.getDuration() == null)
-                {
-                    if (dTEndFound == false)
-                    {
-                        durationFound = true;
-                        vEvent.endPriority = EndPriority.DURATION;
-                        vEvent.setDuration(Duration.parse(value));
-                        stringsIterator.remove();
-                    } else
-                    {
-                        throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
-                    }
-                } else
-                {
-                    throw new IllegalArgumentException("Invalid VEvent: DURATION can only be specified once.");                    
-                }
-            } else if (property.matches("^" + DATE_TIME_END_NAME + ".*"))
-            { // DTEND
-                if (vEvent.getDateTimeEnd() == null)
-                {
-                    if (durationFound == false)
-                    {
-                        dTEndFound = true;
-                        vEvent.endPriority = EndPriority.DTEND;
-                        String dateTimeString = (property.contains(";")) ? line.substring(property.indexOf(";")+1) : value;
-                        Temporal dateTime = VComponent.parseTemporal(dateTimeString);
-                        vEvent.setDateTimeEnd(dateTime);
-                        stringsIterator.remove();
-                    } else
-                    {
-                        throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
-                    }
-                } else
-                {
-                    throw new IllegalArgumentException("Invalid VEvent: DTEND can only be specified once.");                                        
-                }
-            }
-        }
-        return (VEvent<?>) VComponentAbstract.parseVComponent(vEvent, strings);
-    }
-    
-    public static enum EndPriority
+    public enum EndPriority
     {
         DURATION
       , DTEND;
     }
     
     /**
-     * VComponent properties with the following data and methods:
-     * identifying string tags (property name)
+     * VEvent specific properties with the following data and methods:
+     * iCalendar property name
      * setVComponent - parse string method
      * makeContentLine - toString method
      * 
@@ -551,25 +516,113 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
      */
     public enum VEventProperty
     {
-        LOCATION ("LOCATION")
+        DESCRIPTION ("DESCRIPTION")
         {
             @Override
-            public void setVComponent(VEvent<?> vEvent, String value)
+            public boolean setVComponent(VEvent<?> vEvent, String value)
             {
-                vEvent.setLocation(value);
+                if (vEvent.getDescription() == null)
+                {
+                    vEvent.setDescription(value);
+                    return true;
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }
             }
 
             @Override
             public String makeContentLine(VEvent<?> vEvent)
             {
-                return (vEvent.getLocation() == null) ? null : vEvent.locationProperty().getName() + ":"
-                        + vEvent.getLocation();
+                return ((vEvent.getDescription() == null) || (vEvent.getDescription().isEmpty())) ? null : vEvent.descriptionProperty().getName()
+                        + ":" + vEvent.getDescription();
+            }
+        } 
+      , DURATION ("DURATION")
+        {
+            @Override
+            public boolean setVComponent(VEvent<?> vEvent, String value)
+            {
+                if (vEvent.getDuration() == null)
+                {
+                    if (vEvent.getDateTimeEnd() == null)
+                    {
+                        vEvent.endPriority = EndPriority.DURATION;
+                        vEvent.setDuration(Duration.parse(value));
+                        return true;
+                    } else
+                    {
+                        throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
+                    }
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");
+                }
+            }
+
+            @Override
+            public String makeContentLine(VEvent<?> vEvent)
+            {
+                return (vEvent.getDuration() == null) ? null : vEvent.durationProperty().getName() + ":"
+                        + vEvent.getDuration();
+            }
+        } 
+      , DATE_TIME_END ("DTEND")
+        {
+            @Override
+            public boolean setVComponent(VEvent<?> vEvent, String value)
+            {
+                if (vEvent.getDateTimeEnd() == null)
+                {
+                    if (vEvent.getDuration() == null)
+                    {
+                        vEvent.endPriority = EndPriority.DTEND;
+                        Temporal dateTime = VComponent.parseTemporal(value);
+                        vEvent.setDateTimeEnd(dateTime);
+                        return true;
+                    } else
+                    {
+                        throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
+                    }
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                
+                }
+            }
+
+            @Override
+            public String makeContentLine(VEvent<?> vEvent)
+            {
+                if (vEvent.getDateTimeEnd() == null)
+                {
+                    return null;
+                } else
+                {
+                    String tag = VComponent.makeDateTimePropertyTag(vEvent.dateTimeEndProperty().getName(), vEvent.getDateTimeEnd());
+                    return tag + VComponent.temporalToString(vEvent.getDateTimeEnd());
+                }
+            }
+        }        
+      , LOCATION ("LOCATION")
+        {
+            @Override
+            public boolean setVComponent(VEvent<?> vEvent, String value)
+            {
+                vEvent.setLocation(value);
+                return true;
+            }
+
+            @Override
+            public String makeContentLine(VEvent<?> vEvent)
+            {
+                return ((vEvent.getLocation() == null) || (vEvent.getLocation().isEmpty())) ? null : vEvent.locationProperty().getName()
+                        + ":" + vEvent.getLocation();
             }
         }
       , UNKNOWN ("")
         {
             @Override
-            public void setVComponent(VEvent<?> vEvent, String value) { } // do nothing
+            public boolean setVComponent(VEvent<?> vEvent, String value) { return false; } // do nothing
 
             @Override
             public String makeContentLine(VEvent<?> vEvent) { return null; } // do nothing
@@ -604,8 +657,9 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
             return (match == null) ? UNKNOWN : match;
         }
         
-        /** sets enum's associated VEvent's property from parameter value */
-        public abstract void setVComponent(VEvent<?> vEvent, String value);
+        /** sets enum's associated VEvent's property from parameter value
+         * returns true, if property was found and set */
+        public abstract boolean setVComponent(VEvent<?> vEvent, String value);
         
         /** makes content line (RFC 5545 3.1) from a VEvent property  */
         public abstract String makeContentLine(VEvent<?> vEvent);       

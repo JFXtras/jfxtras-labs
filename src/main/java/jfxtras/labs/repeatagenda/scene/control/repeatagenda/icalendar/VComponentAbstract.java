@@ -876,7 +876,10 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         copy(this, (VComponentAbstract<?>) destination);
     }
 
-    /** Make list of properties and string values for toString method in subclasses (like VEvent)
+    /**
+     * Needed by toString in subclasses.
+     *  
+     * Make list of properties and string values for toString method in subclasses (like VEvent)
      * Used by toString method in subclasses */
     List<String> makePropertiesList()
     {
@@ -890,124 +893,21 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
                         properties.add(newLine);
                     }
                 });
-
-//        if (getCategories() != null)
-//        {
-//            properties.add(categoriesProperty().getName() + ":" + getCategories().toString());
-//        }
-//        if (getComment() != null)
-//        {
-//            properties.add(commentProperty().getName() + ":" + getComment().toString());
-//        }
-//        if (getDateTimeCreated() != null)
-//        {
-//            properties.add(dateTimeCreatedProperty().getName() + ":" + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(getDateTimeCreated()));
-//        }
-//        if (getDateTimeStamp() != null)
-//        {
-//            properties.add(dateTimeStampProperty().getName() + ":" + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(getDateTimeStamp()));
-//        }
-//        if (getDateTimeRecurrence() != null)
-//        {
-//            String tag = makeDateTimePropertyTag(dateTimeRecurrenceProperty().getName(), getDateTimeRecurrence());
-//            properties.add(tag + VComponent.temporalToString(getDateTimeRecurrence()));
-//        }
-//        if (getDateTimeStart() != null)
-//        {
-//            String tag = makeDateTimePropertyTag(dateTimeStartProperty().getName(), getDateTimeStart());
-//            properties.add(tag + VComponent.temporalToString(getDateTimeStart()));
-//        }
-//        if (getDateTimeLastModified() != null)
-//        {
-//            properties.add(dateTimeLastModifiedProperty().getName() + ":" + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(getDateTimeLastModified()));
-//        }
-//        if (getExDate() != null)
-//        {
-//            if (isExDatesOnOneLine())
-//            {
-//                Temporal firstTemporal = getExDate().getTemporals().iterator().next();
-//                String tag = makeDateTimePropertyTag(exDateProperty().getName(), firstTemporal);
-//                properties.add(tag + getExDate().toString());
-//            } else
-//            {
-//                Temporal firstTemporal = getExDate().getTemporals().iterator().next();
-//                String tag = makeDateTimePropertyTag(exDateProperty().getName(), firstTemporal);
-//                getExDate().getTemporals().stream().forEach(t ->
-//                {
-//                    properties.add(tag + VComponent.temporalToString(t));
-//                });
-//            }
-//        }
-//        if (getLocation() != null)
-//        {
-//            properties.add(locationProperty().getName() + ":" + getLocation().toString());
-//        }
-//        if (getRelatedTo() != null)
-//        {
-//            properties.add(relatedToProperty().getName() + ":" + getRelatedTo().toString());
-//        }
-//        if (getRDate() != null)
-//        {
-//            Temporal firstTemporal = getRDate().getTemporals().iterator().next();
-//            String tag = makeDateTimePropertyTag(rDateProperty().getName(), firstTemporal);
-//            properties.add(tag + getRDate().toString());
-//        }
-//        if (getRRule() != null)
-//        {
-//            properties.add(rRuleProperty().getName() + ":" + getRRule().toString());
-//        }
-//        if (getSequence() != 0)
-//        {
-//            properties.add(sequenceProperty().getName() + ":" + Integer.toString(getSequence()));
-//        }
-//        if (getSummary() != null)
-//        {
-//            properties.add(summaryProperty().getName() + ":" + getSummary().toString());
-//        }
-//        if (getUniqueIdentifier() != null)
-//        {
-//            properties.add(uniqueIdentifierProperty().getName() + ":" + getUniqueIdentifier()); // required property
-//        }
         return properties;
     }
     
-    /*
-     * Generates iCalendar date-time property tags:
-     * Examples:
-     * DTEND;VALUE=DATE: (for LocalDate)
-     * DTSTART;TZID=Europe/London: (For non-UTC ZonedDateTime)
-     * LAST-MODIFIED: (For LocalDateTime and UTC ZonedDateTime)
-     */
-    @Deprecated
-    protected static String makeDateTimePropertyTag(String propertyName, Temporal t)
-    {
-        if (t instanceof ZonedDateTime)
-        {
-            String zone = VComponent.ZONE_FORMATTER.format(t);
-            if (zone.isEmpty())
-            {
-                return propertyName + ":";                
-            } else
-            {
-                return propertyName + ";" + zone + ":";                
-            }
-        } else
-        {
-            String prefex = (t instanceof LocalDate) ? ";VALUE=DATE:" : ":";
-            return propertyName + prefex;
-        }
-    }
-    
-    /** Convert a list of strings containing properties of a iCalendar component and
+    /**
+     * Needed by parse methods in subclasses 
+     * 
+     * Convert a list of strings containing properties of a iCalendar component and
      * populate its properties.  Used to make a new object from a List<String>.
      * 
-     * @param vComponent
+     * @param vComponent - VComponent input parameter
      * @param strings - list of properties
-     * @return
+     * @return VComponent with parsed properties added
      */
     protected static VComponentAbstract<?> parseVComponent(VComponentAbstract<?> vComponent, List<String> strings)
     {
-//        boolean foundSequence = false;
         Iterator<String> lineIterator = strings.iterator();
         while (lineIterator.hasNext())
         {
@@ -1028,13 +928,20 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
             }
             String propertyName = line.substring(0, propertyValueSeparatorIndex);
             String value = line.substring(propertyValueSeparatorIndex + 1).trim();
+            if (value.isEmpty())
+            { // skip empty properties
+                continue;
+            }
             VComponentProperty property = VComponentProperty.propertyFromString(propertyName);
-            property.setVComponent(vComponent, value); // runs method in enum to set vComponent
-            lineIterator.remove();
+            boolean propertyFound = property.setVComponent(vComponent, value); // runs method in enum to set vComponent
+            if (propertyFound)
+            {
+                lineIterator.remove();                
+            }
         }
         return vComponent;
     }
-
+    
     // Variables for start date or date/time cache used as starting Temporal for stream
     private static final int CACHE_RANGE = 51; // number of values in cache
     private static final int CACHE_SKIP = 21; // store every nth value in the cache

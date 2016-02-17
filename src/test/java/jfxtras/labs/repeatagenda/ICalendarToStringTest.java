@@ -40,6 +40,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
 
     VEventImpl e = getMonthly5();
     String madeString = e.toComponentText();
+    System.out.println("madeString:" + madeString);
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTSTAMP:19970901T083000Z" + System.lineSeparator()
                           + "DTSTART:19970613T100000" + System.lineSeparator()

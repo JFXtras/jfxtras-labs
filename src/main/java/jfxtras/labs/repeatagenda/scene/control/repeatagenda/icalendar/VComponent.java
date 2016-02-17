@@ -978,7 +978,7 @@ public interface VComponent<T>
     
     /**
      * VComponent properties with the following data and methods:
-     * identifying string tags (property name)
+     * iCalendar property name
      * setVComponent - parse string method
      * makeContentLine - toString method
      * 
@@ -990,40 +990,43 @@ public interface VComponent<T>
         CATEGORIES ("CATEGORIES")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 vComponent.setCategories(value);
+                return true;
             }
 
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getCategories() == null) ? null : vComponent.categoriesProperty().getName() + ":"
-                        + vComponent.getCategories();
+                return ((vComponent.getCategories() == null) || (vComponent.getCategories().isEmpty())) ? null : vComponent.categoriesProperty().getName()
+                        + ":" + vComponent.getCategories();
             }
         }
       , COMMENT ("COMMENT")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 vComponent.setComment(value); // TODO - collect multiple values - comma separate? Use list?            
+                return true;
             }
 
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getComment() == null) ? null : vComponent.commentProperty().getName() + ":"
-                        + vComponent.getComment();
+                return ((vComponent.getComment() == null) || (vComponent.getComment().isEmpty())) ? null : vComponent.commentProperty().getName()
+                        + ":" + vComponent.getComment();
             }
         }
       , CREATED ("CREATED")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
                 vComponent.setDateTimeCreated(dateTime);        
+                return true;
             }
 
             @Override
@@ -1036,10 +1039,11 @@ public interface VComponent<T>
       , DATE_TIME_STAMP ("DTSTAMP")
             {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);        
+                return true;
             }
 
             @Override
@@ -1052,12 +1056,13 @@ public interface VComponent<T>
       , DATE_TIME_START ("DTSTART")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getDateTimeStart() == null)
                 {
                     Temporal dateTime = VComponent.parseTemporal(value);
                     vComponent.setDateTimeStart(dateTime);
+                    return true;
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -1080,14 +1085,15 @@ public interface VComponent<T>
       , EXCEPTIONS ("EXDATE")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 Collection<Temporal> temporals = RecurrenceComponent.parseTemporals(value);
                 if (vComponent.getExDate() == null)
                 {
                     vComponent.setExDate(new ExDate());
                 }                  
-                vComponent.getExDate().getTemporals().addAll(temporals);        
+                vComponent.getExDate().getTemporals().addAll(temporals);
+                return true;
             }
 
             @Override
@@ -1119,12 +1125,13 @@ public interface VComponent<T>
       , LAST_MODIFIED ("LAST-MODIFIED")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getDateTimeLastModified() == null)
                 {
                     ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
                     vComponent.setDateTimeLastModified(dateTime);
+                    return true;
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -1141,22 +1148,23 @@ public interface VComponent<T>
       , ORGANIZER ("ORGANIZER")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 vComponent.setOrganizer(value);
+                return true;
             }
 
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getOrganizer() == null) ? null : vComponent.organizerProperty().getName() + ":"
+                return ((vComponent.getOrganizer() == null) || (vComponent.getOrganizer().isEmpty())) ? null : vComponent.organizerProperty().getName() + ":"
                         + vComponent.getOrganizer().toString();
             }
         }
       , RECURRENCES ("RDATE")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 Collection<Temporal> temporals = RecurrenceComponent.parseTemporals(value);
                 if (vComponent.getRDate() == null)
@@ -1164,6 +1172,7 @@ public interface VComponent<T>
                     vComponent.setRDate(new RDate());
                 }                  
                 vComponent.getRDate().getTemporals().addAll(temporals);
+                return true;
             }
 
             @Override
@@ -1183,10 +1192,11 @@ public interface VComponent<T>
       , RECURRENCE_ID ("RECURRENCE-ID")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
-                vComponent.setDateTimeRecurrence(dateTime);        
+                vComponent.setDateTimeRecurrence(dateTime);
+                return true;
             }
 
             @Override
@@ -1206,11 +1216,12 @@ public interface VComponent<T>
       , RECURRENCE_RULE ("RRULE")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getRRule() == null)
                 {
                     vComponent.setRRule(RRule.parseRRule(value));
+                    return true;
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -1227,26 +1238,28 @@ public interface VComponent<T>
       , RELATED_TO ("RELATED-TO")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 vComponent.setRelatedTo(value); // TODO - collect multiple values - comma separate? Use list?
+                return true;
             }
 
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getRelatedTo() == null) ? null : vComponent.relatedToProperty().getName() + ":"
+                return ((vComponent.getRelatedTo() == null) || (vComponent.getRelatedTo().isEmpty())) ? null : vComponent.relatedToProperty().getName() + ":"
                         + vComponent.getRelatedTo().toString();
             }
         }
       , SEQUENCE ("SEQUENCE")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getSequence() == 0)
                 {
                     vComponent.setSequence(Integer.parseInt(value));
+                    return true;
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -1263,11 +1276,12 @@ public interface VComponent<T>
       , SUMMARY ("SUMMARY")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getSummary() == null)
                 {
                     vComponent.setSummary(value);
+                    return true;
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -1277,18 +1291,19 @@ public interface VComponent<T>
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getSummary() == null) ? null : vComponent.summaryProperty().getName() + ":"
+                return ((vComponent.getSummary() == null) || (vComponent.getSummary().isEmpty())) ? null : vComponent.summaryProperty().getName() + ":"
                         + vComponent.getSummary();
             }
         }
       , UNIQUE_IDENTIFIER ("UID")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value)
+            public boolean setVComponent(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getUniqueIdentifier() == null)
                 {
                     vComponent.setUniqueIdentifier(value);
+                    return true;
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -1298,14 +1313,14 @@ public interface VComponent<T>
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getUniqueIdentifier() == null) ? null : vComponent.uniqueIdentifierProperty().getName()
+                return ((vComponent.getUniqueIdentifier() == null) || (vComponent.getUniqueIdentifier().isEmpty())) ? null : vComponent.uniqueIdentifierProperty().getName()
                         + ":" + vComponent.getUniqueIdentifier();
             }
         }
       , UNKNOWN ("")
         {
             @Override
-            public void setVComponent(VComponent<?> vComponent, String value) { } // do nothing
+            public boolean setVComponent(VComponent<?> vComponent, String value) { return false; } // do nothing
 
             @Override
             public String makeContentLine(VComponent<?> vComponent) { return null; } // do nothing
@@ -1340,29 +1355,42 @@ public interface VComponent<T>
             return (match == null) ? UNKNOWN : match;
         }
         
-        private static String makeDateTimePropertyTag(String propertyName, Temporal t)
-        {
-            if (t instanceof ZonedDateTime)
-            {
-                String zone = VComponent.ZONE_FORMATTER.format(t);
-                if (zone.isEmpty())
-                {
-                    return propertyName + ":";                
-                } else
-                {
-                    return propertyName + ";" + zone + ":";                
-                }
-            } else
-            {
-                String prefex = (t instanceof LocalDate) ? ";VALUE=DATE:" : ":";
-                return propertyName + prefex;
-            }
-        }
-        
-        /** sets enum's associated vComponent's property from parameter value */
-        public abstract void setVComponent(VComponent<?> vComponent, String value);
+        /** sets enum's associated VEvent's property from parameter value
+         * returns true, if property was found and set */
+        public abstract boolean setVComponent(VComponent<?> vComponent, String value);
         
         /** makes content line (RFC 5545 3.1) from a vComponent property  */
         public abstract String makeContentLine(VComponent<?> vComponent);       
+    }
+    
+    /**
+     * Produces property name and attribute, if necessary.
+     * For example:
+     * LocalDate : DTSTART;VALUE=DATE:
+     * LocalDateTime : DTSTART:
+     * ZonedDateTime (UTC) : DTSTART:
+     * ZonedDateTime : DTEND;TZID=America/New_York:
+     * 
+     * @param propertyName
+     * @param t - temporal of LocalDate, LocalDateTime or ZonedDateTime
+     * @return
+     */
+    static String makeDateTimePropertyTag(String propertyName, Temporal t)
+    {
+        if (t instanceof ZonedDateTime)
+        {
+            String zone = VComponent.ZONE_FORMATTER.format(t);
+            if (zone.isEmpty())
+            {
+                return propertyName + ":";                
+            } else
+            {
+                return propertyName + ";" + zone + ":";                
+            }
+        } else
+        {
+            String prefex = (t instanceof LocalDate) ? ";VALUE=DATE:" : ":";
+            return propertyName + prefex;
+        }
     }
 }

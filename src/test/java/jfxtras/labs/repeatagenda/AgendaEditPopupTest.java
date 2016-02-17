@@ -1356,8 +1356,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                 + "SUMMARY:New" + System.lineSeparator()
                 + "UID:20151108T000000-0jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
-        System.out.println(expectedString);
-        System.out.println(v);
         Assert.assertEquals(expectedString, v.toComponentText());
         
         List<LocalDateTime> dates = agenda.appointments()
