@@ -8,8 +8,10 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -142,6 +144,17 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     public EndPriority endPriority() { return endPriority; }
     private EndPriority endPriority;
 
+    /**
+     * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
+     * This property defines the intended venue for the activity
+     * defined by a calendar component.
+     * Example:
+     * LOCATION:Conference Room - F123\, Bldg. 002
+     */
+    public StringProperty locationProperty() { return locationProperty; }
+    final private StringProperty locationProperty = new SimpleStringProperty(this, VEventProperty.LOCATION.toString());
+    public String getLocation() { return locationProperty.getValue(); }
+    public void setLocation(String value) { locationProperty.setValue(value); }
     
     // CONSTRUCTORS
     public VEvent(VEvent<T> vevent)
@@ -308,6 +321,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         destination.setDescription(source.getDescription());
         destination.setDuration(source.getDuration());
         destination.setDateTimeEnd(source.getDateTimeEnd());
+        destination.setLocation(source.getLocation());
         destination.endPriority = source.endPriority();
     }
 
@@ -396,10 +410,13 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         return properties;
     }
     
+    /**
+     * Checks that one, and only one, of DTEND or DURATION is set.
+     */
     @Override
-    public String makeErrorString()
+    public String errorString()
     {
-        StringBuilder errorsBuilder = new StringBuilder(super.makeErrorString());
+        StringBuilder errorsBuilder = new StringBuilder(super.errorString());
 
         if ((getDateTimeEnd() != null) && (! VComponent.isAfter(getDateTimeEnd(), getDateTimeStart())))
             errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTEND (" + getDateTimeEnd()
@@ -521,5 +538,76 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     {
         DURATION
       , DTEND;
+    }
+    
+    /**
+     * VComponent properties with the following data and methods:
+     * identifying string tags (property name)
+     * setVComponent - parse string method
+     * makeContentLine - toString method
+     * 
+     * @author David Bal
+     *
+     */
+    public enum VEventProperty
+    {
+        LOCATION ("LOCATION")
+        {
+            @Override
+            public void setVComponent(VEvent<?> vEvent, String value)
+            {
+                vEvent.setLocation(value);
+            }
+
+            @Override
+            public String makeContentLine(VEvent<?> vEvent)
+            {
+                return (vEvent.getLocation() == null) ? null : vEvent.locationProperty().getName() + ":"
+                        + vEvent.getLocation();
+            }
+        }
+      , UNKNOWN ("")
+        {
+            @Override
+            public void setVComponent(VEvent<?> vEvent, String value) { } // do nothing
+
+            @Override
+            public String makeContentLine(VEvent<?> vEvent) { return null; } // do nothing
+        };
+      
+        // Map to match up string tag to ICalendarProperty enum
+        private static Map<String, VEventProperty> propertyFromTagMap = makePropertiesFromNameMap();
+        private static Map<String, VEventProperty> makePropertiesFromNameMap()
+        {
+            Map<String, VEventProperty> map = new HashMap<>();
+            VEventProperty[] values = VEventProperty.values();
+            for (int i=0; i<values.length; i++)
+            {
+                map.put(values[i].toString(), values[i]);
+            }
+            return map;
+        }
+        private String name;
+          
+        VEventProperty(String name)
+        {
+            this.name = name;
+        }
+        
+        @Override
+        public String toString() { return name; }
+        
+        /** get VComponentProperty enum from property name */
+        public static VEventProperty propertyFromString(String propertyName)
+        {
+            VEventProperty match = propertyFromTagMap.get(propertyName.toUpperCase());
+            return (match == null) ? UNKNOWN : match;
+        }
+        
+        /** sets enum's associated VEvent's property from parameter value */
+        public abstract void setVComponent(VEvent<?> vEvent, String value);
+        
+        /** makes content line (RFC 5545 3.1) from a VEvent property  */
+        public abstract String makeContentLine(VEvent<?> vEvent);       
     }
 }

@@ -30,7 +30,6 @@ public class AgendaChangeTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canDragAndDropAppointment()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
@@ -100,7 +99,6 @@ public class AgendaChangeTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canExpandAppoindment()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));

@@ -2,7 +2,6 @@ package jfxtras.labs.repeatagenda.trial;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
@@ -16,7 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import jfxtras.labs.repeatagenda.ICalendarCopyTest;
+import jfxtras.labs.repeatagenda.ICalendarToStringTest;
 import jfxtras.labs.repeatagenda.trial.controller.CalendarController;
 
 public class Main extends Application {
@@ -59,10 +58,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
-	    LocalDate d = LocalDate.now();
-	    Period du = Period.between(LocalDate.now().minusDays(2), LocalDate.now());
-	    System.out.println(d + " " + d.plus(du));
-	    System.exit(0);
 
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
@@ -71,8 +66,8 @@ public class Main extends Application {
         CalendarController controller = mainLoader.getController();
         controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
         
-        ICalendarCopyTest r = new ICalendarCopyTest();
-        r.canCopyVEvent2();
+        ICalendarToStringTest r = new ICalendarToStringTest();
+        r.yearly1ToString();
         System.exit(0);
         
         Scene scene = new Scene(root, 1366, 768);

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,15 +31,112 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 
 /** Interface for VEVENT, VTODO, VJOURNAL calendar components. 
+ *
+ * This defines a top-level calendar component from iCalendar as defined in section 3.6 
+ * of RFC 5545 for an event (VEvent), a to-do (VTodo) or a journal entry (VJournal).
+ * 
+ * The three other components defined in section 3.6 are time zone
+ * information, free/busy time information, and alarm.  Those three components
+ * are not subclasses of VComponent and are not implemented here.
+ *
+ * The implementation status of component properties:
+       3.8.1.  Descriptive Component Properties  . . . . . . . . . .  81
+         3.8.1.1.  Attachment  . . . . . . . . . . . . . . . . . . .  81 - NO
+         3.8.1.2.  Categories  . . . . . . . . . . . . . . . . . . .  82 - Yes
+         3.8.1.3.  Classification  . . . . . . . . . . . . . . . . .  83 - NO
+         3.8.1.4.  Comment . . . . . . . . . . . . . . . . . . . . .  84 - Yes
+         3.8.1.5.  Description . . . . . . . . . . . . . . . . . . .  85 - Yes (in VEvent)
+         3.8.1.6.  Geographic Position . . . . . . . . . . . . . . .  87 - NO
+         3.8.1.7.  Location  . . . . . . . . . . . . . . . . . . . .  88 - Yes (in VEvent)
+         3.8.1.8.  Percent Complete  . . . . . . . . . . . . . . . .  89 - NO
+         3.8.1.9.  Priority  . . . . . . . . . . . . . . . . . . . .  90 - NO
+         3.8.1.10. Resources . . . . . . . . . . . . . . . . . . . .  92 - NO
+         3.8.1.11. Status  . . . . . . . . . . . . . . . . . . . . .  93 - NO
+         3.8.1.12. Summary . . . . . . . . . . . . . . . . . . . . .  94 - Yes
+       3.8.2.  Date and Time Component Properties  . . . . . . . . .  95
+         3.8.2.1.  Date-Time Completed . . . . . . . . . . . . . . .  95 - NO
+         3.8.2.2.  Date-Time End . . . . . . . . . . . . . . . . . .  96 - Yes
+         3.8.2.3.  Date-Time Due . . . . . . . . . . . . . . . . . .  97 - NO
+         3.8.2.4.  Date-Time Start . . . . . . . . . . . . . . . . .  99 - Yes
+         3.8.2.5.  Duration  . . . . . . . . . . . . . . . . . . . . 100 - Yes
+         3.8.2.6.  Free/Busy Time  . . . . . . . . . . . . . . . . . 101 - NO
+         3.8.2.7.  Time Transparency . . . . . . . . . . . . . . . . 102 - NO
+       3.8.3.  Time Zone Component Properties  . . . . . . . . . . . 103 - NO
+         3.8.3.1.  Time Zone Identifier  . . . . . . . . . . . . . . 103 - NO
+         3.8.3.2.  Time Zone Name  . . . . . . . . . . . . . . . . . 105 - NO
+         3.8.3.3.  Time Zone Offset From . . . . . . . . . . . . . . 106 - NO
+         3.8.3.4.  Time Zone Offset To . . . . . . . . . . . . . . . 106 - NO
+         3.8.3.5.  Time Zone URL . . . . . . . . . . . . . . . . . . 107 - NO
+       3.8.4.  Relationship Component Properties . . . . . . . . . . 108
+         3.8.4.1.  Attendee  . . . . . . . . . . . . . . . . . . . . 108 - NO
+         3.8.4.2.  Contact . . . . . . . . . . . . . . . . . . . . . 111 - NO
+         3.8.4.3.  Organizer . . . . . . . . . . . . . . . . . . . . 113 - Yes
+         3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - Yes
+         3.8.4.5.  Related To  . . . . . . . . . . . . . . . . . . . 117 - Yes
+         3.8.4.6.  Uniform Resource Locator  . . . . . . . . . . . . 118 - NO
+         3.8.4.7.  Unique Identifier . . . . . . . . . . . . . . . . 119 - Yes
+       3.8.5.  Recurrence Component Properties . . . . . . . . . . . 120
+         3.8.5.1.  Exception Date-Times  . . . . . . . . . . . . . . 120 - Yes
+         3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - Yes
+         3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - Yes, in RRule class
+       3.8.6.  Alarm Component Properties  . . . . . . . . . . . . . 134
+         3.8.6.1.  Action  . . . . . . . . . . . . . . . . . . . . . 134 - NO
+         3.8.6.2.  Repeat Count  . . . . . . . . . . . . . . . . . . 135 - NO
+         3.8.6.3.  Trigger . . . . . . . . . . . . . . . . . . . . . 135 - NO
+       3.8.7.  Change Management Component Properties  . . . . . . . 138
+         3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - Yes
+         3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - Yes
+         3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - Yes
+         3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - Yes
+       3.8.8.  Miscellaneous Component Properties  . . . . . . . . . 142
+         3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO
+         3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - can't be implemented here.  must be in implementing class
+         3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO
+         
+Alphabetical list of elements for VComponent (some not implemented)
+ATTACH - not implemented
+ATTENDEE - not implemented
+CATEGORIES - yes
+CLASS - not implemented
+COMMENT - yes
+CONTACT - not implemented
+CREATED - yes
+DTSTAMP - yes
+DTSTART - yes
+EXDATE - yes
+IANA-PROP - not implemented
+LAST-MODIFIED - yes
+ORGANIZER - yes
+RDATE - yes
+RECURRENCE-ID - yes
+RELATED-TO - yes
+RESOURCES - not implemented
+RRULE - yes
+RSTATUS - not implemented
+SEQUENCE - Yes
+STATUS - not implemented
+SUMMARY - yes
+UID - yes
+URL - not implemented
+X-PROP - can't be implemented here.  must be in implementing class
+
+Limitations: CATEGORIES, COMMENT, RELATED-TO can only exist once per calendar component.  According
+to iCalendar a number of properties, including these can exist more than once.  Fixing
+this limitation is a future goal. - I plan on fixing this problem by combining multiple
+instances into one property internally.
+
  * @param <T> - type of recurrence instance, such as an appointment implementation
  * @see VComponentAbstract
  * @see VEvent
+ * @see VTodo // not implemented yet
+ * @see VJournal // not implemented yet
  * */
 public interface VComponent<T>
 {
@@ -64,8 +162,8 @@ public interface VComponent<T>
             .toFormatter();
     final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .optionalStart()
+            .parseCaseInsensitive()
             .appendLiteral("TZID=")
-            .parseCaseSensitive()
             .appendZoneRegionId()
             .appendLiteral(':')
             .optionalEnd()
@@ -73,8 +171,8 @@ public interface VComponent<T>
             .toFormatter();
     final static DateTimeFormatter ZONE_FORMATTER = new DateTimeFormatterBuilder()
             .optionalStart()
+            .parseCaseInsensitive()
             .appendLiteral("TZID=")
-            .parseCaseSensitive()
             .appendZoneRegionId()
             .optionalEnd()
             .toFormatter();
@@ -87,6 +185,7 @@ public interface VComponent<T>
      * CATEGORIES:MEETING
      */
     String getCategories();
+    StringProperty categoriesProperty();
     void setCategories(String value);
     
     /**
@@ -100,6 +199,7 @@ public interface VComponent<T>
          their site. - - John
      * */
     String getComment();
+    StringProperty commentProperty();
     void setComment(String value);
     
     /**
@@ -109,6 +209,7 @@ public interface VComponent<T>
      * The value MUST be specified in the UTC time format.
      */
     ZonedDateTime getDateTimeCreated();
+    ObjectProperty<ZonedDateTime> dateTimeCreatedProperty();
     void setDateTimeCreated(ZonedDateTime dtCreated);
     
     /**
@@ -118,6 +219,7 @@ public interface VComponent<T>
      * The value MUST be specified in the UTC time format.
      */
     ZonedDateTime getDateTimeStamp();
+    ObjectProperty<ZonedDateTime> dateTimeStampProperty();
     void setDateTimeStamp(ZonedDateTime dtStamp);
     
     /**
@@ -126,12 +228,7 @@ public interface VComponent<T>
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
     Temporal getDateTimeStart();
-    /**
-     * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
-     * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
-     * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
-     */
-    ObjectProperty<Temporal> dateTimeStartProperty(); // TODO - SHOULD I HAVE PROPERTIES HERE OR JUST IN ABSTRACT?
+    ObjectProperty<Temporal> dateTimeStartProperty();
     void setDateTimeStart(Temporal dtStart);
 
     /** Component is whole day if dateTimeStart (DTSTART) only contains a date (no time) */
@@ -143,7 +240,9 @@ public interface VComponent<T>
      * Is rarely used, so employs lazy initialization.
      */
     ExDate getExDate();
+    ObjectProperty<ExDate> exDateProperty();
     void setExDate(ExDate exDate);
+    boolean isExDatesOnOneLine();
 
     /**
      * LAST-MODIFIED: Date-Time Last Modified, from RFC 5545 iCalendar 3.8.7.3 page 138
@@ -153,18 +252,9 @@ public interface VComponent<T>
      * The property value MUST be specified in the UTC time format.
      */
     ZonedDateTime getDateTimeLastModified();
+    ObjectProperty<ZonedDateTime> dateTimeLastModifiedProperty();
     void setDateTimeLastModified(ZonedDateTime dtLastModified);
     
-    /**
-     * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
-     * This property defines the intended venue for the activity
-     * defined by a calendar component.
-     * Example:
-     * LOCATION:Conference Room - F123\, Bldg. 002
-     */
-    String getLocation();
-    void setLocation(String value);
-
     /**
      *  ORGANIZER: RFC 5545 iCalendar 3.8.4.3. page 111
      * This property defines the organizer for a calendar component
@@ -175,7 +265,16 @@ public interface VComponent<T>
      * responsible to extract any contained data elements such as CN, DIR, SENT-BY
      * */
     String getOrganizer();
+    StringProperty organizerProperty();
     void setOrganizer(String value);
+    
+    /**
+     * RDATE: Set of date/times for recurring events, to-dos, journal entries.
+     * 3.8.5.2, RFC 5545 iCalendar
+     */
+    RDate getRDate();
+    ObjectProperty<RDate> rDateProperty();
+    void setRDate(RDate rDate);
     
     /**
      * RELATED-TO: This property is used to represent a relationship or reference between
@@ -185,6 +284,7 @@ public interface VComponent<T>
      * 3.8.4.5, RFC 5545 iCalendar
      */
     String getRelatedTo();
+    StringProperty relatedToProperty();
     void setRelatedTo(String uid);
     
     // TODO - NOT IMPLEMENTED YET
@@ -200,18 +300,12 @@ public interface VComponent<T>
      * recurrence instance.
      */
     Temporal getDateTimeRecurrence();
+    ObjectProperty<Temporal> dateTimeRecurrenceProperty();
     void setDateTimeRecurrence(Temporal dtRecurrence);
     
     /** If VComponent has RECURRENCE-ID this returns its parent object */
     VComponent<T> getParent();
     void setParent(VComponent<T> v);
-    
-    /**
-     * RDATE: Set of date/times for recurring events, to-dos, journal entries.
-     * 3.8.5.2, RFC 5545 iCalendar
-     */
-    RDate getRDate();
-    void setRDate(RDate rDate);
     
     /**
      * RRULE, Recurrence Rule as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -220,6 +314,7 @@ public interface VComponent<T>
      * If component is not repeating the value is null.
      */
     RRule getRRule();
+    ObjectProperty<RRule> rRuleProperty();
     void setRRule(RRule rRule);
 
     /**
@@ -236,8 +331,8 @@ public interface VComponent<T>
 
        SEQUENCE:2
      */
-    IntegerProperty sequenceProperty();
     int getSequence();
+    IntegerProperty sequenceProperty();
     void setSequence(int value);
     default void incrementSequence() { setSequence(getSequence()+1); }
     
@@ -248,6 +343,7 @@ public interface VComponent<T>
      * SUMMARY:Department Party
      * */
     String getSummary();
+    StringProperty summaryProperty();
     void setSummary(String value);
     
     /**
@@ -257,6 +353,7 @@ public interface VComponent<T>
      * setting the UID callback.
      */
     String getUniqueIdentifier();
+    StringProperty uniqueIdentifierProperty();
     void setUniqueIdentifier(String s);
     
     /** Callback for creating unique uid values  */
@@ -266,6 +363,23 @@ public interface VComponent<T>
     /**
      * Checks to see if VComponent is has all required properties filled.  Also checks
      * to ensure all properties contain valid values.
+    *
+     * Requires properties:
+     * DTSTAMP
+     * UID
+     *
+     * Optional, can only occur once: // TODO - VERIFY ALL BELOW ITEMS DONE ONLY ONCE
+     * CLASS
+     * CREATED
+     * DTSTART
+     * LAST-MODIFIED
+     * ORGANIZER
+     * RECURID
+     * RRULE
+     * SEQUENCE
+     * STATUS
+     * SUMMARY
+     * URL
      * 
      * @return true for valid VComponent, false for invalid one
      */
@@ -349,7 +463,7 @@ public interface VComponent<T>
     Collection<T> instances();
     
     /**
-     * returns string of all line-separated properties for calendar component.
+     * returns string of line-separated properties defining calendar component.
      * 
      * Example:<br>
      * BEGIN:VEVENT<br>
@@ -415,10 +529,10 @@ public interface VComponent<T>
     // DEFAULT METHODS
     
     /**
-     * Checks to see if object contains required properties.  Returns empty string if it is
-     * valid.  Returns string of errors if not valid.
+     * If VComponent is not valid returns string of errors.  If it's valid then returns an empty string
+     * See {@link #isValid()} for valid criteria
      */
-    default String makeErrorString()
+    default String errorString()
     {
         StringBuilder errorsBuilder = new StringBuilder();
         if (getDateTimeStart() == null) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART must not be null.");
@@ -726,26 +840,6 @@ public interface VComponent<T>
             return d1.isAfter(d2);
         } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }
-    
-//    /**
-//     * Add value in chronoUnit to temporal
-//     * Automatically converts nanos to days if temporal is LocalDate.
-//     * 
-//     * @param dateTimeStart
-//     * @param startShiftInNanos
-//     * @param days
-//     */
-//    @Deprecated
-//    static Temporal addNanos(Temporal temporal, long nanos)
-//    {
-//        if (temporal.isSupported(ChronoUnit.NANOS))
-//        {
-//            return temporal.plus(nanos, ChronoUnit.NANOS);            
-//        } else
-//        {
-//            return temporal.plus(nanos/NANOS_IN_DAY, ChronoUnit.DAYS);            
-//        }
-//    }
 
     /**
      * Return list of all related VComponents that make up entire recurrence set.
@@ -764,7 +858,6 @@ public interface VComponent<T>
                 .filter(v -> v.getUniqueIdentifier().equals(uid))
                 .collect(Collectors.toList());
     }
-
     
     /**
      * Return list of all related VComponents that make up entire recurrence set.
@@ -882,5 +975,394 @@ public interface VComponent<T>
         if (count == 0) throw new RuntimeException("Invalid VComponent: no instances in recurrence set");
         return count;
     }
+    
+    /**
+     * VComponent properties with the following data and methods:
+     * identifying string tags (property name)
+     * setVComponent - parse string method
+     * makeContentLine - toString method
+     * 
+     * @author David Bal
+     *
+     */
+    public enum VComponentProperty
+    {
+        CATEGORIES ("CATEGORIES")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                vComponent.setCategories(value);
+            }
 
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getCategories() == null) ? null : vComponent.categoriesProperty().getName() + ":"
+                        + vComponent.getCategories();
+            }
+        }
+      , COMMENT ("COMMENT")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                vComponent.setComment(value); // TODO - collect multiple values - comma separate? Use list?            
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getComment() == null) ? null : vComponent.commentProperty().getName() + ":"
+                        + vComponent.getComment();
+            }
+        }
+      , CREATED ("CREATED")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
+                vComponent.setDateTimeCreated(dateTime);        
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getDateTimeCreated() == null) ? null : vComponent.dateTimeCreatedProperty().getName() + ":"
+                        + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeCreated());
+            }
+        }
+      , DATE_TIME_STAMP ("DTSTAMP")
+            {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
+                vComponent.setDateTimeStamp(dateTime);        
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getDateTimeStamp() == null) ? null : vComponent.dateTimeStampProperty().getName() + ":"
+                        + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeStamp());
+            }
+        }
+      , DATE_TIME_START ("DTSTART")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                if (vComponent.getDateTimeStart() == null)
+                {
+                    Temporal dateTime = VComponent.parseTemporal(value);
+                    vComponent.setDateTimeStart(dateTime);
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                if (vComponent.getDateTimeStart() == null)
+                {
+                    return null;
+                } else
+                {
+                    String tag = makeDateTimePropertyTag(vComponent.dateTimeStartProperty().getName(), vComponent.getDateTimeStart());
+                    return tag + VComponent.temporalToString(vComponent.getDateTimeStart());
+                }
+            }
+        }
+      , EXCEPTIONS ("EXDATE")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                Collection<Temporal> temporals = RecurrenceComponent.parseTemporals(value);
+                if (vComponent.getExDate() == null)
+                {
+                    vComponent.setExDate(new ExDate());
+                }                  
+                vComponent.getExDate().getTemporals().addAll(temporals);        
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                if (vComponent.getExDate() == null)
+                {
+                    return null;
+                } else
+                {
+                    if (vComponent.isExDatesOnOneLine())
+                    {
+                        Temporal firstTemporal = vComponent.getExDate().getTemporals().iterator().next();
+                        String tag = makeDateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
+                        return tag + vComponent.getExDate().toString();
+                    } else
+                    {
+                        Temporal firstTemporal = vComponent.getExDate().getTemporals().iterator().next();
+                        String tag = makeDateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
+                        return vComponent.getExDate()
+                                .getTemporals()
+                                .stream()
+                                .map(t -> tag + VComponent.temporalToString(t) + System.lineSeparator())
+                                .collect(Collectors.joining());
+                    }
+                }
+            }
+        }
+      , LAST_MODIFIED ("LAST-MODIFIED")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                if (vComponent.getDateTimeLastModified() == null)
+                {
+                    ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
+                    vComponent.setDateTimeLastModified(dateTime);
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }        
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getDateTimeLastModified() == null) ? null : vComponent.dateTimeLastModifiedProperty().getName() + ":"
+                        + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeLastModified());
+            }
+        }
+      , ORGANIZER ("ORGANIZER")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                vComponent.setOrganizer(value);
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getOrganizer() == null) ? null : vComponent.organizerProperty().getName() + ":"
+                        + vComponent.getOrganizer().toString();
+            }
+        }
+      , RECURRENCES ("RDATE")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                Collection<Temporal> temporals = RecurrenceComponent.parseTemporals(value);
+                if (vComponent.getRDate() == null)
+                {
+                    vComponent.setRDate(new RDate());
+                }                  
+                vComponent.getRDate().getTemporals().addAll(temporals);
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                if (vComponent.getRDate() == null)
+                {
+                    return null;
+                } else
+                {
+                    Temporal firstTemporal = vComponent.getRDate().getTemporals().iterator().next();
+                    String tag = makeDateTimePropertyTag(vComponent.rDateProperty().getName(), firstTemporal);
+                    return tag + vComponent.getRDate().toString();
+                }
+            }
+        }
+      , RECURRENCE_ID ("RECURRENCE-ID")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
+                vComponent.setDateTimeRecurrence(dateTime);        
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                if (vComponent.getDateTimeRecurrence() == null)
+                {
+                    return null;
+                } else
+                {
+                    String tag = makeDateTimePropertyTag(vComponent.dateTimeRecurrenceProperty().getName()
+                            , vComponent.getDateTimeRecurrence());
+                    return tag + VComponent.temporalToString(vComponent.getDateTimeRecurrence());
+                }
+            }
+        }
+      , RECURRENCE_RULE ("RRULE")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                if (vComponent.getRRule() == null)
+                {
+                    vComponent.setRRule(RRule.parseRRule(value));
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getRRule() == null) ? null : vComponent.rRuleProperty().getName() + ":"
+                        + vComponent.getRRule().toString();
+            }
+        }
+      , RELATED_TO ("RELATED-TO")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                vComponent.setRelatedTo(value); // TODO - collect multiple values - comma separate? Use list?
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getRelatedTo() == null) ? null : vComponent.relatedToProperty().getName() + ":"
+                        + vComponent.getRelatedTo().toString();
+            }
+        }
+      , SEQUENCE ("SEQUENCE")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                if (vComponent.getSequence() == 0)
+                {
+                    vComponent.setSequence(Integer.parseInt(value));
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }            
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getSequence() == 0) ? null : vComponent.sequenceProperty().getName() + ":"
+                        + Integer.toString(vComponent.getSequence());
+            }
+        }
+      , SUMMARY ("SUMMARY")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                if (vComponent.getSummary() == null)
+                {
+                    vComponent.setSummary(value);
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }        
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getSummary() == null) ? null : vComponent.summaryProperty().getName() + ":"
+                        + vComponent.getSummary();
+            }
+        }
+      , UNIQUE_IDENTIFIER ("UID")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value)
+            {
+                if (vComponent.getUniqueIdentifier() == null)
+                {
+                    vComponent.setUniqueIdentifier(value);
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }       
+            }
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent)
+            {
+                return (vComponent.getUniqueIdentifier() == null) ? null : vComponent.uniqueIdentifierProperty().getName()
+                        + ":" + vComponent.getUniqueIdentifier();
+            }
+        }
+      , UNKNOWN ("")
+        {
+            @Override
+            public void setVComponent(VComponent<?> vComponent, String value) { } // do nothing
+
+            @Override
+            public String makeContentLine(VComponent<?> vComponent) { return null; } // do nothing
+        };
+      
+        // Map to match up string tag to ICalendarProperty enum
+        private static Map<String, VComponentProperty> propertyFromTagMap = makePropertiesFromNameMap();
+        private static Map<String, VComponentProperty> makePropertiesFromNameMap()
+        {
+            Map<String, VComponentProperty> map = new HashMap<>();
+            VComponentProperty[] values = VComponentProperty.values();
+            for (int i=0; i<values.length; i++)
+            {
+                map.put(values[i].toString(), values[i]);
+            }
+            return map;
+        }
+        private String name;
+          
+        VComponentProperty(String name)
+        {
+            this.name = name;
+        }
+        
+        @Override
+        public String toString() { return name; }
+        
+        /** get VComponentProperty enum from property name */
+        public static VComponentProperty propertyFromString(String propertyName)
+        {
+            VComponentProperty match = propertyFromTagMap.get(propertyName.toUpperCase());
+            return (match == null) ? UNKNOWN : match;
+        }
+        
+        private static String makeDateTimePropertyTag(String propertyName, Temporal t)
+        {
+            if (t instanceof ZonedDateTime)
+            {
+                String zone = VComponent.ZONE_FORMATTER.format(t);
+                if (zone.isEmpty())
+                {
+                    return propertyName + ":";                
+                } else
+                {
+                    return propertyName + ";" + zone + ":";                
+                }
+            } else
+            {
+                String prefex = (t instanceof LocalDate) ? ";VALUE=DATE:" : ":";
+                return propertyName + prefex;
+            }
+        }
+        
+        /** sets enum's associated vComponent's property from parameter value */
+        public abstract void setVComponent(VComponent<?> vComponent, String value);
+        
+        /** makes content line (RFC 5545 3.1) from a vComponent property  */
+        public abstract String makeContentLine(VComponent<?> vComponent);       
+    }
 }

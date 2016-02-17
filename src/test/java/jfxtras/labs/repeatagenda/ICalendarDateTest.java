@@ -980,7 +980,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     {
         VEventImpl v = getWholeDayDaily2()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withDurationInNanos(Duration.ofMinutes(60));
+                .withDuration(Duration.ofMinutes(60));
         { // start date/time
             List<Temporal> madeDates = v                
                     .stream(v.getDateTimeStart())

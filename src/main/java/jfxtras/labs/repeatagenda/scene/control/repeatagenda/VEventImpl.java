@@ -123,7 +123,7 @@ public class VEventImpl extends VEvent<Appointment>
     public VEventImpl withDateTimeStart(Temporal t) { setDateTimeStart(t); return this; }
     public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
     public VEventImpl withDescription(String s) { setDescription(s); return this; }
-    public VEventImpl withDurationInNanos(Duration d) { setDuration(d); return this; }
+    public VEventImpl withDuration(Duration d) { setDuration(d); return this; }
     public VEventImpl withExDate(ExDate e) { setExDate(e); return this; }
     public VEventImpl withRDate(RDate r) { setRDate(r); return this; }
     public VEventImpl withRelatedTo(String s) { setRelatedTo(s); return this; }
@@ -180,7 +180,7 @@ public class VEventImpl extends VEvent<Appointment>
         setSummary(appointment.getSummary());
         setUniqueIdentifier(getUidGeneratorCallback().call(null));
         instances().add(appointment);
-        if (! makeErrorString().equals("")) throw new IllegalArgumentException(makeErrorString());
+        if (! errorString().equals("")) throw new IllegalArgumentException(errorString());
     }
 
     /** Deep copy all fields from source to destination 
@@ -204,9 +204,9 @@ public class VEventImpl extends VEvent<Appointment>
     }
     
     @Override
-    public String makeErrorString()
+    public String errorString()
     {
-        String errors = super.makeErrorString();
+        String errors = super.errorString();
 //        if (getAppointmentClass() == null) errors += System.lineSeparator() + "Invalid VEventImpl.  appointmentClass must not be null.";
         return errors;
     }
@@ -214,7 +214,7 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public boolean isValid()
     {
-        return super.makeErrorString().equals("");
+        return super.errorString().equals("");
     }
     
     /** Make new VEventImpl and populate properties by parsing a list of property strings 
@@ -255,7 +255,6 @@ public class VEventImpl extends VEvent<Appointment>
             LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(t);
             Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
             appt.setStartLocalDateTime(startLocalDateTime);
-//            final long nanos;
             final Duration duration;
             switch (endPriority())
             {
@@ -279,23 +278,13 @@ public class VEventImpl extends VEvent<Appointment>
             default:
                 throw new RuntimeException("Unknown EndPriority."); // shoudn't get here - only two EndPriorities defined
             }
-//                if (getDateTimeEnd() != null) nanos = ChronoUnit.DAYS.between(getDateTimeStart(), getDateTimeEnd()) * VComponent.NANOS_IN_DAY;
-//                else if (getDurationInNanos() != null) nanos = getDurationInNanos();
-//                else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
-//            } else
-//            {
-//                if (getDateTimeEnd() != null) nanos = ChronoUnit.NANOS.between(getDateTimeStart(), getDateTimeEnd());
-//                else if (getDurationInNanos() != null) nanos = getDurationInNanos();
-//                else throw new RuntimeException("Invalid VEvent: Neither DURATION or DTEND set");
-//            }
-//            appt.setEndLocalDateTime(startLocalDateTime.plusNanos(nanos));
             appt.setEndLocalDateTime(startLocalDateTime.plus(duration));
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());
             appt.setAppointmentGroup(getAppointmentGroup());
             appt.setWholeDay(isWholeDay());
             madeAppointments.add(appt);   // add appointments to return argument
-            instances().add(appt); // add appointments to this repeat's collection
+            instances().add(appt); // add appointments to this object's collection
         });
         return madeAppointments;
     }

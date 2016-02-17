@@ -188,7 +188,6 @@ public class ICalendarAgenda extends Agenda
     {
         VEvent<Appointment> vEvent = (VEvent<Appointment>) findVComponent(appointment);
         VEvent<Appointment> vEventOriginal = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
-//        System.out.println("************************vcomponents:" + vComponents().size() + " " + appointment.getStartLocalDateTime() + " " + appointment.getEndLocalDateTime());
         final Temporal startInstance;
         final Temporal endInstance;
         if (appointment.isWholeDay())
@@ -201,22 +200,18 @@ public class ICalendarAgenda extends Agenda
             endInstance = appointment.getEndLocalDateTime();
         }
         Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
-//        System.out.println("se:" + startInstance + " " + endInstance + " " + startOriginalInstance);
   
         // apply changes to vEvent Note: only changes date and time.  If other types of changes become possible then add to the below list.
         // change start and end date/time
-        final Temporal startNew;
-//        final long duration;
         
         // set start date-time
-        Period shift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
+        final Temporal startNew;
+        Period dayShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
+        System.out.println("dayShift:" + dayShift);
         if (appointment.isWholeDay())
         {
-//            long daysShift = ChronoUnit.DAYS.between(LocalDate.from(startOriginalInstance), startInstance);
-//            startNew = LocalDate.from(vEvent.getDateTimeStart()).plus(daysShift, ChronoUnit.DAYS);
-            startNew = vEvent.getDateTimeStart().plus(shift);
+            startNew = vEvent.getDateTimeStart().plus(dayShift);
             vEvent.setDateTimeStart(startNew);
-//            duration = ChronoUnit.DAYS.between(startInstance, endInstance) * VComponent.NANOS_IN_DAY;
 
             // Convert range to LocalDate if necessary
             if (! (vEvent.getStartRange() instanceof LocalDate))
@@ -226,12 +221,8 @@ public class ICalendarAgenda extends Agenda
             }
         } else
         {
-//            long nanosShift = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
-//            System.out.println("minutes:" + nanosShift/1_000_000_000/60);
-//            System.out.println("startNew:" + vEvent.getDateTimeStart());
-            startNew = vEvent.getDateTimeStart().plus(shift);
+            startNew = vEvent.getDateTimeStart().plus(dayShift);
             vEvent.setDateTimeStart(startNew);
-//            duration = ChronoUnit.NANOS.between(startInstance, endInstance);
         }
         
         // set end date-time or duration

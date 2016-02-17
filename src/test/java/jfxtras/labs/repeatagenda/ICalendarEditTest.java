@@ -79,7 +79,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // Check edited VEvent
         VEventImpl expectedVEvent = getDaily2()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 45))
-                .withDurationInNanos(Duration.ofMinutes(75))
+                .withDuration(Duration.ofMinutes(75))
                 .withSequence(1);
 
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent)); // check to see if repeat rule changed correctly
@@ -154,7 +154,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 15, 10, 0))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 16, 9, 45))
                 .withDateTimeStamp(vEvent1.getDateTimeStamp())
-                .withDurationInNanos(Duration.ofMinutes(75))
+                .withDuration(Duration.ofMinutes(75))
                 .withRRule(null)
                 .withSequence(1);
         assertTrue(vEventIsEqualTo(expectedVEvent1, vEvent1));
