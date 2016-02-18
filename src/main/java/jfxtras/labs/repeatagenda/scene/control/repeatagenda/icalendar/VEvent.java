@@ -287,19 +287,17 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
           , Collection<T> instances)
     {
         // Apply dayShift, if any
-        Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
-        Temporal newEnd = getDateTimeEnd().plus(dayShift);
-        setDateTimeEnd(newEnd);
-//        switch (endPriority())
-//        {
-//        case DTEND:
-//            Temporal endNew = (isWholeDay()) ?  LocalDate.from(endInstance) : endInstance;
-//            setDateTimeEnd(endNew);
-//            break;
-//        case DURATION:
-//            setDuration(Duration.between(startInstance, endInstance));
-//            break;
-//        }
+        switch (endPriority())
+        {
+        case DTEND:
+            Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
+            Temporal newEnd = getDateTimeEnd().plus(dayShift);
+            setDateTimeEnd(newEnd);
+            break;
+        case DURATION:
+            setDuration(Duration.between(startInstance, endInstance));
+            break;
+        }
         super.editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
     }
 
@@ -314,7 +312,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         long shift = ChronoUnit.DAYS.between(getDateTimeStart(), startInstance);
         Temporal endNew = getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
         setDateTimeEnd(endNew);
-        System.out.println("endNew:" + endNew);
         super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, instances);
     }
     
@@ -336,38 +333,6 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         super.copyTo(destination);
         copy(this, (VEvent<?>) destination);
     }
-    
-//    @Override
-//    public boolean equals(Object obj)
-//    {
-//        @SuppressWarnings("unchecked")
-//        VEvent<T> testObj = (VEvent<T>) obj;
-//
-//        boolean descriptionEquals = (getDescription() == null) ? (testObj.getDescription() == null)
-//                : getDescription().equals(testObj.getDescription());
-//        final boolean endEquals;
-//        switch (endPriority())
-//        {
-//        case DTEND:
-//            endEquals = getDateTimeEnd().equals(testObj.getDateTimeEnd());
-//            break;
-//        case DURATION:
-//            endEquals = getDurationInNanos().equals(testObj.getDurationInNanos());
-//            break;
-//        default:
-//            endEquals = false; // shouldn't get here
-//            break;
-//        }
-//        System.out.println("VEvent: " + descriptionEquals + " " + endEquals);
-//        // don't need to check getDateTimeEnd because it is bound to duration
-//        return super.equals(obj) && descriptionEquals && endEquals;
-//    }
-//    
-//    @Override
-//    public int hashCode()
-//    {
-//        return super.hashCode();
-//    }
     
     /** Make iCalendar compliant string of VEvent calendar component.
      * This method should be overridden by an implementing class if that
