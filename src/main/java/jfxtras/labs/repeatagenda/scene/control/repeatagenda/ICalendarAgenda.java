@@ -206,10 +206,10 @@ public class ICalendarAgenda extends Agenda
         
         // set start date-time
         final Temporal startNew;
-        Period dayShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
-        System.out.println("dayShift:" + dayShift);
+        
         if (appointment.isWholeDay())
         {
+            Period dayShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
             startNew = vEvent.getDateTimeStart().plus(dayShift);
             vEvent.setDateTimeStart(startNew);
 
@@ -221,7 +221,8 @@ public class ICalendarAgenda extends Agenda
             }
         } else
         {
-            startNew = vEvent.getDateTimeStart().plus(dayShift);
+            Duration changeShift = Duration.between(startOriginalInstance, startInstance);
+            startNew = vEvent.getDateTimeStart().plus(changeShift);
             vEvent.setDateTimeStart(startNew);
         }
         

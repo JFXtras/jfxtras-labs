@@ -459,6 +459,29 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
     }
+    
+    @Test
+    public void canStreamWeeklyZoned()
+    {
+        VEventImpl e = getWeeklyZoned();
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
+                .limit(10)
+                .collect(Collectors.toList());
+        List<ZonedDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 16, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 20, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 23, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 25, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 27, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 30, 10, 0), ZoneId.of("America/Los_Angeles"))
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
    
     /** Tests daily stream with FREQ=DAILY */
     @Test

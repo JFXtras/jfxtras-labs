@@ -3,6 +3,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -599,16 +600,31 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
           , Temporal endInstance
           , Collection<T> instances)
     {
-        if (isWholeDay())
+        // Apply dayShift, if any
+        Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
+        System.out.println("dayShift:" + dayShift + " " + getDateTimeStart() + " " + startInstance);
+        Temporal newStart = getDateTimeStart().plus(dayShift);
+        setDateTimeStart(newStart);
+//        if (isWholeDay())
+//        {
+//            LocalDate start = LocalDate.from(startInstance);
+//            setDateTimeStart(start);
+//        } else
+//        {
+////            vEventOriginal.getDateTimeStart()
+//            setDateTimeStart(startInstance);
+//        }
+        setRRule(null);
+        // TODO - USE ZONEDDATETIME FOR INSTANCES?
+        if ((getDateTimeStart() instanceof ZonedDateTime) && (startOriginalInstance instanceof LocalDateTime))
         {
-            LocalDate start = LocalDate.from(startInstance);
-            setDateTimeStart(start);
+            ZoneId id = ((ZonedDateTime) getDateTimeStart()).getZone();
+            ZonedDateTime z = ((LocalDateTime) startOriginalInstance).atZone(id);
+            setDateTimeRecurrence(z);
         } else
         {
-            setDateTimeStart(startInstance);
+            setDateTimeRecurrence(startOriginalInstance);
         }
-        setRRule(null);
-        setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setParent(vEventOriginal);
    
@@ -626,6 +642,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of appointments
         instancesTemp.addAll(vEventOriginal.makeInstances()); // make new appointments and add to main collection (added to vEventNew's collection in makeAppointments)
         instances().clear(); // clear vEvent outdated collection of appointments
+        System.out.println("editone:" + this);
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
         instances.clear();
         instances.addAll(instancesTemp);
@@ -993,6 +1010,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     public Stream<Temporal> stream(Temporal start)
     {
         // adjust start to ensure its not before dateTimeStart
+        System.out.println("starts:" + start + " " + getDateTimeStart() + " " + this.hashCode());
         final Temporal start2 = (VComponent.isBefore(start, getDateTimeStart())) ? getDateTimeStart() : start;
      
         final Stream<Temporal> stream1; // individual or rrule stream

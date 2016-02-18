@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -285,18 +286,20 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
           , Temporal endInstance
           , Collection<T> instances)
     {
-        switch (endPriority())
-        {
-        case DTEND:
-            Temporal endNew = (isWholeDay()) ?  LocalDate.from(endInstance) : endInstance;
-            setDateTimeEnd(endNew);
-            break;
-        case DURATION:
-            setDuration(Duration.between(startInstance, endInstance));
-            break;
-        default:
-            break;        
-        }
+        // Apply dayShift, if any
+        Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
+        Temporal newEnd = getDateTimeEnd().plus(dayShift);
+        setDateTimeEnd(newEnd);
+//        switch (endPriority())
+//        {
+//        case DTEND:
+//            Temporal endNew = (isWholeDay()) ?  LocalDate.from(endInstance) : endInstance;
+//            setDateTimeEnd(endNew);
+//            break;
+//        case DURATION:
+//            setDuration(Duration.between(startInstance, endInstance));
+//            break;
+//        }
         super.editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
     }
 
@@ -474,8 +477,10 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
         StringBuilder errorsBuilder = new StringBuilder(super.errorString());
 
         if ((getDateTimeEnd() != null) && (! VComponent.isAfter(getDateTimeEnd(), getDateTimeStart())))
+        {
             errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTEND (" + getDateTimeEnd()
             + ") must be after DTSTART (" + getDateTimeStart() + ")");
+        }
         
         // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
         // It is not checked here due to bindings between both DURATION and DTEND.

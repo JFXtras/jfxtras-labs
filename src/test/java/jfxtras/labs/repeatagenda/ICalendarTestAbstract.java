@@ -521,13 +521,15 @@ public abstract class ICalendarTestAbstract
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withAppointmentClass(clazz)
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 7, 10, 45), ZoneId.of("America/Los_Angeles")))
-                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 7, 10, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
                 .withDescription("WeeklyZoned Description")
                 .withRRule(new RRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
-                .withSummary("WeeklyZoned Summary");
+                .withSummary("WeeklyZoned Summary")
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
 
     

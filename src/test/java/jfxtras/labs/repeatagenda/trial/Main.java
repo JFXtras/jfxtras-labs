@@ -57,7 +57,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
-
+        
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));
@@ -65,8 +65,8 @@ public class Main extends Application {
         CalendarController controller = mainLoader.getController();
         controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
         
-//        ICalendarParseTest r = new ICalendarParseTest();
-//        r.canParseGoogleIndividual();
+//        ICalendarEditTest r = new ICalendarEditTest();
+//        r.canEditOne2();
 //        System.exit(0);
         
         Scene scene = new Scene(root, 1366, 768);

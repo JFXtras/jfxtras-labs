@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -290,6 +292,77 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withRRule(null)
                 .withSequence(1);
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    }
+    
+    /**
+     * Tests changing a ZonedDateTime repeating event
+     */
+    @Test
+    public void canEditOne2()
+    {
+        // Individual Appointment
+        VEventImpl vEvent = getWeeklyZoned();
+        List<VComponent<Appointment>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vEvent.makeInstances(start, end);
+        appointments.addAll(newAppointments);
+        assertEquals(3, appointments.size()); // check if there are only 3 appointments
+        VEventImpl vEventOriginal = new VEventImpl(vEvent);
+
+        // select appointment (get recurrence date)
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        appointmentIterator.next(); // skip first
+        Appointment selectedAppointment = appointmentIterator.next();
+        
+        // apply changes
+        LocalDateTime startOriginalInstance = selectedAppointment.getStartLocalDateTime();
+        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1);
+        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(newDate.atTime(10, 30)); // change end time
+        LocalDateTime startInstance = selectedAppointment.getStartLocalDateTime();
+        LocalDateTime endInstance = selectedAppointment.getEndLocalDateTime();
+        
+        Duration startShift = Duration.between(startOriginalInstance, startInstance);
+        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
+        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        vEvent.setDateTimeStart(dtStart);
+        vEvent.setDateTimeEnd(dtStart.plus(duration));
+
+        // Edit
+        vEvent.handleEdit(
+                vEventOriginal
+              , vComponents
+              , startOriginalInstance
+              , startInstance
+              , endInstance
+              , appointments
+              , (m) -> ChangeDialogOption.ONE);
+
+        List<LocalDateTime> madeDates = appointments.stream()
+                .map(a -> a.getStartLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 16, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 9, 45)
+              , LocalDateTime.of(2015, 11, 20, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+
+        VEventImpl expectedVEvent = getWeeklyZoned()
+                .withRRule(null)
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 9, 45), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 10, 30), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStamp(vEvent.getDateTimeStamp())
+                .withSequence(1);
+        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+
+        VEventImpl expectedVEvent2 = getWeeklyZoned();
+        expectedVEvent2.getRRule().recurrences().add(vEvent);
+        assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
     }
     
 // /**

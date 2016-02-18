@@ -3,7 +3,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
@@ -252,9 +251,19 @@ public class VEventImpl extends VEvent<Appointment>
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
         removedTooLate.forEach(t ->
         {
-            LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(t);
+//            LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(t);
             Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
-            appt.setStartLocalDateTime(startLocalDateTime);
+//            final Temporal startLocalDateTime;
+            // TODO - CONSIDER USING DIFFERENT APPOINTMENT CLASSES FOR DIFFERENT TEMPORAL TYPES
+//            if (getDateTimeStart() instanceof ZonedDateTime)
+//            {
+//                appt.setStartZonedDateTime((ZonedDateTime) t);
+//            } else
+//            {
+//                appt.setStartLocalDateTime(VComponent.localDateTimeFromTemporal(t));
+//            }
+            
+            appt.setStartLocalDateTime(VComponent.localDateTimeFromTemporal(t));
             final Duration duration;
             switch (endPriority())
             {
@@ -278,7 +287,16 @@ public class VEventImpl extends VEvent<Appointment>
             default:
                 throw new RuntimeException("Unknown EndPriority."); // shoudn't get here - only two EndPriorities defined
             }
-            appt.setEndLocalDateTime(startLocalDateTime.plus(duration));
+            
+//            if (getDateTimeStart() instanceof ZonedDateTime)
+//            {
+//                appt.setEndZonedDateTime((ZonedDateTime) t.plus(duration));
+//            } else
+//            {
+//                appt.setEndLocalDateTime((LocalDateTime) t.plus(duration));
+//            }
+            
+            appt.setEndLocalDateTime(appt.getStartLocalDateTime().plus(duration));
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());
             appt.setAppointmentGroup(getAppointmentGroup());
