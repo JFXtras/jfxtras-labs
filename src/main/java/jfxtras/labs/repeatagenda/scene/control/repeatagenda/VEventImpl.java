@@ -4,9 +4,11 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,59 +58,47 @@ public class VEventImpl extends VEvent<Appointment>
      *  Date with UTC time
      *  Date with local time and time zone instance
      *  see iCalendar RFC 5545, page 32-33
+     *  
+     *  Only date-time properties are set in the callbacks.  The other properties
+     *  are set in makeInstances method.
      */    
     /** For DATE type (whole-day Appointments) */
-    private final static Callback<VComponent<Appointment>, Appointment> NEW_DATE_INSTANCE = (v) ->
+    private final static Callback<StartEndPair, Appointment> NEW_DATE_INSTANCE = (p) ->
     {
-        LocalDateTime s = LocalDate.from(v.getDateTimeStart()).atStartOfDay();
-        LocalDateTime e = LocalDate.from(((VEventImpl) v).getDateTimeEnd()).atStartOfDay();
+        LocalDateTime s = LocalDate.from(p.getDateTimeStart()).atStartOfDay();
+        LocalDateTime e = LocalDate.from(p.getDateTimeEnd()).atStartOfDay();
         return new Agenda.AppointmentImplLocal()
                 .withStartLocalDateTime(s)
                 .withEndLocalDateTime(e);
     };
 
     /** For DATE_WITH_LOCAL_TIME */
-    private final static Callback<VComponent<Appointment>, Appointment> NEW_DATE_WITH_LOCAL_TIME_INSTANCE = (v) ->
+    private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_LOCAL_TIME_INSTANCE = (p) ->
     {
-        LocalDateTime s = LocalDateTime.from(v.getDateTimeStart());
-        VEventImpl v2 = (VEventImpl) v;
-        final LocalDateTime e;
-        switch (v2.endPriority())
-        {
-        case DTEND:
-            e = LocalDateTime.from(v2.getDateTimeEnd());
-            break;
-        case DURATION:
-            e = s.plus(v2.getDuration());
-            break;
-        default:
-            throw new RuntimeException("Unknown EndPriority");
-        }
         return new Agenda.AppointmentImplLocal()
-                .withStartLocalDateTime(s)
-                .withEndLocalDateTime(e);
+                .withStartLocalDateTime(LocalDateTime.from(p.getDateTimeStart()))
+                .withEndLocalDateTime(LocalDateTime.from(p.getDateTimeEnd()));
     };
 
     /** For DATE_WITH_UTC_TIME */
-    private final static Callback<VComponent<Appointment>, Appointment> NEW_DATE_WITH_UTC_TIME_INSTANCE = (v) ->
+    private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_UTC_TIME_INSTANCE = (p) ->
     {
         final ZonedDateTime s;
-        if (v.getDateTimeStart() instanceof ZonedDateTime)
+        if (p.getDateTimeStart() instanceof ZonedDateTime)
         {
-            s = ((ZonedDateTime) v.getDateTimeStart()).withZoneSameInstant(ZoneId.of("Z"));
+            s = ((ZonedDateTime) p.getDateTimeStart()).withZoneSameInstant(ZoneId.of("Z"));
         } else
         {
-            s = LocalDateTime.from(v.getDateTimeStart()).atZone(ZoneId.of("Z"));
+            s = LocalDateTime.from(p.getDateTimeStart()).atZone(ZoneId.of("Z"));
         }
 
         final ZonedDateTime e;
-        Temporal dateTimeEnd = ((VEventImpl) v).getDateTimeEnd();
-        if (dateTimeEnd instanceof ZonedDateTime)
+        if (p.getDateTimeEnd() instanceof ZonedDateTime)
         {
-            e = ((ZonedDateTime) dateTimeEnd).withZoneSameInstant(ZoneId.of("Z"));
+            e = ((ZonedDateTime) p.getDateTimeEnd()).withZoneSameInstant(ZoneId.of("Z"));
         } else
         {
-            e = LocalDateTime.from(dateTimeEnd).atZone(ZoneId.of("Z"));
+            e = LocalDateTime.from(p.getDateTimeEnd()).atZone(ZoneId.of("Z"));
         }
         return new Agenda.AppointmentImplZoned()
                 .withStartZonedDateTime(s)
@@ -116,19 +106,18 @@ public class VEventImpl extends VEvent<Appointment>
     };
     
     /** For DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
-    private final static Callback<VComponent<Appointment>, Appointment> NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE = (v) ->
+    private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE = (p) ->
     {
-        Temporal dateTimeEnd = ((VEventImpl) v).getDateTimeEnd();
         return new Agenda.AppointmentImplZoned()
-                .withStartZonedDateTime((ZonedDateTime) v.getDateTimeStart())
-                .withEndZonedDateTime((ZonedDateTime) dateTimeEnd);
+                .withStartZonedDateTime((ZonedDateTime) p.getDateTimeStart())
+                .withEndZonedDateTime((ZonedDateTime) p.getDateTimeEnd());
     };
 
     // Map to match up DateTimeType to Callback;
-    private static final Map<DateTimeType, Callback<VComponent<Appointment>, Appointment>> DATE_TIME_INSTANCE_MAP = defaultDateTimeInstanceMap();
-    private static Map<DateTimeType, Callback<VComponent<Appointment>, Appointment>> defaultDateTimeInstanceMap()
+    private static final Map<DateTimeType, Callback<StartEndPair, Appointment>> DATE_TIME_MAKE_INSTANCE_MAP = defaultDateTimeInstanceMap();
+    private static Map<DateTimeType, Callback<StartEndPair, Appointment>> defaultDateTimeInstanceMap()
     {
-        Map<DateTimeType, Callback<VComponent<Appointment>, Appointment>> map = new HashMap<>();
+        Map<DateTimeType, Callback<StartEndPair, Appointment>> map = new HashMap<>();
         map.put(DateTimeType.DATE, NEW_DATE_INSTANCE);
         map.put(DateTimeType.DATE_WITH_LOCAL_TIME, NEW_DATE_WITH_LOCAL_TIME_INSTANCE);
         map.put(DateTimeType.DATE_WITH_UTC_TIME, NEW_DATE_WITH_UTC_TIME_INSTANCE);
@@ -350,15 +339,37 @@ public class VEventImpl extends VEvent<Appointment>
     public List<Appointment> makeInstances()
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
-        Callback<VComponent<Appointment>, Appointment> newInstanceCallback = DATE_TIME_INSTANCE_MAP.get(getTemporalType());
+        Callback<StartEndPair, Appointment> newInstanceCallback = DATE_TIME_MAKE_INSTANCE_MAP.get(getTemporalType());
         List<Appointment> madeAppointments = new ArrayList<>();
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
-        removedTooLate.forEach(t ->
+        removedTooLate.forEach(temporalStart ->
         {
-//            LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(t);
-//            DateTimeType dateTimeType = DateTimeType.dateTimeTypeFromTemporal(t);
-            Appointment appt = newInstanceCallback.call(this);
+            final Temporal temporalEnd;
+            switch (endPriority())
+            {
+            case DTEND:
+                final TemporalAmount duration;
+                if (isWholeDay())
+                {
+                    duration = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(getDateTimeEnd()));
+                } else
+                {
+                    duration = Duration.between(getDateTimeStart(), getDateTimeEnd());
+                }
+                temporalEnd = temporalStart.plus(duration);
+                break;
+            case DURATION:
+                temporalEnd = temporalStart.plus(getDuration());                
+                break;
+            default:
+                throw new RuntimeException("Unknown EndPriority");
+            }
+            Appointment appt = newInstanceCallback.call(new StartEndPair(temporalStart, temporalEnd));
+            // TODO - PROBLEM - SETTING START AND END TIME IN CALLBACK IS USELESS
+            // THOSE VALUES ARE START OF VEVENT, NOT INSTANCE
+            // SHOULD I JUST MAKE A NEW OBJECT AND RETURN IT?
+            
 //            DateTimeType.makeInstance(t)
             
 //            Appointment appt2 = DateTimeType.makeInstance(t);
@@ -373,31 +384,30 @@ public class VEventImpl extends VEvent<Appointment>
 //                appt.setStartLocalDateTime(VComponent.localDateTimeFromTemporal(t));
 //            }
             
-            appt.setStartLocalDateTime(VComponent.localDateTimeFromTemporal(t));
-            final Duration duration;
-            switch (endPriority())
-            {
-            case DTEND:
-                final Temporal startInclusive;
-                final Temporal endExclusive;
-                if (isWholeDay())
-                {
-                    startInclusive = LocalDate.from(getDateTimeStart()).atStartOfDay();
-                    endExclusive = LocalDate.from(getDateTimeEnd()).atStartOfDay();
-                } else
-                {
-                    startInclusive = getDateTimeStart();
-                    endExclusive = getDateTimeEnd();                    
-                }
-                duration = Duration.between(startInclusive, endExclusive);
-                break;
-            case DURATION:
-                duration = getDuration();
-                break;
-            default:
-                throw new RuntimeException("Unknown EndPriority."); // shoudn't get here - only two EndPriorities defined
-            }
-            
+//            appt.setStartLocalDateTime(VComponent.localDateTimeFromTemporal(temporalStart));
+//            final Duration duration;
+//            switch (endPriority())
+//            {
+//            case DTEND:
+//                final Temporal startInclusive;
+//                final Temporal endExclusive;
+//                if (isWholeDay())
+//                {
+//                    startInclusive = LocalDate.from(getDateTimeStart()).atStartOfDay();
+//                    endExclusive = LocalDate.from(getDateTimeEnd()).atStartOfDay();
+//                } else
+//                {
+//                    startInclusive = getDateTimeStart();
+//                    endExclusive = getDateTimeEnd();                    
+//                }
+//                duration = Duration.between(startInclusive, endExclusive);
+//                break;
+//            case DURATION:
+//                duration = getDuration();
+//                break;
+//            default:
+//                throw new RuntimeException("Unknown EndPriority."); // shoudn't get here - only two EndPriorities defined
+//            }           
 //            if (getDateTimeStart() instanceof ZonedDateTime)
 //            {
 //                appt.setEndZonedDateTime((ZonedDateTime) t.plus(duration));
@@ -405,8 +415,8 @@ public class VEventImpl extends VEvent<Appointment>
 //            {
 //                appt.setEndLocalDateTime((LocalDateTime) t.plus(duration));
 //            }
-            
-            appt.setEndLocalDateTime(appt.getStartLocalDateTime().plus(duration));
+//            appt.setEndLocalDateTime(appt.getStartLocalDateTime().plus(duration));
+
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());
             appt.setAppointmentGroup(getAppointmentGroup());

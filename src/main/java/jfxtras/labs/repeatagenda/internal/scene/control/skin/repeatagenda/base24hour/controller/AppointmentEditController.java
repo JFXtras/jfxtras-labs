@@ -192,17 +192,9 @@ public class AppointmentEditController extends Pane
         // Convert duration to date/time end - this controller can't handle VEvents with duration
         if (vEvent.getDuration() != null)
         {
-            final Temporal end;
-            if (vEvent.isWholeDay())
-            {
-                long days = vEvent.getDuration().toDays();
-                end = vEvent.getDateTimeStart().plus(days, ChronoUnit.DAYS);                
-            } else
-            {
-                end = vEvent.getDateTimeStart().plus(vEvent.getDuration());
-            }
-            vEvent.setDuration(null);
+            Temporal end = vEvent.getDateTimeStart().plus(vEvent.getDuration());
             vEvent.setDateTimeEnd(end);
+            vEvent.setDuration(null);
         }
         
         // Copy original VEvent

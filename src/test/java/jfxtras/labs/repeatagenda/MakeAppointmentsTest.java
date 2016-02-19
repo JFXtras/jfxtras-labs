@@ -52,9 +52,10 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
                 .collect(Collectors.toList());
         for (int i=0; i<expectedAppointments.size(); i++)
         {
+            System.out.println(expectedAppointments.get(i));
+            System.out.println(newAppointments.get(i));
             assertTrue(AppointmentIsEqualTo(expectedAppointments.get(i), newAppointments.get(i)));
         }
-//        assertEquals(expectedAppointments, appointments);
     }
     
     /** FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR */

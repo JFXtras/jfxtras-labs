@@ -1482,11 +1482,6 @@ public interface VComponent<T>
       
         private Class<? extends Temporal> clazz;
         private ZoneId zone;
-        
-//        Class<? extends T> dateInstanceClass();
-//        Class<? extends T> dateWithLocalTimeInstanceClass();
-//        Class<? extends T> dateWithUTCTimeInstanceClass();
-//        Class<? extends T> dateWithLocalTimeAndTimeZoneInstanceClass();
       
         DateTimeType(Class<? extends Temporal> clazz, ZoneId zone)
         {
@@ -1496,7 +1491,7 @@ public interface VComponent<T>
         
         public abstract <U> U makeInstance(VComponent<U> vComponent);
         
-        public static DateTimeType dateTimeTypeFromTemporal(Temporal t)
+        static DateTimeType dateTimeTypeFromTemporal(Temporal t)
         {
             if (t instanceof LocalDate)
             {
@@ -1518,7 +1513,7 @@ public interface VComponent<T>
             {
                 throw new DateTimeException("Invalid Temporal class:" + t.getClass().getSimpleName());
             }
-        }      
+        }
     }
     
     /**
@@ -1534,23 +1529,23 @@ public interface VComponent<T>
 //       public V getEnd() { return end; }
 //   }
    
-//   static public class StartEndPair
-//   {
-//       public StartEndPair(Temporal start, Temporal end)
-//       {
-//           if (start.getClass() != end.getClass()) { throw new RuntimeException("Temporal classes of start and end must be the same."); }
-//           this.start = start;
-//           this.end = end;
-//       }
-//       
-//       public Temporal getStart() { return start; }
-//       private final Temporal start;
-//       
-//       public Temporal getEnd() { return end; }
-//       private final Temporal end; 
-//       
-//       @Override
-//       public String toString() { return super.toString() + " " + start + " to " + end; }
-//   }
+   static public class StartEndPair
+   {
+       public StartEndPair(Temporal start, Temporal end)
+       {
+           if (start.getClass() != end.getClass()) { throw new RuntimeException("Temporal classes of start and end must be the same."); }
+           this.start = start;
+           this.end = end;
+       }
+       
+       public Temporal getDateTimeStart() { return start; }
+       private final Temporal start;
+       
+       public Temporal getDateTimeEnd() { return end; }
+       private final Temporal end; 
+       
+       @Override
+       public String toString() { return super.toString() + " " + start + " to " + end; }
+   }
 
 }

@@ -689,7 +689,7 @@ public abstract class ICalendarTestAbstract
     }
     
     /** Individual - non repeatable VEvent */
-    protected static VEventImpl getIndividual1()
+    public static VEventImpl getIndividual1()
     {
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30));

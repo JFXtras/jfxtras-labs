@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1020,7 +1021,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
             assertEquals(expectedDates, madeDates);
         }
         { // end date/time
-            Duration duration = v.getDuration();
+            TemporalAmount duration = v.getDuration();
             List<Temporal> madeDates = v                
                     .stream(v.getDateTimeStart())
                     .map(t -> t.plus(duration)) // calculate end

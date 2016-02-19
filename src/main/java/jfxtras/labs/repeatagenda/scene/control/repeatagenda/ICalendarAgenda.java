@@ -9,6 +9,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -227,26 +228,27 @@ public class ICalendarAgenda extends Agenda
         }
         
         // set end date-time or duration
-        final Duration duration = Duration.between(startInstance, endInstance);
+        final TemporalAmount duration;
         switch (vEvent.endPriority())
         {
         case DTEND:
             Temporal endNew;
             if (appointment.isWholeDay())
             {
-                long days = duration.toDays();
-                endNew = startNew.plus(days, ChronoUnit.DAYS);                
+                duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
             } else
             {
-                endNew = startNew.plus(duration);
+                duration = Duration.between(startInstance, endInstance);
             }
+            endNew = startNew.plus(duration);                
             vEvent.setDateTimeEnd(endNew);
             break;
         case DURATION:
+                duration = Duration.between(startInstance, endInstance);
                 vEvent.setDuration(duration);
             break;
         }
-        System.out.println("se2:" + startNew + " " );
+//        System.out.println("se2:" + startNew + " " );
         
         appointments().removeListener(appointmentsListener);
         vComponents().removeListener(vComponentsListener);

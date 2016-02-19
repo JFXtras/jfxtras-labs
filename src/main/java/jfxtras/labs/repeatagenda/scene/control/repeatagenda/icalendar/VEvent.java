@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -87,10 +88,10 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
  * @see VEventImpl
  */
 public abstract class VEvent<T> extends VComponentBaseAbstract<T>
-{      
-    private static final String DESCRIPTION_NAME = "DESCRIPTION";
-    private static final String DURATION_NAME = "DURATION";
-    private static final String DATE_TIME_END_NAME = "DTEND";
+{
+    @Deprecated private static final String DESCRIPTION_NAME = "DESCRIPTION";
+    @Deprecated private static final String DURATION_NAME = "DURATION";
+    @Deprecated private static final String DATE_TIME_END_NAME = "DTEND";
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
      * This property provides a more complete description of the
@@ -108,10 +109,10 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
     /** 
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
      * */
-    final private ObjectProperty<Duration> duration = new SimpleObjectProperty<>(this, DURATION_NAME);
-    public ObjectProperty<Duration> durationProperty() { return duration; }
-    public Duration getDuration() { return duration.getValue(); }
-    public void setDuration(Duration duration)
+    final private ObjectProperty<TemporalAmount> duration = new SimpleObjectProperty<>(this, DURATION_NAME);
+    public ObjectProperty<TemporalAmount> durationProperty() { return duration; }
+    public TemporalAmount getDuration() { return duration.getValue(); }
+    public void setDuration(TemporalAmount duration)
     {
         if (duration == null)
         {
