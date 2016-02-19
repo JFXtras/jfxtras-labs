@@ -1436,6 +1436,10 @@ public interface VComponent<T>
 //    }
     /**
      * Temporal date and date-time types supported by iCalendar.
+     *  DATE
+     *  DATE_WITH_LOCAL_TIME
+     *  DATE_WITH_LOCAL_TIME_AND_TIME_ZONE
+     *  DATE_WITH_UTC_TIME:
      * see iCalendar RFC 5545, page 32-33
      * 
      * @author David Bal

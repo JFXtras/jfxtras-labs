@@ -71,7 +71,19 @@ public class VEventImpl extends VEvent<Appointment>
     private final static Callback<VComponent<Appointment>, Appointment> NEW_DATE_WITH_LOCAL_TIME_INSTANCE = (v) ->
     {
         LocalDateTime s = LocalDateTime.from(v.getDateTimeStart());
-        LocalDateTime e = LocalDateTime.from(((VEventImpl) v).getDateTimeEnd());
+        VEventImpl v2 = (VEventImpl) v;
+        final LocalDateTime e;
+        switch (v2.endPriority())
+        {
+        case DTEND:
+            e = LocalDateTime.from(v2.getDateTimeEnd());
+            break;
+        case DURATION:
+            e = s.plus(v2.getDuration());
+            break;
+        default:
+            throw new RuntimeException("Unknown EndPriority");
+        }
         return new Agenda.AppointmentImplLocal()
                 .withStartLocalDateTime(s)
                 .withEndLocalDateTime(e);

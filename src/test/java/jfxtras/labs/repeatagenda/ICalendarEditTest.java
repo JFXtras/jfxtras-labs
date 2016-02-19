@@ -317,12 +317,12 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment selectedAppointment = appointmentIterator.next();
         
         // apply changes
-        LocalDateTime startOriginalInstance = selectedAppointment.getStartLocalDateTime();
+        Temporal startOriginalInstance = selectedAppointment.getStartZonedDateTime();
         LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1);
         selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
         selectedAppointment.setEndLocalDateTime(newDate.atTime(10, 30)); // change end time
-        LocalDateTime startInstance = selectedAppointment.getStartLocalDateTime();
-        LocalDateTime endInstance = selectedAppointment.getEndLocalDateTime();
+        Temporal startInstance = selectedAppointment.getStartZonedDateTime();
+        Temporal endInstance = selectedAppointment.getEndZonedDateTime();
         
         Duration startShift = Duration.between(startOriginalInstance, startInstance);
         Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);

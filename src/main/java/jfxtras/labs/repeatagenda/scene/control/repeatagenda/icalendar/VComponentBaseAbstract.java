@@ -532,7 +532,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
     {
         final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
-        System.out.println("rruleType" + rruleType);
+//        System.out.println("rruleType" + rruleType);
         boolean incrementSequence = true;
         switch (rruleType)
         {
@@ -637,7 +637,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
     {
         // Apply dayShift, if any
         Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
-        System.out.println("dayShift:" + dayShift + " " + getDateTimeStart() + " " + startInstance);
+//        System.out.println("dayShift:" + dayShift + " " + getDateTimeStart() + " " + startInstance);
         Temporal newStart = getDateTimeStart().plus(dayShift);
         setDateTimeStart(newStart);
 //        if (isWholeDay())
@@ -662,6 +662,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
 //            setDateTimeRecurrence(startOriginalInstance);
 //        }
         
+//        System.out.println("startOriginalInstance:" + startOriginalInstance);
         setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setParent(vEventOriginal);
@@ -680,7 +681,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
         vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of appointments
         instancesTemp.addAll(vEventOriginal.makeInstances()); // make new appointments and add to main collection (added to vEventNew's collection in makeAppointments)
         instances().clear(); // clear vEvent outdated collection of appointments
-        System.out.println("editone:" + this);
+//        System.out.println("editone:" + this);
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
         instances.clear();
         instances.addAll(instancesTemp);
