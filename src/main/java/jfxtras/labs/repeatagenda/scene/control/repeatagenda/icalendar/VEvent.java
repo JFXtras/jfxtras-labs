@@ -86,7 +86,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
  * @author David Bal
  * @see VEventImpl
  */
-public abstract class VEvent<T> extends VComponentAbstract<T>
+public abstract class VEvent<T> extends VComponentBaseAbstract<T>
 {      
     private static final String DESCRIPTION_NAME = "DESCRIPTION";
     private static final String DURATION_NAME = "DURATION";
@@ -250,7 +250,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
     private void setupListeners()
     {
         dateTimeStartlistener = (obs, oldValue, newValue) ->
-        { // listener to synch dateTimeStart and durationInSeconds
+        { // listener to synch dateTimeStart and duration
             Class<? extends Temporal> oldClass = (oldValue == null) ? null : oldValue.getClass();
             Class<? extends Temporal> newClass = newValue.getClass();
             if ((oldClass != null) && (newClass != oldClass))
@@ -262,6 +262,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 {
                     changeStartToLocalDateTime((LocalDateTime) newValue);
                 }
+                // TODO - HANDLE CHANGING TO ZONEDDATETIME
             }
         };
         dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
@@ -430,7 +431,7 @@ public abstract class VEvent<T> extends VComponentAbstract<T>
                 lineIterator.remove();                
             }
         }
-        return (VEvent<?>) VComponentAbstract.parseVComponent(vEvent, strings);
+        return (VEvent<?>) VComponentBaseAbstract.parseVComponent(vEvent, strings);
     }
     
     /**

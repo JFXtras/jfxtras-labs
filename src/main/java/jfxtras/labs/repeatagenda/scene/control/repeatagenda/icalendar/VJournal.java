@@ -3,7 +3,7 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 import java.time.temporal.Temporal;
 import java.util.Collection;
 
-public class VJournal<T> extends VComponentAbstract<T>
+public class VJournal<T> extends VComponentBaseAbstract<T>
 {
 
     @Override

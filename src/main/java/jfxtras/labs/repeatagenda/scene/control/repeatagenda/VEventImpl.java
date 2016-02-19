@@ -3,13 +3,16 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
@@ -25,7 +28,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
+import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -45,7 +48,83 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  */
 public class VEventImpl extends VEvent<Appointment>
 {
+    /*
+     *  STATIC CALLBACKS FOR MAKING NEW APPOINTMENTS
+     *  One for each of the four date and date-time options in iCalendar:
+     *  Date
+     *  Date with local time
+     *  Date with UTC time
+     *  Date with local time and time zone instance
+     *  see iCalendar RFC 5545, page 32-33
+     */    
+    /** For DATE type (whole-day Appointments) */
+    private final static Callback<VComponent<Appointment>, Appointment> NEW_DATE_INSTANCE = (v) ->
+    {
+        LocalDateTime s = LocalDate.from(v.getDateTimeStart()).atStartOfDay();
+        LocalDateTime e = LocalDate.from(((VEventImpl) v).getDateTimeEnd()).atStartOfDay();
+        return new Agenda.AppointmentImplLocal()
+                .withStartLocalDateTime(s)
+                .withEndLocalDateTime(e);
+    };
 
+    /** For DATE_WITH_LOCAL_TIME */
+    private final static Callback<VComponent<Appointment>, Appointment> NEW_DATE_WITH_LOCAL_TIME_INSTANCE = (v) ->
+    {
+        LocalDateTime s = LocalDateTime.from(v.getDateTimeStart());
+        LocalDateTime e = LocalDateTime.from(((VEventImpl) v).getDateTimeEnd());
+        return new Agenda.AppointmentImplLocal()
+                .withStartLocalDateTime(s)
+                .withEndLocalDateTime(e);
+    };
+
+    /** For DATE_WITH_UTC_TIME */
+    private final static Callback<VComponent<Appointment>, Appointment> NEW_DATE_WITH_UTC_TIME_INSTANCE = (v) ->
+    {
+        final ZonedDateTime s;
+        if (v.getDateTimeStart() instanceof ZonedDateTime)
+        {
+            s = ((ZonedDateTime) v.getDateTimeStart()).withZoneSameInstant(ZoneId.of("Z"));
+        } else
+        {
+            s = LocalDateTime.from(v.getDateTimeStart()).atZone(ZoneId.of("Z"));
+        }
+
+        final ZonedDateTime e;
+        Temporal dateTimeEnd = ((VEventImpl) v).getDateTimeEnd();
+        if (dateTimeEnd instanceof ZonedDateTime)
+        {
+            e = ((ZonedDateTime) dateTimeEnd).withZoneSameInstant(ZoneId.of("Z"));
+        } else
+        {
+            e = LocalDateTime.from(dateTimeEnd).atZone(ZoneId.of("Z"));
+        }
+        return new Agenda.AppointmentImplZoned()
+                .withStartZonedDateTime(s)
+                .withEndZonedDateTime(e);
+    };
+    
+    /** For DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
+    private final static Callback<VComponent<Appointment>, Appointment> NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE = (v) ->
+    {
+        Temporal dateTimeEnd = ((VEventImpl) v).getDateTimeEnd();
+        return new Agenda.AppointmentImplZoned()
+                .withStartZonedDateTime((ZonedDateTime) v.getDateTimeStart())
+                .withEndZonedDateTime((ZonedDateTime) dateTimeEnd);
+    };
+
+    // Map to match up DateTimeType to Callback;
+    private static final Map<DateTimeType, Callback<VComponent<Appointment>, Appointment>> DATE_TIME_INSTANCE_MAP = defaultDateTimeInstanceMap();
+    private static Map<DateTimeType, Callback<VComponent<Appointment>, Appointment>> defaultDateTimeInstanceMap()
+    {
+        Map<DateTimeType, Callback<VComponent<Appointment>, Appointment>> map = new HashMap<>();
+        map.put(DateTimeType.DATE, NEW_DATE_INSTANCE);
+        map.put(DateTimeType.DATE_WITH_LOCAL_TIME, NEW_DATE_WITH_LOCAL_TIME_INSTANCE);
+        map.put(DateTimeType.DATE_WITH_UTC_TIME, NEW_DATE_WITH_UTC_TIME_INSTANCE);
+        map.put(DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE, NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE);
+        return map;
+    }
+
+    
 //    // TODO - I THINK I'M GOING TO USE CATEGORIES INSTEAD OF BELOW X CUSTOM ELEMENT
 //    /**
 //     * X-APPOINTMENT-GROUP
@@ -142,6 +221,7 @@ public class VEventImpl extends VEvent<Appointment>
         categoriesProperty().addListener(categoriesListener);
         appointmentGroup.addListener(appointmentGroupListener);
         copy(vevent, this);
+//        assignMakeInstanceCallbacks();
     }
     
     public VEventImpl(List<AppointmentGroup> appointmentGroups)
@@ -150,11 +230,12 @@ public class VEventImpl extends VEvent<Appointment>
         this.appointmentGroups = appointmentGroups;
         categoriesProperty().addListener(categoriesListener);
         appointmentGroup.addListener(appointmentGroupListener);
+//        assignMakeInstanceCallbacks();
     }
     
     /**
-     * makes new VEventImpl by copying properties from appointment
-     * stores start and end date/times as ZonedDateTime in default zone
+     * makes new VEventImpl by copying properties from appointment.
+     * stores start and end date/times as ZonedDateTime in default time zone
      * 
      * @param appointment - from Agenda
      */
@@ -181,6 +262,15 @@ public class VEventImpl extends VEvent<Appointment>
         instances().add(appointment);
         if (! errorString().equals("")) throw new IllegalArgumentException(errorString());
     }
+    
+//    private void assignMakeInstanceCallbacks()
+//    {
+//        setNewDateInstanceCallback(NEW_DATE_INSTANCE);
+//        setNewDateWithLocalTimeInstanceCallback(NEW_DATE_WITH_LOCAL_TIME_INSTANCE);
+//        setNewDateWithUTCTimeInstanceCallback(NEW_DATE_WITH_UTC_TIME_INSTANCE);
+//        setNewDateWithLocalTimeAndTimeZoneInstanceCallback(NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE);
+//    }    
+
 
     /** Deep copy all fields from source to destination 
      * */
@@ -235,6 +325,8 @@ public class VEventImpl extends VEvent<Appointment>
         return parse(stringsList, appointmentGroups);
     }
 
+    
+            
     /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
      * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
@@ -246,13 +338,19 @@ public class VEventImpl extends VEvent<Appointment>
     public List<Appointment> makeInstances()
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
+        Callback<VComponent<Appointment>, Appointment> newInstanceCallback = DATE_TIME_INSTANCE_MAP.get(getTemporalType());
         List<Appointment> madeAppointments = new ArrayList<>();
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
         removedTooLate.forEach(t ->
         {
 //            LocalDateTime startLocalDateTime = VComponent.localDateTimeFromTemporal(t);
-            Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
+//            DateTimeType dateTimeType = DateTimeType.dateTimeTypeFromTemporal(t);
+            Appointment appt = newInstanceCallback.call(this);
+//            DateTimeType.makeInstance(t)
+            
+//            Appointment appt2 = DateTimeType.makeInstance(t);
+//            Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
 //            final Temporal startLocalDateTime;
             // TODO - CONSIDER USING DIFFERENT APPOINTMENT CLASSES FOR DIFFERENT TEMPORAL TYPES
 //            if (getDateTimeStart() instanceof ZonedDateTime)

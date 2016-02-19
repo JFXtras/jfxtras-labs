@@ -596,123 +596,42 @@ public class ICalendarAgenda extends Agenda
         }
     }
     
-    /**
-     * Appointment factory methods
-     * 
-     * @author David Bal
-     *
-     */
-    static public class AppointmentFactory {
-
-        /** returns new Appointment */
-        public static <T extends Appointment> T newAppointment(Class<T> appointmentClass)
-        {
-            try {
-                return appointmentClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    
-        /** Returns deep copy of source appointment */
-        @SuppressWarnings("unchecked")
-        public static <T extends Appointment> T newAppointment(T source)
-        {
-            try {
-                return (T) source.getClass()
-                        .getConstructor(Appointment.class) // gets copy constructor
-                        .newInstance(source);               // calls copy constructor
-            } catch (InstantiationException | IllegalAccessException
-                    | IllegalArgumentException | InvocationTargetException
-                    | NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
-            }
-          return null;
-
-        }
-    }
-    
-    /** used for unit testing - equals method required */
-    static public class AppointmentImplLocal2 extends Agenda.AppointmentImplLocal
-    {
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if((obj == null) || (obj.getClass() != getClass())) {
-                return false;
-            }
-            AppointmentImplLocal2 testObj = (AppointmentImplLocal2) obj;
-
-            boolean startEquals = getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
-            boolean endEquals = getEndLocalDateTime().equals(testObj.getEndLocalDateTime());
-            boolean descriptionEquals = (getDescription() == null) ?
-                    (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-            boolean locationEquals = (getLocation() == null) ?
-                    (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
-            boolean summaryEquals = (getSummary() == null) ?
-                    (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-            boolean appointmentGroupEquals = (getAppointmentGroup() == null) ?
-                    (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
-            return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals 
-                    && startEquals && endEquals;
-        }
-    }
-    
 //    /**
-//     * Class implementing Appointment that includes an icon Pane field for easy rendering of
-//     * color boxes representing each AppointmentGroup
+//     * Appointment factory methods
+//     * 
+//     * @author David Bal
+//     *
 //     */
-//    @Deprecated
-//    static public class AppointmentGroupImpl implements AppointmentGroup
-//    {
-//        private String styleSheet;
-//        public AppointmentGroupImpl(String styleSheet) { this.styleSheet = styleSheet; }        
-//        
-//        /** Description: */
-//        public ObjectProperty<String> descriptionProperty() { return descriptionObjectProperty; }
-//        final private ObjectProperty<String> descriptionObjectProperty = new SimpleObjectProperty<String>(this, "description");
-//        @Override
-//        public String getDescription() { return descriptionObjectProperty.getValue(); }
-//        @Override
-//        public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
-//        public AppointmentGroupImpl withDescription(String value) { setDescription(value); return this; } 
-//                
-//        /** StyleClass: */
-//        public ObjectProperty<String> styleClassProperty() { return styleClassObjectProperty; }
-//        final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
-//        @Override
-//        public String getStyleClass() { return styleClassObjectProperty.getValue(); }
-//        @Override
-//        public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
-//        public AppointmentGroupImpl withStyleClass(String value)
-//        {
-//            setStyleClass(value);
-//            makeIcon();
-//            return this; 
-//        }
-//        
-//        private Node icon;
-////        private Pane icon;
-//        public Node getIcon() { return icon; }
-//        void makeIcon()
-//        {
-//            icon = new Rectangle(20, 20);
-////            icon.setPrefSize(20, 20);
-////            icon.getStyleClass().add(Agenda.class.getSimpleName());
-////            icon.getStylesheets().add(styleSheet);
-//            icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
-//        }
+//    static public class AppointmentFactory {
 //
-////        private int key = 0;
-////        public int getKey() { return key; }
-////        public void setKey(int key) { this.key = key; }
-////        public AppointmentGroupImpl withKey(int key) {setKey(key); return this; }
-//        
+//        /** returns new Appointment */
+//        public static <T extends Appointment> T newAppointment(Class<T> appointmentClass)
+//        {
+//            try {
+//                return appointmentClass.newInstance();
+//            } catch (InstantiationException | IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
 //        }
-    
-    
-
+//    
+//        /** Returns deep copy of source appointment */
+//        @SuppressWarnings("unchecked")
+//        public static <T extends Appointment> T newAppointment(T source)
+//        {
+//            try {
+//                return (T) source.getClass()
+//                        .getConstructor(Appointment.class) // gets copy constructor
+//                        .newInstance(source);               // calls copy constructor
+//            } catch (InstantiationException | IllegalAccessException
+//                    | IllegalArgumentException | InvocationTargetException
+//                    | NoSuchMethodException | SecurityException e) {
+//                e.printStackTrace();
+//            }
+//          return null;
+//
+//        }
+//    }
 
     /** Add ResourceBundle for FXML controllers that contains strings for the appointment popups */
     public void setResourceBundle(ResourceBundle resources) {

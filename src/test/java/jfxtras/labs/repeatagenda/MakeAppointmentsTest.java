@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public class MakeAppointmentsTest extends ICalendarTestAbstract
@@ -42,7 +42,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         List<Appointment> expectedAppointments = expectedDates
                 .stream()
                 .map(d -> {
-                    return AppointmentFactory.newAppointment(getClazz())
+                    return new Agenda.AppointmentImplLocal()
                             .withStartLocalDateTime(d)
                             .withEndLocalDateTime(d.plusSeconds(3600))
                             .withDescription("Daily1 Description")
@@ -72,7 +72,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         Iterator<Appointment> appointmentIterator = appointments.iterator();
 
         Appointment madeAppointment1 = appointmentIterator.next();
-        Appointment expectedAppointment1 = AppointmentFactory.newAppointment(getClazz())
+        Appointment expectedAppointment1 = new Agenda.AppointmentImplLocal()
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 45))
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
@@ -81,7 +81,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         assertTrue(AppointmentIsEqualTo(expectedAppointment1, madeAppointment1)); 
         
         Appointment madeAppointment2 = appointmentIterator.next();
-        Appointment expectedAppointment2 = AppointmentFactory.newAppointment(getClazz())
+        Appointment expectedAppointment2 = new Agenda.AppointmentImplLocal()
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 45))
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
@@ -90,7 +90,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         assertTrue(AppointmentIsEqualTo(expectedAppointment2, madeAppointment2));
 
         Appointment madeAppointment3 = appointmentIterator.next();
-        Appointment expectedAppointment3 = AppointmentFactory.newAppointment(getClazz())
+        Appointment expectedAppointment3 = new Agenda.AppointmentImplLocal()
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 45))
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))

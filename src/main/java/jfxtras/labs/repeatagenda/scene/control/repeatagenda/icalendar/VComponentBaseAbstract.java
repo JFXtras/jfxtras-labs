@@ -42,7 +42,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
  *
  * @param <T> - recurrence instance type
  */
-public abstract class VComponentAbstract<T> implements VComponent<T>
+public abstract class VComponentBaseAbstract<T> implements VComponent<T>
 {
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -51,7 +51,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * CATEGORIES:APPOINTMENT,EDUCATION
      * CATEGORIES:MEETING
      */
-    // TODO - CHANGE TO OBSERVABLE LIST OR SET - NEED TO PUT BOX AROUND APPOINTMENT GROUP FOR THE SELECTED ONE, BUT MULTIPLE CHECKS ARE ALLOWED
+    // TODO - NEED TO ACCEPT MULTIPLE CATEGORIES - CHANGE TO OBSERVABLE LIST OR SET OR USE COMMA-DELIMATED STRING - NEED TO PUT BOX AROUND APPOINTMENT GROUP FOR THE SELECTED ONE, BUT MULTIPLE CHECKS ARE ALLOWED
     @Override public StringProperty categoriesProperty() { return categoriesProperty; }
     final private StringProperty categoriesProperty = new SimpleStringProperty(this, VComponentProperty.CATEGORIES.toString());
     @Override public String getCategories() { return categoriesProperty.get(); }
@@ -477,14 +477,49 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
         }
     }
     
+//    /*
+//     * NEW INSTANCE CALLBACKS
+//     * For all the implemented date and date-time combinations the corresponding callbacks
+//     * must be set.  These callbacks should be called in the makeInstances method to create
+//     * new instances
+//     */
+//    /** Callback to make new DATE instances (use LocalDate) */
+//    @Override
+//    public Callback<VComponent<T>, T> getNewDateInstanceCallback() { return newDateInstanceCallback; }
+//    private Callback<VComponent<T>, T> newDateInstanceCallback;
+//    @Override
+//    public void setNewDateInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback) { newDateInstanceCallback = newInstanceCallback; }
+//
+//    /** Callback to make new DATE_WITH_LOCAL_TIME instances (use LocalDateTime) */
+//    @Override
+//    public Callback<VComponent<T>, T> getNewDateWithLocalTimeInstanceCallback() { return newDateWithLocalTimeInstanceCallback; }
+//    private Callback<VComponent<T>, T> newDateWithLocalTimeInstanceCallback;
+//    @Override
+//    public void setNewDateWithLocalTimeInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback) { newDateWithLocalTimeInstanceCallback = newInstanceCallback; }
+//
+//    /** Callback to make new DATE_WITH_UTC_TIME instances (use ZonedDateTime, ZoneId.of("Z")) */
+//    @Override
+//    public Callback<VComponent<T>, T> getNewDateWithUTCTimeInstanceCallback() { return newDateWithUTCTimeInstanceCallback; }
+//    private Callback<VComponent<T>, T> newDateWithUTCTimeInstanceCallback;
+//    @Override
+//    public void setNewDateWithUTCTimeInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback) { newDateWithUTCTimeInstanceCallback = newInstanceCallback; }
+//
+//    /** Callback to make new DATE_WITH_LOCAL_TIME_AND_TIME_ZONE instances (use ZonedDateTime, system default ZoneId) */
+//    @Override
+//    public Callback<VComponent<T>, T> getNewDateWithLocalTimeAndTimeZoneInstanceCallback() { return newDateWithLocalTimeAndTimeZoneInstanceCallback; }
+//    private Callback<VComponent<T>, T> newDateWithLocalTimeAndTimeZoneInstanceCallback;
+//    @Override
+//    public void setNewDateWithLocalTimeAndTimeZoneInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback) { newDateWithLocalTimeAndTimeZoneInstanceCallback = newInstanceCallback; }
+//        
+    
     // CONSTRUCTORS
     /** Copy constructor */
-    public VComponentAbstract(VComponentAbstract<T> vcomponent)
+    public VComponentBaseAbstract(VComponentBaseAbstract<T> vcomponent)
     {
         copy(vcomponent, this);
     }
     
-    public VComponentAbstract() { }
+    public VComponentBaseAbstract() { }
     
     @Override
     public void handleEdit(
@@ -615,16 +650,19 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
 //            setDateTimeStart(startInstance);
 //        }
         setRRule(null);
-        // TODO - USE ZONEDDATETIME FOR INSTANCES?
-        if ((getDateTimeStart() instanceof ZonedDateTime) && (startOriginalInstance instanceof LocalDateTime))
-        {
-            ZoneId id = ((ZonedDateTime) getDateTimeStart()).getZone();
-            ZonedDateTime z = ((LocalDateTime) startOriginalInstance).atZone(id);
-            setDateTimeRecurrence(z);
-        } else
-        {
-            setDateTimeRecurrence(startOriginalInstance);
-        }
+        
+//        // TODO - USE ZONEDDATETIME FOR INSTANCES?
+//        if ((getDateTimeStart() instanceof ZonedDateTime) && (startOriginalInstance instanceof LocalDateTime))
+//        {
+//            ZoneId id = ((ZonedDateTime) getDateTimeStart()).getZone();
+//            ZonedDateTime z = ((LocalDateTime) startOriginalInstance).atZone(id);
+//            setDateTimeRecurrence(z);
+//        } else
+//        {
+//            setDateTimeRecurrence(startOriginalInstance);
+//        }
+        
+        setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setParent(vEventOriginal);
    
@@ -835,7 +873,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     }
 
     /** Deep copy all fields from source to destination */
-    private static void copy(VComponentAbstract<?> source, VComponentAbstract<?> destination)
+    private static void copy(VComponentBaseAbstract<?> source, VComponentBaseAbstract<?> destination)
     {
         destination.setCategories(source.getCategories());
         destination.setComment(source.getComment());
@@ -890,7 +928,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
     @Override
     public void copyTo(VComponent<T> destination)
     {
-        copy(this, (VComponentAbstract<?>) destination);
+        copy(this, (VComponentBaseAbstract<?>) destination);
     }
 
     /**
@@ -923,7 +961,7 @@ public abstract class VComponentAbstract<T> implements VComponent<T>
      * @param strings - list of properties
      * @return VComponent with parsed properties added
      */
-    protected static VComponentAbstract<?> parseVComponent(VComponentAbstract<?> vComponent, List<String> strings)
+    protected static VComponentBaseAbstract<?> parseVComponent(VComponentBaseAbstract<?> vComponent, List<String> strings)
     {
         Iterator<String> lineIterator = strings.iterator();
         while (lineIterator.hasNext())

@@ -133,7 +133,7 @@ this limitation is a future goal. - I plan on fixing this problem by combining m
 instances into one property internally.
 
  * @param <T> - type of recurrence instance, such as an appointment implementation
- * @see VComponentAbstract
+ * @see VComponentBaseAbstract
  * @see VEvent
  * @see VTodo // not implemented yet
  * @see VJournal // not implemented yet
@@ -230,6 +230,7 @@ public interface VComponent<T>
     Temporal getDateTimeStart();
     ObjectProperty<Temporal> dateTimeStartProperty();
     void setDateTimeStart(Temporal dtStart);
+    default DateTimeType getTemporalType() { return DateTimeType.dateTimeTypeFromTemporal(getDateTimeStart()); };
 
     /** Component is whole day if dateTimeStart (DTSTART) only contains a date (no time) */
     default boolean isWholeDay() { return ! getDateTimeStart().isSupported(ChronoUnit.NANOS); }
@@ -462,6 +463,28 @@ public interface VComponent<T>
      */
     Collection<T> instances();
     
+//    /*
+//     * NEW INSTANCE CALLBACKS
+//     * For all the implemented date and date-time combinations the corresponding callbacks
+//     * must be set.  These callbacks should be called in the makeInstances method to create
+//     * new instances
+//     */
+//    /** Callback to make new DATE instances (use LocalDate) */
+//    Callback<VComponent<T>, T> getNewDateInstanceCallback();
+//    void setNewDateInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback);
+//
+//    /** Callback to make new DATE_WITH_LOCAL_TIME instances (use LocalDateTime) */
+//    Callback<VComponent<T>, T> getNewDateWithLocalTimeInstanceCallback();
+//    void setNewDateWithLocalTimeInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback);
+//
+//    /** Callback to make new DATE_WITH_UTC_TIME instances (use ZonedDateTime, ZoneId.of("Z")) */
+//    Callback<VComponent<T>, T> getNewDateWithUTCTimeInstanceCallback();
+//    void setNewDateWithUTCTimeInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback);
+//
+//    /** Callback to make new DATE_WITH_LOCAL_TIME_AND_TIME_ZONE instances (use ZonedDateTime, system default ZoneId) */
+//    Callback<VComponent<T>, T> getNewDateWithLocalTimeAndTimeZoneInstanceCallback();
+//    void setNewDateWithLocalTimeAndTimeZoneInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback);
+             
     /**
      * returns string of line-separated properties defining calendar component.
      * 
@@ -1393,4 +1416,137 @@ public interface VComponent<T>
             return propertyName + prefex;
         }
     }
+
+
+    //    default T makeInstance()
+//    {
+//        switch (DateTimeType.dateTimeTypeFromTemporal(getDateTimeStart()))
+//        {
+//        case DATE:
+//            break;
+//        case DATE_WITH_LOCAL_TIME:
+//            break;
+//        case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+//            break;
+//        case DATE_WITH_UTC_TIME:
+//            break;
+//        default:
+//            break;
+//        };
+//    }
+    /**
+     * Temporal date and date-time types supported by iCalendar.
+     * see iCalendar RFC 5545, page 32-33
+     * 
+     * @author David Bal
+     *
+     */
+    public enum DateTimeType
+    {
+        DATE (LocalDate.class, null) {
+            @Override
+            public <U> U makeInstance(VComponent<U> vComponent)
+            {
+                return null;
+//                return vComponent.getNewDateInstanceCallback().call(vComponent);
+            }
+        } 
+      , DATE_WITH_LOCAL_TIME (LocalDateTime.class, null) {
+        @Override
+        public <U> U makeInstance(VComponent<U> vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }
+      , DATE_WITH_UTC_TIME (ZonedDateTime.class, ZoneId.of("Z")) {
+        @Override
+        public <U> U makeInstance(VComponent<U> vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }
+      , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE (ZonedDateTime.class, ZoneId.systemDefault()) {
+        @Override
+        public <U> U makeInstance(VComponent<U> vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    };  // get zone elsewhere so it can be changed
+      
+        private Class<? extends Temporal> clazz;
+        private ZoneId zone;
+        
+//        Class<? extends T> dateInstanceClass();
+//        Class<? extends T> dateWithLocalTimeInstanceClass();
+//        Class<? extends T> dateWithUTCTimeInstanceClass();
+//        Class<? extends T> dateWithLocalTimeAndTimeZoneInstanceClass();
+      
+        DateTimeType(Class<? extends Temporal> clazz, ZoneId zone)
+        {
+            this.clazz = clazz;
+            this.zone = zone;
+        }
+        
+        public abstract <U> U makeInstance(VComponent<U> vComponent);
+        
+        public static DateTimeType dateTimeTypeFromTemporal(Temporal t)
+        {
+            if (t instanceof LocalDate)
+            {
+                return DATE;
+            } else if (t instanceof LocalDateTime)
+            {
+                return DATE_WITH_LOCAL_TIME;
+            } else if (t instanceof ZonedDateTime)
+            {
+                ZoneOffset z = ((ZonedDateTime) t).getOffset();
+                if (z == ZoneOffset.UTC)
+                {
+                    return DATE_WITH_UTC_TIME;
+                } else
+                {
+                    return DATE_WITH_LOCAL_TIME_AND_TIME_ZONE;                    
+                }
+            } else
+            {
+                throw new DateTimeException("Invalid Temporal class:" + t.getClass().getSimpleName());
+            }
+        }      
+    }
+    
+    /**
+     * A convenience class to represent start and end date-time pairs
+     * 
+     */
+//   public class StartEndPair<U,V> 
+//   {
+//       private U start;
+//       public U getStart() { return start; }
+//
+//       private V end;
+//       public V getEnd() { return end; }
+//   }
+   
+//   static public class StartEndPair
+//   {
+//       public StartEndPair(Temporal start, Temporal end)
+//       {
+//           if (start.getClass() != end.getClass()) { throw new RuntimeException("Temporal classes of start and end must be the same."); }
+//           this.start = start;
+//           this.end = end;
+//       }
+//       
+//       public Temporal getStart() { return start; }
+//       private final Temporal start;
+//       
+//       public Temporal getEnd() { return end; }
+//       private final Temporal end; 
+//       
+//       @Override
+//       public String toString() { return super.toString() + " " + start + " to " + end; }
+//   }
+
 }
