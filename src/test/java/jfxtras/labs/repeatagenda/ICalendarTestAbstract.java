@@ -715,6 +715,18 @@ public abstract class ICalendarTestAbstract
         return vEvent;
     }
     
+    public static VEventImpl getIndividualZoned()
+    {
+        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        vEvent.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")));
+        vEvent.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")));
+        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
+        vEvent.setAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13));
+        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
+        vEvent.setAppointmentClass(clazz);
+        return vEvent;
+    }
+    
     /** FREQ=DAILY;INVERVAL=3;COUNT=6
      *  EXDATE=20151112T100000,20151115T100000 */
     public static VEventImpl getDailyWithException1()

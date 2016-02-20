@@ -3,6 +3,8 @@ package jfxtras.labs.repeatagenda;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +19,7 @@ import jfxtras.test.TestUtil;
 
 public class AgendaRenderVComponentsTest extends AgendaTestAbstract
 {
+    @Override
     public Parent getRootNode()
     {
         Parent p = super.getRootNode();
@@ -24,10 +27,10 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
     }
     
     @Test
-    @Ignore
+    @Ignore // TODO FIX THIS
     public void canRenderVComponents()
     {
-        // Add VComponents, listener in ICalendarAgenda 
+        // Add VComponents, listener in ICalendarAgenda makes Appointments
         TestUtil.runThenWaitForPaintPulse( () -> {
             agenda.vComponents().add(ICalendarTestAbstract.getDaily2());
             agenda.vComponents().add(ICalendarTestAbstract.getWeekly2());
@@ -168,5 +171,35 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
 //        TestUtil.sleep(3000);
     }
 
+    @Test
+    public void canRenderVComponentZoned()
+    {
+        // Add VComponents, listener in ICalendarAgenda makes Appointments
+        TestUtil.runThenWaitForPaintPulse( () -> {
+            agenda.vComponents().add(ICalendarTestAbstract.getIndividualZoned());
+        });
+        
+        List<ZonedDateTime> startZoneDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getStartZonedDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        List<ZonedDateTime> expectedStartZoneDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London"))
+                ));
+        assertEquals(expectedStartZoneDates, startZoneDates);
+
+        // Local dates must be converted to default time zone
+        List<LocalDateTime> startDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getStartLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedStartDates = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 11, 2, 0)
+                ));
+        assertEquals(expectedStartDates, startDates);
+
+    }
 
 }

@@ -52,8 +52,6 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
                 .collect(Collectors.toList());
         for (int i=0; i<expectedAppointments.size(); i++)
         {
-            System.out.println(expectedAppointments.get(i));
-            System.out.println(newAppointments.get(i));
             assertTrue(AppointmentIsEqualTo(expectedAppointments.get(i), newAppointments.get(i)));
         }
     }
@@ -120,8 +118,6 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         assertEquals(expectedDates, dates);
         
         assertTrue(appointments.stream().map(a -> a.isWholeDay()).allMatch(a -> a == true)); // verify all appointment are wholeDay
-        
-//        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
     }
-
+    
 }

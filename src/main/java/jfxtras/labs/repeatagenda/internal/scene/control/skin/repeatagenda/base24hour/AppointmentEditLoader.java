@@ -42,7 +42,6 @@ public class AppointmentEditLoader extends Stage {
         String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndLocalDateTime());
         String appointmentTime = start + end + " ";
         VEvent<Appointment> vEvent = (VEvent<Appointment>) vComponent;
-//        VComponent<Appointment> vComponentOld = VComponentFactory.newVComponent(vComponent);
         setTitle(vEvent.getSummary() + ": " + appointmentTime);
         initModality(Modality.APPLICATION_MODAL);
         
@@ -60,7 +59,6 @@ public class AppointmentEditLoader extends Stage {
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
         Scene scene = new Scene(appointmentPopup);
         scene.getStylesheets().addAll(ICalendarAgenda.iCalendarStyleSheet);
-        System.out.println("scene sheets:" + scene.getStylesheets().size());
         
         appointmentEditController.setupData(
                 appointment
@@ -74,43 +72,6 @@ public class AppointmentEditLoader extends Stage {
 
         setResizable(false);
         setScene(scene);
-
-        //        groupNameEdited.bindBidirectional(appointmentEditController.groupNameEditedProperty());
-
-        // listen for close trigger
-//        popupCloseType.addListener((observable, oldSelection, newSelection) -> close());
-        
-//        // when popup closes write changes if occurred
-//        setOnHidden((windowEvent) -> 
-//        {
-////            System.out.println("group:" + appointment.getAppointmentGroup().getDescription());
-////            agenda.appointmentGroups().stream().map(a -> a.getDescription()).forEach(System.out::println);
-//            switch (popupCloseType.get())
-//            {
-//            case CLOSE_WITH_CHANGE:
-//                agenda.refresh();
-////                System.out.println("close popup");
-//                if (groupNameEdited.getValue()) {    // TODO write group name changes
-////                    System.out.println("group change write needed");
-//                    appointmentGroupWriteCallback.call(agenda.appointmentGroups());
-////                    AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
-//                }
-//                
-//                break;
-//            case CANCEL:
-//            case X:
-//                System.out.println("copy back to original:" + vComponentOld.getDateTimeStart() + " " 
-//                        + vComponent.getDateTimeStart());                
-//                vComponentOld.copyTo(vComponent);
-//                System.out.println("copy back to original:" + vComponent.getDateTimeStart() + " " );
-//                break;
-//            default:
-//                break;
-//            }
-//            System.out.println("VComponent:" + vComponent.toString());
-//        });
-        
-//        setScene(scene);
     }
 
     

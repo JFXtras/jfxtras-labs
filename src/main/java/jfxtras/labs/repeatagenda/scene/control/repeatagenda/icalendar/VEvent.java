@@ -89,9 +89,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
  */
 public abstract class VEvent<T> extends VComponentBaseAbstract<T>
 {
-    @Deprecated private static final String DESCRIPTION_NAME = "DESCRIPTION";
-    @Deprecated private static final String DURATION_NAME = "DURATION";
-    @Deprecated private static final String DATE_TIME_END_NAME = "DTEND";
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
      * This property provides a more complete description of the
@@ -102,14 +99,14 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
      *  MUST attend this meeting.\nRSVP to team leader.
      */
     public StringProperty descriptionProperty() { return description; }
-    final private StringProperty description = new SimpleStringProperty(this, DESCRIPTION_NAME);
+    final private StringProperty description = new SimpleStringProperty(this, VEventProperty.DESCRIPTION.toString());
     public String getDescription() { return description.getValue(); }
     public void setDescription(String value) { description.setValue(value); }
     
     /** 
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
      * */
-    final private ObjectProperty<TemporalAmount> duration = new SimpleObjectProperty<>(this, DURATION_NAME);
+    final private ObjectProperty<TemporalAmount> duration = new SimpleObjectProperty<>(this, VEventProperty.DURATION.toString());
     public ObjectProperty<TemporalAmount> durationProperty() { return duration; }
     public TemporalAmount getDuration() { return duration.getValue(); }
     public void setDuration(TemporalAmount duration)
@@ -133,7 +130,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
      * internally.
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
-    final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, DATE_TIME_END_NAME);
+    final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, VEventProperty.DATE_TIME_END.toString());
     public ObjectProperty<Temporal> dateTimeEndProperty() { return dateTimeEnd; }
     public void setDateTimeEnd(Temporal dtEnd)
     {
@@ -173,7 +170,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
         setupListeners();
     }
     
-   /** Change start, change Temporal type from LocalDateTime to LocalDate (changes to whole-day)
+   /** Change start Temporal type from LocalDateTime to LocalDate (changes to whole-day)
     * this method is called by dateTimeStartlistener
     * @see #dateTimeStartlistener
     */
@@ -209,7 +206,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
         }
     }
 
-   /** Change start, change Temporal type from LocalDate to LocalDateTime
+   /** Change start Temporal type from LocalDate to LocalDateTime
     * this method is called by dateTimeStartlistener
     * @see #dateTimeStartlistener
     */
@@ -246,6 +243,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
         }        
     }
     
+    // TODO - MAKE A METHOD TO CHANGE TO AND FROM ZONEDDATETIME
     
     /* add listeners for dateTimeStart, dateTimeEnd and duration */
     private void setupListeners()

@@ -662,7 +662,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
 //            setDateTimeRecurrence(startOriginalInstance);
 //        }
         
-//        System.out.println("startOriginalInstance:" + startOriginalInstance);
+        System.out.println("startOriginalInstance:" + startOriginalInstance);
         setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setParent(vEventOriginal);
@@ -848,12 +848,12 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
             case CANCEL:
                 break;
             case ONE:
-                if (this.getExDate() == null) this.setExDate(new ExDate(startInstance));
-                else this.getExDate().getTemporals().add(startInstance);
+                if (getExDate() == null) { setExDate(new ExDate(startInstance)); }
+                else { getExDate().getTemporals().add(startInstance); }
                 instances.removeIf(a -> a.equals(instance));
                 break;
             case THIS_AND_FUTURE:
-                if (this.getRRule().getCount() == 0) this.getRRule().setCount(0);
+                if (getRRule().getCount() == 0) getRRule().setCount(0);
                 Temporal previousDay = startInstance.minus(1, ChronoUnit.DAYS);
                 Temporal untilNew = (this.isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
                 this.getRRule().setUntil(untilNew);
@@ -861,8 +861,8 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
                 // Remove old appointments, add back ones
                 Collection<T> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
                 instancesTemp.addAll(instances);
-                instancesTemp.removeIf(a -> this.instances().stream().anyMatch(a2 -> a2 == a));
-                this.instances().clear(); // clear this's outdated collection of appointments
+                instancesTemp.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
+                instances().clear(); // clear this's outdated collection of appointments
                 instancesTemp.addAll(this.makeInstances()); // add vEventOld part of new appointments
                 instances.clear();
                 instances.addAll(instancesTemp);
@@ -1049,9 +1049,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
     public Stream<Temporal> stream(Temporal start)
     {
         // adjust start to ensure its not before dateTimeStart
-        System.out.println("starts:" + start + " " + getDateTimeStart() + " " + this.hashCode());
         final Temporal start2 = (VComponent.isBefore(start, getDateTimeStart())) ? getDateTimeStart() : start;
-     
         final Stream<Temporal> stream1; // individual or rrule stream
         final Temporal earliestCacheValue;
         final Temporal latestCacheValue;

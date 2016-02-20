@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +31,7 @@ public class AgendaChangeTest extends AgendaTestAbstract
         return super.getRootNode();
     }
     
+    /* Moves appointment to new time */
     @Test
     public void canDragAndDropAppointment()
     {
@@ -93,6 +96,70 @@ public class AgendaChangeTest extends AgendaTestAbstract
         List<LocalDateTime> endDates = agenda.appointments()
                 .stream()
                 .map(a -> a.getEndLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(expectedEndDates, endDates);
+    }
+    
+    /* Moves appointment to new time - ZonedDateTime */
+    @Test
+    public void canDragAndDropZonedAppointment()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getWeeklyZoned()));
+        
+        // move one appointment
+        assertFind("#AppointmentRegularBodyPane2015-11-11/0");
+        move("#hourLine10");
+        press(MouseButton.PRIMARY);
+        move("#hourLine15");
+        release(MouseButton.PRIMARY);
+
+        // change dialog
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ONE));
+        click("#changeDialogOkButton");
+
+        // check return to original state
+        assertEquals(2, agenda.vComponents().size());
+        assertEquals(3, agenda.appointments().size());
+        Collections.sort(agenda.vComponents(), VComponent.VCOMPONENT_COMPARATOR);
+        VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
+        VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
+        RRule r = ICalendarTestAbstract.getWeeklyZoned().getRRule().withRecurrences(v1);
+        VEventImpl expectedV0 = ICalendarTestAbstract.getWeeklyZoned()
+                .withRRule(r);
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV0, v0));
+        
+        VEventImpl expectedV1 = ICalendarTestAbstract.getWeeklyZoned()
+                .withRRule(null)
+                .withDateTimeRecurrence(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 00), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 15, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 15, 45), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStamp(v1.getDateTimeStamp())
+                .withSequence(1);
+        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
+        
+        // check appointment dates
+        List<ZonedDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 15, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 10, 0), ZoneId.of("America/Los_Angeles"))
+              ));
+        List<ZonedDateTime> startDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getStartZonedDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(expectedDates, startDates);
+        
+        List<ZonedDateTime> expectedEndDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 15, 45), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 10, 45), ZoneId.of("America/Los_Angeles"))
+              ));
+        List<ZonedDateTime> endDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getEndZonedDateTime())
                 .sorted()
                 .collect(Collectors.toList());
         assertEquals(expectedEndDates, endDates);

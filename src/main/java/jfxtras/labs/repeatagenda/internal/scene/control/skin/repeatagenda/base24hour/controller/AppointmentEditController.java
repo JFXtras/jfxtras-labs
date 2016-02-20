@@ -113,13 +113,11 @@ public class AppointmentEditController extends Pane
                     vEvent.getDateTimeEnd()
                   , oldSelection
                   , newSelection);
-            System.out.println("newDateTimeEnd:" + newDateTimeEnd);
             vEvent.setDateTimeEnd(newDateTimeEnd);
         }
     };
     private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
     {
-//        System.out.println("old start-controller:" + vEvent.getDateTimeStart() + " " + oldSelection + " " + newSelection);
         Temporal newDateTimeStart = adjustStartEndTemporal(
                 vEvent.getDateTimeStart()
               , oldSelection
@@ -129,17 +127,12 @@ public class AppointmentEditController extends Pane
         // adjust endTextField (maintain duration)
         LocalDateTime end = endTextField.getLocalDateTime();
         long duration = ChronoUnit.NANOS.between(oldSelection, end);
-//        System.out.println("duration:" + duration + " " + end);
-//        endTextField.localDateTimeProperty().removeListener(endTextlistener);
         endTextField.setLocalDateTime(newSelection.plus(duration, ChronoUnit.NANOS));
-//        endTextField.localDateTimeProperty().addListener(endTextlistener);
     };
     // Change time and shift dates for start and end edits
-    // TODO - REMOVE - USE ADDNANOS IN VCOMPONENT instead
     private Temporal adjustStartEndTemporal(Temporal input, LocalDateTime oldSelection, LocalDateTime newSelection)
     {
         long dayShift = ChronoUnit.DAYS.between(oldSelection, newSelection);
-        System.out.println("adjust:" + input + " " + dayShift);
         if (input.isSupported(ChronoUnit.NANOS))
         {
             LocalTime time = newSelection.toLocalTime();
@@ -167,11 +160,6 @@ public class AppointmentEditController extends Pane
             , Stage popup)
     {
         appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.iCalendarStyleSheet);
-
-        appointmentGroupGridPane.getStylesheets().stream().forEach(System.out::println);
-        System.out.println("done sheets:" + appointmentGroupGridPane.getStylesheets().size());
-//        Image img = new Image("check-icon");
-//        ImageView check = new ImageView(img);
 
         startOriginalInstance = appointment.getStartLocalDateTime();
         dateTimeInstanceEndOriginal = appointment.getEndLocalDateTime();
@@ -278,7 +266,6 @@ public class AppointmentEditController extends Pane
                 Integer i = appointmentGroupGridPane.getAppointmentGroupSelected();
                 String newText = appointmentGroups.get(i).getDescription();
                 groupTextField.setText(newText);
-                System.out.println("appointmentGroup1:" + newSelection);
 //                groupNameEdited.set(true); // TODO - HANDLE APPOINTMENT GROUP I/O
             });
         // store group name changes by each character typed
@@ -288,7 +275,6 @@ public class AppointmentEditController extends Pane
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
             vEvent.setCategories(newSelection);
-            System.out.println("appointmentGroup2:" + newSelection);
             // TODO - ensure groupTextField has unique description text
 //            groupNameEdited.set(true);
         });
@@ -361,7 +347,6 @@ public class AppointmentEditController extends Pane
     // Displays an alert notifying UNTIL date is not an occurrence and changed to 
     private void tooEarlyDateAlert(Temporal t1, Temporal t2)
     {
-        System.out.println("tooearly:");
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Date Selection");
         alert.setHeaderText("End must be after start");

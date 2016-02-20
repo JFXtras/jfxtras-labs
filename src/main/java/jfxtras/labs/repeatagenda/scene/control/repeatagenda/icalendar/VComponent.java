@@ -900,7 +900,6 @@ public interface VComponent<T>
         System.out.println("uid:" + uid + " " + vComponents.size());
 
         return vComponents.stream()
-//                .forEach(System.out::println);
                 .filter( v ->
                 {
                     boolean isChild = (v.getUniqueIdentifier() != null) ? v.getUniqueIdentifier().equals(uid) : false;
@@ -1417,23 +1416,6 @@ public interface VComponent<T>
         }
     }
 
-
-    //    default T makeInstance()
-//    {
-//        switch (DateTimeType.dateTimeTypeFromTemporal(getDateTimeStart()))
-//        {
-//        case DATE:
-//            break;
-//        case DATE_WITH_LOCAL_TIME:
-//            break;
-//        case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-//            break;
-//        case DATE_WITH_UTC_TIME:
-//            break;
-//        default:
-//            break;
-//        };
-//    }
     /**
      * Temporal date and date-time types supported by iCalendar.
      *  DATE
@@ -1447,50 +1429,11 @@ public interface VComponent<T>
      */
     public enum DateTimeType
     {
-        DATE (LocalDate.class, null) {
-            @Override
-            public <U> U makeInstance(VComponent<U> vComponent)
-            {
-                return null;
-//                return vComponent.getNewDateInstanceCallback().call(vComponent);
-            }
-        } 
-      , DATE_WITH_LOCAL_TIME (LocalDateTime.class, null) {
-        @Override
-        public <U> U makeInstance(VComponent<U> vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    }
-      , DATE_WITH_UTC_TIME (ZonedDateTime.class, ZoneId.of("Z")) {
-        @Override
-        public <U> U makeInstance(VComponent<U> vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    }
-      , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE (ZonedDateTime.class, ZoneId.systemDefault()) {
-        @Override
-        public <U> U makeInstance(VComponent<U> vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    };  // get zone elsewhere so it can be changed
-      
-        private Class<? extends Temporal> clazz;
-        private ZoneId zone;
-      
-        DateTimeType(Class<? extends Temporal> clazz, ZoneId zone)
-        {
-            this.clazz = clazz;
-            this.zone = zone;
-        }
-        
-        public abstract <U> U makeInstance(VComponent<U> vComponent);
-        
+        DATE
+      , DATE_WITH_LOCAL_TIME
+      , DATE_WITH_UTC_TIME
+      , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE;
+               
         static DateTimeType dateTimeTypeFromTemporal(Temporal t)
         {
             if (t instanceof LocalDate)
@@ -1501,8 +1444,8 @@ public interface VComponent<T>
                 return DATE_WITH_LOCAL_TIME;
             } else if (t instanceof ZonedDateTime)
             {
-                ZoneOffset z = ((ZonedDateTime) t).getOffset();
-                if (z == ZoneOffset.UTC)
+                ZoneId z = ((ZonedDateTime) t).getZone();
+                if (z == ZoneId.of("Z"))
                 {
                     return DATE_WITH_UTC_TIME;
                 } else
@@ -1520,15 +1463,6 @@ public interface VComponent<T>
      * A convenience class to represent start and end date-time pairs
      * 
      */
-//   public class StartEndPair<U,V> 
-//   {
-//       private U start;
-//       public U getStart() { return start; }
-//
-//       private V end;
-//       public V getEnd() { return end; }
-//   }
-   
    static public class StartEndPair
    {
        public StartEndPair(Temporal start, Temporal end)

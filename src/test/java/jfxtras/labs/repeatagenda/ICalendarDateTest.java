@@ -420,7 +420,6 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventImpl e = getWeekly4();
         List<Temporal> madeDates = e
                 .stream(e.getDateTimeStart())
-//                .peek(System.out::println)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 11, 10, 0)
@@ -638,9 +637,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventImpl e = getDailyUTC();
         List<Temporal> madeDates = e
                 .stream(e.getDateTimeStart())
-//                .map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()))
                 .map(z -> VComponent.localDateTimeFromTemporal(z))
-//                .peek(System.out::println)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 2, 0)
@@ -687,7 +684,6 @@ public class ICalendarDateTest extends ICalendarTestAbstract
               , LocalDateTime.of(2015, 11, 24, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
-        e.getExDate().getTemporals().stream().forEach(System.out::println);
     }
 
     /** Tests VEvent with RDATE VEvent */
@@ -741,13 +737,10 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventImpl vevent = getWeekly2();
         
         LocalDateTime start = LocalDateTime.of(2025, 11, 10, 0, 0);
-        long t1 = System.nanoTime();
         List<Temporal> madeDates = vevent
                 .stream(start)
                 .limit(3)
                 .collect(Collectors.toList());
-        long t2 = System.nanoTime();
-        System.out.println("time:" + (t2-t1));
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2025, 11, 10, 10, 0)
               , LocalDateTime.of(2025, 11, 12, 10, 0)
@@ -756,13 +749,10 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedDates, madeDates);
         
         LocalDateTime start2 = LocalDateTime.of(2015, 11, 11, 0, 0);
-        t1 = System.nanoTime();
         List<Temporal> madeDates2 = vevent
                 .stream(start2)
                 .limit(2)
                 .collect(Collectors.toList());
-        t2 = System.nanoTime();
-        System.out.println("time:" + (t2-t1));
         List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 11, 10, 0)
               , LocalDateTime.of(2015, 11, 13, 10, 0)
@@ -770,13 +760,10 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedDates2, madeDates2);
         
         LocalDateTime start3 = LocalDateTime.of(2025, 11, 12, 0, 0);
-        t1 = System.nanoTime();
         List<Temporal> madeDates3 = vevent
                 .stream(start3)
                 .limit(3)
                 .collect(Collectors.toList());
-        t2 = System.nanoTime();
-        System.out.println("time:" + (t2-t1));
         List<LocalDateTime> expectedDates3 = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2025, 11, 12, 10, 0)
               , LocalDateTime.of(2025, 11, 14, 10, 0)
@@ -785,13 +772,10 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedDates3, madeDates3);
 
         LocalDateTime start4 = LocalDateTime.of(2025, 11, 17, 0, 0);
-        t1 = System.nanoTime();
         List<Temporal> madeDates4 = vevent
                 .stream(start4)
                 .limit(3)
                 .collect(Collectors.toList());
-        t2 = System.nanoTime();
-        System.out.println("time:" + (t2-t1));
         List<LocalDateTime> expectedDates4 = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2025, 11, 24, 10, 0)
               , LocalDateTime.of(2025, 11, 26, 10, 0)
