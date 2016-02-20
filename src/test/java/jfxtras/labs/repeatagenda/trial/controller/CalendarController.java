@@ -4,6 +4,7 @@ package jfxtras.labs.repeatagenda.trial.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
@@ -102,13 +103,18 @@ public class CalendarController {
         // accept new appointments
         agenda.setNewAppointmentCallback((LocalDateTimeRange dateTimeRange) -> 
         {
-            Appointment appointment = new Agenda.AppointmentImplLocal()
-                .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
-                .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
+//            return new Agenda.AppointmentImplLocal()
+//                .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
+//                .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
+//                .withSummary("New")
+//                .withDescription("")
+//                .withAppointmentGroup(agenda.appointmentGroups().get(0));
+            return new Agenda.AppointmentImplZoned()
+                .withStartZonedDateTime( dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault()))
+                .withEndZonedDateTime( dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault()))
                 .withSummary("New")
                 .withDescription("")
                 .withAppointmentGroup(agenda.appointmentGroups().get(0));
-            return appointment;
         });
 
 //        agenda.setEditAppointmentCallback((AppointmentEditData a) -> {

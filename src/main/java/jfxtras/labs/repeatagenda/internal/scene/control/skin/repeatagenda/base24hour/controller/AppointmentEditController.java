@@ -5,8 +5,12 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +38,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent.DateTimeType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -52,8 +57,8 @@ public class AppointmentEditController extends Pane
 //    private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0); // default start time used when a whole-day event gets a time
     
     private Appointment appointment; // selected appointment
-    private LocalDateTime startOriginalInstance;
-    private LocalDateTime dateTimeInstanceEndOriginal;
+    private Temporal startOriginalInstance;
+    private Temporal endInstanceOriginal;
     
     private VEvent<Appointment> vEvent;
 //    private VComponent<Appointment> vEventOld;
@@ -84,12 +89,12 @@ public class AppointmentEditController extends Pane
     @FXML private RepeatableController<Appointment> repeatableController;
     @FXML private Tab repeatableTab;
     
-    private LocalDateTime lastDateTimeStart = null;
+    private LocalDateTime lastDateTimeStart = null; // last LocalDateTime in startTextField
 //    private LocalDateTime lastDateTimeEnd = null;
 
-    public static final long DEFAULT_DURATION = 3600L * Duration.ofSeconds(1).toNanos();
+//    public static final long DEFAULT_DURATION = 3600L * Duration.ofSeconds(1).toNanos();
     private LocalTime lastStartTime = LocalTime.of(10, 0); // default time
-    private long lastDuration = DEFAULT_DURATION; // Default to one hour duration
+    private TemporalAmount lastDuration = Duration.ofHours(1); // Default to one hour duration
     
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
     private final Callback<Throwable, Void> errorCallback = (throwable) ->
@@ -109,41 +114,36 @@ public class AppointmentEditController extends Pane
             endTextField.setLocalDateTime(oldSelection);
         } else
         {
-            Temporal newDateTimeEnd = adjustStartEndTemporal(
-                    vEvent.getDateTimeEnd()
-                  , oldSelection
-                  , newSelection);
+            final TemporalAmount timeShift;
+            if (vEvent.getTemporalType() == DateTimeType.DATE)
+            {
+                timeShift = Period.between(LocalDate.from(oldSelection), LocalDate.from(newSelection));
+            } else
+            {
+                timeShift = Duration.between(oldSelection, newSelection);
+            }
+            final Temporal newDateTimeEnd = vEvent.getDateTimeEnd().plus(timeShift);
             vEvent.setDateTimeEnd(newDateTimeEnd);
         }
     };
     private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
     {
-        Temporal newDateTimeStart = adjustStartEndTemporal(
-                vEvent.getDateTimeStart()
-              , oldSelection
-              , newSelection);
+        final TemporalAmount timeShift;
+        if (vEvent.getTemporalType() == DateTimeType.DATE)
+        {
+            timeShift = Period.between(LocalDate.from(oldSelection), LocalDate.from(newSelection));
+        } else
+        {
+            timeShift = Duration.between(oldSelection, newSelection);
+        }
+        final Temporal newDateTimeStart = vEvent.getDateTimeStart().plus(timeShift);
         vEvent.setDateTimeStart(newDateTimeStart);
         
         // adjust endTextField (maintain duration)
         LocalDateTime end = endTextField.getLocalDateTime();
-        long duration = ChronoUnit.NANOS.between(oldSelection, end);
-        endTextField.setLocalDateTime(newSelection.plus(duration, ChronoUnit.NANOS));
+        TemporalAmount duration = Duration.between(oldSelection, end);
+        endTextField.setLocalDateTime(newSelection.plus(duration));
     };
-    // Change time and shift dates for start and end edits
-    private Temporal adjustStartEndTemporal(Temporal input, LocalDateTime oldSelection, LocalDateTime newSelection)
-    {
-        long dayShift = ChronoUnit.DAYS.between(oldSelection, newSelection);
-        if (input.isSupported(ChronoUnit.NANOS))
-        {
-            LocalTime time = newSelection.toLocalTime();
-            return LocalDate.from(input)
-                    .atTime(time)
-                    .plus(dayShift, ChronoUnit.DAYS);
-        } else
-        {
-            return input.plus(dayShift, ChronoUnit.DAYS); // whole day
-        }
-    }
     
     @FXML public void initialize()
     {
@@ -161,8 +161,21 @@ public class AppointmentEditController extends Pane
     {
         appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.iCalendarStyleSheet);
 
-        startOriginalInstance = appointment.getStartLocalDateTime();
-        dateTimeInstanceEndOriginal = appointment.getEndLocalDateTime();
+        switch (vComponent.getTemporalType())
+        {
+        case DATE:
+        case DATE_WITH_LOCAL_TIME:
+            startOriginalInstance = appointment.getStartLocalDateTime();
+            endInstanceOriginal = appointment.getEndLocalDateTime();
+            break;
+        case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+        case DATE_WITH_UTC_TIME:
+            startOriginalInstance = appointment.getStartZonedDateTime();
+            endInstanceOriginal = appointment.getEndZonedDateTime();
+            break;
+        default:
+            throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getTemporalType());
+        }
         this.appointment = appointment;        
         this.appointments = appointments;
         this.vComponents = vComponents;
@@ -203,7 +216,7 @@ public class AppointmentEditController extends Pane
             {
                 lastDateTimeStart = startTextField.getLocalDateTime();
                 lastStartTime = lastDateTimeStart.toLocalTime();
-                lastDuration = ChronoUnit.NANOS.between(lastDateTimeStart, endTextField.getLocalDateTime());
+                lastDuration = Duration.between(lastDateTimeStart, endTextField.getLocalDateTime());
                 LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
                 vEvent.setDateTimeStart(newDateTimeStart);
                 LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).plus(1, ChronoUnit.DAYS);
@@ -229,11 +242,27 @@ public class AppointmentEditController extends Pane
                     vEvent.setDateTimeStart(start);
                     startTextField.setLocalDateTime(start);
                 }
-                LocalDateTime end = start.plus(lastDuration, ChronoUnit.NANOS);
+                LocalDateTime end = start.plus(lastDuration);
                 endTextField.setLocalDateTime(end);
                 
-                LocalDateTime newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(lastStartTime);
-                LocalDateTime newDateTimeEnd = newDateTimeStart.plus(lastDuration, ChronoUnit.NANOS);
+                final Temporal newDateTimeStart;
+                final Temporal newDateTimeEnd;
+                switch (vComponent.getTemporalType())
+                {
+                case DATE:
+                case DATE_WITH_LOCAL_TIME:
+                    newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(lastStartTime);
+                    newDateTimeEnd = newDateTimeStart.plus(lastDuration);
+                    break;
+                case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+                case DATE_WITH_UTC_TIME:
+                    ZoneId zone = ((ZonedDateTime) vEvent.getDateTimeStart()).getZone();
+                    newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(lastStartTime).atZone(zone);
+                    newDateTimeEnd = newDateTimeStart.plus(lastDuration);
+                    break;
+                default:
+                    throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getTemporalType());
+                }
                 vEvent.setDateTimeStart(newDateTimeStart);
                 vEvent.setDateTimeEnd(newDateTimeEnd);
 
@@ -249,13 +278,13 @@ public class AppointmentEditController extends Pane
         // START DATE/TIME
         Locale locale = Locale.getDefault();
         startTextField.setLocale(locale);
-        startTextField.setLocalDateTime(startOriginalInstance);
+        startTextField.setLocalDateTime(LocalDateTime.from(startOriginalInstance));
         startTextField.setParseErrorCallback(errorCallback);
         startTextField.localDateTimeProperty().addListener(startTextListener);
         
         // END DATE/TIME
         endTextField.setLocale(locale);
-        endTextField.setLocalDateTime(dateTimeInstanceEndOriginal);
+        endTextField.setLocalDateTime(LocalDateTime.from(endInstanceOriginal));
         endTextField.setParseErrorCallback(errorCallback);
         endTextField.localDateTimeProperty().addListener(endTextlistener);
         

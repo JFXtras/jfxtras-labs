@@ -222,7 +222,6 @@ public class VEventImpl extends VEvent<Appointment>
         categoriesProperty().addListener(categoriesListener);
         appointmentGroup.addListener(appointmentGroupListener);
         copy(vevent, this);
-//        assignMakeInstanceCallbacks();
     }
     
     public VEventImpl(List<AppointmentGroup> appointmentGroups)
@@ -231,7 +230,6 @@ public class VEventImpl extends VEvent<Appointment>
         this.appointmentGroups = appointmentGroups;
         categoriesProperty().addListener(categoriesListener);
         appointmentGroup.addListener(appointmentGroupListener);
-//        assignMakeInstanceCallbacks();
     }
     
     /**
@@ -250,9 +248,18 @@ public class VEventImpl extends VEvent<Appointment>
             setDateTimeStart(appointment.getStartLocalDateTime().toLocalDate());
         } else
         {
-            ZonedDateTime end = ZonedDateTime.of(appointment.getEndLocalDateTime(), ZoneId.systemDefault());
+            Temporal start;
+            Temporal end;
+            try
+            {
+                start = appointment.getStartZonedDateTime();
+                end = appointment.getEndZonedDateTime();
+            } catch (Exception e)
+            {
+                start = appointment.getStartLocalDateTime();
+                end = appointment.getEndLocalDateTime();
+            }
             setDateTimeEnd(end);
-            ZonedDateTime start = ZonedDateTime.of(appointment.getStartLocalDateTime(), ZoneId.systemDefault());
             setDateTimeStart(start);
         }
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
@@ -263,15 +270,6 @@ public class VEventImpl extends VEvent<Appointment>
         instances().add(appointment);
         if (! errorString().equals("")) throw new IllegalArgumentException(errorString());
     }
-    
-//    private void assignMakeInstanceCallbacks()
-//    {
-//        setNewDateInstanceCallback(NEW_DATE_INSTANCE);
-//        setNewDateWithLocalTimeInstanceCallback(NEW_DATE_WITH_LOCAL_TIME_INSTANCE);
-//        setNewDateWithUTCTimeInstanceCallback(NEW_DATE_WITH_UTC_TIME_INSTANCE);
-//        setNewDateWithLocalTimeAndTimeZoneInstanceCallback(NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE);
-//    }    
-
 
     /** Deep copy all fields from source to destination 
      * */
@@ -366,56 +364,6 @@ public class VEventImpl extends VEvent<Appointment>
                 throw new RuntimeException("Unknown EndPriority");
             }
             Appointment appt = newInstanceCallback.call(new StartEndPair(temporalStart, temporalEnd));
-            // TODO - PROBLEM - SETTING START AND END TIME IN CALLBACK IS USELESS
-            // THOSE VALUES ARE START OF VEVENT, NOT INSTANCE
-            // SHOULD I JUST MAKE A NEW OBJECT AND RETURN IT?
-            
-//            DateTimeType.makeInstance(t)
-            
-//            Appointment appt2 = DateTimeType.makeInstance(t);
-//            Appointment appt = AppointmentFactory.newAppointment(getAppointmentClass());
-//            final Temporal startLocalDateTime;
-            // TODO - CONSIDER USING DIFFERENT APPOINTMENT CLASSES FOR DIFFERENT TEMPORAL TYPES
-//            if (getDateTimeStart() instanceof ZonedDateTime)
-//            {
-//                appt.setStartZonedDateTime((ZonedDateTime) t);
-//            } else
-//            {
-//                appt.setStartLocalDateTime(VComponent.localDateTimeFromTemporal(t));
-//            }
-            
-//            appt.setStartLocalDateTime(VComponent.localDateTimeFromTemporal(temporalStart));
-//            final Duration duration;
-//            switch (endPriority())
-//            {
-//            case DTEND:
-//                final Temporal startInclusive;
-//                final Temporal endExclusive;
-//                if (isWholeDay())
-//                {
-//                    startInclusive = LocalDate.from(getDateTimeStart()).atStartOfDay();
-//                    endExclusive = LocalDate.from(getDateTimeEnd()).atStartOfDay();
-//                } else
-//                {
-//                    startInclusive = getDateTimeStart();
-//                    endExclusive = getDateTimeEnd();                    
-//                }
-//                duration = Duration.between(startInclusive, endExclusive);
-//                break;
-//            case DURATION:
-//                duration = getDuration();
-//                break;
-//            default:
-//                throw new RuntimeException("Unknown EndPriority."); // shoudn't get here - only two EndPriorities defined
-//            }           
-//            if (getDateTimeStart() instanceof ZonedDateTime)
-//            {
-//                appt.setEndZonedDateTime((ZonedDateTime) t.plus(duration));
-//            } else
-//            {
-//                appt.setEndLocalDateTime((LocalDateTime) t.plus(duration));
-//            }
-//            appt.setEndLocalDateTime(appt.getStartLocalDateTime().plus(duration));
 
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());

@@ -262,7 +262,6 @@ public class ICalendarAgenda extends Agenda
                 vEvent.setDuration(duration);
             break;
         }
-        System.out.println("s,o,e:" + startOriginalInstance + " " + startInstance + " " + endInstance);
         appointments().removeListener(appointmentsListener);
         vComponents().removeListener(vComponentsListener);
         vEvent.handleEdit(
@@ -333,21 +332,25 @@ public class ICalendarAgenda extends Agenda
                             refresh();
                             break;
                         case OK_DONE: // CREATE EVENT assumes newAppointmentCallback can only edit summary and appointmentGroup
+                            System.out.println("OK:");
                             if (! (a.getSummary().equals(originalSummary)) || ! (a.getAppointmentGroup().equals(originalAppointmentGroup)))
                             {
                                 Platform.runLater(() -> refresh());
                             }
+                            // fall through
                         case OTHER: // ADVANCED EDIT
+                            System.out.println("Advanced edit:");
                             VComponent<Appointment> newVComponent = VComponentFactory
                                     .newVComponent(getVEventClass(), a, appointmentGroups());
-                            LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
-                            LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
+                            Temporal startRange = getDateTimeRange().getStartLocalDateTime();
+                            Temporal endRange = getDateTimeRange().getEndLocalDateTime();
                             newVComponent.setStartRange(startRange);
                             newVComponent.setEndRange(endRange);
                             newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
                             newVComponent.setDateTimeCreated(created);
                             vComponents().removeListener(vComponentsListener);
                             vComponents().add(newVComponent);
+                            System.out.println("new:" + newVComponent);
                             vComponents().addListener(vComponentsListener);
                             // put data in maps
                             appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartLocalDateTime());

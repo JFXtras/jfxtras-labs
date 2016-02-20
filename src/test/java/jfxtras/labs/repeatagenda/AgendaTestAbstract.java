@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Locale;
 
 import javafx.scene.Parent;
@@ -11,7 +12,6 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.JFXtrasGuiTest;
 
 public class AgendaTestAbstract extends JFXtrasGuiTest
@@ -43,15 +43,20 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
             @Override
             public Agenda.Appointment call(ICalendarAgenda.LocalDateTimeRange dateTimeRange)
             {
-                Appointment appointment = new Agenda.AppointmentImplLocal()
-                        .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
-                        .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
+                return new Agenda.AppointmentImplZoned()
+                        .withStartZonedDateTime( dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault()))
+                        .withEndZonedDateTime( dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault()))
                         .withSummary("New")
                         .withDescription("")
-//                        .withAppointmentGroup(appointmentGroupMap.get("group00"));
                         .withAppointmentGroup(agenda.appointmentGroups().get(0));
-                dateTimeStamp = appointment.getStartLocalDateTime();
-                return appointment;
+//                Appointment appointment = new Agenda.AppointmentImplLocal()
+//                        .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
+//                        .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
+//                        .withSummary("New")
+//                        .withDescription("")
+////                        .withAppointmentGroup(appointmentGroupMap.get("group00"));
+//                        .withAppointmentGroup(agenda.appointmentGroups().get(0));
+//                return appointment;
             }
         });
         
