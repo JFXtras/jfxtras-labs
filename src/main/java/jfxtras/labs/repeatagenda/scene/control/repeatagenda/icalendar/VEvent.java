@@ -2,8 +2,6 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -15,14 +13,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 /**
@@ -121,7 +117,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
         this.duration.set(duration);
     }
 
-    private ChangeListener<? super Temporal> dateTimeStartlistener;
+//    private ChangeListener<? super Temporal> dateTimeStartlistener;
     
     /**
      * DTEND, Date-Time End. from RFC 5545 iCalendar 3.8.2.2 page 95
@@ -156,116 +152,131 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
     public String getLocation() { return locationProperty.getValue(); }
     public void setLocation(String value) { locationProperty.setValue(value); }
     
+    @Override
+    void ensureTemporalTypeConsistency(DateTimeType dateTimeType)
+    {
+        // DTEND
+        if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.dateTimeTypeFromTemporal(getDateTimeEnd())))
+        {
+            // convert to new Temporal type
+            Temporal newDateTimeEnd = DateTimeType.changeDateTimeType(getDateTimeEnd(), dateTimeType);
+            setDateTimeEnd(newDateTimeEnd);
+        }
+    }
+
+    
     // CONSTRUCTORS
     public VEvent(VEvent<T> vevent)
     {
         super(vevent);
         copy(vevent, this);
-        setupListeners();
+//        setupListeners();
     }
     
     public VEvent()
     {
         super();
-        setupListeners();
+//        setupListeners();
     }
     
-   /** Change start Temporal type from LocalDateTime to LocalDate (changes to whole-day)
-    * this method is called by dateTimeStartlistener
-    * @see #dateTimeStartlistener
-    */
-    private void changeStartToLocalDate(LocalDate newValue)
-    {
-        // Change ExDates to LocalDate
-        if (getExDate() != null)
-        {
-            Set<LocalDate> newExDates = getExDate().getTemporals()
-                    .stream()
-                    .map(t -> LocalDate.from(t))
-                    .collect(Collectors.toSet());
-            getExDate().getTemporals().clear();
-            getExDate().getTemporals().addAll(newExDates);
-        }
-
-        // Change RDates to LocalDate
-        if (getRDate() != null)
-        {
-            Set<LocalDate> newRDates = getRDate().getTemporals()
-                    .stream()
-                    .map(t -> LocalDate.from(t))
-                    .collect(Collectors.toSet());
-            getExDate().getTemporals().clear();
-            getRDate().getTemporals().addAll(newRDates);
-        }
-        
-        // Change Until to LocalDate
-        if (getRRule() != null)
-        {
-            Temporal until = getRRule().getUntil();
-            if (until != null) getRRule().setUntil(LocalDate.from(until));
-        }
-    }
-
-   /** Change start Temporal type from LocalDate to LocalDateTime
-    * this method is called by dateTimeStartlistener
-    * @see #dateTimeStartlistener
-    */
-    private void changeStartToLocalDateTime(LocalDateTime newValue)
-    {        
-        LocalTime time = LocalTime.from(newValue);
-        // Change ExDates to LocalDate
-        if (getExDate() != null)
-        {
-            Set<LocalDateTime> newExDates = getExDate().getTemporals()
-                    .stream()
-                    .map(t -> LocalDate.from(t).atTime(time))
-                    .collect(Collectors.toSet());
-            getExDate().getTemporals().clear();
-            getExDate().getTemporals().addAll(newExDates);
-        }
-
-        // Change RDates to LocalDate
-        if (getRDate() != null)
-        {
-            Set<LocalDateTime> newRDates = getRDate().getTemporals()
-                    .stream()
-                    .map(t -> LocalDate.from(t).atTime(time))
-                    .collect(Collectors.toSet());
-            getExDate().getTemporals().clear();
-            getRDate().getTemporals().addAll(newRDates);
-        }
-        
-        // Change Until to LocalDate
-        if (getRRule() != null)
-        {
-            Temporal until = getRRule().getUntil();
-            if (until != null) getRRule().setUntil(LocalDate.from(until).atTime(time));
-        }        
-    }
+//   /** Change start Temporal type from LocalDateTime to LocalDate (changes to whole-day)
+//    * this method is called by dateTimeStartlistener
+//    * @see #dateTimeStartlistener
+//    */
+//    @Deprecated // need to change to any time - new ensureTemporalConsistency to do that job
+//    private void changeStartToLocalDate(LocalDate newValue)
+//    {
+//        // Change ExDates to LocalDate
+//        if (getExDate() != null)
+//        {
+//            Set<LocalDate> newExDates = getExDate().getTemporals()
+//                    .stream()
+//                    .map(t -> LocalDate.from(t))
+//                    .collect(Collectors.toSet());
+//            getExDate().getTemporals().clear();
+//            getExDate().getTemporals().addAll(newExDates);
+//        }
+//
+//        // Change RDates to LocalDate
+//        if (getRDate() != null)
+//        {
+//            Set<LocalDate> newRDates = getRDate().getTemporals()
+//                    .stream()
+//                    .map(t -> LocalDate.from(t))
+//                    .collect(Collectors.toSet());
+//            getExDate().getTemporals().clear();
+//            getRDate().getTemporals().addAll(newRDates);
+//        }
+//        
+//        // Change Until to LocalDate
+//        if (getRRule() != null)
+//        {
+//            Temporal until = getRRule().getUntil();
+//            if (until != null) getRRule().setUntil(LocalDate.from(until));
+//        }
+//    }
+//
+//   /** Change start Temporal type from LocalDate to LocalDateTime
+//    * this method is called by dateTimeStartlistener
+//    * @see #dateTimeStartlistener
+//    */
+//    @Deprecated // need to change to any time - new ensureTemporalConsistency to do that job
+//    private void changeStartToLocalDateTime(LocalDateTime newValue)
+//    {        
+//        LocalTime time = LocalTime.from(newValue);
+//        // Change ExDates to LocalDate
+//        if (getExDate() != null)
+//        {
+//            Set<LocalDateTime> newExDates = getExDate().getTemporals()
+//                    .stream()
+//                    .map(t -> LocalDate.from(t).atTime(time))
+//                    .collect(Collectors.toSet());
+//            getExDate().getTemporals().clear();
+//            getExDate().getTemporals().addAll(newExDates);
+//        }
+//
+//        // Change RDates to LocalDate
+//        if (getRDate() != null)
+//        {
+//            Set<LocalDateTime> newRDates = getRDate().getTemporals()
+//                    .stream()
+//                    .map(t -> LocalDate.from(t).atTime(time))
+//                    .collect(Collectors.toSet());
+//            getExDate().getTemporals().clear();
+//            getRDate().getTemporals().addAll(newRDates);
+//        }
+//        
+//        // Change Until to LocalDate
+//        if (getRRule() != null)
+//        {
+//            Temporal until = getRRule().getUntil();
+//            if (until != null) getRRule().setUntil(LocalDate.from(until).atTime(time));
+//        }        
+//    }
     
     // TODO - MAKE A METHOD TO CHANGE TO AND FROM ZONEDDATETIME
     
-    /* add listeners for dateTimeStart, dateTimeEnd and duration */
-    private void setupListeners()
-    {
-        dateTimeStartlistener = (obs, oldValue, newValue) ->
-        { // listener to synch dateTimeStart and duration
-            Class<? extends Temporal> oldClass = (oldValue == null) ? null : oldValue.getClass();
-            Class<? extends Temporal> newClass = newValue.getClass();
-            if ((oldClass != null) && (newClass != oldClass))
-            {
-                if (newClass.equals(LocalDate.class)) // change to LocalDate
-                {
-                    changeStartToLocalDate((LocalDate) newValue);
-                } else if (newClass.equals(LocalDateTime.class)) // change to LocalDateTime
-                {
-                    changeStartToLocalDateTime((LocalDateTime) newValue);
-                }
-                // TODO - HANDLE CHANGING TO ZONEDDATETIME
-            }
-        };
-        dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
-    }
+//    /* add listeners for dateTimeStart, dateTimeEnd and duration */
+//    private void setupListeners()
+//    {
+//        dateTimeStartlistener = (obs, oldValue, newValue) ->
+//        { // listener to synch dateTimeStart and duration
+//            Class<? extends Temporal> oldClass = (oldValue == null) ? null : oldValue.getClass();
+//            Class<? extends Temporal> newClass = newValue.getClass();
+//            if ((oldClass != null) && (newClass != oldClass))
+//            {
+//                if (newClass.equals(LocalDate.class)) // change to LocalDate
+//                {
+//                    changeStartToLocalDate((LocalDate) newValue);
+//                } else if (newClass.equals(LocalDateTime.class)) // change to LocalDateTime
+//                {
+//                    changeStartToLocalDateTime((LocalDateTime) newValue);
+//                }
+//                // TODO - HANDLE CHANGING TO ZONEDDATETIME
+//            }
+//        };
+//        dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
+//    }
 
     @Override
     protected void becomingIndividual(VComponent<T> vComponentOriginal, Temporal startInstance, Temporal endInstance)

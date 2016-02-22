@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -130,6 +131,17 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
         this.dateTimeStamp.set(dtStamp);
     }
     
+    /* DTSTART temporal class and ZoneId
+     * 
+     * Used to ensure the following date-time properties use the same Temporal class
+     * and ZoneId (if using ZonedDateTime, null otherwise)
+     * DTEND
+     * RECURRENCE-ID
+     * EXDATE (underlying collection of Temporals)
+     * RDATE (underlying collection of Temporals)
+     */
+    private DateTimeType dtStartDateTimeType;
+    
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
@@ -142,7 +154,66 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
     final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, VComponentProperty.DATE_TIME_START.toString());
     @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
     @Override
-    public void setDateTimeStart(Temporal dtStart) { dateTimeStart.set(dtStart); }
+    public void setDateTimeStart(Temporal dtStart)
+    {
+        // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
+        DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtStart);
+        
+        // if type has changed then make all date-time properties the same
+        if ((dtStartDateTimeType != null) && (myDateTimeType != dtStartDateTimeType))
+        {
+            ensureTemporalTypeConsistency(myDateTimeType);
+        }
+        dtStartDateTimeType = myDateTimeType;
+        dateTimeStart.set(dtStart);
+    }
+    
+    /**
+     * Changes Temporal type of some properties to match the input parameter.  The input
+     * parameter should be based on the DTSTART property.
+     * 
+     * @param dateTimeType
+     */
+    void ensureTemporalTypeConsistency(DateTimeType dateTimeType)
+    {
+        // RECURRENCE-ID
+        if ((getDateTimeRecurrence() != null) && (dateTimeType != DateTimeType.dateTimeTypeFromTemporal(getDateTimeRecurrence())))
+        {
+            // convert to new Temporal type
+            Temporal newDateTimeRecurrence = DateTimeType.changeDateTimeType(getDateTimeRecurrence(), dateTimeType);
+            setDateTimeRecurrence(newDateTimeRecurrence);
+        }
+        
+        // EXDATE
+        if (getExDate() != null)
+        {
+            Temporal firstTemporal = getExDate().getTemporals().iterator().next();
+            DateTimeType exDateDateTimeType = DateTimeType.dateTimeTypeFromTemporal(firstTemporal);
+            if (dateTimeType != exDateDateTimeType)
+            {
+                Set<Temporal> newExDateTemporals = getExDate().getTemporals()
+                        .stream()
+                        .map(t -> DateTimeType.changeDateTimeType(t, dateTimeType))
+                        .collect(Collectors.toSet());
+                getExDate().setTemporals(newExDateTemporals);
+            }
+        }
+        
+        // RDATE
+        if (getRDate() != null)
+        {
+            Temporal firstTemporal = getRDate().getTemporals().iterator().next();
+            DateTimeType rDateDateTimeType = DateTimeType.dateTimeTypeFromTemporal(firstTemporal);
+            if (dateTimeType != rDateDateTimeType)
+            {
+                Set<Temporal> newRDateTemporals = getRDate().getTemporals()
+                        .stream()
+                        .map(t -> DateTimeType.changeDateTimeType(t, dateTimeType))
+                        .collect(Collectors.toSet());
+                getRDate().setTemporals(newRDateTemporals);
+            }
+        }
+    }
     
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.

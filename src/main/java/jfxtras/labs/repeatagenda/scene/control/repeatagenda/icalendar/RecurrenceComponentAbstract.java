@@ -9,9 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableSet;
-
 /** For EXDate and RDate
  * Stores either date or date-time values
  * @param <T> either EXDate or RDate
@@ -26,7 +23,9 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
     public Set<Temporal> getTemporals() { return vDateTimes; }
-    private ObservableSet<Temporal> vDateTimes = FXCollections.observableSet(new HashSet<Temporal>());
+    private Set<Temporal> vDateTimes = new HashSet<Temporal>();
+    public void setTemporals(Set<Temporal> temporals) { vDateTimes = temporals; }
+//    private ObservableSet<Temporal> vDateTimes = FXCollections.observableSet(new HashSet<Temporal>());
     void setVDateTimes(Temporal...dateOrDateTime)
     {
         for (Temporal d : dateOrDateTime)
