@@ -12,11 +12,9 @@ public class ICalendarCopyTest extends ICalendarTestAbstract
     public void canCopyVEvent1()
     {
         VEventImpl vevent = getMonthly5();
-//        vevent.setDateTimeRangeStart(LocalDateTime.of(2015, 11, 15, 0, 0));
-//        vevent.setDateTimeRangeEnd(LocalDateTime.of(2015, 11, 22, 0, 0));
         VEventImpl veventCopy = new VEventImpl(vevent);
         assertTrue(vEventIsEqualTo(vevent, veventCopy));
-        assertTrue(vevent != veventCopy); // insure not same reference
+        assertTrue(vevent != veventCopy); // ensure not same reference
     }
     
     @Test
@@ -25,6 +23,6 @@ public class ICalendarCopyTest extends ICalendarTestAbstract
         VEventImpl vevent = getWeekly3();
         VEventImpl veventCopy = new VEventImpl(vevent);
         assertTrue(vEventIsEqualTo(vevent, veventCopy));
-        assertTrue(vevent != veventCopy); // insure not same reference
+        assertTrue(vevent != veventCopy); // ensure not same reference
     }
 }

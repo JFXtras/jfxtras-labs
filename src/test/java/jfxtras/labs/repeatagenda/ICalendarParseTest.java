@@ -186,6 +186,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
         VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        System.out.println(vEvent);
         VEventImpl expectedVEvent = getDaily3();
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }

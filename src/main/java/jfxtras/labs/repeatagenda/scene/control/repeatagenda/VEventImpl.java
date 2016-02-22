@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -304,24 +302,14 @@ public class VEventImpl extends VEvent<Appointment>
     {
         return super.errorString().equals("");
     }
-    
-    /** Make new VEventImpl and populate properties by parsing a list of property strings 
-     * */
-    private static VEventImpl parse(List<String> strings, List<AppointmentGroup> appointmentGroups)
-    {
-        VEventImpl vEvent = new VEventImpl(appointmentGroups);
-        VEvent.parseVEvent(vEvent, strings); // parse VEvent properties into vEvent
-        return vEvent;
-    }
-    
-    /** Make new VEventImpl and populate properties by parsing a string with properties separated
-     * a by lineSeparator (new line) */
+        
+    /** Make new VEventImpl and populate properties by parsing a string of line-separated
+     * content lines
+     *  */
     public static VEventImpl parse(String string, List<AppointmentGroup> appointmentGroups)
     {
-        List<String> stringsList = Arrays
-                .stream(string.split(System.lineSeparator()))
-                .collect(Collectors.toList());
-        return parse(stringsList, appointmentGroups);
+        VEventImpl vEvent = new VEventImpl(appointmentGroups);
+        return (VEventImpl) VEvent.parseVEvent(vEvent, string);
     }
 
     

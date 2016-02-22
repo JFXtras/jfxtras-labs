@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 
 /** For EXDate and RDate
  * Stores either date or date-time values
@@ -22,10 +25,10 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
      * 3.8.5.1, RFC 5545 iCalendar
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
-    public Set<Temporal> getTemporals() { return vDateTimes; }
-    private Set<Temporal> vDateTimes = new HashSet<Temporal>();
-    public void setTemporals(Set<Temporal> temporals) { vDateTimes = temporals; }
-//    private ObservableSet<Temporal> vDateTimes = FXCollections.observableSet(new HashSet<Temporal>());
+    public ObservableSet<Temporal> getTemporals() { return vDateTimes; }
+//    private Set<Temporal> vDateTimes = new HashSet<Temporal>();
+//    public void setTemporals(Set<Temporal> temporals) { vDateTimes = temporals; }
+    private ObservableSet<Temporal> vDateTimes = FXCollections.observableSet(new HashSet<Temporal>());
     void setVDateTimes(Temporal...dateOrDateTime)
     {
         for (Temporal d : dateOrDateTime)
@@ -67,6 +70,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     }
     
     /* checks if all Temporal objects in vDateTimes are the same */
+    @Deprecated // obsolete because of new checking
     private void checkTemporalTypes(Class<? extends Temporal> clazz)
     {
         boolean same =  getTemporals()
@@ -76,8 +80,28 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     }
     
     // CONSTRUCTORS
-    public RecurrenceComponentAbstract() { }
-    public RecurrenceComponentAbstract(Temporal... dateOrDateTime) { withTemporals(dateOrDateTime); }
+    public RecurrenceComponentAbstract()
+    {
+        SetChangeListener<? super Temporal> listener = (SetChangeListener.Change<? extends Temporal> change) ->
+        {
+            if (change.wasAdded())
+            {
+                Temporal newTemporal = change.getElementAdded();
+                
+//                if (change.wasAdded())
+//                {
+//                    
+//                }
+            }
+        };
+
+        vDateTimes.addListener(listener);
+    }
+    public RecurrenceComponentAbstract(Temporal... dateOrDateTime)
+    {
+        this();
+        withTemporals(dateOrDateTime);
+    }
 //    public RecurrenceComponentAbstract(LocalDate... date) { withDates(date); }
 
     /** Deep copy all fields from source to destination 

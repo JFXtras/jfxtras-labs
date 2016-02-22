@@ -1,5 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
+import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
@@ -19,6 +20,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.util.Pair;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 /**
@@ -130,8 +132,18 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
     public ObjectProperty<Temporal> dateTimeEndProperty() { return dateTimeEnd; }
     public void setDateTimeEnd(Temporal dtEnd)
     {
-        if (dtEnd != null) endPriority = EndPriority.DTEND;
-        else if (dtEnd == null) endPriority = null;
+        if (dtEnd == null)
+        {
+            endPriority = null;
+        } else
+        {
+            DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtEnd);
+            if ((dtStartDateTimeType() != null) && (myDateTimeType != dtStartDateTimeType()))
+            {
+                throw new DateTimeException("DTEND must have the same DateTimeType as DTSTART, (" + myDateTimeType + " and " + dtStartDateTimeType() + ", respectively");
+            }
+            endPriority = EndPriority.DTEND;
+         }
         dateTimeEnd.set(dtEnd);
     }
     public Temporal getDateTimeEnd() { return dateTimeEnd.get(); }
@@ -392,57 +404,111 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
      * @param strings - list of properties
      * @return VComponent with parsed properties added
      */
-    protected static VEvent<?> parseVEvent(VEvent<?> vEvent, List<String> strings)
+//    static VEvent<?> parseVEvent(VEvent<?> vEvent, List<String> strings)
+//    {
+//        // Test for BEGIN:VEVENT and END:VEVENT, then remove those lines
+//        if (! strings.get(0).equals("BEGIN:VEVENT"))
+//        {
+//            throw new IllegalArgumentException("Invalid VEVENT. First line must be BEGIN:VEVENT");
+//        } else
+//        {
+//            strings.remove(0);
+//        }
+//        if (! strings.get(strings.size()-1).equals("END:VEVENT"))
+//        {
+//            throw new IllegalArgumentException("Invalid VEVENT. Last line must be END:VEVENT");
+//        } else
+//        {
+//            strings.remove(strings.size()-1);
+//        }
+//        
+//        Iterator<String> lineIterator = strings.iterator();
+//        while (lineIterator.hasNext())
+//        {
+//            String line = lineIterator.next();
+//            // identify iCalendar property ending index (property name must start at the beginning of the line)
+//            int propertyValueSeparatorIndex = 0;
+//            for (int i=0; i<line.length(); i++)
+//            {
+//                if ((line.charAt(i) == ';') || (line.charAt(i) == ':'))
+//                {
+//                    propertyValueSeparatorIndex = i;
+//                    break;
+//                }
+//            }
+//            if (propertyValueSeparatorIndex == 0)
+//            {
+//                continue; // line doesn't contain a property, get next one
+//            }
+//            String propertyName = line.substring(0, propertyValueSeparatorIndex);
+//            String value = line.substring(propertyValueSeparatorIndex + 1).trim();
+//            if (value.isEmpty())
+//            { // skip empty properties
+//                continue;
+//            }
+//            VEventProperty property = VEventProperty.propertyFromString(propertyName);
+//            boolean propertyFound = property.setVComponent(vEvent, value); // runs method in enum to set vComponent
+//            if (propertyFound)
+//            {
+//                lineIterator.remove();                
+//            }
+//        }
+//        return (VEvent<?>) VComponentBaseAbstract.parseVComponent(vEvent, strings);
+//    }
+    
+    public static VEvent<?> parseVEvent(VEvent<?> vEvent, String string)
     {
-        // Test for BEGIN:VEVENT and END:VEVENT, then remove those lines
-        if (! strings.get(0).equals("BEGIN:VEVENT"))
+        Iterator<Pair<String, String>> i = ICalendarUtilities.ComponentStringToPropertyNameAndValueList(string).iterator();
+        while (i.hasNext())
         {
-            throw new IllegalArgumentException("Invalid VEVENT. First line must be BEGIN:VEVENT");
-        } else
-        {
-            strings.remove(0);
-        }
-        if (! strings.get(strings.size()-1).equals("END:VEVENT"))
-        {
-            throw new IllegalArgumentException("Invalid VEVENT. Last line must be END:VEVENT");
-        } else
-        {
-            strings.remove(strings.size()-1);
-        }
-        
-        Iterator<String> lineIterator = strings.iterator();
-        while (lineIterator.hasNext())
-        {
-            String line = lineIterator.next();
-            // identify iCalendar property ending index (property name must start at the beginning of the line)
-            int propertyValueSeparatorIndex = 0;
-            for (int i=0; i<line.length(); i++)
+            Pair<String, String> linePair = i.next();
+            String propertyName = linePair.getKey();
+            String value = linePair.getValue();
+
+            // VComponent properties
+            VComponentProperty vComponentProperty = VComponentProperty.propertyFromString(propertyName);
+            if (vComponentProperty != null)
             {
-                if ((line.charAt(i) == ';') || (line.charAt(i) == ':'))
-                {
-                    propertyValueSeparatorIndex = i;
-                    break;
-                }
-            }
-            if (propertyValueSeparatorIndex == 0)
-            {
-                continue; // line doesn't contain a property, get next one
-            }
-            String propertyName = line.substring(0, propertyValueSeparatorIndex);
-            String value = line.substring(propertyValueSeparatorIndex + 1).trim();
-            if (value.isEmpty())
-            { // skip empty properties
+                vComponentProperty.setVComponent(vEvent, value);
                 continue;
             }
-            VEventProperty property = VEventProperty.propertyFromString(propertyName);
-            boolean propertyFound = property.setVComponent(vEvent, value); // runs method in enum to set vComponent
-            if (propertyFound)
+            
+            // VEvent properties
+            VEventProperty vEventProperty = VEventProperty.propertyFromString(propertyName);
+            if (vEventProperty != null)
             {
-                lineIterator.remove();                
+                vEventProperty.setVComponent(vEvent, value);
             }
         }
-        return (VEvent<?>) VComponentBaseAbstract.parseVComponent(vEvent, strings);
+        return vEvent;
     }
+
+    
+//    /** Make new VEventImpl and populate properties by parsing a list of property strings 
+//     * */
+//    private static VEvent<?> parse(List<String> strings, List<AppointmentGroup> appointmentGroups)
+//    {
+//        VEventImpl vEvent = new VEventImpl(appointmentGroups);
+//        // TODO - NEED DTSTART FIRST - HOW?
+//        // split into property name, value
+//        // sort by some order - DTSTART on top
+//        // write parse line method in VEVent and VComponent
+//        // parse one line at a time in order VComponent, VEvent
+//        // put these methods in VEvent - nothing specific here
+//        
+//        VEvent.parseVEvent(vEvent, strings); // parse VEvent properties into vEvent
+//        return vEvent;
+//    }
+    
+//    /** Make new VEventImpl and populate properties by parsing a string with properties separated
+//     * a by lineSeparator (new line) */
+//    public static VEvent<?> parse(String string, List<AppointmentGroup> appointmentGroups)
+//    {
+//        List<String> stringsList = Arrays
+//                .stream(string.split(System.lineSeparator()))
+//                .collect(Collectors.toList());
+//        return parse(stringsList, appointmentGroups);
+//    }
     
     /**
      * Checks that one, and only one, of DTEND or DURATION is set.
@@ -634,8 +700,8 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
         /** get VComponentProperty enum from property name */
         public static VEventProperty propertyFromString(String propertyName)
         {
-            VEventProperty match = propertyFromTagMap.get(propertyName.toUpperCase());
-            return (match == null) ? UNKNOWN : match;
+            return propertyFromTagMap.get(propertyName.toUpperCase());
+//            return (match == null) ? UNKNOWN : match;
         }
         
         /** sets enum's associated VEvent's property from parameter value

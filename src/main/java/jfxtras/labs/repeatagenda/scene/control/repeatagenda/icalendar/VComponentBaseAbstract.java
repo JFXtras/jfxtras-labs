@@ -27,6 +27,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.SetChangeListener;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
@@ -141,6 +142,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
      * RDATE (underlying collection of Temporals)
      */
     private DateTimeType dtStartDateTimeType;
+    DateTimeType dtStartDateTimeType() { return dtStartDateTimeType; }
     
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
@@ -158,14 +160,15 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
     {
         // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
         DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtStart);
+        boolean changed = (dtStartDateTimeType != null) && (myDateTimeType != dtStartDateTimeType);
+        dtStartDateTimeType = myDateTimeType;
+        dateTimeStart.set(dtStart);
         
         // if type has changed then make all date-time properties the same
-        if ((dtStartDateTimeType != null) && (myDateTimeType != dtStartDateTimeType))
+        if (changed)
         {
             ensureTemporalTypeConsistency(myDateTimeType);
         }
-        dtStartDateTimeType = myDateTimeType;
-        dateTimeStart.set(dtStart);
     }
     
     /**
@@ -195,7 +198,8 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
                         .stream()
                         .map(t -> DateTimeType.changeDateTimeType(t, dateTimeType))
                         .collect(Collectors.toSet());
-                getExDate().setTemporals(newExDateTemporals);
+                getExDate().getTemporals().clear();
+                getExDate().getTemporals().addAll(newExDateTemporals);
             }
         }
         
@@ -210,10 +214,25 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
                         .stream()
                         .map(t -> DateTimeType.changeDateTimeType(t, dateTimeType))
                         .collect(Collectors.toSet());
-                getRDate().setTemporals(newRDateTemporals);
+                getRDate().getTemporals().clear();
+                getRDate().getTemporals().addAll(newRDateTemporals);
             }
         }
     }
+    
+    // Listener for EXDATE and RDATE - checks if added Temporals match DTSTART type
+    private final SetChangeListener<? super Temporal> recurrenceListener = (SetChangeListener<? super Temporal>) (SetChangeListener.Change<? extends Temporal> change) ->
+    {
+        if (change.wasAdded())
+        {
+            Temporal newTemporal = change.getElementAdded();
+            DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(newTemporal);
+            if ((dtStartDateTimeType() != null) && (myDateTimeType != dtStartDateTimeType()))
+            {
+                throw new DateTimeException("Temporal must have the same DateTimeType as DTSTART, (" + myDateTimeType + ", " + dtStartDateTimeType() + ", respectively");
+            }
+        }
+    };
     
     /**
      * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -239,6 +258,9 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
         } else
         {
             this.exDate.set(exDate);
+            // ensure Temporals added to ExDate are the same as DTSTART
+            exDate.getTemporals().removeListener(recurrenceListener);
+            exDate.getTemporals().addListener(recurrenceListener);
         }
     }
     /** true = put all Temporals on one line, false = use one line for each Temporal */
@@ -325,6 +347,9 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
         } else
         {
             this.rDate.set(rDate);
+            // ensure Temporals added to RDate are the same as DTSTART
+            rDate.getTemporals().removeListener(recurrenceListener);
+            rDate.getTemporals().addListener(recurrenceListener);
         }
     }
 
@@ -365,6 +390,12 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
     }
     @Override public void setDateTimeRecurrence(Temporal dtRecurrence)
     {
+        DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtRecurrence);
+        if (myDateTimeType != dtStartDateTimeType())
+        {
+            throw new DateTimeException("RECURRENCE-ID must have the same DateTimeType as DTSTART, (" + myDateTimeType + ", " + dtStartDateTimeType() + ", respectively");
+        }
+
         if (dateTimeRecurrence == null)
         {
             _dateTimeRecurrence = dtRecurrence;
@@ -547,42 +578,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
             endRange = LocalDate.from(end);
         }
     }
-    
-//    /*
-//     * NEW INSTANCE CALLBACKS
-//     * For all the implemented date and date-time combinations the corresponding callbacks
-//     * must be set.  These callbacks should be called in the makeInstances method to create
-//     * new instances
-//     */
-//    /** Callback to make new DATE instances (use LocalDate) */
-//    @Override
-//    public Callback<VComponent<T>, T> getNewDateInstanceCallback() { return newDateInstanceCallback; }
-//    private Callback<VComponent<T>, T> newDateInstanceCallback;
-//    @Override
-//    public void setNewDateInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback) { newDateInstanceCallback = newInstanceCallback; }
-//
-//    /** Callback to make new DATE_WITH_LOCAL_TIME instances (use LocalDateTime) */
-//    @Override
-//    public Callback<VComponent<T>, T> getNewDateWithLocalTimeInstanceCallback() { return newDateWithLocalTimeInstanceCallback; }
-//    private Callback<VComponent<T>, T> newDateWithLocalTimeInstanceCallback;
-//    @Override
-//    public void setNewDateWithLocalTimeInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback) { newDateWithLocalTimeInstanceCallback = newInstanceCallback; }
-//
-//    /** Callback to make new DATE_WITH_UTC_TIME instances (use ZonedDateTime, ZoneId.of("Z")) */
-//    @Override
-//    public Callback<VComponent<T>, T> getNewDateWithUTCTimeInstanceCallback() { return newDateWithUTCTimeInstanceCallback; }
-//    private Callback<VComponent<T>, T> newDateWithUTCTimeInstanceCallback;
-//    @Override
-//    public void setNewDateWithUTCTimeInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback) { newDateWithUTCTimeInstanceCallback = newInstanceCallback; }
-//
-//    /** Callback to make new DATE_WITH_LOCAL_TIME_AND_TIME_ZONE instances (use ZonedDateTime, system default ZoneId) */
-//    @Override
-//    public Callback<VComponent<T>, T> getNewDateWithLocalTimeAndTimeZoneInstanceCallback() { return newDateWithLocalTimeAndTimeZoneInstanceCallback; }
-//    private Callback<VComponent<T>, T> newDateWithLocalTimeAndTimeZoneInstanceCallback;
-//    @Override
-//    public void setNewDateWithLocalTimeAndTimeZoneInstanceCallback(Callback<VComponent<T>, T> newInstanceCallback) { newDateWithLocalTimeAndTimeZoneInstanceCallback = newInstanceCallback; }
-//        
-    
+
     // CONSTRUCTORS
     /** Copy constructor */
     public VComponentBaseAbstract(VComponentBaseAbstract<T> vcomponent)
@@ -1060,7 +1056,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
                 continue;
             }
             VComponentProperty property = VComponentProperty.propertyFromString(propertyName);
-            boolean propertyFound = property.setVComponent(vComponent, value); // runs method in enum to set vComponent
+            boolean propertyFound = property.setVComponent(vComponent, value); // runs method in enum to set property
             if (propertyFound)
             {
                 lineIterator.remove();                

@@ -1373,8 +1373,8 @@ public interface VComponent<T>
         /** get VComponentProperty enum from property name */
         public static VComponentProperty propertyFromString(String propertyName)
         {
-            VComponentProperty match = propertyFromTagMap.get(propertyName.toUpperCase());
-            return (match == null) ? UNKNOWN : match;
+            return propertyFromTagMap.get(propertyName.toUpperCase());
+//            return (match == null) ? UNKNOWN : match;
         }
         
         /** sets enum's associated VEvent's property from parameter value
