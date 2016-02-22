@@ -54,6 +54,7 @@ public abstract class ICalendarTestAbstract
      * @param v2 - actual VEventImpl
      * @return - equality result
      */
+    @Deprecated // use VComponentProperties isPropertyEqual
     protected static <T> boolean vEventIsEqualTo(VEventImpl v1, VEventImpl v2)
     {
         // VComponentAbstract properties
@@ -61,7 +62,6 @@ public abstract class ICalendarTestAbstract
         boolean commentEquals = (v1.getComment() == null) ? (v2.getComment() == null) : v1.getComment().equals(v2.getComment());
         boolean dateTimeStampEquals = (v1.getDateTimeStamp() == null) ? (v2.getDateTimeStamp() == null) : v1.getDateTimeStamp().equals(v2.getDateTimeStamp());
         boolean dateTimeStartEquals = (v1.getDateTimeStart() == null) ? (v2.getDateTimeStart() == null) : v1.getDateTimeStart().equals(v2.getDateTimeStart());
-        boolean locationEquals = (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
         boolean sequenceEquals = v1.getSequence() == v2.getSequence();
         boolean summaryEquals = (v1.getSummary() == null) ? (v2.getSummary() == null) : v1.getSummary().equals(v2.getSummary());
         boolean uniqueIdentifierEquals = (v1.getUniqueIdentifier() == null) ? (v2.getUniqueIdentifier() == null) : v1.getUniqueIdentifier().equals(v2.getUniqueIdentifier());
@@ -73,6 +73,7 @@ public abstract class ICalendarTestAbstract
         // VEvent properties
         boolean descriptionEquals = (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
         boolean endPriorityEquals = v1.endPriority().equals(v2.endPriority());
+        boolean locationEquals = (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
         final boolean endEquals;
         switch (v1.endPriority())
         {

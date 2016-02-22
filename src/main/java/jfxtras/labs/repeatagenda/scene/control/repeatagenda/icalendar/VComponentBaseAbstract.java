@@ -599,7 +599,6 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
     {
         final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
-//        System.out.println("rruleType" + rruleType);
         boolean incrementSequence = true;
         switch (rruleType)
         {
@@ -611,22 +610,36 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
             if (! equals(vComponentOriginal)) updateInstances(instances);
             break;
         case WITH_EXISTING_REPEAT:
-            if (! equals(vComponentOriginal)) // if changes occurred
+            // TODO - NEED TO KNOW WHICH PROPERTIES ARE CHANGED - IF ONLY EXDATE THEN NO DIALOG
+            // CAN ENUM HANDLE EQUALS?
+            // LIST OF OBJECTS (PROPERTIES) THAT ARE CHANGED?  compare against properties?
+            List<String> changedPropertyNames = findChangedProperties(vComponentOriginal);
+            changedPropertyNames.stream().forEach(System.out::println);
+            boolean provideDialog = requiresChangeDialog(changedPropertyNames);
+            System.out.println("provideDialog:" + provideDialog);
+            if (changedPropertyNames.size() > 0) // if changes occurred
             {
                 List<VComponent<T>> relatedVComponents = Arrays.asList(this);
-                Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-                String one = VComponent.temporalToStringPretty(startInstance);
-                choices.put(ChangeDialogOption.ONE, one);
-                if (! isIndividual())
+                final ChangeDialogOption changeResponse;
+                if (provideDialog)
                 {
+                    Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
+                    String one = VComponent.temporalToStringPretty(startInstance);
+                    choices.put(ChangeDialogOption.ONE, one);
+                    if (! isIndividual())
                     {
-                        String future = VComponent.rangeToString(relatedVComponents, startInstance);
-                        choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+                        {
+                            String future = VComponent.rangeToString(relatedVComponents, startInstance);
+                            choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+                        }
+                        String all = VComponent.rangeToString(this);
+                        choices.put(ChangeDialogOption.ALL, all);
                     }
-                    String all = VComponent.rangeToString(this);
-                    choices.put(ChangeDialogOption.ALL, all);
+                    changeResponse = dialogCallback.call(choices);
+                } else
+                {
+                    changeResponse = ChangeDialogOption.ALL;
                 }
-                ChangeDialogOption changeResponse = dialogCallback.call(choices);
                 switch (changeResponse)
                 {
                 case ALL:
@@ -655,6 +668,44 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
         }
         if (! isValid()) throw new RuntimeException(errorString());
         if (incrementSequence) incrementSequence();
+    }
+    
+    /**
+     * Return true if ANY property requires a dialog, false otherwise
+     * 
+     * @param changedPropertyNames - list from {@link #findChangedProperties(VComponent)}
+     * @return
+     */
+    boolean requiresChangeDialog(List<String> changedPropertyNames)
+    {
+        return changedPropertyNames.stream()
+                .map(s ->  
+                {
+                    VComponentProperty p = VComponentProperty.propertyFromString(s);
+                    return (p != null) ? p.isDialogRequired() : false;
+                })
+                .anyMatch(b -> b == true);
+    }
+    
+    /**
+     * Generates a list of iCalendar property names that have different values from the 
+     * input parameter
+     * 
+     * equal checks are encapsulated inside the enum VComponentProperty
+     */
+    List<String> findChangedProperties(VComponent<T> vComponentOriginal)
+    {
+        List<String> changedProperties = new ArrayList<>();
+        Arrays.stream(VComponentProperty.values())
+                .forEach(p -> 
+                {
+                    boolean equals = p.isPropertyEqual(this, vComponentOriginal);
+                    if (! equals)
+                    {
+                        changedProperties.add(p.toString());
+                    }
+                });        
+        return changedProperties;
     }
     
     private void updateInstances(Collection<T> instances)

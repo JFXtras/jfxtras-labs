@@ -15,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import jfxtras.labs.repeatagenda.ICalendarCopyTest;
 import jfxtras.labs.repeatagenda.trial.controller.CalendarController;
 
 public class Main extends Application {
@@ -59,9 +58,9 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
 
-	    ICalendarCopyTest r = new ICalendarCopyTest();
-        r.canCopyVEvent1();
-        System.exit(0);
+//	    ICalendarCopyTest r = new ICalendarCopyTest();
+//        r.canCopyVEvent1();
+//        System.exit(0);
         
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();

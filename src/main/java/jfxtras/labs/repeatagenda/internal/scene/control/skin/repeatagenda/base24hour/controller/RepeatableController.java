@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -54,6 +56,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtili
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent.DateTimeType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
@@ -811,31 +814,22 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
-    {
-//        System.out.println("make exception date list" + vComponent.getDateTimeStart().getClass().getSimpleName());
-        
+    {       
         final Temporal dateTimeStart = vComponent.getDateTimeStart();
-        Stream<Temporal> stream1 = vComponent.stream(dateTimeStart);
+        final Stream<Temporal> stream1 = vComponent.stream(dateTimeStart);
         Stream<Temporal> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
-//        Class<? extends Temporal> clazz = vComponent.getDateTimeStart().getClass();
-        List<Temporal> exceptionDates = stream2
+        final Stream<Temporal> stream3; 
+        if (DateTimeType.dateTimeTypeFromTemporal(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+        {
+            stream3 = stream2.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
+        } else
+        {
+            stream3 = stream2;
+        }
+        List<Temporal> exceptionDates = stream3
               .limit(EXCEPTION_CHOICE_LIMIT)
               .collect(Collectors.toList());
-//        if (vComponent.getDateTimeStart() instanceof LocalDate)
-//        {
-//            exceptionDates = stream2
-//                    .limit(EXCEPTION_CHOICE_LIMIT)
-////                    .map(d -> d.toLocalDate())
-//                    .collect(Collectors.toList());
-//        } else if (vComponent.getDateTimeStart().isSupported(ChronoUnit.NANOS))
-//        {
-//            exceptionDates = stream2
-//                    .limit(EXCEPTION_CHOICE_LIMIT)
-//                    .collect(Collectors.toList());
-//        } else throw new DateTimeException("Invalid Temporal class: " +
-//                vComponent.getDateTimeStart().getClass().getSimpleName() + " Only LocalDate, LocalDateTime and ZonedDateTime accepted.");
-
         exceptionComboBox.getItems().clear();
         exceptionComboBox.getItems().addAll(exceptionDates);
     }

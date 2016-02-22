@@ -175,121 +175,56 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
             setDateTimeEnd(newDateTimeEnd);
         }
     }
+    
+    @Override
+    boolean requiresChangeDialog(List<String> changedPropertyNames)
+    {
+        if (super.requiresChangeDialog(changedPropertyNames))
+        {
+            return true;
+        } else
+        {
+            return changedPropertyNames.stream()
+                    .map(s ->  
+                    {
+                        VEventProperty p = VEventProperty.propertyFromString(s);
+                        return (p != null) ? p.isDialogRequired() : false;
+                    })
+                    .anyMatch(b -> b == true);
+        }
+    }
 
+    @Override
+    List<String> findChangedProperties(VComponent<T> vComponentOriginal)
+    {
+        List<String> changedProperties = new ArrayList<>();
+        changedProperties.addAll(super.findChangedProperties(vComponentOriginal));
+        Arrays.stream(VEventProperty.values())
+                .forEach(p -> 
+                {
+                    boolean equals = p.isPropertyEqual(this, (VEvent<?>) vComponentOriginal);
+                    if (! equals)
+                    {
+                        changedProperties.add(p.toString());
+                    }
+                });        
+        return changedProperties;
+    }
     
     // CONSTRUCTORS
     public VEvent(VEvent<T> vevent)
     {
         super(vevent);
         copy(vevent, this);
-//        setupListeners();
     }
     
     public VEvent()
     {
         super();
-//        setupListeners();
     }
     
-//   /** Change start Temporal type from LocalDateTime to LocalDate (changes to whole-day)
-//    * this method is called by dateTimeStartlistener
-//    * @see #dateTimeStartlistener
-//    */
-//    @Deprecated // need to change to any time - new ensureTemporalConsistency to do that job
-//    private void changeStartToLocalDate(LocalDate newValue)
-//    {
-//        // Change ExDates to LocalDate
-//        if (getExDate() != null)
-//        {
-//            Set<LocalDate> newExDates = getExDate().getTemporals()
-//                    .stream()
-//                    .map(t -> LocalDate.from(t))
-//                    .collect(Collectors.toSet());
-//            getExDate().getTemporals().clear();
-//            getExDate().getTemporals().addAll(newExDates);
-//        }
-//
-//        // Change RDates to LocalDate
-//        if (getRDate() != null)
-//        {
-//            Set<LocalDate> newRDates = getRDate().getTemporals()
-//                    .stream()
-//                    .map(t -> LocalDate.from(t))
-//                    .collect(Collectors.toSet());
-//            getExDate().getTemporals().clear();
-//            getRDate().getTemporals().addAll(newRDates);
-//        }
-//        
-//        // Change Until to LocalDate
-//        if (getRRule() != null)
-//        {
-//            Temporal until = getRRule().getUntil();
-//            if (until != null) getRRule().setUntil(LocalDate.from(until));
-//        }
-//    }
-//
-//   /** Change start Temporal type from LocalDate to LocalDateTime
-//    * this method is called by dateTimeStartlistener
-//    * @see #dateTimeStartlistener
-//    */
-//    @Deprecated // need to change to any time - new ensureTemporalConsistency to do that job
-//    private void changeStartToLocalDateTime(LocalDateTime newValue)
-//    {        
-//        LocalTime time = LocalTime.from(newValue);
-//        // Change ExDates to LocalDate
-//        if (getExDate() != null)
-//        {
-//            Set<LocalDateTime> newExDates = getExDate().getTemporals()
-//                    .stream()
-//                    .map(t -> LocalDate.from(t).atTime(time))
-//                    .collect(Collectors.toSet());
-//            getExDate().getTemporals().clear();
-//            getExDate().getTemporals().addAll(newExDates);
-//        }
-//
-//        // Change RDates to LocalDate
-//        if (getRDate() != null)
-//        {
-//            Set<LocalDateTime> newRDates = getRDate().getTemporals()
-//                    .stream()
-//                    .map(t -> LocalDate.from(t).atTime(time))
-//                    .collect(Collectors.toSet());
-//            getExDate().getTemporals().clear();
-//            getRDate().getTemporals().addAll(newRDates);
-//        }
-//        
-//        // Change Until to LocalDate
-//        if (getRRule() != null)
-//        {
-//            Temporal until = getRRule().getUntil();
-//            if (until != null) getRRule().setUntil(LocalDate.from(until).atTime(time));
-//        }        
-//    }
     
-    // TODO - MAKE A METHOD TO CHANGE TO AND FROM ZONEDDATETIME
-    
-//    /* add listeners for dateTimeStart, dateTimeEnd and duration */
-//    private void setupListeners()
-//    {
-//        dateTimeStartlistener = (obs, oldValue, newValue) ->
-//        { // listener to synch dateTimeStart and duration
-//            Class<? extends Temporal> oldClass = (oldValue == null) ? null : oldValue.getClass();
-//            Class<? extends Temporal> newClass = newValue.getClass();
-//            if ((oldClass != null) && (newClass != oldClass))
-//            {
-//                if (newClass.equals(LocalDate.class)) // change to LocalDate
-//                {
-//                    changeStartToLocalDate((LocalDate) newValue);
-//                } else if (newClass.equals(LocalDateTime.class)) // change to LocalDateTime
-//                {
-//                    changeStartToLocalDateTime((LocalDateTime) newValue);
-//                }
-//                // TODO - HANDLE CHANGING TO ZONEDDATETIME
-//            }
-//        };
-//        dateTimeStartProperty().addListener(dateTimeStartlistener); // synch duration with dateTimeStart
-//    }
-
+    // HANDLE EDIT METHODS
     @Override
     protected void becomingIndividual(VComponent<T> vComponentOriginal, Temporal startInstance, Temporal endInstance)
     {
@@ -563,7 +498,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
      */
     public enum VEventProperty
     {
-        DESCRIPTION ("DESCRIPTION")
+        DESCRIPTION ("DESCRIPTION", true)
         {
             @Override
             public boolean setVComponent(VEvent<?> vEvent, String value)
@@ -584,8 +519,14 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
                 return ((vEvent.getDescription() == null) || (vEvent.getDescription().isEmpty())) ? null : vEvent.descriptionProperty().getName()
                         + ":" + vEvent.getDescription();
             }
+
+            @Override
+            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
+            {
+                return (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
+            }
         } 
-      , DURATION ("DURATION")
+      , DURATION ("DURATION", true)
         {
             @Override
             public boolean setVComponent(VEvent<?> vEvent, String value)
@@ -613,8 +554,14 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
                 return (vEvent.getDuration() == null) ? null : vEvent.durationProperty().getName() + ":"
                         + vEvent.getDuration();
             }
+
+            @Override
+            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
+            {
+                return (v1.getDuration() == null) ? (v2.getDuration() == null) : v1.getDuration().equals(v2.getDuration());
+            }
         } 
-      , DATE_TIME_END ("DTEND")
+      , DATE_TIME_END ("DTEND", true)
         {
             @Override
             public boolean setVComponent(VEvent<?> vEvent, String value)
@@ -649,8 +596,14 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
                     return tag + VComponent.temporalToString(vEvent.getDateTimeEnd());
                 }
             }
+
+            @Override
+            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
+            {
+                return (v1.getDateTimeEnd() == null) ? (v2.getDateTimeEnd() == null) : v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
+            }
         }        
-      , LOCATION ("LOCATION")
+      , LOCATION ("LOCATION", true)
         {
             @Override
             public boolean setVComponent(VEvent<?> vEvent, String value)
@@ -665,14 +618,27 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
                 return ((vEvent.getLocation() == null) || (vEvent.getLocation().isEmpty())) ? null : vEvent.locationProperty().getName()
                         + ":" + vEvent.getLocation();
             }
+
+            @Override
+            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
+            {
+                return (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
+            }
         }
-      , UNKNOWN ("")
+      , UNKNOWN ("", false)
         {
             @Override
             public boolean setVComponent(VEvent<?> vEvent, String value) { return false; } // do nothing
 
             @Override
             public String makeContentLine(VEvent<?> vEvent) { return null; } // do nothing
+
+            @Override
+            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
+            {
+                // TODO Auto-generated method stub
+                return false;
+            }
         };
       
         // Map to match up string tag to ICalendarProperty enum
@@ -688,20 +654,24 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
             return map;
         }
         private String name;
-          
-        VEventProperty(String name)
+        /* indicates if providing a dialog to allow user to confirm edit is required. 
+         * False means no confirmation is required or property is only modified by the implementation, not by the user */
+        boolean dialogRequired;
+        
+        VEventProperty(String name, boolean dialogRequired)
         {
             this.name = name;
+            this.dialogRequired = dialogRequired;
         }
         
         @Override
         public String toString() { return name; }
+        public boolean isDialogRequired() { return dialogRequired; }
         
         /** get VComponentProperty enum from property name */
         public static VEventProperty propertyFromString(String propertyName)
         {
             return propertyFromTagMap.get(propertyName.toUpperCase());
-//            return (match == null) ? UNKNOWN : match;
         }
         
         /** sets enum's associated VEvent's property from parameter value
@@ -709,6 +679,10 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
         public abstract boolean setVComponent(VEvent<?> vEvent, String value);
         
         /** makes content line (RFC 5545 3.1) from a VEvent property  */
-        public abstract String makeContentLine(VEvent<?> vEvent);       
+        public abstract String makeContentLine(VEvent<?> vEvent);
+        
+        /** Checks is corresponding property is equal between v1 and v2 */
+        public abstract boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2);       
+
     }
 }
