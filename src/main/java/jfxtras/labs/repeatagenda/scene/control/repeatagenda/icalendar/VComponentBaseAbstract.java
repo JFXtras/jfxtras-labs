@@ -42,9 +42,10 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
  * @author David Bal
  * @see VEvent
  *
- * @param <T> - recurrence instance type
+ * @param <I> - recurrence instance type
+ * @param <T>
  */
-public abstract class VComponentBaseAbstract<T> implements VComponent<T>
+public abstract class VComponentBaseAbstract<I> implements VComponent<I>
 {
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -183,7 +184,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
         if ((getDateTimeRecurrence() != null) && (dateTimeType != DateTimeType.dateTimeTypeFromTemporal(getDateTimeRecurrence())))
         {
             // convert to new Temporal type
-            Temporal newDateTimeRecurrence = DateTimeType.changeDateTimeType(getDateTimeRecurrence(), dateTimeType);
+            Temporal newDateTimeRecurrence = DateTimeType.changeTemporal(getDateTimeRecurrence(), dateTimeType);
             setDateTimeRecurrence(newDateTimeRecurrence);
         }
         
@@ -196,7 +197,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
             {
                 Set<Temporal> newExDateTemporals = getExDate().getTemporals()
                         .stream()
-                        .map(t -> DateTimeType.changeDateTimeType(t, dateTimeType))
+                        .map(t -> DateTimeType.changeTemporal(t, dateTimeType))
                         .collect(Collectors.toSet());
                 getExDate().getTemporals().clear();
                 getExDate().getTemporals().addAll(newExDateTemporals);
@@ -212,7 +213,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
             {
                 Set<Temporal> newRDateTemporals = getRDate().getTemporals()
                         .stream()
-                        .map(t -> DateTimeType.changeDateTimeType(t, dateTimeType))
+                        .map(t -> DateTimeType.changeTemporal(t, dateTimeType))
                         .collect(Collectors.toSet());
                 getRDate().getTemporals().clear();
                 getRDate().getTemporals().addAll(newRDateTemporals);
@@ -406,10 +407,10 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
     }
     
     @Override
-    public VComponent<T> getParent() { return parent; }
-    private VComponent<T> parent;
+    public VComponent<I> getParent() { return parent; }
+    private VComponent<I> parent;
     @Override
-    public void setParent(VComponent<T> v) { parent = v; }
+    public void setParent(VComponent<I> v) { parent = v; }
     
     /**
      * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -581,7 +582,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
 
     // CONSTRUCTORS
     /** Copy constructor */
-    public VComponentBaseAbstract(VComponentBaseAbstract<T> vcomponent)
+    public VComponentBaseAbstract(VComponentBaseAbstract<I> vcomponent)
     {
         copy(vcomponent, this);
     }
@@ -589,13 +590,13 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
     public VComponentBaseAbstract() { }
     
     @Override
-    public void handleEdit(
-            VComponent<T> vComponentOriginal
-          , Collection<VComponent<T>> vComponents
-          , Temporal startOriginalInstance
-          , Temporal startInstance
-          , Temporal endInstance
-          , Collection<T> instances
+    public <T extends Temporal> void handleEdit(
+            VComponent<I> vComponentOriginal
+          , Collection<VComponent<I>> vComponents
+          , T startOriginalInstance
+          , T startInstance
+          , T endInstance
+          , Collection<I> instances
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
     {
         final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
@@ -610,16 +611,12 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
             if (! equals(vComponentOriginal)) updateInstances(instances);
             break;
         case WITH_EXISTING_REPEAT:
-            // TODO - NEED TO KNOW WHICH PROPERTIES ARE CHANGED - IF ONLY EXDATE THEN NO DIALOG
-            // CAN ENUM HANDLE EQUALS?
-            // LIST OF OBJECTS (PROPERTIES) THAT ARE CHANGED?  compare against properties?
             List<String> changedPropertyNames = findChangedProperties(vComponentOriginal);
-            changedPropertyNames.stream().forEach(System.out::println);
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
             System.out.println("provideDialog:" + provideDialog);
             if (changedPropertyNames.size() > 0) // if changes occurred
             {
-                List<VComponent<T>> relatedVComponents = Arrays.asList(this);
+                List<VComponent<I>> relatedVComponents = Arrays.asList(this);
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
@@ -693,7 +690,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
      * 
      * equal checks are encapsulated inside the enum VComponentProperty
      */
-    List<String> findChangedProperties(VComponent<T> vComponentOriginal)
+    List<String> findChangedProperties(VComponent<I> vComponentOriginal)
     {
         List<String> changedProperties = new ArrayList<>();
         Arrays.stream(VComponentProperty.values())
@@ -708,9 +705,9 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
         return changedProperties;
     }
     
-    private void updateInstances(Collection<T> instances)
+    private void updateInstances(Collection<I> instances)
     {
-        Collection<T> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+        Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         instancesTemp.addAll(instances);
         instancesTemp.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
         instances().clear(); // clear VEvent's outdated collection of appointments
@@ -728,7 +725,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
      * @param endInstance
      * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection, Callback)
      */
-    protected void becomingIndividual(VComponent<T> vComponentOriginal, Temporal startInstance, Temporal endInstance)
+    protected void becomingIndividual(VComponent<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
     {
         setRRule(null);
         setRDate(null);
@@ -745,42 +742,21 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
      * 
      * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
      */
-    protected void editOne(
-            VComponent<T> vEventOriginal
-          , Collection<VComponent<T>> vComponents
-          , Temporal startOriginalInstance
-          , Temporal startInstance
-          , Temporal endInstance
-          , Collection<T> instances)
+    protected <T extends Temporal> void editOne(
+            VComponent<I> vEventOriginal
+          , Collection<VComponent<I>> vComponents
+          , T startOriginalInstance
+          , T startInstance
+          , T endInstance
+          , Collection<I> instances)
     {
         // Apply dayShift, if any
         Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
-//        System.out.println("dayShift:" + dayShift + " " + getDateTimeStart() + " " + startInstance);
         Temporal newStart = getDateTimeStart().plus(dayShift);
         setDateTimeStart(newStart);
-//        if (isWholeDay())
-//        {
-//            LocalDate start = LocalDate.from(startInstance);
-//            setDateTimeStart(start);
-//        } else
-//        {
-////            vEventOriginal.getDateTimeStart()
-//            setDateTimeStart(startInstance);
-//        }
+
         setRRule(null);
         
-//        // TODO - USE ZONEDDATETIME FOR INSTANCES?
-//        if ((getDateTimeStart() instanceof ZonedDateTime) && (startOriginalInstance instanceof LocalDateTime))
-//        {
-//            ZoneId id = ((ZonedDateTime) getDateTimeStart()).getZone();
-//            ZonedDateTime z = ((LocalDateTime) startOriginalInstance).atZone(id);
-//            setDateTimeRecurrence(z);
-//        } else
-//        {
-//            setDateTimeRecurrence(startOriginalInstance);
-//        }
-        
-        System.out.println("startOriginalInstance:" + startOriginalInstance);
         setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setParent(vEventOriginal);
@@ -793,13 +769,12 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
         if (! vEventOriginal.isValid()) throw new RuntimeException(vEventOriginal.errorString());
         
         // Remove old appointments, add back ones
-        Collection<T> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+        Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         instancesTemp.addAll(instances);
         instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
         vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of appointments
         instancesTemp.addAll(vEventOriginal.makeInstances()); // make new appointments and add to main collection (added to vEventNew's collection in makeAppointments)
         instances().clear(); // clear vEvent outdated collection of appointments
-//        System.out.println("editone:" + this);
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
         instances.clear();
         instances.addAll(instancesTemp);
@@ -811,20 +786,31 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
      * VComponent with a UNTIL date or date/time and starting a new VComponent from 
      * the selected instance.  EXDATE, RDATE and RECURRENCES are split between both
      * VComponents.  vEventNew has new settings, vEvent has former settings.
+     * @param <T>
      * 
      * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
      */
-    protected void editThisAndFuture(
-            VComponent<T> vComponentOriginal
-          , Collection<VComponent<T>> vComponents
-          , Temporal startOriginalInstance
-          , Temporal startInstance
-          , Collection<T> instances)
+    protected <T extends Temporal> void editThisAndFuture(
+            VComponent<I> vComponentOriginal
+          , Collection<VComponent<I>> vComponents
+          , T startOriginalInstance
+          , T startInstance
+          , Collection<I> instances)
     {
         // adjust original VEvent
-        if (vComponentOriginal.getRRule().getCount() != null) vComponentOriginal.getRRule().setCount(0);
-        Temporal previousDay = startOriginalInstance.minus(1, ChronoUnit.DAYS);
-        Temporal untilNew = (isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
+        if (vComponentOriginal.getRRule().getCount() > 0)
+        {
+            vComponentOriginal.getRRule().setCount(0);
+        }
+        final Temporal untilNew;
+        if (isWholeDay())
+        {
+            untilNew = LocalDate.from(startOriginalInstance).minus(1, ChronoUnit.DAYS);
+        } else
+        {
+            Temporal t = startOriginalInstance.minus(1, ChronoUnit.NANOS);
+            untilNew = DateTimeType.changeTemporal(t, DateTimeType.DATE_WITH_UTC_TIME);
+        }
         vComponentOriginal.getRRule().setUntil(untilNew);
         
         setDateTimeStart(startInstance);
@@ -902,7 +888,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
         vComponents.add(vComponentOriginal);
 
         // Remove old appointments, add back ones
-        Collection<T> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+        Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         instancesTemp.addAll(instances);
         instancesTemp.removeIf(a -> vComponentOriginal.instances().stream().anyMatch(a2 -> a2 == a));
         vComponentOriginal.instances().clear(); // clear vEvent outdated collection of appointments
@@ -916,10 +902,10 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
     
     @Override
     public void handleDelete(
-            Collection<VComponent<T>> vComponents
+            Collection<VComponent<I>> vComponents
           , Temporal startInstance
-          , T instance
-          , Collection<T> instances)
+          , I instance
+          , Collection<I> instances)
     {
         int count = this.instances().size();
         if (count == 1)
@@ -977,7 +963,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
                 this.getRRule().setUntil(untilNew);
 
                 // Remove old appointments, add back ones
-                Collection<T> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+                Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
                 instancesTemp.addAll(instances);
                 instancesTemp.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
                 instances().clear(); // clear this's outdated collection of appointments
@@ -1045,7 +1031,7 @@ public abstract class VComponentBaseAbstract<T> implements VComponent<T>
     
     /** Deep copy all fields from source to destination */
     @Override
-    public void copyTo(VComponent<T> destination)
+    public void copyTo(VComponent<I> destination)
     {
         copy(this, (VComponentBaseAbstract<?>) destination);
     }

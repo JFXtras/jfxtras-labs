@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -132,13 +131,13 @@ to iCalendar a number of properties, including these can exist more than once.  
 this limitation is a future goal. - I plan on fixing this problem by combining multiple
 instances into one property internally.
 
- * @param <T> - type of recurrence instance, such as an appointment implementation
+ * @param <I> - type of recurrence instance, such as an appointment implementation
  * @see VComponentBaseAbstract
  * @see VEvent
  * @see VTodo // not implemented yet
  * @see VJournal // not implemented yet
  * */
-public interface VComponent<T>
+public interface VComponent<I>
 {
     final static DateTimeFormatter LOCAL_DATE_FORMATTER = new DateTimeFormatterBuilder()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
@@ -230,7 +229,7 @@ public interface VComponent<T>
     Temporal getDateTimeStart();
     ObjectProperty<Temporal> dateTimeStartProperty();
     void setDateTimeStart(Temporal dtStart);
-    default DateTimeType getTemporalType() { return DateTimeType.dateTimeTypeFromTemporal(getDateTimeStart()); };
+    default DateTimeType getDateTimeType() { return DateTimeType.dateTimeTypeFromTemporal(getDateTimeStart()); };
 
     /** Component is whole day if dateTimeStart (DTSTART) only contains a date (no time) */
     default boolean isWholeDay() { return ! getDateTimeStart().isSupported(ChronoUnit.NANOS); }
@@ -305,8 +304,8 @@ public interface VComponent<T>
     void setDateTimeRecurrence(Temporal dtRecurrence);
     
     /** If VComponent has RECURRENCE-ID this returns its parent object */
-    VComponent<T> getParent();
-    void setParent(VComponent<T> v);
+    VComponent<I> getParent();
+    void setParent(VComponent<I> v);
     
     /**
      * RRULE, Recurrence Rule as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -438,7 +437,7 @@ public interface VComponent<T>
      * @param end - end of time frame to make instances
      * @return
      */
-    Collection<T> makeInstances(Temporal start, Temporal end);
+    Collection<I> makeInstances(Temporal start, Temporal end);
     /**
      * Returns the collection of recurrence instances of calendar component of type T that exists
      * between dateTimeRangeStart and dateTimeRangeEnd based on VComponent.
@@ -452,7 +451,7 @@ public interface VComponent<T>
      *  
      * @return
      */
-    Collection<T> makeInstances();
+    Collection<I> makeInstances();
     /**
      * Returns existing instances in the Recurrence Set (defined in RFC 5545 iCalendar page 121)
      * made by the last call of makeRecurrenceSet
@@ -461,7 +460,7 @@ public interface VComponent<T>
      * @return - current instances of the Recurrence Set
      * @see makeRecurrenceSet
      */
-    Collection<T> instances();
+    Collection<I> instances();
     
 //    /*
 //     * NEW INSTANCE CALLBACKS
@@ -507,6 +506,7 @@ public interface VComponent<T>
      * Handles how an edited VComponent is processed.  For a VComponent with a recurrence rule (RRULE)
      * the user is given a dialog to select ONE, THIS_AND_FUTURE, or ALL instances to edit.
      * For a VComponent without a RRULE there is no dialog.
+     * @param <T>
      * 
      * @param vComponentOriginal - copy of this VComponent before changes
      * @param vComponents - the collection of VComponents that this VComponent belongs to
@@ -517,13 +517,13 @@ public interface VComponent<T>
      * @param dialogCallback - callback to generate dialog to select ONE, THIS_AND_FUTURE, or ALL.
      *    Can be replaced by a stub for testing (e.g. (m) -> ChangeDialogOption.ALL).
      */
-    void handleEdit(
-            VComponent<T> vComponentOriginal
-          , Collection<VComponent<T>> vComponents
-          , Temporal startOriginalInstance
-          , Temporal startInstance
-          , Temporal endInstance
-          , Collection<T> instances
+    <T extends Temporal> void handleEdit(
+            VComponent<I> vComponentOriginal
+          , Collection<VComponent<I>> vComponents
+          , T startOriginalInstance
+          , T startInstance
+          , T endInstance
+          , Collection<I> instances
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback);
     
     /**
@@ -537,17 +537,17 @@ public interface VComponent<T>
      */
     // TODO - ADD DIALOG CALLBACK HERE
     void handleDelete(
-            Collection<VComponent<T>> vComponents
+            Collection<VComponent<I>> vComponents
           , Temporal startInstance
-          , T instance
-          , Collection<T> instances);
+          , I instance
+          , Collection<I> instances);
     
     /**
      * Copies this object into destination object
      * 
      * @param destination
      */
-    void copyTo(VComponent<T> destination);
+    void copyTo(VComponent<I> destination);
     
     // DEFAULT METHODS
     
@@ -599,11 +599,8 @@ public interface VComponent<T>
         }           
         if (! first.equals(getDateTimeStart())) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART (" + getDateTimeStart() + ") must be first occurrence (" + first + ")");
         Class<? extends Temporal> startClass = first.getClass();
-        Class<? extends Temporal> untilClass = ((getRRule() != null) && (getRRule().getUntil() != null))
-                ? getRRule().getUntil().getClass() : startClass;
         Class<? extends Temporal> eXDateClass = (getExDate() != null) ? getExDate().temporalClass() : startClass;
         Class<? extends Temporal> rDateClass = (getRDate() != null) ? getRDate().temporalClass() : startClass;
-        if (startClass != untilClass) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  Temporal class type of DTSTART (" + startClass + ") and UNTIL (" + untilClass + ") must be the same.");
         if (startClass != eXDateClass) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  Temporal class type of DTSTART (" + startClass + ") and EXDATE (" + eXDateClass + ") must be the same.");
         if (startClass != rDateClass) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  Temporal class type of DTSTART (" + startClass + ") and RDATE (" + rDateClass + ") must be the same.");
         
@@ -999,493 +996,6 @@ public interface VComponent<T>
     }
     
     /**
-     * VComponent properties with the following data and methods:
-     * iCalendar property name
-     * setVComponent - parse string method
-     * makeContentLine - toString method
-     * 
-     * @author David Bal
-     *
-     */
-    public enum VComponentProperty
-    {
-        CATEGORIES ("CATEGORIES", true)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                vComponent.setCategories(value);
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return ((vComponent.getCategories() == null) || (vComponent.getCategories().isEmpty())) ? null : vComponent.categoriesProperty().getName()
-                        + ":" + vComponent.getCategories();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getCategories() == null) ? (v2.getCategories() == null) : v1.getCategories().equals(v2.getCategories());
-            }
-        }
-      , COMMENT ("COMMENT", true)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                vComponent.setComment(value); // TODO - collect multiple values - comma separate? Use list?            
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return ((vComponent.getComment() == null) || (vComponent.getComment().isEmpty())) ? null : vComponent.commentProperty().getName()
-                        + ":" + vComponent.getComment();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getComment() == null) ? (v2.getComment() == null) : v1.getComment().equals(v2.getComment());
-            }
-        }
-      , CREATED ("CREATED", false)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
-                vComponent.setDateTimeCreated(dateTime);        
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return (vComponent.getDateTimeCreated() == null) ? null : vComponent.dateTimeCreatedProperty().getName() + ":"
-                        + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeCreated());
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getDateTimeCreated() == null) ? (v2.getDateTimeCreated() == null) : v1.getDateTimeCreated().equals(v2.getDateTimeCreated());
-            }
-        }
-      , DATE_TIME_STAMP ("DTSTAMP", false)
-            {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
-                vComponent.setDateTimeStamp(dateTime);        
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return (vComponent.getDateTimeStamp() == null) ? null : vComponent.dateTimeStampProperty().getName() + ":"
-                        + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeStamp());
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getDateTimeStamp() == null) ? (v2.getDateTimeStamp() == null) : v1.getDateTimeStamp().equals(v2.getDateTimeStamp());
-            }
-        }
-      , DATE_TIME_START ("DTSTART", true)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                if (vComponent.getDateTimeStart() == null)
-                {
-                    Temporal dateTime = VComponent.parseTemporal(value);
-                    vComponent.setDateTimeStart(dateTime);
-                    return true;
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
-                }
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                if (vComponent.getDateTimeStart() == null)
-                {
-                    return null;
-                } else
-                {
-                    String tag = makeDateTimePropertyTag(vComponent.dateTimeStartProperty().getName(), vComponent.getDateTimeStart());
-                    return tag + VComponent.temporalToString(vComponent.getDateTimeStart());
-                }
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getDateTimeStart() == null) ? (v2.getDateTimeStart() == null) : v1.getDateTimeStart().equals(v2.getDateTimeStart());
-            }
-        }
-      , EXCEPTIONS ("EXDATE", false)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                Collection<Temporal> temporals = RecurrenceComponent.parseTemporals(value);
-                if (vComponent.getExDate() == null)
-                {
-                    vComponent.setExDate(new ExDate());
-                }                  
-                vComponent.getExDate().getTemporals().addAll(temporals);
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                if (vComponent.getExDate() == null)
-                {
-                    return null;
-                } else
-                {
-                    if (vComponent.isExDatesOnOneLine())
-                    {
-                        Temporal firstTemporal = vComponent.getExDate().getTemporals().iterator().next();
-                        String tag = makeDateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
-                        return tag + vComponent.getExDate().toString();
-                    } else
-                    {
-                        Temporal firstTemporal = vComponent.getExDate().getTemporals().iterator().next();
-                        String tag = makeDateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
-                        return vComponent.getExDate()
-                                .getTemporals()
-                                .stream()
-                                .map(t -> tag + VComponent.temporalToString(t) + System.lineSeparator())
-                                .collect(Collectors.joining());
-                    }
-                }
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getExDate() == null) ? (v2.getExDate() == null) : v1.getExDate().equals(v2.getExDate());
-            }
-        }
-      , LAST_MODIFIED ("LAST-MODIFIED", false)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                if (vComponent.getDateTimeLastModified() == null)
-                {
-                    ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
-                    vComponent.setDateTimeLastModified(dateTime);
-                    return true;
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
-                }        
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return (vComponent.getDateTimeLastModified() == null) ? null : vComponent.dateTimeLastModifiedProperty().getName() + ":"
-                        + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeLastModified());
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getDateTimeLastModified() == null) ? (v2.getDateTimeLastModified() == null) : v1.getDateTimeLastModified().equals(v2.getDateTimeLastModified());
-            }
-        }
-      , ORGANIZER ("ORGANIZER", true)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                vComponent.setOrganizer(value);
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return ((vComponent.getOrganizer() == null) || (vComponent.getOrganizer().isEmpty())) ? null : vComponent.organizerProperty().getName() + ":"
-                        + vComponent.getOrganizer().toString();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getOrganizer() == null) ? (v2.getOrganizer() == null) : v1.getOrganizer().equals(v2.getOrganizer());
-            }
-        }
-      , RECURRENCES ("RDATE", false)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                Collection<Temporal> temporals = RecurrenceComponent.parseTemporals(value);
-                if (vComponent.getRDate() == null)
-                {
-                    vComponent.setRDate(new RDate());
-                }                  
-                vComponent.getRDate().getTemporals().addAll(temporals);
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                if (vComponent.getRDate() == null)
-                {
-                    return null;
-                } else
-                {
-                    Temporal firstTemporal = vComponent.getRDate().getTemporals().iterator().next();
-                    String tag = makeDateTimePropertyTag(vComponent.rDateProperty().getName(), firstTemporal);
-                    return tag + vComponent.getRDate().toString();
-                }
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getRDate() == null) ? (v2.getRDate() == null) : v1.getRDate().equals(v2.getRDate()); // required 
-            }
-        }
-      , RECURRENCE_ID ("RECURRENCE-ID", false)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
-                vComponent.setDateTimeRecurrence(dateTime);
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                if (vComponent.getDateTimeRecurrence() == null)
-                {
-                    return null;
-                } else
-                {
-                    String tag = makeDateTimePropertyTag(vComponent.dateTimeRecurrenceProperty().getName()
-                            , vComponent.getDateTimeRecurrence());
-                    return tag + VComponent.temporalToString(vComponent.getDateTimeRecurrence());
-                }
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getDateTimeRecurrence() == null) ? (v2.getDateTimeRecurrence() == null) : v1.getDateTimeRecurrence().equals(v2.getDateTimeRecurrence());
-            }
-        }
-      , RECURRENCE_RULE ("RRULE", true)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                if (vComponent.getRRule() == null)
-                {
-                    vComponent.setRRule(RRule.parseRRule(value));
-                    return true;
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
-                }
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return (vComponent.getRRule() == null) ? null : vComponent.rRuleProperty().getName() + ":"
-                        + vComponent.getRRule().toString();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getRRule() == null) ? (v2.getRRule() == null) : v1.getRRule().equals(v2.getRRule());
-            }
-        }
-      , RELATED_TO ("RELATED-TO", false)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                vComponent.setRelatedTo(value); // TODO - collect multiple values - comma separate? Use list?
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return ((vComponent.getRelatedTo() == null) || (vComponent.getRelatedTo().isEmpty())) ? null : vComponent.relatedToProperty().getName() + ":"
-                        + vComponent.getRelatedTo().toString();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getRelatedTo() == null) ? (v2.getRelatedTo() == null) : v1.getRelatedTo().equals(v2.getRelatedTo());
-            }
-        }
-      , SEQUENCE ("SEQUENCE", false)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                if (vComponent.getSequence() == 0)
-                {
-                    vComponent.setSequence(Integer.parseInt(value));
-                    return true;
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
-                }            
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return (vComponent.getSequence() == 0) ? null : vComponent.sequenceProperty().getName() + ":"
-                        + Integer.toString(vComponent.getSequence());
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return v1.getSequence() == v2.getSequence();
-            }
-        }
-      , SUMMARY ("SUMMARY", true)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                if (vComponent.getSummary() == null)
-                {
-                    vComponent.setSummary(value);
-                    return true;
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
-                }        
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return ((vComponent.getSummary() == null) || (vComponent.getSummary().isEmpty())) ? null : vComponent.summaryProperty().getName() + ":"
-                        + vComponent.getSummary();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getSummary() == null) ? (v2.getSummary() == null) : v1.getSummary().equals(v2.getSummary());
-            }
-        }
-      , UNIQUE_IDENTIFIER ("UID", false)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
-            {
-                if (vComponent.getUniqueIdentifier() == null)
-                {
-                    vComponent.setUniqueIdentifier(value);
-                    return true;
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
-                }       
-            }
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent)
-            {
-                return ((vComponent.getUniqueIdentifier() == null) || (vComponent.getUniqueIdentifier().isEmpty())) ? null : vComponent.uniqueIdentifierProperty().getName()
-                        + ":" + vComponent.getUniqueIdentifier();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
-            {
-                return (v1.getUniqueIdentifier() == null) ? (v2.getUniqueIdentifier() == null) : v1.getUniqueIdentifier().equals(v2.getUniqueIdentifier());
-            }
-        }
-      , UNKNOWN ("", false)
-        {
-            @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value) { return false; } // do nothing
-
-            @Override
-            public String makeContentLine(VComponent<?> vComponent) { return null; } // do nothing
-
-            @Override
-            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2) { return true; }
-        };
-      
-        // Map to match up string tag to ICalendarProperty enum
-        private static Map<String, VComponentProperty> propertyFromTagMap = makePropertiesFromNameMap();
-        private static Map<String, VComponentProperty> makePropertiesFromNameMap()
-        {
-            Map<String, VComponentProperty> map = new HashMap<>();
-            VComponentProperty[] values = VComponentProperty.values();
-            for (int i=0; i<values.length; i++)
-            {
-                map.put(values[i].toString(), values[i]);
-            }
-            return map;
-        }
-        private String name;
-        /* indicates if providing a dialog to allow user to confirm edit is required. 
-         * False means no confirmation is required or property is only modified by the implementation, not by the user */
-        boolean dialogRequired;
-        
-        VComponentProperty(String name, boolean dialogRequired)
-        {
-            this.name = name;
-            this.dialogRequired = dialogRequired;
-        }
-        
-        @Override
-        public String toString() { return name; }
-        public boolean isDialogRequired() { return dialogRequired; }
-        
-        /** get VComponentProperty enum from property name */
-        public static VComponentProperty propertyFromString(String propertyName)
-        {
-            return propertyFromTagMap.get(propertyName.toUpperCase());
-        }
-        
-        /** sets enum's associated VEvent's property from parameter value
-         * returns true, if property was found and set */
-        public abstract boolean setVComponent(VComponent<?> vComponent, String value);
-        
-        /** makes content line (RFC 5545 3.1) from a vComponent property  */
-        public abstract String makeContentLine(VComponent<?> vComponent);       
-
-        /** Checks is corresponding property is equal between v1 and v2 */
-        public abstract boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2);    
-}
-    
-    /**
      * Produces property name and attribute, if necessary.
      * For example:
      * LocalDate : DTSTART;VALUE=DATE:
@@ -1516,149 +1026,6 @@ public interface VComponent<T>
         }
     }
 
-    /**
-     * Temporal date and date-time types supported by iCalendar.
-     *  DATE
-     *  DATE_WITH_LOCAL_TIME
-     *  DATE_WITH_LOCAL_TIME_AND_TIME_ZONE
-     *  DATE_WITH_UTC_TIME:
-     * see iCalendar RFC 5545, page 32-33
-     * 
-     * @author David Bal
-     *
-     */
-    public enum DateTimeType
-    {
-        DATE (LocalDate.class, null)
-      , DATE_WITH_LOCAL_TIME (LocalDate.class, null)
-      , DATE_WITH_UTC_TIME (ZonedDateTime.class, ZoneId.of("Z"))
-      , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE (ZonedDateTime.class, ZoneId.systemDefault());
-
-        private static final ZoneId DEFAULT_ZONE = ZoneId.systemDefault(); // default ZoneId to convert to
-        private Class<? extends Temporal> clazz;
-        private ZoneId zoneId;
-        
-        DateTimeType(Class<? extends Temporal> clazz, ZoneId zoneId)
-        {
-            this.clazz = clazz;
-            this.zoneId = zoneId;
-        }
-        
-        public Class<? extends Temporal> getTemporalClass() { return clazz; }
-        public ZoneId getZoneId() { return zoneId; }
-        
-        
-        public static DateTimeType dateTimeTypeFromTemporal(Temporal t)
-        {
-            if (t instanceof LocalDate)
-            {
-                return DATE;
-            } else if (t instanceof LocalDateTime)
-            {
-                return DATE_WITH_LOCAL_TIME;
-            } else if (t instanceof ZonedDateTime)
-            {
-                ZoneId z = ((ZonedDateTime) t).getZone();
-                if (z == ZoneId.of("Z"))
-                {
-                    return DATE_WITH_UTC_TIME;
-                } else
-                {
-                    return DATE_WITH_LOCAL_TIME_AND_TIME_ZONE;                    
-                }
-            } else
-            {
-                throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
-            }
-        }
-        
-        /*
-         * Change a Temporal type to match new DateTimeType outputType
-         * 
-         * When changing a ZonedDateTime it is first adjusted to the DEFAULT_ZONE to ensure
-         * proper local time.
-         */
-        static Temporal changeDateTimeType(Temporal t, DateTimeType outputType)
-        {
-            DateTimeType initialType = dateTimeTypeFromTemporal(t);
-            if (initialType == outputType)
-            {
-                return t; // nothing to do;
-            } else
-            {
-                switch (initialType)
-                {
-                case DATE:
-                    switch(outputType)
-                    {
-                    case DATE:
-                        return t; // do nothing
-                    case DATE_WITH_LOCAL_TIME:
-                        return LocalDate.from(t).atStartOfDay();
-                    case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                        return LocalDate.from(t).atStartOfDay().atZone(DEFAULT_ZONE);
-                    case DATE_WITH_UTC_TIME:
-                        return LocalDate.from(t).atStartOfDay().atZone(ZoneId.of("Z"));
-                    default:
-                        throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
-                    }
-                case DATE_WITH_LOCAL_TIME:
-                    switch(outputType)
-                    {
-                    case DATE:
-                        return LocalDate.from(t);
-                    case DATE_WITH_LOCAL_TIME:
-                        return t; // do nothing
-                    case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                        return LocalDateTime.from(t).atZone(DEFAULT_ZONE);
-                    case DATE_WITH_UTC_TIME:
-                        return LocalDateTime.from(t).atZone(ZoneId.of("Z"));
-                    default:
-                        throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
-                    }
-                case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                {
-                    ZonedDateTime myZonedDateTime;
-                    switch(outputType)
-                    {
-                    case DATE:
-                        myZonedDateTime = ZonedDateTime.from(t).withZoneSameInstant(DEFAULT_ZONE);
-                        return LocalDate.from(myZonedDateTime);
-                    case DATE_WITH_LOCAL_TIME:
-                        myZonedDateTime = ZonedDateTime.from(t).withZoneSameInstant(DEFAULT_ZONE);
-                        return LocalDateTime.from(myZonedDateTime);
-                    case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                        return t; // do nothing
-                    case DATE_WITH_UTC_TIME:
-                        return ZonedDateTime.from(t).withZoneSameInstant(ZoneId.of("Z"));
-                    default:
-                        throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
-                    }
-                }
-                case DATE_WITH_UTC_TIME:
-                {
-                    ZonedDateTime myZonedDateTime = ZonedDateTime.from(t).withZoneSameInstant(DEFAULT_ZONE);
-                    switch(outputType)
-                    {
-                    case DATE:
-                        return LocalDate.from(myZonedDateTime);
-                    case DATE_WITH_LOCAL_TIME:
-                        return LocalDateTime.from(myZonedDateTime);
-                    case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                        return myZonedDateTime.withZoneSameInstant(DEFAULT_ZONE);
-                    case DATE_WITH_UTC_TIME:
-                        return t; // do nothing
-                    default:
-                        throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
-                    }
-                }
-                default:
-                    throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
-                }
-            }
-        }
-    }
-    
     /**
      * A convenience class to represent start and end date-time pairs
      * 

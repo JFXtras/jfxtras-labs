@@ -196,7 +196,7 @@ public class ICalendarAgenda extends Agenda
             endInstance = LocalDate.from(appointment.getEndLocalDateTime()).plus(1, ChronoUnit.DAYS).atStartOfDay();
         } else
         {
-            switch (vEvent.getTemporalType())
+            switch (vEvent.getDateTimeType())
             {
             case DATE:
                 throw new RuntimeException("VEvent should be wholeday, but isn't");
@@ -212,7 +212,7 @@ public class ICalendarAgenda extends Agenda
                 startOriginalInstance = LocalDateTime.from(startOriginalInstance).atZone(zone); // TODO I don't like this line.  I want the Temporals in appointmentStartOriginalMap to be the correct type.
                 break;
             default:
-                throw new RuntimeException("Unsupported Temporal type:" + vEvent.getTemporalType());
+                throw new RuntimeException("Unsupported Temporal type:" + vEvent.getDateTimeType());
             }
         }
   

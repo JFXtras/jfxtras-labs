@@ -29,6 +29,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -124,19 +125,6 @@ public class VEventImpl extends VEvent<Appointment>
     }
 
     
-//    // TODO - I THINK I'M GOING TO USE CATEGORIES INSTEAD OF BELOW X CUSTOM ELEMENT
-//    /**
-//     * X-APPOINTMENT-GROUP
-//     * Contains the AppointmentGroup from Agenda.
-//     * Non-Standard iCalendar Property (3.8.8.2 in RFC 5545 iCalendar)
-//     * The css StyleClass is the value portion of this property outputed by toString.
-//     * StyleClass must be unique for each AppointmentGroup.
-//     */
-//    public StringProperty appointmentGroupStyleClassProperty() { return appointmentGroupStyleClass; }
-//    private StringProperty appointmentGroupStyleClass = new SimpleStringProperty(this, "X-APPOINTMENT-GROUP");
-//    public void setAppointmentGroupStyleClass(String appointmentGroupStyleClass) { this.appointmentGroupStyleClass.set(appointmentGroupStyleClass); }
-//    public String getAppointmentGroupStyleClass() { return appointmentGroupStyleClass.get(); }
-//
     public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroup; }
     private ObjectProperty<AppointmentGroup> appointmentGroup = new SimpleObjectProperty<AppointmentGroup>(this, "CATEGORIES");
     public void setAppointmentGroup(AppointmentGroup appointmentGroup) { this.appointmentGroup.set(appointmentGroup); }
@@ -155,7 +143,6 @@ public class VEventImpl extends VEvent<Appointment>
      */
     private final InvalidationListener categoriesListener = obs ->
     {
-//        System.out.println("finding appointment group:" + getAppointmentGroups().isEmpty() + " " + getCategories());
         if (! getAppointmentGroups().isEmpty() && getCategories() != null)
         {
             Optional<AppointmentGroup> myGroup = getAppointmentGroups()
@@ -163,7 +150,6 @@ public class VEventImpl extends VEvent<Appointment>
 //                    .peek(a -> System.out.println(a.getDescription()))
                     .filter(g -> g.getDescription().equals(getCategories()))
                     .findFirst();
-//            if (! myGroup.isPresent()) System.out.println("no matched group:");
             if (myGroup.isPresent()) setAppointmentGroup(myGroup.get());                
         }
     };
@@ -189,7 +175,6 @@ public class VEventImpl extends VEvent<Appointment>
     @Override
     public Set<Appointment> instances() { return instances; }
     final private Set<Appointment> instances = new HashSet<>();
-//    public VEventImpl withAppointments(Collection<RepeatableAppointment> s) { appointments().addAll(s); return this; }
     public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
     
     // Fluent methods for chaining
@@ -289,13 +274,12 @@ public class VEventImpl extends VEvent<Appointment>
         copy(this, (VEventImpl) destination);
     }
     
-    @Override
-    public String errorString()
-    {
-        String errors = super.errorString();
-//        if (getAppointmentClass() == null) errors += System.lineSeparator() + "Invalid VEventImpl.  appointmentClass must not be null.";
-        return errors;
-    }
+//    @Override
+//    public String errorString()
+//    {
+//        String errors = super.errorString();
+//        return errors;
+//    }
     
     @Override
     public boolean isValid()
@@ -325,7 +309,7 @@ public class VEventImpl extends VEvent<Appointment>
     public List<Appointment> makeInstances()
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
-        Callback<StartEndPair, Appointment> newInstanceCallback = DATE_TIME_MAKE_INSTANCE_MAP.get(getTemporalType());
+        Callback<StartEndPair, Appointment> newInstanceCallback = DATE_TIME_MAKE_INSTANCE_MAP.get(getDateTimeType());
         List<Appointment> madeAppointments = new ArrayList<>();
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
@@ -352,7 +336,6 @@ public class VEventImpl extends VEvent<Appointment>
                 throw new RuntimeException("Unknown EndPriority");
             }
             Appointment appt = newInstanceCallback.call(new StartEndPair(temporalStart, temporalEnd));
-
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());
             appt.setAppointmentGroup(getAppointmentGroup());

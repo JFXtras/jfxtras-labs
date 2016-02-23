@@ -4,16 +4,13 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
@@ -85,7 +82,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
  * @author David Bal
  * @see VEventImpl
  */
-public abstract class VEvent<T> extends VComponentBaseAbstract<T>
+public abstract class VEvent<I> extends VComponentBaseAbstract<I>
 {
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
@@ -150,7 +147,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
 
     /** Indicates end option, DURATION or DTEND. */
     public EndPriority endPriority() { return endPriority; }
-    private EndPriority endPriority;
+    EndPriority endPriority;
 
     /**
      * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
@@ -171,7 +168,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
         if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.dateTimeTypeFromTemporal(getDateTimeEnd())))
         {
             // convert to new Temporal type
-            Temporal newDateTimeEnd = DateTimeType.changeDateTimeType(getDateTimeEnd(), dateTimeType);
+            Temporal newDateTimeEnd = DateTimeType.changeTemporal(getDateTimeEnd(), dateTimeType);
             setDateTimeEnd(newDateTimeEnd);
         }
     }
@@ -195,7 +192,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
     }
 
     @Override
-    List<String> findChangedProperties(VComponent<T> vComponentOriginal)
+    List<String> findChangedProperties(VComponent<I> vComponentOriginal)
     {
         List<String> changedProperties = new ArrayList<>();
         changedProperties.addAll(super.findChangedProperties(vComponentOriginal));
@@ -212,7 +209,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
     }
     
     // CONSTRUCTORS
-    public VEvent(VEvent<T> vevent)
+    public VEvent(VEvent<I> vevent)
     {
         super(vevent);
         copy(vevent, this);
@@ -226,7 +223,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
     
     // HANDLE EDIT METHODS
     @Override
-    protected void becomingIndividual(VComponent<T> vComponentOriginal, Temporal startInstance, Temporal endInstance)
+    protected void becomingIndividual(VComponent<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
     {
         super.becomingIndividual(vComponentOriginal, startInstance, endInstance);
         if ((vComponentOriginal.getRRule() != null) && (endPriority() == EndPriority.DTEND))
@@ -236,13 +233,13 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
     }
 
     @Override // edit end date or date/time
-    protected void editOne(
-            VComponent<T> vComponentOriginal
-          , Collection<VComponent<T>> vComponents
-          , Temporal startOriginalInstance
-          , Temporal startInstance
-          , Temporal endInstance
-          , Collection<T> instances)
+    protected <T extends Temporal> void editOne(
+            VComponent<I> vComponentOriginal
+          , Collection<VComponent<I>> vComponents
+          , T startOriginalInstance
+          , T startInstance
+          , T endInstance
+          , Collection<I> instances)
     {
         // Apply dayShift, if any
         switch (endPriority())
@@ -260,15 +257,22 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
     }
 
     @Override // edit end date or date/time
-    protected void editThisAndFuture(
-            VComponent<T> vComponentOriginal
-          , Collection<VComponent<T>> vComponents
-          , Temporal startOriginalInstance
-          , Temporal startInstance
-          , Collection<T> instances)
+    protected <T extends Temporal> void editThisAndFuture(
+            VComponent<I> vComponentOriginal
+          , Collection<VComponent<I>> vComponents
+          , T startOriginalInstance
+          , T startInstance
+          , Collection<I> instances)
     {
-        long shift = ChronoUnit.DAYS.between(getDateTimeStart(), startInstance);
-        Temporal endNew = getDateTimeEnd().plus(shift, ChronoUnit.DAYS);
+        final TemporalAmount duration;
+        if (isWholeDay())
+        {
+            duration = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
+        } else
+        {
+            duration = Duration.between(getDateTimeStart(), startInstance);
+        }
+        Temporal endNew = getDateTimeEnd().plus(duration);
         setDateTimeEnd(endNew);
         super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, instances);
     }
@@ -286,7 +290,7 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
 
     /** Deep copy all fields from this to destination */
     @Override
-    public void copyTo(VComponent<T> destination)
+    public void copyTo(VComponent<I> destination)
     {
         super.copyTo(destination);
         copy(this, (VEvent<?>) destination);
@@ -485,204 +489,5 @@ public abstract class VEvent<T> extends VComponentBaseAbstract<T>
     {
         DURATION
       , DTEND;
-    }
-    
-    /**
-     * VEvent specific properties with the following data and methods:
-     * iCalendar property name
-     * setVComponent - parse string method
-     * makeContentLine - toString method
-     * 
-     * @author David Bal
-     *
-     */
-    public enum VEventProperty
-    {
-        DESCRIPTION ("DESCRIPTION", true)
-        {
-            @Override
-            public boolean setVComponent(VEvent<?> vEvent, String value)
-            {
-                if (vEvent.getDescription() == null)
-                {
-                    vEvent.setDescription(value);
-                    return true;
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
-                }
-            }
-
-            @Override
-            public String makeContentLine(VEvent<?> vEvent)
-            {
-                return ((vEvent.getDescription() == null) || (vEvent.getDescription().isEmpty())) ? null : vEvent.descriptionProperty().getName()
-                        + ":" + vEvent.getDescription();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
-            {
-                return (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
-            }
-        } 
-      , DURATION ("DURATION", true)
-        {
-            @Override
-            public boolean setVComponent(VEvent<?> vEvent, String value)
-            {
-                if (vEvent.getDuration() == null)
-                {
-                    if (vEvent.getDateTimeEnd() == null)
-                    {
-                        vEvent.endPriority = EndPriority.DURATION;
-                        vEvent.setDuration(Duration.parse(value));
-                        return true;
-                    } else
-                    {
-                        throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
-                    }
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");
-                }
-            }
-
-            @Override
-            public String makeContentLine(VEvent<?> vEvent)
-            {
-                return (vEvent.getDuration() == null) ? null : vEvent.durationProperty().getName() + ":"
-                        + vEvent.getDuration();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
-            {
-                return (v1.getDuration() == null) ? (v2.getDuration() == null) : v1.getDuration().equals(v2.getDuration());
-            }
-        } 
-      , DATE_TIME_END ("DTEND", true)
-        {
-            @Override
-            public boolean setVComponent(VEvent<?> vEvent, String value)
-            {
-                if (vEvent.getDateTimeEnd() == null)
-                {
-                    if (vEvent.getDuration() == null)
-                    {
-                        vEvent.endPriority = EndPriority.DTEND;
-                        Temporal dateTime = VComponent.parseTemporal(value);
-                        vEvent.setDateTimeEnd(dateTime);
-                        return true;
-                    } else
-                    {
-                        throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
-                    }
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                
-                }
-            }
-
-            @Override
-            public String makeContentLine(VEvent<?> vEvent)
-            {
-                if (vEvent.getDateTimeEnd() == null)
-                {
-                    return null;
-                } else
-                {
-                    String tag = VComponent.makeDateTimePropertyTag(vEvent.dateTimeEndProperty().getName(), vEvent.getDateTimeEnd());
-                    return tag + VComponent.temporalToString(vEvent.getDateTimeEnd());
-                }
-            }
-
-            @Override
-            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
-            {
-                return (v1.getDateTimeEnd() == null) ? (v2.getDateTimeEnd() == null) : v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
-            }
-        }        
-      , LOCATION ("LOCATION", true)
-        {
-            @Override
-            public boolean setVComponent(VEvent<?> vEvent, String value)
-            {
-                vEvent.setLocation(value);
-                return true;
-            }
-
-            @Override
-            public String makeContentLine(VEvent<?> vEvent)
-            {
-                return ((vEvent.getLocation() == null) || (vEvent.getLocation().isEmpty())) ? null : vEvent.locationProperty().getName()
-                        + ":" + vEvent.getLocation();
-            }
-
-            @Override
-            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
-            {
-                return (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
-            }
-        }
-      , UNKNOWN ("", false)
-        {
-            @Override
-            public boolean setVComponent(VEvent<?> vEvent, String value) { return false; } // do nothing
-
-            @Override
-            public String makeContentLine(VEvent<?> vEvent) { return null; } // do nothing
-
-            @Override
-            public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
-            {
-                // TODO Auto-generated method stub
-                return false;
-            }
-        };
-      
-        // Map to match up string tag to ICalendarProperty enum
-        private static Map<String, VEventProperty> propertyFromTagMap = makePropertiesFromNameMap();
-        private static Map<String, VEventProperty> makePropertiesFromNameMap()
-        {
-            Map<String, VEventProperty> map = new HashMap<>();
-            VEventProperty[] values = VEventProperty.values();
-            for (int i=0; i<values.length; i++)
-            {
-                map.put(values[i].toString(), values[i]);
-            }
-            return map;
-        }
-        private String name;
-        /* indicates if providing a dialog to allow user to confirm edit is required. 
-         * False means no confirmation is required or property is only modified by the implementation, not by the user */
-        boolean dialogRequired;
-        
-        VEventProperty(String name, boolean dialogRequired)
-        {
-            this.name = name;
-            this.dialogRequired = dialogRequired;
-        }
-        
-        @Override
-        public String toString() { return name; }
-        public boolean isDialogRequired() { return dialogRequired; }
-        
-        /** get VComponentProperty enum from property name */
-        public static VEventProperty propertyFromString(String propertyName)
-        {
-            return propertyFromTagMap.get(propertyName.toUpperCase());
-        }
-        
-        /** sets enum's associated VEvent's property from parameter value
-         * returns true, if property was found and set */
-        public abstract boolean setVComponent(VEvent<?> vEvent, String value);
-        
-        /** makes content line (RFC 5545 3.1) from a VEvent property  */
-        public abstract String makeContentLine(VEvent<?> vEvent);
-        
-        /** Checks is corresponding property is equal between v1 and v2 */
-        public abstract boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2);       
-
     }
 }

@@ -37,8 +37,8 @@ import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent.DateTimeType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -115,7 +115,7 @@ public class AppointmentEditController extends Pane
         } else
         {
             final TemporalAmount timeShift;
-            if (vEvent.getTemporalType() == DateTimeType.DATE)
+            if (vEvent.getDateTimeType() == DateTimeType.DATE)
             {
                 timeShift = Period.between(LocalDate.from(oldSelection), LocalDate.from(newSelection));
             } else
@@ -129,7 +129,7 @@ public class AppointmentEditController extends Pane
     private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
     {
         final TemporalAmount timeShift;
-        if (vEvent.getTemporalType() == DateTimeType.DATE)
+        if (vEvent.getDateTimeType() == DateTimeType.DATE)
         {
             timeShift = Period.between(LocalDate.from(oldSelection), LocalDate.from(newSelection));
         } else
@@ -161,7 +161,8 @@ public class AppointmentEditController extends Pane
     {
         appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.iCalendarStyleSheet);
 
-        switch (vComponent.getTemporalType())
+        System.out.println("vComponent.getTemporalType():" + vComponent.getDateTimeType());
+        switch (vComponent.getDateTimeType())
         {
         case DATE:
         case DATE_WITH_LOCAL_TIME:
@@ -174,7 +175,7 @@ public class AppointmentEditController extends Pane
             endInstanceOriginal = appointment.getEndZonedDateTime();
             break;
         default:
-            throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getTemporalType());
+            throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getDateTimeType());
         }
         this.appointment = appointment;        
         this.appointments = appointments;
@@ -247,7 +248,7 @@ public class AppointmentEditController extends Pane
                 
                 final Temporal newDateTimeStart;
                 final Temporal newDateTimeEnd;
-                switch (vComponent.getTemporalType())
+                switch (vComponent.getDateTimeType())
                 {
                 case DATE:
                 case DATE_WITH_LOCAL_TIME:
@@ -261,7 +262,7 @@ public class AppointmentEditController extends Pane
                     newDateTimeEnd = newDateTimeStart.plus(lastDuration);
                     break;
                 default:
-                    throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getTemporalType());
+                    throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getDateTimeType());
                 }
                 vEvent.setDateTimeStart(newDateTimeStart);
                 vEvent.setDateTimeEnd(newDateTimeEnd);
@@ -315,10 +316,29 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleSave()
     {
-        LocalDateTime start = startTextField.getLocalDateTime();
-        Temporal startInstance = (vEvent.isWholeDay()) ? LocalDate.from(start) : start;
-        LocalDateTime end = endTextField.getLocalDateTime();
-        Temporal endInstance = (vEvent.isWholeDay()) ? LocalDate.from(end) : end;
+        final Temporal startInstance = DateTimeType.changeTemporal(startTextField.getLocalDateTime(), vEvent.getDateTimeType());
+        final Temporal endInstance = DateTimeType.changeTemporal(endTextField.getLocalDateTime(), vEvent.getDateTimeType());
+//        switch (vEvent.getDateTimeType())
+//        {
+//        case DATE:
+//            startInstance = startTextField.getLocalDateTime().toLocalDate();
+//            break;
+//        case DATE_WITH_LOCAL_TIME:
+//            startInstance = startTextField.getLocalDateTime();
+//            break;
+//        case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+//            startInstance = startTextField.getLocalDateTime().atZone(ZoneId.systemDefault());
+//            break;
+//        case DATE_WITH_UTC_TIME:
+//            startInstance = startTextField.getLocalDateTime().atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+//            break;
+//        default:
+//            throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getDateTimeType());
+//        }
+//        LocalDateTime start = startTextField.getLocalDateTime();
+//        Temporal startInstance = (vEvent.isWholeDay()) ? LocalDate.from(start) : start;
+//        LocalDateTime end = endTextField.getLocalDateTime();
+//        Temporal endInstance = (vEvent.isWholeDay()) ? LocalDate.from(end) : end;
         vEvent.handleEdit(
                 vEventOriginal
                 , vComponents

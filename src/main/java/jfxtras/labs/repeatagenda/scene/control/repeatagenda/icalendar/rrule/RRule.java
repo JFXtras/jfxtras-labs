@@ -21,6 +21,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
@@ -86,7 +87,8 @@ public class RRule
     /**
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
      * Must be same Temporal type as dateTimeStart (DTSTART)
-     * If DTSTART has time zone, then UNTIL must be UTC time.
+     * If DTSTART has time then UNTIL must be UTC time.  That means the Temporal
+     * can be LocalDate or ZonedDateTime with ZoneID.of("Z");
      */
     public SimpleObjectProperty<Temporal> untilProperty()
     {
@@ -205,7 +207,8 @@ public class RRule
         StringBuilder builder = new StringBuilder();
         if (getUntil() != null)
         {
-            if (VComponent.isBefore(getUntil(), parent.getDateTimeStart())) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
+            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), parent.getDateTimeType());
+            if (VComponent.isBefore(convertedUntil, parent.getDateTimeStart())) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
         }
         if ((getCount() == null) || (getCount() < 0)) builder.append(System.lineSeparator() + "Invalid RRule.  COUNT must not be less than 0");
         if (getFrequency() == null)
@@ -383,7 +386,8 @@ public class RRule
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-            return takeWhile(filteredStream, a -> ! VComponent.isAfter(a, getUntil()));
+            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.dateTimeTypeFromTemporal(start));
+            return takeWhile(filteredStream, a -> ! VComponent.isAfter(a, convertedUntil));
         }
         return filteredStream;
     };
