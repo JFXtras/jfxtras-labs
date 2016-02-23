@@ -162,7 +162,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     public void setLocation(String value) { locationProperty.setValue(value); }
     
     @Override
-    void ensureTemporalTypeConsistency(DateTimeType dateTimeType)
+    void ensureDateTimeTypeConsistency(DateTimeType dateTimeType)
     {
         // DTEND
         if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.dateTimeTypeFromTemporal(getDateTimeEnd())))
@@ -171,6 +171,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
             Temporal newDateTimeEnd = DateTimeType.changeTemporal(getDateTimeEnd(), dateTimeType);
             setDateTimeEnd(newDateTimeEnd);
         }
+        super.ensureDateTimeTypeConsistency(dateTimeType);
     }
     
     @Override

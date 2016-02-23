@@ -168,7 +168,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         // if type has changed then make all date-time properties the same
         if (changed)
         {
-            ensureTemporalTypeConsistency(myDateTimeType);
+            ensureDateTimeTypeConsistency(myDateTimeType);
         }
     }
     
@@ -178,7 +178,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
      * 
      * @param dateTimeType
      */
-    void ensureTemporalTypeConsistency(DateTimeType dateTimeType)
+    void ensureDateTimeTypeConsistency(DateTimeType dateTimeType)
     {
         // RECURRENCE-ID
         if ((getDateTimeRecurrence() != null) && (dateTimeType != DateTimeType.dateTimeTypeFromTemporal(getDateTimeRecurrence())))
@@ -394,7 +394,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtRecurrence);
         if (myDateTimeType != dtStartDateTimeType())
         {
-            throw new DateTimeException("RECURRENCE-ID must have the same DateTimeType as DTSTART, (" + myDateTimeType + ", " + dtStartDateTimeType() + ", respectively");
+            throw new DateTimeException("RECURRENCE-ID must have the same DateTimeType as DTSTART, (" + myDateTimeType + " & " + dtStartDateTimeType() + ", respectively");
         }
 
         if (dateTimeRecurrence == null)

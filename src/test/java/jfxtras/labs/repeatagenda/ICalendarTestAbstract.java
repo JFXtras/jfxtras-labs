@@ -888,7 +888,7 @@ public abstract class ICalendarTestAbstract
     }
     
     /* Example Google repeatable appointment with EXDATE*/
-    protected static VEventImpl getGoogleRepeatableWithExDates()
+    protected static VEventImpl getGoogleWithExDates()
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withAppointmentClass(clazz)

@@ -311,7 +311,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
     VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-    VEventImpl expectedVEvent = getGoogleRepeatableWithExDates();
+    VEventImpl expectedVEvent = getGoogleWithExDates();
     assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }
     

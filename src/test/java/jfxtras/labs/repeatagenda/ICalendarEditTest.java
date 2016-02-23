@@ -365,6 +365,78 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
     }
     
+    
+    /**
+     * Changing a event with an exception to wholeday
+     */
+    @Test
+    public void canChangeToWholeDay()
+    {
+        // Individual Appointment
+        VEventImpl vEvent = getGoogleWithExDates();
+        List<VComponent<Appointment>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        LocalDateTime start = LocalDateTime.of(2016, 2, 7, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2016, 2, 14, 0, 0);
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vEvent.makeInstances(start, end);
+        appointments.addAll(newAppointments);
+        assertEquals(3, appointments.size()); // check if there are only 3 appointments
+        VEventImpl vEventOriginal = new VEventImpl(vEvent);
+
+        // select appointment (get recurrence date)
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        appointmentIterator.next(); // skip first
+        Appointment selectedAppointment = appointmentIterator.next();
+        
+        // apply changes
+        Temporal startOriginalInstance = selectedAppointment.getStartZonedDateTime();
+        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1);
+        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
+        selectedAppointment.setEndLocalDateTime(newDate.atTime(10, 30)); // change end time
+        Temporal startInstance = selectedAppointment.getStartZonedDateTime();
+        Temporal endInstance = selectedAppointment.getEndZonedDateTime();
+        
+        Duration startShift = Duration.between(startOriginalInstance, startInstance);
+        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
+        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+        vEvent.setDateTimeStart(dtStart);
+        vEvent.setDateTimeEnd(dtStart.plus(duration));
+
+        // Edit
+        vEvent.handleEdit(
+                vEventOriginal
+              , vComponents
+              , startOriginalInstance
+              , startInstance
+              , endInstance
+              , appointments
+              , (m) -> ChangeDialogOption.ONE);
+
+        List<LocalDateTime> madeDates = appointments.stream()
+                .map(a -> a.getStartLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 16, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 9, 45)
+              , LocalDateTime.of(2015, 11, 20, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+
+        VEventImpl expectedVEvent = getWeeklyZoned()
+                .withRRule(null)
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 9, 45), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 10, 30), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStamp(vEvent.getDateTimeStamp())
+                .withSequence(1);
+        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+
+        VEventImpl expectedVEvent2 = getWeeklyZoned();
+        expectedVEvent2.getRRule().recurrences().add(vEvent);
+        assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
+    }
+    
 // /**
 //  * Tests editing THIS_AND_FUTURE events of a daily repeat event changing date and time
 //  * FREQ=DAILY;INVERVAL=3;COUNT=6

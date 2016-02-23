@@ -730,6 +730,55 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedDates2, madeDates2);
     }
     
+    // Google test
+    @Test
+    public void canStreamGoogleWithExDates()
+    {
+        VEventImpl vevent = getGoogleWithExDates();
+        Temporal start = ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles"));
+        List<Temporal> madeDates = vevent
+                .stream(start)
+                .limit(5)
+                .collect(Collectors.toList());
+        List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 11, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 13, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 12, 30), ZoneId.of("America/Los_Angeles"))
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
+    public void canChangeGoogleWithExDatesToWholeDay()
+    {
+        VEventImpl vevent = getGoogleWithExDates()
+                .withDateTimeStart(LocalDate.of(2016, 2, 7));
+                
+        List<Temporal> exDates = vevent.getExDate().getTemporals().stream().sorted(VComponent.TEMPORAL_COMPARATOR).collect(Collectors.toList());
+        List<Temporal> expectedExDates = new ArrayList<>(Arrays.asList(
+                LocalDate.of(2016, 2, 9)
+              , LocalDate.of(2016, 2, 10)
+              , LocalDate.of(2016, 2, 12)
+                ));
+        assertEquals(expectedExDates, exDates);
+        
+        Temporal start = LocalDate.of(2016, 2, 7);
+        List<Temporal> madeDates = vevent
+                .stream(start)
+                .limit(5)
+                .collect(Collectors.toList());
+        List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                LocalDate.of(2016, 2, 7)
+              , LocalDate.of(2016, 2, 8)
+              , LocalDate.of(2016, 2, 11)
+              , LocalDate.of(2016, 2, 13)
+              , LocalDate.of(2016, 2, 14)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
     // ten years in future
     @Test
     public void getWeekly2FarFuture()
@@ -1069,7 +1118,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
     }
-    
+        
     @Test
     public void canStreamDatesGoogleParts()
     {
