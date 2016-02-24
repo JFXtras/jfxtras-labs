@@ -1088,7 +1088,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
      *  Children have RECURRENCE-ID
      */
     @Test
-    public void canFindRecurrenceSet1()
+    public void canMakeRecurrenceSet1()
     {
         List<VEventImpl> vComponents = getDailyWithRecurrence();
         VEventImpl parent = vComponents.get(0);

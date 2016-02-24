@@ -225,10 +225,16 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         }
         
         // RANGE
-//       Temporal newStartRange =  DateTimeType.changeTemporal(getStartRange(), dateTimeType);
-       setStartRange(getStartRange());
-//       Temporal newEndRange =  DateTimeType.changeTemporal(getEndRange(), dateTimeType);
-       setEndRange(getEndRange());
+        if (getStartRange() != null)
+        {
+//            Temporal newStartRange =  DateTimeType.changeTemporal(getStartRange(), dateTimeType);
+            setStartRange(getStartRange());
+        }
+        if (getEndRange() != null)
+        {
+//            Temporal newEndRange =  DateTimeType.changeTemporal(getEndRange(), dateTimeType);
+            setEndRange(getEndRange());
+        }
     }
     
     // Listener for EXDATE and RDATE - checks if added Temporals match DTSTART type
@@ -402,10 +408,10 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     @Override public void setDateTimeRecurrence(Temporal dtRecurrence)
     {
         DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtRecurrence);
-        DateTimeType parentDateTimeType = getParent().getDateTimeType();
-        if (myDateTimeType != parentDateTimeType)
+         // parent should be set before dateTimeRecurrence or this check can't be performed
+        if ((getParent() != null) && (myDateTimeType != getParent().getDateTimeType()))
         {
-            throw new DateTimeException("RECURRENCE-ID must have the same DateTimeType as the parent's DTSTART, (" + myDateTimeType + " & " + parentDateTimeType + ", respectively");
+            throw new DateTimeException("RECURRENCE-ID must have the same DateTimeType as the parent's DTSTART, (" + myDateTimeType + " & " + getParent().getDateTimeType() + ", respectively");
         }
 
         if (dateTimeRecurrence == null)
@@ -538,6 +544,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     @Override
     public void setStartRange(Temporal start)
     {
+//        startRange = start;
         startRange = DateTimeType.changeTemporal(start, getDateTimeType());
 //        if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
 //        {
@@ -570,6 +577,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     @Override
     public void setEndRange(Temporal end)
     {
+//        endRange = end;
         endRange = DateTimeType.changeTemporal(end, getDateTimeType());
 //        if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
 //        {

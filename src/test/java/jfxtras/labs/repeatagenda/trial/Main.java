@@ -58,8 +58,8 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
 
-//	    ICalendarCopyTest r = new ICalendarCopyTest();
-//        r.canCopyVEvent1();
+//	    ICalendarDateTest r = new ICalendarDateTest();
+//        r.canMakeRecurrenceSet1();
 //        System.exit(0);
         
         // ROOT PANE

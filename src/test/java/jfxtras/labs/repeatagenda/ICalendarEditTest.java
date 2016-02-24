@@ -380,27 +380,15 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         List<Appointment> appointments = new ArrayList<Appointment>();
         Collection<Appointment> newAppointments = vEvent.makeInstances(start, end);
         appointments.addAll(newAppointments);
-        assertEquals(3, appointments.size()); // check if there are only 3 appointments
+        assertEquals(4, appointments.size()); // check if there are only 3 appointments
         VEventImpl vEventOriginal = new VEventImpl(vEvent);
 
-        // select appointment (get recurrence date)
-        Iterator<Appointment> appointmentIterator = appointments.iterator();
-        appointmentIterator.next(); // skip first
-        Appointment selectedAppointment = appointmentIterator.next();
-        
         // apply changes
-        Temporal startOriginalInstance = selectedAppointment.getStartZonedDateTime();
-        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1);
-        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
-        selectedAppointment.setEndLocalDateTime(newDate.atTime(10, 30)); // change end time
-        Temporal startInstance = selectedAppointment.getStartZonedDateTime();
-        Temporal endInstance = selectedAppointment.getEndZonedDateTime();
-        
-        Duration startShift = Duration.between(startOriginalInstance, startInstance);
-        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
-        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
-        vEvent.setDateTimeStart(dtStart);
-        vEvent.setDateTimeEnd(dtStart.plus(duration));
+        vEvent.setDateTimeStart(LocalDate.of(2016, 2, 8)); // make one day, and shift one day earlier
+        vEvent.setDateTimeEnd(LocalDate.of(2016, 2, 9)); // make one day, and shift one day earlier       
+        Temporal startOriginalInstance = ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 12, 30), ZoneId.of("America/Los_Angeles"));
+        Temporal startInstance = LocalDate.of(2016, 2, 8);
+        Temporal endInstance = LocalDate.of(2016, 2, 9);
 
         // Edit
         vEvent.handleEdit(
@@ -417,22 +405,23 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .sorted()
                 .collect(Collectors.toList());
 
-        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 16, 10, 0)
-              , LocalDateTime.of(2015, 11, 17, 9, 45)
-              , LocalDateTime.of(2015, 11, 20, 10, 0)
+        List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2016, 2, 7, 12, 30)
+              , LocalDateTime.of(2016, 2, 8, 0, 0)
+              , LocalDateTime.of(2016, 2, 11, 12, 30)
+              , LocalDateTime.of(2016, 2, 13, 12, 30)
                 ));
         assertEquals(expectedDates, madeDates);
 
-        VEventImpl expectedVEvent = getWeeklyZoned()
+        VEventImpl expectedVEvent = getGoogleWithExDates()
                 .withRRule(null)
-                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 9, 45), ZoneId.of("America/Los_Angeles")))
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 10, 30), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStart(LocalDate.of(2016, 2, 8))
+                .withDateTimeEnd(LocalDate.of(2016, 2, 9))
                 .withDateTimeStamp(vEvent.getDateTimeStamp())
                 .withSequence(1);
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
 
-        VEventImpl expectedVEvent2 = getWeeklyZoned();
+        VEventImpl expectedVEvent2 = getGoogleWithExDates();
         expectedVEvent2.getRRule().recurrences().add(vEvent);
         assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
     }
@@ -474,7 +463,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         List<LocalDateTime> madeDates = appointments.stream()
                 .map(a -> a.getStartLocalDateTime())
                 .sorted()
-                .peek(System.out::println)
                 .collect(Collectors.toList());
 
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -484,15 +472,15 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
 
-        VEventImpl expectedVEvent = getWeeklyZoned()
+        VEventImpl expectedVEvent = getGoogleRepeatable()
                 .withRRule(null)
-                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 9, 45), ZoneId.of("America/Los_Angeles")))
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 10, 30), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStart(LocalDate.of(2016, 2, 22))
+                .withDateTimeEnd(LocalDate.of(2016, 2, 23))
                 .withDateTimeStamp(vEvent.getDateTimeStamp())
                 .withSequence(1);
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
 
-        VEventImpl expectedVEvent2 = getWeeklyZoned();
+        VEventImpl expectedVEvent2 = getGoogleRepeatable();
         expectedVEvent2.getRRule().recurrences().add(vEvent);
         assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
     }
