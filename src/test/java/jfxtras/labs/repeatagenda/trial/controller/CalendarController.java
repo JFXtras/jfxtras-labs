@@ -228,7 +228,7 @@ public class CalendarController {
 //        VEventImpl daily1 = ICalendarTestAbstract.getDaily1();
 //        agenda.vComponents().add(daily1);
         
-        agenda.vComponents().add(ICalendarTestAbstract.getDaily1());
+        agenda.vComponents().add(ICalendarTestAbstract.getGoogleRepeatable());
         // replace Agenda's appointmentGroups with the ones used in the test events.
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);

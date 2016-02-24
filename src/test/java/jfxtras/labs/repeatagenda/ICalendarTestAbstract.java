@@ -871,7 +871,7 @@ public abstract class ICalendarTestAbstract
     }
     
     /* Example Google repeatable appointment */
-    protected static VEventImpl getGoogleRepeatable()
+    public static VEventImpl getGoogleRepeatable()
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withAppointmentClass(clazz)

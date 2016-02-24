@@ -228,8 +228,8 @@ public class AppointmentEditController extends Pane
                 LocalDateTime end = LocalDate.from(endTextField.getLocalDateTime()).plus(1, ChronoUnit.DAYS).atStartOfDay();
                 endTextField.setLocalDateTime(end);
 
-                vEvent.setStartRange(LocalDate.from(vEvent.getStartRange()));
-                vEvent.setEndRange(LocalDate.from(vEvent.getEndRange()));
+//                vEvent.setStartRange(LocalDate.from(vEvent.getStartRange())); // change in VComponent
+//                vEvent.setEndRange(LocalDate.from(vEvent.getEndRange()));
             } else
             {
                 final LocalDateTime start;
@@ -318,27 +318,6 @@ public class AppointmentEditController extends Pane
     {
         final Temporal startInstance = DateTimeType.changeTemporal(startTextField.getLocalDateTime(), vEvent.getDateTimeType());
         final Temporal endInstance = DateTimeType.changeTemporal(endTextField.getLocalDateTime(), vEvent.getDateTimeType());
-//        switch (vEvent.getDateTimeType())
-//        {
-//        case DATE:
-//            startInstance = startTextField.getLocalDateTime().toLocalDate();
-//            break;
-//        case DATE_WITH_LOCAL_TIME:
-//            startInstance = startTextField.getLocalDateTime();
-//            break;
-//        case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-//            startInstance = startTextField.getLocalDateTime().atZone(ZoneId.systemDefault());
-//            break;
-//        case DATE_WITH_UTC_TIME:
-//            startInstance = startTextField.getLocalDateTime().atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
-//            break;
-//        default:
-//            throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getDateTimeType());
-//        }
-//        LocalDateTime start = startTextField.getLocalDateTime();
-//        Temporal startInstance = (vEvent.isWholeDay()) ? LocalDate.from(start) : start;
-//        LocalDateTime end = endTextField.getLocalDateTime();
-//        Temporal endInstance = (vEvent.isWholeDay()) ? LocalDate.from(end) : end;
         vEvent.handleEdit(
                 vEventOriginal
                 , vComponents

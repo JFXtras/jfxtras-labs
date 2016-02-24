@@ -437,6 +437,66 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
     }
     
+    /**
+     * Changing one instance to wholeday
+     */
+    @Test
+    public void canChangeOneWholeDay()
+    {
+        // Individual Appointment
+        VEventImpl vEvent = getGoogleRepeatable();
+        List<VComponent<Appointment>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        Temporal start = ZonedDateTime.of(LocalDateTime.of(2016, 2, 21, 0, 0), ZoneId.of("America/Los_Angeles"));
+        Temporal end = ZonedDateTime.of(LocalDateTime.of(2016, 2, 28, 0, 0), ZoneId.of("America/Los_Angeles"));
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        Collection<Appointment> newAppointments = vEvent.makeInstances(start, end);
+        appointments.addAll(newAppointments);
+        assertEquals(3, appointments.size()); // check if there are only 3 appointments
+        VEventImpl vEventOriginal = new VEventImpl(vEvent);
+        
+        // apply changes
+        vEvent.setDateTimeStart(LocalDate.of(2016, 2, 13)); // make one day, and shift one day earlier
+        vEvent.setDateTimeEnd(LocalDate.of(2016, 2, 14)); // make one day, and shift one day earlier       
+        Temporal startOriginalInstance = ZonedDateTime.of(LocalDateTime.of(2016, 2, 23, 8, 0), ZoneId.of("America/Los_Angeles"));
+        Temporal startInstance = LocalDate.of(2016, 2, 22);
+        Temporal endInstance = LocalDate.of(2016, 2, 23);
+
+        // Edit
+        vEvent.handleEdit(
+                vEventOriginal
+              , vComponents
+              , startOriginalInstance
+              , startInstance
+              , endInstance
+              , appointments
+              , (m) -> ChangeDialogOption.ONE);
+
+        List<LocalDateTime> madeDates = appointments.stream()
+                .map(a -> a.getStartLocalDateTime())
+                .sorted()
+                .peek(System.out::println)
+                .collect(Collectors.toList());
+
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2016, 2, 21, 8, 0)
+              , LocalDateTime.of(2016, 2, 22, 0, 0)
+              , LocalDateTime.of(2016, 2, 26, 8, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+
+        VEventImpl expectedVEvent = getWeeklyZoned()
+                .withRRule(null)
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 9, 45), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 10, 30), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStamp(vEvent.getDateTimeStamp())
+                .withSequence(1);
+        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+
+        VEventImpl expectedVEvent2 = getWeeklyZoned();
+        expectedVEvent2.getRRule().recurrences().add(vEvent);
+        assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
+    }
+    
 // /**
 //  * Tests editing THIS_AND_FUTURE events of a daily repeat event changing date and time
 //  * FREQ=DAILY;INVERVAL=3;COUNT=6

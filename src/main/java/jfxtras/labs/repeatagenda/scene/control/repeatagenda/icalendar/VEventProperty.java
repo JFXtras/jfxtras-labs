@@ -19,6 +19,15 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent.End
  */
 public enum VEventProperty
 {
+    /**
+     * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
+     * This property provides a more complete description of the
+     * calendar component than that provided by the "SUMMARY" property.
+     * Example:
+     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
+     *  design.\nHappy Face Conference Room. Phoenix design team
+     *  MUST attend this meeting.\nRSVP to team leader.
+     */
     DESCRIPTION ("DESCRIPTION", true)
     {
         @Override
@@ -47,6 +56,10 @@ public enum VEventProperty
             return (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
         }
     } 
+    /** 
+     * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
+     * Can't be used if DTEND is used.  Must be one or the other.
+     * */
   , DURATION ("DURATION", true)
     {
         @Override
@@ -82,6 +95,12 @@ public enum VEventProperty
             return (v1.getDuration() == null) ? (v2.getDuration() == null) : v1.getDuration().equals(v2.getDuration());
         }
     } 
+  /**
+   * DTEND, Date-Time End. from RFC 5545 iCalendar 3.8.2.2 page 95
+   * Specifies the date and time that a calendar component ends.
+   * Can't be used if DURATION is used.  Must be one or the other.
+   * Must be same Temporal type as dateTimeStart (DTSTART)
+   */
   , DATE_TIME_END ("DTEND", true)
     {
         @Override
@@ -123,7 +142,14 @@ public enum VEventProperty
         {
             return (v1.getDateTimeEnd() == null) ? (v2.getDateTimeEnd() == null) : v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
         }
-    }        
+    }
+  /**
+   * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
+   * This property defines the intended venue for the activity
+   * defined by a calendar component.
+   * Example:
+   * LOCATION:Conference Room - F123\, Bldg. 002
+   */
   , LOCATION ("LOCATION", true)
     {
         @Override

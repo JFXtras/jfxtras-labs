@@ -142,8 +142,8 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
      * EXDATE (underlying collection of Temporals)
      * RDATE (underlying collection of Temporals)
      */
-    private DateTimeType dtStartDateTimeType;
-    DateTimeType dtStartDateTimeType() { return dtStartDateTimeType; }
+    private DateTimeType lastDtStartDateTimeType;
+    DateTimeType lastDtStartDateTimeType() { return lastDtStartDateTimeType; }
     
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
@@ -161,8 +161,8 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     {
         // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
         DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtStart);
-        boolean changed = (dtStartDateTimeType != null) && (myDateTimeType != dtStartDateTimeType);
-        dtStartDateTimeType = myDateTimeType;
+        boolean changed = (lastDtStartDateTimeType != null) && (myDateTimeType != lastDtStartDateTimeType);
+        lastDtStartDateTimeType = myDateTimeType;
         dateTimeStart.set(dtStart);
         
         // if type has changed then make all date-time properties the same
@@ -176,16 +176,20 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
      * Changes Temporal type of some properties to match the input parameter.  The input
      * parameter should be based on the DTSTART property.
      * 
+     * This method runs when dateTimeStart (DTSTART) changes DateTimeType
+     * 
      * @param dateTimeType
      */
     void ensureDateTimeTypeConsistency(DateTimeType dateTimeType)
     {
-        // RECURRENCE-ID
-        if ((getDateTimeRecurrence() != null) && (dateTimeType != DateTimeType.dateTimeTypeFromTemporal(getDateTimeRecurrence())))
+        // RECURRENCE-ID (of children)
+        if (getRRule() != null && getRRule().recurrences() != null)
         {
-            // convert to new Temporal type
-            Temporal newDateTimeRecurrence = DateTimeType.changeTemporal(getDateTimeRecurrence(), dateTimeType);
-            setDateTimeRecurrence(newDateTimeRecurrence);
+            getRRule().recurrences().forEach(v ->
+            {
+                Temporal newDateTimeRecurrence = DateTimeType.changeTemporal(v.getDateTimeRecurrence(), dateTimeType);
+                v.setDateTimeRecurrence(newDateTimeRecurrence);
+            });
         }
         
         // EXDATE
@@ -219,6 +223,12 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
                 getRDate().getTemporals().addAll(newRDateTemporals);
             }
         }
+        
+        // RANGE
+//       Temporal newStartRange =  DateTimeType.changeTemporal(getStartRange(), dateTimeType);
+       setStartRange(getStartRange());
+//       Temporal newEndRange =  DateTimeType.changeTemporal(getEndRange(), dateTimeType);
+       setEndRange(getEndRange());
     }
     
     // Listener for EXDATE and RDATE - checks if added Temporals match DTSTART type
@@ -228,9 +238,9 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         {
             Temporal newTemporal = change.getElementAdded();
             DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(newTemporal);
-            if ((dtStartDateTimeType() != null) && (myDateTimeType != dtStartDateTimeType()))
+            if ((lastDtStartDateTimeType() != null) && (myDateTimeType != lastDtStartDateTimeType()))
             {
-                throw new DateTimeException("Temporal must have the same DateTimeType as DTSTART, (" + myDateTimeType + ", " + dtStartDateTimeType() + ", respectively");
+                throw new DateTimeException("Temporal must have the same DateTimeType as DTSTART, (" + myDateTimeType + ", " + lastDtStartDateTimeType() + ", respectively");
             }
         }
     };
@@ -392,9 +402,10 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     @Override public void setDateTimeRecurrence(Temporal dtRecurrence)
     {
         DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtRecurrence);
-        if (myDateTimeType != dtStartDateTimeType())
+        DateTimeType parentDateTimeType = getParent().getDateTimeType();
+        if (myDateTimeType != parentDateTimeType)
         {
-            throw new DateTimeException("RECURRENCE-ID must have the same DateTimeType as DTSTART, (" + myDateTimeType + " & " + dtStartDateTimeType() + ", respectively");
+            throw new DateTimeException("RECURRENCE-ID must have the same DateTimeType as the parent's DTSTART, (" + myDateTimeType + " & " + parentDateTimeType + ", respectively");
         }
 
         if (dateTimeRecurrence == null)
@@ -527,26 +538,27 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     @Override
     public void setStartRange(Temporal start)
     {
-        if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
-        {
-            LocalDateTime dt = LocalDateTime.from(start);
-            if (getDateTimeStart() instanceof ZonedDateTime)
-            {
-                ZoneId zone = (start instanceof ZonedDateTime) ? ZonedDateTime.from(start).getZone() : ZonedDateTime.from(getDateTimeStart()).getZone();
-                startRange = ZonedDateTime.of(dt, zone);
-                return;
-            } else if (getDateTimeStart() instanceof LocalDateTime)
-            {
-                startRange = dt;
-                return;
-            } else
-            {
-                throw new RuntimeException("Invalid startRange:" + start);
-            }
-        } else
-        {
-            startRange = LocalDate.from(start);
-        }
+        startRange = DateTimeType.changeTemporal(start, getDateTimeType());
+//        if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
+//        {
+//            LocalDateTime dt = LocalDateTime.from(start);
+//            if (getDateTimeStart() instanceof ZonedDateTime)
+//            {
+//                ZoneId zone = (start instanceof ZonedDateTime) ? ZonedDateTime.from(start).getZone() : ZonedDateTime.from(getDateTimeStart()).getZone();
+//                startRange = ZonedDateTime.of(dt, zone);
+//                return;
+//            } else if (getDateTimeStart() instanceof LocalDateTime)
+//            {
+//                startRange = dt;
+//                return;
+//            } else
+//            {
+//                throw new RuntimeException("Invalid startRange:" + start);
+//            }
+//        } else
+//        {
+//            startRange = LocalDate.from(start);
+//        }
     }
     
     /**
@@ -558,26 +570,27 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     @Override
     public void setEndRange(Temporal end)
     {
-        if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
-        {
-            LocalDateTime dt = LocalDateTime.from(end);
-            if (getDateTimeStart() instanceof ZonedDateTime)
-            {
-                ZoneId zone = (end instanceof ZonedDateTime) ? ZonedDateTime.from(end).getZone() : ZonedDateTime.from(getDateTimeStart()).getZone();
-                endRange = ZonedDateTime.of(dt, zone);
-                return;
-            } else if (getDateTimeStart() instanceof LocalDateTime)
-            {
-                endRange = dt;
-                return;
-            } else
-            {
-                throw new RuntimeException("Invalid endRange:" + end);
-            }
-        } else
-        {
-            endRange = LocalDate.from(end);
-        }
+        endRange = DateTimeType.changeTemporal(end, getDateTimeType());
+//        if (getDateTimeStart().isSupported(ChronoUnit.NANOS))
+//        {
+//            LocalDateTime dt = LocalDateTime.from(end);
+//            if (getDateTimeStart() instanceof ZonedDateTime)
+//            {
+//                ZoneId zone = (end instanceof ZonedDateTime) ? ZonedDateTime.from(end).getZone() : ZonedDateTime.from(getDateTimeStart()).getZone();
+//                endRange = ZonedDateTime.of(dt, zone);
+//                return;
+//            } else if (getDateTimeStart() instanceof LocalDateTime)
+//            {
+//                endRange = dt;
+//                return;
+//            } else
+//            {
+//                throw new RuntimeException("Invalid endRange:" + end);
+//            }
+//        } else
+//        {
+//            endRange = LocalDate.from(end);
+//        }
     }
 
     // CONSTRUCTORS
@@ -590,15 +603,16 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     public VComponentBaseAbstract() { }
     
     @Override
-    public <T extends Temporal> void handleEdit(
+    public void handleEdit(
             VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
-          , T startOriginalInstance
-          , T startInstance
-          , T endInstance
+          , Temporal startOriginalInstance
+          , Temporal startInstance
+          , Temporal endInstance
           , Collection<I> instances
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
     {
+        System.out.println("instance:" + startOriginalInstance + " " + startInstance + " " + endInstance + " " + getDateTimeStart() + " " + ((VEvent) this).getDateTimeEnd() + " " + getStartRange() + " " + getEndRange());
         final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
         boolean incrementSequence = true;
         switch (rruleType)
@@ -742,24 +756,22 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
      * 
      * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
      */
-    protected <T extends Temporal> void editOne(
+    protected void editOne(
             VComponent<I> vEventOriginal
           , Collection<VComponent<I>> vComponents
-          , T startOriginalInstance
-          , T startInstance
-          , T endInstance
+          , Temporal startOriginalInstance
+          , Temporal startInstance
+          , Temporal endInstance
           , Collection<I> instances)
     {
         // Apply dayShift, if any
         Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
         Temporal newStart = getDateTimeStart().plus(dayShift);
         setDateTimeStart(newStart);
-
         setRRule(null);
-        
+        setParent(vEventOriginal);
         setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
-        setParent(vEventOriginal);
    
         // Add recurrence to original vEvent
         vEventOriginal.getRRule().recurrences().add(this);
@@ -790,11 +802,11 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
      * 
      * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
      */
-    protected <T extends Temporal> void editThisAndFuture(
+    protected void editThisAndFuture(
             VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
-          , T startOriginalInstance
-          , T startInstance
+          , Temporal startOriginalInstance
+          , Temporal startInstance
           , Collection<I> instances)
     {
         // adjust original VEvent

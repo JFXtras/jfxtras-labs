@@ -506,7 +506,6 @@ public interface VComponent<I>
      * Handles how an edited VComponent is processed.  For a VComponent with a recurrence rule (RRULE)
      * the user is given a dialog to select ONE, THIS_AND_FUTURE, or ALL instances to edit.
      * For a VComponent without a RRULE there is no dialog.
-     * @param <T>
      * 
      * @param vComponentOriginal - copy of this VComponent before changes
      * @param vComponents - the collection of VComponents that this VComponent belongs to
@@ -517,12 +516,12 @@ public interface VComponent<I>
      * @param dialogCallback - callback to generate dialog to select ONE, THIS_AND_FUTURE, or ALL.
      *    Can be replaced by a stub for testing (e.g. (m) -> ChangeDialogOption.ALL).
      */
-    <T extends Temporal> void handleEdit(
+    void handleEdit(
             VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
-          , T startOriginalInstance
-          , T startInstance
-          , T endInstance
+          , Temporal startOriginalInstance
+          , Temporal startInstance
+          , Temporal endInstance
           , Collection<I> instances
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback);
     

@@ -100,6 +100,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     
     /** 
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
+     * Can't be used if DTEND is used.  Must be one or the other.
      * */
     final private ObjectProperty<TemporalAmount> duration = new SimpleObjectProperty<>(this, VEventProperty.DURATION.toString());
     public ObjectProperty<TemporalAmount> durationProperty() { return duration; }
@@ -115,14 +116,11 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
         }
         this.duration.set(duration);
     }
-
-//    private ChangeListener<? super Temporal> dateTimeStartlistener;
     
     /**
      * DTEND, Date-Time End. from RFC 5545 iCalendar 3.8.2.2 page 95
      * Specifies the date and time that a calendar component ends.
-     * If entered this value is used to calculate the durationInSeconds, which is used
-     * internally.
+     * Can't be used if DURATION is used.  Must be one or the other.
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
     final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, VEventProperty.DATE_TIME_END.toString());
@@ -135,9 +133,9 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
         } else
         {
             DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtEnd);
-            if ((dtStartDateTimeType() != null) && (myDateTimeType != dtStartDateTimeType()))
+            if ((lastDtStartDateTimeType() != null) && (myDateTimeType != lastDtStartDateTimeType()))
             {
-                throw new DateTimeException("DTEND must have the same DateTimeType as DTSTART, (" + myDateTimeType + " and " + dtStartDateTimeType() + ", respectively");
+                throw new DateTimeException("DTEND must have the same DateTimeType as DTSTART, (" + myDateTimeType + " and " + lastDtStartDateTimeType() + ", respectively");
             }
             endPriority = EndPriority.DTEND;
          }
@@ -234,12 +232,12 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     }
 
     @Override // edit end date or date/time
-    protected <T extends Temporal> void editOne(
+    protected void editOne(
             VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
-          , T startOriginalInstance
-          , T startInstance
-          , T endInstance
+          , Temporal startOriginalInstance
+          , Temporal startInstance
+          , Temporal endInstance
           , Collection<I> instances)
     {
         // Apply dayShift, if any
@@ -258,11 +256,11 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     }
 
     @Override // edit end date or date/time
-    protected <T extends Temporal> void editThisAndFuture(
+    protected void editThisAndFuture(
             VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
-          , T startOriginalInstance
-          , T startInstance
+          , Temporal startOriginalInstance
+          , Temporal startInstance
           , Collection<I> instances)
     {
         final TemporalAmount duration;

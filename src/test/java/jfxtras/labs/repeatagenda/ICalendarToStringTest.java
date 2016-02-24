@@ -9,9 +9,31 @@ import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponentProperty;
 
 public class ICalendarToStringTest extends ICalendarTestAbstract
 {
+
+    /* Tests both multi-line EXDATE and comma separated EXDATE */
+    @Test
+    public void canMakeZonedExDateToString()
+    {
+        VEventImpl v = getGoogleWithExDates();
+
+        String madeString = VComponentProperty.EXCEPTIONS.makeContentLine(v);
+        String expectedString = "EXDATE;TZID=America/Los_Angeles:20160212T123000" + System.lineSeparator()
+                                + "EXDATE;TZID=America/Los_Angeles:20160210T123000" + System.lineSeparator()
+                                + "EXDATE;TZID=America/Los_Angeles:20160209T123000" + System.lineSeparator();
+        assertEquals(expectedString, madeString);
+        
+        v.setExDatesOnOneLine(true);
+        String madeString2 = VComponentProperty.EXCEPTIONS.makeContentLine(v);
+        String expectedString2 = "EXDATE;TZID=America/Los_Angeles:20160209T123000,20160210T123000,20160212T123000";
+        assertEquals(expectedString2, madeString2);
+        
+        
+    }
+    
     /** Tests FREQ=YEARLY */
     @Test
     public void yearly1ToString()
