@@ -132,7 +132,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
             endPriority = null;
         } else
         {
-            DateTimeType myDateTimeType = DateTimeType.dateTimeTypeFromTemporal(dtEnd);
+            DateTimeType myDateTimeType = DateTimeType.from(dtEnd);
             if ((lastDtStartDateTimeType() != null) && (myDateTimeType != lastDtStartDateTimeType()))
             {
                 throw new DateTimeException("DTEND must have the same DateTimeType as DTSTART, (" + myDateTimeType + " and " + lastDtStartDateTimeType() + ", respectively");
@@ -163,7 +163,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     void ensureDateTimeTypeConsistency(DateTimeType dateTimeType)
     {
         // DTEND
-        if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.dateTimeTypeFromTemporal(getDateTimeEnd())))
+        if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.from(getDateTimeEnd())))
         {
             // convert to new Temporal type
             Temporal newDateTimeEnd = DateTimeType.changeTemporal(getDateTimeEnd(), dateTimeType);
@@ -341,59 +341,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
      * @param vEvent
      * @param strings - list of properties
      * @return VComponent with parsed properties added
-     */
-//    static VEvent<?> parseVEvent(VEvent<?> vEvent, List<String> strings)
-//    {
-//        // Test for BEGIN:VEVENT and END:VEVENT, then remove those lines
-//        if (! strings.get(0).equals("BEGIN:VEVENT"))
-//        {
-//            throw new IllegalArgumentException("Invalid VEVENT. First line must be BEGIN:VEVENT");
-//        } else
-//        {
-//            strings.remove(0);
-//        }
-//        if (! strings.get(strings.size()-1).equals("END:VEVENT"))
-//        {
-//            throw new IllegalArgumentException("Invalid VEVENT. Last line must be END:VEVENT");
-//        } else
-//        {
-//            strings.remove(strings.size()-1);
-//        }
-//        
-//        Iterator<String> lineIterator = strings.iterator();
-//        while (lineIterator.hasNext())
-//        {
-//            String line = lineIterator.next();
-//            // identify iCalendar property ending index (property name must start at the beginning of the line)
-//            int propertyValueSeparatorIndex = 0;
-//            for (int i=0; i<line.length(); i++)
-//            {
-//                if ((line.charAt(i) == ';') || (line.charAt(i) == ':'))
-//                {
-//                    propertyValueSeparatorIndex = i;
-//                    break;
-//                }
-//            }
-//            if (propertyValueSeparatorIndex == 0)
-//            {
-//                continue; // line doesn't contain a property, get next one
-//            }
-//            String propertyName = line.substring(0, propertyValueSeparatorIndex);
-//            String value = line.substring(propertyValueSeparatorIndex + 1).trim();
-//            if (value.isEmpty())
-//            { // skip empty properties
-//                continue;
-//            }
-//            VEventProperty property = VEventProperty.propertyFromString(propertyName);
-//            boolean propertyFound = property.setVComponent(vEvent, value); // runs method in enum to set vComponent
-//            if (propertyFound)
-//            {
-//                lineIterator.remove();                
-//            }
-//        }
-//        return (VEvent<?>) VComponentBaseAbstract.parseVComponent(vEvent, strings);
-//    }
-    
+     */    
     public static VEvent<?> parseVEvent(VEvent<?> vEvent, String string)
     {
         Iterator<Pair<String, String>> i = ICalendarUtilities.ComponentStringToPropertyNameAndValueList(string).iterator();
@@ -407,7 +355,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
             VComponentProperty vComponentProperty = VComponentProperty.propertyFromString(propertyName);
             if (vComponentProperty != null)
             {
-                vComponentProperty.setVComponent(vEvent, value);
+                vComponentProperty.parseAndSetProperty(vEvent, value);
                 continue;
             }
             
@@ -415,38 +363,11 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
             VEventProperty vEventProperty = VEventProperty.propertyFromString(propertyName);
             if (vEventProperty != null)
             {
-                vEventProperty.setVComponent(vEvent, value);
+                vEventProperty.parseAndSetProperty(vEvent, value);
             }
         }
         return vEvent;
     }
-
-    
-//    /** Make new VEventImpl and populate properties by parsing a list of property strings 
-//     * */
-//    private static VEvent<?> parse(List<String> strings, List<AppointmentGroup> appointmentGroups)
-//    {
-//        VEventImpl vEvent = new VEventImpl(appointmentGroups);
-//        // TODO - NEED DTSTART FIRST - HOW?
-//        // split into property name, value
-//        // sort by some order - DTSTART on top
-//        // write parse line method in VEVent and VComponent
-//        // parse one line at a time in order VComponent, VEvent
-//        // put these methods in VEvent - nothing specific here
-//        
-//        VEvent.parseVEvent(vEvent, strings); // parse VEvent properties into vEvent
-//        return vEvent;
-//    }
-    
-//    /** Make new VEventImpl and populate properties by parsing a string with properties separated
-//     * a by lineSeparator (new line) */
-//    public static VEvent<?> parse(String string, List<AppointmentGroup> appointmentGroups)
-//    {
-//        List<String> stringsList = Arrays
-//                .stream(string.split(System.lineSeparator()))
-//                .collect(Collectors.toList());
-//        return parse(stringsList, appointmentGroups);
-//    }
     
     /**
      * Checks that one, and only one, of DTEND or DURATION is set.

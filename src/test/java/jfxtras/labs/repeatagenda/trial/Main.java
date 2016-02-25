@@ -57,10 +57,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
-
-//	    ICalendarDateTest r = new ICalendarDateTest();
-//        r.canMakeRecurrenceSet1();
-//        System.exit(0);
         
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();

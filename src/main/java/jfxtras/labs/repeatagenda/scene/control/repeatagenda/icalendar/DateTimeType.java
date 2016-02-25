@@ -39,8 +39,8 @@ public enum DateTimeType
     public Class<? extends Temporal> getTemporalClass() { return clazz; }
     public ZoneId getZoneId() { return zoneId; }
     
-    
-    public static DateTimeType dateTimeTypeFromTemporal(Temporal t)
+    /** Find DateTimeType of Temporal parameter t */
+    public static DateTimeType from(Temporal t)
     {
         if (t instanceof LocalDate)
         {
@@ -72,7 +72,7 @@ public enum DateTimeType
      */
     public static Temporal changeTemporal(Temporal t, DateTimeType outputType)
     {
-        DateTimeType initialType = dateTimeTypeFromTemporal(t);
+        DateTimeType initialType = from(t);
         if (initialType == outputType)
         {
             return t; // nothing to do;

@@ -9,16 +9,20 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RDate;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponentProperty;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEventProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
@@ -54,47 +58,63 @@ public abstract class ICalendarTestAbstract
      * @param v2 - actual VEventImpl
      * @return - equality result
      */
-    @Deprecated // use VComponentProperties isPropertyEqual
     protected static <T> boolean vEventIsEqualTo(VEventImpl v1, VEventImpl v2)
     {
-        // VComponentAbstract properties
-        boolean categoriesEquals = (v1.getCategories() == null) ? (v2.getCategories() == null) : v1.getCategories().equals(v2.getCategories());
-        boolean commentEquals = (v1.getComment() == null) ? (v2.getComment() == null) : v1.getComment().equals(v2.getComment());
-        boolean dateTimeStampEquals = (v1.getDateTimeStamp() == null) ? (v2.getDateTimeStamp() == null) : v1.getDateTimeStamp().equals(v2.getDateTimeStamp());
-        boolean dateTimeStartEquals = (v1.getDateTimeStart() == null) ? (v2.getDateTimeStart() == null) : v1.getDateTimeStart().equals(v2.getDateTimeStart());
-        boolean sequenceEquals = v1.getSequence() == v2.getSequence();
-        boolean summaryEquals = (v1.getSummary() == null) ? (v2.getSummary() == null) : v1.getSummary().equals(v2.getSummary());
-        boolean uniqueIdentifierEquals = (v1.getUniqueIdentifier() == null) ? (v2.getUniqueIdentifier() == null) : v1.getUniqueIdentifier().equals(v2.getUniqueIdentifier());
-        boolean relatedToEquals = (v1.getRelatedTo() == null) ? (v2.getRelatedTo() == null) : v1.getRelatedTo().equals(v2.getRelatedTo());
-        boolean rruleEquals = (v1.getRRule() == null) ? (v2.getRRule() == null) : v1.getRRule().equals(v2.getRRule()); // goes deeper
-        boolean eXDatesEquals = (v1.getExDate() == null) ? (v2.getExDate() == null) : v1.getExDate().equals(v2.getExDate()); // goes deeper
-        boolean rDatesEquals = (v1.getRDate() == null) ? (v2.getRDate() == null) : v1.getRDate().equals(v2.getRDate()); // goes deeper
-        
-        // VEvent properties
-        boolean descriptionEquals = (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
-        boolean endPriorityEquals = v1.endPriority().equals(v2.endPriority());
-        boolean locationEquals = (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
-        final boolean endEquals;
-        switch (v1.endPriority())
+        List<String> changedProperties = new ArrayList<>();
+        Arrays.stream(VComponentProperty.values())
+        .forEach(p -> 
         {
-        case DTEND:
-            endEquals = v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
-            break;
-        case DURATION:
-            endEquals = v1.getDuration().equals(v2.getDuration());
-            break;
-        default:
-            endEquals = false; // shouldn't get here
-            break;
-        }
+            if (! (p.isPropertyEqual(v1, v2)))
+            {
+                changedProperties.add(p.toString() + " not equal" + p.getPropertyValue(v1) + " " + p.getPropertyValue(v2));
+            }
+        });
+        
+        Arrays.stream(VEventProperty.values())
+        .forEach(p -> 
+        {
+            if (! (p.isPropertyEqual(v1, v2)))
+            {
+                changedProperties.add(p.toString() + " not equal" + p.getPropertyValue(v1) + " " + p.getPropertyValue(v2));
+            }
+        });
+        
+//        // VComponentAbstract properties
+//        boolean categoriesEquals = (v1.getCategories() == null) ? (v2.getCategories() == null) : v1.getCategories().equals(v2.getCategories());
+//        boolean commentEquals = (v1.getComment() == null) ? (v2.getComment() == null) : v1.getComment().equals(v2.getComment());
+//        boolean dateTimeStampEquals = (v1.getDateTimeStamp() == null) ? (v2.getDateTimeStamp() == null) : v1.getDateTimeStamp().equals(v2.getDateTimeStamp());
+//        boolean dateTimeStartEquals = (v1.getDateTimeStart() == null) ? (v2.getDateTimeStart() == null) : v1.getDateTimeStart().equals(v2.getDateTimeStart());
+//        boolean sequenceEquals = v1.getSequence() == v2.getSequence();
+//        boolean summaryEquals = (v1.getSummary() == null) ? (v2.getSummary() == null) : v1.getSummary().equals(v2.getSummary());
+//        boolean uniqueIdentifierEquals = (v1.getUniqueIdentifier() == null) ? (v2.getUniqueIdentifier() == null) : v1.getUniqueIdentifier().equals(v2.getUniqueIdentifier());
+//        boolean relatedToEquals = (v1.getRelatedTo() == null) ? (v2.getRelatedTo() == null) : v1.getRelatedTo().equals(v2.getRelatedTo());
+//        boolean rruleEquals = (v1.getRRule() == null) ? (v2.getRRule() == null) : v1.getRRule().equals(v2.getRRule()); // goes deeper
+//        boolean eXDatesEquals = (v1.getExDate() == null) ? (v2.getExDate() == null) : v1.getExDate().equals(v2.getExDate()); // goes deeper
+//        boolean rDatesEquals = (v1.getRDate() == null) ? (v2.getRDate() == null) : v1.getRDate().equals(v2.getRDate()); // goes deeper
+//        
+//        // VEvent properties
+//        boolean descriptionEquals = (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
+//        boolean endPriorityEquals = v1.endPriority().equals(v2.endPriority());
+//        boolean locationEquals = (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
+//        final boolean endEquals;
+//        switch (v1.endPriority())
+//        {
+//        case DTEND:
+//            endEquals = v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
+//            break;
+//        case DURATION:
+//            endEquals = v1.getDuration().equals(v2.getDuration());
+//            break;
+//        default:
+//            endEquals = false; // shouldn't get here
+//            break;
+//        }
         
         // VEventImpl properties
         boolean appointmentClassEquals = (v1.getAppointmentClass() == null) ? (v2.getAppointmentClass() == null) : v1.getAppointmentClass().equals(v2.getAppointmentClass());
         boolean appointmentGroupEquals = (v1.getAppointmentGroup() == null) ? (v2.getAppointmentGroup() == null) : v1.getAppointmentGroup().equals(v2.getAppointmentGroup());
 
-        if (categoriesEquals && commentEquals && dateTimeStampEquals && dateTimeStartEquals && locationEquals
-                && summaryEquals && uniqueIdentifierEquals && rruleEquals && eXDatesEquals && rDatesEquals && relatedToEquals
-                && sequenceEquals && descriptionEquals && endPriorityEquals && endEquals && appointmentClassEquals && appointmentGroupEquals)
+        if ((changedProperties.size() == 0) && appointmentClassEquals && appointmentGroupEquals)
         {
             return true;
         } else
@@ -105,22 +125,7 @@ public abstract class ICalendarTestAbstract
                     + v1 + System.lineSeparator()
                     + "but was:" + System.lineSeparator()
                     + v2 + System.lineSeparator()
-                    + "categoriesEquals:" + categoriesEquals + System.lineSeparator()
-                    + "dateTimeStampEquals:" + dateTimeStampEquals + System.lineSeparator()
-                    + "dateTimeStartEquals:" + dateTimeStartEquals + " " + v1.getDateTimeStart() + " " + v2.getDateTimeStart() + System.lineSeparator()
-                    + "locationEquals:" + locationEquals + System.lineSeparator()
-                    + "summaryEquals:" + summaryEquals + System.lineSeparator()
-                    + "uniqueIdentifierEquals:" + uniqueIdentifierEquals + System.lineSeparator()
-                    + "rruleEquals:" + rruleEquals + System.lineSeparator()
-                    + "eXDatesEquals:" + eXDatesEquals + System.lineSeparator()
-                    + "rDatesEquals:" + rDatesEquals + System.lineSeparator()
-                    + "relatedToEquals:" + relatedToEquals + System.lineSeparator()
-                    + "sequenceEquals:" + sequenceEquals + System.lineSeparator()
-                    + "descriptionEquals:" + descriptionEquals + System.lineSeparator()
-                    + "endPriorityEquals:" + endPriorityEquals + System.lineSeparator()
-                    + "endEquals:" + endEquals + System.lineSeparator()
-                    + "appointmentClassEquals:" + appointmentClassEquals + System.lineSeparator()
-                    + "appointmentGroupEquals:" + appointmentGroupEquals + System.lineSeparator()                                        
+                    + changedProperties.stream().collect(Collectors.joining(System.lineSeparator()))
                     );
         }
     }

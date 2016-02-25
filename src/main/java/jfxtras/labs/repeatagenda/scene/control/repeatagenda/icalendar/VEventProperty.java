@@ -31,7 +31,7 @@ public enum VEventProperty
     DESCRIPTION ("DESCRIPTION", true)
     {
         @Override
-        public boolean setVComponent(VEvent<?> vEvent, String value)
+        public boolean parseAndSetProperty(VEvent<?> vEvent, String value)
         {
             if (vEvent.getDescription() == null)
             {
@@ -41,6 +41,12 @@ public enum VEventProperty
             {
                 throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
             }
+        }
+
+        @Override
+        public Object getPropertyValue(VEvent<?> vEvent)
+        {
+            return vEvent.getDescription();
         }
 
         @Override
@@ -63,7 +69,7 @@ public enum VEventProperty
   , DURATION ("DURATION", true)
     {
         @Override
-        public boolean setVComponent(VEvent<?> vEvent, String value)
+        public boolean parseAndSetProperty(VEvent<?> vEvent, String value)
         {
             if (vEvent.getDuration() == null)
             {
@@ -82,6 +88,12 @@ public enum VEventProperty
             }
         }
 
+        @Override
+        public Object getPropertyValue(VEvent<?> vEvent)
+        {
+            return vEvent.getDuration();
+        }
+        
         @Override
         public String makeContentLine(VEvent<?> vEvent)
         {
@@ -104,7 +116,7 @@ public enum VEventProperty
   , DATE_TIME_END ("DTEND", true)
     {
         @Override
-        public boolean setVComponent(VEvent<?> vEvent, String value)
+        public boolean parseAndSetProperty(VEvent<?> vEvent, String value)
         {
             if (vEvent.getDateTimeEnd() == null)
             {
@@ -122,6 +134,12 @@ public enum VEventProperty
             {
                 throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                
             }
+        }
+
+        @Override
+        public Object getPropertyValue(VEvent<?> vEvent)
+        {
+            return vEvent.getDateTimeEnd();
         }
 
         @Override
@@ -153,12 +171,18 @@ public enum VEventProperty
   , LOCATION ("LOCATION", true)
     {
         @Override
-        public boolean setVComponent(VEvent<?> vEvent, String value)
+        public boolean parseAndSetProperty(VEvent<?> vEvent, String value)
         {
             vEvent.setLocation(value);
             return true;
         }
 
+        @Override
+        public Object getPropertyValue(VEvent<?> vEvent)
+        {
+            return vEvent.getLocation();
+        }
+        
         @Override
         public String makeContentLine(VEvent<?> vEvent)
         {
@@ -206,9 +230,13 @@ public enum VEventProperty
         return propertyFromTagMap.get(propertyName.toUpperCase());
     }
     
-    /** sets enum's associated VEvent's property from parameter value
+    /** sets VEvent's property for this VEventProperty to parameter value
+     * value is a string that is parsed if necessary to the appropriate type
      * returns true, if property was found and set */
-    public abstract boolean setVComponent(VEvent<?> vEvent, String value);
+    public abstract boolean parseAndSetProperty(VEvent<?> vEvent, String value);
+
+    /** gets VEvent's property value for this VEventProperty */
+    public abstract Object getPropertyValue(VEvent<?> vEvent);
     
     /** makes content line (RFC 5545 3.1) from a VEvent property  */
     public abstract String makeContentLine(VEvent<?> vEvent);

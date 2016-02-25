@@ -820,7 +820,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         Stream<Temporal> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
         final Stream<Temporal> stream3; 
-        if (DateTimeType.dateTimeTypeFromTemporal(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+        if (DateTimeType.from(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
         {
             stream3 = stream2.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
         } else

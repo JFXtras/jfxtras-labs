@@ -206,9 +206,12 @@ public class ICalendarAgenda extends Agenda
                 break;
             case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
             case DATE_WITH_UTC_TIME:
-                startInstance = appointment.getStartZonedDateTime();
-                endInstance = appointment.getEndZonedDateTime();
-                ZoneId zone = appointment.getStartZonedDateTime().getZone();
+                startInstance = appointment.getStartTemporal();
+                endInstance = appointment.getEndTemporal();
+                ZoneId zone = ((ZonedDateTime) startInstance).getZone();
+//                startInstance = appointment.getStartZonedDateTime();
+//                endInstance = appointment.getEndZonedDateTime();
+//                ZoneId zone = appointment.getStartZonedDateTime().getZone();
                 startOriginalInstance = LocalDateTime.from(startOriginalInstance).atZone(zone); // TODO I don't like this line.  I want the Temporals in appointmentStartOriginalMap to be the correct type.
                 break;
             default:

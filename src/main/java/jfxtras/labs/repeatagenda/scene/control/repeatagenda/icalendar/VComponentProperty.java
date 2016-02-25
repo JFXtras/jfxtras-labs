@@ -32,12 +32,18 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
         CATEGORIES ("CATEGORIES", true)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 vComponent.setCategories(value);
                 return true;
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getCategories();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -64,12 +70,18 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , COMMENT ("COMMENT", true)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 vComponent.setComment(value); // TODO - collect multiple values - comma separate? Use list?            
                 return true;
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getComment();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -92,13 +104,19 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , CREATED ("CREATED", false)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
                 vComponent.setDateTimeCreated(dateTime);        
                 return true;
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getDateTimeCreated();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -121,13 +139,19 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , DATE_TIME_STAMP ("DTSTAMP", false)
             {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
                 vComponent.setDateTimeStamp(dateTime);        
                 return true;
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getDateTimeStamp();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -149,7 +173,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , DATE_TIME_START ("DTSTART", true)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getDateTimeStart() == null)
                 {
@@ -162,6 +186,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
                 }
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getDateTimeStart();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -188,7 +218,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , EXCEPTIONS ("EXDATE", false)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 Collection<Temporal> temporals = RecurrenceComponent.parseTemporals(value);
                 if (vComponent.getExDate() == null)
@@ -199,6 +229,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
                 return true;
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getExDate();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -241,7 +277,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , LAST_MODIFIED ("LAST-MODIFIED", false)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getDateTimeLastModified() == null)
                 {
@@ -254,6 +290,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
                 }        
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getDateTimeLastModified();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -279,12 +321,18 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , ORGANIZER ("ORGANIZER", true)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 vComponent.setOrganizer(value);
                 return true;
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getOrganizer();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -305,7 +353,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , RECURRENCES ("RDATE", false)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 Collection<Temporal> temporals = RecurrenceComponent.parseTemporals(value);
                 if (vComponent.getRDate() == null)
@@ -316,6 +364,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
                 return true;
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getRDate();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -345,13 +399,19 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , RECURRENCE_ID ("RECURRENCE-ID", false)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
                 vComponent.setDateTimeRecurrence(dateTime);
                 return true;
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getDateTimeRecurrence();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -381,7 +441,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , RECURRENCE_RULE ("RRULE", true)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getRRule() == null)
                 {
@@ -393,6 +453,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
                 }
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getRRule();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -416,12 +482,18 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , RELATED_TO ("RELATED-TO", false)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 vComponent.setRelatedTo(value); // TODO - collect multiple values - comma separate? Use list?
                 return true;
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getRelatedTo();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -452,7 +524,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , SEQUENCE ("SEQUENCE", false)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getSequence() == 0)
                 {
@@ -464,6 +536,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
                 }            
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getSequence();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -486,7 +564,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , SUMMARY ("SUMMARY", true)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getSummary() == null)
                 {
@@ -498,6 +576,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
                 }        
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getSummary();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -520,7 +604,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
       , UNIQUE_IDENTIFIER ("UID", false)
         {
             @Override
-            public boolean setVComponent(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
                 if (vComponent.getUniqueIdentifier() == null)
                 {
@@ -532,6 +616,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
                 }       
             }
 
+            @Override
+            public Object getPropertyValue(VComponent<?> vComponent)
+            {
+                return vComponent.getUniqueIdentifier();
+            }
+            
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
@@ -578,11 +668,15 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
         {
             return propertyFromTagMap.get(propertyName.toUpperCase());
         }
-        
-        /** sets enum's associated VEvent's property from parameter value
+
+        /** sets VComponent's property for this VComponentProperty to parameter value
+         * value is a string that is parsed if necessary to the appropriate type
          * returns true, if property was found and set */
-        public abstract boolean setVComponent(VComponent<?> vComponent, String value);
-        
+        public abstract boolean parseAndSetProperty(VComponent<?> vComponent, String value);
+
+        /** gets VComponent's property value for this VComponentProperty */
+        public abstract Object getPropertyValue(VComponent<?> vComponent);
+                
         /** makes content line (RFC 5545 3.1) from a vComponent property  */
         public abstract String makeContentLine(VComponent<?> vComponent);       
 

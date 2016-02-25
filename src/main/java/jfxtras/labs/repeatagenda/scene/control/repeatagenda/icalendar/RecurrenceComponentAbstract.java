@@ -35,22 +35,20 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         {
             this.getTemporals().add(d);
         }
-        if (dateOrDateTime.length > 0) temporalClass(); // test class sameness
+//        if (dateOrDateTime.length > 0) temporalClass(); // test class sameness
 //        Class<? extends Temporal> firstClass = dateOrDateTime[0].getClass();
 //        checkTemporalTypes(firstClass);
     }
 
-    /** Class of encapsulated Temporal objects - LocalDate, LocalDateTime or ZonedDateTime */
-    @Deprecated // not worth a method - inline
-    protected Class<? extends Temporal> temporalClass()
-    {
-        if (getTemporals().size() > 0)
-        {
-            Class<? extends Temporal> clazz = getTemporals().iterator().next().getClass();
-//            checkTemporalTypes(clazz);
-            return clazz;                
-        } else return null;
-    }
+//    /** Class of encapsulated Temporal objects - LocalDate, LocalDateTime or ZonedDateTime */
+//    protected Class<? extends Temporal> temporalClass()
+//    {
+//        if (getTemporals().size() > 0)
+//        {
+//            Class<? extends Temporal> clazz = getTemporals().iterator().next().getClass();
+//            return clazz;                
+//        } else return null;
+//    }
     
     protected Stream<Temporal> getTemporalStream()
     {
@@ -70,15 +68,15 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         return (T) this;
     }
     
-    /* checks if all Temporal objects in vDateTimes are the same */
-    @Deprecated // obsolete because of new checking
-    private void checkTemporalTypes(Class<? extends Temporal> clazz)
-    {
-        boolean same =  getTemporals()
-                .stream()
-                .allMatch(v -> v.getClass().equals(clazz));
-        if (! same) throw new IllegalArgumentException("Not all Temporal objects in VDateTime class of type:" + clazz.getSimpleName());
-    }
+//    /* checks if all Temporal objects in vDateTimes are the same */
+//    @Deprecated // obsolete because of new checking
+//    private void checkTemporalTypes(Class<? extends Temporal> clazz)
+//    {
+//        boolean same =  getTemporals()
+//                .stream()
+//                .allMatch(v -> v.getClass().equals(clazz));
+//        if (! same) throw new IllegalArgumentException("Not all Temporal objects in VDateTime class of type:" + clazz.getSimpleName());
+//    }
     
     // CONSTRUCTORS
     public RecurrenceComponentAbstract()
@@ -149,8 +147,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
     @Override
     public int hashCode()
     {
-        // TODO - ADD IMPLEMENTATION
-        return super.hashCode();
+        return getTemporals().hashCode();
     }
 
     @Override

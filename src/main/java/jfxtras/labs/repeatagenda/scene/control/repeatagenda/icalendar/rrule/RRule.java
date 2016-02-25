@@ -178,7 +178,7 @@ public class RRule
         int hash = 7;
         hash = (31 * hash) + getCount().hashCode();
         hash = (31 * hash) + getFrequency().hashCode();
-        hash = (31 * hash) + (recurrences() == null ? 0 : recurrences().hashCode());
+        hash = (31 * hash) + ((recurrences() == null) ? 0 : recurrences().hashCode());
         return hash;
     }
 
@@ -386,7 +386,7 @@ public class RRule
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.dateTimeTypeFromTemporal(start));
+            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.from(start));
             return takeWhile(filteredStream, a -> ! VComponent.isAfter(a, convertedUntil));
         }
         return filteredStream;

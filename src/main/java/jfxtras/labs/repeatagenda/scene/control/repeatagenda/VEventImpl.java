@@ -66,17 +66,23 @@ public class VEventImpl extends VEvent<Appointment>
     {
         LocalDateTime s = LocalDate.from(p.getDateTimeStart()).atStartOfDay();
         LocalDateTime e = LocalDate.from(p.getDateTimeEnd()).atStartOfDay();
-        return new Agenda.AppointmentImplLocal()
-                .withStartLocalDateTime(s)
-                .withEndLocalDateTime(e);
+        return new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(s)
+                .withEndTemporal(e);
+//        return new Agenda.AppointmentImplLocal()
+//                .withStartLocalDateTime(s)
+//                .withEndLocalDateTime(e);
     };
 
     /** For DATE_WITH_LOCAL_TIME */
     private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_LOCAL_TIME_INSTANCE = (p) ->
     {
-        return new Agenda.AppointmentImplLocal()
-                .withStartLocalDateTime(LocalDateTime.from(p.getDateTimeStart()))
-                .withEndLocalDateTime(LocalDateTime.from(p.getDateTimeEnd()));
+        return new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(p.getDateTimeStart())
+                .withEndTemporal(p.getDateTimeEnd());
+//        return new Agenda.AppointmentImplLocal()
+//                .withStartLocalDateTime(LocalDateTime.from(p.getDateTimeStart()))
+//                .withEndLocalDateTime(LocalDateTime.from(p.getDateTimeEnd()));
     };
 
     /** For DATE_WITH_UTC_TIME */
@@ -99,17 +105,23 @@ public class VEventImpl extends VEvent<Appointment>
         {
             e = LocalDateTime.from(p.getDateTimeEnd()).atZone(ZoneId.of("Z"));
         }
-        return new Agenda.AppointmentImplZoned()
-                .withStartZonedDateTime(s)
-                .withEndZonedDateTime(e);
+        return new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(s)
+                .withEndTemporal(e);
+//        return new Agenda.AppointmentImplZoned()
+//                .withStartZonedDateTime(s)
+//                .withEndZonedDateTime(e);
     };
     
     /** For DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
     private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE = (p) ->
     {
-        return new Agenda.AppointmentImplZoned()
-                .withStartZonedDateTime((ZonedDateTime) p.getDateTimeStart())
-                .withEndZonedDateTime((ZonedDateTime) p.getDateTimeEnd());
+        return new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(p.getDateTimeStart())
+                .withEndTemporal(p.getDateTimeEnd());
+//        return new Agenda.AppointmentImplZoned()
+//                .withStartZonedDateTime((ZonedDateTime) p.getDateTimeStart())
+//                .withEndZonedDateTime((ZonedDateTime) p.getDateTimeEnd());
     };
 
     // Map to match up DateTimeType to Callback;
@@ -233,15 +245,17 @@ public class VEventImpl extends VEvent<Appointment>
         {
             Temporal start;
             Temporal end;
-            try
-            {
-                start = appointment.getStartZonedDateTime();
-                end = appointment.getEndZonedDateTime();
-            } catch (Exception e)
-            {
-                start = appointment.getStartLocalDateTime();
-                end = appointment.getEndLocalDateTime();
-            }
+            start = appointment.getStartTemporal();
+            end = appointment.getEndTemporal();
+//            try
+//            {
+//                start = appointment.getStartZonedDateTime();
+//                end = appointment.getEndZonedDateTime();
+//            } catch (Exception e)
+//            {
+//                start = appointment.getStartLocalDateTime();
+//                end = appointment.getEndLocalDateTime();
+//            }
             setDateTimeEnd(end);
             setDateTimeStart(start);
         }

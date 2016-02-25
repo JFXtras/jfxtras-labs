@@ -109,12 +109,19 @@ public class CalendarController {
 //                .withSummary("New")
 //                .withDescription("")
 //                .withAppointmentGroup(agenda.appointmentGroups().get(0));
-            return new Agenda.AppointmentImplZoned()
-                .withStartZonedDateTime( dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault()))
-                .withEndZonedDateTime( dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault()))
-                .withSummary("New")
-                .withDescription("")
-                .withAppointmentGroup(agenda.appointmentGroups().get(0));
+//            return new Agenda.AppointmentImplZoned()
+//                .withStartZonedDateTime( dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault()))
+//                .withEndZonedDateTime( dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault()))
+//                .withSummary("New")
+//                .withDescription("")
+//                .withAppointmentGroup(agenda.appointmentGroups().get(0));
+            return new Agenda.AppointmentImplTemporal()
+                    .withStartTemporal( dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault()))
+                    .withEndTemporal( dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault()))
+                    .withSummary("New")
+                    .withDescription("")
+                    .withAppointmentGroup(agenda.appointmentGroups().get(0));
+        
         });
 
 //        agenda.setEditAppointmentCallback((AppointmentEditData a) -> {
