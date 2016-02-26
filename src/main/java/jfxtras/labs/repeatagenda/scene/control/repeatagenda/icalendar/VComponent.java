@@ -549,6 +549,7 @@ public interface VComponent<I>
     void copyTo(VComponent<I> destination);
     
     // DEFAULT METHODS
+    // TODO - CONSIDER MOVING SOME OF THE BELOW METHODS TO ABSTRACT
     
     /**
      * If VComponent is not valid returns string of errors.  If it's valid then returns an empty string

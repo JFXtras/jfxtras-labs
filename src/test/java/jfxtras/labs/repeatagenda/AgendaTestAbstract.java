@@ -43,9 +43,9 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
             @Override
             public Agenda.Appointment call(ICalendarAgenda.LocalDateTimeRange dateTimeRange)
             {
-                return new Agenda.AppointmentImplZoned()
-                        .withStartZonedDateTime( dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault()))
-                        .withEndZonedDateTime( dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault()))
+                return new Agenda.AppointmentImplTemporal()
+                        .withStartTemporal( dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault()))
+                        .withEndTemporal( dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault()))
                         .withSummary("New")
                         .withDescription("")
                         .withAppointmentGroup(agenda.appointmentGroups().get(0));

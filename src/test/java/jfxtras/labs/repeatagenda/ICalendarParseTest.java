@@ -373,6 +373,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
             + "DESCRIPTION:" + System.lineSeparator()
             + "LAST-MODIFIED:20160214T213226Z" + System.lineSeparator()
             + "LOCATION:" + System.lineSeparator()
+            + "RECURRENCE-ID;TZID=America/Los_Angeles:20160216T110000" + System.lineSeparator()
             + "SEQUENCE:1" + System.lineSeparator()
             + "STATUS:CONFIRMED" + System.lineSeparator() // currently not supported
             + "SUMMARY:test6" + System.lineSeparator()

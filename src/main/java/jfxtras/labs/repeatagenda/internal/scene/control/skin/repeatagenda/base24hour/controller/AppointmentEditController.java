@@ -161,22 +161,25 @@ public class AppointmentEditController extends Pane
     {
         appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.iCalendarStyleSheet);
 
-        System.out.println("vComponent.getTemporalType():" + vComponent.getDateTimeType());
-        switch (vComponent.getDateTimeType())
-        {
-        case DATE:
-        case DATE_WITH_LOCAL_TIME:
-            startOriginalInstance = appointment.getStartLocalDateTime();
-            endInstanceOriginal = appointment.getEndLocalDateTime();
-            break;
-        case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-        case DATE_WITH_UTC_TIME:
-            startOriginalInstance = appointment.getStartZonedDateTime();
-            endInstanceOriginal = appointment.getEndZonedDateTime();
-            break;
-        default:
-            throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getDateTimeType());
-        }
+        startOriginalInstance = appointment.getStartTemporal();
+        endInstanceOriginal = appointment.getEndTemporal();
+        
+//        System.out.println("vComponent.getTemporalType():" + vComponent.getDateTimeType());
+//        switch (vComponent.getDateTimeType())
+//        {
+//        case DATE:
+//        case DATE_WITH_LOCAL_TIME:
+//            startOriginalInstance = appointment.getStartLocalDateTime();
+//            endInstanceOriginal = appointment.getEndLocalDateTime();
+//            break;
+//        case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+//        case DATE_WITH_UTC_TIME:
+//            startOriginalInstance = appointment.getStartZonedDateTime();
+//            endInstanceOriginal = appointment.getEndZonedDateTime();
+//            break;
+//        default:
+//            throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getDateTimeType());
+//        }
         this.appointment = appointment;        
         this.appointments = appointments;
         this.vComponents = vComponents;

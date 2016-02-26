@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -140,26 +141,26 @@ public class AgendaChangeTest extends AgendaTestAbstract
         assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
         
         // check appointment dates
-        List<ZonedDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+        List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles"))
               , ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 15, 0), ZoneId.of("America/Los_Angeles"))
               , ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 10, 0), ZoneId.of("America/Los_Angeles"))
               ));
-        List<ZonedDateTime> startDates = agenda.appointments()
+        List<Temporal> startDates = agenda.appointments()
                 .stream()
-                .map(a -> a.getStartZonedDateTime())
+                .map(a -> a.getStartTemporal())
                 .sorted()
                 .collect(Collectors.toList());
         assertEquals(expectedDates, startDates);
         
-        List<ZonedDateTime> expectedEndDates = new ArrayList<>(Arrays.asList(
+        List<Temporal> expectedEndDates = new ArrayList<>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles"))
               , ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 15, 45), ZoneId.of("America/Los_Angeles"))
               , ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 10, 45), ZoneId.of("America/Los_Angeles"))
               ));
-        List<ZonedDateTime> endDates = agenda.appointments()
+        List<Temporal> endDates = agenda.appointments()
                 .stream()
-                .map(a -> a.getEndZonedDateTime())
+                .map(a -> a.getEndTemporal())
                 .sorted()
                 .collect(Collectors.toList());
         assertEquals(expectedEndDates, endDates);

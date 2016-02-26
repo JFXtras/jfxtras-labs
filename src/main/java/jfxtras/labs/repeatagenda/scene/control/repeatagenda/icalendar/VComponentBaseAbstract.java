@@ -302,7 +302,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     @Override
     public void setDateTimeLastModified(ZonedDateTime dtLastModified)
     {
-        if (! dtLastModified.getOffset().equals(ZoneOffset.UTC))
+        if ((dtLastModified != null) && ! dtLastModified.getOffset().equals(ZoneOffset.UTC))
         {
             throw new DateTimeException("dateTimeStamp (DTSTAMP) must be specified in the UTC time format (Z)");
         }
@@ -1000,14 +1000,19 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     /** Deep copy all fields from source to destination */
     private static void copy(VComponentBaseAbstract<?> source, VComponentBaseAbstract<?> destination)
     {
-        destination.setCategories(source.getCategories());
-        destination.setComment(source.getComment());
-        destination.setDateTimeStamp(source.getDateTimeStamp());
-        destination.setDateTimeStart(source.getDateTimeStart());
-        destination.setRelatedTo(source.getRelatedTo());
-        destination.setSequence(source.getSequence());
-        destination.setSummary(source.getSummary());
-        destination.setUniqueIdentifier(source.getUniqueIdentifier());
+        Arrays.stream(VComponentProperty.values())
+        .forEach(p ->
+        {
+            p.copyProperty(source, destination);
+        });
+//        destination.setCategories(source.getCategories());
+//        destination.setComment(source.getComment());
+//        destination.setDateTimeStamp(source.getDateTimeStamp());
+//        destination.setDateTimeStart(source.getDateTimeStart());
+//        destination.setRelatedTo(source.getRelatedTo());
+//        destination.setSequence(source.getSequence());
+//        destination.setSummary(source.getSummary());
+//        destination.setUniqueIdentifier(source.getUniqueIdentifier());
         if (source.getRRule() != null)
         {
             if (destination.getRRule() == null)

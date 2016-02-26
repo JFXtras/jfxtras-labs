@@ -42,9 +42,9 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         List<Appointment> expectedAppointments = expectedDates
                 .stream()
                 .map(d -> {
-                    return new Agenda.AppointmentImplLocal()
-                            .withStartLocalDateTime(d)
-                            .withEndLocalDateTime(d.plusSeconds(3600))
+                    return new Agenda.AppointmentImplTemporal()
+                            .withStartTemporal(d)
+                            .withEndTemporal(d.plusSeconds(3600))
                             .withDescription("Daily1 Description")
                             .withSummary("Daily1 Summary")
                             .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3));
@@ -71,27 +71,27 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         Iterator<Appointment> appointmentIterator = appointments.iterator();
 
         Appointment madeAppointment1 = appointmentIterator.next();
-        Appointment expectedAppointment1 = new Agenda.AppointmentImplLocal()
-                .withStartLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 0))
-                .withEndLocalDateTime(LocalDate.of(2015, 12, 21).atTime(10, 45))
+        Appointment expectedAppointment1 = new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(LocalDate.of(2015, 12, 21).atTime(10, 0))
+                .withEndTemporal(LocalDate.of(2015, 12, 21).atTime(10, 45))
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
         assertTrue(AppointmentIsEqualTo(expectedAppointment1, madeAppointment1)); 
         
         Appointment madeAppointment2 = appointmentIterator.next();
-        Appointment expectedAppointment2 = new Agenda.AppointmentImplLocal()
-                .withStartLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 0))
-                .withEndLocalDateTime(LocalDate.of(2015, 12, 23).atTime(10, 45))
+        Appointment expectedAppointment2 = new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(LocalDate.of(2015, 12, 23).atTime(10, 0))
+                .withEndTemporal(LocalDate.of(2015, 12, 23).atTime(10, 45))
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");
         assertTrue(AppointmentIsEqualTo(expectedAppointment2, madeAppointment2));
 
         Appointment madeAppointment3 = appointmentIterator.next();
-        Appointment expectedAppointment3 = new Agenda.AppointmentImplLocal()
-                .withStartLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 0))
-                .withEndLocalDateTime(LocalDate.of(2015, 12, 25).atTime(10, 45))
+        Appointment expectedAppointment3 = new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(LocalDate.of(2015, 12, 25).atTime(10, 0))
+                .withEndTemporal(LocalDate.of(2015, 12, 25).atTime(10, 45))
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withSummary("Weekly1 Summary")
                 .withDescription("Weekly1 Description");

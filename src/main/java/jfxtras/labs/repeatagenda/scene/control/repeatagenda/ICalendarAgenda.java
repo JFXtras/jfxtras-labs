@@ -79,10 +79,11 @@ public class ICalendarAgenda extends Agenda
     private final Map<Integer, Temporal> appointmentStartOriginalMap = new HashMap<>();
     private final Map<Integer, VComponent<Appointment>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VComponent that made it */
     
-    // Extended appointment class used by the implementor - used to instantiate new appointment objects
-    private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImpl.class; // set to default class, change if using own implementation
-    Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
-    public void setAppointmentClass(Class<? extends Appointment> clazz) { appointmentClass = clazz; }
+    // not here - in VEventImpl
+//    // Extended appointment class used by the implementor - used to instantiate new appointment objects
+//    private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImpl.class; // set to default class, change if using own implementation
+//    Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
+//    public void setAppointmentClass(Class<? extends Appointment> clazz) { appointmentClass = clazz; }
 
     /** Callback for creating unique identifier values
      * @see VComponent#getUidGeneratorCallback() */
@@ -206,6 +207,7 @@ public class ICalendarAgenda extends Agenda
                 break;
             case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
             case DATE_WITH_UTC_TIME:
+                System.out.println("appointment class:" + appointment.getStartTemporal().getClass());
                 startInstance = appointment.getStartTemporal();
                 endInstance = appointment.getEndTemporal();
                 ZoneId zone = ((ZonedDateTime) startInstance).getZone();
@@ -386,7 +388,7 @@ public class ICalendarAgenda extends Agenda
         // fires when VComponents are added outside the edit popup, such as initialization
         vComponentsListener = (ListChangeListener.Change<? extends VComponent<Appointment>> change) ->
         {
-//            System.out.println("vcomponents changed:");
+            System.out.println("vcomponents changed:");
             while (change.next())
             {
                 if (change.wasAdded()) // can't make appointment if range is not set
@@ -398,16 +400,18 @@ public class ICalendarAgenda extends Agenda
                             {
                                 if (! v.isValid()) { throw new IllegalArgumentException("Invalid VComponent:" + v.errorString()); }                        
                             });
+                    System.out.println("was added:" + dateTimeRange + " " +  getDateTimeRange());
                     if (dateTimeRange != null)
                     {
-                        LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
-                        LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
+                        Temporal start = getDateTimeRange().getStartLocalDateTime();
+                        Temporal end = getDateTimeRange().getEndLocalDateTime();
                         List<Appointment> newAppointments = new ArrayList<>();
                         // add new appointments
                         change.getAddedSubList()
                                 .stream()
                                 .forEach(v -> 
                                 {
+                                    System.out.println("add instances:");
                                     if (v.instances().isEmpty()) newAppointments.addAll(v.makeInstances(start, end));
     
                                     // add recurrence-id Temporal to parents (required to skip recurrences when making appointments)

@@ -61,6 +61,12 @@ public enum VEventProperty
         {
             return (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
         }
+
+        @Override
+        public void copyProperty(VEvent<?> source, VEvent<?> destination)
+        {
+            destination.setDescription(source.getDescription());
+        }
     } 
     /** 
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
@@ -105,6 +111,12 @@ public enum VEventProperty
         public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
         {
             return (v1.getDuration() == null) ? (v2.getDuration() == null) : v1.getDuration().equals(v2.getDuration());
+        }
+
+        @Override
+        public void copyProperty(VEvent<?> source, VEvent<?> destination)
+        {
+            destination.setDuration(source.getDuration());
         }
     } 
   /**
@@ -160,6 +172,12 @@ public enum VEventProperty
         {
             return (v1.getDateTimeEnd() == null) ? (v2.getDateTimeEnd() == null) : v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
         }
+
+        @Override
+        public void copyProperty(VEvent<?> source, VEvent<?> destination)
+        {
+            destination.setDateTimeEnd(source.getDateTimeEnd());
+        }
     }
   /**
    * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
@@ -194,6 +212,12 @@ public enum VEventProperty
         public boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2)
         {
             return (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
+        }
+
+        @Override
+        public void copyProperty(VEvent<?> source, VEvent<?> destination)
+        {
+            destination.setLocation(source.getLocation());
         }
     };
 
@@ -242,6 +266,8 @@ public enum VEventProperty
     public abstract String makeContentLine(VEvent<?> vEvent);
     
     /** Checks is corresponding property is equal between v1 and v2 */
-    public abstract boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2);       
-
+    public abstract boolean isPropertyEqual(VEvent<?> v1, VEvent<?> v2);
+    
+    /** Copies property value from one v1 to v2 */
+    public abstract void copyProperty(VEvent<?> source, VEvent<?> destination);
 }

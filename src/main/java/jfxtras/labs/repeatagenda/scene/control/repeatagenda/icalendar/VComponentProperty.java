@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Collection;
@@ -56,6 +55,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             {
                 return (v1.getCategories() == null) ? (v2.getCategories() == null) : v1.getCategories().equals(v2.getCategories());
             }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setCategories(source.getCategories());
+            }
         }
         /**
          *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -94,6 +99,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             {
                 return (v1.getComment() == null) ? (v2.getComment() == null) : v1.getComment().equals(v2.getComment());
             }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setComment(source.getComment());
+            }
         }
       /**
        * CREATED: Date-Time Created, from RFC 5545 iCalendar 3.8.7.1 page 136
@@ -106,9 +117,15 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             @Override
             public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
-                ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
-                vComponent.setDateTimeCreated(dateTime);        
-                return true;
+                if (vComponent.getDateTimeCreated() == null)
+                {
+                    ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
+                    vComponent.setDateTimeCreated(dateTime);
+                    return true;
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }
             }
 
             @Override
@@ -129,6 +146,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             {
                 return (v1.getDateTimeCreated() == null) ? (v2.getDateTimeCreated() == null) : v1.getDateTimeCreated().equals(v2.getDateTimeCreated());
             }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setDateTimeCreated(source.getDateTimeCreated());
+            }
         }
       /**
        * DTSTAMP: Date-Time Stamp, from RFC 5545 iCalendar 3.8.7.2 page 137
@@ -141,9 +164,15 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             @Override
             public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
-                ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
-                vComponent.setDateTimeStamp(dateTime);        
-                return true;
+                if (vComponent.getDateTimeStamp() == null)
+                {
+                    ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
+                    vComponent.setDateTimeStamp(dateTime);
+                    return true;
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }
             }
 
             @Override
@@ -163,6 +192,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getDateTimeStamp() == null) ? (v2.getDateTimeStamp() == null) : v1.getDateTimeStamp().equals(v2.getDateTimeStamp());
+            }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setDateTimeStamp(source.getDateTimeStamp());
             }
         }
       /**
@@ -210,6 +245,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             {
                 return (v1.getDateTimeStart() == null) ? (v2.getDateTimeStart() == null) : v1.getDateTimeStart().equals(v2.getDateTimeStart());
             }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setDateTimeStart(source.getDateTimeStart());
+            }
         }
       /**
        * EXDATE: Set of date/times exceptions for recurring events, to-dos, journal entries.
@@ -256,7 +297,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
                                 .getTemporals()
                                 .stream()
                                 .map(t -> tag + VComponent.temporalToString(t) + System.lineSeparator())
-                                .collect(Collectors.joining());
+                                .collect(Collectors.joining())
+                                .trim();
                     }
                 }
             }
@@ -265,6 +307,24 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getExDate() == null) ? (v2.getExDate() == null) : v1.getExDate().equals(v2.getExDate());
+            }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                if (source.getExDate() != null)
+                {
+                    if (destination.getExDate() == null)
+                    { // make new EXDate object for destination if necessary
+                        try {
+                            ExDate newEXDate = source.getExDate().getClass().newInstance();
+                            destination.setExDate(newEXDate);
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    source.getExDate().copyTo(destination.getExDate());
+                }
             }
         }
       /**
@@ -308,6 +368,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             {
                 return (v1.getDateTimeLastModified() == null) ? (v2.getDateTimeLastModified() == null) : v1.getDateTimeLastModified().equals(v2.getDateTimeLastModified());
             }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setDateTimeLastModified(source.getDateTimeLastModified());
+            }
         }
       /**
        *  ORGANIZER: RFC 5545 iCalendar 3.8.4.3. page 111
@@ -344,6 +410,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getOrganizer() == null) ? (v2.getOrganizer() == null) : v1.getOrganizer().equals(v2.getOrganizer());
+            }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setOrganizer(source.getOrganizer());
             }
         }
       /**
@@ -389,6 +461,24 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             {
                 return (v1.getRDate() == null) ? (v2.getRDate() == null) : v1.getRDate().equals(v2.getRDate()); // required 
             }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                if (source.getRDate() != null)
+                {
+                    if (destination.getRDate() == null)
+                    { // make new RDate object for destination if necessary
+                        try {
+                            RDate newRDate = source.getRDate().getClass().newInstance();
+                            destination.setRDate(newRDate);
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    source.getRDate().copyTo(destination.getRDate());
+                }
+            }
         }
 
       /**
@@ -401,9 +491,15 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             @Override
             public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
             {
-                LocalDateTime dateTime = LocalDateTime.parse(value,VComponent.LOCAL_DATE_TIME_FORMATTER);
-                vComponent.setDateTimeRecurrence(dateTime);
-                return true;
+                if (vComponent.getDateTimeRecurrence() == null)
+                {
+                    Temporal dateTime = VComponent.parseTemporal(value);
+                    vComponent.setDateTimeRecurrence(dateTime);
+                    return true;
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
+                }
             }
 
             @Override
@@ -430,6 +526,15 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getDateTimeRecurrence() == null) ? (v2.getDateTimeRecurrence() == null) : v1.getDateTimeRecurrence().equals(v2.getDateTimeRecurrence());
+            }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                if (source.getDateTimeRecurrence() != null)
+                {
+                    destination.setDateTimeRecurrence(source.getDateTimeRecurrence());                    
+                }
             }
         }
       /**
@@ -471,6 +576,24 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             {
                 return (v1.getRRule() == null) ? (v2.getRRule() == null) : v1.getRRule().equals(v2.getRRule());
             }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                if (source.getRRule() != null)
+                {
+                    if (destination.getRRule() == null)
+                    { // make new RRule object for destination if necessary
+                        try {
+                            RRule newRRule = source.getRRule().getClass().newInstance();
+                            destination.setRRule(newRRule);
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    source.getRRule().copyTo(destination.getRRule());
+                }
+            }
         }
       /**
        * RELATED-TO: This property is used to represent a relationship or reference between
@@ -505,6 +628,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getRelatedTo() == null) ? (v2.getRelatedTo() == null) : v1.getRelatedTo().equals(v2.getRelatedTo());
+            }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setRelatedTo(source.getRelatedTo());
             }
         }
       /**
@@ -554,6 +683,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             {
                 return v1.getSequence() == v2.getSequence();
             }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setSequence(source.getSequence());
+            }
         }
       /**
        *  SUMMARY: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -594,6 +729,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             {
                 return (v1.getSummary() == null) ? (v2.getSummary() == null) : v1.getSummary().equals(v2.getSummary());
             }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setSummary(source.getSummary());
+            }
         }
       /**
        * UID, Unique identifier, as defined by RFC 5545, iCalendar 3.8.4.7 page 117
@@ -633,6 +774,12 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getUniqueIdentifier() == null) ? (v2.getUniqueIdentifier() == null) : v1.getUniqueIdentifier().equals(v2.getUniqueIdentifier());
+            }
+
+            @Override
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
+            {
+                destination.setUniqueIdentifier(source.getUniqueIdentifier());
             }
         };
       
@@ -681,5 +828,8 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
         public abstract String makeContentLine(VComponent<?> vComponent);       
 
         /** Checks is corresponding property is equal between v1 and v2 */
-        public abstract boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2);    
+        public abstract boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2);
+        
+        /** Copies property value from one v1 to v2 */
+        public abstract void copyProperty(VComponent<?> source, VComponent<?> destination);
 }

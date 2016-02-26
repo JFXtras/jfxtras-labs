@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -317,13 +318,9 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Appointment selectedAppointment = appointmentIterator.next();
         
         // apply changes
-        Temporal startOriginalInstance = selectedAppointment.getStartZonedDateTime();
-        LocalDate newDate = selectedAppointment.getStartLocalDateTime().toLocalDate().minusDays(1);
-        selectedAppointment.setStartLocalDateTime(newDate.atTime(9, 45)); // change start time
-        selectedAppointment.setEndLocalDateTime(newDate.atTime(10, 30)); // change end time
-        Temporal startInstance = selectedAppointment.getStartZonedDateTime();
-        Temporal endInstance = selectedAppointment.getEndZonedDateTime();
-        
+        Temporal startOriginalInstance = selectedAppointment.getStartTemporal();
+        Temporal startInstance = selectedAppointment.getStartTemporal().with(LocalTime.of(9, 45)).minus(1, ChronoUnit.DAYS);
+        Temporal endInstance = selectedAppointment.getEndTemporal().with(LocalTime.of(10, 30)).minus(1, ChronoUnit.DAYS);
         Duration startShift = Duration.between(startOriginalInstance, startInstance);
         Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
         Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
@@ -356,6 +353,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withRRule(null)
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 9, 45), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 10, 30), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeRecurrence(ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 10, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(vEvent.getDateTimeStamp())
                 .withSequence(1);
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
@@ -364,7 +362,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         expectedVEvent2.getRRule().recurrences().add(vEvent);
         assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
     }
-    
     
     /**
      * Changing a event with an exception to wholeday
@@ -418,10 +415,12 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withDateTimeStart(LocalDate.of(2016, 2, 8))
                 .withDateTimeEnd(LocalDate.of(2016, 2, 9))
                 .withDateTimeStamp(vEvent.getDateTimeStamp())
+                .withDateTimeRecurrence(ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 12, 30), ZoneId.of("America/Los_Angeles")))
                 .withSequence(1);
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
 
-        VEventImpl expectedVEvent2 = getGoogleWithExDates();
+        VEventImpl expectedVEvent2 = getGoogleWithExDates()
+                .withDateTimeCreated(vEventOriginal.getDateTimeCreated()); // set by system time, so need to copy
         expectedVEvent2.getRRule().recurrences().add(vEvent);
         assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
     }
@@ -476,6 +475,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .withRRule(null)
                 .withDateTimeStart(LocalDate.of(2016, 2, 22))
                 .withDateTimeEnd(LocalDate.of(2016, 2, 23))
+                .withDateTimeRecurrence(ZonedDateTime.of(LocalDateTime.of(2016, 2, 23, 8, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(vEvent.getDateTimeStamp())
                 .withSequence(1);
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));

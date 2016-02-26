@@ -201,7 +201,7 @@ public class CalendarController {
 //        this.startDate = startDate;
 //        this.endDate = endDate;
         
-        Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
+//        Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
         
 //        VEventImpl vEvent = new VEventImpl(agenda.appointmentGroups());
 //        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));

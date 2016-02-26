@@ -49,6 +49,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  */
 public class VEventImpl extends VEvent<Appointment>
 {
+    // TODO - THESE CALLBACKS MAY BE OBSOLETE - IF AppointmentImplTemporal IS IN AGENDA
     /*
      *  STATIC CALLBACKS FOR MAKING NEW APPOINTMENTS
      *  One for each of the four date and date-time options in iCalendar:
@@ -174,7 +175,7 @@ public class VEventImpl extends VEvent<Appointment>
      * the appointmentClass.
      */
     public Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
-    private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImplLocal.class; // default Appointment class
+    private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImplTemporal.class; // default Appointment class
     public void setAppointmentClass(Class<? extends Appointment> appointmentClass) { this.appointmentClass = appointmentClass; }
     public VEventImpl withAppointmentClass(Class<? extends Appointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
 
@@ -325,6 +326,7 @@ public class VEventImpl extends VEvent<Appointment>
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
         Callback<StartEndPair, Appointment> newInstanceCallback = DATE_TIME_MAKE_INSTANCE_MAP.get(getDateTimeType());
         List<Appointment> madeAppointments = new ArrayList<>();
+        System.out.println("makeinstances:" + getStartRange() + " " + getEndRange());
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
         removedTooLate.forEach(temporalStart ->

@@ -28,7 +28,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     public void renderRegularAppointment()
     {
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.appointments().add( new Agenda.AppointmentImplLocal()
+            agenda.appointments().add( new Agenda.AppointmentImplTemporal()
                     .withStartLocalDateTime(LocalDateTime.of(2015, 11, 11, 10, 0))
                     .withEndLocalDateTime(LocalDateTime.of(2015, 11, 11, 12, 0))
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(1))
@@ -54,7 +54,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     {
         String dateTimeStamp = VComponent.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.appointments().add( new Agenda.AppointmentImplLocal()
+            agenda.appointments().add( new Agenda.AppointmentImplTemporal()
                 .withStartLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T10:00"))
                 .withEndLocalDateTime(TestUtil.quickParseLocalDateTimeYMDhm("2015-11-11T12:00"))
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(0))

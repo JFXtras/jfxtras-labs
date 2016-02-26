@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Parent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.TestUtil;
 
 public class AgendaRenderVComponentsTest extends AgendaTestAbstract
@@ -179,9 +182,11 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
             agenda.vComponents().add(ICalendarTestAbstract.getIndividualZoned());
         });
         
-        List<ZonedDateTime> startZoneDates = agenda.appointments()
+        VComponent<Appointment> v = agenda.vComponents().get(0);
+        System.out.println("v:" + v + " " + agenda.appointments().size());
+        List<Temporal> startZoneDates = agenda.appointments()
                 .stream()
-                .map(a -> a.getStartZonedDateTime())
+                .map(a -> a.getStartTemporal())
                 .sorted()
                 .collect(Collectors.toList());
         List<ZonedDateTime> expectedStartZoneDates = new ArrayList<>(Arrays.asList(

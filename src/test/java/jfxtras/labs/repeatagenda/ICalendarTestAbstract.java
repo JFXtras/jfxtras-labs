@@ -47,8 +47,8 @@ public abstract class ICalendarTestAbstract
 //            -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
 //    public final Comparator<Appointment> getAppointmentComparator() { return APPOINTMENT_COMPARATOR; }
     
-    private final static Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
-    public Class<Agenda.AppointmentImplLocal> getClazz() { return clazz; }
+    private final static Class<Agenda.AppointmentImplTemporal> clazz = Agenda.AppointmentImplTemporal.class;
+    public Class<Agenda.AppointmentImplTemporal> getClazz() { return clazz; }
     
     /**
      * Tests equality between two VEventImpl objects.  Treats v1 as expected.  Produces a JUnit-like
@@ -66,7 +66,7 @@ public abstract class ICalendarTestAbstract
         {
             if (! (p.isPropertyEqual(v1, v2)))
             {
-                changedProperties.add(p.toString() + " not equal" + p.getPropertyValue(v1) + " " + p.getPropertyValue(v2));
+                changedProperties.add(p.toString() + " not equal:" + p.getPropertyValue(v1) + " " + p.getPropertyValue(v2));
             }
         });
         
@@ -75,44 +75,15 @@ public abstract class ICalendarTestAbstract
         {
             if (! (p.isPropertyEqual(v1, v2)))
             {
-                changedProperties.add(p.toString() + " not equal" + p.getPropertyValue(v1) + " " + p.getPropertyValue(v2));
+                changedProperties.add(p.toString() + " not equal:" + p.getPropertyValue(v1) + " " + p.getPropertyValue(v2));
             }
         });
         
-//        // VComponentAbstract properties
-//        boolean categoriesEquals = (v1.getCategories() == null) ? (v2.getCategories() == null) : v1.getCategories().equals(v2.getCategories());
-//        boolean commentEquals = (v1.getComment() == null) ? (v2.getComment() == null) : v1.getComment().equals(v2.getComment());
-//        boolean dateTimeStampEquals = (v1.getDateTimeStamp() == null) ? (v2.getDateTimeStamp() == null) : v1.getDateTimeStamp().equals(v2.getDateTimeStamp());
-//        boolean dateTimeStartEquals = (v1.getDateTimeStart() == null) ? (v2.getDateTimeStart() == null) : v1.getDateTimeStart().equals(v2.getDateTimeStart());
-//        boolean sequenceEquals = v1.getSequence() == v2.getSequence();
-//        boolean summaryEquals = (v1.getSummary() == null) ? (v2.getSummary() == null) : v1.getSummary().equals(v2.getSummary());
-//        boolean uniqueIdentifierEquals = (v1.getUniqueIdentifier() == null) ? (v2.getUniqueIdentifier() == null) : v1.getUniqueIdentifier().equals(v2.getUniqueIdentifier());
-//        boolean relatedToEquals = (v1.getRelatedTo() == null) ? (v2.getRelatedTo() == null) : v1.getRelatedTo().equals(v2.getRelatedTo());
-//        boolean rruleEquals = (v1.getRRule() == null) ? (v2.getRRule() == null) : v1.getRRule().equals(v2.getRRule()); // goes deeper
-//        boolean eXDatesEquals = (v1.getExDate() == null) ? (v2.getExDate() == null) : v1.getExDate().equals(v2.getExDate()); // goes deeper
-//        boolean rDatesEquals = (v1.getRDate() == null) ? (v2.getRDate() == null) : v1.getRDate().equals(v2.getRDate()); // goes deeper
-//        
-//        // VEvent properties
-//        boolean descriptionEquals = (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
-//        boolean endPriorityEquals = v1.endPriority().equals(v2.endPriority());
-//        boolean locationEquals = (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
-//        final boolean endEquals;
-//        switch (v1.endPriority())
-//        {
-//        case DTEND:
-//            endEquals = v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
-//            break;
-//        case DURATION:
-//            endEquals = v1.getDuration().equals(v2.getDuration());
-//            break;
-//        default:
-//            endEquals = false; // shouldn't get here
-//            break;
-//        }
-        
         // VEventImpl properties
         boolean appointmentClassEquals = (v1.getAppointmentClass() == null) ? (v2.getAppointmentClass() == null) : v1.getAppointmentClass().equals(v2.getAppointmentClass());
+        if (! appointmentClassEquals) { changedProperties.add("Appointment Class:" + " not equal:" + v1.getAppointmentClass() + " " + v2.getAppointmentClass()); }
         boolean appointmentGroupEquals = (v1.getAppointmentGroup() == null) ? (v2.getAppointmentGroup() == null) : v1.getAppointmentGroup().equals(v2.getAppointmentGroup());
+        if (! appointmentGroupEquals) { changedProperties.add("Appointment Group:" + " not equal:" + v1.getAppointmentGroup() + " " + v2.getAppointmentGroup()); }
 
         if ((changedProperties.size() == 0) && appointmentClassEquals && appointmentGroupEquals)
         {
@@ -524,6 +495,7 @@ public abstract class ICalendarTestAbstract
     /** FREQ=WEEKLY;BYDAY=MO,WE,FR  */
     public static VEventImpl getWeeklyZoned()
     {
+        System.out.println(clazz);
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withAppointmentClass(clazz)
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
@@ -897,7 +869,7 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withAppointmentClass(clazz)
-                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 6, 50, 24), ZoneOffset.UTC))
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 15, 30), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 7, 22, 31), ZoneOffset.UTC))

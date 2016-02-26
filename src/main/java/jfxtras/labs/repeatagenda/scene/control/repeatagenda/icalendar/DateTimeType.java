@@ -21,6 +21,7 @@ import java.time.temporal.Temporal;
  */
 public enum DateTimeType
 {
+    // TODO - clazz and zoneID not used (i think) delete if not used
     DATE (LocalDate.class, null)
   , DATE_WITH_LOCAL_TIME (LocalDate.class, null)
   , DATE_WITH_UTC_TIME (ZonedDateTime.class, ZoneId.of("Z"))

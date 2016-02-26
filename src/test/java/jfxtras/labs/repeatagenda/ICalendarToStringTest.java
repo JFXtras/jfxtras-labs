@@ -23,7 +23,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
         String madeString = VComponentProperty.EXCEPTIONS.makeContentLine(v);
         String expectedString = "EXDATE;TZID=America/Los_Angeles:20160212T123000" + System.lineSeparator()
                                 + "EXDATE;TZID=America/Los_Angeles:20160210T123000" + System.lineSeparator()
-                                + "EXDATE;TZID=America/Los_Angeles:20160209T123000" + System.lineSeparator();
+                                + "EXDATE;TZID=America/Los_Angeles:20160209T123000";
         assertEquals(expectedString, madeString);
         
         v.setExDatesOnOneLine(true);
