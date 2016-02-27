@@ -238,15 +238,17 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
             , Temporal endInstance)
     {
         super.adjustDateTime(startOriginalInstance, startInstance, endInstance);
+        // TODO - NEED TO HANDLE DURATION (NOT DTEND)
         final Temporal newEnd;
         if (DateTimeType.from(endInstance) == DateTimeType.DATE)
         {
             TemporalAmount duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
-            newEnd = LocalDate.from(getDateTimeEnd()).plus(duration);
+            System.out.println("duration:" + duration);
+            newEnd = LocalDate.from(getDateTimeStart()).plus(duration);
         } else
         {
             TemporalAmount duration = Duration.between(startInstance, endInstance);
-            newEnd = getDateTimeEnd().plus(duration);
+            newEnd = getDateTimeStart().plus(duration);
         }
         setDateTimeEnd(newEnd);
 //        final TemporalAmount duration;
@@ -291,6 +293,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
           , Collection<VComponent<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
+          , Temporal endInstance
           , Collection<I> instances)
     {
         final TemporalAmount duration;
@@ -303,7 +306,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
         }
         Temporal endNew = getDateTimeEnd().plus(duration);
         setDateTimeEnd(endNew);
-        super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, instances);
+        super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
     }
     
     /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. 

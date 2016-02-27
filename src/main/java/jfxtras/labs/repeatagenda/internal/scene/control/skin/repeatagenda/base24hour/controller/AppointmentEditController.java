@@ -343,6 +343,7 @@ public class AppointmentEditController extends Pane
         {
             endInstance = DateTimeType.changeTemporal(endTextField.getLocalDateTime(), vEvent.getDateTimeType());
         }
+//        System.out.println("se:" + startInstance + " " + endInstance);
         vEvent.handleEdit(
                 vEventOriginal
                 , vComponents

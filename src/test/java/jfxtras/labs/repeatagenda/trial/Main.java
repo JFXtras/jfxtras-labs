@@ -57,8 +57,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{    
-//	    AgendaRenderVComponentsTest r = new AgendaRenderVComponentsTest();
-//	    r.canRenderVComponentZoned();
+//	    ICalendarEditTest r = new ICalendarEditTest();
+//	    r.canEditAll1();
 //        System.exit(0);	    
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();

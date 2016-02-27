@@ -55,11 +55,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
         Temporal startInstance = selectedAppointment.getStartLocalDateTime();
         Temporal endInstance = selectedAppointment.getEndLocalDateTime();
-        Duration startShift = Duration.between(startOriginalInstance, startInstance);
-        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
-        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
-        vEvent.setDateTimeStart(dtStart);
-        vEvent.setDuration(duration);
+//        Duration startShift = Duration.between(startOriginalInstance, startInstance);
+//        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
+//        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+//        vEvent.setDateTimeStart(dtStart);
+//        vEvent.setDuration(duration);
         
         vEvent.handleEdit(
                   vComponentOriginal

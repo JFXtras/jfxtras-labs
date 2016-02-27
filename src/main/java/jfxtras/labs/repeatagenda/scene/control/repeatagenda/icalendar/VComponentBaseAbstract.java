@@ -668,6 +668,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
                 case ALL:
                     if (relatedVComponents.size() == 1)
                     {
+                        adjustDateTime(startOriginalInstance, startInstance, endInstance);
                         updateInstances(instances);
                     } else
                     {
@@ -679,7 +680,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
                     incrementSequence = false;
                     break;
                 case THIS_AND_FUTURE:
-                    editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, instances);
+                    editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
                     break;
                 case ONE:
                     editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
@@ -692,7 +693,15 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         if (! isValid()) throw new RuntimeException(errorString());
         if (incrementSequence)
         {
-            adjustDateTime(startOriginalInstance, startInstance, endInstance);
+//            adjustDateTime(startOriginalInstance, startInstance, endInstance); // PROBABLY WON'T WORK FOR THIS_AND_FUTURE
+            
+//            // update instances
+//            Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to instances
+//            instances().clear(); // clear vEvent outdated collection of instances
+//            instancesTemp.addAll(makeInstances()); // add vEventOld part of new instances
+//            instances.clear();
+//            instances.addAll(instancesTemp);
+
             // TODO - KEEPS RECURRENCE-ID - BUT TOO LATE FOR REFRESH
             incrementSequence();
         }
@@ -754,6 +763,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         return changedProperties;
     }
     
+    @Deprecated // inline I think
     private void updateInstances(Collection<I> instances)
     {
         Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
@@ -809,6 +819,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         // MAYBE AGENDA IS CHNAGEING ORIGINAL TO LOCALDATETIME
         setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
+        adjustDateTime(startOriginalInstance, startInstance, endInstance);        
    
         // Add recurrence to original vEvent
         vEventOriginal.getRRule().recurrences().add(this);
@@ -835,6 +846,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
      * VComponent with a UNTIL date or date/time and starting a new VComponent from 
      * the selected instance.  EXDATE, RDATE and RECURRENCES are split between both
      * VComponents.  vEventNew has new settings, vEvent has former settings.
+     * @param endInstance 
      * @param <T>
      * 
      * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
@@ -844,6 +856,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
           , Collection<VComponent<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
+          , Temporal endInstance
           , Collection<I> instances)
     {
         // adjust original VEvent
@@ -932,6 +945,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             int countInNew = getRRule().getCount() - countInOrginal;
             getRRule().setCount(countInNew);
         }
+        adjustDateTime(startOriginalInstance, startInstance, endInstance);        
         
         if (! vComponentOriginal.isValid()) throw new RuntimeException(vComponentOriginal.errorString());
         vComponents.add(vComponentOriginal);
