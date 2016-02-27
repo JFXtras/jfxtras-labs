@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -207,14 +208,14 @@ public class ICalendarAgenda extends Agenda
                 break;
             case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
             case DATE_WITH_UTC_TIME:
-                System.out.println("appointment class:" + appointment.getStartTemporal().getClass());
+//                System.out.println("appointment class:" + appointment.getStartTemporal().getClass());
                 startInstance = appointment.getStartTemporal();
                 endInstance = appointment.getEndTemporal();
                 ZoneId zone = ((ZonedDateTime) startInstance).getZone();
 //                startInstance = appointment.getStartZonedDateTime();
 //                endInstance = appointment.getEndZonedDateTime();
 //                ZoneId zone = appointment.getStartZonedDateTime().getZone();
-                startOriginalInstance = LocalDateTime.from(startOriginalInstance).atZone(zone); // TODO I don't like this line.  I want the Temporals in appointmentStartOriginalMap to be the correct type.
+//                startOriginalInstance = LocalDateTime.from(startOriginalInstance).atZone(zone); // TODO I don't like this line.  I want the Temporals in appointmentStartOriginalMap to be the correct type.
                 break;
             default:
                 throw new RuntimeException("Unsupported Temporal type:" + vEvent.getDateTimeType());
@@ -225,8 +226,7 @@ public class ICalendarAgenda extends Agenda
         // change start and end date/time
         
         // set start date-time
-        final Temporal startNew;
-        
+        final Temporal startNew;        
         if (appointment.isWholeDay())
         {
             Period dayShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
@@ -289,7 +289,11 @@ public class ICalendarAgenda extends Agenda
     public ICalendarAgenda()
     {
         super();
-//        appointments().addListener((InvalidationListener) (obs) -> System.out.println("appointments chagned:"));
+        vComponents().addListener((InvalidationListener) (obs) -> 
+        {
+            System.out.println("vComponents chagned:******************************");
+            vComponents.stream().forEach(System.out::println);
+        });
 
         // setup event listener to delete selected appointments when Agenda is added to a scene
         sceneProperty().addListener((obs, oldValue, newValue) ->
@@ -494,7 +498,7 @@ public class ICalendarAgenda extends Agenda
 //                                    throw new RuntimeException("Unknown TemporalType:" + v.getTemporalType());
 //                                }
                                 
-                                appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartLocalDateTime());
+                                appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
 //                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
                                 // TODO - IF I MOVE INSTANCE MAKING TO HERE - EITHER CALLBACK OR LISTENER THEN I CAN UPDATE
                                 // BOTH MAPS HERE

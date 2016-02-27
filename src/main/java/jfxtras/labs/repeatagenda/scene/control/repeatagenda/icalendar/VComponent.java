@@ -582,7 +582,7 @@ public interface VComponent<I>
                         }
                     } else
                     {
-                        errorsBuilder.append(System.lineSeparator() + "Invalid RRule: UNTIL must be ZonedDateTime if DTSTART (dateTimeStart) is ZonedDateTime");
+                        errorsBuilder.append(System.lineSeparator() + "Invalid RRule: UNTIL must be ZonedDateTime wth UTC if DTSTART (dateTimeStart) is ZonedDateTime");
                     }
                 }
             }

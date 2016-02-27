@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -9,6 +10,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -168,6 +170,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         // if type has changed then make all date-time properties the same
         if (changed)
         {
+            System.out.println("**********************start:" + dtStart);
             ensureDateTimeTypeConsistency(myDateTimeType);
         }
     }
@@ -183,6 +186,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     void ensureDateTimeTypeConsistency(DateTimeType dateTimeType)
     {
         // RECURRENCE-ID (of children)
+        // TODO - changing children incorrectly - FIXTHIS
         if (getRRule() != null && getRRule().recurrences() != null)
         {
             getRRule().recurrences().forEach(v ->
@@ -686,7 +690,30 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             }
         }
         if (! isValid()) throw new RuntimeException(errorString());
-        if (incrementSequence) incrementSequence();
+        if (incrementSequence)
+        {
+            adjustDateTime(startOriginalInstance, startInstance, endInstance);
+            // TODO - KEEPS RECURRENCE-ID - BUT TOO LATE FOR REFRESH
+            incrementSequence();
+        }
+    }
+    
+    /* Adjust DTSTART by instance start and end date-time */
+    protected void adjustDateTime(Temporal startOriginalInstance
+            , Temporal startInstance
+            , Temporal endInstance)
+    {
+        final Temporal newStart;
+        if (DateTimeType.from(startInstance) == DateTimeType.DATE)
+        {
+            TemporalAmount startShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
+            newStart = LocalDate.from(getDateTimeStart()).plus(startShift);
+        } else
+        {
+            TemporalAmount startShift = Duration.between(startOriginalInstance, startInstance);
+            newStart = getDateTimeStart().plus(startShift);
+        }
+        setDateTimeStart(newStart);
     }
     
     /**
@@ -775,9 +802,11 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         // Apply dayShift, if any
         Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
         Temporal newStart = getDateTimeStart().plus(dayShift);
-        setDateTimeStart(newStart);
         setRRule(null);
         setParent(vEventOriginal);
+        setDateTimeStart(newStart);
+        System.out.println("For recurrence startOriginalInstance:" + startOriginalInstance);
+        // MAYBE AGENDA IS CHNAGEING ORIGINAL TO LOCALDATETIME
         setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
    
@@ -788,14 +817,14 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         if (! isValid()) throw new RuntimeException(errorString());
         if (! vEventOriginal.isValid()) throw new RuntimeException(vEventOriginal.errorString());
         
-        // Remove old appointments, add back ones
-        Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+        // Remove old instances, add back ones
+        Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to instances
         instancesTemp.addAll(instances);
         instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
-        vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of appointments
-        instancesTemp.addAll(vEventOriginal.makeInstances()); // make new appointments and add to main collection (added to vEventNew's collection in makeAppointments)
-        instances().clear(); // clear vEvent outdated collection of appointments
-        instancesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
+        vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of instances
+        instancesTemp.addAll(vEventOriginal.makeInstances()); // make new instances and add to main collection (added to vEventNew's collection in makeinstances)
+        instances().clear(); // clear vEvent outdated collection of instances
+        instancesTemp.addAll(makeInstances()); // add vEventOld part of new instances
         instances.clear();
         instances.addAll(instancesTemp);
         vComponents.add(vEventOriginal);
@@ -978,9 +1007,19 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
                 break;
             case THIS_AND_FUTURE:
                 if (getRRule().getCount() == 0) getRRule().setCount(0);
-                Temporal previousDay = startInstance.minus(1, ChronoUnit.DAYS);
-                Temporal untilNew = (this.isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
-                this.getRRule().setUntil(untilNew);
+//                Temporal previousDay = startInstance.minus(1, ChronoUnit.DAYS);
+                final Temporal untilNew;
+                if (isWholeDay())
+                {
+                    untilNew = LocalDate.from(startInstance).minus(1, ChronoUnit.DAYS);
+                } else
+                {
+                    Temporal t = startInstance.minus(1, ChronoUnit.NANOS);
+                    untilNew = DateTimeType.changeTemporal(t, DateTimeType.DATE_WITH_UTC_TIME);
+                }
+//                vComponentOriginal.getRRule().setUntil(untilNew);
+//                Temporal untilNew = (this.isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
+                getRRule().setUntil(untilNew);
 
                 // Remove old appointments, add back ones
                 Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments

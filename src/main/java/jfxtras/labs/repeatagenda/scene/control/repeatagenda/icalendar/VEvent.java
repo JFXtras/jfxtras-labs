@@ -230,6 +230,36 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
             setDateTimeEnd(endInstance);
         }
     }
+    
+    /* Adjust DTEND by instance start and end date-time */
+    @Override
+    protected void adjustDateTime(Temporal startOriginalInstance
+            , Temporal startInstance
+            , Temporal endInstance)
+    {
+        super.adjustDateTime(startOriginalInstance, startInstance, endInstance);
+        final Temporal newEnd;
+        if (DateTimeType.from(endInstance) == DateTimeType.DATE)
+        {
+            TemporalAmount duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
+            newEnd = LocalDate.from(getDateTimeEnd()).plus(duration);
+        } else
+        {
+            TemporalAmount duration = Duration.between(startInstance, endInstance);
+            newEnd = getDateTimeEnd().plus(duration);
+        }
+        setDateTimeEnd(newEnd);
+//        final TemporalAmount duration;
+//        if (DateTimeType.from(startInstance) == DateTimeType.DATE)
+//        {
+//            duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
+//        } else
+//        {
+//            duration = Duration.between(startInstance, endInstance);            
+//        }
+//        Temporal newEnd = getDateTimeStart().plus(duration);
+//        setDateTimeEnd(newEnd);
+    }
 
     @Override // edit end date or date/time
     protected void editOne(
