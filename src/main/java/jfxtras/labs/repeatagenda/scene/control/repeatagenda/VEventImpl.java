@@ -341,7 +341,7 @@ public class VEventImpl extends VEvent<Appointment>
         removedTooLate.forEach(temporalStart ->
         {
             TemporalAmount duration = endPriority().getDuration(this);
-            System.out.println("make duration:" + duration);
+//            System.out.println("make duration:" + duration);
             Temporal temporalEnd = temporalStart.plus(duration);
 //            final Temporal temporalEnd;
 //            switch (endPriority())

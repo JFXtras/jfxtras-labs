@@ -50,11 +50,13 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         Appointment selectedAppointment = appointmentIterator.next();
         Temporal startOriginalInstance = selectedAppointment.getStartLocalDateTime();
-        LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate();
-        selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
-        selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
-        Temporal startInstance = selectedAppointment.getStartLocalDateTime();
-        Temporal endInstance = selectedAppointment.getEndLocalDateTime();
+//        LocalDate date = selectedAppointment.getStartLocalDateTime().toLocalDate();
+//        selectedAppointment.setStartLocalDateTime(date.atTime(9, 45)); // change start time
+//        selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
+//        Temporal startInstance = selectedAppointment.getStartLocalDateTime();
+//        Temporal endInstance = selectedAppointment.getEndLocalDateTime();
+        Temporal startInstance = selectedAppointment.getStartLocalDateTime().with(LocalTime.of(9, 45));
+        Temporal endInstance = selectedAppointment.getEndLocalDateTime().with(LocalTime.of(11, 00));
 //        Duration startShift = Duration.between(startOriginalInstance, startInstance);
 //        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
 //        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
@@ -321,11 +323,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Temporal startOriginalInstance = selectedAppointment.getStartTemporal();
         Temporal startInstance = selectedAppointment.getStartTemporal().with(LocalTime.of(9, 45)).minus(1, ChronoUnit.DAYS);
         Temporal endInstance = selectedAppointment.getEndTemporal().with(LocalTime.of(10, 30)).minus(1, ChronoUnit.DAYS);
-//        Duration startShift = Duration.between(startOriginalInstance, startInstance);
-//        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
-//        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
-//        vEvent.setDateTimeStart(dtStart);
-//        vEvent.setDateTimeEnd(dtStart.plus(duration));
 
         // Edit
         vEvent.handleEdit(
@@ -381,8 +378,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl vEventOriginal = new VEventImpl(vEvent);
 
         // apply changes
-        vEvent.setDateTimeStart(LocalDate.of(2016, 2, 8)); // make one day, and shift one day earlier
-        vEvent.setDateTimeEnd(LocalDate.of(2016, 2, 9)); // make one day, and shift one day earlier       
         Temporal startOriginalInstance = ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 12, 30), ZoneId.of("America/Los_Angeles"));
         Temporal startInstance = LocalDate.of(2016, 2, 8);
         Temporal endInstance = LocalDate.of(2016, 2, 9);
@@ -426,10 +421,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
     
     /**
-     * Changing one instance to wholeday
+     * Changing two instances to wholeday
+     * Tests keeping RECURRENCE-ID as parent DateTimeType
      */
     @Test
-    public void canChangeOneWholeDay()
+    public void canChangeTwoWholeDay()
     {
         // Individual Appointment
         VEventImpl vEvent = getGoogleRepeatable();
@@ -443,8 +439,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl vEventOriginal = new VEventImpl(vEvent);
         
         // apply changes
-        vEvent.setDateTimeStart(LocalDate.of(2016, 2, 13)); // make one day, and shift one day earlier
-        vEvent.setDateTimeEnd(LocalDate.of(2016, 2, 14)); // make one day, and shift one day earlier       
         Temporal startOriginalInstance = ZonedDateTime.of(LocalDateTime.of(2016, 2, 23, 8, 0), ZoneId.of("America/Los_Angeles"));
         Temporal startInstance = LocalDate.of(2016, 2, 22);
         Temporal endInstance = LocalDate.of(2016, 2, 23);
@@ -463,7 +457,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .map(a -> a.getStartLocalDateTime())
                 .sorted()
                 .collect(Collectors.toList());
-
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2016, 2, 21, 8, 0)
               , LocalDateTime.of(2016, 2, 22, 0, 0)
@@ -483,7 +476,39 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventImpl expectedVEvent2 = getGoogleRepeatable();
         expectedVEvent2.getRRule().recurrences().add(vEvent);
         assertTrue(vEventIsEqualTo(expectedVEvent2, vEventOriginal));
+        
+        // apply changes
+        VEventImpl vEventOriginal2 = new VEventImpl(vEventOriginal);
+        Temporal startOriginalInstance2 = ZonedDateTime.of(LocalDateTime.of(2016, 2, 26, 8, 0), ZoneId.of("America/Los_Angeles"));
+        Temporal startInstance2 = LocalDate.of(2016, 2, 26);
+        Temporal endInstance2 = LocalDate.of(2016, 2, 27);       
+        
+        // Edit
+        vEventOriginal.handleEdit(
+                vEventOriginal2
+              , vComponents
+              , startOriginalInstance2
+              , startInstance2
+              , endInstance2
+              , appointments
+              , (m) -> ChangeDialogOption.ONE);
+        
+        List<Temporal> madeDates2 = appointments.stream()
+                .map(a -> a.getStartTemporal())
+                .sorted(VComponent.TEMPORAL_COMPARATOR)
+                .collect(Collectors.toList());
+        List<Temporal> expectedDates2 = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2016, 2, 21, 8, 0), ZoneId.of("America/Los_Angeles"))
+              , LocalDate.of(2016, 2, 22)
+              , LocalDate.of(2016, 2, 26)
+                ));
+        
+        vComponents.stream().forEach(System.out::println);
+        assertEquals(expectedDates2, madeDates2);
+
     }
+
+    
     
 // /**
 //  * Tests editing THIS_AND_FUTURE events of a daily repeat event changing date and time

@@ -6,11 +6,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
-                AgendaRenderVComponentsTest.class
-              , AgendaRenderAppointmentsTest.class
-              , AgendaChangeTest.class
-              , AgendaEditPopupTest.class
-              , ICalendarCopyTest.class
+//                AgendaRenderVComponentsTest.class
+//              , AgendaRenderAppointmentsTest.class
+//              , AgendaChangeTest.class
+//              , AgendaEditPopupTest.class
+               ICalendarCopyTest.class
               , ICalendarDateTest.class
               , ICalendarEditTest.class
               , ICalendarEqualsTest.class

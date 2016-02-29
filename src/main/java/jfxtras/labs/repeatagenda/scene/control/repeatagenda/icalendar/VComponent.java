@@ -129,7 +129,7 @@ this limitation is a future goal. - I plan on fixing this problem by combining m
 instances into one property internally.
 
  * @param <I> - type of recurrence instance, such as an appointment implementation
- * @see VComponentBaseAbstract
+ * @see VComponentBase
  * @see VEvent
  * @see VTodo // not implemented yet
  * @see VJournal // not implemented yet
@@ -615,6 +615,7 @@ public interface VComponent<I>
             Temporal myTemporal = i.next();
             System.out.println("test:" + myTemporal + " " + startInstance);
             if (myTemporal.equals(startInstance)) { return i.hasNext(); } // matched startInstance, does iterator have next?
+            if (LocalDate.from(myTemporal).isAfter(LocalDate.from(startInstance))) break;
         }
         throw new RuntimeException("Instance is not in recurrence set:" + startInstance);
     }

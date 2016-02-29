@@ -152,16 +152,13 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         
         boolean intervalEquals = (getInterval() == null) ?
                 (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
-//        Iterator<Rule> ruleIterator = getRules().iterator();
         boolean rulesEquals;
-        System.out.println(getByRules().size() + " -size- "+  testObj.getByRules().size());
         if (getByRules().size() == testObj.getByRules().size())
         {
             List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
             for (int i=0; i<getByRules().size(); i++)
             {
                 boolean e = getByRules().get(i).equals(testObj.getByRules().get(i));
-                System.out.println("rules: " + getByRules().get(i) + " " + testObj.getByRules().get(i) + " " + e);
                 rulesEqualsArray.add(e);
             }
             rulesEquals = rulesEqualsArray.stream().allMatch(a -> a == true );

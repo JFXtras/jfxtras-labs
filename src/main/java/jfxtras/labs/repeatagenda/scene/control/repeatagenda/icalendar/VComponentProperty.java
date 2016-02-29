@@ -806,6 +806,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRul
             this.dialogRequired = dialogRequired;
         }
         
+        /** Returns the iCalendar property name (e.g. DTSTAMP) */
         @Override
         public String toString() { return name; }
         public boolean isDialogRequired() { return dialogRequired; }

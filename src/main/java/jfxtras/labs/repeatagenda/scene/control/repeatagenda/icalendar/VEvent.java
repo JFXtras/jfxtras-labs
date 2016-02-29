@@ -82,7 +82,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
  * @author David Bal
  * @see VEventImpl
  */
-public abstract class VEvent<I> extends VComponentBaseAbstract<I>
+public abstract class VEvent<I> extends VComponentBase<I>
 {
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
@@ -231,6 +231,17 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
         }
     }
     
+    /** returns list of date-time properties that have been edited (DURATION or DTEND) */
+    @Override
+    protected Collection<String> changedStartAndEndDateTime(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
+    {
+        Collection<String> changedProperties = super.changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance);
+        TemporalAmount durationNew = EndPriority.calcDuration(startInstance, endInstance);
+        TemporalAmount durationOriginal = endPriority().getDuration(this);
+        if (! durationOriginal.equals(durationNew)) { changedProperties.add(endPriority().toString()); }
+        return changedProperties;
+    }
+    
     /* Adjust DTEND by instance start and end date-time */
     @Override
     protected void adjustDateTime(Temporal startOriginalInstance
@@ -284,7 +295,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     }
 
     @Override // edit end date or date/time
-    protected void editOne(
+    protected Collection<I> editOne(
             VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
           , Temporal startOriginalInstance
@@ -305,11 +316,11 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
             setDuration(Duration.between(startInstance, endInstance));
             break;
         }
-        super.editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
+        return super.editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
     }
 
     @Override // edit end date or date/time
-    protected void editThisAndFuture(
+    protected Collection<I> editThisAndFuture(
             VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
           , Temporal startOriginalInstance
@@ -327,7 +338,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
         }
         Temporal endNew = getDateTimeEnd().plus(duration);
         setDateTimeEnd(endNew);
-        super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
+        return super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
     }
     
     /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. 
@@ -519,7 +530,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
      */
     public abstract TemporalAmount getDuration(VEvent<?> vEvent);
     
-    private static TemporalAmount calcDuration(Temporal startInclusive, Temporal endExclusive)
+    public static TemporalAmount calcDuration(Temporal startInclusive, Temporal endExclusive)
     {
         final TemporalAmount duration;
         if (DateTimeType.from(startInclusive) == DateTimeType.DATE)

@@ -205,12 +205,28 @@ public class RRule
     public String makeErrorString(VComponent<?> parent)
     {
         StringBuilder builder = new StringBuilder();
+        if (recurrences() != null)
+        {
+            recurrences().stream()
+                    .filter(r -> ! DateTimeType.from(r.getDateTimeRecurrence()).equals(parent.getDateTimeType()))
+                    .forEach(r -> 
+                    {
+                        builder.append(System.lineSeparator()
+                                + "Invalid RRule.  Recurrence ("
+                                + r.getDateTimeRecurrence() + ", " + r.getDateTimeType()
+                                + ") must have same DateTimeType as parent ("
+                                + parent.getDateTimeType() + ")");
+                    });
+        }
         if (getUntil() != null)
         {
             Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), parent.getDateTimeType());
             if (VComponent.isBefore(convertedUntil, parent.getDateTimeStart())) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
         }
-        if ((getCount() == null) || (getCount() < 0)) builder.append(System.lineSeparator() + "Invalid RRule.  COUNT must not be less than 0");
+        if ((getCount() == null) || (getCount() < 0))
+        {
+            builder.append(System.lineSeparator() + "Invalid RRule.  COUNT must not be less than 0");
+        }
         if (getFrequency() == null)
         {
             builder.append(System.lineSeparator() + "Invalid RRule.  FREQ must not be null");

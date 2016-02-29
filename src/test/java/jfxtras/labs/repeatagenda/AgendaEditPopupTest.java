@@ -760,8 +760,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
-    public void canMakeExceptionListStart()
+    public void canMakeExceptionListInitial()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
         VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
@@ -790,6 +789,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
               , LocalDateTime.of(2015, 11, 14, 10, 0)
                 ));
         assertEquals(expectedDates, exceptions);
+        TestUtil.sleep(3000);
         closeCurrentWindow();
     }
     
@@ -1156,6 +1156,12 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         expectedV1.setRRule(null);
         expectedV1.setSequence(1);
         assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
+        
+//        // edit second recurrence
+//        move("#AppointmentRegularBodyPane2015-11-09/0");
+//        press(MouseButton.SECONDARY);
+//        release(MouseButton.SECONDARY);
+//        TestUtil.sleep(3000);
     }
     
     @Test
@@ -1315,7 +1321,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         move("#hourLine12");
         release(MouseButton.PRIMARY);
         
-//        Assert.assertEquals(1, agenda.vComponents().size());
         Assert.assertEquals("2015-11-11T10:00", agenda.appointments().get(0).getStartLocalDateTime().toString() );
         Assert.assertEquals("2015-11-11T12:00", agenda.appointments().get(0).getEndLocalDateTime().toString() );
         assertFind("#AppointmentRegularBodyPane2015-11-11/0"); // validate that the pane has the expected id
@@ -1426,19 +1431,4 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                 ));
         Assert.assertEquals(expectedDates, dates);
     }
-     
-//    public static ArrayList<Node> getAllNodes(Parent root) {
-//        ArrayList<Node> nodes = new ArrayList<Node>();
-//        addAllDescendents(root, nodes);
-//        return nodes;
-//    }
-//
-//    private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
-//        for (Node node : parent.getChildrenUnmodifiable()) {
-//            nodes.add(node);
-//            if (node instanceof Parent)
-//                addAllDescendents((Parent)node, nodes);
-//        }
-//    }
-
 }

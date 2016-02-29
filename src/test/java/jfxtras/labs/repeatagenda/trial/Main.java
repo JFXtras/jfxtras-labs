@@ -58,7 +58,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{    
 //	    ICalendarEditTest r = new ICalendarEditTest();
-//	    r.canEditOne2();
+//	    r.canEditAll1();
 //        System.exit(0);	    
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
