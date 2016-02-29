@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */

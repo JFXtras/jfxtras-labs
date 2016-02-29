@@ -318,10 +318,6 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
                 {
                     p.copyProperty(source, destination);
                 });
-//        destination.setDescription(source.getDescription());
-//        destination.setDuration(source.getDuration());
-//        destination.setDateTimeEnd(source.getDateTimeEnd());
-//        destination.setLocation(source.getLocation());
         destination.endPriority = source.endPriority();
     }
 

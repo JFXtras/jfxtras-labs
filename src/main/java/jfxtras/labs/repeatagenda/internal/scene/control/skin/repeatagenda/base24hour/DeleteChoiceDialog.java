@@ -3,7 +3,7 @@ package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base2
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ICalendarUtilities.ChangeDialogOption;
 
 /**
  * Dialog to allow user to choice between ChangeDialogOption (ONE, THIS_AND_FUTURE, and ALL) delete options.

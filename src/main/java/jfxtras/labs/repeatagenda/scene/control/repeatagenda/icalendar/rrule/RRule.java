@@ -20,7 +20,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
@@ -360,6 +360,16 @@ public class RRule
         return rrule;
     }
 
+    /**
+     * Determines if recurrence set is goes on forever
+     * 
+     * @return - true if recurrence set is infinite, false otherwise
+     */
+    public boolean isInfinite()
+    {
+        return ((getCount() == 0) && (getUntil() == null));
+    }
+    
     /** Stream of date/times made after applying all modification rules.
      * Stream is infinite if COUNT or UNTIL not present or ends when COUNT or UNTIL condition
      * is met.

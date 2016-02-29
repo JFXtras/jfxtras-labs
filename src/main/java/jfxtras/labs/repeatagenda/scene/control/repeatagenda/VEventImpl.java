@@ -50,6 +50,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 public class VEventImpl extends VEvent<Appointment>
 {
     // TODO - THESE CALLBACKS MAY BE OBSOLETE - IF AppointmentImplTemporal IS IN AGENDA
+    // USE REFLECTION FROM APPOINTMENT CLASS INSTEAD?
     /*
      *  STATIC CALLBACKS FOR MAKING NEW APPOINTMENTS
      *  One for each of the four date and date-time options in iCalendar:
@@ -61,7 +62,14 @@ public class VEventImpl extends VEvent<Appointment>
      *  
      *  Only date-time properties are set in the callbacks.  The other properties
      *  are set in makeInstances method.
-     */    
+     */
+    private final static Callback<StartEndPair, Appointment> TEMPORAL_INSTANCE = (p) ->
+    {
+        return new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(p.getDateTimeStart())
+                .withEndTemporal(p.getDateTimeEnd());
+    };
+    
     /** For DATE type (whole-day Appointments) */
     private final static Callback<StartEndPair, Appointment> NEW_DATE_INSTANCE = (p) ->
     {
@@ -170,9 +178,8 @@ public class VEventImpl extends VEvent<Appointment>
             (obs, oldValue, newValue) -> setCategories(newValue.getDescription());
     
     /**
-     *  VEventImpl doesn't know how to make an appointment.  An appointment factory makes new appointments.  The Class of the appointment
-     * is an argument for the AppointmentFactory.  The appointmentClass is set in the constructor.  A RRule object is not valid without
-     * the appointmentClass.
+     *  VEventImpl doesn't know how to make an appointment.  New appointments are instantiated via reflection, so they
+     *  must have a no-arg constructor.
      */
     public Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
     private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImplTemporal.class; // default Appointment class
@@ -238,28 +245,30 @@ public class VEventImpl extends VEvent<Appointment>
     {
         this(appointmentGroups);
         setCategories(appointment.getAppointmentGroup().getDescription());
-        if (appointment.isWholeDay())
-        {
-            setDateTimeEnd(appointment.getEndLocalDateTime().toLocalDate());
-            setDateTimeStart(appointment.getStartLocalDateTime().toLocalDate());
-        } else
-        {
-            Temporal start;
-            Temporal end;
-            start = appointment.getStartTemporal();
-            end = appointment.getEndTemporal();
-//            try
-//            {
-//                start = appointment.getStartZonedDateTime();
-//                end = appointment.getEndZonedDateTime();
-//            } catch (Exception e)
-//            {
-//                start = appointment.getStartLocalDateTime();
-//                end = appointment.getEndLocalDateTime();
-//            }
-            setDateTimeEnd(end);
-            setDateTimeStart(start);
-        }
+//        if (appointment.isWholeDay())
+//        {
+//            setDateTimeEnd(appointment.getEndTemporal());
+//            setDateTimeStart(appointment.getEndTemporal());
+//        } else
+//        {
+//            Temporal start;
+//            Temporal end;
+//            start = appointment.getStartTemporal();
+//            end = appointment.getEndTemporal();
+////            try
+////            {
+////                start = appointment.getStartZonedDateTime();
+////                end = appointment.getEndZonedDateTime();
+////            } catch (Exception e)
+////            {
+////                start = appointment.getStartLocalDateTime();
+////                end = appointment.getEndLocalDateTime();
+////            }
+//            setDateTimeEnd(end);
+//            setDateTimeStart(start);
+//        }
+        setDateTimeStart(appointment.getStartTemporal());
+        setDateTimeEnd(appointment.getEndTemporal());
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setDescription(appointment.getDescription());
         setLocation(appointment.getLocation());
@@ -324,11 +333,12 @@ public class VEventImpl extends VEvent<Appointment>
     public List<Appointment> makeInstances()
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
-        Callback<StartEndPair, Appointment> newInstanceCallback = DATE_TIME_MAKE_INSTANCE_MAP.get(getDateTimeType());
+//        Callback<StartEndPair, Appointment> newInstanceCallback = DATE_TIME_MAKE_INSTANCE_MAP.get(getDateTimeType());
+        Callback<StartEndPair, Appointment> newInstanceCallback = TEMPORAL_INSTANCE;
         List<Appointment> madeAppointments = new ArrayList<>();
-        System.out.println("makeinstances:" + getStartRange() + " " + getEndRange());
-        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange()));
-        Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> ! VComponent.isAfter(a, getEndRange()));
+//        System.out.println("makeinstances:" + getStartRange() + " " + getEndRange());
+        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange())); // inclusive
+        Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> VComponent.isBefore(a, getEndRange())); // exclusive
         removedTooLate.forEach(temporalStart ->
         {
             final Temporal temporalEnd;
@@ -351,7 +361,12 @@ public class VEventImpl extends VEvent<Appointment>
             default:
                 throw new RuntimeException("Unknown EndPriority");
             }
-            Appointment appt = newInstanceCallback.call(new StartEndPair(temporalStart, temporalEnd));
+//            Appointment appt = newInstanceCallback.call(new StartEndPair(temporalStart, temporalEnd));
+            Appointment appt = null;
+            try { appt = getAppointmentClass().newInstance(); }
+            catch (Exception e) { e.printStackTrace(); }
+            appt.setStartTemporal(temporalStart);
+            appt.setEndTemporal(temporalEnd);
             appt.setDescription(getDescription());
             appt.setSummary(getSummary());
             appt.setAppointmentGroup(getAppointmentGroup());

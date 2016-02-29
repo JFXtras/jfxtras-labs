@@ -3,9 +3,12 @@ package jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 
 
 /**
@@ -16,29 +19,59 @@ import java.time.temporal.Temporal;
  *  DATE_WITH_UTC_TIME:
  * see iCalendar RFC 5545, page 32-33
  * 
+ * includes methods to format a Temporal representing a DateTimeType as a String
+ * 
  * @author David Bal
  *
  */
 public enum DateTimeType
 {
-    // TODO - clazz and zoneID not used (i think) delete if not used
-    DATE (LocalDate.class, null)
-  , DATE_WITH_LOCAL_TIME (LocalDate.class, null)
-  , DATE_WITH_UTC_TIME (ZonedDateTime.class, ZoneId.of("Z"))
-  , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE (ZonedDateTime.class, ZoneId.systemDefault());
+    DATE
+    {
+        @Override
+        public String formatStart(Temporal temporal) { return Settings.DATE_FORMAT.format(temporal); }
+
+        @Override
+        public String formatEndSameDay(Temporal temporal) { throw new DateTimeException("Invalid DateTimeType format selection"); }
+
+        @Override
+        public String formatEndDifferentDay(Temporal temporal) { return Settings.DATE_FORMAT.format(temporal); }
+    }
+  , DATE_WITH_LOCAL_TIME
+    {
+      @Override
+      public String formatStart(Temporal temporal) { return Settings.DATE_TIME_FORMAT.format(temporal); }
+
+      @Override
+      public String formatEndSameDay(Temporal temporal) { return Settings.TIME_FORMAT_END.format(temporal); }
+
+      @Override
+      public String formatEndDifferentDay(Temporal temporal) { return Settings.DATE_TIME_FORMAT.format(temporal); }
+    }
+  , DATE_WITH_UTC_TIME
+    {
+    @Override
+    public String formatStart(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatStart(temporal); }
+
+    @Override
+    public String formatEndSameDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndSameDay(temporal); }
+
+    @Override
+    public String formatEndDifferentDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndDifferentDay(temporal); }
+    }
+  , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE
+    {
+    @Override
+    public String formatStart(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatStart(temporal); }
+
+    @Override
+    public String formatEndSameDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndSameDay(temporal); }
+
+    @Override
+    public String formatEndDifferentDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndDifferentDay(temporal); }
+    };
 
     private static final ZoneId DEFAULT_ZONE = ZoneId.systemDefault(); // default ZoneId to convert to
-    private Class<? extends Temporal> clazz;
-    private ZoneId zoneId;
-    
-    DateTimeType(Class<? extends Temporal> clazz, ZoneId zoneId)
-    {
-        this.clazz = clazz;
-        this.zoneId = zoneId;
-    }
-    
-    public Class<? extends Temporal> getTemporalClass() { return clazz; }
-    public ZoneId getZoneId() { return zoneId; }
     
     /** Find DateTimeType of Temporal parameter t */
     public static DateTimeType from(Temporal t)
@@ -150,4 +183,27 @@ public enum DateTimeType
             }
         }
     }
+
+    public static String formatRange(Temporal start, Temporal end)
+    {
+        Period days = Period.between(LocalDate.from(start), LocalDate.from(end));
+        final String startString = DateTimeType.from(start).formatStart(start);
+        final String endString;
+        if (days.isZero()) // same day
+        {
+            endString = DateTimeType.from(end).formatEndSameDay(end);
+        } else
+        {
+            endString = DateTimeType.from(end).formatEndDifferentDay(end);            
+        }
+        return startString + " - " + endString;
+    }
+    
+    /** Formats temporal according to its DateTimeType */
+    public abstract String formatStart(Temporal temporal);
+    /** Formats temporal according to its DateTimeType */
+    public abstract String formatEndSameDay(Temporal temporal);
+    /** Formats temporal according to its DateTimeType */
+    public abstract String formatEndDifferentDay(Temporal temporal);
+
 }

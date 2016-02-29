@@ -24,6 +24,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
+
 // TODO - THESE METHODS ARE OUT OF DATE - THEY WERE USED ON
 // THE NOW OBSOLETE (AND DELETED) REPEAT CLASS.
 // NEW METHODS WILL BE WRITTEN IN THE FUTURE.

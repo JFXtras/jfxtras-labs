@@ -11,7 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ICalendarUtilities.ChangeDialogOption;
 
 /**
  * Dialog that can be either an edit or a delete choice dialog.
@@ -22,6 +22,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtili
  */
 public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
 {
+        
     private final ChangeDialogOption initialSelection = ChangeDialogOption.ONE;
 
     /**

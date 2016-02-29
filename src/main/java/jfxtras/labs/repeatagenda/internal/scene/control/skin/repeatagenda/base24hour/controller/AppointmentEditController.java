@@ -33,10 +33,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.ICalendarUtilities;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditChoiceDialog;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
@@ -351,7 +351,7 @@ public class AppointmentEditController extends Pane
                 , startInstance
                 , endInstance
                 , appointments
-                , ICalendarUtilities.EDIT_DIALOG_CALLBACK);
+                , EditChoiceDialog.EDIT_DIALOG_CALLBACK);
         popup.close();
     }
 

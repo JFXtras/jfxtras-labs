@@ -1,15 +1,10 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,10 +28,11 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentEditLoader;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.SelectOneLoader;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
@@ -113,6 +109,13 @@ public class ICalendarAgenda extends Agenda
      */
     private ListChangeListener<Appointment> appointmentsListener;
     private ListChangeListener<VComponent<Appointment>> vComponentsListener; // listen for changes to vComponents.
+
+    /*
+     * Callback for determing scope of edit change - defaults to always answering ALL
+     * Add For choice dialog, change to different callback
+     */
+    private Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> oneAllThisAndFutureDialogCallback = (m) -> ChangeDialogOption.ALL;
+    public void setOneAllThisAndFutureDialogCallback(Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> callback) { oneAllThisAndFutureDialogCallback = callback; }
     
     // Default edit popup callback - this callback replaces Agenda's default edit popup
     // It has controls for repeatable events
@@ -192,81 +195,89 @@ public class ICalendarAgenda extends Agenda
         final Temporal startInstance;
         final Temporal endInstance;
         Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
-        if (appointment.isWholeDay())
-        {
-            startInstance = LocalDate.from(appointment.getStartLocalDateTime()).atStartOfDay();
-            endInstance = LocalDate.from(appointment.getEndLocalDateTime()).plus(1, ChronoUnit.DAYS).atStartOfDay();
-        } else
-        {
-            switch (vEvent.getDateTimeType())
-            {
-            case DATE:
-                throw new RuntimeException("VEvent should be wholeday, but isn't");
-            case DATE_WITH_LOCAL_TIME:
-                startInstance = appointment.getStartLocalDateTime();
-                endInstance = appointment.getEndLocalDateTime();
-                break;
-            case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-            case DATE_WITH_UTC_TIME:
-//                System.out.println("appointment class:" + appointment.getStartTemporal().getClass());
-                startInstance = appointment.getStartTemporal();
-                endInstance = appointment.getEndTemporal();
-                ZoneId zone = ((ZonedDateTime) startInstance).getZone();
-//                startInstance = appointment.getStartZonedDateTime();
-//                endInstance = appointment.getEndZonedDateTime();
-//                ZoneId zone = appointment.getStartZonedDateTime().getZone();
-//                startOriginalInstance = LocalDateTime.from(startOriginalInstance).atZone(zone); // TODO I don't like this line.  I want the Temporals in appointmentStartOriginalMap to be the correct type.
-                break;
-            default:
-                throw new RuntimeException("Unsupported Temporal type:" + vEvent.getDateTimeType());
-            }
-        }
+        appointmentStartOriginalMap.entrySet().stream().forEach(a -> System.out.println("map2:" + a.getKey() + " " + a.getValue()));
+        startInstance = appointment.getStartTemporal();
+        endInstance = appointment.getEndTemporal();
+
+//        if (appointment.isWholeDay())
+//        {
+//            startInstance = LocalDate.from(appointment.getStartLocalDateTime()).atStartOfDay();
+//            endInstance = LocalDate.from(appointment.getEndLocalDateTime()).plus(1, ChronoUnit.DAYS).atStartOfDay();
+//        } else
+//        {
+//            startInstance = appointment.getStartTemporal();
+//            endInstance = appointment.getEndTemporal();
+//            switch (vEvent.getDateTimeType())
+//            {
+//            case DATE:
+//                throw new RuntimeException("VEvent should be wholeday, but isn't");
+//            case DATE_WITH_LOCAL_TIME:
+//                startInstance = appointment.getStartLocalDateTime();
+//                endInstance = appointment.getEndLocalDateTime();
+//                break;
+//            case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+//            case DATE_WITH_UTC_TIME:
+////                System.out.println("appointment class:" + appointment.getStartTemporal().getClass());
+//                startInstance = appointment.getStartTemporal();
+//                endInstance = appointment.getEndTemporal();
+////                System.out.println("instances:" + startOriginalInstance + " " + startInstance + " " + endInstance);
+////                ZoneId zone = ((ZonedDateTime) startInstance).getZone();
+////                startInstance = appointment.getStartZonedDateTime();
+////                endInstance = appointment.getEndZonedDateTime();
+////                ZoneId zone = appointment.getStartZonedDateTime().getZone();
+////                startOriginalInstance = LocalDateTime.from(startOriginalInstance).atZone(zone); // TODO I don't like this line.  I want the Temporals in appointmentStartOriginalMap to be the correct type.
+//                break;
+//            default:
+//                throw new RuntimeException("Unsupported Temporal type:" + vEvent.getDateTimeType());
+//            }
+//        }
   
         // apply changes to vEvent Note: only changes date and time.  If other types of changes become possible then add to the below list.
         // change start and end date/time
         
-        // set start date-time
-        final Temporal startNew;        
-        if (appointment.isWholeDay())
-        {
-            Period dayShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
-            startNew = vEvent.getDateTimeStart().plus(dayShift);
-            vEvent.setDateTimeStart(startNew);
-
-            // Convert range to LocalDate if necessary
-            if (! (vEvent.getStartRange() instanceof LocalDate))
-            {
-                vEvent.setStartRange(LocalDate.from(vEvent.getStartRange()));
-                vEvent.setEndRange(LocalDate.from(vEvent.getEndRange()));
-            }
-        } else
-        {
-            Duration changeShift = Duration.between(startOriginalInstance, startInstance);
-            startNew = vEvent.getDateTimeStart().plus(changeShift);
-            vEvent.setDateTimeStart(startNew);
-        }
+        // START AND END CHANGED IN handleEdit
+//        // set start date-time
+//        final Temporal startNew;        
+//        if (appointment.isWholeDay())
+//        {
+//            Period dayShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
+//            startNew = vEvent.getDateTimeStart().plus(dayShift);
+//            vEvent.setDateTimeStart(startNew);
+//
+//            // Convert range to LocalDate if necessary
+//            if (! (vEvent.getStartRange() instanceof LocalDate))
+//            {
+//                vEvent.setStartRange(LocalDate.from(vEvent.getStartRange()));
+//                vEvent.setEndRange(LocalDate.from(vEvent.getEndRange()));
+//            }
+//        } else
+//        {
+//            Duration changeShift = Duration.between(startOriginalInstance, startInstance);
+//            startNew = vEvent.getDateTimeStart().plus(changeShift);
+//            vEvent.setDateTimeStart(startNew);
+//        }
         
-        // set end date-time or duration
-        final TemporalAmount duration;
-        switch (vEvent.endPriority())
-        {
-        case DTEND:
-            Temporal endNew;
-            if (appointment.isWholeDay())
-            {
-                duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
-            } else
-            {
-                duration = Duration.between(startInstance, endInstance);
-            }
-            endNew = startNew.plus(duration);                
-            vEvent.setDateTimeEnd(endNew);
-            break;
-        case DURATION:
-                duration = Duration.between(startInstance, endInstance);
-                vEvent.setDuration(duration);
-            break;
-        }
+//        // set end date-time or duration
+//        final TemporalAmount duration;
+//        switch (vEvent.endPriority())
+//        {
+//        case DTEND:
+//            Temporal endNew;
+//            if (appointment.isWholeDay())
+//            {
+//                duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
+//            } else
+//            {
+//                duration = Duration.between(startInstance, endInstance);
+//            }
+//            endNew = startNew.plus(duration);                
+//            vEvent.setDateTimeEnd(endNew);
+//            break;
+//        case DURATION:
+//                duration = Duration.between(startInstance, endInstance);
+//                vEvent.setDuration(duration);
+//            break;
+//        }
         appointments().removeListener(appointmentsListener);
         vComponents().removeListener(vComponentsListener);
         vEvent.handleEdit(
@@ -276,12 +287,15 @@ public class ICalendarAgenda extends Agenda
               , startInstance
               , endInstance
               , appointments()
-              , ICalendarUtilities.EDIT_DIALOG_CALLBACK);
+              , oneAllThisAndFutureDialogCallback);
         appointments().addListener(appointmentsListener);
         vComponents().addListener(vComponentsListener);
         
+        System.out.println("vComponents changed - added:******************************" + vComponents.size());
+
         if (vEvent.equals(vEventOriginal)) refresh(); // refresh if canceled
-        appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartLocalDateTime()); // update start map
+        System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
+        appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
         return null;
     };
     
@@ -291,7 +305,7 @@ public class ICalendarAgenda extends Agenda
         super();
         vComponents().addListener((InvalidationListener) (obs) -> 
         {
-            System.out.println("vComponents chagned:******************************");
+            System.out.println("vComponents chagned:******************************" + vComponents.size());
             vComponents.stream().forEach(System.out::println);
         });
 
@@ -331,6 +345,8 @@ public class ICalendarAgenda extends Agenda
                     { // Open little popup - edit, delete
                         ZonedDateTime created = ZonedDateTime.now(ZoneId.of("Z"));
                         Appointment a = change.getAddedSubList().get(0);
+                        System.out.println("new appt:" + a + appointments().size());
+
                         String originalSummary = a.getSummary();
                         AppointmentGroup originalAppointmentGroup = a.getAppointmentGroup();
                         ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0)); // runs NewAppointmentDialog by default
@@ -348,7 +364,7 @@ public class ICalendarAgenda extends Agenda
                             }
                             // fall through
                         case OTHER: // ADVANCED EDIT
-                            System.out.println("Advanced edit:");
+//                            System.out.println("Advanced edit:");
                             VComponent<Appointment> newVComponent = VComponentFactory
                                     .newVComponent(getVEventClass(), a, appointmentGroups());
                             Temporal startRange = getDateTimeRange().getStartLocalDateTime();
@@ -359,10 +375,11 @@ public class ICalendarAgenda extends Agenda
                             newVComponent.setDateTimeCreated(created);
                             vComponents().removeListener(vComponentsListener);
                             vComponents().add(newVComponent);
-                            System.out.println("new:" + newVComponent);
+//                            System.out.println("new:" + newVComponent);
                             vComponents().addListener(vComponentsListener);
                             // put data in maps
-                            appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartLocalDateTime());
+                            System.out.println("map3:" + System.identityHashCode(a) + " " + a.getStartTemporal());
+                            appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
                             appointmentVComponentMap.put(System.identityHashCode(a), newVComponent); // populate appointment-vComponent map
                             break;
                         default:
@@ -381,8 +398,8 @@ public class ICalendarAgenda extends Agenda
                     { // add appointments to EXDATE
                         VComponent<Appointment> v = findVComponent(a);
                         if (v.getExDate() == null) v.setExDate(new ExDate());
-                        Temporal t = (a.isWholeDay()) ? LocalDate.from(a.getStartLocalDateTime()) : a.getStartLocalDateTime();
-                        v.getExDate().getTemporals().add(t);
+//                        Temporal t = (a.isWholeDay()) ? LocalDate.from(a.getStartLocalDateTime()) : a.getStartLocalDateTime();
+                        v.getExDate().getTemporals().add(a.getStartTemporal());
                         if (v.isRecurrenceSetEmpty()) vComponents().remove(v);
                     });
                 }
@@ -392,7 +409,7 @@ public class ICalendarAgenda extends Agenda
         // fires when VComponents are added outside the edit popup, such as initialization
         vComponentsListener = (ListChangeListener.Change<? extends VComponent<Appointment>> change) ->
         {
-            System.out.println("vcomponents changed:");
+            System.out.println("vcomponents changed:" + vComponents.size());
             while (change.next())
             {
                 if (change.wasAdded()) // can't make appointment if range is not set
@@ -415,7 +432,7 @@ public class ICalendarAgenda extends Agenda
                                 .stream()
                                 .forEach(v -> 
                                 {
-                                    System.out.println("add instances:");
+//                                    System.out.println("add instances:");
                                     if (v.instances().isEmpty()) newAppointments.addAll(v.makeInstances(start, end));
     
                                     // add recurrence-id Temporal to parents (required to skip recurrences when making appointments)
@@ -475,6 +492,7 @@ public class ICalendarAgenda extends Agenda
         // Keeps appointmentRecurrenceIDMap and appointmentVComponentMap synched with appointments
         ListChangeListener<Appointment> appointmentsListener2 = (ListChangeListener.Change<? extends Appointment> change) ->
         {
+            System.out.println("appointmentsListener2:");
             while (change.next())
             {
                 if (change.wasAdded())
@@ -498,6 +516,7 @@ public class ICalendarAgenda extends Agenda
 //                                    throw new RuntimeException("Unknown TemporalType:" + v.getTemporalType());
 //                                }
                                 
+                                System.out.println("map:" + System.identityHashCode(a) + " " + a.getStartTemporal());
                                 appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
 //                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
                                 // TODO - IF I MOVE INSTANCE MAKING TO HERE - EITHER CALLBACK OR LISTENER THEN I CAN UPDATE
@@ -557,7 +576,8 @@ public class ICalendarAgenda extends Agenda
                     appointments().addAll(newAppointments);
                     newAppointments.stream().forEach(a ->
                     {
-                        appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartLocalDateTime()); // populate recurrence-id map
+                        System.out.println("map5:" + System.identityHashCode(a) + " " + a.getStartTemporal());
+                        appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal()); // populate recurrence-id map
                         appointmentVComponentMap.put(System.identityHashCode(a), v); // populate appointment-vComponent map
                     });
                 });
@@ -670,9 +690,9 @@ public class ICalendarAgenda extends Agenda
 //        }
 //    }
 
-    /** Add ResourceBundle for FXML controllers that contains strings for the appointment popups */
-    public void setResourceBundle(ResourceBundle resources) {
-        Settings.setup(resources);
-    }
+//    /** Add ResourceBundle for FXML controllers that contains strings for the appointment popups */
+//    public void setResourceBundle(ResourceBundle resources) {
+//        Settings.setup(resources);
+//    }
         
 }

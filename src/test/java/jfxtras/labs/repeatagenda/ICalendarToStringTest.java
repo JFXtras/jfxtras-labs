@@ -8,6 +8,7 @@ import java.time.temporal.Temporal;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ICalendarUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponentProperty;
 
@@ -315,9 +316,9 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     @Test
     public void canMakeRangeToString1()
     {
-        assertEquals("Wed, November, 11, 2015 10:00 AM - Fri, December 25, 2015", getWeekly4().rangeToString());
-        assertEquals("Mon, November 9, 2015 - Tue, November 24, 2015", getWholeDayDaily3().rangeToString());
-        assertEquals("Mon, November, 9, 2015 10:00 AM - forever", getDaily5().rangeToString());
+        assertEquals("Wed, November, 11, 2015 10:00 AM - Fri, December 25, 2015", ICalendarUtilities.rangeToString(getWeekly4()));
+        assertEquals("Mon, November 9, 2015 - Tue, November 24, 2015", ICalendarUtilities.rangeToString(getWholeDayDaily3()));
+        assertEquals("Mon, November, 9, 2015 10:00 AM - forever", ICalendarUtilities.rangeToString(getDaily5()));
     }
     
 

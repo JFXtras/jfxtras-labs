@@ -11,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -59,9 +59,13 @@ public class SelectOneController extends Rectangle
 //        this.layoutHelp = layoutHelp;
 //        this.popup = popup;
         
-        String start = Settings.DATE_FORMAT_AGENDA_START.format(appointment.getStartLocalDateTime());
-        String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndLocalDateTime());
-        String appointmentTime = start + end + " ";
+        // TODO - FORMAT DIFFERENT DATE-TIME TYPES DIFFERENTLY
+//        String start = Settings.DATE_TIME_FORMAT.format(appointment.getStartTemporal());
+//        String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndTemporal());
+//        String appointmentTime = start + end + " ";
+
+        String appointmentTime = DateTimeType.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
+
         appointmentTimeLabel.setText(appointmentTime);
         nameLabel.setText(appointment.getSummary());
         nameLabel.textProperty().addListener((observable, oldValue, newValue) ->  {

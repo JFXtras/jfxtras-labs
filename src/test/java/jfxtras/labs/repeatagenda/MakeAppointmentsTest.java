@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -104,16 +105,16 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
         VEventImpl vevent = getWholeDayDaily3();
         vevent.setAppointmentClass(getClazz());
         LocalDate start = LocalDate.of(2015, 11, 15);
-        LocalDate end = LocalDate.of(2015, 11, 21);
+        LocalDate end = LocalDate.of(2015, 11, 22);
         List<Appointment> appointments = vevent.makeInstances(start, end);
 
-        List<LocalDateTime> dates = appointments.stream()
-                .map(a -> a.getStartLocalDateTime())
+        List<Temporal> dates = appointments.stream()
+                .map(a -> a.getStartTemporal())
                 .collect(Collectors.toList());
-        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 15, 0, 0)
-              , LocalDateTime.of(2015, 11, 18, 0, 0)
-              , LocalDateTime.of(2015, 11, 21, 0, 0)
+        List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                LocalDate.of(2015, 11, 15)
+              , LocalDate.of(2015, 11, 18)
+              , LocalDate.of(2015, 11, 21)
                 ));        
         assertEquals(expectedDates, dates);
         

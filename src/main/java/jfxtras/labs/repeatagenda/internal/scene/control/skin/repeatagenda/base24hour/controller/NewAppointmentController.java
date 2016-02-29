@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import javafx.fxml.FXML;
 import javafx.stage.Popup;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -31,9 +30,10 @@ public class NewAppointmentController extends Popup
 //        this.layoutHelp = layoutHelp;
 //        this.popup = popup;
         
-        String start = Settings.DATE_FORMAT_AGENDA_START.format(appointment.getStartLocalDateTime());
-        String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndLocalDateTime());
-        String appointmentTime = start + end + " ";
+//        String start = Settings.DATE_TIME_FORMAT.format(appointment.getStartTemporal());
+//        String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndTemporal());
+//        String appointmentTime = DateTimeType.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
+//        String appointmentTime = start + end + " ";
 //        appointmentTimeLabel.setText(appointmentTime);
 //        nameLabel.setText(appointment.getSummary());
 //        nameLabel.textProperty().addListener((observable, oldValue, newValue) ->  {

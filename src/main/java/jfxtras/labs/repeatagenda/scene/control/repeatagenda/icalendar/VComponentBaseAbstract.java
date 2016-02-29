@@ -32,10 +32,10 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.SetChangeListener;
 import javafx.util.Callback;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.DeleteChoiceDialog;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.RRuleType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 
 /**
@@ -93,7 +93,6 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             this.comment.set(comment);            
         }
     }
-//    public VEvent withComment(String value) { setComment(value); return this; }
 
     /**
      * CREATED: Date-Time Created, from RFC 5545 iCalendar 3.8.7.1 page 136
@@ -186,7 +185,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
     void ensureDateTimeTypeConsistency(DateTimeType dateTimeType)
     {
         // RECURRENCE-ID (of children)
-        // TODO - changing children incorrectly - FIXTHIS
+        System.out.println("ensureDateTimeTypeConsistency:");
         if (getRRule() != null && getRRule().recurrences() != null)
         {
             getRRule().recurrences().forEach(v ->
@@ -625,7 +624,9 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
     {
         System.out.println("instance:" + startOriginalInstance + " " + startInstance + " " + endInstance + " " + getDateTimeStart() + " " + ((VEvent) this).getDateTimeEnd() + " " + getStartRange() + " " + getEndRange());
+        adjustDateTime(startOriginalInstance, startInstance, endInstance);
         final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
+        System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         switch (rruleType)
         {
@@ -637,6 +638,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             if (! equals(vComponentOriginal)) updateInstances(instances);
             break;
         case WITH_EXISTING_REPEAT:
+            System.out.println("existing start:" + vComponentOriginal.getDateTimeStart());
             List<String> changedPropertyNames = findChangedProperties(vComponentOriginal);
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
             System.out.println("provideDialog:" + provideDialog);
@@ -644,20 +646,22 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             {
                 List<VComponent<I>> relatedVComponents = Arrays.asList(this);
                 final ChangeDialogOption changeResponse;
+                // TODO - NEED REMOVAL OF THIS AGENDA-DEPENDANT CODE
                 if (provideDialog)
                 {
-                    Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-                    String one = VComponent.temporalToStringPretty(startInstance);
-                    choices.put(ChangeDialogOption.ONE, one);
-                    if (! isIndividual())
-                    {
-                        {
-                            String future = VComponent.rangeToString(relatedVComponents, startInstance);
-                            choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
-                        }
-                        String all = VComponent.rangeToString(this);
-                        choices.put(ChangeDialogOption.ALL, all);
-                    }
+                    Map<ChangeDialogOption, String> choices = makeDialogChoices(startInstance);
+//                    Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
+//                    String one = ICalendarUtilities.temporalToStringPretty(startInstance);
+//                    choices.put(ChangeDialogOption.ONE, one);
+//                    if (! isIndividual())
+//                    {
+//                        {
+//                            String future = ICalendarUtilities.rangeToString(relatedVComponents, startInstance);
+//                            choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+//                        }
+//                        String all = ICalendarUtilities.rangeToString(this);
+//                        choices.put(ChangeDialogOption.ALL, all);
+//                    }
                     changeResponse = dialogCallback.call(choices);
                 } else
                 {
@@ -668,7 +672,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
                 case ALL:
                     if (relatedVComponents.size() == 1)
                     {
-                        adjustDateTime(startOriginalInstance, startInstance, endInstance);
+//                        adjustDateTime(startOriginalInstance, startInstance, endInstance);
                         updateInstances(instances);
                     } else
                     {
@@ -712,6 +716,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             , Temporal startInstance
             , Temporal endInstance)
     {
+        // TODO - FOR ALL BUT ONE - MAKE SURE START DATE IS FIRST OCCURRENCE - CHANGE IF NECESSARY
         final Temporal newStart;
         if (DateTimeType.from(startInstance) == DateTimeType.DATE)
         {
@@ -819,7 +824,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         // MAYBE AGENDA IS CHNAGEING ORIGINAL TO LOCALDATETIME
         setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
-        adjustDateTime(startOriginalInstance, startInstance, endInstance);        
+//        adjustDateTime(startOriginalInstance, startInstance, endInstance);
    
         // Add recurrence to original vEvent
         vEventOriginal.getRRule().recurrences().add(this);
@@ -945,7 +950,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             int countInNew = getRRule().getCount() - countInOrginal;
             getRRule().setCount(countInNew);
         }
-        adjustDateTime(startOriginalInstance, startInstance, endInstance);        
+//        adjustDateTime(startOriginalInstance, startInstance, endInstance);        
         
         if (! vComponentOriginal.isValid()) throw new RuntimeException(vComponentOriginal.errorString());
         vComponents.add(vComponentOriginal);
@@ -977,18 +982,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             instances.remove(instance);
         } else // more than one instance
         {
-            Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-            String one = VComponent.temporalToStringPretty(startInstance);
-            choices.put(ChangeDialogOption.ONE, one);
-            if (! this.isIndividual())
-            {
-                {
-                    String future = VComponent.rangeToString(this, startInstance);
-                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
-                }
-                String all = VComponent.rangeToString(this);
-                choices.put(ChangeDialogOption.ALL, all);
-            }
+            Map<ChangeDialogOption, String> choices = makeDialogChoices(startInstance);
             DeleteChoiceDialog dialog = new DeleteChoiceDialog(choices, Settings.resources);        
             Optional<ChangeDialogOption> result = dialog.showAndWait();
             ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
@@ -1040,7 +1034,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
                 instancesTemp.addAll(instances);
                 instancesTemp.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
                 instances().clear(); // clear this's outdated collection of appointments
-                instancesTemp.addAll(this.makeInstances()); // add vEventOld part of new appointments
+                instancesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
                 instances.clear();
                 instances.addAll(instancesTemp);
                 break;
@@ -1048,6 +1042,43 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
                 break;
             }
         }
+    }
+    
+//    static <U> Map<ChangeDialogOption, String> makeDialogChoices(VComponent<U> vComponent, Temporal startInstance)
+//    {
+//        Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
+//        String one = ICalendarUtilities.temporalToStringPretty(startInstance);
+//        choices.put(ChangeDialogOption.ONE, one);
+//        if (! vComponent.isIndividual())
+//        {
+//            if (! vComponent.isLastRecurrence(startInstance))
+//            {
+//                String future = ICalendarUtilities.rangeToString(vComponent, startInstance);
+//                choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+//            }
+//            String all = ICalendarUtilities.rangeToString(vComponent);
+//            choices.put(ChangeDialogOption.ALL, all);
+//        }
+//        return choices;
+//    }
+    
+    private Map<ChangeDialogOption, String> makeDialogChoices(Temporal startInstance)
+    {
+        Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
+        String one = ICalendarUtilities.temporalToStringPretty(startInstance);
+        choices.put(ChangeDialogOption.ONE, one);
+        if (! this.isIndividual())
+        {
+            if (! isLastRecurrence(startInstance))
+            {
+                String future = ICalendarUtilities.rangeToString(this, startInstance);
+                choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+            }
+            String all = ICalendarUtilities.rangeToString(this);
+            choices.put(ChangeDialogOption.ALL, all);
+        }
+        choices.entrySet().stream().forEach(System.out::println);
+        return choices;
     }
 
     /** Deep copy all fields from source to destination */
@@ -1066,45 +1097,45 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
 //        destination.setSequence(source.getSequence());
 //        destination.setSummary(source.getSummary());
 //        destination.setUniqueIdentifier(source.getUniqueIdentifier());
-        if (source.getRRule() != null)
-        {
-            if (destination.getRRule() == null)
-            { // make new RRule object for destination if necessary
-                try {
-                    RRule newRRule = source.getRRule().getClass().newInstance();
-                    destination.setRRule(newRRule);
-                } catch (InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-            source.getRRule().copyTo(destination.getRRule());
-        }
-        if (source.getExDate() != null)
-        {
-            if (destination.getExDate() == null)
-            { // make new EXDate object for destination if necessary
-                try {
-                    ExDate newEXDate = source.getExDate().getClass().newInstance();
-                    destination.setExDate(newEXDate);
-                } catch (InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-            source.getExDate().copyTo(destination.getExDate());
-        }
-        if (source.getRDate() != null)
-        {
-            if (destination.getRDate() == null)
-            { // make new RDate object for destination if necessary
-                try {
-                    RDate newRDate = source.getRDate().getClass().newInstance();
-                    destination.setRDate(newRDate);
-                } catch (InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-            source.getRDate().copyTo(destination.getRDate());
-        }
+//        if (source.getRRule() != null)
+//        {
+//            if (destination.getRRule() == null)
+//            { // make new RRule object for destination if necessary
+//                try {
+//                    RRule newRRule = source.getRRule().getClass().newInstance();
+//                    destination.setRRule(newRRule);
+//                } catch (InstantiationException | IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            source.getRRule().copyTo(destination.getRRule());
+//        }
+//        if (source.getExDate() != null)
+//        {
+//            if (destination.getExDate() == null)
+//            { // make new EXDate object for destination if necessary
+//                try {
+//                    ExDate newEXDate = source.getExDate().getClass().newInstance();
+//                    destination.setExDate(newEXDate);
+//                } catch (InstantiationException | IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            source.getExDate().copyTo(destination.getExDate());
+//        }
+//        if (source.getRDate() != null)
+//        {
+//            if (destination.getRDate() == null)
+//            { // make new RDate object for destination if necessary
+//                try {
+//                    RDate newRDate = source.getRDate().getClass().newInstance();
+//                    destination.setRDate(newRDate);
+//                } catch (InstantiationException | IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            source.getRDate().copyTo(destination.getRDate());
+//        }
     }
     
     /** Deep copy all fields from source to destination */

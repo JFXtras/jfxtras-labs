@@ -3,9 +3,10 @@ package jfxtras.labs.repeatagenda.trial.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.repeatagenda.ICalendarTestAbstract;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -93,6 +95,7 @@ public class CalendarController {
         // Set I/O callbacks
 //        agenda.setAppointmentWriteCallback(appointmentWriteCallback);
         agenda.setRepeatWriteCallback(repeatWriteCallback);
+        agenda.setOneAllThisAndFutureDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK);
 
         //        // setup appointment groups
 //        final Map<String, Agenda.AppointmentGroup> lAppointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
@@ -115,9 +118,13 @@ public class CalendarController {
 //                .withSummary("New")
 //                .withDescription("")
 //                .withAppointmentGroup(agenda.appointmentGroups().get(0));
+            LocalDateTime s = dateTimeRange.getStartLocalDateTime();
+            Temporal startTemporal = (s.toLocalTime().equals(LocalTime.MIN)) ? s.toLocalDate() : s;
+            LocalDateTime e = dateTimeRange.getEndLocalDateTime();
+            Temporal endTemporal = (e.toLocalTime().equals(LocalTime.MIN)) ? e.toLocalDate() : e;
             return new Agenda.AppointmentImplTemporal()
-                    .withStartTemporal( dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault()))
-                    .withEndTemporal( dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault()))
+                    .withStartTemporal(startTemporal)
+                    .withEndTemporal(endTemporal)
                     .withSummary("New")
                     .withDescription("")
                     .withAppointmentGroup(agenda.appointmentGroups().get(0));

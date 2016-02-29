@@ -1,6 +1,5 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -21,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -48,11 +48,13 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
     {
         initModality(Modality.APPLICATION_MODAL);
         setTitle(resources.getString("dialog.event.new.title"));
-        DateTimeFormatter startFormatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.start"));
-        DateTimeFormatter endFormatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.end"));
-        String start = startFormatter.format(appointment.getStartLocalDateTime());
-        String end = endFormatter.format(appointment.getEndLocalDateTime());
-        String appointmentTime = start + end + " ";
+        // TODO - FORMAT DIFFERENTLY FOR DIFFERNT DATE-TIME TYPES
+//        DateTimeFormatter startFormatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.start"));
+//        DateTimeFormatter endFormatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.end"));
+//        String start = startFormatter.format(appointment.getStartTemporal());
+//        String end = endFormatter.format(appointment.getEndTemporal());
+//        String appointmentTime = start + end + " ";
+        String appointmentTime = DateTimeType.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
         setHeaderText(appointmentTime);
         
         // Buttons
