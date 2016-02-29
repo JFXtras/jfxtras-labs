@@ -4,7 +4,6 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
@@ -334,33 +333,36 @@ public class VEventImpl extends VEvent<Appointment>
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
 //        Callback<StartEndPair, Appointment> newInstanceCallback = DATE_TIME_MAKE_INSTANCE_MAP.get(getDateTimeType());
-        Callback<StartEndPair, Appointment> newInstanceCallback = TEMPORAL_INSTANCE;
+//        Callback<StartEndPair, Appointment> newInstanceCallback = TEMPORAL_INSTANCE;
         List<Appointment> madeAppointments = new ArrayList<>();
 //        System.out.println("makeinstances:" + getStartRange() + " " + getEndRange());
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange())); // inclusive
         Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> VComponent.isBefore(a, getEndRange())); // exclusive
         removedTooLate.forEach(temporalStart ->
         {
-            final Temporal temporalEnd;
-            switch (endPriority())
-            {
-            case DTEND:
-                final TemporalAmount duration;
-                if (isWholeDay())
-                {
-                    duration = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(getDateTimeEnd()));
-                } else
-                {
-                    duration = Duration.between(getDateTimeStart(), getDateTimeEnd());
-                }
-                temporalEnd = temporalStart.plus(duration);
-                break;
-            case DURATION:
-                temporalEnd = temporalStart.plus(getDuration());                
-                break;
-            default:
-                throw new RuntimeException("Unknown EndPriority");
-            }
+            TemporalAmount duration = endPriority().getDuration(this);
+            System.out.println("make duration:" + duration);
+            Temporal temporalEnd = temporalStart.plus(duration);
+//            final Temporal temporalEnd;
+//            switch (endPriority())
+//            {
+//            case DTEND:
+//                final TemporalAmount duration;
+//                if (isWholeDay())
+//                {
+//                    duration = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(getDateTimeEnd()));
+//                } else
+//                {
+//                    duration = Duration.between(getDateTimeStart(), getDateTimeEnd());
+//                }
+//                temporalEnd = temporalStart.plus(duration);
+//                break;
+//            case DURATION:
+//                temporalEnd = temporalStart.plus(getDuration());                
+//                break;
+//            default:
+//                throw new RuntimeException("Unknown EndPriority");
+//            }
 //            Appointment appt = newInstanceCallback.call(new StartEndPair(temporalStart, temporalEnd));
             Appointment appt = null;
             try { appt = getAppointmentClass().newInstance(); }

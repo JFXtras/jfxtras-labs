@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
@@ -181,6 +182,34 @@ public enum DateTimeType
             default:
                 throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
             }
+        }
+    }
+    
+    /**
+     * Returns LocalDateTime from Temporal that is an instance of either LocalDate or LocalDateTime
+     * If the parameter is type LocalDate the returned LocalDateTime is atStartofDay.
+     * If the parameter is type ZonedDateTime the zoneID is changed to ZoneId.systemDefault() before taking the
+     * LocalDateTime.
+     * 
+     * @param temporal - either LocalDate or LocalDateTime type
+     * @return LocalDateTime
+     */
+    public static LocalDateTime localDateTimeFromTemporal(Temporal temporal)
+    {
+        if (temporal == null) return null;
+        if (temporal.isSupported(ChronoUnit.NANOS))
+        {
+            if (temporal instanceof ZonedDateTime)
+            {
+                ZonedDateTime z = ((ZonedDateTime) temporal).withZoneSameInstant(ZoneId.systemDefault());
+                return LocalDateTime.from(z);                
+            } else if (temporal instanceof LocalDateTime)
+            {
+                return LocalDateTime.from(temporal);                
+            } else throw new DateTimeException("Invalid temporal type:" + temporal.getClass().getSimpleName());
+        } else
+        {
+            return LocalDate.from(temporal).atStartOfDay();
         }
     }
 

@@ -5,7 +5,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -115,31 +114,31 @@ public class AppointmentEditController extends Pane
         {
             tooEarlyDateAlert(newSelection, startTextField.getLocalDateTime());
             endTextField.setLocalDateTime(oldSelection);
-        } else
-        {
-            final TemporalAmount timeShift;
-            if (vEvent.getDateTimeType() == DateTimeType.DATE)
-            {
-                timeShift = Period.between(LocalDate.from(oldSelection), LocalDate.from(newSelection));
-            } else
-            {
-                timeShift = Duration.between(oldSelection, newSelection);
-            }
-            final Temporal newDateTimeEnd = vEvent.getDateTimeEnd().plus(timeShift);
+//        } else
+//        {
+//            final TemporalAmount timeShift;
+//            if (vEvent.getDateTimeType() == DateTimeType.DATE)
+//            {
+//                timeShift = Period.between(LocalDate.from(oldSelection), LocalDate.from(newSelection));
+//            } else
+//            {
+//                timeShift = Duration.between(oldSelection, newSelection);
+//            }
+//            final Temporal newDateTimeEnd = vEvent.getDateTimeEnd().plus(timeShift);
 //            vEvent.setDateTimeEnd(newDateTimeEnd);
         }
     };
     private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
     {
-        final TemporalAmount timeShift;
-        if (vEvent.getDateTimeType() == DateTimeType.DATE)
-        {
-            timeShift = Period.between(LocalDate.from(oldSelection), LocalDate.from(newSelection));
-        } else
-        {
-            timeShift = Duration.between(oldSelection, newSelection);
-        }
-        final Temporal newDateTimeStart = vEvent.getDateTimeStart().plus(timeShift);
+//        final TemporalAmount timeShift;
+//        if (vEvent.getDateTimeType() == DateTimeType.DATE)
+//        {
+//            timeShift = Period.between(LocalDate.from(oldSelection), LocalDate.from(newSelection));
+//        } else
+//        {
+//            timeShift = Duration.between(oldSelection, newSelection);
+//        }
+//        final Temporal newDateTimeStart = vEvent.getDateTimeStart().plus(timeShift);
 //        vEvent.setDateTimeStart(newDateTimeStart);
         
         // adjust endTextField (maintain duration)
@@ -290,13 +289,13 @@ public class AppointmentEditController extends Pane
         // START DATE/TIME
         Locale locale = Locale.getDefault();
         startTextField.setLocale(locale);
-        startTextField.setLocalDateTime(LocalDateTime.from(startOriginalInstance));
+        startTextField.setLocalDateTime(DateTimeType.localDateTimeFromTemporal(startOriginalInstance));
         startTextField.setParseErrorCallback(errorCallback);
         startTextField.localDateTimeProperty().addListener(startTextListener);
         
         // END DATE/TIME
         endTextField.setLocale(locale);
-        endTextField.setLocalDateTime(LocalDateTime.from(endInstanceOriginal));
+        endTextField.setLocalDateTime(DateTimeType.localDateTimeFromTemporal(endInstanceOriginal));
         endTextField.setParseErrorCallback(errorCallback);
         endTextField.localDateTimeProperty().addListener(endTextlistener);
         

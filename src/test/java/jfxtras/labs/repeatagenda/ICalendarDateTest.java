@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
@@ -637,7 +638,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventImpl e = getDailyUTC();
         List<Temporal> madeDates = e
                 .stream(e.getDateTimeStart())
-                .map(z -> VComponent.localDateTimeFromTemporal(z))
+                .map(z -> DateTimeType.localDateTimeFromTemporal(z))
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 2, 0)

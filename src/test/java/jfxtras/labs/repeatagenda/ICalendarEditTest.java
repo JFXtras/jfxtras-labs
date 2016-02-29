@@ -115,11 +115,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         selectedAppointment.setEndLocalDateTime(date.atTime(11, 0)); // change end time
         LocalDateTime startInstance = selectedAppointment.getStartLocalDateTime();
         LocalDateTime endInstance = selectedAppointment.getEndLocalDateTime();
-        Duration startShift = Duration.between(startOriginalInstance, startInstance);
-        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
-        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
-        vEvent.setDateTimeStart(dtStart);
-        vEvent.setDuration(duration);
+//        Duration startShift = Duration.between(startOriginalInstance, startInstance);
+//        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
+//        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+//        vEvent.setDateTimeStart(dtStart);
+//        vEvent.setDuration(duration);
         
         vEvent.handleEdit(
                 vEventOriginal
@@ -321,11 +321,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Temporal startOriginalInstance = selectedAppointment.getStartTemporal();
         Temporal startInstance = selectedAppointment.getStartTemporal().with(LocalTime.of(9, 45)).minus(1, ChronoUnit.DAYS);
         Temporal endInstance = selectedAppointment.getEndTemporal().with(LocalTime.of(10, 30)).minus(1, ChronoUnit.DAYS);
-        Duration startShift = Duration.between(startOriginalInstance, startInstance);
-        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
-        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
-        vEvent.setDateTimeStart(dtStart);
-        vEvent.setDateTimeEnd(dtStart.plus(duration));
+//        Duration startShift = Duration.between(startOriginalInstance, startInstance);
+//        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift);
+//        Duration duration = Duration.between(selectedAppointment.getStartLocalDateTime(), selectedAppointment.getEndLocalDateTime());
+//        vEvent.setDateTimeStart(dtStart);
+//        vEvent.setDateTimeEnd(dtStart.plus(duration));
 
         // Edit
         vEvent.handleEdit(

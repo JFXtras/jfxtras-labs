@@ -15,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import jfxtras.labs.repeatagenda.ICalendarEditTest;
 import jfxtras.labs.repeatagenda.trial.controller.CalendarController;
 
 public class Main extends Application {
@@ -58,9 +57,9 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{    
-	    ICalendarEditTest r = new ICalendarEditTest();
-	    r.canEditAll1();
-        System.exit(0);	    
+//	    ICalendarEditTest r = new ICalendarEditTest();
+//	    r.canEditOne2();
+//        System.exit(0);	    
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));

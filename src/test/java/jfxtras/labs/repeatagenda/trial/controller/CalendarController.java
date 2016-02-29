@@ -202,53 +202,12 @@ public class CalendarController {
             
     }
 
-    public void setupData(LocalDate startDate, LocalDate endDate) {
-
-//        this.data = data;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-        
-//        Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
-        
-//        VEventImpl vEvent = new VEventImpl(agenda.appointmentGroups());
-//        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
-//        vEvent.setCategories(data.appointmentGroups().get(3).getDescription());
-//        vEvent.setDurationInNanos(2700L * Duration.ofSeconds(1).toNanos());
-//        vEvent.setDescription("Weekly1 Description");
-//        vEvent.setSummary("Weekly1 Summary");
-//        vEvent.setAppointmentClass(clazz);
-//        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 11, 9, 8, 30));
-//        vEvent.setUniqueIdentifier("20151109T082900-0@jfxtras.org");
-//        RRule rule = new RRule();
-//        vEvent.setRRule(rule);
-//        Frequency daily = new Daily();
-//        rule.setFrequency(daily);
-
-//        RRule rule = new RRule();
-//        vEvent.setRRule(rule);
-//        Frequency weekly = new Weekly().withInterval(2);
-//        rule.setFrequency(weekly);
-//        Rule byRule = new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
-//        weekly.addByRule(byRule);
-//        
-//        data.getVComponents().add(vEvent);
-//        
-//        if (! data.appointmentGroups().isEmpty()) 
-//        { // overwrite default appointmentGroups with ones read from file if not empty
-//            agenda.appointmentGroups().clear();
-//            agenda.appointmentGroups().addAll(data.appointmentGroups());
-//        }
-//        agenda.vComponents().add(ICalendarTestAbstract.getDailyWithException1());
-//        VEventImpl daily1 = ICalendarTestAbstract.getDaily1();
-//        agenda.vComponents().add(daily1);
-        
-        agenda.vComponents().add(ICalendarTestAbstract.getGoogleRepeatable());
+    public void setupData(LocalDate startDate, LocalDate endDate)
+    {
+        agenda.vComponents().add(ICalendarTestAbstract.getWeeklyZoned());
         // replace Agenda's appointmentGroups with the ones used in the test events.
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        
-
-        //        agenda.vComponents().addAll(data.getVComponents());
     }
     
     @FXML private void handleDateIncrement() {

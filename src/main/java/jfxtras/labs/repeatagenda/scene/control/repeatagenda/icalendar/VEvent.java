@@ -239,18 +239,38 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     {
         super.adjustDateTime(startOriginalInstance, startInstance, endInstance);
         // TODO - NEED TO HANDLE DURATION (NOT DTEND)
-        final Temporal newEnd;
-        if (DateTimeType.from(endInstance) == DateTimeType.DATE)
-        {
-            TemporalAmount duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
-            System.out.println("duration:" + duration);
-            newEnd = LocalDate.from(getDateTimeStart()).plus(duration);
-        } else
-        {
-            TemporalAmount duration = Duration.between(startInstance, endInstance);
-            newEnd = getDateTimeStart().plus(duration);
-        }
-        setDateTimeEnd(newEnd);
+//        final TemporalAmount duration;
+//        if (DateTimeType.from(endInstance) == DateTimeType.DATE)
+//        {
+//            duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
+//        } else
+//        {
+//            duration = Duration.between(startInstance, endInstance);
+//        }        
+        System.out.println("start:" + getDuration());
+        endPriority().setDuration(this, startInstance, endInstance);
+        System.out.println("finish:" + getDuration());
+//        switch (endPriority())
+//        {
+//        case DTEND:
+//            break;
+//        case DURATION:
+//            break;
+//        default:
+//            break;
+//        }
+//        final Temporal newEnd;
+//        if (DateTimeType.from(endInstance) == DateTimeType.DATE)
+//        {
+//            TemporalAmount duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
+//            System.out.println("duration:" + duration);
+//            newEnd = LocalDate.from(getDateTimeStart()).plus(duration);
+//        } else
+//        {
+//            TemporalAmount duration = Duration.between(startInstance, endInstance);
+//            newEnd = getDateTimeStart().plus(duration);
+//        }
+//        setDateTimeEnd(newEnd);
 //        final TemporalAmount duration;
 //        if (DateTimeType.from(startInstance) == DateTimeType.DATE)
 //        {
@@ -273,7 +293,8 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
           , Collection<I> instances)
     {
         // Apply dayShift, if any
-        switch (endPriority())
+
+        switch (endPriority())  // TODO - CAN THIS BE PUT INTO EndPriority enum?
         {
         case DTEND:
             Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
@@ -341,7 +362,7 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     @Override
     public String toComponentText()
     {
-        List<String> properties = makePropertiesList();
+        List<String> properties = makeContentLines();
         String propertiesString = properties.stream()
                 .map(p -> p + System.lineSeparator())
                 .sorted()
@@ -350,10 +371,10 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     }
 
     @Override
-    protected List<String> makePropertiesList()
+    protected List<String> makeContentLines()
     {
         List<String> properties = new ArrayList<>();
-        properties.addAll(super.makePropertiesList());
+        properties.addAll(super.makeContentLines());
         Arrays.stream(VEventProperty.values())
                 .forEach(p ->
                 {
@@ -442,6 +463,74 @@ public abstract class VEvent<I> extends VComponentBaseAbstract<I>
     public enum EndPriority
     {
         DURATION
-      , DTEND;
+        {
+            @Override
+            public void setDuration(VEvent<?> vEvent, Temporal startInclusive, Temporal endExclusive)
+            {
+                TemporalAmount duration = calcDuration(startInclusive, endExclusive);
+                vEvent.setDuration(duration);
+            }
+
+            @Override
+            public TemporalAmount getDuration(VEvent<?> vEvent)
+            {
+                return vEvent.getDuration();
+            }
+        }
+      , DTEND
+      {
+        @Override
+        public void setDuration(VEvent<?> vEvent, Temporal startInclusive, Temporal endExclusive)
+        {
+            TemporalAmount duration = calcDuration(startInclusive, endExclusive);
+            Temporal dtEnd = vEvent.getDateTimeStart().plus(duration);
+            vEvent.setDateTimeEnd(dtEnd);
+        }
+
+        @Override
+        public TemporalAmount getDuration(VEvent<?> vEvent)
+        {
+            if (vEvent.isWholeDay())
+            {
+                return Period.between(LocalDate.from(vEvent.getDateTimeStart()), LocalDate.from(vEvent.getDateTimeEnd()));
+            } else
+            {
+                return Duration.between(vEvent.getDateTimeStart(), vEvent.getDateTimeEnd());
+            }
+        }
+    };
+
+        /**
+     * Adds the Duration or Period between two Temporals to the DTSTART or DURATION
+     * of the parameter vEvent.
+     * 
+     * @param vEvent - VEvent to modify
+     * @param startInclusive
+     * @param endExclusive
+     */
+    public abstract void setDuration(VEvent<?> vEvent, Temporal startInclusive, Temporal endExclusive);
+
+    /**
+     * Gets duration, either from DURATION property, or by calculating duration between
+     * DTSTART and DTEND
+     * 
+     * @param vEvent
+     * @return
+     */
+    public abstract TemporalAmount getDuration(VEvent<?> vEvent);
+    
+    private static TemporalAmount calcDuration(Temporal startInclusive, Temporal endExclusive)
+    {
+        final TemporalAmount duration;
+        if (DateTimeType.from(startInclusive) == DateTimeType.DATE)
+        {
+            duration = Period.between(LocalDate.from(startInclusive), LocalDate.from(endExclusive));
+        } else
+        {
+            duration = Duration.between(startInclusive, endExclusive);
+        }
+        return duration;
+    }
+    
     }
 }

@@ -623,10 +623,10 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
           , Collection<I> instances
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
     {
-        System.out.println("instance:" + startOriginalInstance + " " + startInstance + " " + endInstance + " " + getDateTimeStart() + " " + ((VEvent) this).getDateTimeEnd() + " " + getStartRange() + " " + getEndRange());
+//        System.out.println("instance:" + startOriginalInstance + " " + startInstance + " " + endInstance + " " + getDateTimeStart() + " " + ((VEvent) this).getDateTimeEnd() + " " + getStartRange() + " " + getEndRange());
         adjustDateTime(startOriginalInstance, startInstance, endInstance);
         final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
-        System.out.println("rruleType:" + rruleType);
+//        System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         switch (rruleType)
         {
@@ -638,10 +638,10 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             if (! equals(vComponentOriginal)) updateInstances(instances);
             break;
         case WITH_EXISTING_REPEAT:
-            System.out.println("existing start:" + vComponentOriginal.getDateTimeStart());
+//            System.out.println("existing start:" + vComponentOriginal.getDateTimeStart());
             List<String> changedPropertyNames = findChangedProperties(vComponentOriginal);
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
-            System.out.println("provideDialog:" + provideDialog);
+//            System.out.println("provideDialog:" + provideDialog);
             if (changedPropertyNames.size() > 0) // if changes occurred
             {
                 List<VComponent<I>> relatedVComponents = Arrays.asList(this);
@@ -650,6 +650,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
                 if (provideDialog)
                 {
                     Map<ChangeDialogOption, String> choices = makeDialogChoices(startInstance);
+//                    Map<ChangeDialogOption, String> choices = makeDialogChoices(startInstance);
 //                    Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
 //                    String one = ICalendarUtilities.temporalToStringPretty(startInstance);
 //                    choices.put(ChangeDialogOption.ONE, one);
@@ -725,6 +726,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         } else
         {
             TemporalAmount startShift = Duration.between(startOriginalInstance, startInstance);
+            System.out.println("startShift:" + startShift + " " + getDateTimeStart());
             newStart = getDateTimeStart().plus(startShift);
         }
         setDateTimeStart(newStart);
@@ -819,6 +821,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
         Temporal newStart = getDateTimeStart().plus(dayShift);
         setRRule(null);
         setParent(vEventOriginal);
+        System.out.println("newStart:" + newStart + " " + getDateTimeStart());
         setDateTimeStart(newStart);
         System.out.println("For recurrence startOriginalInstance:" + startOriginalInstance);
         // MAYBE AGENDA IS CHNAGEING ORIGINAL TO LOCALDATETIME
@@ -1077,7 +1080,6 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
             String all = ICalendarUtilities.rangeToString(this);
             choices.put(ChangeDialogOption.ALL, all);
         }
-        choices.entrySet().stream().forEach(System.out::println);
         return choices;
     }
 
@@ -1150,7 +1152,7 @@ public abstract class VComponentBaseAbstract<I> implements VComponent<I>
      *  
      * Make list of properties and string values for toString method in subclasses (like VEvent)
      * Used by toString method in subclasses */
-    List<String> makePropertiesList()
+    List<String> makeContentLines()
     {
         List<String> properties = new ArrayList<>();
         Arrays.stream(VComponentProperty.values())

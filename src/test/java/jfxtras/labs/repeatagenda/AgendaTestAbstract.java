@@ -8,6 +8,7 @@ import java.util.Locale;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
@@ -32,6 +33,7 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
         agenda.setPrefSize(1000, 800);
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        agenda.setOneAllThisAndFutureDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK);
         
 //        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
 //            appointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);

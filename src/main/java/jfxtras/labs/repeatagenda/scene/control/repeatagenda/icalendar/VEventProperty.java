@@ -103,8 +103,16 @@ public enum VEventProperty
         @Override
         public String makeContentLine(VEvent<?> vEvent)
         {
-            return (vEvent.getDuration() == null) ? null : vEvent.durationProperty().getName() + ":"
-                    + vEvent.getDuration();
+            if (vEvent.getDuration() == null)
+            {
+                return null;
+            } else if (vEvent.endPriority == EndPriority.DURATION)
+            {
+                return vEvent.durationProperty().getName() + ":" + vEvent.getDuration();
+            } else
+            {
+                throw new RuntimeException("DURATION and EndPriority don't match");                
+            }
         }
 
         @Override
@@ -160,10 +168,13 @@ public enum VEventProperty
             if (vEvent.getDateTimeEnd() == null)
             {
                 return null;
-            } else
+            } else if (vEvent.endPriority == EndPriority.DTEND)
             {
                 String tag = VComponent.makeDateTimePropertyTag(vEvent.dateTimeEndProperty().getName(), vEvent.getDateTimeEnd());
                 return tag + VComponent.temporalToString(vEvent.getDateTimeEnd());
+            } else
+            {
+                throw new RuntimeException("DTEND and EndPriority don't match");
             }
         }
 
