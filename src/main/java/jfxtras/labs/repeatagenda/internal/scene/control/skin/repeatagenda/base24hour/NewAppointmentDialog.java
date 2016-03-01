@@ -48,12 +48,6 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
     {
         initModality(Modality.APPLICATION_MODAL);
         setTitle(resources.getString("dialog.event.new.title"));
-        // TODO - FORMAT DIFFERENTLY FOR DIFFERNT DATE-TIME TYPES
-//        DateTimeFormatter startFormatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.start"));
-//        DateTimeFormatter endFormatter = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.end"));
-//        String start = startFormatter.format(appointment.getStartTemporal());
-//        String end = endFormatter.format(appointment.getEndTemporal());
-//        String appointmentTime = start + end + " ";
         String appointmentTime = DateTimeType.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
         setHeaderText(appointmentTime);
         
@@ -61,9 +55,6 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
         ButtonType createButton = new ButtonType(resources.getString("dialog.event.new.create"), ButtonData.OK_DONE);
         ButtonType editButton = new ButtonType(resources.getString("dialog.event.new.edit"), ButtonData.OTHER);
         getDialogPane().getButtonTypes().addAll(createButton, editButton, ButtonType.CANCEL);
-        getDialogPane().lookupButton(createButton).setId("createButton");
-        getDialogPane().lookupButton(editButton).setId("editButton");
-        getDialogPane().lookupButton(ButtonType.CANCEL).setId("cancelButton");
         
         // Edit Summary and appointmentGroup
         GridPane grid = new GridPane();
@@ -72,16 +63,22 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField summaryTextField = new TextField(appointment.getSummary());
-        summaryTextField.setId("summaryTextField");
         summaryTextField.setPromptText(resources.getString("new.event"));
         summaryTextField.textProperty().addListener((obs, oldValue, newValue) -> appointment.setSummary(newValue));
         
         ComboBox<AppointmentGroup> appointmentGroupComboBox = new ComboBox<>();
-        appointmentGroupComboBox.setId("appointmentGroupComboBox");
         appointmentGroupComboBox.setItems(appointmentGroups);
         appointmentGroupComboBox.getSelectionModel().select(appointment.getAppointmentGroup());
         appointmentGroupComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> 
                 appointment.setAppointmentGroup(newSelection)); 
+        
+        // set id
+        getDialogPane().setId("newAppointmentDialog");
+        getDialogPane().lookupButton(createButton).setId("createButton");
+        getDialogPane().lookupButton(editButton).setId("editButton");
+        getDialogPane().lookupButton(ButtonType.CANCEL).setId("cancelButton");
+        summaryTextField.setId("summaryTextField");
+        appointmentGroupComboBox.setId("appointmentGroupComboBox");
         
         // Can't use below map because it results in an error: after clicking on a selection the graphic disappears.
         Map<AppointmentGroup, Node> iconMap = appointmentGroups.stream()

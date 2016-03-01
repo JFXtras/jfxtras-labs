@@ -170,7 +170,6 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
         VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        vEvent.setAppointmentClass(getClazz());
         VEventImpl expectedVEvent = getYearly1();
         assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
     }

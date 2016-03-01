@@ -266,6 +266,8 @@ public class VEventImpl extends VEvent<Appointment>
 //            setDateTimeEnd(end);
 //            setDateTimeStart(start);
 //        }
+        // TODO - WHAT TO DO IF APPOINTMENT IS LOCALDATETIME???
+        // MAKE DEFAULT ZONED DATE TIME?
         setDateTimeStart(appointment.getStartTemporal());
         setDateTimeEnd(appointment.getEndTemporal());
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
@@ -341,7 +343,7 @@ public class VEventImpl extends VEvent<Appointment>
         removedTooLate.forEach(temporalStart ->
         {
             TemporalAmount duration = endPriority().getDuration(this);
-//            System.out.println("make duration:" + duration);
+            System.out.println("make duration:" + duration);
             Temporal temporalEnd = temporalStart.plus(duration);
 //            final Temporal temporalEnd;
 //            switch (endPriority())

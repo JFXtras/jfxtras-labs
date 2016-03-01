@@ -638,7 +638,7 @@ public abstract class VComponentBase<I> implements VComponent<I>
 //        System.out.println("instance:" + startOriginalInstance + " " + startInstance + " " + endInstance + " " + getDateTimeStart() + " " + ((VEvent) this).getDateTimeEnd() + " " + getStartRange() + " " + getEndRange());
 //        adjustDateTime(startOriginalInstance, startInstance, endInstance);
         final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
-//        System.out.println("rruleType:" + rruleType);
+        System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         Collection<I> newInstances = null;
         switch (rruleType)
@@ -648,6 +648,7 @@ public abstract class VComponentBase<I> implements VComponent<I>
             // fall through
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
+            adjustDateTime(startOriginalInstance, startInstance, endInstance);
             if (! this.equals(vComponentOriginal)) { newInstances = updateInstances(instances); }
             break;
         case WITH_EXISTING_REPEAT:

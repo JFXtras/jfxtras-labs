@@ -2,6 +2,7 @@ package jfxtras.labs.repeatagenda.trial;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
@@ -59,7 +60,8 @@ public class Main extends Application {
 	{    
 //	    ICalendarEditTest r = new ICalendarEditTest();
 //	    r.canEditAll1();
-//        System.exit(0);	    
+	    ZoneId.getAvailableZoneIds().stream().forEach(System.out::println);
+        System.exit(0);	    
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));

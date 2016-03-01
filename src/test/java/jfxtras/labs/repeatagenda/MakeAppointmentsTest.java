@@ -62,7 +62,6 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
     public void makeAppointmentsWeeklyTest1()
     {
         VEventImpl vevent = getWeekly2();
-        vevent.setAppointmentClass(getClazz());
         LocalDateTime start = LocalDateTime.of(2015, 12, 20, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 12, 27, 0, 0);
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -103,7 +102,7 @@ public class MakeAppointmentsTest extends ICalendarTestAbstract
     public void makeAppointmentsWholeDayTest1()
     {
         VEventImpl vevent = getWholeDayDaily3();
-        vevent.setAppointmentClass(getClazz());
+
         LocalDate start = LocalDate.of(2015, 11, 15);
         LocalDate end = LocalDate.of(2015, 11, 22);
         List<Appointment> appointments = vevent.makeInstances(start, end);
