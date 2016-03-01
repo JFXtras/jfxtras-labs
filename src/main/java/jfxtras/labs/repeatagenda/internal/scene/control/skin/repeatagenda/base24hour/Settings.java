@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
+import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendar.rrule.freq.Frequency.FrequencyType;
 
 // TODO - SHOULD THIS CLASS BE ON THE INTERNAL SIDE?
 public final class Settings

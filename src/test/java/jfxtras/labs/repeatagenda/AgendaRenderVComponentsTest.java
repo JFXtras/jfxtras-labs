@@ -16,7 +16,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Parent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.icalendar.ICalendarTestAbstract;
+import jfxtras.labs.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.TestUtil;
 

@@ -13,8 +13,8 @@ import org.junit.Test;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonBar.ButtonData;
+import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.AssertNode;
@@ -81,6 +81,127 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
 //            new AssertNode(n).assertXYWH(0.5, 419.5, 125.0, 84.0, 0.01);
 //        }
     }
+    
+//    /**
+//     * 
+//     */
+//    @Test
+//    public void renderRegularAppointmentZoned()
+//    {
+//        TestUtil.runThenWaitForPaintPulse( () -> {
+//            agenda.appointments().removeListener(agenda.getAppointmentsChangeListener());
+//            agenda.setAppointmentsChangeListener(null);
+//            agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
+//            
+//            agenda.appointments().add( new Agenda.AppointmentImplTemporal()
+//                .withStartTemporal(ZonedDateTime.of(LocalDateTime.of(2014, 1, 1, 10, 0), ZoneId.systemDefault()))
+//                .withEndTemporal(ZonedDateTime.of(LocalDateTime.of(2014, 1, 1, 12, 0), ZoneId.systemDefault()))
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(0))
+//            );
+//        });
+//
+//        Node n = find("#AppointmentRegularBodyPane2014-01-01/0");
+//        //AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+//        new AssertNode(n).assertXYWH(0.5, 419.5, 125.0, 84.0, 0.01);
+//        //TestUtil.sleep(3000);
+//    }
+//    
+//    @Test
+//    public void renderWholeDayAppointmentLocalDate()
+//    {
+//        TestUtil.runThenWaitForPaintPulse( () -> {
+//            agenda.appointments().removeListener(agenda.getAppointmentsChangeListener());
+//            agenda.setAppointmentsChangeListener(null);
+//            agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
+//            
+//            agenda.appointments().add( new Agenda.AppointmentImplTemporal()
+//                .withStartTemporal(LocalDate.of(2014, 1, 1))
+//                .withEndTemporal(LocalDate.of(2014, 1, 2))
+//                .withWholeDay(true)
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(1))
+//            );
+//        });
+//
+//        Node n = find("#AppointmentWholedayBodyPane2014-01-01/0");
+//        //AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+//        new AssertNode(n).assertXYWH(0.5, 0.0, 5.0, 966.375, 0.01);
+//        //TestUtil.sleep(3000);
+//    }
+//    
+//    @Test
+//    public void renderWholeDayAppointmentHijrahDate()
+//    {
+//        TestUtil.runThenWaitForPaintPulse( () -> {
+//            agenda.appointments().removeListener(agenda.getAppointmentsChangeListener());
+//            agenda.setAppointmentsChangeListener(null);
+//            agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
+//            
+//            Temporal h = HijrahDate.from(LocalDate.of(2014, 1, 1));
+//            agenda.appointments().add( new Agenda.AppointmentImplTemporal()
+//                .withStartTemporal(h)
+//                .withEndTemporal(h.plus(1, ChronoUnit.DAYS))
+//                .withWholeDay(true)
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(1))
+//            );
+//        });
+//
+//        Node n = find("#AppointmentWholedayBodyPane2014-01-01/0");
+//        //AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+//        new AssertNode(n).assertXYWH(0.5, 0.0, 5.0, 966.375, 0.01);
+//        //TestUtil.sleep(3000);
+//    }
+//    
+//    @Test
+//    public void renderRegularAppointmentOffset()
+//    {
+//        TestUtil.runThenWaitForPaintPulse( () -> {
+//            agenda.appointments().removeListener(agenda.getAppointmentsChangeListener());
+//            agenda.setAppointmentsChangeListener(null);
+//            agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
+//            
+//            ZoneOffset offset = ZonedDateTime.now().getOffset();
+//            agenda.appointments().add( new Agenda.AppointmentImplTemporal()
+//                .withStartTemporal(OffsetDateTime.of(LocalDateTime.of(2014, 1, 1, 10, 0), offset))
+//                .withEndTemporal(OffsetDateTime.of(LocalDateTime.of(2014, 1, 1, 12, 0), offset))
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(0))
+//            );
+//        });
+//
+//        Node n = find("#AppointmentRegularBodyPane2014-01-01/0");
+//        //AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+//        new AssertNode(n).assertXYWH(0.5, 419.5, 125.0, 84.0, 0.01);
+//        //TestUtil.sleep(3000);
+//    }
+//    
+//    @Test
+//    public void renderRegularAppointmentInstant()
+//    {
+//        TestUtil.runThenWaitForPaintPulse( () -> {
+//            agenda.appointments().removeListener(agenda.getAppointmentsChangeListener());
+//            agenda.setAppointmentsChangeListener(null);
+//            agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
+//            
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd hh:mm:ss");
+//            String dateInString = "2014-1-1 10:00:00";
+//            Date date = null;
+//            try {
+//                date = sdf.parse(dateInString);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            Instant instant = date.toInstant();
+//            agenda.appointments().add( new Agenda.AppointmentImplTemporal()
+//                .withStartTemporal(instant)
+//                .withEndTemporal(instant.plus(2, ChronoUnit.HOURS))
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(0))
+//            );
+//        });
+//
+//        Node n = find("#AppointmentRegularBodyPane2014-01-01/0");
+//        //AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+//        new AssertNode(n).assertXYWH(0.5, 419.5, 125.0, 84.0, 0.01);
+//        //TestUtil.sleep(3000);
+//    }
     
     @Test
     public void renderRegularAppointment2()

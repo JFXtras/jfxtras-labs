@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 
 
 /**

@@ -31,14 +31,15 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.VComponentFactory;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -62,9 +63,9 @@ public class AppointmentEditController extends Pane
     private Temporal startOriginalInstance;
     private Temporal endInstanceOriginal;
     
-    private VEvent<Appointment> vEvent;
+    private VEvent<Appointment,?> vEvent;
 //    private VComponent<Appointment> vEventOld;
-    private VEvent<Appointment> vEventOriginal;
+    private VEvent<Appointment,?> vEventOriginal;
     private Collection<Appointment> appointments;
     private Collection<VComponent<Appointment>> vComponents;
     private Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback;
@@ -187,7 +188,7 @@ public class AppointmentEditController extends Pane
         this.vComponents = vComponents;
         this.popup = popup;
         this.vEventWriteCallback = vEventWriteCallback;
-        vEvent = (VEvent<Appointment>) vComponent;
+        vEvent = (VEvent<Appointment,?>) vComponent;
         
         // Disable repeat rules for events with recurrence-id
         if (vComponent.getDateTimeRecurrence() != null)
@@ -205,7 +206,7 @@ public class AppointmentEditController extends Pane
         }
         
         // Copy original VEvent
-        vEventOriginal = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent);
+        vEventOriginal = (VEvent<Appointment,?>) VComponentFactory.newVComponent(vEvent);
         
         // String bindings
         summaryTextField.textProperty().bindBidirectional(vEvent.summaryProperty());
@@ -393,7 +394,8 @@ public class AppointmentEditController extends Pane
                 vComponents
               , startInstance
               , appointment
-              , appointments);
+              , appointments
+              , DeleteChoiceDialog.DELETE_DIALOG_CALLBACK);
         popup.close();
     }
     

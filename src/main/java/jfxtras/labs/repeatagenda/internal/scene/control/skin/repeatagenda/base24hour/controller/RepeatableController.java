@@ -51,17 +51,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.ExDate;
+import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.rrule.RRule;
+import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.rrule.byxxx.Rule;
+import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
+import jfxtras.labs.icalendar.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.rrule.freq.Frequency.FrequencyType;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay.ByDayPair;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Frequency.FrequencyType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
 
 /**
  * Makes pane for selection some repeatable rules

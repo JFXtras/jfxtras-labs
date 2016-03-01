@@ -1,7 +1,6 @@
 package jfxtras.labs.repeatagenda.scene.control.repeatagenda;
 
 import java.time.DateTimeException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,12 +27,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.RDate;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
+import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.VEvent;
+import jfxtras.labs.icalendar.VEventProperty;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -46,7 +43,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * @author David Bal
  *
  */
-public class VEventImpl extends VEvent<Appointment>
+public class VEventImpl extends VEvent<Appointment, VEventImpl>
 {
     // TODO - THESE CALLBACKS MAY BE OBSOLETE - IF AppointmentImplTemporal IS IN AGENDA
     // USE REFLECTION FROM APPOINTMENT CLASS INSTEAD?
@@ -62,6 +59,7 @@ public class VEventImpl extends VEvent<Appointment>
      *  Only date-time properties are set in the callbacks.  The other properties
      *  are set in makeInstances method.
      */
+    @Deprecated
     private final static Callback<StartEndPair, Appointment> TEMPORAL_INSTANCE = (p) ->
     {
         return new Agenda.AppointmentImplTemporal()
@@ -70,6 +68,7 @@ public class VEventImpl extends VEvent<Appointment>
     };
     
     /** For DATE type (whole-day Appointments) */
+    @Deprecated
     private final static Callback<StartEndPair, Appointment> NEW_DATE_INSTANCE = (p) ->
     {
         LocalDateTime s = LocalDate.from(p.getDateTimeStart()).atStartOfDay();
@@ -83,6 +82,7 @@ public class VEventImpl extends VEvent<Appointment>
     };
 
     /** For DATE_WITH_LOCAL_TIME */
+    @Deprecated
     private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_LOCAL_TIME_INSTANCE = (p) ->
     {
         return new Agenda.AppointmentImplTemporal()
@@ -94,6 +94,7 @@ public class VEventImpl extends VEvent<Appointment>
     };
 
     /** For DATE_WITH_UTC_TIME */
+    @Deprecated
     private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_UTC_TIME_INSTANCE = (p) ->
     {
         final ZonedDateTime s;
@@ -122,6 +123,7 @@ public class VEventImpl extends VEvent<Appointment>
     };
     
     /** For DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
+    @Deprecated
     private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE = (p) ->
     {
         return new Agenda.AppointmentImplTemporal()
@@ -133,7 +135,9 @@ public class VEventImpl extends VEvent<Appointment>
     };
 
     // Map to match up DateTimeType to Callback;
+    @Deprecated
     private static final Map<DateTimeType, Callback<StartEndPair, Appointment>> DATE_TIME_MAKE_INSTANCE_MAP = defaultDateTimeInstanceMap();
+    @Deprecated
     private static Map<DateTimeType, Callback<StartEndPair, Appointment>> defaultDateTimeInstanceMap()
     {
         Map<DateTimeType, Callback<StartEndPair, Appointment>> map = new HashMap<>();
@@ -180,10 +184,10 @@ public class VEventImpl extends VEvent<Appointment>
      *  VEventImpl doesn't know how to make an appointment.  New appointments are instantiated via reflection, so they
      *  must have a no-arg constructor.
      */
-    public Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
-    private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImplTemporal.class; // default Appointment class
-    public void setAppointmentClass(Class<? extends Appointment> appointmentClass) { this.appointmentClass = appointmentClass; }
-    public VEventImpl withAppointmentClass(Class<? extends Appointment> appointmentClass) { setAppointmentClass(appointmentClass); return this; }
+    public Class<? extends Appointment> getInstanceClass() { return instanceClass; }
+    private Class<? extends Appointment> instanceClass = Agenda.AppointmentImplTemporal.class; // default instance class
+    public void setInstanceClass(Class<? extends Appointment> instanceClass) { this.instanceClass = instanceClass; }
+    public VEventImpl withInstanceClass(Class<? extends Appointment> instanceClass) { setInstanceClass(instanceClass); return this; }
 
     /**
      * The currently generated instances of the recurrence set.
@@ -197,21 +201,21 @@ public class VEventImpl extends VEvent<Appointment>
     public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
     
     // Fluent methods for chaining
-    public VEventImpl withDateTimeCreated(ZonedDateTime t) { setDateTimeCreated(t); return this; }
-    public VEventImpl withDateTimeLastModified(ZonedDateTime t) { setDateTimeLastModified(t); return this; }
-    public VEventImpl withDateTimeRecurrence(Temporal t) { setDateTimeRecurrence(t); return this; }
-    public VEventImpl withDateTimeStamp(ZonedDateTime t) { setDateTimeStamp(t); return this; }
-    public VEventImpl withDateTimeStart(Temporal t) { setDateTimeStart(t); return this; }
-    public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
-    public VEventImpl withDescription(String s) { setDescription(s); return this; }
-    public VEventImpl withDuration(Duration d) { setDuration(d); return this; }
-    public VEventImpl withExDate(ExDate e) { setExDate(e); return this; }
-    public VEventImpl withRDate(RDate r) { setRDate(r); return this; }
-    public VEventImpl withRelatedTo(String s) { setRelatedTo(s); return this; }
-    public VEventImpl withRRule(RRule r) { setRRule(r); return this; }
-    public VEventImpl withSequence(int i) { setSequence(i); return this; }
-    public VEventImpl withSummary(String s) { setSummary(s); return this; }
-    public VEventImpl withUniqueIdentifier(String s) { setUniqueIdentifier(s); return this; }
+//    public VEventImpl withDateTimeCreated(ZonedDateTime t) { setDateTimeCreated(t); return this; }
+//    public VEventImpl withDateTimeLastModified(ZonedDateTime t) { setDateTimeLastModified(t); return this; }
+//    public VEventImpl withDateTimeRecurrence(Temporal t) { setDateTimeRecurrence(t); return this; }
+//    public VEventImpl withDateTimeStamp(ZonedDateTime t) { setDateTimeStamp(t); return this; }
+//    public VEventImpl withDateTimeStart(Temporal t) { setDateTimeStart(t); return this; }
+//    public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
+//    public VEventImpl withDescription(String s) { setDescription(s); return this; }
+//    public VEventImpl withDuration(Duration d) { setDuration(d); return this; }
+//    public VEventImpl withExDate(ExDate e) { setExDate(e); return this; }
+//    public VEventImpl withRDate(RDate r) { setRDate(r); return this; }
+//    public VEventImpl withRelatedTo(String s) { setRelatedTo(s); return this; }
+//    public VEventImpl withRRule(RRule r) { setRRule(r); return this; }
+//    public VEventImpl withSequence(int i) { setSequence(i); return this; }
+//    public VEventImpl withSummary(String s) { setSummary(s); return this; }
+//    public VEventImpl withUniqueIdentifier(String s) { setUniqueIdentifier(s); return this; }
     
     /*
      * CONSTRUCTORS
@@ -244,33 +248,12 @@ public class VEventImpl extends VEvent<Appointment>
     {
         this(appointmentGroups);
         setCategories(appointment.getAppointmentGroup().getDescription());
-//        if (appointment.isWholeDay())
-//        {
-//            setDateTimeEnd(appointment.getEndTemporal());
-//            setDateTimeStart(appointment.getEndTemporal());
-//        } else
-//        {
-//            Temporal start;
-//            Temporal end;
-//            start = appointment.getStartTemporal();
-//            end = appointment.getEndTemporal();
-////            try
-////            {
-////                start = appointment.getStartZonedDateTime();
-////                end = appointment.getEndZonedDateTime();
-////            } catch (Exception e)
-////            {
-////                start = appointment.getStartLocalDateTime();
-////                end = appointment.getEndLocalDateTime();
-////            }
-//            setDateTimeEnd(end);
-//            setDateTimeStart(start);
-//        }
-        // TODO - WHAT TO DO IF APPOINTMENT IS LOCALDATETIME???
-        // MAKE DEFAULT ZONED DATE TIME?
-        setDateTimeStart(appointment.getStartTemporal());
-        setDateTimeEnd(appointment.getEndTemporal());
+
+        // Convert appointment LocalDateTime to ZonedDateTime as default Temporal class
+        setDateTimeStart(appointment.getStartLocalDateTime().atZone(ZoneId.systemDefault()));
+        setDateTimeEnd(appointment.getEndLocalDateTime().atZone(ZoneId.systemDefault()));
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
+        setDateTimeCreated(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setDescription(appointment.getDescription());
         setLocation(appointment.getLocation());
         setSummary(appointment.getSummary());
@@ -284,7 +267,7 @@ public class VEventImpl extends VEvent<Appointment>
     private static void copy(VEventImpl source, VEventImpl destination)
     {
         destination.setAppointmentGroup(source.getAppointmentGroup());
-        destination.setAppointmentClass(source.getAppointmentClass());
+        destination.setInstanceClass(source.getInstanceClass());
         if (source.getStartRange() != null) destination.setStartRange(source.getStartRange());
         if (source.getEndRange() != null) destination.setEndRange(source.getEndRange());
         destination.setUidGeneratorCallback(source.getUidGeneratorCallback());
@@ -321,6 +304,39 @@ public class VEventImpl extends VEvent<Appointment>
         return (VEventImpl) VEvent.parseVEvent(vEvent, string);
     }
 
+    /**
+     * Tests equality between two VEventImpl objects.  Treats v1 as expected.  Produces a JUnit-like
+     * output if objects are not equal.
+     * 
+     * @param v1 - expected VEventImpl
+     * @param v2 - actual VEventImpl
+     * @param verbose - true = display list of unequal properties, false no display output
+     * @return - equality result
+     */
+    public static boolean isEqualTo(VEventImpl v1, VEventImpl v2, boolean verbose)
+    {
+        // VEventImpl properties
+        boolean appointmentClassEquals = (v1.getInstanceClass() == null) ? (v2.getInstanceClass() == null) : v1.getInstanceClass().equals(v2.getInstanceClass());
+        if (! appointmentClassEquals && verbose) { System.out.println("Appointment Class:" + " not equal:" + v1.getInstanceClass() + " " + v2.getInstanceClass()); }
+        boolean appointmentGroupEquals = (v1.getAppointmentGroup() == null) ? (v2.getAppointmentGroup() == null) : v1.getAppointmentGroup().equals(v2.getAppointmentGroup());
+        if (! appointmentGroupEquals && verbose) { System.out.println("Appointment Group:" + " not equal:" + v1.getAppointmentGroup() + " " + v2.getAppointmentGroup()); }
+        boolean vEventResult = VEventProperty.isEqualTo(v1, v2, verbose);
+        return vEventResult && appointmentClassEquals && appointmentGroupEquals;
+    }
+    
+    /**
+     * Tests equality between two VEventImpl objects.  Treats v1 as expected.  Produces a JUnit-like
+     * output if objects are not equal.
+     * 
+     * @param v1 - expected VEventImpl
+     * @param v2 - actual VEventImpl
+     * @param verbose - true = display list of unequal properties, false no display output
+     * @return - equality result
+     */
+    public static boolean isEqualTo(VEventImpl v1, VEventImpl v2)
+    {
+        return isEqualTo(v1, v2, true);
+    }
     
             
     /**
@@ -367,7 +383,7 @@ public class VEventImpl extends VEvent<Appointment>
 //            }
 //            Appointment appt = newInstanceCallback.call(new StartEndPair(temporalStart, temporalEnd));
             Appointment appt = null;
-            try { appt = getAppointmentClass().newInstance(); }
+            try { appt = getInstanceClass().newInstance(); }
             catch (Exception e) { e.printStackTrace(); }
             appt.setStartTemporal(temporalStart);
             appt.setEndTemporal(temporalEnd);

@@ -11,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 

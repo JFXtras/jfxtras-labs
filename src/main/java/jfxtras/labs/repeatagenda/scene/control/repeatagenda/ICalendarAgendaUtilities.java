@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
+import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 

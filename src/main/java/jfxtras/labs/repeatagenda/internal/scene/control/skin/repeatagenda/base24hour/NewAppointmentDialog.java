@@ -20,7 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 

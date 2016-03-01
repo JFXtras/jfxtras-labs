@@ -18,10 +18,11 @@ import org.junit.Test;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
+import jfxtras.labs.icalendar.ICalendarTestAbstract;
+import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.test.TestUtil;
 
 public class AgendaChangeTest extends AgendaTestAbstract

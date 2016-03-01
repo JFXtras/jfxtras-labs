@@ -27,14 +27,14 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
+import jfxtras.labs.icalendar.ExDate;
+import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentEditLoader;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.SelectOneLoader;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ExDate;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.util.NodeUtil;
 /**
@@ -195,8 +195,8 @@ public class ICalendarAgenda extends Agenda
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
         // TODO - NEED ANOTHER VERSION OF THIS CODE FOR VTODO
-        VEvent<Appointment> vEvent = (VEvent<Appointment>) findVComponent(appointment);
-        VEvent<Appointment> vEventOriginal = (VEvent<Appointment>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
+        VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) findVComponent(appointment);
+        VEvent<Appointment,?> vEventOriginal = (VEvent<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
         final Temporal startInstance;
         final Temporal endInstance;
         Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
