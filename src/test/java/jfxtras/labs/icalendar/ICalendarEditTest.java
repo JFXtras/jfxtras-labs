@@ -339,9 +339,9 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 .collect(Collectors.toList());
 
         List<Temporal> expectedDates = new ArrayList<Temporal>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 16, 10, 0)
-              , LocalDateTime.of(2015, 11, 17, 9, 45)
-              , LocalDateTime.of(2015, 11, 20, 10, 0)
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 16, 10, 0), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 9, 45), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 20, 10, 0), ZoneId.of("America/Los_Angeles"))
                 ));
         assertEquals(expectedDates, madeDates);
 
@@ -393,14 +393,14 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         List<Temporal> madeDates = InstanceMocks.stream()
                 .map(a -> a.getStartTemporal())
-                .sorted()
+                .sorted(VComponent.TEMPORAL_COMPARATOR)
                 .collect(Collectors.toList());
 
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(2016, 2, 7, 12, 30)
-              , LocalDateTime.of(2016, 2, 8, 0, 0)
-              , LocalDateTime.of(2016, 2, 11, 12, 30)
-              , LocalDateTime.of(2016, 2, 13, 12, 30)
+                ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , LocalDate.of(2016, 2, 8)
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 11, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 13, 12, 30), ZoneId.of("America/Los_Angeles"))
                 ));
         assertEquals(expectedDates, madeDates);
 
@@ -454,12 +454,12 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         List<Temporal> madeDates = InstanceMocks.stream()
                 .map(a -> a.getStartTemporal())
-                .sorted()
+                .sorted(VComponent.TEMPORAL_COMPARATOR)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<Temporal>(Arrays.asList(
-                LocalDateTime.of(2016, 2, 21, 8, 0)
-              , LocalDateTime.of(2016, 2, 22, 0, 0)
-              , LocalDateTime.of(2016, 2, 26, 8, 0)
+                ZonedDateTime.of(LocalDateTime.of(2016, 2, 21, 8, 0), ZoneId.of("America/Los_Angeles"))
+              , LocalDate.of(2016, 2, 22)
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 26, 8, 0), ZoneId.of("America/Los_Angeles"))
                 ));
         assertEquals(expectedDates, madeDates);
 
