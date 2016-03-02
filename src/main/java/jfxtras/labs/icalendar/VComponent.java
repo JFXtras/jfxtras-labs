@@ -357,31 +357,6 @@ public interface VComponent<I>
     Callback<Void, String> getUidGeneratorCallback();
     void setUidGeneratorCallback(Callback<Void, String> uidCallback);
     
-    /**
-     * Checks to see if VComponent is has all required properties filled.  Also checks
-     * to ensure all properties contain valid values.
-    *
-     * Requires properties:
-     * DTSTAMP
-     * UID
-     *
-     * Optional, can only occur once: // TODO - VERIFY ALL BELOW ITEMS DONE ONLY ONCE
-     * CLASS
-     * CREATED
-     * DTSTART
-     * LAST-MODIFIED
-     * ORGANIZER
-     * RECURID
-     * RRULE
-     * SEQUENCE
-     * STATUS
-     * SUMMARY
-     * URL
-     * 
-     * @return true for valid VComponent, false for invalid one
-     */
-    boolean isValid();
-    
     /** Stream of dates or date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.
      * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
@@ -593,6 +568,31 @@ public interface VComponent<I>
         
         return errorsBuilder.toString();
     }
+    
+    /**
+     * Checks to see if VComponent is has all required properties filled.  Also checks
+     * to ensure all properties contain valid values.
+     *
+     * Requires properties:
+     * DTSTAMP
+     * UID
+     *
+     * Optional, can only occur once: // TODO - VERIFY ALL BELOW ITEMS DONE ONLY ONCE
+     * CLASS
+     * CREATED
+     * DTSTART
+     * LAST-MODIFIED
+     * ORGANIZER
+     * RECURID
+     * RRULE
+     * SEQUENCE
+     * STATUS
+     * SUMMARY
+     * URL
+     * 
+     * @return true for valid VComponent, false for invalid one
+     */
+    default boolean isValid() { return errorString().equals(""); };
     
     /** Returns true if VComponent is an individual (only one instance in recurrence set),
      *  false if has more than 1 instance */

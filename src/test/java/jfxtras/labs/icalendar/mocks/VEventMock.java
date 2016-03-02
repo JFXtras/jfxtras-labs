@@ -24,12 +24,11 @@ import jfxtras.labs.icalendar.VEventProperty;
 public class VEventMock extends VEvent<InstanceMock, VEventMock>
 {
 
-    @Override
-    public boolean isValid()
-    {
-        // TODO Auto-generated method stub
-        return true;
-    }
+//    @Override
+//    public boolean isValid()
+//    {
+//        return super.errorString().equals("");
+//    }
 
     @Override
     public List<InstanceMock> makeInstances(Temporal startRange, Temporal endRange)
@@ -68,6 +67,10 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
       return madeInstances;
     }
     
+    /**
+     *  Class of an instance.
+     *  New appointments are instantiated via reflection, so they must have a no-argument constructor.
+     */
     public Class<? extends InstanceMock> getInstanceClass() { return instanceClass; }
     private Class<? extends InstanceMock> instanceClass = InstanceMock.class; // default instance class
     public void setInstanceClass(Class<? extends InstanceMock> instanceClass) { this.instanceClass = instanceClass; }
@@ -105,5 +108,9 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
     public static boolean isEqualTo(VEventMock v1, VEventMock v2)
     {
         return VEventProperty.isEqualTo(v1, v2, true);
+    }
+    public static boolean isEqualTo(VEventMock v1, VEventMock v2, boolean verbose)
+    {
+        return VEventProperty.isEqualTo(v1, v2, verbose);
     }
 }

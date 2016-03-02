@@ -178,8 +178,8 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
             (obs, oldValue, newValue) -> setCategories(newValue.getDescription());
     
     /**
-     *  VEventImpl doesn't know how to make an appointment.  New appointments are instantiated via reflection, so they
-     *  must have a no-arg constructor.
+     *  Class of an instance.
+     *  New appointments are instantiated via reflection, so they must have a no-argument constructor.
      */
     public Class<? extends Appointment> getInstanceClass() { return instanceClass; }
     private Class<? extends Appointment> instanceClass = Agenda.AppointmentImplTemporal.class; // default instance class
@@ -269,11 +269,11 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
 //        return errors;
 //    }
     
-    @Override
-    public boolean isValid()
-    {
-        return super.errorString().equals("");
-    }
+//    @Override
+//    public boolean isValid()
+//    {
+//        return super.errorString().equals("");
+//    }
         
     /** Make new VEventImpl and populate properties by parsing a string of line-separated
      * content lines
