@@ -9,18 +9,11 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
@@ -200,27 +193,10 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
      * is not possible.  The set only contains the events inside the bounds of 
      */
     @Override
-    public Set<Appointment> instances() { return instances; }
-    final private Set<Appointment> instances = new HashSet<>();
-    public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
-    
-    // Fluent methods for chaining
-//    public VEventImpl withDateTimeCreated(ZonedDateTime t) { setDateTimeCreated(t); return this; }
-//    public VEventImpl withDateTimeLastModified(ZonedDateTime t) { setDateTimeLastModified(t); return this; }
-//    public VEventImpl withDateTimeRecurrence(Temporal t) { setDateTimeRecurrence(t); return this; }
-//    public VEventImpl withDateTimeStamp(ZonedDateTime t) { setDateTimeStamp(t); return this; }
-//    public VEventImpl withDateTimeStart(Temporal t) { setDateTimeStart(t); return this; }
-//    public VEventImpl withDateTimeEnd(Temporal t) { setDateTimeEnd(t); return this; }
-//    public VEventImpl withDescription(String s) { setDescription(s); return this; }
-//    public VEventImpl withDuration(Duration d) { setDuration(d); return this; }
-//    public VEventImpl withExDate(ExDate e) { setExDate(e); return this; }
-//    public VEventImpl withRDate(RDate r) { setRDate(r); return this; }
-//    public VEventImpl withRelatedTo(String s) { setRelatedTo(s); return this; }
-//    public VEventImpl withRRule(RRule r) { setRRule(r); return this; }
-//    public VEventImpl withSequence(int i) { setSequence(i); return this; }
-//    public VEventImpl withSummary(String s) { setSummary(s); return this; }
-//    public VEventImpl withUniqueIdentifier(String s) { setUniqueIdentifier(s); return this; }
-    
+    public List<Appointment> instances() { return instances; }
+    final private List<Appointment> instances = new ArrayList<>();
+//    public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
+        
     /*
      * CONSTRUCTORS
      */
@@ -401,41 +377,21 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     public List<Appointment> makeInstances()
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
-//        Callback<StartEndPair, Appointment> newInstanceCallback = DATE_TIME_MAKE_INSTANCE_MAP.get(getDateTimeType());
-//        Callback<StartEndPair, Appointment> newInstanceCallback = TEMPORAL_INSTANCE;
         List<Appointment> madeAppointments = new ArrayList<>();
-//        System.out.println("makeinstances:" + getStartRange() + " " + getEndRange());
         Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange())); // inclusive
-        Stream<Temporal> removedTooLate = takeWhile(removedTooEarly, a -> VComponent.isBefore(a, getEndRange())); // exclusive
+        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> VComponent.isBefore(a, getEndRange())); // exclusive
         removedTooLate.forEach(temporalStart ->
         {
             TemporalAmount duration = endPriority().getDuration(this);
-            System.out.println("make duration:" + duration);
             Temporal temporalEnd = temporalStart.plus(duration);
-//            final Temporal temporalEnd;
-//            switch (endPriority())
-//            {
-//            case DTEND:
-//                final TemporalAmount duration;
-//                if (isWholeDay())
-//                {
-//                    duration = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(getDateTimeEnd()));
-//                } else
-//                {
-//                    duration = Duration.between(getDateTimeStart(), getDateTimeEnd());
-//                }
-//                temporalEnd = temporalStart.plus(duration);
-//                break;
-//            case DURATION:
-//                temporalEnd = temporalStart.plus(getDuration());                
-//                break;
-//            default:
-//                throw new RuntimeException("Unknown EndPriority");
-//            }
-//            Appointment appt = newInstanceCallback.call(new StartEndPair(temporalStart, temporalEnd));
             Appointment appt = null;
-            try { appt = getInstanceClass().newInstance(); }
-            catch (Exception e) { e.printStackTrace(); }
+            try
+            {
+                appt = getInstanceClass().newInstance();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
             appt.setStartTemporal(temporalStart);
             appt.setEndTemporal(temporalEnd);
             appt.setDescription(getDescription());
@@ -460,35 +416,10 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     @Override
     public List<Appointment> makeInstances(Temporal startRange, Temporal endRange)
     {
-        if (VComponent.isAfter(startRange, endRange)) throw new DateTimeException("startTemporal must be after endTemporal");
+        if (VComponent.isAfter(startRange, endRange)) throw new DateTimeException("endRange must be after startRange");
         setEndRange(endRange);
         setStartRange(startRange);
         return makeInstances();
     }
     
-    // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
-    // will be obsolete with Java 9
-    public static <T> Spliterator<T> takeWhile(
-            Spliterator<T> splitr, Predicate<? super T> predicate) {
-          return new Spliterators.AbstractSpliterator<T>(splitr.estimateSize(), 0) {
-            boolean stillGoing = true;
-            @Override public boolean tryAdvance(Consumer<? super T> consumer) {
-              if (stillGoing) {
-                boolean hadNext = splitr.tryAdvance(elem -> {
-                  if (predicate.test(elem)) {
-                    consumer.accept(elem);
-                  } else {
-                    stillGoing = false;
-                  }
-                });
-                return hadNext && stillGoing;
-              }
-              return false;
-            }
-          };
-        }
-
-        static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
-           return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
-        }
 }

@@ -1,11 +1,16 @@
 package jfxtras.labs.icalendar.mocks;
 
+import java.time.DateTimeException;
 import java.time.temporal.Temporal;
-import java.util.Collection;
+import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.ICalendarUtilities;
+import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.VComponentProperty;
 import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.icalendar.VEventProperty;
@@ -23,30 +28,56 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
     public boolean isValid()
     {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
-    public Collection<InstanceMock> makeInstances(Temporal start, Temporal end)
+    public List<InstanceMock> makeInstances(Temporal startRange, Temporal endRange)
     {
-        // TODO Auto-generated method stub
-        return null;
+        if (VComponent.isAfter(startRange, endRange)) throw new DateTimeException("endRange must be after startRange");
+        setEndRange(endRange);
+        setStartRange(startRange);
+        return makeInstances();
     }
 
     @Override
-    public Collection<InstanceMock> makeInstances()
+    public List<InstanceMock> makeInstances()
     {
-        // TODO Auto-generated method stub
-        return null;
+        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
+        List<InstanceMock> madeInstances = new ArrayList<>();
+        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange())); // inclusive
+        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> VComponent.isBefore(a, getEndRange())); // exclusive
+        removedTooLate.forEach(temporalStart ->
+        {
+            TemporalAmount duration = endPriority().getDuration(this);
+            Temporal temporalEnd = temporalStart.plus(duration);
+            InstanceMock instance = null;
+            try
+            {
+                instance = getInstanceClass().newInstance();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            instance.setStartTemporal(temporalStart);
+            instance.setEndTemporal(temporalEnd);
+            instance.setSummary(getSummary());
+            madeInstances.add(instance);
+            instances().add(instance);
+      });
+      return madeInstances;
     }
 
+    /**
+     * The currently generated instances of the recurrence set.
+     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
+     * calendar component.  As many RRule definitions are infinite sets, a complete representation
+     * is not possible.  The set only contains the events inside the bounds of 
+     */
     @Override
-    public Collection<InstanceMock> instances()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    public List<InstanceMock> instances() { return instances; }
+    final private List<InstanceMock> instances = new ArrayList<>();
+    
     public Class<? extends InstanceMock> getInstanceClass() { return instanceClass; }
     private Class<? extends InstanceMock> instanceClass = InstanceMock.class; // default instance class
     public void setInstanceClass(Class<? extends InstanceMock> instanceClass) { this.instanceClass = instanceClass; }

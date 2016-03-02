@@ -203,25 +203,6 @@ public class ICalendarDateTest extends ICalendarTestAbstract
 //        Locale.setDefault(oldLocale);
     }
     
-    /** FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=10 - start before first valid date */
-    @Test
-    public void yearlyStreamTest9()
-    {
-        VEventMock e = getYearly9();
-        List<Temporal> madeDates = e
-                .stream(e.getDateTimeStart())
-                .limit(5)
-                .collect(Collectors.toList());
-        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 10, 0, 0)
-              , LocalDateTime.of(2016, 11, 10, 0, 0)
-              , LocalDateTime.of(2017, 11, 10, 0, 0)
-              , LocalDateTime.of(2018, 11, 10, 0, 0)
-              , LocalDateTime.of(2019, 11, 10, 0, 0)
-                ));
-        assertEquals(expectedDates, madeDates);
-    }
-    
     /** Tests daily stream with FREQ=MONTHLY */
     @Test
     public void monthlyStreamTest()

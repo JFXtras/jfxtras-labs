@@ -765,6 +765,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         instancesTemp.addAll(instances);
         instancesTemp.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
         instances().clear(); // clear VEvent's outdated collection of appointments
+        System.out.println("instances:" + makeInstances());
         instancesTemp.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
         return instancesTemp;
 //        instances.clear();
@@ -834,13 +835,27 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         // Remove old instances, add back ones
         Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to instances
         instancesTemp.addAll(instances);
-        instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
+        instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
+        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
+        System.out.println("end original" + instancesTemp.size());
+        System.out.println("start size:" + instancesTemp.size());
+        instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a)); // TODO - NOT REMOVING
+        System.out.println("end size:" + instancesTemp.size());
+        instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
+        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
+        System.out.println("end original" + instancesTemp.size());
+       
         vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of instances
         instancesTemp.addAll(vEventOriginal.makeInstances()); // make new instances and add to main collection (added to vEventNew's collection in makeinstances)
         instances().clear(); // clear vEvent outdated collection of instances
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new instances
         vComponents.add(vEventOriginal);
-
+        makeInstances().stream().forEach(a -> System.out.println("instances1:" + a));
+        System.out.println("-------");
+        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
+        System.out.println(this);
+        System.out.println(vEventOriginal);
+        
         return instancesTemp;
 //        instances.clear();
 //        instances.addAll(instancesTemp);
@@ -1091,6 +1106,8 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         {
             p.copyProperty(source, destination);
         });
+        destination.setStartRange(source.getStartRange());
+        destination.setEndRange(source.getEndRange());
 //        destination.setCategories(source.getCategories());
 //        destination.setComment(source.getComment());
 //        destination.setDateTimeStamp(source.getDateTimeStamp());

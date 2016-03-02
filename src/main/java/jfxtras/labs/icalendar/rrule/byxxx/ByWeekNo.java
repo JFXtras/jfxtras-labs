@@ -39,8 +39,9 @@ public class ByWeekNo extends ByRuleAbstract
 
     /** Start of week - default start of week is Monday */
     public DayOfWeek getWeekStart() { return weekStart; }
-    private DayOfWeek weekStart = DayOfWeek.MONDAY;
+    private DayOfWeek weekStart = DayOfWeek.MONDAY; // default to start on Monday
     public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
+    public ByWeekNo withWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; return this; }
 
     // CONSTRUCTORS
     /** takes String of comma-delimited integers, parses it to array of ints 

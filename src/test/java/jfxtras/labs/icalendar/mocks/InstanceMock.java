@@ -39,4 +39,15 @@ public class InstanceMock
         boolean summaryEquals = i1.getSummary().equals(i2.getSummary());
         return startEquals && endEquals && summaryEquals;
     }
+    
+    @Override
+    public String toString()
+    {
+        return super.toString()
+             + ", "
+             + this.getStartTemporal()
+             + " - "
+             + this.getEndTemporal()
+             ;
+    }
 }

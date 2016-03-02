@@ -43,7 +43,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
             throw new IllegalArgumentException("INTERVAL can't be less than 1. (" + i + ")");
         }
     }
-    public Frequency withInterval(int interval) { setInterval(interval); return this; }
+    public T withInterval(int interval) { setInterval(interval); return (T) this; }
 
     /** BYxxx Rules 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)

@@ -22,13 +22,10 @@ import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendar.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendar.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.icalendar.rrule.byxxx.ByWeekNo;
-import jfxtras.labs.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.icalendar.rrule.freq.Daily;
-import jfxtras.labs.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.rrule.freq.Monthly;
 import jfxtras.labs.icalendar.rrule.freq.Weekly;
 import jfxtras.labs.icalendar.rrule.freq.Yearly;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public abstract class ICalendarTestAbstract
 {
@@ -37,70 +34,52 @@ public abstract class ICalendarTestAbstract
     private final static Class<InstanceMock> clazz = InstanceMock.class;
     public Class<InstanceMock> getClazz() { return clazz; }
     
-    /**
-     * Tests equality between two VEventImplMock objects.  Treats v1 as expected.  Produces a JUnit-like
-     * exception is objects are not equal.
-     * 
-     * @param v1 - expected VEventImplMock
-     * @param v2 - actual VEventImplMock
-     * @return - equality result
-     */
-    protected static <T> boolean AppointmentIsEqualTo(Appointment a1, Appointment a2)
-    {
-        boolean startEquals = a1.getStartLocalDateTime().equals(a2.getStartLocalDateTime());
-        boolean endEquals = a1.getEndLocalDateTime().equals(a2.getEndLocalDateTime());
-        boolean descriptionEquals = (a1.getDescription() == null) ? (a2.getDescription() == null) : a1.getDescription().equals(a2.getDescription());
-        boolean locationEquals = (a1.getLocation() == null) ? (a2.getLocation() == null) : a1.getLocation().equals(a2.getLocation());
-        boolean summaryEquals = (a1.getSummary() == null) ? (a2.getSummary() == null) : a1.getSummary().equals(a2.getSummary());
-        boolean appointmentGroupEquals = (a1.getAppointmentGroup() == null) ? (a2.getAppointmentGroup() == null) : a1.getAppointmentGroup().equals(a2.getAppointmentGroup());
-        return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals && startEquals && endEquals;
-    }
-
-    
-//    public void refresh(List<VComponent<Appointment>> vComponents, List<Appointment> appointments)
+//    /**
+//     * Tests equality between two VEventImplMock objects.  Treats v1 as expected.  Produces a JUnit-like
+//     * exception is objects are not equal.
+//     * 
+//     * @param v1 - expected VEventImplMock
+//     * @param v2 - actual VEventImplMock
+//     * @return - equality result
+//     */
+//    protected static <T> boolean AppointmentIsEqualTo(Appointment a1, Appointment a2)
 //    {
-//        vComponents.stream().forEach(v -> v.instances().clear());   
-//        appointments.clear();
-//        vComponents.stream().forEach(r ->
-//        {
-//            Collection<Appointment> newAppointments = r.makeInstances();
-//            appointments.addAll(newAppointments);
-//        });
+//        boolean startEquals = a1.getStartLocalDateTime().equals(a2.getStartLocalDateTime());
+//        boolean endEquals = a1.getEndLocalDateTime().equals(a2.getEndLocalDateTime());
+//        boolean descriptionEquals = (a1.getDescription() == null) ? (a2.getDescription() == null) : a1.getDescription().equals(a2.getDescription());
+//        boolean locationEquals = (a1.getLocation() == null) ? (a2.getLocation() == null) : a1.getLocation().equals(a2.getLocation());
+//        boolean summaryEquals = (a1.getSummary() == null) ? (a2.getSummary() == null) : a1.getSummary().equals(a2.getSummary());
+//        boolean appointmentGroupEquals = (a1.getAppointmentGroup() == null) ? (a2.getAppointmentGroup() == null) : a1.getAppointmentGroup().equals(a2.getAppointmentGroup());
+//        return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals && startEquals && endEquals;
 //    }
     
     /** FREQ=YEARLY; */
     protected VEventMock getYearly1()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC));
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC));
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20151109T082900-0@jfxtras.org");
-        vEvent.setDuration(Duration.ofHours(1));
-        vEvent.setDescription("Yearly1 Description");
-        vEvent.setSummary("Yearly1 Summary");
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency yearly = new Yearly();
-        rule.setFrequency(yearly);
-        return vEvent;
+        return new VEventMock()
+                .withCategories("group13")
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
+                .withUniqueIdentifier("20151109T082900-0@jfxtras.org")
+                .withDuration(Duration.ofHours(1))
+                .withDescription("Yearly1 Description")
+                .withSummary("Yearly1 Summary")
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Yearly()));
     }
 
-    /** FREQ=YEARLY;BYDAY=SU; */
+    /** FREQ=YEARLY;BYDAY=FR; */
     protected VEventMock getYearly2()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency yearly = new Yearly();
-        rule.setFrequency(yearly);
-        Rule byRule = new ByDay(DayOfWeek.FRIDAY);
-        yearly.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Yearly()
+                                .withByRules(new ByDay(DayOfWeek.FRIDAY))));
     }
     
     /**Every Thursday, but only during June, July, and August, forever:
@@ -109,50 +88,42 @@ public abstract class ICalendarTestAbstract
      * example in RFC 5545 iCalendar, page 129 */
     protected VEventMock getYearly3()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency yearly = new Yearly();
-        rule.setFrequency(yearly);
-        Rule byRule = new ByDay(DayOfWeek.THURSDAY);
-        yearly.addByRule(byRule);
-        Rule byRule2 = new ByMonth(Month.JUNE, Month.JULY, Month.AUGUST);
-        yearly.addByRule(byRule2);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Yearly()
+                                .withByRules(new ByDay(DayOfWeek.THURSDAY)
+                                           , new ByMonth(Month.JUNE, Month.JULY, Month.AUGUST))));
     }
     
     /** FREQ=YEARLY;BYMONTH=1,2 */
     protected VEventMock getYearly4()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency yearly = new Yearly();
-        rule.setFrequency(yearly);
-        Rule byRule = new ByMonth(Month.JANUARY, Month.FEBRUARY);
-        yearly.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Yearly()
+                                .withByRules(new ByMonth(Month.JANUARY, Month.FEBRUARY))));
+//        RRule rule = new RRule();
+//                .withRRule(rule);
+//        Frequency yearly = new Yearly();
+//        rule.setFrequency(yearly);
+//        Rule byRule = new ByMonth(Month.JANUARY, Month.FEBRUARY);
+//        yearly.addByRule(byRule);
     }
 
     /** FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=10 */
     protected VEventMock getYearly5()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency yearly = new Yearly();
-        rule.setFrequency(yearly);
-        Rule byRule = new ByMonth(Month.NOVEMBER);
-        yearly.addByRule(byRule);
-        Rule byRule2 = new ByMonthDay(10);
-        yearly.addByRule(byRule2);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Yearly()
+                                .withByRules(new ByMonth(Month.NOVEMBER)
+                                           , new ByMonthDay(10))));
     }
 
     /** RFC 5545 iCalendar, page 130 
@@ -164,239 +135,164 @@ public abstract class ICalendarTestAbstract
         BYMONTHDAY=2,3,4,5,6,7,8 */
     protected VEventMock getYearly6()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency yearly = new Yearly()
-                .withInterval(4);
-        rule.setFrequency(yearly);
-        Rule byRule = new ByMonth(Month.NOVEMBER);
-        yearly.addByRule(byRule);
-        Rule byRule2 = new ByDay(DayOfWeek.TUESDAY);
-        yearly.addByRule(byRule2);
-        Rule byRule3 = new ByMonthDay(2,3,4,5,6,7,8);
-        yearly.addByRule(byRule3);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Yearly()
+                                .withInterval(4)
+                                .withByRules(new ByMonth(Month.NOVEMBER)
+                                           , new ByDay(DayOfWeek.TUESDAY)
+                                           , new ByMonthDay(2,3,4,5,6,7,8))));
     }
     
     /** FREQ=YEARLY;BYDAY=20MO */
     protected VEventMock getYearly7()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency yearly = new Yearly();
-        rule.setFrequency(yearly);
-        Rule byRule = new ByDay(new ByDayPair(DayOfWeek.MONDAY, 20));
-        yearly.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Yearly()
+                                .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 20)))));
     }
     
     /** FREQ=YEARLY;WKST=MO;BYWEEKNO=20;BYDAY=MO */
     protected VEventMock getYearly8()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency yearly = new Yearly();
-        rule.setFrequency(yearly);
-        ByWeekNo byRule = new ByWeekNo(20);
-        byRule.setWeekStart(DayOfWeek.MONDAY); // not needed, is default.
-        yearly.addByRule(byRule);
-        Rule byRule2 = new ByDay(DayOfWeek.MONDAY);
-        yearly.addByRule(byRule2);
-
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Yearly()
+                                .withByRules(new ByWeekNo(20).withWeekStart(DayOfWeek.MONDAY)
+                                           , new ByDay(DayOfWeek.MONDAY))));
     }
-    
-    /** FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=10 - start before first valid date */
-    protected VEventMock getYearly9()
-    {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 1, 1, 0, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency yearly = new Yearly();
-        rule.setFrequency(yearly);
-        Rule byRule = new ByMonth(Month.NOVEMBER);
-        yearly.addByRule(byRule);
-        Rule byRule2 = new ByMonthDay(10); // use default repeat date from startLocalDateTime (10th of month)
-        yearly.addByRule(byRule2);
-        return vEvent;
-    }
-    
+        
     /** FREQ=MONTHLY, Basic monthly stream, repeats 9th day of every month */
     protected VEventMock getMonthly1()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Monthly monthly = new Monthly();
-        rule.setFrequency(monthly);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Monthly()));
     }
 
     /** FREQ=MONTHLY;BYMONTHDAY=-2, Monthly stream, negative day of month */
     protected VEventMock getMonthly2()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency monthly = new Monthly();
-        rule.setFrequency(monthly);
-        Rule by = new ByMonthDay()
-                .withDaysOfMonth(-2);// repeats 2nd to last day
-        monthly.addByRule(by);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Monthly()
+                                .withByRules(new ByMonthDay()
+                                        .withDaysOfMonth(-2)))); // repeats 2nd to last day of month
     }
 
     /** FREQ=MONTHLY;BYDAY=TU,WE,FR */
     protected VEventMock getMonthly3()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency monthly = new Monthly();
-        rule.setFrequency(monthly);
-        Rule byRule = new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
-        monthly.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Monthly()
+                                .withByRules(new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
     }
 
     /** FREQ=MONTHLY;BYDAY=-1SA */
     protected VEventMock getMonthly4()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency monthly = new Monthly();
-        rule.setFrequency(monthly);
-        Rule byRule = new ByDay(new ByDay.ByDayPair(DayOfWeek.SATURDAY, -1));
-        monthly.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Monthly()
+                                .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.SATURDAY, -1))))); // last Saturday in month
     }
 
     /** FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13 Every Friday the 13th, forever: */
     protected VEventMock getMonthly5()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(1997, 6, 13, 10, 0));
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(1997, 9, 1, 8, 30), ZoneOffset.UTC));
-        vEvent.setDuration(Duration.ofHours(1));
-        vEvent.setUniqueIdentifier("19970901T083000-0@jfxtras.org");
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency monthly = new Monthly();
-        rule.setFrequency(monthly);
-        Rule byRule = new ByDay(DayOfWeek.FRIDAY);
-        monthly.addByRule(byRule);
-        Rule byRule2 = new ByMonthDay(13);
-        monthly.addByRule(byRule2);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(1997, 6, 13, 10, 0))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(1997, 9, 1, 8, 30), ZoneOffset.UTC))
+                .withDuration(Duration.ofHours(1))
+                .withUniqueIdentifier("19970901T083000-0@jfxtras.org")
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Monthly()
+                                .withByRules(new ByDay(DayOfWeek.FRIDAY), new ByMonthDay(13))));
     }
 
-    /** FREQ=MONTHLY;BYMONTH=11,12;BYDAY=TU,WE,FR - start before first valid date */
+    /** FREQ=MONTHLY;BYMONTH=11,12;BYDAY=TU,WE,FR  */
     protected VEventMock getMonthly6()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 3, 10, 0));
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setDuration(Duration.ofMinutes(90));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency monthly = new Monthly();
-        rule.setFrequency(monthly);
-        Rule byRule1 = new ByMonth(Month.NOVEMBER, Month.DECEMBER);
-        monthly.addByRule(byRule1);
-        Rule byRule2 = new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
-        monthly.addByRule(byRule2);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 3, 10, 0))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withDuration(Duration.ofMinutes(90))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Monthly()
+                                .withByRules(new ByMonth(Month.NOVEMBER, Month.DECEMBER)
+                                           , new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
     }
     
     /** FREQ=MONTHLY;BYDAY=3MO */
     protected VEventMock getMonthly7()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency monthly = new Monthly();
-        rule.setFrequency(monthly);
-        Rule byRule = new ByDay(new ByDay.ByDayPair(DayOfWeek.MONDAY, 3));
-        monthly.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Monthly()
+                                .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.MONDAY, 3)))));
     }
     
     
     /** FREQ=WEEKLY, Basic weekly stream */
     protected VEventMock getWeekly1()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency weekly = new Weekly();
-        rule.setFrequency(weekly);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Weekly()));
     }
 
     /** FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR */
     protected static VEventMock getWeekly2()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
-        vEvent.setDuration(Duration.ofMinutes(45));
-        vEvent.setDescription("Weekly1 Description");
-        vEvent.setSummary("Weekly1 Summary");
-        vEvent.setInstanceClass(clazz);
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency weekly = new Weekly()
-                .withInterval(2);
-        rule.setFrequency(weekly);
-        Rule byRule = new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
-        weekly.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
+                .withDuration(Duration.ofMinutes(45))
+                .withDescription("Weekly1 Description")
+                .withSummary("Weekly1 Summary")
+                .withInstanceClass(clazz)
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRRule(new RRule()
+                        .withFrequency(new Weekly()
+                                .withInterval(2)
+                                .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
     }
 
     /** FREQ=WEEKLY;BYDAY=MO,WE,FR  */
     protected VEventMock getWeekly3()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
-        vEvent.setDuration(Duration.ofMinutes(45));
-        vEvent.setDescription("Weekly3 Description");
-        vEvent.setSummary("Weekly3 Summary");
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency weekly = new Weekly();
-        rule.setFrequency(weekly);
-        Rule byRule = new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
-        weekly.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0))
+                .withDuration(Duration.ofMinutes(45))
+                .withDescription("Weekly3 Description")
+                .withSummary("Weekly3 Summary")
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Weekly()
+                                .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
     }
     
     /** FREQ=WEEKLY;INTERVAL=2;COUNT=11;BYDAY=MO,WE,FR */
@@ -409,25 +305,20 @@ public abstract class ICalendarTestAbstract
     
     protected VEventMock getWeekly5()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2016, 1, 3, 5, 0));
-        vEvent.setDateTimeEnd(LocalDateTime.of(2016, 1, 3, 7, 0));
-        vEvent.setDescription("Weekly5 Description");
-        vEvent.setSummary("Weekly5 Summary");
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency weekly = new Weekly();
-        rule.setFrequency(weekly);
-        Rule byRule = new ByDay(DayOfWeek.SUNDAY, DayOfWeek.WEDNESDAY);
-        weekly.addByRule(byRule);
-        return vEvent;        
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2016, 1, 3, 5, 0))
+                .withDateTimeEnd(LocalDateTime.of(2016, 1, 3, 7, 0))
+                .withDescription("Weekly5 Description")
+                .withSummary("Weekly5 Summary")
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Weekly()
+                                .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.WEDNESDAY))));      
     }
     
     /** FREQ=WEEKLY;BYDAY=MO,WE,FR  */
     public static VEventMock getWeeklyZoned()
     {
-        System.out.println(clazz);
         return new VEventMock()
                 .withInstanceClass(clazz)
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
@@ -445,257 +336,225 @@ public abstract class ICalendarTestAbstract
     /** FREQ=DAILY, Basic daily stream */
     public static VEventMock getDaily1()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
-        vEvent.setDescription("Daily1 Description");
-        vEvent.setSummary("Daily1 Summary");
-        vEvent.setInstanceClass(clazz);
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily();
-        rule.setFrequency(daily);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
+                .withDescription("Daily1 Description")
+                .withSummary("Daily1 Summary")
+                .withInstanceClass(clazz)
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRRule(new RRule()
+                        .withFrequency(new Daily()));
     }
 
     /** FREQ=DAILY;INVERVAL=3;COUNT=6 */
     protected static VEventMock getDaily2()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDuration(Duration.ofMinutes(90));
-        vEvent.setDescription("Daily2 Description");
-        vEvent.setSummary("Daily2 Summary");
-        vEvent.setInstanceClass(clazz);
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        RRule rule = new RRule()
-                .withCount(6);
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(3);
-        rule.setFrequency(daily);
-        return vEvent;
+        return new VEventMock()
+                .withCategories("group03")
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDuration(Duration.ofMinutes(90))
+                .withDescription("Daily2 Description")
+                .withSummary("Daily2 Summary")
+                .withInstanceClass(clazz)
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRRule(new RRule()
+                        .withCount(6)
+                        .withFrequency(new Daily()
+                                .withInterval(3)));
     }
 
     /** FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14 */
     protected VEventMock getDaily3()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
-        vEvent.setInstanceClass(clazz);
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        RRule rule = new RRule()
-                .withCount(10);
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(3);
-        rule.setFrequency(daily);
-        Rule byRule = new ByMonthDay()
-                .withDaysOfMonth(9,10,11,12,13,14);
-        daily.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
+                .withInstanceClass(clazz)
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRRule(new RRule()
+                        .withCount(10)
+                        .withFrequency(new Daily()
+                                .withInterval(3)
+                                .withByRules(new ByMonthDay()
+                                        .withDaysOfMonth(9,10,11,12,13,14))));
     }
 
     /** FREQ=DAILY;INVERVAL=2;BYMONTHDAY=9 */
     protected VEventMock getDaily4()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(2);
-        rule.setFrequency(daily);
-        Rule byRule = new ByMonthDay(9); // use default repeat date from startLocalDateTime (9th of month)
-        daily.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Daily()
+                                .withInterval(2)
+                                .withByRules(new ByMonthDay(9))));
     }
     
     /** FREQ=DAILY;INVERVAL=2;BYDAY=FR */
     protected VEventMock getDaily5()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule();
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(2);
-        rule.setFrequency(daily);
-        Rule byRule = new ByDay(DayOfWeek.FRIDAY);
-        daily.addByRule(byRule);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withFrequency(new Daily()
+                                .withInterval(2)
+                                .withByRules(new ByDay(DayOfWeek.FRIDAY))));
     }
 
     /* FREQ=DAILY;INVERVAL=2;UNTIL=20151201T095959 */
     protected static VEventMock getDaily6()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
-        vEvent.setDescription("Daily6 Description");
-        vEvent.setSummary("Daily6 Summary");
-        vEvent.setInstanceClass(clazz);
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        RRule rule = new RRule()
-                .withUntil(LocalDateTime.of(2015, 12, 1, 9, 59, 59));
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(2);
-        rule.setFrequency(daily);
-        return vEvent;
+        return new VEventMock()
+                .withCategories("group03")
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
+                .withDescription("Daily6 Description")
+                .withSummary("Daily6 Summary")
+                .withInstanceClass(clazz)
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRRule(new RRule()
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
+                                .withZoneSameInstant(ZoneId.of("Z")))
+                        .withFrequency(new Daily()
+                                .withInterval(2)));
     }
     
-    /* FREQ=DAILY;INVERVAL=2;UNTIL=20151129T100000 */
+    /* FREQ=DAILY;INVERVAL=2;UNTIL=20151129T100000 
+     * Tests inclusive UNTIL */
     protected static VEventMock getDaily7()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0));
-        vEvent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0));
-        vEvent.setDescription("Daily6 Description");
-        vEvent.setSummary("Daily6 Summary");
-        vEvent.setInstanceClass(clazz);
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        RRule rule = new RRule()
-                .withUntil(LocalDateTime.of(2015, 11, 29, 10, 0));
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(2);
-        rule.setFrequency(daily);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
+                .withDescription("Daily6 Description")
+                .withSummary("Daily6 Summary")
+                .withInstanceClass(clazz)
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRRule(new RRule()
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneOffset.systemDefault())
+                                .withZoneSameInstant(ZoneId.of("Z")))
+                        .withFrequency(new Daily()
+                                .withInterval(2)));
     }
     
     public static VEventMock getDailyUTC()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneOffset.UTC));
-        vEvent.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneOffset.UTC));
-        vEvent.setDescription("Daily6 Description");
-        vEvent.setSummary("Daily6 Summary");
-        vEvent.setInstanceClass(clazz);
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        RRule rule = new RRule()
-                .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.UTC));
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(2);
-        rule.setFrequency(daily);
-        return vEvent;
+        return new VEventMock()
+                .withCategories("group03")
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneOffset.UTC))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneOffset.UTC))
+                .withDescription("Daily6 Description")
+                .withSummary("Daily6 Summary")
+                .withInstanceClass(clazz)
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRRule(new RRule()
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.UTC))
+                        .withFrequency(new Daily()
+                                .withInterval(2)));
     }
     
     /** Individual - non repeatable VEvent */
     public static VEventMock getIndividual1()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30));
-        vEvent.setDuration(Duration.ofMinutes(60));
-        vEvent.setDescription("Individual Description");
-        vEvent.setSummary("Individual Summary");
-        vEvent.setInstanceClass(clazz);
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30))
+                .withDuration(Duration.ofMinutes(60))
+                .withDescription("Individual Description")
+                .withSummary("Individual Summary")
+                .withInstanceClass(clazz)
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
     
     protected static VEventMock getIndividual2()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 11));
-        vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        vEvent.setInstanceClass(clazz);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDate.of(2015, 11, 11))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 12))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withInstanceClass(clazz);
     }
     
     public static VEventMock getIndividualZoned()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")));
-        vEvent.setDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")));
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        vEvent.setInstanceClass(clazz);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withInstanceClass(clazz);
     }
     
     /** FREQ=DAILY;INVERVAL=3;COUNT=6
      *  EXDATE=20151112T100000,20151115T100000 */
     public static VEventMock getDailyWithException1()
     {
-        VEventMock vEvent = getDaily2();
-        ExDate exDate = new ExDate().withTemporals(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0));
-        vEvent.setExDate(exDate);
-        return vEvent;
+        return getDaily2()
+                .withExDate(new ExDate()
+                        .withTemporals(LocalDateTime.of(2015, 11, 12, 10, 0)
+                                     , LocalDateTime.of(2015, 11, 15, 10, 0)));
     }
 
     protected static VEventMock getRDate()
     {
-        VEventMock vEvent = new VEventMock()
+        return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(60))
                 .withRDate(new RDate()
                         .withTemporals(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 14, 12, 0)));
-        return vEvent;
     }
     
     /** all-day appointments */
     protected VEventMock getWholeDayDaily1()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
-        vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        vEvent.setInstanceClass(clazz);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDate.of(2015, 11, 9))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 12))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withInstanceClass(clazz);
     }
     
     /* FREQ=DAILY;INVERVAL=3;COUNT=6 */
     protected VEventMock getWholeDayDaily2()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
-        vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 12));
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule()
-                .withCount(6);
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(3);
-        rule.setFrequency(daily);
-        return vEvent;
+        return new VEventMock()
+                .withDateTimeStart(LocalDate.of(2015, 11, 9))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 12))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withCount(6)
+                        .withFrequency(new Daily()
+                                .withInterval(3)));
     }
 
     /* FREQ=DAILY;INVERVAL=3;UNTIL=20151124 */
     protected static VEventMock getWholeDayDaily3()
     {
-        VEventMock vEvent = new VEventMock();
-        vEvent.setDateTimeStart(LocalDate.of(2015, 11, 9));
-        vEvent.setDateTimeEnd(LocalDate.of(2015, 11, 11));
-        vEvent.setDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC));
-        vEvent.setUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        vEvent.setInstanceClass(clazz);
-        RRule rule = new RRule()
-//                .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneOffset.UTC));
-                .withUntil(LocalDate.of(2015, 11, 24));
-        vEvent.setRRule(rule);
-        Frequency daily = new Daily()
-                .withInterval(3);
-        rule.setFrequency(daily);
-        return vEvent;
+        return new VEventMock()
+                .withCategories("group06")
+                .withDateTimeStart(LocalDate.of(2015, 11, 9))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 11))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withInstanceClass(clazz)
+                .withRRule(new RRule()
+                        .withUntil(LocalDate.of(2015, 11, 24))
+                        .withFrequency(new Daily()
+                                .withInterval(3)));
     }
 
     /*

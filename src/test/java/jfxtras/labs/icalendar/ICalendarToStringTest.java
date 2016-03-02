@@ -3,6 +3,10 @@ package jfxtras.labs.icalendar;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
 import org.junit.Test;
@@ -93,13 +97,16 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
     VEventMock e = getDaily6();
     String madeString = e.toComponentText();
+    ZonedDateTime until = ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
+        .withZoneSameInstant(ZoneId.of("Z")); // depends on time zone, so can't be hard coded
+    String untilString = VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(until);
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                         + "CATEGORIES:group03" + System.lineSeparator()
                         + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
                         + "DTEND:20151109T110000" + System.lineSeparator()
                         + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
                         + "DTSTART:20151109T100000" + System.lineSeparator()
-                        + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T095959" + System.lineSeparator()
+                        + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=" + untilString + System.lineSeparator()
                         + "SUMMARY:Daily6 Summary" + System.lineSeparator()
                         + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                         + "END:VEVENT";
@@ -111,7 +118,6 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
     VEventMock e = getDailyUTC();
     String madeString = e.toComponentText();
-    System.out.println(madeString);
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                         + "CATEGORIES:group03" + System.lineSeparator()
                         + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
