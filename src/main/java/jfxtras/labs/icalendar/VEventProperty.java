@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javafx.util.Pair;
 import jfxtras.labs.icalendar.VEvent.EndPriority;
 
 /**
@@ -269,6 +270,31 @@ public enum VEventProperty
         return propertyFromTagMap.get(propertyName.toUpperCase());
     }
     
+    /*
+     * ABSTRACT METHODS
+     */
+    
+    /** sets VEvent's property for this VEventProperty to parameter value
+     * value is a string that is parsed if necessary to the appropriate type
+     * returns true, if property was found and set */
+    public abstract boolean parseAndSetProperty(VEvent<?,?> vEvent, String value);
+
+    /** gets VEvent's property value for this VEventProperty */
+    public abstract Object getPropertyValue(VEvent<?,?> vEvent);
+    
+    /** makes content line (RFC 5545 3.1) from a VEvent property  */
+    public abstract String makeContentLine(VEvent<?,?> vEvent);
+    
+    /** Checks is corresponding property is equal between v1 and v2 */
+    public abstract boolean isPropertyEqual(VEvent<?,?> v1, VEvent<?,?> v2);
+    
+    /** Copies property value from one v1 to v2 */
+    public abstract void copyProperty(VEvent<?,?> source, VEvent<?,?> destination);
+    
+    /*
+     * STATIC METHODS
+     */
+    
     /**
      * Tests equality between two VEvent objects.  Treats v1 as expected.  Produces a JUnit-like
      * output if objects are not equal.
@@ -304,24 +330,23 @@ public enum VEventProperty
         }
     }
     
-    /*
-     * ABSTRACT METHODS
+    /**
+     * Parses the property-value pair to the matching property, if a match is found.
+     * If no matching property, does nothing.
+     * 
+     * @param vEvent - object to add property values
+     * @param propertyValuePair - property name-value pair (e.g. DTSTART and TZID=America/Los_Angeles:20160214T110000)
      */
-    
-    /** sets VEvent's property for this VEventProperty to parameter value
-     * value is a string that is parsed if necessary to the appropriate type
-     * returns true, if property was found and set */
-    public abstract boolean parseAndSetProperty(VEvent<?,?> vEvent, String value);
-
-    /** gets VEvent's property value for this VEventProperty */
-    public abstract Object getPropertyValue(VEvent<?,?> vEvent);
-    
-    /** makes content line (RFC 5545 3.1) from a VEvent property  */
-    public abstract String makeContentLine(VEvent<?,?> vEvent);
-    
-    /** Checks is corresponding property is equal between v1 and v2 */
-    public abstract boolean isPropertyEqual(VEvent<?,?> v1, VEvent<?,?> v2);
-    
-    /** Copies property value from one v1 to v2 */
-    public abstract void copyProperty(VEvent<?,?> source, VEvent<?,?> destination);
+    public static void parse(VEvent<?,?> vEvent, Pair<String, String> propertyValuePair)
+    {
+        String propertyName = propertyValuePair.getKey();
+        String value = propertyValuePair.getValue();
+        
+        // VEvent properties
+        VEventProperty vEventProperty = VEventProperty.propertyFromString(propertyName);
+        if (vEventProperty != null)
+        {
+            vEventProperty.parseAndSetProperty(vEvent, value);
+        }
+    }
 }

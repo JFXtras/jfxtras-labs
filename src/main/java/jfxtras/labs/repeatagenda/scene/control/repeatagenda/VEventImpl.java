@@ -10,6 +10,7 @@ import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,8 +28,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
+import javafx.util.Pair;
 import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.VComponentProperty;
 import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.icalendar.VEventProperty;
 import jfxtras.scene.control.agenda.Agenda;
@@ -301,8 +305,55 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     public static VEventImpl parse(String string, List<AppointmentGroup> appointmentGroups)
     {
         VEventImpl vEvent = new VEventImpl(appointmentGroups);
-        return (VEventImpl) VEvent.parseVEvent(vEvent, string);
+        Iterator<Pair<String, String>> i = ICalendarUtilities.ComponentStringToPropertyNameAndValueList(string).iterator();
+        while (i.hasNext())
+        {
+            Pair<String, String> propertyValuePair = i.next();
+            
+            // parse each property-value pair by all associated property enums
+            // TODO - CONSIDER MAKING A VEventImpl ENUM
+            VEventProperty.parse(vEvent, propertyValuePair);
+            VComponentProperty.parse(vEvent, propertyValuePair);
+        }
+        return vEvent;
     }
+    
+//    /**
+//     * Needed by parse methods in subclasses 
+//     * 
+//     * Convert a list of strings containing properties of a iCalendar component and
+//     * populate its properties.  Used to make a new object from a List<String>.
+//     * 
+//     * @param vEvent
+//     * @param strings - list of properties
+//     * @return VComponent with parsed properties added
+//     */    
+//    public static VEvent<?,?> parse(VEvent<?,?> vEvent, String string)
+//    {
+//        Iterator<Pair<String, String>> i = ICalendarUtilities.ComponentStringToPropertyNameAndValueList(string).iterator();
+//        while (i.hasNext())
+//        {
+//            Pair<String, String> linePair = i.next();
+//            String propertyName = linePair.getKey();
+//            String value = linePair.getValue();
+//            
+//            // VEvent properties
+//            VEventProperty vEventProperty = VEventProperty.propertyFromString(propertyName);
+//            if (vEventProperty != null)
+//            {
+//                vEventProperty.parseAndSetProperty(vEvent, value);
+//            }
+//            
+//            // VComponent properties
+//            VComponentProperty vComponentProperty = VComponentProperty.propertyFromString(propertyName);
+//            if (vComponentProperty != null)
+//            {
+//                vComponentProperty.parseAndSetProperty(vComponent, value);
+//                continue;
+//            }
+//        }
+//        return vEvent;
+//    }
 
     /**
      * Tests equality between two VEventImpl objects.  Treats v1 as expected.  Produces a JUnit-like

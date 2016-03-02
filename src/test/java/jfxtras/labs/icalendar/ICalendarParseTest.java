@@ -17,20 +17,17 @@ import java.util.List;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.RecurrenceComponent;
-import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.mocks.VEventMock;
 import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendar.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendar.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.icalendar.rrule.byxxx.ByWeekNo;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendar.rrule.freq.Daily;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.rrule.freq.Monthly;
 import jfxtras.labs.icalendar.rrule.freq.Yearly;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 public class ICalendarParseTest extends ICalendarTestAbstract
 {
@@ -169,9 +166,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        VEventImpl expectedVEvent = getYearly1();
-        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+        VEventMock vEvent = VEventMock.parse(vEventString);
+        VEventMock expectedVEvent = getYearly1();
+        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
 
     @Test
@@ -184,10 +181,10 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        VEventMock vEvent = VEventMock.parse(vEventString);
         System.out.println(vEvent);
-        VEventImpl expectedVEvent = getDaily3();
-        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+        VEventMock expectedVEvent = getDaily3();
+        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     
     /** FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
@@ -204,9 +201,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                               + "SUMMARY:Daily6 Summary" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        VEventImpl expectedVEvent = getDaily6();
-        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+        VEventMock vEvent = VEventMock.parse(vEventString);
+        VEventMock expectedVEvent = getDaily6();
+        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     
     /** Tests FREQ=YEARLY */
@@ -224,9 +221,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                 + "SUMMARY:Daily2 Summary" + System.lineSeparator()
                 + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
-        VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        VEventImpl expectedVEvent = getDailyWithException1();
-        assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+        VEventMock vEvent = VEventMock.parse(vEventString);
+        VEventMock expectedVEvent = getDailyWithException1();
+        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     
     @Test
@@ -238,9 +235,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
                           + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
-    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-    VEventImpl expectedVEvent = getWholeDayDaily1();
-    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    VEventMock vEvent = VEventMock.parse(vEventString);
+    VEventMock expectedVEvent = getWholeDayDaily1();
+    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     
     @Test
@@ -260,9 +257,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
             + "SUMMARY:test1" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-    VEventImpl expectedVEvent = getGoogleIndividual();
-    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    VEventMock vEvent = VEventMock.parse(vEventString);
+    VEventMock expectedVEvent = getGoogleIndividual();
+    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     
     @Test
@@ -283,9 +280,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
             + "SUMMARY:test2" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-    VEventImpl expectedVEvent = getGoogleRepeatable();
-    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    VEventMock vEvent = VEventMock.parse(vEventString);
+    VEventMock expectedVEvent = getGoogleRepeatable();
+    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     
     @Test
@@ -309,9 +306,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
             + "SUMMARY:test3" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-    VEventImpl expectedVEvent = getGoogleWithExDates();
-    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    VEventMock vEvent = VEventMock.parse(vEventString);
+    VEventMock expectedVEvent = getGoogleWithExDates();
+    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     
     @Test
@@ -332,9 +329,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
             + "SUMMARY:test4" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-    VEventImpl expectedVEvent = getGoogleRepeatablePart1();
-    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    VEventMock vEvent = VEventMock.parse(vEventString);
+    VEventMock expectedVEvent = getGoogleRepeatablePart1();
+    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     
     @Test
@@ -355,9 +352,9 @@ public class ICalendarParseTest extends ICalendarTestAbstract
             + "SUMMARY:test5" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-    VEventImpl expectedVEvent = getGoogleRepeatablePart2();
-    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    VEventMock vEvent = VEventMock.parse(vEventString);
+    VEventMock expectedVEvent = getGoogleRepeatablePart2();
+    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     
     @Test
@@ -378,8 +375,8 @@ public class ICalendarParseTest extends ICalendarTestAbstract
             + "SUMMARY:test6" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventImpl vEvent = VEventImpl.parse(vEventString, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-    VEventImpl expectedVEvent = getGoogleRepeatablePart3();
-    assertTrue(vEventIsEqualTo(expectedVEvent, vEvent));
+    VEventMock vEvent = VEventMock.parse(vEventString);
+    VEventMock expectedVEvent = getGoogleRepeatablePart3();
+    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
 }

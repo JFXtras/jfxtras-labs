@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javafx.util.Pair;
 import jfxtras.labs.icalendar.rrule.RRule;
 
 /**
@@ -819,7 +820,32 @@ import jfxtras.labs.icalendar.rrule.RRule;
         {
             return propertyFromTagMap.get(propertyName.toUpperCase());
         }
+        
+        /*
+         * ABSTRACT METHODS
+         */
+       
+        /** sets VComponent's property for this VComponentProperty to parameter value
+         * value is a string that is parsed if necessary to the appropriate type
+         * returns true, if property was found and set */
+        public abstract boolean parseAndSetProperty(VComponent<?> vComponent, String value);
 
+        /** gets VComponent's property value for this VComponentProperty */
+        public abstract Object getPropertyValue(VComponent<?> vComponent);
+                
+        /** makes content line (RFC 5545 3.1) from a vComponent property  */
+        public abstract String makeContentLine(VComponent<?> vComponent);       
+
+        /** Checks is corresponding property is equal between v1 and v2 */
+        public abstract boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2);
+        
+        /** Copies property value from one v1 to v2 */
+        public abstract void copyProperty(VComponent<?> source, VComponent<?> destination);
+
+        /*
+         * STATIC METHODS
+         */
+        
         /**
          * Tests equality between two VComponent objects.  Treats v1 as expected.  Produces a JUnit-like
          * output if objects are not equal.
@@ -861,27 +887,23 @@ import jfxtras.labs.icalendar.rrule.RRule;
             }
         }
         
-        
-        // TODO - MOVE COPYTO HERE
-        
-        /*
-         * ABSTRACT METHODS
+        /**
+         * Parses the property-value pair to the matching property, if a match is found.
+         * If no matching property, does nothing.
+         * 
+         * @param vComponent - object to add property values
+         * @param propertyValuePair - property name-value pair (e.g. DTSTART and TZID=America/Los_Angeles:20160214T110000)
          */
-       
-        /** sets VComponent's property for this VComponentProperty to parameter value
-         * value is a string that is parsed if necessary to the appropriate type
-         * returns true, if property was found and set */
-        public abstract boolean parseAndSetProperty(VComponent<?> vComponent, String value);
-
-        /** gets VComponent's property value for this VComponentProperty */
-        public abstract Object getPropertyValue(VComponent<?> vComponent);
-                
-        /** makes content line (RFC 5545 3.1) from a vComponent property  */
-        public abstract String makeContentLine(VComponent<?> vComponent);       
-
-        /** Checks is corresponding property is equal between v1 and v2 */
-        public abstract boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2);
-        
-        /** Copies property value from one v1 to v2 */
-        public abstract void copyProperty(VComponent<?> source, VComponent<?> destination);
+        public static void parse(VComponent<?> vComponent, Pair<String, String> propertyValuePair)
+        {
+            String propertyName = propertyValuePair.getKey();
+            String value = propertyValuePair.getValue();
+            
+            // VComponent properties
+            VComponentProperty vComponentProperty = VComponentProperty.propertyFromString(propertyName);
+            if (vComponentProperty != null)
+            {
+                vComponentProperty.parseAndSetProperty(vComponent, value);
+            }
+        }
 }

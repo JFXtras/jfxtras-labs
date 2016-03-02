@@ -1167,51 +1167,51 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         return properties;
     }
     
-    /**
-     * Needed by parse methods in subclasses 
-     * 
-     * Convert a list of strings containing properties of a iCalendar component and
-     * populate its properties.  Used to make a new object from a List<String>.
-     * 
-     * @param vComponent - VComponent input parameter
-     * @param strings - list of properties
-     * @return VComponent with parsed properties added
-     */
-    protected static VComponentBase<?,?> parseVComponent(VComponentBase<?,?> vComponent, List<String> strings)
-    {
-        Iterator<String> lineIterator = strings.iterator();
-        while (lineIterator.hasNext())
-        {
-            String line = lineIterator.next();
-            // identify iCalendar property ending index (property name must start at the beginning of the line)
-            int propertyValueSeparatorIndex = 0;
-            for (int i=0; i<line.length(); i++)
-            {
-                if ((line.charAt(i) == ';') || (line.charAt(i) == ':'))
-                {
-                    propertyValueSeparatorIndex = i;
-                    break;
-                }
-            }
-            if (propertyValueSeparatorIndex == 0)
-            {
-                continue; // line doesn't contain a property, get next one
-            }
-            String propertyName = line.substring(0, propertyValueSeparatorIndex);
-            String value = line.substring(propertyValueSeparatorIndex + 1).trim();
-            if (value.isEmpty())
-            { // skip empty properties
-                continue;
-            }
-            VComponentProperty property = VComponentProperty.propertyFromString(propertyName);
-            boolean propertyFound = property.parseAndSetProperty(vComponent, value); // runs method in enum to set property
-            if (propertyFound)
-            {
-                lineIterator.remove();                
-            }
-        }
-        return vComponent;
-    }
+//    /**
+//     * Needed by parse methods in subclasses 
+//     * 
+//     * Convert a list of strings containing properties of a iCalendar component and
+//     * populate its properties.  Used to make a new object from a List<String>.
+//     * 
+//     * @param vComponent - VComponent input parameter
+//     * @param strings - list of properties
+//     * @return VComponent with parsed properties added
+//     */
+//    protected static VComponentBase<?,?> parseVComponent(VComponentBase<?,?> vComponent, List<String> strings)
+//    {
+//        Iterator<String> lineIterator = strings.iterator();
+//        while (lineIterator.hasNext())
+//        {
+//            String line = lineIterator.next();
+//            // identify iCalendar property ending index (property name must start at the beginning of the line)
+//            int propertyValueSeparatorIndex = 0;
+//            for (int i=0; i<line.length(); i++)
+//            {
+//                if ((line.charAt(i) == ';') || (line.charAt(i) == ':'))
+//                {
+//                    propertyValueSeparatorIndex = i;
+//                    break;
+//                }
+//            }
+//            if (propertyValueSeparatorIndex == 0)
+//            {
+//                continue; // line doesn't contain a property, get next one
+//            }
+//            String propertyName = line.substring(0, propertyValueSeparatorIndex);
+//            String value = line.substring(propertyValueSeparatorIndex + 1).trim();
+//            if (value.isEmpty())
+//            { // skip empty properties
+//                continue;
+//            }
+//            VComponentProperty property = VComponentProperty.propertyFromString(propertyName);
+//            boolean propertyFound = property.parseAndSetProperty(vComponent, value); // runs method in enum to set property
+//            if (propertyFound)
+//            {
+//                lineIterator.remove();                
+//            }
+//        }
+//        return vComponent;
+//    }
     
     // Variables for start date or date/time cache used as starting Temporal for stream
     private static final int CACHE_RANGE = 51; // number of values in cache
