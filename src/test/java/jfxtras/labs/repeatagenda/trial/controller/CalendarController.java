@@ -1,10 +1,14 @@
 package jfxtras.labs.repeatagenda.trial.controller;
 
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalField;
@@ -27,11 +31,14 @@ import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
-import jfxtras.labs.icalendar.ICalendarTestAbstract;
 import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.rrule.RRule;
+import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.rrule.freq.Weekly;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.scene.control.LocalDatePicker;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -49,6 +56,7 @@ public class CalendarController {
 //    private MyData data;
 
      public ICalendarAgenda agenda = new ICalendarAgenda();
+     private final static Class<? extends Appointment> clazz = Agenda.AppointmentImplTemporal.class;
 //     private final Callback<Collection<Appointment>, Void> appointmentWriteCallback =
 //             a -> { RepeatableAppointmentImpl.writeToFile(a, Settings.APPOINTMENTS_FILE); return null; };
      private final Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback = null;
@@ -204,7 +212,20 @@ public class CalendarController {
 
     public void setupData(LocalDate startDate, LocalDate endDate)
     {
-        agenda.vComponents().add(ICalendarTestAbstract.getWeeklyZoned());
+        
+        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+//            .withInstanceClass(clazz)
+            .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
+            .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
+            .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
+            .withDescription("WeeklyZoned Description")
+            .withRRule(new RRule()
+                    .withFrequency(new Weekly()
+                            .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
+            .withSummary("WeeklyZoned Summary")
+            .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+        
+        agenda.vComponents().add(vEvent);
         // replace Agenda's appointmentGroups with the ones used in the test events.
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);

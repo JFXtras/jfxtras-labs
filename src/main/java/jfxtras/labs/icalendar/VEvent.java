@@ -111,7 +111,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
             endPriority = null;
         } else
         {
-            endPriority = EndPriority.DURATION;
+            endPriority = EndType.DURATION;
         }
         this.duration.set(duration);
     }
@@ -138,7 +138,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
             {
                 throw new DateTimeException("DTEND must have the same DateTimeType as DTSTART, (" + myDateTimeType + " and " + lastDtStartDateTimeType() + ", respectively");
             }
-            endPriority = EndPriority.DTEND;
+            endPriority = EndType.DTEND;
          }
         dateTimeEnd.set(dtEnd);
     }
@@ -147,8 +147,8 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
 
     /** Indicates end option, DURATION or DTEND. 
      * Getter and setter methods in EndPriority enum */
-    public EndPriority endPriority() { return endPriority; }
-    EndPriority endPriority;
+    public EndType endType() { return endPriority; }
+    EndType endPriority;
 
     /**
      * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
@@ -229,7 +229,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     protected void becomingIndividual(VComponent<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
     {
         super.becomingIndividual(vComponentOriginal, startInstance, endInstance);
-        if ((vComponentOriginal.getRRule() != null) && (endPriority() == EndPriority.DTEND))
+        if ((vComponentOriginal.getRRule() != null) && (endType() == EndType.DTEND))
         { // RRULE was removed, update DTEND
             setDateTimeEnd(endInstance);
         }
@@ -240,9 +240,9 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     protected Collection<String> changedStartAndEndDateTime(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
     {
         Collection<String> changedProperties = super.changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance);
-        TemporalAmount durationNew = EndPriority.calcDuration(startInstance, endInstance);
-        TemporalAmount durationOriginal = endPriority().getDuration(this);
-        if (! durationOriginal.equals(durationNew)) { changedProperties.add(endPriority().toString()); }
+        TemporalAmount durationNew = EndType.calcDuration(startInstance, endInstance);
+        TemporalAmount durationOriginal = endType().getDuration(this);
+        if (! durationOriginal.equals(durationNew)) { changedProperties.add(endType().toString()); }
         return changedProperties;
     }
     
@@ -263,7 +263,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
 //            duration = Duration.between(startInstance, endInstance);
 //        }        
         System.out.println("start:" + getDuration());
-        endPriority().setDuration(this, startInstance, endInstance);
+        endType().setDuration(this, startInstance, endInstance);
         System.out.println("finish:" + getDuration());
 //        switch (endPriority())
 //        {
@@ -309,7 +309,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     {
         // Apply dayShift, if any
 
-        switch (endPriority())  // TODO - CAN THIS BE PUT INTO EndPriority enum?
+        switch (endType())  // TODO - CAN THIS BE PUT INTO EndPriority enum?
         {
         case DTEND:
             Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
@@ -354,7 +354,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
                 {
                     p.copyProperty(source, destination);
                 });
-        destination.endPriority = source.endPriority();
+        destination.endPriority = source.endType();
     }
 
     /** Deep copy all fields from this to destination */
@@ -475,7 +475,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
         return errorsBuilder.toString();
     }
     
-    public enum EndPriority
+    public enum EndType
     {
         DURATION
         {

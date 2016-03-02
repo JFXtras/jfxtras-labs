@@ -66,7 +66,6 @@ public abstract class ICalendarTestAbstract
                 .withDuration(Duration.ofHours(1))
                 .withDescription("Yearly1 Description")
                 .withSummary("Yearly1 Summary")
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Yearly()));
     }
@@ -76,7 +75,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByDay(DayOfWeek.FRIDAY))));
@@ -90,7 +88,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByDay(DayOfWeek.THURSDAY)
@@ -102,7 +99,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByMonth(Month.JANUARY, Month.FEBRUARY))));
@@ -119,7 +115,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByMonth(Month.NOVEMBER)
@@ -137,7 +132,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Yearly()
                                 .withInterval(4)
@@ -151,7 +145,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 20)))));
@@ -162,7 +155,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByWeekNo(20).withWeekStart(DayOfWeek.MONDAY)
@@ -174,7 +166,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Monthly()));
     }
@@ -184,7 +175,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByMonthDay()
@@ -196,7 +186,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -207,7 +196,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.SATURDAY, -1))))); // last Saturday in month
@@ -221,7 +209,6 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(1997, 9, 1, 8, 30), ZoneOffset.UTC))
                 .withDuration(Duration.ofHours(1))
                 .withUniqueIdentifier("19970901T083000-0@jfxtras.org")
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(DayOfWeek.FRIDAY), new ByMonthDay(13))));
@@ -235,7 +222,6 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDuration(Duration.ofMinutes(90))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByMonth(Month.NOVEMBER, Month.DECEMBER)
@@ -247,7 +233,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.MONDAY, 3)))));
@@ -259,7 +244,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Weekly()));
     }
@@ -272,7 +256,6 @@ public abstract class ICalendarTestAbstract
                 .withDuration(Duration.ofMinutes(45))
                 .withDescription("Weekly1 Description")
                 .withSummary("Weekly1 Summary")
-                .withInstanceClass(clazz)
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RRule()
@@ -289,7 +272,6 @@ public abstract class ICalendarTestAbstract
                 .withDuration(Duration.ofMinutes(45))
                 .withDescription("Weekly3 Description")
                 .withSummary("Weekly3 Summary")
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -310,7 +292,6 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeEnd(LocalDateTime.of(2016, 1, 3, 7, 0))
                 .withDescription("Weekly5 Description")
                 .withSummary("Weekly5 Summary")
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.WEDNESDAY))));      
@@ -320,7 +301,6 @@ public abstract class ICalendarTestAbstract
     public static VEventMock getWeeklyZoned()
     {
         return new VEventMock()
-                .withInstanceClass(clazz)
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
@@ -341,7 +321,6 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDescription("Daily1 Description")
                 .withSummary("Daily1 Summary")
-                .withInstanceClass(clazz)
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RRule()
@@ -357,7 +336,6 @@ public abstract class ICalendarTestAbstract
                 .withDuration(Duration.ofMinutes(90))
                 .withDescription("Daily2 Description")
                 .withSummary("Daily2 Summary")
-                .withInstanceClass(clazz)
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RRule()
@@ -372,7 +350,6 @@ public abstract class ICalendarTestAbstract
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
-                .withInstanceClass(clazz)
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RRule()
@@ -388,7 +365,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Daily()
                                 .withInterval(2)
@@ -400,7 +376,6 @@ public abstract class ICalendarTestAbstract
     {
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withFrequency(new Daily()
                                 .withInterval(2)
@@ -416,7 +391,6 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDescription("Daily6 Description")
                 .withSummary("Daily6 Summary")
-                .withInstanceClass(clazz)
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RRule()
@@ -435,7 +409,6 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDescription("Daily6 Description")
                 .withSummary("Daily6 Summary")
-                .withInstanceClass(clazz)
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RRule()
@@ -453,7 +426,6 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneOffset.UTC))
                 .withDescription("Daily6 Description")
                 .withSummary("Daily6 Summary")
-                .withInstanceClass(clazz)
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RRule()
@@ -470,7 +442,6 @@ public abstract class ICalendarTestAbstract
                 .withDuration(Duration.ofMinutes(60))
                 .withDescription("Individual Description")
                 .withSummary("Individual Summary")
-                .withInstanceClass(clazz)
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
@@ -481,8 +452,7 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeStart(LocalDate.of(2015, 11, 11))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withInstanceClass(clazz);
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
     
     public static VEventMock getIndividualZoned()
@@ -491,8 +461,7 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withInstanceClass(clazz);
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
     
     /** FREQ=DAILY;INVERVAL=3;COUNT=6
@@ -522,8 +491,7 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeStart(LocalDate.of(2015, 11, 9))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withInstanceClass(clazz);
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
     
     /* FREQ=DAILY;INVERVAL=3;COUNT=6 */
@@ -534,7 +502,6 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withCount(6)
                         .withFrequency(new Daily()
@@ -550,7 +517,6 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeEnd(LocalDate.of(2015, 11, 11))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withInstanceClass(clazz)
                 .withRRule(new RRule()
                         .withUntil(LocalDate.of(2015, 11, 24))
                         .withFrequency(new Daily()
@@ -618,7 +584,6 @@ public abstract class ICalendarTestAbstract
     protected static VEventMock getGoogleIndividual()
     {
         return new VEventMock()
-                .withInstanceClass(clazz)
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 15, 0), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
@@ -632,7 +597,6 @@ public abstract class ICalendarTestAbstract
     public static VEventMock getGoogleRepeatable()
     {
         return new VEventMock()
-                .withInstanceClass(clazz)
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 11, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
@@ -649,7 +613,6 @@ public abstract class ICalendarTestAbstract
     protected static VEventMock getGoogleWithExDates()
     {
         return new VEventMock()
-                .withInstanceClass(clazz)
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 15, 30), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
@@ -671,7 +634,6 @@ public abstract class ICalendarTestAbstract
     protected static VEventMock getGoogleRepeatablePart1()
     {
         return new VEventMock()
-                .withInstanceClass(clazz)
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 3), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 13, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 17), ZoneOffset.UTC))
@@ -693,7 +655,6 @@ public abstract class ICalendarTestAbstract
     protected static VEventMock getGoogleRepeatablePart2()
     {
         return new VEventMock()
-                .withInstanceClass(clazz)
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 3), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 18, 14, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 17), ZoneOffset.UTC))
@@ -712,7 +673,6 @@ public abstract class ICalendarTestAbstract
     protected static VEventMock getGoogleRepeatablePart3()
     {
         return new VEventMock()
-                .withInstanceClass(clazz)
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 3), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 16, 9, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 21, 32, 26), ZoneOffset.UTC))

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.VComponent;
@@ -23,13 +24,13 @@ import jfxtras.labs.icalendar.VEventProperty;
  */
 public class VEventMock extends VEvent<InstanceMock, VEventMock>
 {
-
-//    @Override
-//    public boolean isValid()
-//    {
-//        return super.errorString().equals("");
-//    }
-
+    private final static Callback<StartEndPair, InstanceMock> NEW_INSTANCE = (p) ->
+    {
+        return new InstanceMock()
+                .withStartTemporal(p.getDateTimeStart())
+                .withEndTemporal(p.getDateTimeEnd());
+    };
+    
     @Override
     public List<InstanceMock> makeInstances(Temporal startRange, Temporal endRange)
     {
@@ -48,33 +49,17 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
         Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> VComponent.isBefore(a, getEndRange())); // exclusive
         removedTooLate.forEach(temporalStart ->
         {
-            TemporalAmount duration = endPriority().getDuration(this);
+            TemporalAmount duration = endType().getDuration(this);
             Temporal temporalEnd = temporalStart.plus(duration);
-            InstanceMock instance = null;
-            try
-            {
-                instance = getInstanceClass().newInstance();
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            instance.setStartTemporal(temporalStart);
-            instance.setEndTemporal(temporalEnd);
-            instance.setSummary(getSummary());
+            InstanceMock instance = new InstanceMock()
+                .withStartTemporal(temporalStart)
+                .withEndTemporal(temporalEnd)
+                .withSummary(getSummary());
             madeInstances.add(instance);
             instances().add(instance);
       });
       return madeInstances;
     }
-    
-    /**
-     *  Class of an instance.
-     *  New appointments are instantiated via reflection, so they must have a no-argument constructor.
-     */
-    public Class<? extends InstanceMock> getInstanceClass() { return instanceClass; }
-    private Class<? extends InstanceMock> instanceClass = InstanceMock.class; // default instance class
-    public void setInstanceClass(Class<? extends InstanceMock> instanceClass) { this.instanceClass = instanceClass; }
-    public VEventMock withInstanceClass(Class<? extends InstanceMock> instanceClass) { setInstanceClass(instanceClass); return this; }
 
     /*
      * CONSTRUCTORS

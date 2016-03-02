@@ -34,10 +34,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
-import jfxtras.labs.icalendar.ICalendarTestAbstract;
-import jfxtras.labs.icalendar.VComponent;
-import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
@@ -69,8 +67,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canEditNonRepeatProperties()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getIndividual1()));        
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getIndividual1()));        
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
         
         // Open edit popup
         move("#hourLine11");
@@ -143,8 +141,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canToggleRepeatableCheckBox()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -170,8 +168,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canChangeFrequency()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -285,8 +283,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canChangeInterval()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -313,8 +311,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canChangeStartDate()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -355,8 +353,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canChangeEndsCriteria()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -404,8 +402,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canMakeExceptionList()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -431,8 +429,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canMakeExceptionListWholeDay() // Whole day appointments
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -481,8 +479,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canMakeExceptionListWeekly()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -672,8 +670,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canMakeExceptionListMonthly()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -730,8 +728,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canMakeExceptionListYearly()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -763,8 +761,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     @Test
     public void canMakeExceptionListInitial()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -798,8 +796,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canMakeExceptionListEndsCriteria()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -885,8 +883,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canAddException2()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#hourLine11");
@@ -967,8 +965,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canRemoveException2()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDailyWithException1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDailyWithException1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
 
         // Open edit popup
         move("#AppointmentRegularBodyPane2015-11-09/0"); 
@@ -1065,7 +1063,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canEditThisAndFuture()
     {
-       TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));       
+       TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));       
        
        // Open edit popup
        move("#hourLine11"); // open edit popup
@@ -1087,9 +1085,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
        agenda.vComponents().sort(VComponent.VCOMPONENT_COMPARATOR);
        VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
        VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
-       VEventImpl expectedV0 = ICalendarTestAbstract.getDaily1();
+       VEventImpl expectedV0 = ICalendarStaticVEvents.getDaily1();
        expectedV0.getRRule().setUntil(LocalDateTime.of(2015, 11, 11, 9, 59, 59));
-       VEventImpl expectedV1 = ICalendarTestAbstract.getDaily1();
+       VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1();
        expectedV1.setSummary("new summary");
        expectedV1.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
        expectedV1.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
@@ -1097,8 +1095,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
        expectedV1.setUniqueIdentifier(v1.getUniqueIdentifier()); // uid is time-based so copy it to guarantee equality.
        expectedV1.setDateTimeStamp(v1.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
        expectedV1.setSequence(1);
-       assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV0, v0));
-       assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
+       assertTrue(VEventImpl.isEqualTo(expectedV0, v0));
+       assertTrue(VEventImpl.isEqualTo(expectedV1, v1));
 
        // verify Appointment changes
        { // verify added exceptions are not in exceptionComboBox list
@@ -1122,7 +1120,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canEditOne()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
         
         // Open edit popup
         move("#hourLine11"); // open edit popup
@@ -1144,11 +1142,11 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         agenda.vComponents().sort(VComponent.VCOMPONENT_COMPARATOR);
         VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
         VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
-        VEventImpl expectedV0 = ICalendarTestAbstract.getDaily1();
+        VEventImpl expectedV0 = ICalendarStaticVEvents.getDaily1();
         expectedV0.getRRule().recurrences().add(v1);
-        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV0, v0));
+        assertTrue(VEventImpl.isEqualTo(expectedV0, v0));
 
-        VEventImpl expectedV1 = ICalendarTestAbstract.getDaily1();
+        VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1();
         expectedV1.setSummary("new summary");
         expectedV1.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
         expectedV1.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
@@ -1156,7 +1154,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         expectedV1.setDateTimeRecurrence(LocalDateTime.of(2015, 11, 11, 10, 0));
         expectedV1.setRRule(null);
         expectedV1.setSequence(1);
-        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV1, v1));
+        assertTrue(VEventImpl.isEqualTo(expectedV1, v1));
         
 //        // edit second recurrence
 //        move("#AppointmentRegularBodyPane2015-11-09/0");
@@ -1169,7 +1167,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canCancelEdit()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));       
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));       
         VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
         
         // Open edit popup
@@ -1190,8 +1188,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         click("#changeDialogOkButton");
         
         // check return to original state
-        VEventImpl expectedV0 = ICalendarTestAbstract.getDaily1();
-        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV0, v0));
+        VEventImpl expectedV0 = ICalendarStaticVEvents.getDaily1();
+        assertTrue(VEventImpl.isEqualTo(expectedV0, v0));
         assertEquals("Daily1 Summary", v0.getSummary());
         assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), v0.getDateTimeStart());
     }
@@ -1200,7 +1198,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canDeleteIndividualEdit()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getIndividual1()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getIndividual1()));
         
         // Open edit popup
         move("#hourLine11");
@@ -1218,7 +1216,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canDeleteSeriesEdit()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
         
         // Open edit popup
         move("#hourLine11");
@@ -1239,7 +1237,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     //@Ignore
     public void canDeleteSeriesThisAndFutureEdit()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
         VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
         
         // Open edit popup
@@ -1255,16 +1253,16 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // verify VComponent changes
         assertEquals(1, agenda.vComponents().size());
-        VEventImpl expectedV = ICalendarTestAbstract.getDaily1();
+        VEventImpl expectedV = ICalendarStaticVEvents.getDaily1();
         expectedV.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
-        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV, v));
+        assertTrue(VEventImpl.isEqualTo(expectedV, v));
     }
     
     @Test
     //@Ignore
     public void canDeleteSeriesWithRecurrencesEdit()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
         VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
         
         // Open edit popup
@@ -1280,17 +1278,17 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // verify VComponent changes
         assertEquals(1, agenda.vComponents().size());
-        VEventImpl expectedV = ICalendarTestAbstract.getDaily1();
+        VEventImpl expectedV = ICalendarStaticVEvents.getDaily1();
         expectedV.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
-        assertTrue(ICalendarTestAbstract.vEventIsEqualTo(expectedV, v));
+        assertTrue(VEventImpl.isEqualTo(expectedV, v));
     }
     
     @Test
     //@Ignore
     public void canEditVComponent2()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarTestAbstract.getDaily1()));
-        VEvent<Appointment> v = (VEvent<Appointment>) agenda.vComponents().get(0);
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
         
         // Open edit popup
         move("#hourLine11");

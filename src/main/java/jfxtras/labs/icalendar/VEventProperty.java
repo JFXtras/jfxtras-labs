@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javafx.util.Pair;
-import jfxtras.labs.icalendar.VEvent.EndPriority;
+import jfxtras.labs.icalendar.VEvent.EndType;
 
 /**
  * VEvent specific properties with the following data and methods:
@@ -86,7 +86,7 @@ public enum VEventProperty
             {
                 if (vEvent.getDateTimeEnd() == null)
                 {
-                    vEvent.endPriority = EndPriority.DURATION;
+                    vEvent.endPriority = EndType.DURATION;
                     vEvent.setDuration(Duration.parse(value));
                     return true;
                 } else
@@ -111,7 +111,7 @@ public enum VEventProperty
             if (vEvent.getDuration() == null)
             {
                 return null;
-            } else if (vEvent.endPriority == EndPriority.DURATION)
+            } else if (vEvent.endPriority == EndType.DURATION)
             {
                 return vEvent.durationProperty().getName() + ":" + vEvent.getDuration();
             } else
@@ -147,7 +147,7 @@ public enum VEventProperty
             {
                 if (vEvent.getDuration() == null)
                 {
-                    vEvent.endPriority = EndPriority.DTEND;
+                    vEvent.endPriority = EndType.DTEND;
                     Temporal dateTime = VComponent.parseTemporal(value);
                     vEvent.setDateTimeEnd(dateTime);
                     return true;
@@ -173,7 +173,7 @@ public enum VEventProperty
             if (vEvent.getDateTimeEnd() == null)
             {
                 return null;
-            } else if (vEvent.endPriority == EndPriority.DTEND)
+            } else if (vEvent.endPriority == EndType.DTEND)
             {
                 String tag = VComponent.makeDateTimePropertyTag(vEvent.dateTimeEndProperty().getName(), vEvent.getDateTimeEnd());
                 return tag + VComponent.temporalToString(vEvent.getDateTimeEnd());

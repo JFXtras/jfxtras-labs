@@ -176,26 +176,6 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     };
     private final ChangeListener<? super AppointmentGroup> appointmentGroupListener = 
             (obs, oldValue, newValue) -> setCategories(newValue.getDescription());
-    
-    /**
-     *  Class of an instance.
-     *  New appointments are instantiated via reflection, so they must have a no-argument constructor.
-     */
-    public Class<? extends Appointment> getInstanceClass() { return instanceClass; }
-    private Class<? extends Appointment> instanceClass = Agenda.AppointmentImplTemporal.class; // default instance class
-    public void setInstanceClass(Class<? extends Appointment> instanceClass) { this.instanceClass = instanceClass; }
-    public VEventImpl withInstanceClass(Class<? extends Appointment> instanceClass) { setInstanceClass(instanceClass); return this; }
-
-//    /**
-//     * The currently generated instances of the recurrence set.
-//     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
-//     * calendar component.  As many RRule definitions are infinite sets, a complete representation
-//     * is not possible.  The set only contains the events inside the bounds of 
-//     */
-//    @Override
-//    public List<Appointment> instances() { return instances; }
-//    final private List<Appointment> instances = new ArrayList<>();
-//    public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
         
     /*
      * CONSTRUCTORS
@@ -247,11 +227,6 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     private static void copy(VEventImpl source, VEventImpl destination)
     {
         destination.setAppointmentGroup(source.getAppointmentGroup());
-        destination.setInstanceClass(source.getInstanceClass());
-//        if (source.getStartRange() != null) destination.setStartRange(source.getStartRange());
-//        if (source.getEndRange() != null) destination.setEndRange(source.getEndRange());
-//        destination.setUidGeneratorCallback(source.getUidGeneratorCallback());
-//        source.instances().stream().forEach(a -> destination.instances().add(a));
     }
     
     /** Deep copy all fields from source to destination */
@@ -261,19 +236,6 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
         super.copyTo(destination);
         copy(this, (VEventImpl) destination);
     }
-    
-//    @Override
-//    public String errorString()
-//    {
-//        String errors = super.errorString();
-//        return errors;
-//    }
-    
-//    @Override
-//    public boolean isValid()
-//    {
-//        return super.errorString().equals("");
-//    }
         
     /** Make new VEventImpl and populate properties by parsing a string of line-separated
      * content lines
@@ -293,43 +255,6 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
         }
         return vEvent;
     }
-    
-//    /**
-//     * Needed by parse methods in subclasses 
-//     * 
-//     * Convert a list of strings containing properties of a iCalendar component and
-//     * populate its properties.  Used to make a new object from a List<String>.
-//     * 
-//     * @param vEvent
-//     * @param strings - list of properties
-//     * @return VComponent with parsed properties added
-//     */    
-//    public static VEvent<?,?> parse(VEvent<?,?> vEvent, String string)
-//    {
-//        Iterator<Pair<String, String>> i = ICalendarUtilities.ComponentStringToPropertyNameAndValueList(string).iterator();
-//        while (i.hasNext())
-//        {
-//            Pair<String, String> linePair = i.next();
-//            String propertyName = linePair.getKey();
-//            String value = linePair.getValue();
-//            
-//            // VEvent properties
-//            VEventProperty vEventProperty = VEventProperty.propertyFromString(propertyName);
-//            if (vEventProperty != null)
-//            {
-//                vEventProperty.parseAndSetProperty(vEvent, value);
-//            }
-//            
-//            // VComponent properties
-//            VComponentProperty vComponentProperty = VComponentProperty.propertyFromString(propertyName);
-//            if (vComponentProperty != null)
-//            {
-//                vComponentProperty.parseAndSetProperty(vComponent, value);
-//                continue;
-//            }
-//        }
-//        return vEvent;
-//    }
 
     /**
      * Tests equality between two VEventImpl objects.  Treats v1 as expected.  Produces a JUnit-like
@@ -343,12 +268,10 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     public static boolean isEqualTo(VEventImpl v1, VEventImpl v2, boolean verbose)
     {
         // VEventImpl properties
-        boolean appointmentClassEquals = (v1.getInstanceClass() == null) ? (v2.getInstanceClass() == null) : v1.getInstanceClass().equals(v2.getInstanceClass());
-        if (! appointmentClassEquals && verbose) { System.out.println("Appointment Class:" + " not equal:" + v1.getInstanceClass() + " " + v2.getInstanceClass()); }
         boolean appointmentGroupEquals = (v1.getAppointmentGroup() == null) ? (v2.getAppointmentGroup() == null) : v1.getAppointmentGroup().equals(v2.getAppointmentGroup());
         if (! appointmentGroupEquals && verbose) { System.out.println("Appointment Group:" + " not equal:" + v1.getAppointmentGroup() + " " + v2.getAppointmentGroup()); }
         boolean vEventResult = VEventProperty.isEqualTo(v1, v2, verbose);
-        return vEventResult && appointmentClassEquals && appointmentGroupEquals;
+        return vEventResult && appointmentGroupEquals;
     }
     
     /**
@@ -382,22 +305,16 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
         Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> VComponent.isBefore(a, getEndRange())); // exclusive
         removedTooLate.forEach(temporalStart ->
         {
-            TemporalAmount duration = endPriority().getDuration(this);
+            TemporalAmount duration = endType().getDuration(this);
             Temporal temporalEnd = temporalStart.plus(duration);
-            Appointment appt = null;
-            try
-            {
-                appt = getInstanceClass().newInstance();
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            appt.setStartTemporal(temporalStart);
-            appt.setEndTemporal(temporalEnd);
-            appt.setDescription(getDescription());
-            appt.setSummary(getSummary());
-            appt.setAppointmentGroup(getAppointmentGroup());
-            appt.setWholeDay(isWholeDay());
+            Appointment appt = new Agenda.AppointmentImplTemporal()
+                    .withStartTemporal(temporalStart)
+                    .withEndTemporal(temporalEnd)
+                    .withDescription(getDescription())
+                    .withSummary(getSummary())
+                    .withLocation(getLocation())
+                    .withWholeDay(isWholeDay())
+                    .withAppointmentGroup(getAppointmentGroup());
             madeAppointments.add(appt);   // add appointments to return argument
             instances().add(appt); // add appointments to this object's collection
         });

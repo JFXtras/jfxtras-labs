@@ -461,7 +461,7 @@ public interface VComponent<I>
      * that depend on the answer to the dialog question
      * 
      * @param vComponentOriginal - copy of this VComponent before changes
-     * @param vComponents - the collection of VComponents that this VComponent belongs to
+     * @param vComponents - collection of all VComponents
      * @param startOriginalInstance - date or date/time of selected instance before changes
      * @param startInstance - date or date/time of selected instance after changes
      * @param endInstance - date or date/time of selected instance after changes (null for VTODO and VJOURNAL)
@@ -482,7 +482,7 @@ public interface VComponent<I>
      * Deletes a VComponent.  For a VComponent with a recurrence rule (RRULE) the user is given a dialog
      * to select ONE, THIS_AND_FUTURE, or ALL instances to delete.
      * 
-     * @param vComponents - main collection of all VComponents
+     * @param vComponents - collection of all VComponents
      * @param startInstance - start date or date/time of instance
      * @param instance - selected recurrence instance
      * @param instances - collection of all instances across all VComponents

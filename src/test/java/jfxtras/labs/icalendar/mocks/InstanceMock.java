@@ -47,7 +47,6 @@ public class InstanceMock
              + ", "
              + this.getStartTemporal()
              + " - "
-             + this.getEndTemporal()
-             ;
+             + this.getEndTemporal();
     }
 }

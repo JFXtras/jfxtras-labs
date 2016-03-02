@@ -8,11 +8,12 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ 
                 ICalendarCopyTest.class
               , ICalendarDateTest.class
+              , ICalendarDeleteTest.class
               , ICalendarEditTest.class
               , ICalendarEqualsTest.class
+              , ICalendarMakeInstancesTest.class
               , ICalendarParseTest.class
               , ICalendarToStringTest.class
-              , MakeInstancesTest.class
               })
 public class AllTests {
 

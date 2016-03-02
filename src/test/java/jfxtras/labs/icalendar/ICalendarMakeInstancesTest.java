@@ -19,7 +19,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 
-public class MakeInstancesTest extends ICalendarTestAbstract
+public class ICalendarMakeInstancesTest extends ICalendarTestAbstract
 {
 
     /** Tests daily stream with FREQ=DAILY */

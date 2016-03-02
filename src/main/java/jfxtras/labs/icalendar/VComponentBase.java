@@ -588,7 +588,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * is not possible.  The set only contains the events inside the bounds of 
      */
     @Override
-    public Collection<I> instances() { System.out.println("getting:"); return instances; }
+    public Collection<I> instances() { return instances; }
     final private Collection<I> instances = new ArrayList<>();
 
     // CONSTRUCTORS
@@ -1038,7 +1038,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                 instances.removeIf(a -> a.equals(instance));
                 break;
             case THIS_AND_FUTURE:
-                if (getRRule().getCount() == 0) getRRule().setCount(0);
+                if (getRRule().getCount() != 0) { getRRule().setCount(0); }
 //                Temporal previousDay = startInstance.minus(1, ChronoUnit.DAYS);
                 final Temporal untilNew;
                 if (isWholeDay())

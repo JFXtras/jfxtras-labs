@@ -68,7 +68,7 @@ public class RRule
     private int _count = 0;
     public void setCount(Integer i)
     {
-        if (getUntil() == null)
+        if ((getUntil() == null) || (i == 0))
         {
             if (i >= 0)
             {
@@ -80,7 +80,8 @@ public class RRule
                     count.set(i);
                 }
             } else throw new IllegalArgumentException("COUNT can't be less than 0. (" + i + ")");
-        } else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
+        }
+        else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
     }
     public RRule withCount(int count) { setCount(count); return this; }
 
