@@ -581,13 +581,19 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     public void setEndRange(Temporal end) { endRange = DateTimeType.changeTemporal(end, getDateTimeType()); }
     public T withEndRange(Temporal end) { setEndRange(end); return (T) this; }
 
+    /**
+     * The currently generated instances of the recurrence set.
+     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
+     * calendar component.  As many RRule definitions are infinite sets, a complete representation
+     * is not possible.  The set only contains the events inside the bounds of 
+     */
+    @Override
+    public Collection<I> instances() { System.out.println("getting:"); return instances; }
+    final private Collection<I> instances = new ArrayList<>();
 
     // CONSTRUCTORS
     /** Copy constructor */
-    public VComponentBase(VComponentBase<I, T> vcomponent)
-    {
-        copy(vcomponent, this);
-    }
+    public VComponentBase(VComponentBase<I, T> vcomponent) { copy(vcomponent, this); }
     
     public VComponentBase() { }
     
@@ -836,13 +842,13 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to instances
         instancesTemp.addAll(instances);
         instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
-        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
+        vEventOriginal.instances().stream().forEach(a -> System.out.println("instances-original:" + a));
         System.out.println("end original" + instancesTemp.size());
         System.out.println("start size:" + instancesTemp.size());
-        instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a)); // TODO - NOT REMOVING
+        instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
         System.out.println("end size:" + instancesTemp.size());
-        instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
-        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
+//        instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
+//        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
         System.out.println("end original" + instancesTemp.size());
        
         vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of instances
@@ -1097,71 +1103,34 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         }
         return choices;
     }
-
-    /** Deep copy all fields from source to destination */
-    private static void copy(VComponentBase<?,?> source, VComponentBase<?,?> destination)
+    
+    /** Deep copy all fields from source to destination 
+     * @param <J>*/
+    private static <J> void copy(VComponentBase<J,?> source, VComponentBase<J,?> destination)
     {
         Arrays.stream(VComponentProperty.values())
         .forEach(p ->
         {
             p.copyProperty(source, destination);
         });
-        destination.setStartRange(source.getStartRange());
-        destination.setEndRange(source.getEndRange());
-//        destination.setCategories(source.getCategories());
-//        destination.setComment(source.getComment());
-//        destination.setDateTimeStamp(source.getDateTimeStamp());
-//        destination.setDateTimeStart(source.getDateTimeStart());
-//        destination.setRelatedTo(source.getRelatedTo());
-//        destination.setSequence(source.getSequence());
-//        destination.setSummary(source.getSummary());
-//        destination.setUniqueIdentifier(source.getUniqueIdentifier());
-//        if (source.getRRule() != null)
-//        {
-//            if (destination.getRRule() == null)
-//            { // make new RRule object for destination if necessary
-//                try {
-//                    RRule newRRule = source.getRRule().getClass().newInstance();
-//                    destination.setRRule(newRRule);
-//                } catch (InstantiationException | IllegalAccessException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            source.getRRule().copyTo(destination.getRRule());
-//        }
-//        if (source.getExDate() != null)
-//        {
-//            if (destination.getExDate() == null)
-//            { // make new EXDate object for destination if necessary
-//                try {
-//                    ExDate newEXDate = source.getExDate().getClass().newInstance();
-//                    destination.setExDate(newEXDate);
-//                } catch (InstantiationException | IllegalAccessException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            source.getExDate().copyTo(destination.getExDate());
-//        }
-//        if (source.getRDate() != null)
-//        {
-//            if (destination.getRDate() == null)
-//            { // make new RDate object for destination if necessary
-//                try {
-//                    RDate newRDate = source.getRDate().getClass().newInstance();
-//                    destination.setRDate(newRDate);
-//                } catch (InstantiationException | IllegalAccessException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            source.getRDate().copyTo(destination.getRDate());
-//        }
+        
+        if (source.getStartRange() != null)
+        {
+            destination.setStartRange(source.getStartRange());
+        }
+        if (source.getEndRange() != null)
+        {
+            destination.setEndRange(source.getEndRange());
+        }
+        source.instances().stream().forEach(a -> destination.instances().add(a));
+        destination.setUidGeneratorCallback(source.getUidGeneratorCallback());
     }
     
     /** Deep copy all fields from source to destination */
     @Override
     public void copyTo(VComponent<I> destination)
     {
-        copy(this, (VComponentBase<?,?>) destination);
+        copy(this, (VComponentBase<I,?>) destination);
     }
 
     /**

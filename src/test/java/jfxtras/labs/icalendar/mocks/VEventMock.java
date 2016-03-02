@@ -68,15 +68,15 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
       return madeInstances;
     }
 
-    /**
-     * The currently generated instances of the recurrence set.
-     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
-     * calendar component.  As many RRule definitions are infinite sets, a complete representation
-     * is not possible.  The set only contains the events inside the bounds of 
-     */
-    @Override
-    public List<InstanceMock> instances() { return instances; }
-    final private List<InstanceMock> instances = new ArrayList<>();
+//    /**
+//     * The currently generated instances of the recurrence set.
+//     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
+//     * calendar component.  As many RRule definitions are infinite sets, a complete representation
+//     * is not possible.  The set only contains the events inside the bounds of 
+//     */
+//    @Override
+//    public List<InstanceMock> instances() { return instances; }
+//    final private List<InstanceMock> instances = new ArrayList<>();
     
     public Class<? extends InstanceMock> getInstanceClass() { return instanceClass; }
     private Class<? extends InstanceMock> instanceClass = InstanceMock.class; // default instance class
@@ -92,6 +92,7 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
     public VEventMock(VEventMock vevent)
     {
         super(vevent);
+//        copy(vevent, this);
     }
     
     /** Make new VEventMock and populate properties by parsing a string of line-separated

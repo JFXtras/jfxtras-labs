@@ -186,15 +186,15 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     public void setInstanceClass(Class<? extends Appointment> instanceClass) { this.instanceClass = instanceClass; }
     public VEventImpl withInstanceClass(Class<? extends Appointment> instanceClass) { setInstanceClass(instanceClass); return this; }
 
-    /**
-     * The currently generated instances of the recurrence set.
-     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
-     * calendar component.  As many RRule definitions are infinite sets, a complete representation
-     * is not possible.  The set only contains the events inside the bounds of 
-     */
-    @Override
-    public List<Appointment> instances() { return instances; }
-    final private List<Appointment> instances = new ArrayList<>();
+//    /**
+//     * The currently generated instances of the recurrence set.
+//     * 3.8.5.2 defines the recurrence set as the complete set of recurrence instances for a
+//     * calendar component.  As many RRule definitions are infinite sets, a complete representation
+//     * is not possible.  The set only contains the events inside the bounds of 
+//     */
+//    @Override
+//    public List<Appointment> instances() { return instances; }
+//    final private List<Appointment> instances = new ArrayList<>();
 //    public boolean isNewRRule() { return instances().size() == 0; } // new RRule has no appointments
         
     /*
@@ -248,10 +248,10 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     {
         destination.setAppointmentGroup(source.getAppointmentGroup());
         destination.setInstanceClass(source.getInstanceClass());
-        if (source.getStartRange() != null) destination.setStartRange(source.getStartRange());
-        if (source.getEndRange() != null) destination.setEndRange(source.getEndRange());
-        destination.setUidGeneratorCallback(source.getUidGeneratorCallback());
-        source.instances().stream().forEach(a -> destination.instances().add(a));
+//        if (source.getStartRange() != null) destination.setStartRange(source.getStartRange());
+//        if (source.getEndRange() != null) destination.setEndRange(source.getEndRange());
+//        destination.setUidGeneratorCallback(source.getUidGeneratorCallback());
+//        source.instances().stream().forEach(a -> destination.instances().add(a));
     }
     
     /** Deep copy all fields from source to destination */
