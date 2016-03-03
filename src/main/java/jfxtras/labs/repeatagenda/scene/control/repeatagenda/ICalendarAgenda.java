@@ -305,6 +305,7 @@ public class ICalendarAgenda extends Agenda
 //                            System.out.println("new:" + newVComponent);
                             vComponents().addListener(vComponentsChangeListener);
                             // put data in maps
+                            System.out.println("dtstart:" + newVComponent.getDateTimeStart());
                             System.out.println("map3:" + System.identityHashCode(a) + " " + a.getStartTemporal());
                             appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
                             appointmentVComponentMap.put(System.identityHashCode(a), newVComponent); // populate appointment-vComponent map

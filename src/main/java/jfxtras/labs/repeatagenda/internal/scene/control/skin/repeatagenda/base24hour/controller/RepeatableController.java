@@ -1,6 +1,7 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller;
 
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -56,11 +57,11 @@ import jfxtras.labs.icalendar.ExDate;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
+import jfxtras.labs.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
-import jfxtras.labs.icalendar.rrule.freq.Weekly;
 import jfxtras.labs.icalendar.rrule.freq.Frequency.FrequencyType;
+import jfxtras.labs.icalendar.rrule.freq.Weekly;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 
 /**
@@ -365,19 +366,22 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     if (! exceptionsListView.getItems().isEmpty())
     {
         List<Temporal> newItems = null;
-        if (newValue.getClass().equals(LocalDate.class))
-        {
-            newItems = exceptionsListView.getItems()
-                    .stream()
-                    .map(d -> LocalDate.from(d))
-                    .collect(Collectors.toList());
-        } else if (newValue.getClass().equals(LocalDateTime.class))
+        if (newValue.isSupported(ChronoUnit.SECONDS))
         {
             LocalTime time = LocalDateTime.from(newValue).toLocalTime();
             newItems = exceptionsListView.getItems()
                     .stream()
                     .map(d -> LocalDate.from(d).atTime(time))
-                    .collect(Collectors.toList());            
+                    .collect(Collectors.toList());        
+        } else if (newValue.isSupported(ChronoUnit.DAYS))
+        {
+            newItems = exceptionsListView.getItems()
+                    .stream()
+                    .map(d -> LocalDate.from(d))
+                    .collect(Collectors.toList());
+        } else
+        {
+            throw new DateTimeException("Unsupported Temporal class:" + newValue.getClass());
         }
         exceptionsListView.setItems(FXCollections.observableArrayList(newItems));
     }
@@ -812,13 +816,14 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
-    {       
+    {
+        System.out.println("new exception dates:");
         final Temporal dateTimeStart = vComponent.getDateTimeStart();
         final Stream<Temporal> stream1 = vComponent.stream(dateTimeStart);
         Stream<Temporal> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
         final Stream<Temporal> stream3; 
-        if (DateTimeType.from(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+        if (DateTimeType.of(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
         {
             stream3 = stream2.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
         } else

@@ -226,7 +226,7 @@ public interface VComponent<I>
     Temporal getDateTimeStart();
     ObjectProperty<Temporal> dateTimeStartProperty();
     void setDateTimeStart(Temporal dtStart);
-    default DateTimeType getDateTimeType() { return DateTimeType.from(getDateTimeStart()); };
+    default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart()); };
 
     /** Component is whole day if dateTimeStart (DTSTART) only contains a date (no time) */
     default boolean isWholeDay() { return getDateTimeType() == DateTimeType.DATE; }
@@ -557,12 +557,12 @@ public interface VComponent<I>
 
         if (getExDate() != null)
         {
-            DateTimeType exDateTimeType = DateTimeType.from(getExDate().getTemporals().iterator().next());
+            DateTimeType exDateTimeType = DateTimeType.of(getExDate().getTemporals().iterator().next());
             if (getDateTimeType() != exDateTimeType) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DateTimeType of DTSTART (" + getDateTimeType() + ") and EXDATE (" + exDateTimeType + ") must be the same.");
         }
         if (getRDate() != null)
         {
-            DateTimeType rDateTimeType = DateTimeType.from(getRDate().getTemporals().iterator().next());
+            DateTimeType rDateTimeType = DateTimeType.of(getRDate().getTemporals().iterator().next());
             if (getDateTimeType() != rDateTimeType) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DateTimeType of DTSTART (" + getDateTimeType() + ") and RDATE (" + rDateTimeType + ") must be the same.");
         }
         

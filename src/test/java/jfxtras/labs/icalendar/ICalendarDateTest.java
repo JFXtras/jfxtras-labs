@@ -612,6 +612,29 @@ public class ICalendarDateTest extends ICalendarTestAbstract
     }
     
     @Test
+    public void dailyStreamTestJapanZone()
+    {
+        VEventMock e = getDailyJapanZone();
+        List<Temporal> madeDates = e
+                .stream(e.getDateTimeStart())
+                .collect(Collectors.toList());
+        List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 12, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 14, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 15, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 16, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 8, 0), ZoneId.of("Japan"))
+              ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
     public void dailyStreamTestUTC()
     {
         VEventMock e = getDailyUTC();

@@ -207,7 +207,8 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     public void renderRegularAppointment2()
     {
         agenda.setNewAppointmentDrawnCallback((a) -> ButtonData.OK_DONE); // remove dialog, just return OK
-        TestUtil.runThenWaitForPaintPulse( () -> {
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
             agenda.appointments().add( new Agenda.AppointmentImplTemporal()
                 .withStartTemporal(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Japan")))
                 .withEndTemporal(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 12, 0), ZoneId.of("Japan")))
@@ -221,8 +222,13 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
                 .getDayOfMonth();
         find("#AppointmentRegularBodyPane2015-11-" + dayOfMonth + "/0");
         
+        Appointment a = agenda.appointments().get(0);
+        System.out.println(a.getStartTemporal() + " " + a.getEndTemporal());
+        // TODO - somewhere - not in Agenda - AUTOMATICALLY CONVERTS TO DEFAULT TIME ZONE
+        
         Assert.assertEquals(1, agenda.appointments().size());
         VComponent<Appointment> v = agenda.vComponents().get(0);
+        System.out.println(v.getDateTimeStart() + " ");
         String dateTimeStamp = VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(v.getDateTimeStamp());
         String dateTimeCreated = VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(v.getDateTimeCreated());
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()

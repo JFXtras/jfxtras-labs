@@ -35,8 +35,20 @@ public class InstanceMock
     public static boolean isEqualTo(InstanceMock i1, InstanceMock i2)
     {
         boolean startEquals = i1.getStartTemporal().equals(i2.getStartTemporal());
+        if (! startEquals)
+        {
+            System.out.println("startTemporal not equal:" + i1.getStartTemporal() + ", " + i2.getStartTemporal());
+        }
         boolean endEquals = i1.getEndTemporal().equals(i2.getEndTemporal());
+        if (! endEquals)
+        {
+            System.out.println("endTemporal not equal:" + i1.getEndTemporal() + ", " + i2.getEndTemporal());
+        }
         boolean summaryEquals = i1.getSummary().equals(i2.getSummary());
+        if (! summaryEquals)
+        {
+            System.out.println("summary not equal:" + i1.getSummary() + ", " + i2.getSummary());
+        }
         return startEquals && endEquals && summaryEquals;
     }
     

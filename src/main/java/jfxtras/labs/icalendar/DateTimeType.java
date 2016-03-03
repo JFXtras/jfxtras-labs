@@ -37,55 +37,130 @@ public enum DateTimeType
 
         @Override
         public String formatEndDifferentDay(Temporal temporal) { return Settings.DATE_FORMAT.format(temporal); }
+
+        @Override
+        public Temporal from(Temporal temporal)
+        {
+            switch(DateTimeType.of(temporal))
+            {
+            case DATE:
+                return temporal; // do nothing
+            case DATE_WITH_LOCAL_TIME:
+                return LocalDate.from(temporal);
+            case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+            case DATE_WITH_UTC_TIME:
+                return ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE).toLocalDate();
+            default:
+                throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
+            }
+        }
     }
   , DATE_WITH_LOCAL_TIME
     {
-      @Override
-      public String formatStart(Temporal temporal) { return Settings.DATE_TIME_FORMAT.format(temporal); }
+        @Override
+        public String formatStart(Temporal temporal) { return Settings.DATE_TIME_FORMAT.format(temporal); }
 
-      @Override
-      public String formatEndSameDay(Temporal temporal) { return Settings.TIME_FORMAT_END.format(temporal); }
+        @Override
+        public String formatEndSameDay(Temporal temporal) { return Settings.TIME_FORMAT_END.format(temporal); }
 
-      @Override
-      public String formatEndDifferentDay(Temporal temporal) { return Settings.DATE_TIME_FORMAT.format(temporal); }
+        @Override
+        public String formatEndDifferentDay(Temporal temporal) { return Settings.DATE_TIME_FORMAT.format(temporal); }
+
+        @Override
+        public Temporal from(Temporal temporal)
+        {
+            switch(DateTimeType.of(temporal))
+            {
+            case DATE:
+                return LocalDate.from(temporal).atStartOfDay();
+            case DATE_WITH_LOCAL_TIME:
+                return temporal;  // do nothing
+            case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+            case DATE_WITH_UTC_TIME:
+                return ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE).toLocalDateTime();
+            default:
+                throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
+            }
+        }
     }
   , DATE_WITH_UTC_TIME
     {
-    @Override
-    public String formatStart(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatStart(temporal); }
+        @Override
+        public String formatStart(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatStart(temporal); }
+    
+        @Override
+        public String formatEndSameDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndSameDay(temporal); }
+    
+        @Override
+        public String formatEndDifferentDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndDifferentDay(temporal); }
 
-    @Override
-    public String formatEndSameDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndSameDay(temporal); }
-
-    @Override
-    public String formatEndDifferentDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndDifferentDay(temporal); }
+        @Override
+        public Temporal from(Temporal temporal)
+        {
+            switch(DateTimeType.of(temporal))
+            {
+            case DATE:
+                return LocalDate.from(temporal).atStartOfDay().atZone(ZoneId.of("Z"));
+            case DATE_WITH_LOCAL_TIME:
+                return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
+            case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+                return ZonedDateTime.from(temporal).withZoneSameInstant(ZoneId.of("Z"));
+            case DATE_WITH_UTC_TIME:
+                return temporal;  // do nothing
+            default:
+                throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
+            }
+        }
     }
   , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE
     {
-    @Override
-    public String formatStart(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatStart(temporal); }
-
-    @Override
-    public String formatEndSameDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndSameDay(temporal); }
-
-    @Override
-    public String formatEndDifferentDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndDifferentDay(temporal); }
+        @Override
+        public String formatStart(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatStart(temporal); }
+    
+        @Override
+        public String formatEndSameDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndSameDay(temporal); }
+    
+        @Override
+        public String formatEndDifferentDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndDifferentDay(temporal); }
+    
+        @Override
+        public Temporal from(Temporal temporal)
+        {
+            switch(DateTimeType.of(temporal))
+            {
+            case DATE:
+                return LocalDate.from(temporal).atStartOfDay().atZone(DEFAULT_ZONE);
+            case DATE_WITH_LOCAL_TIME:
+                return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE);
+            case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+                return temporal;  // do nothing
+            case DATE_WITH_UTC_TIME:
+                return ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE);
+            default:
+                throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
+            }
+        }
     };
 
     private static final ZoneId DEFAULT_ZONE = ZoneId.systemDefault(); // default ZoneId to convert to
+    /** 
+     * Default DateTimeType to use when none is specified.  For example, when a date-only component is converted to
+     * a date-time one.
+     */
+    public static final DateTimeType DEFAULT_DATE_TIME_TYPE = DateTimeType.DATE_WITH_UTC_TIME;
     
     /** Find DateTimeType of Temporal parameter t */
-    public static DateTimeType from(Temporal t)
+    public static DateTimeType of(Temporal temporal)
     {
-        if (t instanceof LocalDate)
+        if (temporal instanceof LocalDate)
         {
             return DATE;
-        } else if (t instanceof LocalDateTime)
+        } else if (temporal instanceof LocalDateTime)
         {
             return DATE_WITH_LOCAL_TIME;
-        } else if (t instanceof ZonedDateTime)
+        } else if (temporal instanceof ZonedDateTime)
         {
-            ZoneId z = ((ZonedDateTime) t).getZone();
+            ZoneId z = ((ZonedDateTime) temporal).getZone();
             if (z == ZoneId.of("Z"))
             {
                 return DATE_WITH_UTC_TIME;
@@ -95,7 +170,7 @@ public enum DateTimeType
             }
         } else
         {
-            throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
+            throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
         }
     }
     
@@ -105,12 +180,13 @@ public enum DateTimeType
      * When changing a ZonedDateTime it is first adjusted to the DEFAULT_ZONE to ensure
      * proper local time.
      */
-    public static Temporal changeTemporal(Temporal t, DateTimeType outputType)
+    @Deprecated // use from method instead
+    public static Temporal changeTemporal(Temporal temporal, DateTimeType outputType)
     {
-        DateTimeType initialType = from(t);
+        DateTimeType initialType = of(temporal);
         if (initialType == outputType)
         {
-            return t; // nothing to do;
+            return temporal; // nothing to do;
         } else
         {
             switch (initialType)
@@ -119,29 +195,29 @@ public enum DateTimeType
                 switch(outputType)
                 {
                 case DATE:
-                    return t; // do nothing
+                    return temporal; // do nothing
                 case DATE_WITH_LOCAL_TIME:
-                    return LocalDate.from(t).atStartOfDay();
+                    return LocalDate.from(temporal).atStartOfDay();
                 case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                    return LocalDate.from(t).atStartOfDay().atZone(DEFAULT_ZONE);
+                    return LocalDate.from(temporal).atStartOfDay().atZone(DEFAULT_ZONE);
                 case DATE_WITH_UTC_TIME:
-                    return LocalDate.from(t).atStartOfDay().atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
+                    return LocalDate.from(temporal).atStartOfDay().atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
                 default:
-                    throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
+                    throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
                 }
             case DATE_WITH_LOCAL_TIME:
                 switch(outputType)
                 {
                 case DATE:
-                    return LocalDate.from(t);
+                    return LocalDate.from(temporal);
                 case DATE_WITH_LOCAL_TIME:
-                    return t; // do nothing
+                    return temporal; // do nothing
                 case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                    return LocalDateTime.from(t).atZone(DEFAULT_ZONE);
+                    return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE);
                 case DATE_WITH_UTC_TIME:
-                    return LocalDateTime.from(t).atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
+                    return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
                 default:
-                    throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
+                    throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
                 }
             case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
             {
@@ -149,22 +225,22 @@ public enum DateTimeType
                 switch(outputType)
                 {
                 case DATE:
-                    myZonedDateTime = ZonedDateTime.from(t).withZoneSameInstant(DEFAULT_ZONE);
+                    myZonedDateTime = ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE);
                     return LocalDate.from(myZonedDateTime);
                 case DATE_WITH_LOCAL_TIME:
-                    myZonedDateTime = ZonedDateTime.from(t).withZoneSameInstant(DEFAULT_ZONE);
+                    myZonedDateTime = ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE);
                     return LocalDateTime.from(myZonedDateTime);
                 case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                    return t; // do nothing
+                    return temporal; // do nothing
                 case DATE_WITH_UTC_TIME:
-                    return ZonedDateTime.from(t).withZoneSameInstant(ZoneId.of("Z"));
+                    return ZonedDateTime.from(temporal).withZoneSameInstant(ZoneId.of("Z"));
                 default:
-                    throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
+                    throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
                 }
             }
             case DATE_WITH_UTC_TIME:
             {
-                ZonedDateTime myZonedDateTime = ZonedDateTime.from(t).withZoneSameInstant(DEFAULT_ZONE);
+                ZonedDateTime myZonedDateTime = ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE);
                 switch(outputType)
                 {
                 case DATE:
@@ -174,13 +250,13 @@ public enum DateTimeType
                 case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
                     return myZonedDateTime.withZoneSameInstant(DEFAULT_ZONE);
                 case DATE_WITH_UTC_TIME:
-                    return t; // do nothing
+                    return temporal; // do nothing
                 default:
-                    throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
+                    throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
                 }
             }
             default:
-                throw new DateTimeException("Unsupported Temporal class:" + t.getClass().getSimpleName());
+                throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
             }
         }
     }
@@ -216,18 +292,20 @@ public enum DateTimeType
     public static String formatRange(Temporal start, Temporal end)
     {
         Period days = Period.between(LocalDate.from(start), LocalDate.from(end));
-        final String startString = DateTimeType.from(start).formatStart(start);
+        final String startString = DateTimeType.of(start).formatStart(start);
         final String endString;
         if (days.isZero()) // same day
         {
-            endString = DateTimeType.from(end).formatEndSameDay(end);
+            endString = DateTimeType.of(end).formatEndSameDay(end);
         } else
         {
-            endString = DateTimeType.from(end).formatEndDifferentDay(end);            
+            endString = DateTimeType.of(end).formatEndDifferentDay(end);            
         }
         return startString + " - " + endString;
     }
-    
+
+    /** Convert temporal to new DateTimeType */
+    public abstract Temporal from(Temporal temporal);
     /** Formats temporal according to its DateTimeType */
     public abstract String formatStart(Temporal temporal);
     /** Formats temporal according to its DateTimeType */

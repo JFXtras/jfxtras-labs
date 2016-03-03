@@ -5,8 +5,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -92,12 +90,11 @@ public class AppointmentEditController extends Pane
     @FXML private RepeatableController<Appointment> repeatableController;
     @FXML private Tab repeatableTab;
     
-    private LocalDateTime lastDateTimeStart = null; // last LocalDateTime in startTextField
-//    private LocalDateTime lastDateTimeEnd = null;
-
-//    public static final long DEFAULT_DURATION = 3600L * Duration.ofSeconds(1).toNanos();
+    private LocalDateTime lastStartTextFieldValue = null; // last LocalDateTime in startTextField
     private LocalTime lastStartTime = LocalTime.of(10, 0); // default time
     private TemporalAmount lastDuration = Duration.ofHours(1); // Default to one hour duration
+    private Temporal lastDateTimeStart;
+    private Temporal lastDateTimeEnd;
     
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
     private final Callback<Throwable, Void> errorCallback = (throwable) ->
@@ -221,15 +218,17 @@ public class AppointmentEditController extends Pane
             endTextField.localDateTimeProperty().removeListener(endTextlistener);
             if (newSelection)
             {
-                lastDateTimeStart = startTextField.getLocalDateTime();
-                lastStartTime = lastDateTimeStart.toLocalTime();
-                lastDuration = Duration.between(lastDateTimeStart, endTextField.getLocalDateTime());
-//                LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
+                lastStartTextFieldValue = startTextField.getLocalDateTime();
+                lastStartTime = lastStartTextFieldValue.toLocalTime();
+                lastDuration = Duration.between(lastStartTextFieldValue, endTextField.getLocalDateTime());
+                LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
 //                appointment.setStartTemporal(newDateTimeStart);
-//                vEvent.setDateTimeStart(newDateTimeStart);
-//                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).plus(1, ChronoUnit.DAYS);
+                lastDateTimeStart = vEvent.getDateTimeStart();
+                vEvent.setDateTimeStart(newDateTimeStart);
+                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).plus(1, ChronoUnit.DAYS);
 //                appointment.setEndTemporal(newDateTimeEnd);
-//                vEvent.setDateTimeEnd(newDateTimeEnd);
+                lastDateTimeEnd = vEvent.getDateTimeEnd();
+                vEvent.setDateTimeEnd(newDateTimeEnd);
                 
                 LocalDateTime start = LocalDate.from(startTextField.getLocalDateTime()).atStartOfDay();
                 startTextField.setLocalDateTime(start);
@@ -241,42 +240,56 @@ public class AppointmentEditController extends Pane
             } else
             {
                 final LocalDateTime start;
-                if (lastDateTimeStart != null)
+                if (lastStartTextFieldValue != null)
                 {
-                    start = lastDateTimeStart;
-                    startTextField.setLocalDateTime(lastDateTimeStart);
+                    start = lastStartTextFieldValue;
                 } else
                 {
                     start = LocalDate.from(startTextField.getLocalDateTime()).atTime(lastStartTime);
-//                    vEvent.setDateTimeStart(start);
-                    startTextField.setLocalDateTime(start);
                 }
+                startTextField.setLocalDateTime(start);
                 LocalDateTime end = start.plus(lastDuration);
                 endTextField.setLocalDateTime(end);
                 
                 final Temporal newDateTimeStart;
-                final Temporal newDateTimeEnd;
-                switch (vComponent.getDateTimeType())
+                if (lastDateTimeStart != null)
                 {
-                case DATE:
-                case DATE_WITH_LOCAL_TIME:
-                    newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(lastStartTime);
-                    newDateTimeEnd = newDateTimeStart.plus(lastDuration);
-                    break;
-                case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                case DATE_WITH_UTC_TIME:
-                    ZoneId zone = ((ZonedDateTime) vEvent.getDateTimeStart()).getZone();
-                    newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(lastStartTime).atZone(zone);
-                    newDateTimeEnd = newDateTimeStart.plus(lastDuration);
-                    break;
-                default:
-                    throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getDateTimeType());
+                    newDateTimeStart = lastDateTimeStart;
+                } else
+                {
+                    newDateTimeStart = DateTimeType.DEFAULT_DATE_TIME_TYPE.from(start);
                 }
+                
+                final Temporal newDateTimeEnd = newDateTimeStart.plus(lastDuration);
+//                if (lastDateTimeEnd != null)
+//                {
+//                    newDateTimeEnd = lastDateTimeEnd;
+//                } else
+//                {
+//                    newDateTimeEnd = DateTimeType.DEFAULT_DATE_TIME_TYPE.from(start);                    
+//                }
+//                switch (vComponent.getDateTimeType())
+//                {
+//                case DATE:
+//                case DATE_WITH_LOCAL_TIME:
+//                    newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(lastStartTime);
+//                    newDateTimeEnd = newDateTimeStart.plus(lastDuration);
+//                    break;
+//                case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+//                case DATE_WITH_UTC_TIME:
+//                    ZoneId zone = ((ZonedDateTime) vEvent.getDateTimeStart()).getZone();
+//                    newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart()).atTime(lastStartTime).atZone(zone);
+//                    newDateTimeEnd = newDateTimeStart.plus(lastDuration);
+//                    break;
+//                default:
+//                    throw new RuntimeException("Not Implemented TemporalType:" + vComponent.getDateTimeType());
+//                }
 //                appointment.setStartTemporal(newDateTimeStart);
 //                appointment.setEndTemporal(newDateTimeEnd);
 
-//                vEvent.setDateTimeStart(newDateTimeStart);
-//                vEvent.setDateTimeEnd(newDateTimeEnd);
+                System.out.println("whole day change:" + newDateTimeStart + " " + newDateTimeEnd);
+                vEvent.setDateTimeStart(newDateTimeStart);
+                vEvent.setDateTimeEnd(newDateTimeEnd);
 
                 LocalDateTime newStartRange = LocalDate.from(vEvent.getStartRange()).atStartOfDay();
                 LocalDateTime newEndRange = LocalDate.from(vEvent.getEndRange()).atStartOfDay();
@@ -343,7 +356,7 @@ public class AppointmentEditController extends Pane
         {
             endInstance = DateTimeType.changeTemporal(endTextField.getLocalDateTime(), vEvent.getDateTimeType());
         }
-//        System.out.println("se:" + startInstance + " " + endInstance);
+
         vEvent.handleEdit(
                 vEventOriginal
                 , vComponents
@@ -354,7 +367,6 @@ public class AppointmentEditController extends Pane
                 , EditChoiceDialog.EDIT_DIALOG_CALLBACK);
         popup.close();
     }
-
     
     // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
     @FXML private void handleRepeatSave()

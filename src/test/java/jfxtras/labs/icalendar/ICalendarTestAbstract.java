@@ -434,6 +434,21 @@ public abstract class ICalendarTestAbstract
                                 .withInterval(2)));
     }
     
+    public static VEventMock getDailyJapanZone()
+    {
+        return new VEventMock()
+                .withCategories("group03")
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 0), ZoneId.of("Japan")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 9, 0), ZoneId.of("Japan")))
+                .withDescription("Japan Description")
+                .withSummary("Japan Summary")
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRRule(new RRule()
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 1, 0), ZoneOffset.UTC))
+                        .withFrequency(new Daily()));
+    }
+    
     /** Individual - non repeatable VEvent */
     public static VEventMock getIndividual1()
     {

@@ -133,7 +133,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
             endPriority = null;
         } else
         {
-            DateTimeType myDateTimeType = DateTimeType.from(dtEnd);
+            DateTimeType myDateTimeType = DateTimeType.of(dtEnd);
             if ((lastDtStartDateTimeType() != null) && (myDateTimeType != lastDtStartDateTimeType()))
             {
                 throw new DateTimeException("DTEND must have the same DateTimeType as DTSTART, (" + myDateTimeType + " and " + lastDtStartDateTimeType() + ", respectively");
@@ -167,7 +167,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     void ensureDateTimeTypeConsistency(DateTimeType dateTimeType)
     {
         // DTEND
-        if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.from(getDateTimeEnd())))
+        if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.of(getDateTimeEnd())))
         {
             // convert to new Temporal type
             Temporal newDateTimeEnd = DateTimeType.changeTemporal(getDateTimeEnd(), dateTimeType);
@@ -537,7 +537,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     public static TemporalAmount calcDuration(Temporal startInclusive, Temporal endExclusive)
     {
         final TemporalAmount duration;
-        if (DateTimeType.from(startInclusive) == DateTimeType.DATE)
+        if (DateTimeType.of(startInclusive) == DateTimeType.DATE)
         {
             duration = Period.between(LocalDate.from(startInclusive), LocalDate.from(endExclusive));
         } else

@@ -162,7 +162,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     public void setDateTimeStart(Temporal dtStart)
     {
         // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
-        DateTimeType myDateTimeType = DateTimeType.from(dtStart);
+        DateTimeType myDateTimeType = DateTimeType.of(dtStart);
         boolean changed = (lastDtStartDateTimeType != null) && (myDateTimeType != lastDtStartDateTimeType);
         lastDtStartDateTimeType = myDateTimeType;
         dateTimeStart.set(dtStart);
@@ -201,7 +201,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         if (getExDate() != null)
         {
             Temporal firstTemporal = getExDate().getTemporals().iterator().next();
-            DateTimeType exDateDateTimeType = DateTimeType.from(firstTemporal);
+            DateTimeType exDateDateTimeType = DateTimeType.of(firstTemporal);
             if (dateTimeType != exDateDateTimeType)
             {
                 Set<Temporal> newExDateTemporals = getExDate().getTemporals()
@@ -217,7 +217,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         if (getRDate() != null)
         {
             Temporal firstTemporal = getRDate().getTemporals().iterator().next();
-            DateTimeType rDateDateTimeType = DateTimeType.from(firstTemporal);
+            DateTimeType rDateDateTimeType = DateTimeType.of(firstTemporal);
             if (dateTimeType != rDateDateTimeType)
             {
                 Set<Temporal> newRDateTemporals = getRDate().getTemporals()
@@ -246,7 +246,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         if (change.wasAdded())
         {
             Temporal newTemporal = change.getElementAdded();
-            DateTimeType myDateTimeType = DateTimeType.from(newTemporal);
+            DateTimeType myDateTimeType = DateTimeType.of(newTemporal);
             if ((lastDtStartDateTimeType() != null) && (myDateTimeType != lastDtStartDateTimeType()))
             {
                 throw new DateTimeException("Temporal must have the same DateTimeType as DTSTART, (" + myDateTimeType + ", " + lastDtStartDateTimeType() + ", respectively");
@@ -424,7 +424,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     }
     @Override public void setDateTimeRecurrence(Temporal dtRecurrence)
     {
-        DateTimeType myDateTimeType = DateTimeType.from(dtRecurrence);
+        DateTimeType myDateTimeType = DateTimeType.of(dtRecurrence);
          // parent should be set before dateTimeRecurrence or this check can't be performed
         if ((getParent() != null) && (myDateTimeType != getParent().getDateTimeType()))
         {
@@ -627,6 +627,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
 //            System.out.println("existing start:" + vComponentOriginal.getDateTimeStart());
             List<String> changedPropertyNames = findChangedProperties(vComponentOriginal);
             changedPropertyNames.addAll(changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance));
+            changedPropertyNames.stream().forEach(p -> System.out.println("property changed:" + p));
             // TODO - NEED TO ADD START AND END TO CHANGED PROPERTIES EVEN WHEN NOT ADJUSTED YET
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
 //            System.out.println("provideDialog:" + provideDialog);
@@ -714,7 +715,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     {
         // TODO - FOR ALL BUT ONE - MAKE SURE START DATE IS FIRST OCCURRENCE - CHANGE IF NECESSARY
         final Temporal newStart;
-        if (DateTimeType.from(startInstance) == DateTimeType.DATE)
+        if (DateTimeType.of(startInstance) == DateTimeType.DATE)
         {
             TemporalAmount startShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
             newStart = LocalDate.from(getDateTimeStart()).plus(startShift);

@@ -208,10 +208,11 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     {
         this(appointmentGroups);
         setCategories(appointment.getAppointmentGroup().getDescription());
-
+        setDateTimeStart(appointment.getStartTemporal());
+        setDateTimeEnd(appointment.getEndTemporal());
         // Convert appointment LocalDateTime to ZonedDateTime as default Temporal class
-        setDateTimeStart(appointment.getStartLocalDateTime().atZone(ZoneId.systemDefault()));
-        setDateTimeEnd(appointment.getEndLocalDateTime().atZone(ZoneId.systemDefault()));
+//        setDateTimeStart(appointment.getStartLocalDateTime().atZone(ZoneId.systemDefault()));
+//        setDateTimeEnd(appointment.getEndLocalDateTime().atZone(ZoneId.systemDefault()));
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setDateTimeCreated(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setDescription(appointment.getDescription());

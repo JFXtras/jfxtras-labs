@@ -209,7 +209,7 @@ public class RRule
         if (recurrences() != null)
         {
             recurrences().stream()
-                    .filter(r -> ! DateTimeType.from(r.getDateTimeRecurrence()).equals(parent.getDateTimeType()))
+                    .filter(r -> ! DateTimeType.of(r.getDateTimeRecurrence()).equals(parent.getDateTimeType()))
                     .forEach(r -> 
                     {
                         builder.append(System.lineSeparator()
@@ -413,7 +413,7 @@ public class RRule
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.from(start));
+            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.of(start));
             return takeWhile(filteredStream, a -> ! VComponent.isAfter(a, convertedUntil));
         }
         return filteredStream;

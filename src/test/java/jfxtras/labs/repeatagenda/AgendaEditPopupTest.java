@@ -94,18 +94,17 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         assertFalse(wholeDayCheckBox.isSelected());
 
         // Edit and check properties
-        startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));
-        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), v.getDateTimeStart());
-        
+        startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));        
         endTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 9, 0));
-        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), v.getDateTimeEnd());
         
         wholeDayCheckBox.setSelected(true);
         assertEquals(LocalDate.of(2015, 11, 11), v.getDateTimeStart());
         assertEquals(LocalDate.of(2015, 11, 12), v.getDateTimeEnd());
         wholeDayCheckBox.setSelected(false);
-        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), v.getDateTimeStart());
-        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), v.getDateTimeEnd());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 30), v.getDateTimeStart());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 11, 30), v.getDateTimeEnd());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), startTextField.getLocalDateTime());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), endTextField.getLocalDateTime());
         
         summaryTextField.setText("new summary");
         assertEquals("new summary", v.getSummary());
@@ -126,6 +125,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         click("#saveAppointmentButton");
         
         // Check appointment edited after close
+        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), v.getDateTimeStart());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), v.getDateTimeEnd());
+        
         assertEquals(1, agenda.appointments().size());
         Appointment a = agenda.appointments().get(0);
         assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), a.getStartLocalDateTime());
@@ -788,7 +790,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
               , LocalDateTime.of(2015, 11, 14, 10, 0)
                 ));
         assertEquals(expectedDates, exceptions);
-        TestUtil.sleep(3000);
+//        TestUtil.sleep(3000);
         closeCurrentWindow();
     }
     
