@@ -204,6 +204,7 @@ public class AppointmentEditController extends Pane
         
         // Copy original VEvent
         vEventOriginal = (VEvent<Appointment,?>) VComponentFactory.newVComponent(vEvent);
+        System.out.println("just copied:" + vEventOriginal.getCategories());
         
         // String bindings
         summaryTextField.textProperty().bindBidirectional(vEvent.summaryProperty());
@@ -359,12 +360,12 @@ public class AppointmentEditController extends Pane
 
         vEvent.handleEdit(
                 vEventOriginal
-                , vComponents
-                , startOriginalInstance
-                , startInstance
-                , endInstance
-                , appointments
-                , EditChoiceDialog.EDIT_DIALOG_CALLBACK);
+              , vComponents
+              , startOriginalInstance
+              , startInstance
+              , endInstance
+              , appointments
+              , EditChoiceDialog.EDIT_DIALOG_CALLBACK);
         popup.close();
     }
     

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -33,35 +32,35 @@ public final class ICalendarAgendaUtilities
 //                
 //    }
 
-    public enum RRuleType
-    {
-        INDIVIDUAL
-      , WITH_EXISTING_REPEAT
-      , WITH_NEW_REPEAT
-      , HAD_REPEAT_BECOMING_INDIVIDUAL
-    }
-    
-    public static RRuleType getRRuleType(RRule rruleNew, RRule rruleOld)
-    {
-        if (rruleNew == null)
-        {
-            if (rruleOld == null)
-            { // doesn't have repeat or have old repeat either
-                return RRuleType.INDIVIDUAL;
-            } else {
-                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
-            }
-        } else
-        { // RRule != null
-            if (rruleOld == null)
-            {
-                return RRuleType.WITH_NEW_REPEAT;                
-            } else
-            {
-                return RRuleType.WITH_EXISTING_REPEAT;
-            }
-        }
-    }
+//    public enum RRuleType
+//    {
+//        INDIVIDUAL
+//      , WITH_EXISTING_REPEAT
+//      , WITH_NEW_REPEAT
+//      , HAD_REPEAT_BECOMING_INDIVIDUAL
+//    }
+//    
+//    public static RRuleType getRRuleType(RRule rruleNew, RRule rruleOld)
+//    {
+//        if (rruleNew == null)
+//        {
+//            if (rruleOld == null)
+//            { // doesn't have repeat or have old repeat either
+//                return RRuleType.INDIVIDUAL;
+//            } else {
+//                return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
+//            }
+//        } else
+//        { // RRule != null
+//            if (rruleOld == null)
+//            {
+//                return RRuleType.WITH_NEW_REPEAT;                
+//            } else
+//            {
+//                return RRuleType.WITH_EXISTING_REPEAT;
+//            }
+//        }
+//    }
     
 //    // TODO - CONSIDER DELETING - I'M NOT USING ANY MORE - I THINK
 //    public static List<Node> getMatchingNodes(Parent root, Class<? extends Node> matchClass)

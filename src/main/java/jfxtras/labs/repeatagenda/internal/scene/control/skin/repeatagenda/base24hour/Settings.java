@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.rrule.freq.Frequency.FrequencyType;
 
-// TODO - SHOULD THIS CLASS BE ON THE INTERNAL SIDE?
+// TODO - MAKE SEPARATE RESOURCE FILE FOR THESE
 public final class Settings
 {
     private Settings() {}

@@ -32,8 +32,6 @@ import javafx.collections.SetChangeListener;
 import javafx.util.Callback;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.rrule.RRule;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgendaUtilities.RRuleType;
 
 /**
  * Abstract implementation of VComponent with all common methods for VEvent, VTodo, and VJournal
@@ -593,7 +591,10 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
 
     // CONSTRUCTORS
     /** Copy constructor */
-    public VComponentBase(VComponentBase<I, T> vcomponent) { copy(vcomponent, this); }
+    public VComponentBase(VComponentBase<I, T> vcomponent)
+    {
+        copy(vcomponent, this);
+    }
     
     public VComponentBase() { }
     
@@ -609,7 +610,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     {
 //        System.out.println("instance:" + startOriginalInstance + " " + startInstance + " " + endInstance + " " + getDateTimeStart() + " " + ((VEvent) this).getDateTimeEnd() + " " + getStartRange() + " " + getEndRange());
 //        adjustDateTime(startOriginalInstance, startInstance, endInstance);
-        final RRuleType rruleType = ICalendarAgendaUtilities.getRRuleType(getRRule(), vComponentOriginal.getRRule());
+        final RRuleType rruleType = RRuleType.getRRuleType(getRRule(), vComponentOriginal.getRRule());
         System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         Collection<I> newInstances = null;
@@ -626,6 +627,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         case WITH_EXISTING_REPEAT:
 //            System.out.println("existing start:" + vComponentOriginal.getDateTimeStart());
             List<String> changedPropertyNames = findChangedProperties(vComponentOriginal);
+            System.out.println("categories:" + getCategories() + " " + vComponentOriginal.getCategories());
             changedPropertyNames.addAll(changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance));
             changedPropertyNames.stream().forEach(p -> System.out.println("property changed:" + p));
             // TODO - NEED TO ADD START AND END TO CHANGED PROPERTIES EVEN WHEN NOT ADJUSTED YET
@@ -1428,5 +1430,34 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         Stream<Temporal> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, start); // remove exceptions
         return stream3.filter(t -> ! VComponent.isBefore(t, start));
     }
-
+    
+    public enum RRuleType
+    {
+        INDIVIDUAL ,
+        WITH_EXISTING_REPEAT ,
+        WITH_NEW_REPEAT, 
+        HAD_REPEAT_BECOMING_INDIVIDUAL;
+      
+        public static RRuleType getRRuleType(RRule rruleNew, RRule rruleOld)
+        {
+            if (rruleNew == null)
+            {
+                if (rruleOld == null)
+                { // doesn't have repeat or have old repeat either
+                    return RRuleType.INDIVIDUAL;
+                } else {
+                    return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
+                }
+            } else
+            { // RRule != null
+                if (rruleOld == null)
+                {
+                    return RRuleType.WITH_NEW_REPEAT;                
+                } else
+                {
+                    return RRuleType.WITH_EXISTING_REPEAT;
+                }
+            }
+        }
+    }
 }

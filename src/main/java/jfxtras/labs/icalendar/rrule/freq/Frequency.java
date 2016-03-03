@@ -144,12 +144,61 @@ public interface Frequency {
     public static enum FrequencyType
     {
         YEARLY (Yearly.class)
-      , MONTHLY (Monthly.class)
-      , WEEKLY (Weekly.class)
-      , DAILY (Daily.class)
-      , HOURLY (Hourly.class) // Not implemented
-      , MINUTELY (Minutely.class) // Not implemented
-      , SECONDLY (Secondly.class);// Not implemented
+        {
+            @Override
+            public String toStringSingular() { return Settings.REPEAT_FREQUENCIES_SINGULAR.get(YEARLY); }
+
+            @Override
+            public String toStringPlural() { return Settings.REPEAT_FREQUENCIES_PLURAL.get(YEARLY); }
+        } , 
+        MONTHLY (Monthly.class)
+        {
+            @Override
+            public String toStringSingular() { return Settings.REPEAT_FREQUENCIES_SINGULAR.get(MONTHLY); }
+
+            @Override
+            public String toStringPlural() { return Settings.REPEAT_FREQUENCIES_PLURAL.get(MONTHLY); }
+        } ,
+        WEEKLY (Weekly.class)
+        {
+            @Override
+            public String toStringSingular() { return Settings.REPEAT_FREQUENCIES_SINGULAR.get(WEEKLY); }
+
+            @Override
+            public String toStringPlural() { return Settings.REPEAT_FREQUENCIES_PLURAL.get(WEEKLY); }
+        } ,
+        DAILY (Daily.class)
+        {
+            @Override
+            public String toStringSingular() { return Settings.REPEAT_FREQUENCIES_SINGULAR.get(DAILY); }
+
+            @Override
+            public String toStringPlural() { return Settings.REPEAT_FREQUENCIES_PLURAL.get(DAILY); }
+        } ,
+        HOURLY (Hourly.class)
+        {
+            @Override
+            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
+
+            @Override
+            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
+        } ,
+        MINUTELY (Minutely.class)
+        {
+            @Override
+            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
+
+            @Override
+            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
+        } ,
+        SECONDLY (Secondly.class)
+        {
+            @Override
+            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
+
+            @Override
+            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
+        };
       
         private Class<? extends Frequency> clazz;
           
@@ -173,39 +222,11 @@ public interface Frequency {
         {
             return new FrequencyType[] { DAILY, WEEKLY, MONTHLY, YEARLY };
         }
-                
-        public String toStringSingular()
-        {
-            switch (this)
-            {
-            case DAILY:
-                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(DAILY); // day
-            case WEEKLY:
-                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(WEEKLY); // week
-            case MONTHLY:
-                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(MONTHLY); // month
-            case YEARLY:
-                return Settings.REPEAT_FREQUENCIES_SINGULAR.get(YEARLY); // year
-            default:
-                return null;                
-            }
-        }
-        
-        public String toStringPlural()
-        {
-            switch (this) {
-            case DAILY:
-                return Settings.REPEAT_FREQUENCIES_PLURAL.get(DAILY); // days
-            case WEEKLY:
-                return Settings.REPEAT_FREQUENCIES_PLURAL.get(WEEKLY); // weeks
-            case MONTHLY:
-                return Settings.REPEAT_FREQUENCIES_PLURAL.get(MONTHLY); // months
-            case YEARLY:
-                return Settings.REPEAT_FREQUENCIES_PLURAL.get(YEARLY); // years
-            default:
-                return null;                
-            }
-        }
+
+        /** singular string, e.g week */
+        public abstract String toStringSingular();
+        /** plural string, e.g weeks */
+        public abstract String toStringPlural();
         
         public static StringConverter<FrequencyType> stringConverter = new StringConverter<FrequencyType>()
         {

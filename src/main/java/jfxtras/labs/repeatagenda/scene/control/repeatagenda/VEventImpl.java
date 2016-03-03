@@ -196,6 +196,10 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
         this.appointmentGroups = appointmentGroups;
         categoriesProperty().addListener(categoriesListener);
         appointmentGroup.addListener(appointmentGroupListener);
+        if (getAppointmentGroup() == null)
+        {
+            setAppointmentGroup(getAppointmentGroups().get(0)); // set default appointment group if none set
+        }
     }
     
     /**
