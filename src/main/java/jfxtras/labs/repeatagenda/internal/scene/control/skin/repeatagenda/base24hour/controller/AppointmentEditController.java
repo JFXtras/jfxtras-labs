@@ -5,6 +5,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -219,16 +221,16 @@ public class AppointmentEditController extends Pane
             endTextField.localDateTimeProperty().removeListener(endTextlistener);
             if (newSelection)
             {
+                // save previous values to restore in case whole-day is toggled off
                 lastStartTextFieldValue = startTextField.getLocalDateTime();
                 lastStartTime = lastStartTextFieldValue.toLocalTime();
                 lastDuration = Duration.between(lastStartTextFieldValue, endTextField.getLocalDateTime());
-                LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
-//                appointment.setStartTemporal(newDateTimeStart);
                 lastDateTimeStart = vEvent.getDateTimeStart();
+                lastDateTimeEnd = vEvent.getDateTimeEnd();
+                
+                LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
                 vEvent.setDateTimeStart(newDateTimeStart);
                 LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).plus(1, ChronoUnit.DAYS);
-//                appointment.setEndTemporal(newDateTimeEnd);
-                lastDateTimeEnd = vEvent.getDateTimeEnd();
                 vEvent.setDateTimeEnd(newDateTimeEnd);
                 
                 LocalDateTime start = LocalDate.from(startTextField.getLocalDateTime()).atStartOfDay();
@@ -258,7 +260,7 @@ public class AppointmentEditController extends Pane
                     newDateTimeStart = lastDateTimeStart;
                 } else
                 {
-                    newDateTimeStart = DateTimeType.DEFAULT_DATE_TIME_TYPE.from(start);
+                    newDateTimeStart = DateTimeType.DEFAULT_DATE_TIME_TYPE.from(start, ZoneId.systemDefault());
                 }
                 
                 final Temporal newDateTimeEnd = newDateTimeStart.plus(lastDuration);
@@ -341,13 +343,15 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleSave()
     {
+        ZoneId zone = (vEvent.getDateTimeStart() instanceof ZonedDateTime) ? ZoneId.from(vEvent.getDateTimeStart()) : null;
         final Temporal startInstance;
         if (wholeDayCheckBox.isSelected())
         {
             startInstance = LocalDate.from(startTextField.getLocalDateTime());
         } else
         {
-            startInstance = DateTimeType.changeTemporal(startTextField.getLocalDateTime(), vEvent.getDateTimeType());
+            startInstance = vEvent.getDateTimeType().from(startTextField.getLocalDateTime(), zone);
+//            startInstance = DateTimeType.changeTemporal(startTextField.getLocalDateTime(), vEvent.getDateTimeType());
         }
         final Temporal endInstance;
         if (wholeDayCheckBox.isSelected())
@@ -355,9 +359,11 @@ public class AppointmentEditController extends Pane
             endInstance = LocalDate.from(endTextField.getLocalDateTime());
         } else
         {
-            endInstance = DateTimeType.changeTemporal(endTextField.getLocalDateTime(), vEvent.getDateTimeType());
+            endInstance = vEvent.getDateTimeType().from(endTextField.getLocalDateTime(), zone);
+//            endInstance = vEvent.getDateTimeStart().with(endTextField.getLocalDateTime());
+//            endInstance = DateTimeType.changeTemporal(endTextField.getLocalDateTime(), vEvent.getDateTimeType());
         }
-
+System.out.println("instance controller:" + startInstance + " " + endInstance);
         vEvent.handleEdit(
                 vEventOriginal
               , vComponents

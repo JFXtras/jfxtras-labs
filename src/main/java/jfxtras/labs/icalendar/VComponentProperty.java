@@ -63,9 +63,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
             @Override
             public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
-                System.out.println("source.getCategories():" + source.getCategories());
                 destination.setCategories(source.getCategories());
-                System.out.println("destination.getCategories():" + destination.getCategories());
             }
         }
         /**

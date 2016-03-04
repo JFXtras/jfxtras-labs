@@ -200,10 +200,11 @@ public class ICalendarAgenda extends Agenda
         final Temporal startInstance;
         final Temporal endInstance;
         Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
-        appointmentStartOriginalMap.entrySet().stream().forEach(a -> System.out.println("map2:" + a.getKey() + " " + a.getValue()));
+//        appointmentStartOriginalMap.entrySet().stream().forEach(a -> System.out.println("map2:" + a.getKey() + " " + a.getValue()));
         startInstance = appointment.getStartTemporal();
         endInstance = appointment.getEndTemporal();
 
+        System.out.println("change instances:" + startOriginalInstance + " " + startInstance + " " + endInstance);
         appointments().removeListener(appointmentsChangeListener);
         vComponents().removeListener(vComponentsChangeListener);
         vEvent.handleEdit(
@@ -217,11 +218,11 @@ public class ICalendarAgenda extends Agenda
         appointments().addListener(appointmentsChangeListener);
         vComponents().addListener(vComponentsChangeListener);
         
-        System.out.println("vComponents changed - added:******************************" + vComponents.size());
-        System.out.println("vevent:" + startInstance + " " + endInstance);
+//        System.out.println("vComponents changed - added:******************************" + vComponents.size());
+//        System.out.println("vevent:" + startInstance + " " + endInstance);
 
         if (vEvent.equals(vEventOriginal)) refresh(); // refresh if canceled
-        System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
+//        System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
         appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
         return null;
     };
@@ -232,8 +233,8 @@ public class ICalendarAgenda extends Agenda
         super();
         vComponents().addListener((InvalidationListener) (obs) -> 
         {
-            System.out.println("vComponents chagned:******************************" + vComponents.size());
-            vComponents.stream().forEach(System.out::println);
+//            System.out.println("vComponents chagned:******************************" + vComponents.size());
+//            vComponents.stream().forEach(System.out::println);
         });
 
         // setup event listener to delete selected appointments when Agenda is added to a scene
@@ -272,7 +273,7 @@ public class ICalendarAgenda extends Agenda
                     { // Open little popup - edit, delete
                         ZonedDateTime created = ZonedDateTime.now(ZoneId.of("Z"));
                         Appointment a = change.getAddedSubList().get(0);
-                        System.out.println("new appt:" + a + " " + appointments().size());
+//                        System.out.println("new appt:" + a + " " + appointments().size());
 
                         String originalSummary = a.getSummary();
                         AppointmentGroup originalAppointmentGroup = a.getAppointmentGroup();
@@ -284,7 +285,7 @@ public class ICalendarAgenda extends Agenda
                             refresh();
                             break;
                         case OK_DONE: // CREATE EVENT assumes newAppointmentCallback can only edit summary and appointmentGroup
-                            System.out.println("OK:");
+//                            System.out.println("OK:");
                             if ((a.getSummary() != null) && ! (a.getSummary().equals(originalSummary)) || ! (a.getAppointmentGroup().equals(originalAppointmentGroup)))
                             {
                                 Platform.runLater(() -> refresh());
@@ -305,8 +306,8 @@ public class ICalendarAgenda extends Agenda
 //                            System.out.println("new:" + newVComponent);
                             vComponents().addListener(vComponentsChangeListener);
                             // put data in maps
-                            System.out.println("dtstart:" + newVComponent.getDateTimeStart());
-                            System.out.println("map3:" + System.identityHashCode(a) + " " + a.getStartTemporal());
+//                            System.out.println("dtstart:" + newVComponent.getDateTimeStart());
+//                            System.out.println("map3:" + System.identityHashCode(a) + " " + a.getStartTemporal());
                             appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
                             appointmentVComponentMap.put(System.identityHashCode(a), newVComponent); // populate appointment-vComponent map
                             break;
@@ -349,7 +350,7 @@ public class ICalendarAgenda extends Agenda
                             {
                                 if (! v.isValid()) { throw new IllegalArgumentException("Invalid VComponent:" + v.errorString()); }                        
                             });
-                    System.out.println("was added:" + dateTimeRange + " " +  getDateTimeRange());
+//                    System.out.println("was added:" + dateTimeRange + " " +  getDateTimeRange());
                     if (dateTimeRange != null)
                     {
                         Temporal start = getDateTimeRange().getStartLocalDateTime();
@@ -420,7 +421,7 @@ public class ICalendarAgenda extends Agenda
         // Keeps appointmentRecurrenceIDMap and appointmentVComponentMap synched with appointments
         ListChangeListener<Appointment> appointmentsListener2 = (ListChangeListener.Change<? extends Appointment> change) ->
         {
-            System.out.println("appointmentsListener2:");
+//            System.out.println("appointmentsListener2:");
             while (change.next())
             {
                 if (change.wasAdded())
@@ -444,7 +445,7 @@ public class ICalendarAgenda extends Agenda
 //                                    throw new RuntimeException("Unknown TemporalType:" + v.getTemporalType());
 //                                }
                                 
-                                System.out.println("map:" + System.identityHashCode(a) + " " + a.getStartTemporal());
+//                                System.out.println("map:" + System.identityHashCode(a) + " " + a.getStartTemporal());
                                 appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
 //                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
                                 // TODO - IF I MOVE INSTANCE MAKING TO HERE - EITHER CALLBACK OR LISTENER THEN I CAN UPDATE
@@ -504,7 +505,7 @@ public class ICalendarAgenda extends Agenda
                     appointments().addAll(newAppointments);
                     newAppointments.stream().forEach(a ->
                     {
-                        System.out.println("map5:" + System.identityHashCode(a) + " " + a.getStartTemporal());
+//                        System.out.println("map5:" + System.identityHashCode(a) + " " + a.getStartTemporal());
                         appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal()); // populate recurrence-id map
                         appointmentVComponentMap.put(System.identityHashCode(a), v); // populate appointment-vComponent map
                     });

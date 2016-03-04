@@ -40,8 +40,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<VComponent<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
-        Collection<InstanceMock> newinstances = vEvent.makeInstances(start, end);
-        instances.addAll(newinstances);
+        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
+        instances.addAll(newInstances);
         assertEquals(3, instances.size()); // check if there are only 3 instances
         VEventMock vComponentOriginal = new VEventMock(vEvent);
                
@@ -92,8 +92,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
-        Collection<InstanceMock> newinstances = vEvent.makeInstances(start, end);
-        instances.addAll(newinstances);
+        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
+        instances.addAll(newInstances);
         assertEquals(3, instances.size()); // check if there are only 3 instances
         VEventMock vEventOriginal = new VEventMock(vEvent);
         
@@ -157,8 +157,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
-        Collection<InstanceMock> newinstances = vEvent.makeInstances(start, end);
-        instances.addAll(newinstances);
+        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
+        instances.addAll(newInstances);
         assertEquals(7, instances.size()); // check if there are only 3 instances
         VEventMock vEventOriginal = new VEventMock(vEvent);
         
@@ -239,8 +239,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
-        Collection<InstanceMock> newinstances = vEvent.makeInstances(start, end);
-        instances.addAll(newinstances);
+        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
+        instances.addAll(newInstances);
         assertEquals(3, instances.size()); // check if there are only 3 instances
         VEventMock vEventOriginal = new VEventMock(vEvent);
 
@@ -293,8 +293,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
-        Collection<InstanceMock> newinstances = vEvent.makeInstances(start, end);
-        instances.addAll(newinstances);
+        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
+        instances.addAll(newInstances);
         assertEquals(3, instances.size()); // check if there are only 3 instances
         VEventMock vEventOriginal = new VEventMock(vEvent);
 
@@ -356,8 +356,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         LocalDateTime start = LocalDateTime.of(2016, 2, 7, 0, 0);
         LocalDateTime end = LocalDateTime.of(2016, 2, 14, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
-        Collection<InstanceMock> newinstances = vEvent.makeInstances(start, end);
-        instances.addAll(newinstances);
+        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
+        instances.addAll(newInstances);
         assertEquals(4, instances.size()); // check if there are only 3 instances
         VEventMock vEventOriginal = new VEventMock(vEvent);
 
@@ -411,14 +411,13 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     @Test
     public void canChangeTwoWholeDay()
     {
-        // Individual InstanceMock
         VEventMock vEvent = getGoogleRepeatable();
         List<VComponent<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         Temporal start = ZonedDateTime.of(LocalDateTime.of(2016, 2, 21, 0, 0), ZoneId.of("America/Los_Angeles"));
         Temporal end = ZonedDateTime.of(LocalDateTime.of(2016, 2, 28, 0, 0), ZoneId.of("America/Los_Angeles"));
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
-        Collection<InstanceMock> newinstances = vEvent.makeInstances(start, end);
-        instances.addAll(newinstances);
+        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
+        instances.addAll(newInstances);
         assertEquals(3, instances.size()); // check if there are only 3 instances
         VEventMock vEventOriginal = new VEventMock(vEvent);
         
@@ -490,8 +489,54 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         vComponents.stream().forEach(System.out::println);
         assertEquals(expectedDates2, madeDates2);
     }
+    
+    
+    /**
+     * Changing two instances to wholeday
+     * Tests keeping RECURRENCE-ID as parent DateTimeType
+     */
+    @Test
+    public void canChangeOneWholeDayToDateTime()
+    {
+        VEventMock vEvent = getWholeDayDaily2();
+        List<VComponent<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        Temporal start = LocalDate.of(2015, 11, 15);
+        Temporal end = LocalDate.of(2015, 11, 22);
+        List<InstanceMock> instances = new ArrayList<InstanceMock>();
+        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
+        instances.addAll(newInstances);
+        assertEquals(3, instances.size()); // check if there are only 3 instances
+        VEventMock vEventOriginal = new VEventMock(vEvent);
+        
+        // apply changes
+        Temporal startOriginalInstance = LocalDate.of(2015, 11, 18);
+        Temporal startInstance = ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 8, 0), ZoneId.of("America/New_York"));
+        Temporal endInstance = ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 10, 0), ZoneId.of("America/New_York"));
+        
+        instances.stream().forEach(a -> System.out.println("instance:" + a));
+        // Edit
+        vEvent.handleEdit(
+                vEventOriginal
+              , vComponents
+              , startOriginalInstance
+              , startInstance
+              , endInstance
+              , instances
+              , (m) -> ChangeDialogOption.ONE);
+        
+        List<Temporal> madeDates = instances.stream()
+                .map(a -> a.getStartTemporal())
+                .sorted(VComponent.TEMPORAL_COMPARATOR)
+                .collect(Collectors.toList());
+        List<Temporal> expectedDates = new ArrayList<Temporal>(Arrays.asList(
+                  LocalDate.of(2015, 11, 15)
+                , ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 8, 0), ZoneId.of("America/New_York"))
+                , LocalDate.of(2015, 11, 21)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
 
-    // TODO - NEED THIS_AND_FUTURE TESTS
+
     
     
 // /**
@@ -507,8 +552,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 //     LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
 //     LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
 //     List<InstanceMock> instances = new ArrayList<InstanceMock>();
-//     Collection<InstanceMock> newinstances = vevent.makeInstances(start, end);
-//     instances.addAll(newinstances);
+//     Collection<InstanceMock> newInstances = vevent.makeInstances(start, end);
+//     instances.addAll(newInstances);
 //     assertEquals(3, instances.size()); // check if there are only 3 instances
 //     VEventMock veventOld = new VEventMock(vevent);
 //     
@@ -610,8 +655,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 //     LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
 //     LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
 //     Set<InstanceMock> instances = new TreeSet<InstanceMock>((a,b) -> a.getStartTemporal().compareTo(b.getStartTemporal()));
-//     Collection<InstanceMock> newinstances = vevent.makeInstances(start, end);
-//     instances.addAll(newinstances);
+//     Collection<InstanceMock> newInstances = vevent.makeInstances(start, end);
+//     instances.addAll(newInstances);
 //     assertEquals(4, instances.size()); // check if there are only 3 instances
 //     VEventMock veventOld = new VEventMock(vevent);
 //     
@@ -762,8 +807,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 //     LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
 //     LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
 //     List<InstanceMock> instances = new ArrayList<InstanceMock>();
-//     Collection<InstanceMock> newinstances = vevent.makeInstances(start, end);
-//     instances.addAll(newinstances);
+//     Collection<InstanceMock> newInstances = vevent.makeInstances(start, end);
+//     instances.addAll(newInstances);
 //     assertEquals(3, instances.size()); // check if there are only 3 instances
 //     VEventMock veventOld = new VEventMock(vevent);
 //     assertEquals(veventOld, vevent); // check to see if repeat rule changed correctly
@@ -810,8 +855,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 //     LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
 //     List<VComponent<InstanceMock>> vevents = new ArrayList<>(Arrays.asList(vevent));
 //     List<InstanceMock> instances = new ArrayList<>();
-//     Collection<InstanceMock> newinstances = vevent.makeInstances(start, end);
-//     instances.addAll(newinstances);
+//     Collection<InstanceMock> newInstances = vevent.makeInstances(start, end);
+//     instances.addAll(newInstances);
 //     VEventMock veventOld = new VEventMock(vevent);
 //     
 //     // select InstanceMock and apply changes
@@ -847,8 +892,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 //     LocalDate end = LocalDate.of(2015, 11, 22);
 //     List<VComponent<InstanceMock>> vevents = new ArrayList<>(Arrays.asList(vevent));
 //     List<InstanceMock> instances = new ArrayList<>();
-//     Collection<InstanceMock> newinstances = vevent.makeInstances(start, end);
-//     instances.addAll(newinstances);
+//     Collection<InstanceMock> newInstances = vevent.makeInstances(start, end);
+//     instances.addAll(newInstances);
 //     assertEquals(3, instances.size()); // check if there are 3 instances
 //     VEventMock veventOld = new VEventMock(vevent);
 //

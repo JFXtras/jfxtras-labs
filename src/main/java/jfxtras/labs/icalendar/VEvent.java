@@ -498,6 +498,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
         public void setDuration(VEvent<?,?> vEvent, Temporal startInclusive, Temporal endExclusive)
         {
             TemporalAmount duration = calcDuration(startInclusive, endExclusive);
+            System.out.println("duration:" + duration);
             Temporal dtEnd = vEvent.getDateTimeStart().plus(duration);
             vEvent.setDateTimeEnd(dtEnd);
         }

@@ -714,18 +714,23 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     protected void adjustDateTime(Temporal startOriginalInstance
             , Temporal startInstance
             , Temporal endInstance)
-    {
-        // TODO - FOR ALL BUT ONE - MAKE SURE START DATE IS FIRST OCCURRENCE - CHANGE IF NECESSARY
-        final Temporal newStart;
-        if (DateTimeType.of(startInstance) == DateTimeType.DATE)
+    {        
+        // Make all Temporals same DateTimeType
+        DateTimeType newDateTimeType = DateTimeType.of(startInstance);
+        ZoneId zone = (startInstance instanceof ZonedDateTime) ? ZoneId.from(startInstance) : null;
+        Temporal startAdjusted = newDateTimeType.from(getDateTimeStart(), zone);
+        Temporal startOriginalInstanceAdjusted = newDateTimeType.from(startOriginalInstance, zone);
+
+        // Calculate shift from startAdjusted to make new DTSTART
+        final TemporalAmount startShift;
+        if (newDateTimeType == DateTimeType.DATE)
         {
-            TemporalAmount startShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
-            newStart = LocalDate.from(getDateTimeStart()).plus(startShift);
+            startShift = Period.between(LocalDate.from(startOriginalInstance), LocalDate.from(startInstance));
         } else
         {
-            TemporalAmount startShift = Duration.between(startOriginalInstance, startInstance);
-            newStart = getDateTimeStart().plus(startShift);
+            startShift = Duration.between(startOriginalInstanceAdjusted, startInstance);
         }
+        Temporal newStart = startAdjusted.plus(startShift);
         setDateTimeStart(newStart);
     }
     
@@ -827,12 +832,12 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         setDateTimeStart(newStart);
         adjustDateTime(startOriginalInstance, startInstance, endInstance);
 
-        System.out.println("Changes start:" + getDateTimeStart());
+//        System.out.println("Changes start:" + getDateTimeStart());
         // MAYBE AGENDA IS CHNAGEING ORIGINAL TO LOCALDATETIME
         setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
 //        adjustDateTime(startOriginalInstance, startInstance, endInstance);
-        System.out.println(this);
+//        System.out.println(this);
    
         // Add recurrence to original vEvent
         vEventOriginal.getRRule().recurrences().add(this);
@@ -844,26 +849,26 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         // Remove old instances, add back ones
         Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to instances
         instancesTemp.addAll(instances);
-        instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
-        vEventOriginal.instances().stream().forEach(a -> System.out.println("instances-original:" + a));
-        System.out.println("end original" + instancesTemp.size());
-        System.out.println("start size:" + instancesTemp.size());
+//        instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
+//        vEventOriginal.instances().stream().forEach(a -> System.out.println("instances-original:" + a));
+//        System.out.println("end original" + instancesTemp.size());
+//        System.out.println("start size:" + instancesTemp.size());
         instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
-        System.out.println("end size:" + instancesTemp.size());
+//        System.out.println("end size:" + instancesTemp.size());
 //        instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
 //        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
-        System.out.println("end original" + instancesTemp.size());
+//        System.out.println("end original" + instancesTemp.size());
        
         vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of instances
         instancesTemp.addAll(vEventOriginal.makeInstances()); // make new instances and add to main collection (added to vEventNew's collection in makeinstances)
         instances().clear(); // clear vEvent outdated collection of instances
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new instances
         vComponents.add(vEventOriginal);
-        makeInstances().stream().forEach(a -> System.out.println("instances1:" + a));
-        System.out.println("-------");
-        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
-        System.out.println(this);
-        System.out.println(vEventOriginal);
+//        makeInstances().stream().forEach(a -> System.out.println("instances1:" + a));
+//        System.out.println("-------");
+//        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
+//        System.out.println(this);
+//        System.out.println(vEventOriginal);
         
         return instancesTemp;
 //        instances.clear();

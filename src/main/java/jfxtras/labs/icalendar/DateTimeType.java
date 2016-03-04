@@ -39,7 +39,7 @@ public enum DateTimeType
         public String formatEndDifferentDay(Temporal temporal) { return Settings.DATE_FORMAT.format(temporal); }
 
         @Override
-        public Temporal from(Temporal temporal)
+        public Temporal from(Temporal temporal, ZoneId zone)
         {
             switch(DateTimeType.of(temporal))
             {
@@ -67,7 +67,7 @@ public enum DateTimeType
         public String formatEndDifferentDay(Temporal temporal) { return Settings.DATE_TIME_FORMAT.format(temporal); }
 
         @Override
-        public Temporal from(Temporal temporal)
+        public Temporal from(Temporal temporal, ZoneId zone)
         {
             switch(DateTimeType.of(temporal))
             {
@@ -95,7 +95,7 @@ public enum DateTimeType
         public String formatEndDifferentDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndDifferentDay(temporal); }
 
         @Override
-        public Temporal from(Temporal temporal)
+        public Temporal from(Temporal temporal, ZoneId zone)
         {
             switch(DateTimeType.of(temporal))
             {
@@ -124,18 +124,17 @@ public enum DateTimeType
         public String formatEndDifferentDay(Temporal temporal) { return DATE_WITH_LOCAL_TIME.formatEndDifferentDay(temporal); }
     
         @Override
-        public Temporal from(Temporal temporal)
+        public Temporal from(Temporal temporal, ZoneId zone)
         {
             switch(DateTimeType.of(temporal))
             {
             case DATE:
-                return LocalDate.from(temporal).atStartOfDay().atZone(DEFAULT_ZONE);
+                return LocalDate.from(temporal).atStartOfDay().atZone(zone);
             case DATE_WITH_LOCAL_TIME:
-                return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE);
+                return LocalDateTime.from(temporal).atZone(zone);
             case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-                return temporal;  // do nothing
             case DATE_WITH_UTC_TIME:
-                return ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE);
+                return ZonedDateTime.from(temporal).withZoneSameInstant(zone);
             default:
                 throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
             }
@@ -260,7 +259,7 @@ public enum DateTimeType
             }
         }
     }
-    
+        
     /**
      * Returns LocalDateTime from Temporal that is an instance of either LocalDate or LocalDateTime
      * If the parameter is type LocalDate the returned LocalDateTime is atStartofDay.
@@ -305,7 +304,7 @@ public enum DateTimeType
     }
 
     /** Convert temporal to new DateTimeType */
-    public abstract Temporal from(Temporal temporal);
+    public abstract Temporal from(Temporal temporal, ZoneId zone);
     /** Formats temporal according to its DateTimeType */
     public abstract String formatStart(Temporal temporal);
     /** Formats temporal according to its DateTimeType */

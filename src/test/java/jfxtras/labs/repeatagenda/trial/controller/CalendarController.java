@@ -34,6 +34,7 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.rrule.freq.Daily;
 import jfxtras.labs.icalendar.rrule.freq.Weekly;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
@@ -223,9 +224,21 @@ public class CalendarController {
                     .withFrequency(new Weekly()
                             .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
             .withSummary("WeeklyZoned Summary")
-            .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
-        
+            .withUniqueIdentifier("20150110T080000-0@jfxtras.org");        
         agenda.vComponents().add(vEvent);
+        
+        
+        
+        VEventImpl vEvent2 = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withDateTimeStart(LocalDate.of(2015, 11, 9))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 10))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRRule(new RRule()
+                        .withFrequency(new Daily()
+                                .withInterval(3)));
+        agenda.vComponents().add(vEvent2);        
+        
         // replace Agenda's appointmentGroups with the ones used in the test events.
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);

@@ -616,8 +616,8 @@ public interface VComponent<I>
         while (i.hasNext())
         {
             Temporal myTemporal = i.next();
-            System.out.println("test:" + myTemporal + " " + startInstance);
-            if (myTemporal.equals(startInstance)) { return i.hasNext(); } // matched startInstance, does iterator have next?
+            System.out.println("test:" + myTemporal + " " + startInstance + " " + i.hasNext());
+            if (myTemporal.equals(startInstance)) { return ! i.hasNext(); } // matched startInstance, does iterator have next?
             if (LocalDate.from(myTemporal).isAfter(LocalDate.from(startInstance))) break;
         }
         throw new RuntimeException("Instance is not in recurrence set:" + startInstance);
