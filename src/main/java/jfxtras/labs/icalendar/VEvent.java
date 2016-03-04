@@ -4,6 +4,7 @@ import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
@@ -164,16 +165,17 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     public T withLocation(String location) { setLocation(location); return (T) this; }
 
     @Override
-    void ensureDateTimeTypeConsistency(DateTimeType dateTimeType)
+    void ensureDateTimeTypeConsistency(DateTimeType dateTimeType, ZoneId zone)
     {
         // DTEND
         if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.of(getDateTimeEnd())))
         {
             // convert to new Temporal type
-            Temporal newDateTimeEnd = DateTimeType.changeTemporal(getDateTimeEnd(), dateTimeType);
+//            Temporal newDateTimeEnd = DateTimeType.changeTemporal(getDateTimeEnd(), dateTimeType);
+            Temporal newDateTimeEnd = dateTimeType.from(getDateTimeEnd(), zone);
             setDateTimeEnd(newDateTimeEnd);
         }
-        super.ensureDateTimeTypeConsistency(dateTimeType);
+        super.ensureDateTimeTypeConsistency(dateTimeType, zone);
     }
     
     @Override

@@ -11,7 +11,6 @@ import javafx.scene.control.Control;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.DateTimeType;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.AppointmentEditController;
@@ -44,7 +43,7 @@ public class AppointmentEditLoader extends Stage {
 //        String appointmentTime = dateTimeType.format(appointment.getStartTemporal(), appointment.getEndTemporal());
 //        String start = Settings.DATE_TIME_FORMAT_START.format(appointment.getStartTemporal());
 //        String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndTemporal());
-        String appointmentTime = DateTimeType.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
+        String appointmentTime = DateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
 //        String appointmentTime = start + end + " ";
         VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) vComponent;
         setTitle(vEvent.getSummary() + ": " + appointmentTime);

@@ -20,7 +20,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -48,7 +47,7 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
     {
         initModality(Modality.APPLICATION_MODAL);
         setTitle(resources.getString("dialog.event.new.title"));
-        String appointmentTime = DateTimeType.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
+        String appointmentTime = DateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
         setHeaderText(appointmentTime);
         
         // Buttons

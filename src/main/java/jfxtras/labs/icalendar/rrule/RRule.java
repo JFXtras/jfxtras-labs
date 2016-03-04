@@ -2,6 +2,8 @@ package jfxtras.labs.icalendar.rrule;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -221,7 +223,8 @@ public class RRule
         }
         if (getUntil() != null)
         {
-            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), parent.getDateTimeType());
+//            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), parent.getDateTimeType());
+            Temporal convertedUntil = parent.getDateTimeType().from(getUntil(), parent.getZoneId());
             if (VComponent.isBefore(convertedUntil, parent.getDateTimeStart())) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
         }
         if ((getCount() == null) || (getCount() < 0))
@@ -413,7 +416,9 @@ public class RRule
 //            return frequency
 //                    .stream(startDateTime)
 //                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.of(start));
+//            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.of(start));
+            ZoneId zone = (start instanceof ZonedDateTime) ? ((ZonedDateTime) start).getZone() : null;
+            Temporal convertedUntil = DateTimeType.of(start).from(getUntil(), zone);
             return takeWhile(filteredStream, a -> ! VComponent.isAfter(a, convertedUntil));
         }
         return filteredStream;

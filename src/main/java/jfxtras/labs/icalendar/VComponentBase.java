@@ -169,7 +169,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         if (changed)
         {
             System.out.println("**********************start:" + dtStart);
-            ensureDateTimeTypeConsistency(myDateTimeType);
+            ensureDateTimeTypeConsistency(myDateTimeType, getZoneId());
         }
     }
     public T withDateTimeStart(Temporal dtStart) { setDateTimeStart(dtStart); return (T) this; }
@@ -180,9 +180,10 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * 
      * This method runs when dateTimeStart (DTSTART) changes DateTimeType
      * 
-     * @param dateTimeType
+     * @param dateTimeType - new DateTimeType
+     * @param zone - ZoneId of dateTimeType, null if not applicable
      */
-    void ensureDateTimeTypeConsistency(DateTimeType dateTimeType)
+    void ensureDateTimeTypeConsistency(DateTimeType dateTimeType, ZoneId zone)
     {
         // RECURRENCE-ID (of children)
         System.out.println("ensureDateTimeTypeConsistency:" + dateTimeType);
@@ -190,7 +191,8 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         {
             getRRule().recurrences().forEach(v ->
             {
-                Temporal newDateTimeRecurrence = DateTimeType.changeTemporal(v.getDateTimeRecurrence(), dateTimeType);
+//                Temporal newDateTimeRecurrence = DateTimeType.changeTemporal(v.getDateTimeRecurrence(), dateTimeType);
+                Temporal newDateTimeRecurrence = dateTimeType.from(v.getDateTimeRecurrence(), zone);
                 v.setDateTimeRecurrence(newDateTimeRecurrence);
             });
         }
@@ -204,7 +206,8 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             {
                 Set<Temporal> newExDateTemporals = getExDate().getTemporals()
                         .stream()
-                        .map(t -> DateTimeType.changeTemporal(t, dateTimeType))
+//                        .map(t -> DateTimeType.changeTemporal(t, dateTimeType))
+                        .map(t -> dateTimeType.from(t, zone))
                         .collect(Collectors.toSet());
                 getExDate().getTemporals().clear();
                 getExDate().getTemporals().addAll(newExDateTemporals);
@@ -220,7 +223,8 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             {
                 Set<Temporal> newRDateTemporals = getRDate().getTemporals()
                         .stream()
-                        .map(t -> DateTimeType.changeTemporal(t, dateTimeType))
+//                        .map(t -> DateTimeType.changeTemporal(t, dateTimeType))
+                        .map(t -> dateTimeType.from(t, zone))
                         .collect(Collectors.toSet());
                 getRDate().getTemporals().clear();
                 getRDate().getTemporals().addAll(newRDateTemporals);
@@ -566,7 +570,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     public Temporal getStartRange() { return startRange; }
     private Temporal startRange;
     @Override
-    public void setStartRange(Temporal start) { startRange = DateTimeType.changeTemporal(start, getDateTimeType()); }
+    public void setStartRange(Temporal start){ startRange = getDateTimeType().from(start, getZoneId()); }
     public T withStartRange(Temporal start) { setStartRange(start); return (T) this; }
     
     /**
@@ -576,7 +580,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     public Temporal getEndRange() { return endRange; }
     private Temporal endRange;
     @Override
-    public void setEndRange(Temporal end) { endRange = DateTimeType.changeTemporal(end, getDateTimeType()); }
+    public void setEndRange(Temporal end) { endRange = getDateTimeType().from(end, getZoneId()); }
     public T withEndRange(Temporal end) { setEndRange(end); return (T) this; }
 
     /**
@@ -608,10 +612,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
           , Collection<I> instances
           , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
     {
-//        System.out.println("instance:" + startOriginalInstance + " " + startInstance + " " + endInstance + " " + getDateTimeStart() + " " + ((VEvent) this).getDateTimeEnd() + " " + getStartRange() + " " + getEndRange());
-//        adjustDateTime(startOriginalInstance, startInstance, endInstance);
         final RRuleType rruleType = RRuleType.getRRuleType(getRRule(), vComponentOriginal.getRRule());
-        System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         Collection<I> newInstances = null;
         switch (rruleType)
@@ -625,12 +626,8 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             if (! this.equals(vComponentOriginal)) { newInstances = updateInstances(instances); }
             break;
         case WITH_EXISTING_REPEAT:
-//            System.out.println("existing start:" + vComponentOriginal.getDateTimeStart());
             List<String> changedPropertyNames = findChangedProperties(vComponentOriginal);
-            System.out.println("categories:" + getCategories() + " " + vComponentOriginal.getCategories());
             changedPropertyNames.addAll(changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance));
-            changedPropertyNames.stream().forEach(p -> System.out.println("property changed:" + p));
-            // TODO - NEED TO ADD START AND END TO CHANGED PROPERTIES EVEN WHEN NOT ADJUSTED YET
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
             if (changedPropertyNames.size() > 0) // if changes occurred
             {
@@ -647,7 +644,6 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                 switch (changeResponse)
                 {
                 case ALL:
-                    System.out.println("EDIT ALL **********************************" + relatedVComponents.size());
                     if (relatedVComponents.size() == 1)
                     {
                         adjustDateTime(startOriginalInstance, startInstance, endInstance);
@@ -666,7 +662,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                     }
                     break;
                 case CANCEL:
-                    vComponentOriginal.copyTo(this); // return to original this
+                    vComponentOriginal.copyTo(this); // return to original
                     return false;
                 case THIS_AND_FUTURE:
                     newInstances = editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
@@ -687,7 +683,6 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             instances.addAll(newInstances);
         }
         return true;
-//        System.out.println("edit popup vevent:" + this);
     }
     
     /** returns list of date-time properties that have been edited (DTSTART) */
@@ -767,18 +762,14 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         return changedProperties;
     }
     
-    @Deprecated // inline I think
     private Collection<I> updateInstances(Collection<I> instances)
     {
         Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         instancesTemp.addAll(instances);
         instancesTemp.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
         instances().clear(); // clear VEvent's outdated collection of appointments
-//        System.out.println("instances:" + makeInstances());
         instancesTemp.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
         return instancesTemp;
-//        instances.clear();
-//        instances.addAll(instancesTemp);
     }
     
     /**
@@ -815,8 +806,6 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
           , Temporal endInstance
           , Collection<I> instances)
     {
-        System.out.println("EDIT ONE **********************************" + startOriginalInstance);
-
         // Remove RRule and set parent component
         setRRule(null);
         setParent(vEventOriginal);
@@ -826,13 +815,8 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         Temporal newStart = getDateTimeStart().plus(dayShift);
         setDateTimeStart(newStart);
         adjustDateTime(startOriginalInstance, startInstance, endInstance);
-
-//        System.out.println("Changes start:" + getDateTimeStart());
-        // MAYBE AGENDA IS CHNAGEING ORIGINAL TO LOCALDATETIME
         setDateTimeRecurrence(startOriginalInstance);
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
-//        adjustDateTime(startOriginalInstance, startInstance, endInstance);
-//        System.out.println(this);
    
         // Add recurrence to original vEvent
         vEventOriginal.getRRule().recurrences().add(this);
@@ -844,30 +828,13 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         // Remove old instances, add back ones
         Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to instances
         instancesTemp.addAll(instances);
-//        instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
-//        vEventOriginal.instances().stream().forEach(a -> System.out.println("instances-original:" + a));
-//        System.out.println("end original" + instancesTemp.size());
-//        System.out.println("start size:" + instancesTemp.size());
         instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
-//        System.out.println("end size:" + instancesTemp.size());
-//        instancesTemp.stream().forEach(a -> System.out.println("instances1:" + a));
-//        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
-//        System.out.println("end original" + instancesTemp.size());
-       
         vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of instances
         instancesTemp.addAll(vEventOriginal.makeInstances()); // make new instances and add to main collection (added to vEventNew's collection in makeinstances)
         instances().clear(); // clear vEvent outdated collection of instances
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new instances
         vComponents.add(vEventOriginal);
-//        makeInstances().stream().forEach(a -> System.out.println("instances1:" + a));
-//        System.out.println("-------");
-//        vEventOriginal.makeInstances().stream().forEach(a -> System.out.println("instances-original:" + a));
-//        System.out.println(this);
-//        System.out.println(vEventOriginal);
-        
         return instancesTemp;
-//        instances.clear();
-//        instances.addAll(instancesTemp);
     }
     
     /**
@@ -899,8 +866,8 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             untilNew = LocalDate.from(startOriginalInstance).minus(1, ChronoUnit.DAYS);
         } else
         {
-            Temporal t = startOriginalInstance.minus(1, ChronoUnit.NANOS);
-            untilNew = DateTimeType.changeTemporal(t, DateTimeType.DATE_WITH_UTC_TIME);
+            Temporal temporal = startOriginalInstance.minus(1, ChronoUnit.NANOS);
+            untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
         }
         vComponentOriginal.getRRule().setUntil(untilNew);
         
@@ -1009,9 +976,6 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         } else // more than one instance
         {
             Map<ChangeDialogOption, String> choices = makeDialogChoices(startInstance);
-//            DeleteChoiceDialog dialog = new DeleteChoiceDialog(choices, Settings.resources);        
-//            Optional<ChangeDialogOption> result = dialog.showAndWait();
-//            ChangeDialogOption changeResponse = (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
             ChangeDialogOption changeResponse = dialogCallback.call(choices);
             switch (changeResponse)
             {
@@ -1049,11 +1013,9 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                     untilNew = LocalDate.from(startInstance).minus(1, ChronoUnit.DAYS);
                 } else
                 {
-                    Temporal t = startInstance.minus(1, ChronoUnit.NANOS);
-                    untilNew = DateTimeType.changeTemporal(t, DateTimeType.DATE_WITH_UTC_TIME);
+                    Temporal temporal = startInstance.minus(1, ChronoUnit.NANOS);
+                    untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
                 }
-//                vComponentOriginal.getRRule().setUntil(untilNew);
-//                Temporal untilNew = (this.isWholeDay()) ? LocalDate.from(previousDay).atTime(23, 59, 59) : previousDay; // use last second of previous day, like Yahoo
                 getRRule().setUntil(untilNew);
 
                 // Remove old appointments, add back ones

@@ -37,6 +37,7 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
         if (VComponent.isAfter(startRange, endRange)) throw new DateTimeException("endRange must be after startRange");
         setEndRange(endRange);
         setStartRange(startRange);
+        System.out.println("ranges:" + getStartRange() + " " + getEndRange());
         return makeInstances();
     }
 

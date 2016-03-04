@@ -10,6 +10,7 @@ import static java.time.temporal.ChronoField.YEAR;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -227,6 +228,14 @@ public interface VComponent<I>
     ObjectProperty<Temporal> dateTimeStartProperty();
     void setDateTimeStart(Temporal dtStart);
     default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart()); };
+    default ZoneId getZoneId()
+    {
+        if (getDateTimeType() == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+        {
+            return ((ZonedDateTime) getDateTimeStart()).getZone();
+        }
+        return null;
+    }
 
     /** Component is whole day if dateTimeStart (DTSTART) only contains a date (no time) */
     default boolean isWholeDay() { return getDateTimeType() == DateTimeType.DATE; }
@@ -617,7 +626,6 @@ public interface VComponent<I>
         while (i.hasNext())
         {
             Temporal myTemporal = i.next();
-            System.out.println("test:" + myTemporal + " " + startInstance + " " + i.hasNext());
             if (myTemporal.equals(startInstance)) { return ! i.hasNext(); } // matched startInstance, does iterator have next?
             if (LocalDate.from(myTemporal).isAfter(LocalDate.from(startInstance))) break;
         }
@@ -631,26 +639,6 @@ public interface VComponent<I>
         return ! i.hasNext();
     }
     
-//    /**
-//     * Make easy-to-read date range string
-//     * 
-//     * For generating a string representing the whole segment the start parameter should be
-//     * DTSTART.  For a this-and-future representation start should be the start of the
-//     * selected instance.
-//     * 
-//     * If VComponent is part of a multi-part series only this segment is considered.
-//     * Example: Dec 5, 2015 - Feb 6, 2016
-//     *          Nov 12, 2015 - forever
-//     *          
-//     * return String representing start and end of VComponent.
-//     */
-//    default String rangeToString(Temporal start)
-//    {
-//        Temporal lastStart = lastStartTemporal();
-//        if (start.equals(lastStart)) return temporalToStringPretty(start); // individual            
-//        else if (lastStart == null) return temporalToStringPretty(start) + " - forever"; // infinite
-//        else return temporalToStringPretty(start) + " - " + Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY.format(lastStart); // has finite range (use only date for end)
-//    }
     /**
      * Make easy-to-read date range string
      * Uses DTSTART as start.
@@ -895,71 +883,6 @@ public interface VComponent<I>
                 .sorted(VCOMPONENT_COMPARATOR)
                 .collect(Collectors.toList());
     }
-
-//    // TODO - PROBABLY THESE METHODS SHOULD GO TO ICALENDARUTILITIES
-//    /**
-//     * Makes easy-to-read string of date range for the VComponents
-//     * For ALL edit option (one VComponent)
-//     * 
-//     * @param vComponent
-//     * @return - easy-to-read string of date range for the VComponents
-//     */
-//    static <U> String rangeToString(VComponent<U> vComponent)
-//    {
-//        return rangeToString(Arrays.asList(vComponent));
-//    }
-//    /**
-//     * Makes easy-to-read string of date range for the VComponents
-//     * Beginning of range is parameter start
-//     * For ALL edit option (one VComponent)
-//     * 
-//     * @param vComponent
-//     * @param start - Temporal start date or date/time
-//     * @return - easy-to-read string of date range for the VComponents
-//     */
-//    static <U> String rangeToString(VComponent<U> vComponent, Temporal start)
-//    {
-//        return rangeToString(Arrays.asList(vComponent), start);
-//    }
-//    /**
-//     * For ALL edit option (list of VComponents)
-//     * 
-//     * @param relatives - list of all related VComponents
-//     * @return - easy-to-read string of date range for the VComponents
-//     */
-//    static <U> String rangeToString(Collection<VComponent<U>> relatives)
-//    {
-//        return rangeToString(relatives, null);
-//    }
-//    /**
-//     * For THIS_AND_FUTURE_ALL edit option
-//     * 
-//     * @param relatives - list of all related VComponents
-//     * @param start - Temporal start date or date/time
-//     * @return - easy-to-read string of date range for the VComponents
-//     */
-//    static <U> String rangeToString(Collection<VComponent<U>> relatives, Temporal start)
-//    {
-//        if (relatives.size() == 0) return null;
-//        Iterator<VComponent<U>> i = relatives.iterator();
-//        VComponent<U> v1 = i.next();
-//        Temporal start2 = (start == null) ? v1.getDateTimeStart() : start; // set initial start
-//        Temporal end = v1.lastStartTemporal();
-//        if (i.hasNext())
-//        {
-//            VComponent<U> v = i.next();
-//            if (start != null) start2 = (isBefore(v.getDateTimeStart(), start2)) ? v.getDateTimeStart() : start2;
-//            if (end != null) // null means infinite
-//            {
-//                Temporal myEnd = v.lastStartTemporal();
-//                if (myEnd == null) end = null;
-//                else end = (isAfter(myEnd, end)) ? v.lastStartTemporal() : end;
-//            }
-//        }
-//        if (start2.equals(end)) return temporalToStringPretty(start2); // individual            
-//        else if (end == null) return temporalToStringPretty(start2) + " - forever"; // infinite
-//        else return temporalToStringPretty(start2) + " - " + Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY.format(end); // has finite range (only returns date for end of range)
-//    }
     
     /**
      * Counts number of instances in recurrence set.  returns -1 for infinite.
