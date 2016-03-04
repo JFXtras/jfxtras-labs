@@ -691,7 +691,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
 
     /** Tests VEvent with RDATE VEvent */
     @Test
-    public void recurrenceTest1()
+    public void canStreamRDate()
     {
         VEventMock e = getRDate();
         List<Temporal> madeDates = e

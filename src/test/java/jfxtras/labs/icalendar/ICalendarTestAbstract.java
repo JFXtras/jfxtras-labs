@@ -9,10 +9,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
@@ -544,9 +541,9 @@ public abstract class ICalendarTestAbstract
      *  Branches have RELATED-TO
      */
     
-    public static Collection<VComponent<InstanceMock>> getRecurrenceSetDaily1()
+    public static List<VComponent<InstanceMock>> getRecurrenceSetDaily1()
     {
-        Set<VComponent<InstanceMock>> recurrenceSet = new LinkedHashSet<>();
+        List<VComponent<InstanceMock>> recurrenceSet = new ArrayList<>();
         VEventMock parent = getDaily1();
 
         VEventMock child1 = getDaily1()

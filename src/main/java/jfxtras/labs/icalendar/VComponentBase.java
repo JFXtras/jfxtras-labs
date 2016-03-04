@@ -634,7 +634,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
             if (changedPropertyNames.size() > 0) // if changes occurred
             {
-                List<VComponent<I>> relatedVComponents = Arrays.asList(this);
+                List<VComponent<I>> relatedVComponents = Arrays.asList(this); // TODO - support related components
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
@@ -651,6 +651,14 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                     if (relatedVComponents.size() == 1)
                     {
                         adjustDateTime(startOriginalInstance, startInstance, endInstance);
+                        if ((getRRule() != null) && (getRRule().recurrences().size() > 0))
+                        {
+                            getRRule().recurrences().forEach(v ->
+                            {
+                                Temporal newRecurreneId = adjustStart(v.getDateTimeRecurrence(), startOriginalInstance, startInstance, endInstance);
+                                v.setDateTimeRecurrence(newRecurreneId);
+                            });
+                        }
                         newInstances = updateInstances(instances);
                     } else
                     {
@@ -693,11 +701,20 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     protected void adjustDateTime(Temporal startOriginalInstance
             , Temporal startInstance
             , Temporal endInstance)
-    {        
-        // Make all Temporals same DateTimeType
+    {
+        Temporal newStart = adjustStart(getDateTimeStart(), startOriginalInstance, startInstance, endInstance);
+        setDateTimeStart(newStart);
+    }
+    
+    /* Adjust DTSTART of RECURRENCE-ID */
+    private static Temporal adjustStart(Temporal initialStart
+            , Temporal startOriginalInstance
+            , Temporal startInstance
+            , Temporal endInstance)
+    {
         DateTimeType newDateTimeType = DateTimeType.of(startInstance);
         ZoneId zone = (startInstance instanceof ZonedDateTime) ? ZoneId.from(startInstance) : null;
-        Temporal startAdjusted = newDateTimeType.from(getDateTimeStart(), zone);
+        Temporal startAdjusted = newDateTimeType.from(initialStart, zone);
         Temporal startOriginalInstanceAdjusted = newDateTimeType.from(startOriginalInstance, zone);
 
         // Calculate shift from startAdjusted to make new DTSTART
@@ -709,8 +726,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         {
             startShift = Duration.between(startOriginalInstanceAdjusted, startInstance);
         }
-        Temporal newStart = startAdjusted.plus(startShift);
-        setDateTimeStart(newStart);
+        return startAdjusted.plus(startShift);
     }
     
     /**

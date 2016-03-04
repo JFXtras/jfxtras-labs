@@ -237,17 +237,30 @@ public class AgendaChangeTest extends AgendaTestAbstract
         release(MouseButton.PRIMARY);
 
         // change dialog
-        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
-        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ONE));
         click("#changeDialogCancelButton");
 
         // check return to original state
         assertEquals(1, agenda.vComponents().size());
-        agenda.appointments().stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(6, agenda.appointments().size());
         VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
         VEventImpl expectedV = ICalendarStaticVEvents.getDaily1();
         assertTrue(VEventImpl.isEqualTo(expectedV, v));
+        
+        // check appointment dates
+        List<LocalDateTime> expectedStartDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 10, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 14, 10, 0)
+              ));
+        List<LocalDateTime> startDates = agenda.appointments()
+                .stream()
+                .map(a -> a.getStartLocalDateTime())
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(expectedStartDates, startDates);
     }
 
 }

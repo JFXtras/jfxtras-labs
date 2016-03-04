@@ -227,9 +227,7 @@ public class ICalendarAgenda extends Agenda
         appointments().addListener(appointmentsChangeListener);
         vComponents().addListener(vComponentsChangeListener);
         
-//        System.out.println("vComponents changed - added:******************************" + vComponents.size());
-        System.out.println("vevent:" + VEventImpl.isEqualTo((VEventImpl)vEventOriginal, (VEventImpl)vEvent));
-        
+//        System.out.println("vComponents changed - added:******************************" + vComponents.size());       
         
         if (! changed) refresh(); // refresh if canceled (undo drag effect, if edited a refresh occurred when updating Appointments)
 //        System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
@@ -474,6 +472,8 @@ public class ICalendarAgenda extends Agenda
                 {
                     Appointment appointment = selectedAppointments().get(0);
                     getOneAppointmentSelectedCallback().call(appointment);
+                    VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) findVComponent(appointment);
+                    System.out.println("selected vEvent:" + vEvent);
                 }
             }
         };
