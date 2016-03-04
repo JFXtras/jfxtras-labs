@@ -599,7 +599,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     public VComponentBase() { }
     
     @Override
-    public void handleEdit(
+    public boolean handleEdit(
             VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
           , Temporal startOriginalInstance
@@ -659,8 +659,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                     break;
                 case CANCEL:
                     vComponentOriginal.copyTo(this); // return to original this
-                    incrementSequence = false;
-                    break;
+                    return false;
                 case THIS_AND_FUTURE:
                     newInstances = editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
                     break;
@@ -679,7 +678,8 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             instances.clear();
             instances.addAll(newInstances);
         }
-        System.out.println("edit popup vevent:" + this);
+        return true;
+//        System.out.println("edit popup vevent:" + this);
     }
     
     /** returns list of date-time properties that have been edited (DTSTART) */

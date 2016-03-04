@@ -468,8 +468,9 @@ public interface VComponent<I>
      * @param instances - all instances being rendered by all VComponents
      * @param dialogCallback - callback to generate dialog to select ONE, THIS_AND_FUTURE, or ALL.
      *    Note: Can use a stub for testing (e.g. (m) -> ChangeDialogOption.ALL).
+     * @return - true if changed, false otherwise
      */
-    void handleEdit(
+    boolean handleEdit(
             VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
           , Temporal startOriginalInstance

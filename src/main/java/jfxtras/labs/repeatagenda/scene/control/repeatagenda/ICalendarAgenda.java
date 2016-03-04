@@ -216,7 +216,7 @@ public class ICalendarAgenda extends Agenda
         System.out.println("change instances:" + startOriginalInstance + " " + startInstance + " " + endInstance);
         appointments().removeListener(appointmentsChangeListener);
         vComponents().removeListener(vComponentsChangeListener);
-        vEvent.handleEdit(
+        boolean changed = vEvent.handleEdit(
                 vEventOriginal
               , vComponents
               , startOriginalInstance
@@ -228,9 +228,10 @@ public class ICalendarAgenda extends Agenda
         vComponents().addListener(vComponentsChangeListener);
         
 //        System.out.println("vComponents changed - added:******************************" + vComponents.size());
-        System.out.println("vevent:" + vEvent);
-
-        if (vEvent.equals(vEventOriginal)) refresh(); // refresh if canceled
+        System.out.println("vevent:" + VEventImpl.isEqualTo((VEventImpl)vEventOriginal, (VEventImpl)vEvent));
+        
+        
+        if (! changed) refresh(); // refresh if canceled (undo drag effect, if edited a refresh occurred when updating Appointments)
 //        System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
         appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
         return null;
