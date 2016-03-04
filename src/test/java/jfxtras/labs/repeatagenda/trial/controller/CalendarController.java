@@ -4,7 +4,6 @@ package jfxtras.labs.repeatagenda.trial.controller;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -115,29 +114,14 @@ public class CalendarController {
         // accept new appointments
         agenda.setNewAppointmentCallback((LocalDateTimeRange dateTimeRange) -> 
         {
-//            return new Agenda.AppointmentImplLocal()
-//                .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
-//                .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
-//                .withSummary("New")
-//                .withDescription("")
-//                .withAppointmentGroup(agenda.appointmentGroups().get(0));
-//            return new Agenda.AppointmentImplZoned()
-//                .withStartZonedDateTime( dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault()))
-//                .withEndZonedDateTime( dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault()))
-//                .withSummary("New")
-//                .withDescription("")
-//                .withAppointmentGroup(agenda.appointmentGroups().get(0));
-            LocalDateTime s = dateTimeRange.getStartLocalDateTime();
-            Temporal startTemporal = (s.toLocalTime().equals(LocalTime.MIN)) ? s.toLocalDate() : s;
-            LocalDateTime e = dateTimeRange.getEndLocalDateTime();
-            Temporal endTemporal = (e.toLocalTime().equals(LocalTime.MIN)) ? e.toLocalDate() : e;
+            Temporal s = dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault());
+            Temporal e = dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault());
             return new Agenda.AppointmentImplTemporal()
-                    .withStartTemporal(startTemporal)
-                    .withEndTemporal(endTemporal)
+                    .withStartTemporal(s)
+                    .withEndTemporal(e)
                     .withSummary("New")
                     .withDescription("")
                     .withAppointmentGroup(agenda.appointmentGroups().get(0));
-        
         });
 
 //        agenda.setEditAppointmentCallback((AppointmentEditData a) -> {

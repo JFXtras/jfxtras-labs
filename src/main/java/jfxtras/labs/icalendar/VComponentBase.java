@@ -632,34 +632,13 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             changedPropertyNames.stream().forEach(p -> System.out.println("property changed:" + p));
             // TODO - NEED TO ADD START AND END TO CHANGED PROPERTIES EVEN WHEN NOT ADJUSTED YET
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
-//            System.out.println("provideDialog:" + provideDialog);
-//            int changes = changedPropertyNames.size();
-//            changes += (startOriginalInstance.equals(startInstance)) ? 0 : 1;
-//            TemporalAmount initial = EndPriority.calcDuration(getDateTimeStart(), endInstance);
-//            TemporalAmount changed = EndPriority.calcDuration(startInstance, endInstance);
-//            changes += (startOriginalInstance.equals(startInstance)) ? 1 : 0;
-//            System.out.println("changes:" + changes + " " + startOriginalInstance + " " + startInstance + " " + (startOriginalInstance.equals(startInstance)));
             if (changedPropertyNames.size() > 0) // if changes occurred
             {
                 List<VComponent<I>> relatedVComponents = Arrays.asList(this);
                 final ChangeDialogOption changeResponse;
-                // TODO - NEED REMOVAL OF THIS AGENDA-DEPENDANT CODE
                 if (provideDialog)
                 {
                     Map<ChangeDialogOption, String> choices = makeDialogChoices(startOriginalInstance);
-//                    Map<ChangeDialogOption, String> choices = makeDialogChoices(startInstance);
-//                    Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-//                    String one = ICalendarUtilities.temporalToStringPretty(startInstance);
-//                    choices.put(ChangeDialogOption.ONE, one);
-//                    if (! isIndividual())
-//                    {
-//                        {
-//                            String future = ICalendarUtilities.rangeToString(relatedVComponents, startInstance);
-//                            choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
-//                        }
-//                        String all = ICalendarUtilities.rangeToString(this);
-//                        choices.put(ChangeDialogOption.ALL, all);
-//                    }
                     changeResponse = dialogCallback.call(choices);
                 } else
                 {
@@ -697,10 +676,10 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         if (incrementSequence) { incrementSequence(); }
         if (newInstances != null)
         {
-//            adjustDateTime(startOriginalInstance, startInstance, endInstance);
             instances.clear();
             instances.addAll(newInstances);
         }
+        System.out.println("edit popup vevent:" + this);
     }
     
     /** returns list of date-time properties that have been edited (DTSTART) */
@@ -779,7 +758,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         instancesTemp.addAll(instances);
         instancesTemp.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
         instances().clear(); // clear VEvent's outdated collection of appointments
-        System.out.println("instances:" + makeInstances());
+//        System.out.println("instances:" + makeInstances());
         instancesTemp.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
         return instancesTemp;
 //        instances.clear();

@@ -8,10 +8,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.chrono.ThaiBuddhistDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +26,6 @@ import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.rrule.freq.Weekly;
-import jfxtras.scene.control.agenda.TemporalType;
 
 /*
  * Tests subset of recurrence set
@@ -1197,48 +1194,114 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedEndDates, endDates);
     }
     
-    @Test
-    public void canConvertTemporalClasses()
-    {
-        /*
-         * t is Temporal in startTemporal and endTemporal
-         * a is what is the modified argument in the setStartLocalDateTime and setEndLocalDateTime.
-         * a is modified to be either LocalDate if Appointment isWholeDay is true and LocalDateTime otherwise.
-         */
-        // LocalDate into LocalDate
-        {
-            Temporal t = LocalDate.of(2015, 11, 18);
-            TemporalAdjuster a = LocalDate.of(2015, 11, 19);
-            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
-            assertEquals(LocalDate.of(2015, 11, 19), actual);
-        }
+    // TODO - MOVE THESE TESTS TO AGENDA
 
-        // LocalDate into LocalDateTime
-        {
-            Temporal t = LocalDate.of(2015, 11, 18);
-            TemporalAdjuster a = LocalDateTime.of(2015, 11, 19, 5, 30);
-            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
-            Temporal expected = LocalDateTime.of(2015, 11, 19, 5, 30).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
-            assertEquals(expected, actual);
-        }
-
-        // LocalDate into ThaiBuddhistDate
-        {
-            Temporal t = ThaiBuddhistDate.from(LocalDate.of(2015, 11, 18));
-            TemporalAdjuster a = LocalDate.of(2015, 11, 19);
-            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
-            Temporal expected = ThaiBuddhistDate.from(LocalDate.of(2015, 11, 19));
-            assertEquals(expected, actual);
-        }
-        
-        // LocalDate into ZonedDateTime
-        {
-            Temporal t = ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 5, 0), ZoneId.of("Japan"));
-            TemporalAdjuster a = LocalDate.of(2015, 11, 19);
-            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
-            Temporal expected = LocalDate.of(2015, 11, 19);
-            assertEquals(expected, actual);
-        }
-        
-    }
+//    /*
+//     * t is Temporal in startTemporal and endTemporal
+//     * a is what is the modified argument in the setStartLocalDateTime and setEndLocalDateTime.
+//     * a is modified to be either LocalDate if Appointment isWholeDay is true and LocalDateTime otherwise.
+//     */
+//
+//    @Test
+//    public void canConvertLocalDateToLocalDate()
+//    {
+//        // LocalDate into LocalDate
+//        {
+//            Temporal t = LocalDate.of(2015, 11, 18);
+//            TemporalAdjuster a = LocalDate.of(2015, 11, 19);
+//            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
+//            assertEquals(LocalDate.of(2015, 11, 19), actual);
+//        }
+//    }
+//    
+//    @Test
+//    public void canConvertLocalDateToThaiBuddhistDate()
+//    {
+//        // LocalDate into ThaiBuddhistDate
+//        {
+//            Temporal t = ThaiBuddhistDate.from(LocalDate.of(2015, 11, 18));
+//            TemporalAdjuster a = LocalDate.of(2015, 11, 19);
+//            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
+//            Temporal expected = ThaiBuddhistDate.from(LocalDate.of(2015, 11, 19));
+//            assertEquals(expected, actual);
+//        }
+//    }
+//    
+//    @Test
+//    public void canConvertLocalDateToZonedDateTime()
+//    {
+//        // LocalDate into ZonedDateTime
+//        {
+//            Temporal t = ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 5, 0), ZoneId.of("Japan"));
+//            TemporalAdjuster a = LocalDate.of(2015, 11, 19);
+//            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
+//            Temporal expected = ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 5, 0), ZoneId.of("Japan"));
+//            assertEquals(expected, actual);
+//        }
+//    }
+//    
+//    @Test
+//    public void canConvertLocalDateToLocalDateTime()
+//    {
+//        // LocalDate into LocalDateTime
+//        {
+//            Temporal t = LocalDateTime.of(2015, 11, 19, 5, 30);
+//            TemporalAdjuster a = LocalDate.of(2015, 11, 18);
+//            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
+//            Temporal expected = LocalDateTime.of(2015, 11, 18, 5, 30);
+//            assertEquals(expected, actual);
+//        }
+//    }
+//    
+//    @Test
+//    public void canConvertLocalDateTimeToLocalDateTime()
+//    {
+//        // LocalDateTime into LocalDateTime
+//        {
+//            Temporal t = LocalDateTime.of(2015, 11, 19, 5, 30);
+//            TemporalAdjuster a = LocalDateTime.of(2015, 11, 22, 11, 30);
+//            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
+//            Temporal expected = LocalDateTime.of(2015, 11, 22, 11, 30);
+//            assertEquals(expected, actual);
+//        }
+//    }
+//    
+//    @Test
+//    public void canConvertLocalDateTimeToLocalDate()
+//    {
+//        // LocalDateTime into LocalDate
+//        {
+//            Temporal t = LocalDate.of(2015, 11, 18);
+//            TemporalAdjuster a = LocalDateTime.of(2015, 11, 19, 5, 30);
+//            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
+//            Temporal expected = LocalDateTime.of(2015, 11, 19, 5, 30);
+//            assertEquals(expected, actual);
+//        }
+//    }
+//    
+//    @Test
+//    public void canConvertLocalDateTimeToZonedDateTime()
+//    {
+//        // LocalDateTime into ZonedDateTime
+//        {
+//            Temporal t = ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 5, 0), ZoneId.of("Japan"));
+//            TemporalAdjuster a = LocalDateTime.of(2015, 11, 19, 5, 30);
+//            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
+//            Temporal expected = ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 5, 30), ZoneId.of("Japan"));
+//            assertEquals(expected, actual);
+//        }
+//    }
+//    
+//    @Test
+//    public void canConvertLocalDateTimeToThaiBuddhistDate()
+//    {
+//        // LocalDateTime into ThaiBuddhistDate
+//        {
+//            Temporal t = ThaiBuddhistDate.from(LocalDate.of(2015, 11, 18));
+//            TemporalAdjuster a = LocalDateTime.of(2015, 11, 19, 5, 30);
+//            Temporal actual = TemporalType.from(t.getClass()).combine(t, a);
+//            Temporal expected = LocalDateTime.of(2015, 11, 19, 5, 30);
+//            assertEquals(expected, actual);
+//        }
+//    }
 }

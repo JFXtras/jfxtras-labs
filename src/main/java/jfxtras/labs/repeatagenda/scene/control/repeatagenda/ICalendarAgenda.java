@@ -27,6 +27,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
+import jfxtras.labs.icalendar.DateTimeType;
 import jfxtras.labs.icalendar.ExDate;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.VComponent;
@@ -197,12 +198,20 @@ public class ICalendarAgenda extends Agenda
         // TODO - NEED ANOTHER VERSION OF THIS CODE FOR VTODO
         VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) findVComponent(appointment);
         VEvent<Appointment,?> vEventOriginal = (VEvent<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
+        Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
         final Temporal startInstance;
         final Temporal endInstance;
-        Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
-//        appointmentStartOriginalMap.entrySet().stream().forEach(a -> System.out.println("map2:" + a.getKey() + " " + a.getValue()));
-        startInstance = appointment.getStartTemporal();
-        endInstance = appointment.getEndTemporal();
+        boolean wasDateType = DateTimeType.of(startOriginalInstance).equals(DateTimeType.DATE);
+        boolean isNotDateType = ! DateTimeType.of(appointment.getStartTemporal()).equals(DateTimeType.DATE);
+        if (wasDateType && isNotDateType)
+        {
+            startInstance = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getStartTemporal(), ZoneId.systemDefault());
+            endInstance = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getEndTemporal(), ZoneId.systemDefault());
+        } else
+        {
+            startInstance = appointment.getStartTemporal();
+            endInstance = appointment.getEndTemporal();            
+        }
 
         System.out.println("change instances:" + startOriginalInstance + " " + startInstance + " " + endInstance);
         appointments().removeListener(appointmentsChangeListener);
@@ -219,7 +228,7 @@ public class ICalendarAgenda extends Agenda
         vComponents().addListener(vComponentsChangeListener);
         
 //        System.out.println("vComponents changed - added:******************************" + vComponents.size());
-//        System.out.println("vevent:" + startInstance + " " + endInstance);
+        System.out.println("vevent:" + vEvent);
 
         if (vEvent.equals(vEventOriginal)) refresh(); // refresh if canceled
 //        System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
@@ -303,7 +312,7 @@ public class ICalendarAgenda extends Agenda
                             newVComponent.setDateTimeCreated(created);
                             vComponents().removeListener(vComponentsChangeListener);
                             vComponents().add(newVComponent);
-//                            System.out.println("new:" + newVComponent);
+                            System.out.println("new:" + newVComponent);
                             vComponents().addListener(vComponentsChangeListener);
                             // put data in maps
 //                            System.out.println("dtstart:" + newVComponent.getDateTimeStart());
@@ -430,22 +439,6 @@ public class ICalendarAgenda extends Agenda
                             .stream()
                             .forEach(a -> 
                             {
-//                                VComponent<Appointment> v = findVComponent(a); // FIX THIS - CAN'T FIND WHEN DRAG-N-DROP
-//                                switch (v.getTemporalType())
-//                                {
-//                                case DATE:
-//                                case DATE_WITH_LOCAL_TIME:
-//                                    appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartLocalDateTime());
-//                                    break;
-//                                case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-//                                case DATE_WITH_UTC_TIME:
-//                                    appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartZonedDateTime());
-//                                    break;
-//                                default:
-//                                    throw new RuntimeException("Unknown TemporalType:" + v.getTemporalType());
-//                                }
-                                
-//                                System.out.println("map:" + System.identityHashCode(a) + " " + a.getStartTemporal());
                                 appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
 //                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
                                 // TODO - IF I MOVE INSTANCE MAKING TO HERE - EITHER CALLBACK OR LISTENER THEN I CAN UPDATE
