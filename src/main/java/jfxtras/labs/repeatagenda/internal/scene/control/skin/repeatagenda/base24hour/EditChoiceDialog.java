@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import javafx.util.Callback;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendar.VComponent.StartEndRange;
 
 
 /**
@@ -21,7 +22,7 @@ public class EditChoiceDialog extends AppointmentChangeDialog
      * Callback to produce an edit choice dialog based on the options in the input argument choices.
      * Usually all or some of ONE, THIS_AND_FUTURE, and ALL.
      */
-    final static public Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> EDIT_DIALOG_CALLBACK = (choices) ->
+    final static public Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> EDIT_DIALOG_CALLBACK = (choices) ->
     {
         EditChoiceDialog dialog = new EditChoiceDialog(choices, Settings.resources);                
         Optional<ChangeDialogOption> result = dialog.showAndWait();
@@ -29,12 +30,12 @@ public class EditChoiceDialog extends AppointmentChangeDialog
     };
     /**
      * 
-     * @param choicesAndDateRanges - map of ChangeDialogOption and matching string of the date/time range affected
+     * @param choicesAndDateRanges - list of ChangeDialogOption representing the date/time range to be affected
      * @param resources
      */
-    public EditChoiceDialog(Map<ChangeDialogOption, String> choicesAndDateRanges, ResourceBundle resources)
+    public EditChoiceDialog(Map<ChangeDialogOption, StartEndRange> choiceList, ResourceBundle resources)
     {
-        super(choicesAndDateRanges, resources);
+        super(choiceList, resources);
         getDialogPane().setId("editChoiceDialog");
         setTitle(resources.getString("dialog.edit.title"));
 //        setHeaderText(resources.getString("dialog.edit.header"));

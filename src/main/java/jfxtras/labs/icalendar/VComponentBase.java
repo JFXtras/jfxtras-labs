@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -610,7 +609,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
           , Temporal startInstance
           , Temporal endInstance
           , Collection<I> instances
-          , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
+          , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
     {
         final RRuleType rruleType = RRuleType.getRRuleType(getRRule(), vComponentOriginal.getRRule());
         boolean incrementSequence = true;
@@ -635,7 +634,8 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
-                    Map<ChangeDialogOption, String> choices = makeDialogChoices(startOriginalInstance);
+                    Map<ChangeDialogOption, StartEndRange> choices = ChangeDialogOption.makeDialogChoices(this, startOriginalInstance);
+//                    List<ChangeDialogOption> choices = makeDialogChoices(startOriginalInstance);
                     changeResponse = dialogCallback.call(choices);
                 } else
                 {
@@ -966,7 +966,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
           , Temporal startInstance
           , I instance
           , Collection<I> instances
-          , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback)
+          , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
     {
         int count = this.instances().size();
         if (count == 1)
@@ -975,7 +975,9 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             instances.remove(instance);
         } else // more than one instance
         {
-            Map<ChangeDialogOption, String> choices = makeDialogChoices(startInstance);
+            //  TODO - COMBINE makeDialogChoices INTO dialogCallback
+            Map<ChangeDialogOption, StartEndRange> choices = ChangeDialogOption.makeDialogChoices(this, startInstance);
+//            Map<ChangeDialogOption, String> choices = makeDialogChoices(startInstance);
             ChangeDialogOption changeResponse = dialogCallback.call(choices);
             switch (changeResponse)
             {
@@ -1033,41 +1035,41 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         }
     }
     
-//    static <U> Map<ChangeDialogOption, String> makeDialogChoices(VComponent<U> vComponent, Temporal startInstance)
+//    static List<ChangeDialogOption> makeDialogChoices(VComponent<?> vComponent, Temporal startInstance)
 //    {
-//        Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-//        String one = ICalendarUtilities.temporalToStringPretty(startInstance);
-//        choices.put(ChangeDialogOption.ONE, one);
+//        List<ChangeDialogOption> choices = new ArrayList<>();
+////        String one = ICalendarUtilities.temporalToStringPretty(startInstance);
+//        choices.add(ChangeDialogOption.ONE);
 //        if (! vComponent.isIndividual())
 //        {
 //            if (! vComponent.isLastRecurrence(startInstance))
 //            {
-//                String future = ICalendarUtilities.rangeToString(vComponent, startInstance);
-//                choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+////                String future = ICalendarUtilities.rangeToString(vComponent, startInstance);
+//                choices.add(ChangeDialogOption.THIS_AND_FUTURE);
 //            }
-//            String all = ICalendarUtilities.rangeToString(vComponent);
-//            choices.put(ChangeDialogOption.ALL, all);
+////            String all = ICalendarUtilities.rangeToString(vComponent);
+//            choices.put(ChangeDialogOption.ALL);
 //        }
 //        return choices;
 //    }
     
-    private Map<ChangeDialogOption, String> makeDialogChoices(Temporal startInstance)
-    {
-        Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-        String one = ICalendarUtilities.temporalToStringPretty(startInstance);
-        choices.put(ChangeDialogOption.ONE, one);
-        if (! this.isIndividual())
-        {
-            if (! isLastRecurrence(startInstance))
-            {
-                String future = ICalendarUtilities.rangeToString(this, startInstance);
-                choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
-            }
-            String all = ICalendarUtilities.rangeToString(this);
-            choices.put(ChangeDialogOption.ALL, all);
-        }
-        return choices;
-    }
+//    private List<ChangeDialogOption> makeDialogChoices(Temporal startInstance)
+//    {
+//        Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
+//        String one = ICalendarUtilities.temporalToStringPretty(startInstance);
+//        choices.put(ChangeDialogOption.ONE, one);
+//        if (! this.isIndividual())
+//        {
+//            if (! isLastRecurrence(startInstance))
+//            {
+//                String future = ICalendarUtilities.rangeToString(this, startInstance);
+//                choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
+//            }
+//            String all = ICalendarUtilities.rangeToString(this);
+//            choices.put(ChangeDialogOption.ALL, all);
+//        }
+//        return choices;
+//    }
     
     /** Deep copy all fields from source to destination 
      * @param <J>*/

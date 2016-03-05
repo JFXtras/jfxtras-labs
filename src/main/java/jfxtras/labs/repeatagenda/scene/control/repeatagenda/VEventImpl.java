@@ -57,7 +57,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
      *  are set in makeInstances method.
      */
     @Deprecated
-    private final static Callback<StartEndPair, Appointment> TEMPORAL_INSTANCE = (p) ->
+    private final static Callback<StartEndRange, Appointment> TEMPORAL_INSTANCE = (p) ->
     {
         return new Agenda.AppointmentImplTemporal()
                 .withStartTemporal(p.getDateTimeStart())
@@ -66,7 +66,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     
     /** For DATE type (whole-day Appointments) */
     @Deprecated
-    private final static Callback<StartEndPair, Appointment> NEW_DATE_INSTANCE = (p) ->
+    private final static Callback<StartEndRange, Appointment> NEW_DATE_INSTANCE = (p) ->
     {
         LocalDateTime s = LocalDate.from(p.getDateTimeStart()).atStartOfDay();
         LocalDateTime e = LocalDate.from(p.getDateTimeEnd()).atStartOfDay();
@@ -80,7 +80,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
 
     /** For DATE_WITH_LOCAL_TIME */
     @Deprecated
-    private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_LOCAL_TIME_INSTANCE = (p) ->
+    private final static Callback<StartEndRange, Appointment> NEW_DATE_WITH_LOCAL_TIME_INSTANCE = (p) ->
     {
         return new Agenda.AppointmentImplTemporal()
                 .withStartTemporal(p.getDateTimeStart())
@@ -92,7 +92,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
 
     /** For DATE_WITH_UTC_TIME */
     @Deprecated
-    private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_UTC_TIME_INSTANCE = (p) ->
+    private final static Callback<StartEndRange, Appointment> NEW_DATE_WITH_UTC_TIME_INSTANCE = (p) ->
     {
         final ZonedDateTime s;
         if (p.getDateTimeStart() instanceof ZonedDateTime)
@@ -121,7 +121,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     
     /** For DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
     @Deprecated
-    private final static Callback<StartEndPair, Appointment> NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE = (p) ->
+    private final static Callback<StartEndRange, Appointment> NEW_DATE_WITH_LOCAL_TIME_AND_TIME_ZONE_INSTANCE = (p) ->
     {
         return new Agenda.AppointmentImplTemporal()
                 .withStartTemporal(p.getDateTimeStart())
@@ -133,11 +133,11 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
 
     // Map to match up DateTimeType to Callback;
     @Deprecated
-    private static final Map<DateTimeType, Callback<StartEndPair, Appointment>> DATE_TIME_MAKE_INSTANCE_MAP = defaultDateTimeInstanceMap();
+    private static final Map<DateTimeType, Callback<StartEndRange, Appointment>> DATE_TIME_MAKE_INSTANCE_MAP = defaultDateTimeInstanceMap();
     @Deprecated
-    private static Map<DateTimeType, Callback<StartEndPair, Appointment>> defaultDateTimeInstanceMap()
+    private static Map<DateTimeType, Callback<StartEndRange, Appointment>> defaultDateTimeInstanceMap()
     {
-        Map<DateTimeType, Callback<StartEndPair, Appointment>> map = new HashMap<>();
+        Map<DateTimeType, Callback<StartEndRange, Appointment>> map = new HashMap<>();
         map.put(DateTimeType.DATE, NEW_DATE_INSTANCE);
         map.put(DateTimeType.DATE_WITH_LOCAL_TIME, NEW_DATE_WITH_LOCAL_TIME_INSTANCE);
         map.put(DateTimeType.DATE_WITH_UTC_TIME, NEW_DATE_WITH_UTC_TIME_INSTANCE);

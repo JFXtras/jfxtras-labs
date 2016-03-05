@@ -31,6 +31,7 @@ import jfxtras.labs.icalendar.DateTimeType;
 import jfxtras.labs.icalendar.ExDate;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.VComponent.StartEndRange;
 import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentEditLoader;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.NewAppointmentDialog;
@@ -120,8 +121,8 @@ public class ICalendarAgenda extends Agenda
      * Callback for determing scope of edit change - defaults to always answering ALL
      * Add For choice dialog, change to different callback
      */
-    private Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> oneAllThisAndFutureDialogCallback = (m) -> ChangeDialogOption.ALL;
-    public void setOneAllThisAndFutureDialogCallback(Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> callback) { oneAllThisAndFutureDialogCallback = callback; }
+    private Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> oneAllThisAndFutureDialogCallback = (m) -> ChangeDialogOption.ALL;
+    public void setOneAllThisAndFutureDialogCallback(Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> callback) { oneAllThisAndFutureDialogCallback = callback; }
     
     // Default edit popup callback - this callback replaces Agenda's default edit popup
     // It has controls for repeatable events

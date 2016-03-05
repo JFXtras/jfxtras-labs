@@ -12,6 +12,7 @@ import java.time.temporal.Temporal;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.mocks.VEventMock;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.DateTimeUtilities;
 
 public class ICalendarToStringTest extends ICalendarTestAbstract
 {
@@ -319,9 +320,12 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     @Test
     public void canMakeRangeToString1()
     {
-        assertEquals("Wed, November, 11, 2015 10:00 AM - Fri, December 25, 2015", ICalendarUtilities.rangeToString(getWeekly4()));
-        assertEquals("Mon, November 9, 2015 - Tue, November 24, 2015", ICalendarUtilities.rangeToString(getWholeDayDaily3()));
-        assertEquals("Mon, November, 9, 2015 10:00 AM - forever", ICalendarUtilities.rangeToString(getDaily5()));
+        String dateTimeString = DateTimeUtilities.formatRange(LocalDateTime.of(2015, 11, 11, 10, 0), LocalDateTime.of(2015, 12, 25, 12, 0));
+        assertEquals("Wed, November 11, 2015 10:00 AM - Fri, December 25, 2015 12:00 PM", dateTimeString);
+        String dateString = DateTimeUtilities.formatRange(LocalDate.of(2015, 11, 9), LocalDate.of(2015, 11, 24));
+        assertEquals("Mon, November 9, 2015 - Tue, November 24, 2015", dateString);
+        String dateForeverString = DateTimeUtilities.formatRange(LocalDateTime.of(2015, 11, 9, 10, 0), null);
+        assertEquals("Mon, November 9, 2015 10:00 AM - forever", dateForeverString);
     }
     
 

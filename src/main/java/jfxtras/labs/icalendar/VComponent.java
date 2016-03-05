@@ -486,7 +486,7 @@ public interface VComponent<I>
           , Temporal startInstance
           , Temporal endInstance
           , Collection<I> instances
-          , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback);
+          , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback);
     
     /**
      * Deletes a VComponent.  For a VComponent with a recurrence rule (RRULE) the user is given a dialog
@@ -504,7 +504,7 @@ public interface VComponent<I>
           , Temporal startInstance
           , I instance
           , Collection<I> instances
-          , Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> dialogCallback);
+          , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback);
     
     /**
      * Copies this object into destination object
@@ -942,11 +942,11 @@ public interface VComponent<I>
      * A convenience class to represent start and end date-time pairs
      * 
      */
-   static public class StartEndPair
+   static public class StartEndRange
    {
-       public StartEndPair(Temporal start, Temporal end)
+       public StartEndRange(Temporal start, Temporal end)
        {
-           if (start.getClass() != end.getClass()) { throw new RuntimeException("Temporal classes of start and end must be the same."); }
+           if ((start != null) && (end != null) && (start.getClass() != end.getClass())) { throw new RuntimeException("Temporal classes of start and end must be the same."); }
            this.start = start;
            this.end = end;
        }
@@ -959,6 +959,7 @@ public interface VComponent<I>
        
        @Override
        public String toString() { return super.toString() + " " + start + " to " + end; }
+       
    }
 
 }

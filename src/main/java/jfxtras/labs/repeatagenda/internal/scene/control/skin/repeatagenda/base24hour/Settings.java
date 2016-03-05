@@ -30,9 +30,9 @@ public final class Settings
     public static DateTimeFormatter DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY = DateTimeFormatter.ofPattern("EEE, MMMM d, yyyy");
     public static DateTimeFormatter DATE_FORMAT_AGENDA_DATEONLY = DateTimeFormatter.ofPattern("MMM d, yyyy");
     public static DateTimeFormatter DATE_FORMAT_AGENDA_MONTHDAY = DateTimeFormatter.ofPattern("MMMM d"); // for yearly summary
-    public static DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("EEE, MMMM, d, yyyy h:mm a");
+    public static DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("EEE, MMMM d, yyyy h:mm a");
     public static DateTimeFormatter TIME_FORMAT_END = DateTimeFormatter.ofPattern("hh:mm a");
-    public static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("EEE, MMMM, d, yyyy");
+    public static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("EEE, MMMM d, yyyy");
 //    public static DateTimeFormatter DATE_AGENDA_END = DateTimeFormatter.ofPattern("-hh:mm a");
     public static DateTimeFormatter TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -110,6 +110,7 @@ public final class Settings
     {
         resources = resourcesIn;
         
+        DATE_FORMAT = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format"));
         DATE_FORMAT1 = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format1"));
         DATE_FORMAT2 = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format2"));
         DATE_FORMAT_AGENDA = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda"));
@@ -118,9 +119,10 @@ public final class Settings
 
         DATE_FORMAT_AGENDA_DATEONLY = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.dateonly"));
         DATE_FORMAT_AGENDA_MONTHDAY = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.monthday"));
-        DATE_TIME_FORMAT = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.start"));
+        DATE_TIME_FORMAT = DateTimeFormatter.ofPattern(resourcesIn.getString("date.time.format"));
 //        DATE_FORMAT_AGENDA_END = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.end"));
         TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern(resourcesIn.getString("time.format.agenda"));
+        TIME_FORMAT_END = DateTimeFormatter.ofPattern(resourcesIn.getString("time.format"));
         
         REPEAT_FREQUENCIES.put(FrequencyType.DAILY, resourcesIn.getString("daily"));
         REPEAT_FREQUENCIES.put(FrequencyType.WEEKLY, resourcesIn.getString("weekly"));
@@ -137,9 +139,9 @@ public final class Settings
         REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.MONTHLY, resourcesIn.getString("month"));
         REPEAT_FREQUENCIES_SINGULAR.put(FrequencyType.YEARLY, resourcesIn.getString("year"));
 
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ONE, resources.getString("dialog.one"));
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ALL, resources.getString("dialog.all"));
-        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE, resources.getString("dialog.future"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ONE, resourcesIn.getString("dialog.one"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ALL, resourcesIn.getString("dialog.all"));
+        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE, resourcesIn.getString("dialog.future"));
 //        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.SEGMENT, resources.getString("dialog.repeat.change.segment"));
 //        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE_SEGMENT, resources.getString("dialog.repeat.change.future.segment"));
 //        REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.THIS_AND_FUTURE_ALL, resources.getString("dialog.repeat.change.future.all"));

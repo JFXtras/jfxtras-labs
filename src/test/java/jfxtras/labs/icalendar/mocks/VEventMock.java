@@ -24,7 +24,7 @@ import jfxtras.labs.icalendar.VEventProperty;
  */
 public class VEventMock extends VEvent<InstanceMock, VEventMock>
 {
-    private final static Callback<StartEndPair, InstanceMock> NEW_INSTANCE = (p) ->
+    private final static Callback<StartEndRange, InstanceMock> NEW_INSTANCE = (p) ->
     {
         return new InstanceMock()
                 .withStartTemporal(p.getDateTimeStart())

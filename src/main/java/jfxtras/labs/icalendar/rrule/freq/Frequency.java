@@ -228,6 +228,7 @@ public interface Frequency {
         /** plural string, e.g weeks */
         public abstract String toStringPlural();
         
+        @Deprecated // use string methods in enum instead
         public static StringConverter<FrequencyType> stringConverter = new StringConverter<FrequencyType>()
         {
             @Override public String toString(FrequencyType object) {

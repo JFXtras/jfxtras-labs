@@ -1,7 +1,5 @@
 package jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -11,7 +9,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendar.VComponent.StartEndRange;
 
 /**
  * Dialog that can be either an edit or a delete choice dialog.
@@ -24,39 +24,18 @@ public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
 {
         
     private final ChangeDialogOption initialSelection = ChangeDialogOption.ONE;
-
-//    /**
-//     * Callback to produce an edit choice dialog based on the options in the input argument choices.
-//     * Usually all or some of ONE, THIS_AND_FUTURE, and ALL.
-//     */
-//    public static Callback<Map<ChangeDialogOption, String>, ChangeDialogOption> getCallback(String type)
-//    {
-//            return (choices) ->
-//        {
-//            final AppointmentChangeDialog dialog;
-//            if (type.toUpperCase().equals("DELETE"))
-//            {
-//                dialog = new DeleteChoiceDialog(choices, Settings.resources);
-//            } else if (type.toUpperCase().equals("EDIT"))
-//            {
-//                dialog = new EditChoiceDialog(choices, Settings.resources);
-//            } else
-//            {
-//                throw new RuntimeException("Unknown AppointmentChangeDialog type: " + type + ". Only DELETE and EDIT supported.");
-//            }
-//            Optional<ChangeDialogOption> result = dialog.showAndWait();
-//            return (result.isPresent()) ? result.get() : ChangeDialogOption.CANCEL;
-//        };
-//    }
     
     /**
+     * Parent of both edit and delete dialogs
      * 
-     * @param choicesAndDateRanges - map of ChangeDialogOption and matching string of the date/time range affected
+     * @param choiceMap - map of ChangeDialogOption and StartEndRange pairs representing the choices available
      * @param resources
      */
-    public AppointmentChangeDialog(Map<ChangeDialogOption, String> choicesAndDateRanges, ResourceBundle resources)
+    public AppointmentChangeDialog(Map<ChangeDialogOption, StartEndRange> choiceMap, ResourceBundle resources)
     {
-        if (! choicesAndDateRanges.containsKey(initialSelection)) throw new RuntimeException("choicesAndDateRanges map must contain: ChangeDialogOption." + initialSelection);
+        choiceMap.entrySet().stream().forEach(System.out::println);
+        Settings.REPEAT_CHANGE_CHOICES.get(this);
+        if (! choiceMap.containsKey(initialSelection)) throw new RuntimeException("choicesAndDateRanges must contain: ChangeDialogOption." + initialSelection);
         getDialogPane().getStyleClass().add("choice-dialog");
 
         // Buttons
@@ -70,11 +49,22 @@ public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
         label.textProperty().bind(getDialogPane().contentTextProperty());
         
         // Choices
-        List<ChangeDialogOption> choiceList = new ArrayList<>(choicesAndDateRanges.keySet());
         ComboBox<ChangeDialogOption> comboBox = new ComboBox<>();       
         comboBox.setId("changeDialogComboBox");
-        comboBox.getItems().addAll(choiceList);
+        comboBox.getItems().addAll(choiceMap.keySet());
         comboBox.getSelectionModel().select(initialSelection);
+        
+        comboBox.setConverter(new StringConverter<ChangeDialogOption>()
+        {
+            @Override public String toString(ChangeDialogOption selection)
+            {
+                return Settings.REPEAT_CHANGE_CHOICES.get(selection);
+            }
+            @Override public ChangeDialogOption fromString(String string)
+            {
+                throw new RuntimeException("not required for non editable ComboBox");
+            }
+        });
 
         // grid
         GridPane grid = new GridPane();
@@ -84,10 +74,12 @@ public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
         getDialogPane().setContent(grid);
         
         // Match header with range string
-        setHeaderText(initialSelection + ":" + System.lineSeparator() + choicesAndDateRanges.get(initialSelection)); // initial header text
+        String range = DateTimeUtilities.formatRange(choiceMap.get(initialSelection));
+        setHeaderText(Settings.REPEAT_CHANGE_CHOICES.get(initialSelection) + ":" + System.lineSeparator() + range); // initial header text
         comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> 
         {
-            setHeaderText(newSelection + ":" + System.lineSeparator() + choicesAndDateRanges.get(newSelection));
+            String range2 = DateTimeUtilities.formatRange(choiceMap.get(newSelection));
+            setHeaderText(Settings.REPEAT_CHANGE_CHOICES.get(newSelection) + ":" + System.lineSeparator() + range2);
         });
         
         setResultConverter((dialogButton) -> {
