@@ -33,7 +33,7 @@ public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
      */
     public AppointmentChangeDialog(Map<ChangeDialogOption, StartEndRange> choiceMap, ResourceBundle resources)
     {
-        choiceMap.entrySet().stream().forEach(System.out::println);
+        choiceMap.keySet().stream().forEach(System.out::println);
         Settings.REPEAT_CHANGE_CHOICES.get(this);
         if (! choiceMap.containsKey(initialSelection)) throw new RuntimeException("choicesAndDateRanges must contain: ChangeDialogOption." + initialSelection);
         getDialogPane().getStyleClass().add("choice-dialog");
@@ -78,6 +78,7 @@ public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
         setHeaderText(Settings.REPEAT_CHANGE_CHOICES.get(initialSelection) + ":" + System.lineSeparator() + range); // initial header text
         comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> 
         {
+            System.out.println("newselection:" + newSelection + " " + choiceMap.get(newSelection));
             String range2 = DateTimeUtilities.formatRange(choiceMap.get(newSelection));
             setHeaderText(Settings.REPEAT_CHANGE_CHOICES.get(newSelection) + ":" + System.lineSeparator() + range2);
         });

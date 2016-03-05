@@ -1157,16 +1157,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         expectedV1.setRRule(null);
         expectedV1.setSequence(1);
         assertTrue(VEventImpl.isEqualTo(expectedV1, v1));
-        
-//        // edit second recurrence
-//        move("#AppointmentRegularBodyPane2015-11-09/0");
-//        press(MouseButton.SECONDARY);
-//        release(MouseButton.SECONDARY);
-//        TestUtil.sleep(3000);
     }
     
     @Test
-    //@Ignore
     public void canCancelEdit()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));       
@@ -1185,9 +1178,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // cancel changes
         click("#saveAppointmentButton");
-        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
-        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.CANCEL));
-        click("#changeDialogOkButton");
+        click("#changeDialogCancelButton");
         
         // check return to original state
         VEventImpl expectedV0 = ICalendarStaticVEvents.getDaily1();

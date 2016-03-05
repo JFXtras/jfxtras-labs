@@ -12,7 +12,6 @@ import java.time.temporal.Temporal;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.DateTimeUtilities;
 
 public class ICalendarToStringTest extends ICalendarTestAbstract
 {
@@ -250,82 +249,6 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                         + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                         + "END:VEVENT";
     assertEquals(expectedString, madeString);
-    }
-    
-    // Easy-to-read-summary tests
-    
-    @Test
-    public void canMakeRRuleSummaryString1()
-    {
-        VEventMock e = getDaily6();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
-        String expectedString = "Every 2 days, until Dec 1, 2015";
-        assertEquals(expectedString, summaryString);
-    }
-    
-    @Test
-    public void canMakeRRuleSummaryString2()
-    {
-        VEventMock e = getYearly1();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
-        String expectedString = "Yearly on November 9";
-        assertEquals(expectedString, summaryString);
-    }
-    
-    @Test
-    public void canMakeRRuleSummaryString3()
-    {
-        VEventMock e = getMonthly1();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
-        String expectedString = "Monthly on day 9";
-        assertEquals(expectedString, summaryString);
-    }
-
-    @Test
-    public void canMakeRRuleSummaryString4()
-    {
-        VEventMock e = getMonthly7();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
-        String expectedString = "Monthly on the third Monday";
-        assertEquals(expectedString, summaryString);
-    }
-    
-    @Test
-    public void canMakeRRuleSummaryString5()
-    {
-        VEventMock e = getWeekly1();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
-        String expectedString = "Weekly on Monday";
-        assertEquals(expectedString, summaryString);
-    }
-    
-    @Test
-    public void canMakeRRuleSummaryString6()
-    {
-        VEventMock e = getWeekly2();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
-        String expectedString = "Every 2 weeks on Monday, Wednesday, Friday";
-        assertEquals(expectedString, summaryString);
-    }
-    
-    @Test
-    public void canMakeRRuleSummaryString7()
-    {
-        VEventMock e = getWeekly4();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
-        String expectedString = "Every 2 weeks on Monday, Wednesday, Friday, 11 times";
-        assertEquals(expectedString, summaryString);
-    }
-    
-    @Test
-    public void canMakeRangeToString1()
-    {
-        String dateTimeString = DateTimeUtilities.formatRange(LocalDateTime.of(2015, 11, 11, 10, 0), LocalDateTime.of(2015, 12, 25, 12, 0));
-        assertEquals("Wed, November 11, 2015 10:00 AM - Fri, December 25, 2015 12:00 PM", dateTimeString);
-        String dateString = DateTimeUtilities.formatRange(LocalDate.of(2015, 11, 9), LocalDate.of(2015, 11, 24));
-        assertEquals("Mon, November 9, 2015 - Tue, November 24, 2015", dateString);
-        String dateForeverString = DateTimeUtilities.formatRange(LocalDateTime.of(2015, 11, 9, 10, 0), null);
-        assertEquals("Mon, November 9, 2015 10:00 AM - forever", dateForeverString);
     }
     
 

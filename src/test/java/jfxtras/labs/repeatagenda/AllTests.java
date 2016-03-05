@@ -10,6 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
               , AgendaRenderAppointmentsTest.class
               , AgendaChangeTest.class
               , AgendaEditPopupTest.class
+              , AgendaStringConverstionTests.class
               })
 public class AllTests {
 
