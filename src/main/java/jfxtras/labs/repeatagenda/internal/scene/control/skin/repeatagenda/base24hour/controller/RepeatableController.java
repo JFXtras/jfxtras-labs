@@ -444,7 +444,16 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 
     // Setup frequencyComboBox items
     frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.implementedValues()));
-    frequencyComboBox.setConverter(Frequency.FrequencyType.stringConverter);
+    frequencyComboBox.setConverter(new StringConverter<FrequencyType>()
+    {
+        @Override public String toString(FrequencyType frequencyType)
+        {
+            return Settings.REPEAT_FREQUENCIES.get(frequencyType);
+        }
+        @Override public FrequencyType fromString(String string) {
+            throw new RuntimeException("not required for non editable ComboBox");
+        }
+    });
 
     // INTERVAL SPINNER
     // Make frequencySpinner and only accept numbers (needs below two listeners)

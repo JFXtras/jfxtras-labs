@@ -9,12 +9,10 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRules;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
  * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.)
@@ -144,61 +142,12 @@ public interface Frequency {
     public static enum FrequencyType
     {
         YEARLY (Yearly.class) ,
-//        {
-//            @Override
-//            public String toStringSingular() { return "year"; }
-//
-//            @Override
-//            public String toStringPlural() { return "years"; }
-//        } , 
         MONTHLY (Monthly.class) ,
-//        {
-//            @Override
-//            public String toStringSingular() { return "month"; }
-//
-//            @Override
-//            public String toStringPlural() { return "months"; }
-//        } ,
         WEEKLY (Weekly.class) ,
-//        {
-//            @Override
-//            public String toStringSingular() { return "week"; }
-//
-//            @Override
-//            public String toStringPlural() { return "weeks"; }
-//        } ,
         DAILY (Daily.class) ,
-//        {
-//            @Override
-//            public String toStringSingular() { return "day"; }
-//
-//            @Override
-//            public String toStringPlural() { return "days"; }
-//        } ,
         HOURLY (Hourly.class) ,
-//        {
-//            @Override
-//            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
-//
-//            @Override
-//            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
-//        } ,
         MINUTELY (Minutely.class) ,
-//        {
-//            @Override
-//            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
-//
-//            @Override
-//            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
-//        } ,
         SECONDLY (Secondly.class);
-//        {
-//            @Override
-//            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
-//
-//            @Override
-//            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
-//        };
       
         private Class<? extends Frequency> clazz;
           
@@ -222,33 +171,6 @@ public interface Frequency {
         {
             return new FrequencyType[] { DAILY, WEEKLY, MONTHLY, YEARLY };
         }
-
-//        /** singular string, e.g week */
-//        public abstract String toStringSingular();
-//        /** plural string, e.g weeks */
-//        public abstract String toStringPlural();
-        
-        @Deprecated // use string methods in enum instead
-        public static StringConverter<FrequencyType> stringConverter = new StringConverter<FrequencyType>()
-        {
-            @Override public String toString(FrequencyType object) {
-                switch (object) {
-                case DAILY:
-                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.DAILY); // Daily
-                case WEEKLY:
-                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.WEEKLY); // Weekly
-                case MONTHLY:
-                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.MONTHLY); // Monthly
-                case YEARLY:
-                    return Settings.REPEAT_FREQUENCIES.get(FrequencyType.YEARLY); // Yearly
-                default:
-                    return null;                
-                }
-            }
-            @Override public FrequencyType fromString(String string) {
-                throw new RuntimeException("not required for non editable ComboBox");
-            }
-        };
     }
 
     /** Deep copy all fields from source to destination */
