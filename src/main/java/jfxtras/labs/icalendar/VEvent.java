@@ -17,7 +17,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 
 /**
  * Parent calendar component, VEVENT
