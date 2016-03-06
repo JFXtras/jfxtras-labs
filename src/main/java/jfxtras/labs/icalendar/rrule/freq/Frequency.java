@@ -143,62 +143,62 @@ public interface Frequency {
      * to its matching class */
     public static enum FrequencyType
     {
-        YEARLY (Yearly.class)
-        {
-            @Override
-            public String toStringSingular() { return Settings.REPEAT_FREQUENCIES_SINGULAR.get(YEARLY); }
-
-            @Override
-            public String toStringPlural() { return Settings.REPEAT_FREQUENCIES_PLURAL.get(YEARLY); }
-        } , 
-        MONTHLY (Monthly.class)
-        {
-            @Override
-            public String toStringSingular() { return Settings.REPEAT_FREQUENCIES_SINGULAR.get(MONTHLY); }
-
-            @Override
-            public String toStringPlural() { return Settings.REPEAT_FREQUENCIES_PLURAL.get(MONTHLY); }
-        } ,
-        WEEKLY (Weekly.class)
-        {
-            @Override
-            public String toStringSingular() { return Settings.REPEAT_FREQUENCIES_SINGULAR.get(WEEKLY); }
-
-            @Override
-            public String toStringPlural() { return Settings.REPEAT_FREQUENCIES_PLURAL.get(WEEKLY); }
-        } ,
-        DAILY (Daily.class)
-        {
-            @Override
-            public String toStringSingular() { return Settings.REPEAT_FREQUENCIES_SINGULAR.get(DAILY); }
-
-            @Override
-            public String toStringPlural() { return Settings.REPEAT_FREQUENCIES_PLURAL.get(DAILY); }
-        } ,
-        HOURLY (Hourly.class)
-        {
-            @Override
-            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
-
-            @Override
-            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
-        } ,
-        MINUTELY (Minutely.class)
-        {
-            @Override
-            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
-
-            @Override
-            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
-        } ,
-        SECONDLY (Secondly.class)
-        {
-            @Override
-            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
-
-            @Override
-            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
-        };
+        YEARLY (Yearly.class) ,
+//        {
+//            @Override
+//            public String toStringSingular() { return "year"; }
+//
+//            @Override
+//            public String toStringPlural() { return "years"; }
+//        } , 
+        MONTHLY (Monthly.class) ,
+//        {
+//            @Override
+//            public String toStringSingular() { return "month"; }
+//
+//            @Override
+//            public String toStringPlural() { return "months"; }
+//        } ,
+        WEEKLY (Weekly.class) ,
+//        {
+//            @Override
+//            public String toStringSingular() { return "week"; }
+//
+//            @Override
+//            public String toStringPlural() { return "weeks"; }
+//        } ,
+        DAILY (Daily.class) ,
+//        {
+//            @Override
+//            public String toStringSingular() { return "day"; }
+//
+//            @Override
+//            public String toStringPlural() { return "days"; }
+//        } ,
+        HOURLY (Hourly.class) ,
+//        {
+//            @Override
+//            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
+//
+//            @Override
+//            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
+//        } ,
+        MINUTELY (Minutely.class) ,
+//        {
+//            @Override
+//            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
+//
+//            @Override
+//            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
+//        } ,
+        SECONDLY (Secondly.class);
+//        {
+//            @Override
+//            public String toStringSingular() { throw new RuntimeException("Not implemented Frequency:" + this); }
+//
+//            @Override
+//            public String toStringPlural() { throw new RuntimeException("Not implemented Frequency:" + this); }
+//        };
       
         private Class<? extends Frequency> clazz;
           
@@ -223,10 +223,10 @@ public interface Frequency {
             return new FrequencyType[] { DAILY, WEEKLY, MONTHLY, YEARLY };
         }
 
-        /** singular string, e.g week */
-        public abstract String toStringSingular();
-        /** plural string, e.g weeks */
-        public abstract String toStringPlural();
+//        /** singular string, e.g week */
+//        public abstract String toStringSingular();
+//        /** plural string, e.g weeks */
+//        public abstract String toStringPlural();
         
         @Deprecated // use string methods in enum instead
         public static StringConverter<FrequencyType> stringConverter = new StringConverter<FrequencyType>()

@@ -59,6 +59,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule;
+import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.rrule.freq.Frequency.FrequencyType;
 import jfxtras.labs.icalendar.rrule.freq.Weekly;
@@ -190,8 +191,9 @@ final private InvalidationListener makeExceptionDatesAndSummaryListener = (obs) 
 private void refreshSummary()
 {
 // System.out.println("refresh summary:");
- String summaryString = vComponent.getRRule().summary(vComponent.getDateTimeStart());
- repeatSummaryLabel.setText(summaryString);
+//   String summaryString = vComponent.getRRule().summary(vComponent.getDateTimeStart());
+   String summaryString = makeSummary(vComponent.getRRule(), vComponent.getDateTimeStart());
+   repeatSummaryLabel.setText(summaryString);
 }
 private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, newValue) ->
 {
@@ -252,12 +254,16 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     
     // visibility of monthlyVBox & weeklyHBox
     setFrequencyVisibility(newSel);
-    
-    if (intervalSpinner.getValue() == 1) {
-        frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringSingular());
-    } else {
-        frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
+
+    final String frequencyLabelText;
+    if (intervalSpinner.getValue() == 1)
+    {
+        frequencyLabelText = Settings.REPEAT_FREQUENCIES_SINGULAR.get(frequencyComboBox.valueProperty().get());
+    } else
+    {
+        frequencyLabelText = Settings.REPEAT_FREQUENCIES_PLURAL.get(frequencyComboBox.valueProperty().get());
     }
+    frequencyLabel.setText(frequencyLabelText);
     
     // Make summary and exceptions
     refreshSummary();
@@ -304,11 +310,15 @@ private void setFrequencyVisibility(FrequencyType f)
 
 private final ChangeListener<? super Integer> intervalSpinnerListener = (observable, oldValue, newValue) ->
 {
-    if (newValue == 1) {
-        frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringSingular());
-    } else {
-        frequencyLabel.setText(frequencyComboBox.valueProperty().get().toStringPlural());
+    final String frequencyLabelText;
+    if (intervalSpinner.getValue() == 1)
+    {
+        frequencyLabelText = Settings.REPEAT_FREQUENCIES_SINGULAR.get(frequencyComboBox.valueProperty().get());
+    } else
+    {
+        frequencyLabelText = Settings.REPEAT_FREQUENCIES_PLURAL.get(frequencyComboBox.valueProperty().get());
     }
+    frequencyLabel.setText(frequencyLabelText);
     vComponent.getRRule().getFrequency().setInterval(newValue);
     refreshSummary();
     makeExceptionDates();
@@ -920,6 +930,83 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
+    }
+    
+    /**
+     * Produce easy to read summary of repeat rule
+     * Is limited to producing strings for following repeat rules:
+     * Any individual Frequency (FREQ)
+     * COUNT and UNTIL properties
+     * MONTHLY and WEEKLY with ByDay Byxxx rule
+     * 
+     * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
+     * @return Easy to read summary of repeat rule
+     */
+    public static String makeSummary(RRule rRule, Temporal startTemporal)
+    {
+        StringBuilder builder = new StringBuilder();
+        if (rRule.getCount() == 1) return Settings.resources.getString("once");;
+        
+        final String frequencyText;
+        if (rRule.getFrequency().getInterval() == 1)
+        {
+            frequencyText = Settings.REPEAT_FREQUENCIES.get(rRule.getFrequency().frequencyType());
+        } else if (rRule.getFrequency().getInterval() > 1)
+        {
+            builder.append("Every ");
+            builder.append(rRule.getFrequency().getInterval() + " ");
+            frequencyText = Settings.REPEAT_FREQUENCIES_PLURAL.get(rRule.getFrequency().frequencyType());
+        } else
+        {
+            throw new RuntimeException("Interval can't be less than 1");
+        }
+        builder.append(frequencyText);
+        
+        ByDay byDay = (ByDay) rRule.getFrequency().getByRuleByType(ByRules.BYDAY);
+        switch (rRule.getFrequency().frequencyType())
+        {
+        case DAILY: // add nothing else
+            break;
+        case MONTHLY:
+            if (byDay == null)
+            {
+                builder.append(" on day " + LocalDate.from(startTemporal).getDayOfMonth());
+            } else
+            {
+                builder.append(" on the " + byDay.summary());
+            }
+            break;
+        case WEEKLY:
+            if (byDay == null)
+            {
+                DayOfWeek dayOfWeek = LocalDate.from(startTemporal).getDayOfWeek();
+                String dayOfWeekString = Settings.DAYS_OF_WEEK_MAP.get(dayOfWeek);
+                builder.append(" on " + dayOfWeekString);
+            } else
+            {
+                builder.append(" on " + byDay.summary());
+            }
+            break;
+        case YEARLY:
+            builder.append(" on " + Settings.DATE_FORMAT_AGENDA_MONTHDAY.format(startTemporal));
+            break;
+        case HOURLY:
+        case MINUTELY:
+        case SECONDLY:
+            throw new IllegalArgumentException("Not supported:" + rRule.getFrequency().frequencyType());
+        default:
+            break;
+        }
+        
+        if (rRule.getCount() > 0)
+        {
+            builder.append(", " + rRule.getCount() + " times");
+        } else if (rRule.getUntil() != null)
+        {
+            System.out.println("Settings.DATE_FORMAT_AGENDA_DATEONLY:" + Settings.DATE_FORMAT_AGENDA_DATEONLY);
+            builder.append(", until " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(rRule.getUntil()));
+        }
+        return builder.toString();
     }
     
 }

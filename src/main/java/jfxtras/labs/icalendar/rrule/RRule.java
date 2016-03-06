@@ -1,14 +1,11 @@
 package jfxtras.labs.icalendar.rrule;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -24,12 +21,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.DateTimeType;
 import jfxtras.labs.icalendar.VComponent;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRules;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
-import jfxtras.labs.icalendar.rrule.freq.Frequency.FrequencyType;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 
 /**
  * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -248,83 +242,83 @@ public class RRule
      * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
      * @return Easy to read summary of repeat rule
      */
-  //TODO - use resource bundle instead of literal strings
-    // default strings, can be overridden by resource bundle
-    private String once = "Once";
-    
-    /**
-     * Set resource bundle to override text strings used in toString and summary methods
-     * @param bundle
-     */
-    public void setResources(ResourceBundle resource)    
-    {
-        if (resource.containsKey("once")) once = resource.getString("once");
-    }
-    // TODO - Should this method be here?  Should I extend RRule and leave only ICalendar methods in
-    // original, and put Agenda-related methods in extended one?
-    public String summary(Temporal startTemporal)
-    {
-        StringBuilder builder = new StringBuilder();
-        if (getCount() == 1) return once;
-        
-        if (getFrequency().getInterval() > 1)
-        {
-            builder.append("Every ");
-            builder.append(getFrequency().getInterval() + " ");
-            System.out.println("REPEAT_FREQUENCIES:" + Settings.REPEAT_FREQUENCIES.size());
-            builder.append(getFrequency().frequencyType().toStringPlural());
-        } else if (getFrequency().getInterval().equals(1))
-        {
-            String frequency = FrequencyType.stringConverter.toString(getFrequency().frequencyType());
-            builder.append(frequency);
-        }
-        
-        ByDay byDay = (ByDay) getFrequency().getByRuleByType(ByRules.BYDAY);
-        switch (getFrequency().frequencyType())
-        {
-        case DAILY: // add nothing else
-            break;
-        case MONTHLY:
-            if (byDay == null)
-            {
-                builder.append(" on day " + LocalDate.from(startTemporal).getDayOfMonth());
-            } else
-            {
-                builder.append(" on the " + byDay.summary());
-            }
-            break;
-        case WEEKLY:
-            if (byDay == null)
-            {
-                DayOfWeek dayOfWeek = LocalDate.from(startTemporal).getDayOfWeek();
-                String dayOfWeekString = Settings.DAYS_OF_WEEK_MAP.get(dayOfWeek);
-                builder.append(" on " + dayOfWeekString);
-            } else
-            {
-                builder.append(" on " + byDay.summary());
-            }
-            break;
-        case YEARLY:
-            builder.append(" on " + Settings.DATE_FORMAT_AGENDA_MONTHDAY.format(startTemporal));
-            break;
-        case HOURLY:
-        case MINUTELY:
-        case SECONDLY:
-            throw new IllegalArgumentException("Not supported:" + getFrequency().frequencyType());
-        default:
-            break;
-        }
-        
-        if (getCount() > 0)
-        {
-            builder.append(", " + getCount() + " times");
-        } else if (getUntil() != null)
-        {
-            System.out.println("Settings.DATE_FORMAT_AGENDA_DATEONLY:" + Settings.DATE_FORMAT_AGENDA_DATEONLY);
-            builder.append(", until " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(getUntil()));
-        }
-        return builder.toString();
-    }
+//  //TODO - use resource bundle instead of literal strings
+//    // default strings, can be overridden by resource bundle
+//    private String once = "Once";
+//    
+//    /**
+//     * Set resource bundle to override text strings used in toString and summary methods
+//     * @param bundle
+//     */
+//    public void setResources(ResourceBundle resource)    
+//    {
+//        if (resource.containsKey("once")) once = resource.getString("once");
+//    }
+//    // TODO - Should this method be here?  Should I extend RRule and leave only ICalendar methods in
+//    // original, and put Agenda-related methods in extended one?
+//    public String summary(Temporal startTemporal)
+//    {
+//        StringBuilder builder = new StringBuilder();
+//        if (getCount() == 1) return once;
+//        
+//        if (getFrequency().getInterval() > 1)
+//        {
+//            builder.append("Every ");
+//            builder.append(getFrequency().getInterval() + " ");
+//            System.out.println("REPEAT_FREQUENCIES:" + Settings.REPEAT_FREQUENCIES.size());
+//            builder.append(getFrequency().frequencyType().toStringPlural());
+//        } else if (getFrequency().getInterval().equals(1))
+//        {
+//            String frequency = FrequencyType.stringConverter.toString(getFrequency().frequencyType());
+//            builder.append(frequency);
+//        }
+//        
+//        ByDay byDay = (ByDay) getFrequency().getByRuleByType(ByRules.BYDAY);
+//        switch (getFrequency().frequencyType())
+//        {
+//        case DAILY: // add nothing else
+//            break;
+//        case MONTHLY:
+//            if (byDay == null)
+//            {
+//                builder.append(" on day " + LocalDate.from(startTemporal).getDayOfMonth());
+//            } else
+//            {
+//                builder.append(" on the " + byDay.summary());
+//            }
+//            break;
+//        case WEEKLY:
+//            if (byDay == null)
+//            {
+//                DayOfWeek dayOfWeek = LocalDate.from(startTemporal).getDayOfWeek();
+//                String dayOfWeekString = Settings.DAYS_OF_WEEK_MAP.get(dayOfWeek);
+//                builder.append(" on " + dayOfWeekString);
+//            } else
+//            {
+//                builder.append(" on " + byDay.summary());
+//            }
+//            break;
+//        case YEARLY:
+//            builder.append(" on " + Settings.DATE_FORMAT_AGENDA_MONTHDAY.format(startTemporal));
+//            break;
+//        case HOURLY:
+//        case MINUTELY:
+//        case SECONDLY:
+//            throw new IllegalArgumentException("Not supported:" + getFrequency().frequencyType());
+//        default:
+//            break;
+//        }
+//        
+//        if (getCount() > 0)
+//        {
+//            builder.append(", " + getCount() + " times");
+//        } else if (getUntil() != null)
+//        {
+//            System.out.println("Settings.DATE_FORMAT_AGENDA_DATEONLY:" + Settings.DATE_FORMAT_AGENDA_DATEONLY);
+//            builder.append(", until " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(getUntil()));
+//        }
+//        return builder.toString();
+//    }
 
     /** Return new RRule with its properties set by parsing iCalendar compliant RRULE string */
     public static RRule parseRRule(String rRuleString)

@@ -428,5 +428,5 @@ public class AppointmentEditController extends Pane
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
-    }
+    }    
 }

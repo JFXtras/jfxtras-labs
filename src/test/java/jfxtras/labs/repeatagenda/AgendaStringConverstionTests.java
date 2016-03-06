@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import org.junit.Test;
 
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.DateTimeUtilities;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableController;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 
 public class AgendaStringConverstionTests
@@ -18,7 +19,8 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString1()
     {
         VEventImpl e = ICalendarStaticVEvents.getDaily6();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+//        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String summaryString = RepeatableController.makeSummary(e.getRRule(), e.getDateTimeStart());        
         String expectedString = "Every 2 days, until Dec 1, 2015";
         assertEquals(expectedString, summaryString);
     }
@@ -27,7 +29,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString2()
     {
         VEventImpl e = ICalendarStaticVEvents.getYearly1();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String summaryString = RepeatableController.makeSummary(e.getRRule(), e.getDateTimeStart());        
         String expectedString = "Yearly on November 9";
         assertEquals(expectedString, summaryString);
     }
@@ -36,7 +38,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString3()
     {
         VEventImpl e = ICalendarStaticVEvents.getMonthly1();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String summaryString = RepeatableController.makeSummary(e.getRRule(), e.getDateTimeStart());        
         String expectedString = "Monthly on day 9";
         assertEquals(expectedString, summaryString);
     }
@@ -45,7 +47,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString4()
     {
         VEventImpl e = ICalendarStaticVEvents.getMonthly7();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String summaryString = RepeatableController.makeSummary(e.getRRule(), e.getDateTimeStart());        
         String expectedString = "Monthly on the third Monday";
         assertEquals(expectedString, summaryString);
     }
@@ -54,7 +56,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString5()
     {
         VEventImpl e = ICalendarStaticVEvents.getWeekly1();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String summaryString = RepeatableController.makeSummary(e.getRRule(), e.getDateTimeStart());        
         String expectedString = "Weekly on Monday";
         assertEquals(expectedString, summaryString);
     }
@@ -63,7 +65,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString6()
     {
         VEventImpl e = ICalendarStaticVEvents.getWeekly2();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String summaryString = RepeatableController.makeSummary(e.getRRule(), e.getDateTimeStart());        
         String expectedString = "Every 2 weeks on Monday, Wednesday, Friday";
         assertEquals(expectedString, summaryString);
     }
@@ -72,7 +74,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString7()
     {
         VEventImpl e = ICalendarStaticVEvents.getWeekly4();
-        String summaryString = e.getRRule().summary(e.getDateTimeStart());
+        String summaryString = RepeatableController.makeSummary(e.getRRule(), e.getDateTimeStart());        
         String expectedString = "Every 2 weeks on Monday, Wednesday, Friday, 11 times";
         assertEquals(expectedString, summaryString);
     }

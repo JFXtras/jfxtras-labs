@@ -62,24 +62,6 @@ public final class ICalendarUtilities
             .collect(Collectors.toList());
     }
     
-//    /** formats by either LocalDate or LocalDateTime Temporal to an easy-to-read format
-//     * Example: Dec 5, 2015 - Feb 6, 2016
-//     *          Nov 12, 2015 - forever
-//     */
-//    static String temporalToStringPretty(Temporal temporal)
-//    {
-//        if (temporal.isSupported(ChronoUnit.NANOS))
-//        {
-//            return Settings.DATE_TIME_FORMAT.format(temporal);
-//        } else
-//        {
-//            return Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY.format(temporal);
-//        }
-//    };
-    
-    // TODO - PROBABLY THESE METHODS SHOULD GO TO ICALENDARUTILITIES
- 
-    
     /**
      * Options available when editing or deleting a repeatable appointment.
      * Sometimes all options are not available.  For example, a one-part repeating
@@ -89,9 +71,9 @@ public final class ICalendarUtilities
     {
         ONE                  // individual instance
       , ALL                  // entire series
-      , THIS_AND_FUTURE      // same as THIS_AND_FUTURE_ALL, but has a shorter text.  It is used when THIS_AND_FUTURE_SEGMENT does not appear
+      , THIS_AND_FUTURE      // selected instance and all in the future
       , CANCEL;              // do nothing
-
+        
         static Map<ChangeDialogOption, StartEndRange> makeDialogChoices(VComponent<?> vComponent, Temporal startInstance)
         {
             Map<ChangeDialogOption, StartEndRange> choices = new LinkedHashMap<>();
@@ -109,28 +91,6 @@ public final class ICalendarUtilities
             return choices;
         }
         
-        
-//      private List<ChangeDialogOption> makeDialogChoices(Temporal startInstance)
-//      {
-//          Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-//          String one = ICalendarUtilities.temporalToStringPretty(startInstance);
-//          choices.put(ChangeDialogOption.ONE, one);
-//          if (! this.isIndividual())
-//          {
-//              if (! isLastRecurrence(startInstance))
-//              {
-//                  String future = ICalendarUtilities.rangeToString(this, startInstance);
-//                  choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
-//              }
-//              String all = ICalendarUtilities.rangeToString(this);
-//              choices.put(ChangeDialogOption.ALL, all);
-//          }
-//          return choices;
-//      }
-//        @Override
-//        public String toString() {
-//            return Settings.REPEAT_CHANGE_CHOICES.get(this);
-//        }
     }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
