@@ -18,12 +18,12 @@ package jfxtras.labs.icalendar.rrule.byxxx;
 public abstract class ByRuleAbstract implements Rule, Comparable<Rule>
 {
     /** ByRule enum containing order in which ByRules are processed */
-    final private ByRules byRule;
-    @Override public ByRules getByRule() { return byRule; }
+    final private ByRuleType byRule;
+    @Override public ByRuleType getByRuleType() { return byRule; }
 
     /** Constructor that takes ByRule type as parameter 
      * The type contains the processing order as defined in RFC 5545 iCalendar page 44 */
-    ByRuleAbstract(ByRules byRule)
+    ByRuleAbstract(ByRuleType byRule)
     {
         this.byRule = byRule;
     }
@@ -31,8 +31,8 @@ public abstract class ByRuleAbstract implements Rule, Comparable<Rule>
     @Override
     public int compareTo(Rule byRule)
     {
-        int p1 = this.getByRule().getProcessOrder();
-        int p2 = byRule.getByRule().getProcessOrder();
+        int p1 = this.getByRuleType().getProcessOrder();
+        int p2 = byRule.getByRuleType().getProcessOrder();
         return (p2 > p1) ? -1 :
                (p2 < p1) ? 1 : 0;
     }

@@ -8,7 +8,7 @@ import javafx.beans.property.ObjectProperty;
 
 public class BySetPos extends ByRuleAbstract
 {
-    private final static ByRules MY_RULE = ByRules.BYSETPOS;
+    private final static ByRuleType MY_RULE = ByRuleType.BYSETPOS;
 
     public BySetPos()
     {

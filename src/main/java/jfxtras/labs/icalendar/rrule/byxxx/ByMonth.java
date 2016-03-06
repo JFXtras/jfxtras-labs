@@ -15,7 +15,7 @@ import javafx.beans.property.ObjectProperty;
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract
 {
-    private final static ByRules MY_RULE = ByRules.BYMONTH;
+    private final static ByRuleType MY_RULE = ByRuleType.BYMONTH;
 
     /** sorted array of months to be included
      * January = 1 - December = 12
@@ -27,7 +27,7 @@ public class ByMonth extends ByRuleAbstract
 
     // CONSTRUCTORS
     /** This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRules#newInstance(String)}
+     * {@link jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType#newInstance(String)}
      */
     public ByMonth(String months)
     {
@@ -86,7 +86,7 @@ public class ByMonth extends ByRuleAbstract
         String days = Arrays.stream(getMonths())
                 .map(d -> d.getValue() + ",")
                 .collect(Collectors.joining());
-        return ByRules.BYMONTH + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleType.BYMONTH + "=" + days.substring(0, days.length()-1); // remove last comma
     }
 
     @Override

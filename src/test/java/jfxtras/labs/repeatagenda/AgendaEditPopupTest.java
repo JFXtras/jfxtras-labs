@@ -37,7 +37,7 @@ import javafx.scene.layout.HBox;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRules;
+import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableController;
@@ -204,7 +204,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Frequency f = v.getRRule().getFrequency();
         assertEquals(Frequency.FrequencyType.WEEKLY, f.frequencyType());
         assertEquals(1, f.getByRules().size());
-        ByDay rule = (ByDay) f.getByRuleByType(ByRules.BYDAY);
+        ByDay rule = (ByDay) f.getByRuleByType(ByRuleType.BYDAY);
 
         // Check initial state
         List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
@@ -265,7 +265,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         assertFalse(dayOfMonth.isSelected());
         assertTrue(dayOfWeek.isSelected());
         assertEquals(1, f.getByRules().size());
-        ByDay rule = (ByDay) f.getByRuleByType(ByRules.BYDAY);
+        ByDay rule = (ByDay) f.getByRuleByType(ByRuleType.BYDAY);
         assertEquals("BYDAY=2WE", rule.toString()); // 2nd Wednesday of the month
         }
         
@@ -525,7 +525,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Frequency f = v.getRRule().getFrequency();
         assertEquals(Frequency.FrequencyType.WEEKLY, f.frequencyType());
         assertEquals(1, f.getByRules().size());
-        ByDay rule = (ByDay) f.getByRuleByType(ByRules.BYDAY);
+        ByDay rule = (ByDay) f.getByRuleByType(ByRuleType.BYDAY);
 
         // Check initial state
         List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);

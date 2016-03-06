@@ -37,7 +37,7 @@ public interface Rule extends Comparable<Rule>
     Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal);
 
     /** order to process rules */
-    ByRules getByRule();
+    ByRuleType getByRuleType();
 //    Integer getProcessOrder();
 
     void copyTo(Rule destination);
@@ -54,7 +54,7 @@ public interface Rule extends Comparable<Rule>
      * The class is used to make new instances of the different Rules by matching RRULE property
      * to its matching class
      * */
-    static enum ByRules
+    static enum ByRuleType
     {
         BYSECOND (BySecond.class, 70) // Not implemented
       , BYMINUTE (ByMinute.class, 60) // Not implemented
@@ -71,7 +71,7 @@ public interface Rule extends Comparable<Rule>
         private int processOrder;
         public int getProcessOrder() { return processOrder; }
 
-        ByRules(Class<? extends Rule> clazz, int processOrder)
+        ByRuleType(Class<? extends Rule> clazz, int processOrder)
         {
             this.clazz = clazz;
             this.processOrder = processOrder;

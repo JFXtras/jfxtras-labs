@@ -20,7 +20,7 @@ import javafx.beans.property.ObjectProperty;
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
 {
-    private final static ByRules MY_RULE = ByRules.BYMONTHDAY;
+    private final static ByRuleType MY_RULE = ByRuleType.BYMONTHDAY;
 
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
@@ -36,7 +36,7 @@ public class ByMonthDay extends ByRuleAbstract
     /** Constructor 
      * takes String of comma-delimited integers, parses it to array of ints
      * This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRules#newInstance(String)}
+     * {@link jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType#newInstance(String)}
      */
     public ByMonthDay(String daysOfMonthString)
     {
@@ -101,7 +101,7 @@ public class ByMonthDay extends ByRuleAbstract
         String days = Arrays.stream(getDaysOfMonth())
                 .mapToObj(d -> d + ",")
                 .collect(Collectors.joining());
-        return ByRules.BYMONTHDAY + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleType.BYMONTHDAY + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     /**

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
@@ -61,14 +60,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         getByRules().add(byRule);
         Collections.sort(getByRules());
     }
-    @Override public Rule getByRuleByType(Rule.ByRules byRule)
-    {
-        Optional<Rule> rule = getByRules()
-                .stream()
-                .filter(a -> a.getByRule() == byRule)
-                .findFirst();
-        return (rule.isPresent()) ? rule.get() : null;
-    }
+
     /** Add varargs of ByRules to Frequency 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * Each BYxxx rule can only occur once */

@@ -22,7 +22,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.DateTimeType;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule;
-import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRules;
+import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
 
 /**
@@ -268,7 +268,7 @@ public class RRule
                 }
             } else
             {
-                for (ByRules b : ByRules.values())
+                for (ByRuleType b : ByRuleType.values())
                 {
                     if (property.equals(b.toString()))
                     {

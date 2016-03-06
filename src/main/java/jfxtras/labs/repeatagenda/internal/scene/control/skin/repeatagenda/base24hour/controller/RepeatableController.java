@@ -59,7 +59,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule;
-import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRules;
+import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.rrule.freq.Frequency.FrequencyType;
 import jfxtras.labs.icalendar.rrule.freq.Weekly;
@@ -74,7 +74,7 @@ import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24
 public class RepeatableController<T>
 {
 
-final public static int EXCEPTION_CHOICE_LIMIT = 50;
+final public static int EXCEPTION_CHOICE_LIMIT = 50; // TODO - EXTEND WHEN BOTTOM OF LIST IS REACHED
 final public static int INITIAL_COUNT = 10;
 final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on) 
 final private static int INITIAL_INTERVAL = 1;
@@ -134,7 +134,7 @@ private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, 
     ByDay rule = (ByDay) vComponent
             .getRRule()
             .getFrequency()
-            .getByRuleByType(Rule.ByRules.BYDAY);
+            .getByRuleByType(Rule.ByRuleType.BYDAY);
     if (newSel)
     {
         if (! dayOfWeekList.contains(dayOfWeek))
@@ -173,7 +173,7 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
         vComponent.getRRule().getFrequency().addByRule(byDayRuleMonthly);
     } else
     { // remove rule to reset to default behavior of repeat by day of month
-        Rule r = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+        Rule r = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRuleType.BYDAY);
         vComponent.getRRule().getFrequency().getByRules().remove(r);
     }
     refreshSummary();
@@ -226,13 +226,13 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     case YEARLY:
         break;
     case MONTHLY:
-        Rule r = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+        Rule r = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRuleType.BYDAY);
         vComponent.getRRule().getFrequency().getByRules().remove(r);
         dayOfMonthRadioButton.selectedProperty().set(true);
         dayOfWeekRadioButton.selectedProperty().set(false);
         break;
     case WEEKLY:
-        Rule r2 = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+        Rule r2 = vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRuleType.BYDAY);
         vComponent.getRRule().getFrequency().getByRules().remove(r2);
         if (dayOfWeekList.isEmpty())
         {
@@ -651,6 +651,10 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     {
         this.vComponent = vComponent;
         this.dateTimeStartInstanceNew = dateTimeStartInstanceNew;
+        if (! isSupported(vComponent))
+        {
+            throw new RuntimeException("Unsupported VComponent");
+        }
 
         // EXCEPTIONS
         // Note: exceptionComboBox string converter must be setup after the controller's initialization 
@@ -745,7 +749,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         switch(frequencyType)
         {
         case MONTHLY:
-            ByDay rule = (ByDay) vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+            ByDay rule = (ByDay) vComponent.getRRule().getFrequency().getByRuleByType(Rule.ByRuleType.BYDAY);
             if (rule == null)
             {
                 dayOfMonthRadioButton.selectedProperty().set(true);
@@ -798,7 +802,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         // Set day of week properties
         if (rRule.getFrequency().frequencyType() == FrequencyType.WEEKLY)
         {
-            Rule rule = rRule.getFrequency().getByRuleByType(Rule.ByRules.BYDAY);
+            Rule rule = rRule.getFrequency().getByRuleByType(Rule.ByRuleType.BYDAY);
             ((ByDay) rule).dayOfWeekWithoutOrdinalList()
                     .stream()
                     .forEach(d -> 
@@ -958,7 +962,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     public static String makeSummary(RRule rRule, Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();
-        if (rRule.getCount() == 1) return Settings.resources.getString("once");;
+        if (rRule.getCount() == 1) return Settings.resources.getString("rrule.summary.once");
         
         final String frequencyText;
         if (rRule.getFrequency().getInterval() == 1)
@@ -966,7 +970,8 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             frequencyText = Settings.REPEAT_FREQUENCIES.get(rRule.getFrequency().frequencyType());
         } else if (rRule.getFrequency().getInterval() > 1)
         {
-            builder.append("Every ");
+            String every = Settings.resources.getString("rrule.summary.every");
+            builder.append(every + " ");
             builder.append(rRule.getFrequency().getInterval() + " ");
             frequencyText = Settings.REPEAT_FREQUENCIES_PLURAL.get(rRule.getFrequency().frequencyType());
         } else
@@ -975,34 +980,44 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         }
         builder.append(frequencyText);
         
-        ByDay byDay = (ByDay) rRule.getFrequency().getByRuleByType(ByRules.BYDAY);
+        // NOTE: only ByRule allowed for this control is ByDay - others are not supported by this control
+        ByDay byDay = (ByDay) rRule.getFrequency().getByRuleByType(ByRuleType.BYDAY);
         switch (rRule.getFrequency().frequencyType())
         {
         case DAILY: // add nothing else
             break;
         case MONTHLY:
+            String onDay = Settings.resources.getString("rrule.summary.on.day") + " " + LocalDate.from(startTemporal).getDayOfMonth();
+            String onThe = Settings.resources.getString("rrule.summary.on.the") + " " + byDaySummary(byDay);
             if (byDay == null)
             {
-                builder.append(" on day " + LocalDate.from(startTemporal).getDayOfMonth());
+                builder.append(" " + onDay);
             } else
             {
-                builder.append(" on the " + byDaySummary(byDay));
+                builder.append(" " + onThe);
             }
             break;
         case WEEKLY:
+        {
+            String on = Settings.resources.getString("rrule.summary.on");
             if (byDay == null)
             {
                 DayOfWeek dayOfWeek = LocalDate.from(startTemporal).getDayOfWeek();
                 String dayOfWeekString = Settings.DAYS_OF_WEEK_MAP.get(dayOfWeek);
-                builder.append(" on " + dayOfWeekString);
+                builder.append(" " + on + " " + dayOfWeekString);
             } else
             {
-                builder.append(" on " + byDaySummary(byDay));
+                builder.append(" " + on + " " + byDaySummary(byDay));
             }
             break;
+        }
         case YEARLY:
-            builder.append(" on " + Settings.DATE_FORMAT_AGENDA_MONTHDAY.format(startTemporal));
+        {
+            String on = Settings.resources.getString("rrule.summary.on");
+            String monthAndDay = Settings.DATE_FORMAT_AGENDA_MONTHDAY.format(startTemporal);
+            builder.append(" " + on + " " + monthAndDay);
             break;
+        }
         case HOURLY:
         case MINUTELY:
         case SECONDLY:
@@ -1013,13 +1028,33 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         
         if (rRule.getCount() > 0)
         {
-            builder.append(", " + rRule.getCount() + " times");
+            String times = Settings.resources.getString("rrule.summary.times");
+            builder.append(", " + rRule.getCount() + " " + times);
         } else if (rRule.getUntil() != null)
         {
-            System.out.println("Settings.DATE_FORMAT_AGENDA_DATEONLY:" + Settings.DATE_FORMAT_AGENDA_DATEONLY);
-            builder.append(", until " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(rRule.getUntil()));
+            String until = Settings.resources.getString("rrule.summary.until");
+            String date = Settings.DATE_FORMAT_AGENDA_DATEONLY.format(rRule.getUntil());
+            builder.append(", " + until + " " + date);
         }
         return builder.toString();
+    }
+    
+    private boolean isSupported(VComponent<?> vComponent)
+    {
+        RRule rRule = vComponent.getRRule();
+        ByDay byDay = (ByDay) rRule.getFrequency().getByRuleByType(ByRuleType.BYDAY);
+        int byRulesSize = rRule.getFrequency().getByRules().size();
+        int unsupportedRules = (byDay == null) ? byRulesSize : byRulesSize-1;
+        if (unsupportedRules > 0)
+        {
+            String unsupportedByRules = rRule.getFrequency().getByRules().stream()
+                    .filter(b -> b.getByRuleType() != ByRuleType.BYDAY)
+                    .map(b -> b.getByRuleType().toString())
+                    .collect(Collectors.joining(","));
+            System.out.println("RRULE contains unsupported ByRule" + ((unsupportedRules > 1) ? "s:" : ":") + unsupportedByRules);
+            return false;
+        }
+        return true;
     }
     
     /**
