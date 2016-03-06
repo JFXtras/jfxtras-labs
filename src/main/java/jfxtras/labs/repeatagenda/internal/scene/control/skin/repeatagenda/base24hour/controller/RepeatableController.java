@@ -948,6 +948,10 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
      * COUNT and UNTIL properties
      * MONTHLY and WEEKLY with ByDay Byxxx rule
      * 
+     * For example:
+     * RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=11;BYDAY=MO,WE,FR produces:
+     * "Every 2 weeks on Monday, Wednesday, Friday, 11 times"
+     * 
      * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
      * @return Easy to read summary of repeat rule
      */
@@ -982,7 +986,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                 builder.append(" on day " + LocalDate.from(startTemporal).getDayOfMonth());
             } else
             {
-                builder.append(" on the " + byDay.summary());
+                builder.append(" on the " + byDaySummary(byDay));
             }
             break;
         case WEEKLY:
@@ -993,7 +997,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                 builder.append(" on " + dayOfWeekString);
             } else
             {
-                builder.append(" on " + byDay.summary());
+                builder.append(" on " + byDaySummary(byDay));
             }
             break;
         case YEARLY:
@@ -1014,6 +1018,28 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
             System.out.println("Settings.DATE_FORMAT_AGENDA_DATEONLY:" + Settings.DATE_FORMAT_AGENDA_DATEONLY);
             builder.append(", until " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(rRule.getUntil()));
+        }
+        return builder.toString();
+    }
+    
+    /**
+     * Produces an easy to ready summary for ByDay rule with only one ByDayPair.
+     * Returns null for more than one ByDayPair.
+     * Example: third Monday
+     * 
+     * @return easy to read summary of rule
+     */
+    private static String byDaySummary(ByDay byDay)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (ByDayPair b : byDay.getByDayPairs())
+        {
+            int ordinal = b.getOrdinal();
+            DayOfWeek dayOfWeek = b.getDayOfWeek();
+            String ordinalString = (ordinal > 0) ? Settings.ORDINALS.get(ordinal) + " " : "";
+            String dayOfWeekString = Settings.DAYS_OF_WEEK_MAP.get(dayOfWeek);
+            if (builder.length() > 0) builder.append(", ");
+            builder.append(ordinalString + dayOfWeekString);            
         }
         return builder.toString();
     }

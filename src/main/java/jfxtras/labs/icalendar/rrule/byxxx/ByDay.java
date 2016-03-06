@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.Settings;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
@@ -206,28 +205,6 @@ public class ByDay extends ByRuleAbstract
         return ByRules.BYDAY + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
-    /**
-     * Produces an easy to ready summary for ByDay rule with only one ByDayPair.
-     * Returns null for more than one ByDayPair.
-     * Example: third Monday
-     * 
-     * @return easy to read summary of rule
-     */
-    public String summary()
-    {
-        StringBuilder builder = new StringBuilder();
-        for (ByDayPair b : getByDayPairs())
-        {
-            int ordinal = b.ordinal;
-            DayOfWeek dayOfWeek = b.dayOfWeek;
-            String ordinalString = (ordinal > 0) ? Settings.ORDINALS.get(ordinal) + " " : "";
-            String dayOfWeekString = Settings.DAYS_OF_WEEK_MAP.get(dayOfWeek);
-            if (builder.length() > 0) builder.append(", ");
-            builder.append(ordinalString + dayOfWeekString);            
-        }
-        return builder.toString();
-    }
-    
     @Override // TODO - try to REMOVE startTemporal
     public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
@@ -347,7 +324,9 @@ public class ByDay extends ByRuleAbstract
     public static class ByDayPair
     {
         private DayOfWeek dayOfWeek;
+        public DayOfWeek getDayOfWeek() { return dayOfWeek; }
         private int ordinal = 0;
+        public int getOrdinal() { return ordinal; }
 
         public ByDayPair(DayOfWeek dayOfWeek, int ordinal)
         {
@@ -363,8 +342,8 @@ public class ByDay extends ByRuleAbstract
                 return false;
             }
             ByDayPair testObj = (ByDayPair) obj;
-            System.out.println("ByDayPairequals " + (dayOfWeek == testObj.dayOfWeek)
-                    + " " + (ordinal == testObj.ordinal));
+//            System.out.println("ByDayPairequals " + (dayOfWeek == testObj.dayOfWeek)
+//                    + " " + (ordinal == testObj.ordinal));
             return (dayOfWeek == testObj.dayOfWeek)
                     && (ordinal == testObj.ordinal);
         }
