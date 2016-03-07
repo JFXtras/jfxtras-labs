@@ -14,6 +14,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -125,6 +126,7 @@ private ToggleGroup endGroup;
 @FXML private ListView<Temporal> exceptionsListView; // EXDATE date/times to be skipped (deleted events)
 @FXML private Button removeExceptionButton;
 private Temporal exceptionFirstTemporal;
+private List<Temporal> exceptionMasterList = new ArrayList<>();
 
 private DateTimeFormatter getFormatter(Temporal t)
 {
@@ -182,7 +184,7 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
         vComponent.getRRule().getFrequency().getByRules().remove(r);
     }
     refreshSummary();
-    makeExceptionDates();
+    refreshExceptionDates();
 };
 
 
@@ -191,7 +193,7 @@ final private InvalidationListener makeExceptionDatesAndSummaryListener = (obs) 
 {
 //   System.out.println("exceptions6:" + obs);
    refreshSummary();
-   makeExceptionDates();
+   refreshExceptionDates();
 };
 private void refreshSummary()
 {
@@ -205,8 +207,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
     if (newValue)
     {
         refreshSummary();
-        System.out.println("make exception1 " + obs);
-        makeExceptionDates();
+        refreshExceptionDates();
     }
 };
 
@@ -272,8 +273,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     
     // Make summary and exceptions
     refreshSummary();
-//    System.out.println("make exception2" + obs + " " + oldSel);
-    makeExceptionDates();
+    refreshExceptionDates();
 };
 
 private void setFrequencyVisibility(FrequencyType f)
@@ -326,7 +326,7 @@ private final ChangeListener<? super Integer> intervalSpinnerListener = (observa
     frequencyLabel.setText(frequencyLabelText);
     vComponent.getRRule().getFrequency().setInterval(newValue);
     refreshSummary();
-    makeExceptionDates();
+    refreshExceptionDates();
 };
 
 private final ChangeListener<? super LocalDate> untilListener = (observable, oldSelection, newSelection) ->
@@ -345,7 +345,7 @@ private final ChangeListener<? super LocalDate> untilListener = (observable, old
         }
         vComponent.getRRule().setUntil(until);
         refreshSummary();
-        makeExceptionDates();
+        refreshExceptionDates();
     }
 };
 
@@ -363,7 +363,7 @@ private final ChangeListener<? super Boolean> untilRadioButtonListener = (observ
         untilDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
         untilDatePicker.setDisable(false);
         untilDatePicker.show();
-        makeExceptionDates();
+        refreshExceptionDates();
     } else {
         vComponent.getRRule().setUntil(null);
         untilDatePicker.setDisable(true);
@@ -401,7 +401,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 {
 //    System.out.println("make exception3 " + obs);
 
-    makeExceptionDates();
+    refreshExceptionDates();
     // update existing exceptions
     if (! exceptionsListView.getItems().isEmpty())
     {
@@ -515,7 +515,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                 value = Integer.parseInt(s);
                 vComponent.getRRule().getFrequency().setInterval(value);
                 refreshSummary();
-                makeExceptionDates();
+                refreshExceptionDates();
             } else {
                 String lastValue = intervalSpinner.getValue().toString();
                 intervalSpinner.getEditor().textProperty().set(lastValue);
@@ -537,7 +537,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             {
                 vComponent.setDateTimeStart(newValue);                
             }
-            makeExceptionDates();
+            refreshExceptionDates();
         }
     });
     startDatePicker.focusedProperty().addListener((obs, wasFocused, isNowFocused) ->
@@ -567,7 +567,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
               vComponent.getRRule().setCount(newSelection);
               refreshSummary();
-              makeExceptionDates();
+              refreshExceptionDates();
         }
         if (newSelection == 1) {
             eventLabel.setText(resources.getString("event"));
@@ -584,7 +584,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             eventLabel.setDisable(false);
             vComponent.getRRule().setCount(endAfterEventsSpinner.getValue());
             refreshSummary();
-            makeExceptionDates();
+            refreshExceptionDates();
         } else
         {
             vComponent.getRRule().setCount(0);
@@ -667,7 +667,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
             throw new RuntimeException("Unsupported VComponent");
         }
-
+        
         // EXCEPTIONS
         // Note: exceptionComboBox string converter must be setup after the controller's initialization 
         // because the resource bundle isn't instantiated earlier.
@@ -725,25 +725,27 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
                     {
                         bar.valueProperty().addListener((ChangeListener<Number>) (value, oldValue, newValue) -> 
                         {
-                            System.out.println(bar.getOrientation() + " " + newValue);
-                            if ((double) newValue > 0.9)
+                            if (((double) newValue > 0.9) && ((double) oldValue < 0.9))
                             {
+                                // add data to bottom
                                 int elements = exceptionComboBox.getItems().size();
-//                                int bottomIndex = (int) (elements * (double) newValue)-1;
-//                                System.out.println(bottomIndex + " " +  elements);
-//                                Temporal bottomElement = exceptionComboBox.getItems().get(bottomIndex);
                                 exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
                                 makeExceptionDates();
                                 bar.setValue(.5);
-//                                bar
-///                                exceptionComboBox.getSelectionModel().select(elements/2);
-                                // add data to bottom
-                            } else if ((double) newValue < 0.1)
+                            } else if (((double) newValue < 0.1) && ((double) oldValue > 0.1))
                             {
                                 // add data to top
-
+                                int elements = exceptionComboBox.getItems().size();
+                                Temporal firstElement = exceptionComboBox.getItems().get(0);
+                                int indexInMasterList = exceptionMasterList.indexOf(firstElement);
+                                int newIndex = Math.max((indexInMasterList - elements/3), 0);
+                                if (newIndex < indexInMasterList)
+                                {
+                                    exceptionFirstTemporal = exceptionMasterList.get(newIndex);
+                                    makeExceptionDates();
+                                    bar.setValue(.5);
+                                }
                             }
-//                            handleExceptionComboBoxList((Double) newValue);
                         });
                     }
                 }
@@ -771,25 +773,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         // LISTENERS TO BE ADDED AFTER INITIALIZATION
         addListeners(); // Listeners to update exception dates
         frequencyComboBox.valueProperty().addListener(frequencyListener);
-    }
-
-    // Handles scroll event for exceptionComboBox to ensure there is data when scroll up and down
-    private void handleExceptionComboBoxList(Double newValue)
-    {
-        if (newValue > 0.9)
-        {
-            int elements = exceptionComboBox.getItems().size();
-            int bottomIndex = (int) (elements * newValue);
-            Temporal bottomElement = exceptionComboBox.getItems().get(bottomIndex);
-            System.out.println(bottomIndex + " " +  elements);
-            exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/2);
-            makeExceptionDates();
-            exceptionComboBox.getSelectionModel().select(elements/2);
-            // add data to bottom
-        } else if (newValue < 0.1)
-        {
-            // add data to top
-        }
     }
 
     private void addListeners()
@@ -860,7 +843,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         
         startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
         refreshSummary();
-        makeExceptionDates(); // Should this be here? - TODO - CHECK # OF CALLS
+        refreshExceptionDates(); // Should this be here? - TODO - CHECK # OF CALLS
     }
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 
@@ -906,11 +889,16 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     }
     
     /** Make list of start date/times for exceptionComboBox */
+    private void refreshExceptionDates()
+    {
+        exceptionFirstTemporal = vComponent.getDateTimeStart();
+        makeExceptionDates();
+    }
+    
+    /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
     {
-//        System.out.println("new exception dates:"); // TODO - MAKE SURE ONLY RUNS ONCE PER CHANGE
         final Temporal dateTimeStart = exceptionFirstTemporal; // vComponent.getDateTimeStart();
-        System.out.println("exceptionFirstTemporal:" + exceptionFirstTemporal);
         final Stream<Temporal> stream1 = vComponent.stream(dateTimeStart);
         Stream<Temporal> stream2 = (vComponent.getExDate() == null) ? stream1
                 : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
@@ -922,47 +910,19 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
             stream3 = stream2;
         }
+        Temporal lastExceptionInMasterList = (exceptionMasterList.isEmpty()) ? dateTimeStart.with(LocalDate.MIN) : exceptionMasterList.get(exceptionMasterList.size()-1);
         List<Temporal> exceptionDates = stream3
               .limit(EXCEPTION_CHOICE_LIMIT)
+              .peek(t ->
+              {
+                  if (VComponent.isAfter(t, lastExceptionInMasterList))
+                  {
+                      exceptionMasterList.add(t);
+                  }
+              })
               .collect(Collectors.toList());
         exceptionComboBox.getItems().clear();
         exceptionComboBox.getItems().addAll(exceptionDates);
-        
-        
-//        exceptionComboBox.setOnScroll(new EventHandler<ScrollEvent>() {
-//            @Override
-//            public void handle(ScrollEvent scrollEvent) {
-//                System.out.println("Hello!");
-//            }
-//        });
-//        
-//        
-//        exceptionComboBox.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
-//            @Override
-//            public void handle(ScrollEvent scrollEvent) {
-//               System.out.println("Scrolled.");
-//            }
-//     });
-//
-//        ChangeListener<? super Number> eventHandler = (obs, oldSel, newSel) -> 
-//        {
-//            System.out.println("scroll bar property");
-//        };
-//        
-//        System.out.println("scroll bars:" + exceptionComboBox.lookupAll(".scroll-bar").size());
-//        for (Node node : exceptionComboBox.lookupAll(".scroll-bar"))
-//        {
-//            if  (node instanceof ScrollBar && ((ScrollBar) node).getOrientation().equals(Orientation.VERTICAL))
-//            {
-//                ((ScrollBar) node).valueProperty().addListener(eventHandler);
-//            }
-//        }
-//        
-//        exceptionComboBox.onScrollProperty().addListener((obs, oldSel, newSel) -> 
-//        {
-//            System.out.println("scroll property");
-//        });
-//        getScrollbarComponent()
     }
     
     @FXML private void handleAddException()
@@ -971,7 +931,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         exceptionsListView.getItems().add(d);
         if (vComponent.getExDate() == null) vComponent.setExDate(new ExDate());
         vComponent.getExDate().getTemporals().add(d);
-        makeExceptionDates();
+        refreshExceptionDates();
         Collections.sort(exceptionsListView.getItems(),VComponent.TEMPORAL_COMPARATOR); // Maintain sorted list
         if (exceptionComboBox.getValue() == null) addExceptionButton.setDisable(true);
     }
@@ -980,7 +940,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     {
         Temporal d = exceptionsListView.getSelectionModel().getSelectedItem();
         vComponent.getExDate().getTemporals().remove(d);
-        makeExceptionDates();
+        refreshExceptionDates();
         exceptionsListView.getItems().remove(d);
         if (exceptionsListView.getSelectionModel().getSelectedItem() == null) removeExceptionButton.setDisable(true);
     }
