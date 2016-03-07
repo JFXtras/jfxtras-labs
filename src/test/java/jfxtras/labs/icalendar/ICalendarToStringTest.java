@@ -99,7 +99,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     String madeString = e.toComponentText();
     ZonedDateTime until = ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
         .withZoneSameInstant(ZoneId.of("Z")); // depends on time zone, so can't be hard coded
-    String untilString = VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(until);
+    String untilString = DateTimeType.ZONED_DATE_TIME_UTC_FORMATTER.format(until);
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                         + "CATEGORIES:group03" + System.lineSeparator()
                         + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
@@ -120,12 +120,12 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     String madeString = e.toComponentText();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                         + "CATEGORIES:group03" + System.lineSeparator()
-                        + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
+                        + "DESCRIPTION:DailyUTC Description" + System.lineSeparator()
                         + "DTEND:20151109T110000Z" + System.lineSeparator()
                         + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
                         + "DTSTART:20151109T100000Z" + System.lineSeparator()
-                        + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T095959Z" + System.lineSeparator()
-                        + "SUMMARY:Daily6 Summary" + System.lineSeparator()
+                        + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z" + System.lineSeparator()
+                        + "SUMMARY:DailyUTC Summary" + System.lineSeparator()
                         + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                         + "END:VEVENT";
     assertEquals(expectedString, madeString);
@@ -159,7 +159,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
         Temporal date = LocalDate.of(2015, 11, 12);
         String expectedString = "20151112";
-        String madeString = VComponent.temporalToString(date);
+        String madeString = DateTimeType.temporalToString(date);
         assertEquals(expectedString, madeString);
     }
 

@@ -148,7 +148,7 @@ public enum VEventProperty
                 if (vEvent.getDuration() == null)
                 {
                     vEvent.endPriority = EndType.DTEND;
-                    Temporal dateTime = VComponent.parseTemporal(value);
+                    Temporal dateTime = DateTimeType.parseTemporal(value);
                     vEvent.setDateTimeEnd(dateTime);
                     return true;
                 } else
@@ -175,8 +175,8 @@ public enum VEventProperty
                 return null;
             } else if (vEvent.endPriority == EndType.DTEND)
             {
-                String tag = VComponent.makeDateTimePropertyTag(vEvent.dateTimeEndProperty().getName(), vEvent.getDateTimeEnd());
-                return tag + VComponent.temporalToString(vEvent.getDateTimeEnd());
+                String tag = DateTimeType.makeDateTimePropertyTag(vEvent.dateTimeEndProperty().getName(), vEvent.getDateTimeEnd());
+                return tag + DateTimeType.temporalToString(vEvent.getDateTimeEnd());
             } else
             {
                 throw new RuntimeException("DTEND and EndPriority don't match");

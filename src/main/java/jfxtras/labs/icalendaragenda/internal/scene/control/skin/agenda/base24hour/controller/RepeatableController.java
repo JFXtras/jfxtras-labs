@@ -399,8 +399,7 @@ private Temporal findUntil(LocalDate initialUntilDate)
 // listen for changes to start date/time (type may change requiring new exception date choices)
 private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeListener = (obs, oldValue, newValue) ->
 {
-//    System.out.println("make exception3 " + obs);
-
+    exceptionMasterList.clear();
     refreshExceptionDates();
     // update existing exceptions
     if (! exceptionsListView.getItems().isEmpty())

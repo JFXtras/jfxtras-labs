@@ -34,8 +34,7 @@ public class AppointmentEditLoader extends Stage {
             , VComponent<Appointment> vComponent
             , ICalendarAgenda agenda
             , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
-            , Callback<Collection<VComponent<Appointment>>, Void> veventWriteCallback
-            , Callback<Void, Void> refreshCallback)
+            , Callback<Collection<VComponent<Appointment>>, Void> veventWriteCallback)
     {
         System.out.println("here:");
 

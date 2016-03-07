@@ -36,7 +36,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseLocalDate()
     {
         String string = "19980704";
-        Temporal t = VComponent.parseTemporal(string);
+        Temporal t = DateTimeType.parseTemporal(string);
         assertEquals(t, LocalDate.of(1998, 7, 4));
     }
     
@@ -45,7 +45,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseLocalDateTime()
     {
         String string = "19980119T020000";
-        Temporal t = VComponent.parseTemporal(string);
+        Temporal t = DateTimeType.parseTemporal(string);
         assertEquals(t, LocalDateTime.of(1998, 1, 19, 2, 0));
     }
     
@@ -54,7 +54,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseZonedDateTimeUTC()
     {
         String string = "19980119T020000Z";
-        Temporal t = VComponent.parseTemporal(string);
+        Temporal t = DateTimeType.parseTemporal(string);
         assertEquals(t, ZonedDateTime.of(LocalDateTime.of(1998, 1, 19, 2, 0), ZoneId.of("Z").normalized()));
     }
     
@@ -63,7 +63,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseZonedDateTime()
     {
         String string = "TZID=Europe/London:20160208T073000";
-        Temporal t = VComponent.parseTemporal(string);
+        Temporal t = DateTimeType.parseTemporal(string);
         assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 7, 30), ZoneId.of("Europe/London")));
     }
     
@@ -186,23 +186,22 @@ public class ICalendarParseTest extends ICalendarTestAbstract
         VEventMock expectedVEvent = getDaily3();
         assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
-    
-    /** FREQ=DAILY;INVERVAL=2;UNTIL=20151201T000000 */
+        
     @Test
-    public void canParseDaily6()
+    public void canParseDailyUTC()
     {
         String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "CATEGORIES:group03" + System.lineSeparator()
-                              + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
-                              + "DTEND:20151109T110000" + System.lineSeparator()
+                              + "DESCRIPTION:DailyUTC Description" + System.lineSeparator()
+                              + "DTEND:20151109T110000Z" + System.lineSeparator()
                               + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
-                              + "DTSTART:20151109T100000" + System.lineSeparator()
-                              + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T000000" + System.lineSeparator()
-                              + "SUMMARY:Daily6 Summary" + System.lineSeparator()
+                              + "DTSTART:20151109T100000Z" + System.lineSeparator()
+                              + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z" + System.lineSeparator()
+                              + "SUMMARY:DailyUTC Summary" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
         VEventMock vEvent = VEventMock.parse(vEventString);
-        VEventMock expectedVEvent = getDaily6();
+        VEventMock expectedVEvent = getDailyUTC();
         assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
     

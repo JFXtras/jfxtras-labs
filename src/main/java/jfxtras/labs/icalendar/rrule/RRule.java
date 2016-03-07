@@ -125,7 +125,10 @@ public class RRule
     /** Deep copy all fields from source to destination */
     private static void copy(RRule source, RRule destination)
     {
-        if (source.getCount() > 0) destination.setCount(source.getCount());
+        if (source.getCount() > 0)
+        {
+            destination.setCount(source.getCount());
+        }
         if (source.getFrequency() != null)
         {
             try {
@@ -135,6 +138,10 @@ public class RRule
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
+        }
+        if (source.getUntil() != null)
+        {
+            destination.setUntil(source.getUntil());
         }
         Iterator<VComponent<?>> i = source.recurrences().iterator();
         while (i.hasNext())
@@ -160,13 +167,13 @@ public class RRule
 
         boolean countEquals = getCount().equals(testObj.getCount());
         boolean frequencyEquals = getFrequency().equals(testObj.getFrequency()); // RRule requires a frequency
-//        boolean frequencyEquals = (getFrequency() == null) ?
-//                (testObj.getFrequency() == null) : getFrequency().equals(testObj.getFrequency());
-        boolean recurrencesEquals = (recurrences() == null) ?
-                (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());
+        System.out.println("untils:" + getUntil() + " " + testObj.getUntil() + ((getUntil() != null) ? getUntil().hashCode() : "")
+                + " " + ((testObj.getUntil() != null) ? testObj.getUntil().hashCode() : ""));
+        boolean untilEquals = (getUntil() == null) ? (testObj.getUntil() == null) : getUntil().equals(testObj.getUntil());
+        boolean recurrencesEquals = (recurrences() == null) ? (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());
 
-        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals);
-        return countEquals && frequencyEquals && recurrencesEquals;
+        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals + " " + untilEquals);
+        return countEquals && frequencyEquals && recurrencesEquals && untilEquals;
     }
     
     @Override
@@ -185,7 +192,7 @@ public class RRule
         StringBuilder builder = new StringBuilder();
         builder.append(getFrequency().toString());
         if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
-        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + VComponent.temporalToString(getUntil()));
+        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + DateTimeType.temporalToString(getUntil()));
         String rules = getFrequency()
                 .getByRules()
                 .stream()
@@ -255,7 +262,7 @@ public class RRule
                 rrule.setCount(Integer.parseInt(value));
             } else if (property.equals(UNTIL_NAME))
             { // UNTIL
-                Temporal dateTime = VComponent.parseTemporal(value);
+                Temporal dateTime = DateTimeType.parseTemporal(value);
                 rrule.setUntil(dateTime);
             } else if (property.equals(INTERVAL_NAME))
             { // INTERVAL

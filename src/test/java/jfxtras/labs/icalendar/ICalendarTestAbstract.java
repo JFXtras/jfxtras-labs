@@ -26,10 +26,8 @@ import jfxtras.labs.icalendar.rrule.freq.Yearly;
 
 public abstract class ICalendarTestAbstract
 {
-    public final static long NANOS_IN_SECOND = Duration.ofSeconds(1).toNanos();
-        
-    private final static Class<InstanceMock> clazz = InstanceMock.class;
-    public Class<InstanceMock> getClazz() { return clazz; }
+//    private final static Class<InstanceMock> clazz = InstanceMock.class;
+//    public Class<InstanceMock> getClazz() { return clazz; }
     
 //    /**
 //     * Tests equality between two VEventImplMock objects.  Treats v1 as expected.  Produces a JUnit-like
@@ -421,12 +419,12 @@ public abstract class ICalendarTestAbstract
                 .withCategories("group03")
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneOffset.UTC))
-                .withDescription("Daily6 Description")
-                .withSummary("Daily6 Summary")
+                .withDescription("DailyUTC Description")
+                .withSummary("DailyUTC Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RRule()
-                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.UTC))
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0), ZoneOffset.UTC))
                         .withFrequency(new Daily()
                                 .withInterval(2)));
     }

@@ -32,11 +32,11 @@ import jfxtras.labs.icalendar.ExDate;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.VComponent.StartEndRange;
+import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentEditLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectOneLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendar.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.util.NodeUtil;
 /**
@@ -90,7 +90,7 @@ public class ICalendarAgenda extends Agenda
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
-        String dateTime = VComponent.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String dateTime = DateTimeType.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };
@@ -135,8 +135,7 @@ public class ICalendarAgenda extends Agenda
                 , vComponent
                 , this
                 , appointmentGroupWriteCallback
-                , repeatWriteCallback // write repeat callback initialized to null
-                , a -> { this.refresh(); return null; }); // refresh agenda
+                , repeatWriteCallback);
 
         editPopup.getScene().getStylesheets().addAll(getUserAgentStylesheet(), ICALENDAR_STYLE_SHEET);
         // remove listeners during edit (to prevent creating extra vEvents when making appointments)

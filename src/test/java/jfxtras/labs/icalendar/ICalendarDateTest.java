@@ -654,6 +654,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
               , LocalDateTime.of(2015, 11, 25, 2, 0)
               , LocalDateTime.of(2015, 11, 27, 2, 0)
               , LocalDateTime.of(2015, 11, 29, 2, 0)
+              , LocalDateTime.of(2015, 12, 1, 2, 0)
               ));
         assertEquals(expectedDates, madeDates);
     }

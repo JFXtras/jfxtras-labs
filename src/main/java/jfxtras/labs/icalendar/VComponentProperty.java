@@ -123,7 +123,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
             {
                 if (vComponent.getDateTimeCreated() == null)
                 {
-                    ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
+                    ZonedDateTime dateTime = ZonedDateTime.parse(value, DateTimeType.ZONED_DATE_TIME_UTC_FORMATTER);
                     vComponent.setDateTimeCreated(dateTime);
                     return true;
                 } else
@@ -142,7 +142,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
             public String makeContentLine(VComponent<?> vComponent)
             {
                 return (vComponent.getDateTimeCreated() == null) ? null : vComponent.dateTimeCreatedProperty().getName() + ":"
-                        + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeCreated());
+                        + DateTimeType.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeCreated());
             }
 
             @Override
@@ -170,7 +170,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
             {
                 if (vComponent.getDateTimeStamp() == null)
                 {
-                    ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
+                    ZonedDateTime dateTime = ZonedDateTime.parse(value, DateTimeType.ZONED_DATE_TIME_UTC_FORMATTER);
                     vComponent.setDateTimeStamp(dateTime);
                     return true;
                 } else
@@ -189,7 +189,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
             public String makeContentLine(VComponent<?> vComponent)
             {
                 return (vComponent.getDateTimeStamp() == null) ? null : vComponent.dateTimeStampProperty().getName() + ":"
-                        + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeStamp());
+                        + DateTimeType.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeStamp());
             }
 
             @Override
@@ -216,7 +216,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
             {
                 if (vComponent.getDateTimeStart() == null)
                 {
-                    Temporal dateTime = VComponent.parseTemporal(value);
+                    Temporal dateTime = DateTimeType.parseTemporal(value);
                     vComponent.setDateTimeStart(dateTime);
                     return true;
                 } else
@@ -239,8 +239,8 @@ import jfxtras.labs.icalendar.rrule.RRule;
                     return null;
                 } else
                 {
-                    String tag = VComponent.makeDateTimePropertyTag(vComponent.dateTimeStartProperty().getName(), vComponent.getDateTimeStart());
-                    return tag + VComponent.temporalToString(vComponent.getDateTimeStart());
+                    String tag = DateTimeType.makeDateTimePropertyTag(vComponent.dateTimeStartProperty().getName(), vComponent.getDateTimeStart());
+                    return tag + DateTimeType.temporalToString(vComponent.getDateTimeStart());
                 }
             }
 
@@ -291,16 +291,16 @@ import jfxtras.labs.icalendar.rrule.RRule;
                     if (vComponent.isExDatesOnOneLine())
                     {
                         Temporal firstTemporal = vComponent.getExDate().getTemporals().iterator().next();
-                        String tag = VComponent.makeDateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
+                        String tag = DateTimeType.makeDateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
                         return tag + vComponent.getExDate().toString();
                     } else
                     {
                         Temporal firstTemporal = vComponent.getExDate().getTemporals().iterator().next();
-                        String tag = VComponent.makeDateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
+                        String tag = DateTimeType.makeDateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
                         return vComponent.getExDate()
                                 .getTemporals()
                                 .stream()
-                                .map(t -> tag + VComponent.temporalToString(t) + System.lineSeparator())
+                                .map(t -> tag + DateTimeType.temporalToString(t) + System.lineSeparator())
                                 .collect(Collectors.joining())
                                 .trim();
                     }
@@ -345,7 +345,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
             {
                 if (vComponent.getDateTimeLastModified() == null)
                 {
-                    ZonedDateTime dateTime = ZonedDateTime.parse(value, VComponent.ZONED_DATE_TIME_UTC_FORMATTER);
+                    ZonedDateTime dateTime = ZonedDateTime.parse(value, DateTimeType.ZONED_DATE_TIME_UTC_FORMATTER);
                     vComponent.setDateTimeLastModified(dateTime);
                     return true;
                 } else
@@ -364,7 +364,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
             public String makeContentLine(VComponent<?> vComponent)
             {
                 return (vComponent.getDateTimeLastModified() == null) ? null : vComponent.dateTimeLastModifiedProperty().getName() + ":"
-                        + VComponent.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeLastModified());
+                        + DateTimeType.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeLastModified());
             }
 
             @Override
@@ -455,7 +455,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
                 } else
                 {
                     Temporal firstTemporal = vComponent.getRDate().getTemporals().iterator().next();
-                    String tag = VComponent.makeDateTimePropertyTag(vComponent.rDateProperty().getName(), firstTemporal);
+                    String tag = DateTimeType.makeDateTimePropertyTag(vComponent.rDateProperty().getName(), firstTemporal);
                     return tag + vComponent.getRDate().toString();
                 }
             }
@@ -497,7 +497,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
             {
                 if (vComponent.getDateTimeRecurrence() == null)
                 {
-                    Temporal dateTime = VComponent.parseTemporal(value);
+                    Temporal dateTime = DateTimeType.parseTemporal(value);
                     vComponent.setDateTimeRecurrence(dateTime);
                     return true;
                 } else
@@ -520,9 +520,9 @@ import jfxtras.labs.icalendar.rrule.RRule;
                     return null;
                 } else
                 {
-                    String tag = VComponent.makeDateTimePropertyTag(vComponent.dateTimeRecurrenceProperty().getName()
+                    String tag = DateTimeType.makeDateTimePropertyTag(vComponent.dateTimeRecurrenceProperty().getName()
                             , vComponent.getDateTimeRecurrence());
-                    return tag + VComponent.temporalToString(vComponent.getDateTimeRecurrence());
+                    return tag + DateTimeType.temporalToString(vComponent.getDateTimeRecurrence());
                 }
             }
 
@@ -547,7 +547,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
        * to-dos, journal entries, or time zone definitions
        * If component is not repeating the value is null.
        */
-      , RECURRENCE_RULE ("RRULE", true)
+      , RECURRENCE_RULE ("RRULE", false)
         {
             @Override
             public boolean parseAndSetProperty(VComponent<?> vComponent, String value)

@@ -156,7 +156,7 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         String datesString = getTemporals()
                 .stream()
                 .sorted()
-                .map(d -> VComponent.temporalToString(d) + ",")
+                .map(d -> DateTimeType.temporalToString(d) + ",")
                 .collect(Collectors.joining());
         return datesString.substring(0, datesString.length()-1); // remove last comma
     }

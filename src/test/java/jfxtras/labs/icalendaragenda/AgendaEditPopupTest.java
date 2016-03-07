@@ -9,6 +9,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
+import jfxtras.labs.icalendar.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
@@ -53,6 +55,7 @@ import jfxtras.test.TestUtil;
  * 
  * The change vComponentsListener should only fire by changes made outside the implementation.
  *
+ * @author David Bal
  */
 public class AgendaEditPopupTest extends AgendaTestAbstract
 {
@@ -64,7 +67,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
     // edit non-repeatable elements
     @Test
-    //@Ignore
     public void canEditNonRepeatProperties()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getIndividual1()));        
@@ -140,7 +142,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canToggleRepeatableCheckBox()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -167,7 +168,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canChangeFrequency()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -327,14 +327,11 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // save change
         click("#saveRepeatButton");
-        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
-        TestUtil.runThenWaitForPaintPulse(() -> c.getSelectionModel().select(ChangeDialogOption.ALL));
-        click("#changeDialogOkButton");
-        
+
         // Verify state change
-        assertEquals(4, agenda.appointments().size());
+        assertEquals(5, agenda.appointments().size());
         
-        closeCurrentWindow();
+//        closeCurrentWindow();
     }
     
     @Test
@@ -379,7 +376,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
 
     @Test
-    //@Ignore
     public void canChangeEndsCriteria()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -455,7 +451,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canMakeExceptionListWholeDay() // Whole day appointments
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -505,7 +500,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canMakeExceptionListWeekly()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -1112,19 +1106,22 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
        // verify VComponent changes
        assertEquals(2, agenda.vComponents().size());
        agenda.vComponents().sort(VComponent.VCOMPONENT_COMPARATOR);
+
        VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
-       VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
        VEventImpl expectedV0 = ICalendarStaticVEvents.getDaily1();
-       expectedV0.getRRule().setUntil(LocalDateTime.of(2015, 11, 11, 9, 59, 59));
-       VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1();
-       expectedV1.setSummary("new summary");
-       expectedV1.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
-       expectedV1.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
-       expectedV1.setRelatedTo("20150110T080000-0@jfxtras.org");
-       expectedV1.setUniqueIdentifier(v1.getUniqueIdentifier()); // uid is time-based so copy it to guarantee equality.
-       expectedV1.setDateTimeStamp(v1.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
-       expectedV1.setSequence(1);
+       expectedV0.getRRule().setUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 10, 0), ZoneId.systemDefault())
+               .withZoneSameInstant(ZoneId.of("Z")));
        assertTrue(VEventImpl.isEqualTo(expectedV0, v0));
+
+       VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
+       VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1()
+               .withSummary("new summary")
+               .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
+               .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0))
+               .withRelatedTo("20150110T080000-0@jfxtras.org")
+               .withUniqueIdentifier(v1.getUniqueIdentifier()) // uid is time-based so copy it to guarantee equality.
+               .withDateTimeStamp(v1.getDateTimeStamp()) // time stamp is time-based so copy it to guarantee equality.
+               .withSequence(1);
        assertTrue(VEventImpl.isEqualTo(expectedV1, v1));
 
        // verify Appointment changes
@@ -1175,14 +1172,14 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         expectedV0.getRRule().recurrences().add(v1);
         assertTrue(VEventImpl.isEqualTo(expectedV0, v0));
 
-        VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1();
-        expectedV1.setSummary("new summary");
-        expectedV1.setDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0));
-        expectedV1.setDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0));
-        expectedV1.setDateTimeStamp(v1.getDateTimeStamp()); // time stamp is time-based so copy it to guarantee equality.
-        expectedV1.setDateTimeRecurrence(LocalDateTime.of(2015, 11, 11, 10, 0));
-        expectedV1.setRRule(null);
-        expectedV1.setSequence(1);
+        VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1()
+                .withSummary("new summary")
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0))
+                .withDateTimeStamp(v1.getDateTimeStamp()) // time stamp is time-based so copy it to guarantee equality.
+                .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 11, 10, 0))
+                .withRRule(null)
+                .withSequence(1);
         assertTrue(VEventImpl.isEqualTo(expectedV1, v1));
     }
     
@@ -1254,7 +1251,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canDeleteSeriesThisAndFutureEdit()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -1274,12 +1270,12 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         // verify VComponent changes
         assertEquals(1, agenda.vComponents().size());
         VEventImpl expectedV = ICalendarStaticVEvents.getDaily1();
-        expectedV.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
+        expectedV.getRRule().setUntil( ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 10, 0), ZoneId.systemDefault())
+                .withZoneSameInstant(ZoneId.of("Z")) );
         assertTrue(VEventImpl.isEqualTo(expectedV, v));
     }
     
     @Test
-    //@Ignore
     public void canDeleteSeriesWithRecurrencesEdit()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -1299,12 +1295,12 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         // verify VComponent changes
         assertEquals(1, agenda.vComponents().size());
         VEventImpl expectedV = ICalendarStaticVEvents.getDaily1();
-        expectedV.getRRule().setUntil(LocalDateTime.of(2015, 11, 10, 23, 59, 59));
+        expectedV.getRRule().setUntil( ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 10, 0), ZoneId.systemDefault())
+                .withZoneSameInstant(ZoneId.of("Z")) );
         assertTrue(VEventImpl.isEqualTo(expectedV, v));
     }
     
     @Test
-    //@Ignore
     public void canEditVComponent2()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -1331,7 +1327,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         closeCurrentWindow();
     }
     
-    // edit appointments made by drawing on Agenda
+    // create appointment made by drawing on Agenda
     private void renderAppointmentByDragging()
     {;
         Assert.assertEquals(0, agenda.appointments().size());
@@ -1346,9 +1342,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
         
     @Test
-   //@Ignore
-    // TODO - MOVE TO NEW APPOINTMENT POPUP TEST
-    public void renderRepeatableAppointmentByDragging()
+    public void canCreateAppointmentByDraggingAndMakeRepeatable()
     {
         renderAppointmentByDragging();
         // Open edit popup
@@ -1371,18 +1365,15 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "CREATED:" + VComponent.temporalToString(v.getDateTimeCreated()) + System.lineSeparator()
+                + "CREATED:" + DateTimeType.temporalToString(v.getDateTimeCreated()) + System.lineSeparator()
                 + "DTEND;TZID=" + zone + ":20151111T120000" + System.lineSeparator()
-                + "DTSTAMP:" + VComponent.temporalToString(v.getDateTimeStamp()) + System.lineSeparator()
+                + "DTSTAMP:" + DateTimeType.temporalToString(v.getDateTimeStamp()) + System.lineSeparator()
                 + "DTSTART;TZID=" + zone + ":20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=WEEKLY;BYDAY=WE,FR,MO" + System.lineSeparator()
                 + "SEQUENCE:1" + System.lineSeparator()
                 + "SUMMARY:New" + System.lineSeparator()
                 + "UID:20151108T000000-0jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
-//        System.out.println(v.toComponentText());
-//        System.out.println("***");
-//        System.out.println(expectedString);
         Assert.assertEquals(expectedString, v.toComponentText());
         
         List<LocalDateTime> dates = agenda.appointments()
@@ -1398,8 +1389,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
-    public void createRepeatableAppointment2()
+    public void canCreateAppointmentByDraggingAndMakeRepeatable2()
     {
         renderAppointmentByDragging();
         move("#hourLine11");
@@ -1429,9 +1419,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "CREATED:" + VComponent.temporalToString(v.getDateTimeCreated()) + System.lineSeparator()
+                + "CREATED:" + DateTimeType.temporalToString(v.getDateTimeCreated()) + System.lineSeparator()
                 + "DTEND;TZID=" + zone + ":20151111T120000" + System.lineSeparator()
-                + "DTSTAMP:" + VComponent.temporalToString(v.getDateTimeStamp()) + System.lineSeparator()
+                + "DTSTAMP:" + DateTimeType.temporalToString(v.getDateTimeStamp()) + System.lineSeparator()
                 + "DTSTART;TZID=" + zone + ":20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6" + System.lineSeparator()
                 + "SEQUENCE:1" + System.lineSeparator()

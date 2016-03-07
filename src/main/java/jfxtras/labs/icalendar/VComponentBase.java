@@ -554,7 +554,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
-        String dateTime = VComponent.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String dateTime = DateTimeType.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };
@@ -612,6 +612,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
           , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
     {
         final RRuleType rruleType = RRuleType.getRRuleType(getRRule(), vComponentOriginal.getRRule());
+        System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         Collection<I> newInstances = null;
         switch (rruleType)
@@ -635,12 +636,12 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                 if (provideDialog)
                 {
                     Map<ChangeDialogOption, StartEndRange> choices = ChangeDialogOption.makeDialogChoices(this, startOriginalInstance);
-//                    List<ChangeDialogOption> choices = makeDialogChoices(startOriginalInstance);
                     changeResponse = dialogCallback.call(choices);
                 } else
                 {
                     changeResponse = ChangeDialogOption.ALL;
                 }
+                System.out.println("changeResponse:" + changeResponse);
                 switch (changeResponse)
                 {
                 case ALL:
@@ -651,7 +652,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                         {
                             getRRule().recurrences().forEach(v ->
                             {
-                                Temporal newRecurreneId = adjustStart(v.getDateTimeRecurrence(), startOriginalInstance, startInstance, endInstance);
+                                Temporal newRecurreneId = adjustRecurrenceStart(v.getDateTimeRecurrence(), startOriginalInstance, startInstance, endInstance);
                                 v.setDateTimeRecurrence(newRecurreneId);
                             });
                         }
@@ -697,12 +698,12 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             , Temporal startInstance
             , Temporal endInstance)
     {
-        Temporal newStart = adjustStart(getDateTimeStart(), startOriginalInstance, startInstance, endInstance);
+        Temporal newStart = adjustRecurrenceStart(getDateTimeStart(), startOriginalInstance, startInstance, endInstance);
         setDateTimeStart(newStart);
     }
     
     /* Adjust DTSTART of RECURRENCE-ID */
-    private static Temporal adjustStart(Temporal initialStart
+    private static Temporal adjustRecurrenceStart(Temporal initialStart
             , Temporal startOriginalInstance
             , Temporal startInstance
             , Temporal endInstance)
@@ -799,7 +800,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
      */
     protected Collection<I> editOne(
-            VComponent<I> vEventOriginal
+            VComponent<I> vComponentOriginal
           , Collection<VComponent<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
@@ -808,7 +809,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     {
         // Remove RRule and set parent component
         setRRule(null);
-        setParent(vEventOriginal);
+        setParent(vComponentOriginal);
 
         // Apply dayShift, account for editing instance beyond first
         Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startOriginalInstance));
@@ -819,21 +820,21 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
    
         // Add recurrence to original vEvent
-        vEventOriginal.getRRule().recurrences().add(this);
+        vComponentOriginal.getRRule().recurrences().add(this);
         
         // Check for validity
         if (! isValid()) throw new RuntimeException(errorString());
-        if (! vEventOriginal.isValid()) throw new RuntimeException(vEventOriginal.errorString());
+        if (! vComponentOriginal.isValid()) throw new RuntimeException(vComponentOriginal.errorString());
         
         // Remove old instances, add back ones
         Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to instances
         instancesTemp.addAll(instances);
-        instancesTemp.removeIf(a -> vEventOriginal.instances().stream().anyMatch(a2 -> a2 == a));
-        vEventOriginal.instances().clear(); // clear vEventOriginal outdated collection of instances
-        instancesTemp.addAll(vEventOriginal.makeInstances()); // make new instances and add to main collection (added to vEventNew's collection in makeinstances)
+        instancesTemp.removeIf(a -> vComponentOriginal.instances().stream().anyMatch(a2 -> a2 == a));
+        vComponentOriginal.instances().clear(); // clear vEventOriginal outdated collection of instances
+        instancesTemp.addAll(vComponentOriginal.makeInstances()); // make new instances and add to main collection (added to vEventNew's collection in makeinstances)
         instances().clear(); // clear vEvent outdated collection of instances
         instancesTemp.addAll(makeInstances()); // add vEventOld part of new instances
-        vComponents.add(vEventOriginal);
+        vComponents.add(vComponentOriginal);
         return instancesTemp;
     }
     
@@ -866,12 +867,15 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             untilNew = LocalDate.from(startOriginalInstance).minus(1, ChronoUnit.DAYS);
         } else
         {
-            Temporal temporal = startOriginalInstance.minus(1, ChronoUnit.NANOS);
-            untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
+//            Temporal temporal = startOriginalInstance.minus(1, ChronoUnit.NANOS);
+//            untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
+            untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue(startInstance));
         }
         vComponentOriginal.getRRule().setUntil(untilNew);
         
+        
         setDateTimeStart(startInstance);
+        adjustDateTime(startInstance, startInstance, endInstance);
         setUniqueIdentifier();
         String relatedUID = (vComponentOriginal.getRelatedTo() == null) ? vComponentOriginal.getUniqueIdentifier() : vComponentOriginal.getRelatedTo();
         setRelatedTo(relatedUID);
@@ -1015,8 +1019,11 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                     untilNew = LocalDate.from(startInstance).minus(1, ChronoUnit.DAYS);
                 } else
                 {
-                    Temporal temporal = startInstance.minus(1, ChronoUnit.NANOS);
-                    untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
+                    // UNTIL IS INCLUSIVE - FIND PREVIOUS INSTANCE DATE-TIME - CONVERT TO UTC
+                    untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue(startInstance));
+                    System.out.println("start instance:" + startInstance + " " + untilNew);
+//                    Temporal temporal = startInstance.minus(1, ChronoUnit.NANOS);
+//                    untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
                 }
                 getRRule().setUntil(untilNew);
 

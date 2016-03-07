@@ -161,26 +161,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         instances.addAll(newInstances);
         assertEquals(7, instances.size()); // check if there are only 3 instances
         VEventMock vEventOriginal = new VEventMock(vEvent);
-        
-        // select InstanceMock (get recurrence date)
-        Iterator<InstanceMock> instanceIterator = instances.iterator();
-        instanceIterator.next(); // skip first
-        instanceIterator.next(); // skip second
-        InstanceMock selectedInstance = instanceIterator.next();
-        Temporal startOriginalInstance = selectedInstance.getStartTemporal();
-        
-        // apply changes
-        LocalDate newDate = LocalDate.from(selectedInstance.getStartTemporal());
-        selectedInstance.setStartTemporal(newDate.atTime(9, 45)); // change start time
-        selectedInstance.setEndTemporal(newDate.atTime(10, 30)); // change end time
-        Temporal startInstance = selectedInstance.getStartTemporal();
-        Temporal endInstance = selectedInstance.getEndTemporal();
-        long startShift = ChronoUnit.NANOS.between(startOriginalInstance, startInstance);
-        Temporal dtStart = vEvent.getDateTimeStart().plus(startShift, ChronoUnit.NANOS);
-        long duration = ChronoUnit.NANOS.between(selectedInstance.getStartTemporal(), selectedInstance.getEndTemporal());
-        Temporal dtEnd = dtStart.plus(duration, ChronoUnit.NANOS);
-        vEvent.setDateTimeStart(dtStart);
-        vEvent.setDateTimeEnd(dtEnd);
+
+        Temporal startOriginalInstance = LocalDateTime.of(2015, 11, 17, 10, 0);
+        Temporal startInstance = LocalDateTime.of(2015, 11, 17, 9, 45);
+        Temporal endInstance = LocalDateTime.of(2015, 11, 17, 10, 30);
 
         vEvent.handleEdit(
                 vEventOriginal
@@ -190,6 +174,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , endInstance
               , instances
               , (m) -> ChangeDialogOption.THIS_AND_FUTURE);
+        
+        System.out.println("after edit:" + vEvent);
         
         assertEquals(2, vComponents.size());
         
@@ -214,7 +200,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventMock expectedVEvent0 = getDaily1()
                 .withRRule(new RRule()
                         .withFrequency(new Daily())
-                        .withUntil(LocalDateTime.of(2015, 11, 16, 23, 59, 59)));
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 16, 10, 0), ZoneId.systemDefault())
+                                .withZoneSameInstant(ZoneId.of("Z"))));
         assertTrue(VEventMock.isEqualTo(expectedVEvent0, vEvent0));
         
         VEventMock expectedVEvent1 = getDaily1()
@@ -360,6 +347,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         instances.addAll(newInstances);
         assertEquals(4, instances.size()); // check if there are only 3 instances
         VEventMock vEventOriginal = new VEventMock(vEvent);
+        System.out.println("vEventOriginal:" + vEventOriginal.getRRule());
 
         // apply changes
         Temporal startOriginalInstance = ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 12, 30), ZoneId.of("America/Los_Angeles"));

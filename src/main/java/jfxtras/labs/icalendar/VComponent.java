@@ -1,21 +1,11 @@
 package jfxtras.labs.icalendar;
 
-import static java.time.temporal.ChronoField.DAY_OF_MONTH;
-import static java.time.temporal.ChronoField.HOUR_OF_DAY;
-import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
-import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
-import static java.time.temporal.ChronoField.YEAR;
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.SignStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Collection;
@@ -137,42 +127,42 @@ instances into one property internally.
  * */
 public interface VComponent<I>
 {
-    final static DateTimeFormatter LOCAL_DATE_FORMATTER = new DateTimeFormatterBuilder()
-            .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-            .appendValue(MONTH_OF_YEAR, 2)
-            .appendValue(DAY_OF_MONTH, 2)
-            .toFormatter();
-    final static DateTimeFormatter LOCAL_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .appendValue(HOUR_OF_DAY, 2)
-            .appendValue(MINUTE_OF_HOUR, 2)
-            .appendValue(SECOND_OF_MINUTE, 2)
-            .toFormatter();
-    final static DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .parseCaseInsensitive()
-            .append(LOCAL_DATE_FORMATTER)
-            .appendLiteral('T')
-            .append(LOCAL_TIME_FORMATTER)
-            .toFormatter();
-    final static DateTimeFormatter ZONED_DATE_TIME_UTC_FORMATTER = new DateTimeFormatterBuilder()
-            .append(LOCAL_DATE_TIME_FORMATTER)
-            .appendOffsetId()
-            .toFormatter();
-    final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .optionalStart()
-            .parseCaseInsensitive()
-            .appendLiteral("TZID=")
-            .appendZoneRegionId()
-            .appendLiteral(':')
-            .optionalEnd()
-            .append(LOCAL_DATE_TIME_FORMATTER)
-            .toFormatter();
-    final static DateTimeFormatter ZONE_FORMATTER = new DateTimeFormatterBuilder()
-            .optionalStart()
-            .parseCaseInsensitive()
-            .appendLiteral("TZID=")
-            .appendZoneRegionId()
-            .optionalEnd()
-            .toFormatter();
+//    final static DateTimeFormatter LOCAL_DATE_FORMATTER = new DateTimeFormatterBuilder()
+//            .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+//            .appendValue(MONTH_OF_YEAR, 2)
+//            .appendValue(DAY_OF_MONTH, 2)
+//            .toFormatter();
+//    final static DateTimeFormatter LOCAL_TIME_FORMATTER = new DateTimeFormatterBuilder()
+//            .appendValue(HOUR_OF_DAY, 2)
+//            .appendValue(MINUTE_OF_HOUR, 2)
+//            .appendValue(SECOND_OF_MINUTE, 2)
+//            .toFormatter();
+//    final static DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+//            .parseCaseInsensitive()
+//            .append(LOCAL_DATE_FORMATTER)
+//            .appendLiteral('T')
+//            .append(LOCAL_TIME_FORMATTER)
+//            .toFormatter();
+//    final static DateTimeFormatter ZONED_DATE_TIME_UTC_FORMATTER = new DateTimeFormatterBuilder()
+//            .append(LOCAL_DATE_TIME_FORMATTER)
+//            .appendOffsetId()
+//            .toFormatter();
+//    final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+//            .optionalStart()
+//            .parseCaseInsensitive()
+//            .appendLiteral("TZID=")
+//            .appendZoneRegionId()
+//            .appendLiteral(':')
+//            .optionalEnd()
+//            .append(LOCAL_DATE_TIME_FORMATTER)
+//            .toFormatter();
+//    final static DateTimeFormatter ZONE_FORMATTER = new DateTimeFormatterBuilder()
+//            .optionalStart()
+//            .parseCaseInsensitive()
+//            .appendLiteral("TZID=")
+//            .appendZoneRegionId()
+//            .optionalEnd()
+//            .toFormatter();
 
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -699,82 +689,7 @@ public interface VComponent<I>
         return ld1.compareTo(ld2);
     };
     
-    /** Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
-     * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000 (LocalDateTime)
-     * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z (ZonedDateTime)
-     * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000 (ZonedDateTime)
-     * FORM #4: DATE ONLY e.g. VALUE=DATE:19970304 (LocalDate)
-     * 
-     * Note: strings can contain optionally contain "VALUE" "=" ("DATE-TIME" / "DATE")) before the date-time portion of the string.
-     * e.g. VALUE=DATE:19960401         VALUE=DATE-TIME:19980101T050000Z
-     * 
-     * Based on ISO.8601.2004
-     */
-    static Temporal parseTemporal(String temporalString)
-    {
-        final String form1 = "^[0-9]{8}T([0-9]{6})";
-        final String form2 = "^[0-9]{8}T([0-9]{6})Z";
-        final String form3 = "^(TZID=.*:)[0-9]{8}T([0-9]{6})";
-        final String form4 = "^(VALUE=DATE:)?[0-9]{8}";
-        if (temporalString.matches("^VALUE=DATE-TIME:.*")) // remove optional VALUE=DATE-TIME
-        {
-            temporalString = temporalString.substring(temporalString.indexOf("VALUE=DATE-TIME:")+"VALUE=DATE-TIME:".length()).trim();
-        }
-        if (temporalString.matches(form1))
-        {
-            return LocalDateTime.parse(temporalString, LOCAL_DATE_TIME_FORMATTER);
-        } else if (temporalString.matches(form2))
-        {
-            return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_UTC_FORMATTER);
-        } else if (temporalString.matches(form3))
-        {
-            return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_FORMATTER);            
-        } else if (temporalString.matches(form4))
-        {
-            if (temporalString.matches("^VALUE=DATE:.*"))
-            {
-                temporalString = temporalString.substring(temporalString.indexOf("VALUE=DATE:")+"VALUE=DATE:".length()).trim();
-            }
-            return LocalDate.parse(temporalString, LOCAL_DATE_FORMATTER);
-        } else
-        {
-            throw new IllegalArgumentException("String does not match any DATE or DATE-TIME patterns: " + temporalString);
-        }
-    }
-    
-    /**
-     * Convert temporal, either LocalDate or LocalDateTime to appropriate iCalendar string
-     * Examples:
-     * 19980119T020000
-     * 19980119
-     * 
-     * @param temporal LocalDate or LocalDateTime
-     * @return iCalendar date or date/time string based on ISO.8601.2004
-     */
-    static String temporalToString(Temporal temporal)
-    {
-        if (temporal == null) return null;
-        if (temporal instanceof ZonedDateTime)
-        {
-            ZoneOffset offset = ((ZonedDateTime) temporal).getOffset();
-            if (offset == ZoneOffset.UTC)
-            {
-                return ZONED_DATE_TIME_UTC_FORMATTER.format(temporal);
-            } else
-            {
-                return LOCAL_DATE_TIME_FORMATTER.format(temporal); // don't use ZONED_DATE_TIME_FORMATTER because time zone is added to property tag
-            }
-        } else if (temporal instanceof LocalDateTime)
-        {
-            return LOCAL_DATE_TIME_FORMATTER.format(temporal);
-        } else if (temporal instanceof LocalDate)
-        {
-            return LOCAL_DATE_FORMATTER.format(temporal);
-        } else
-        {
-            throw new DateTimeException("Invalid temporal type:" + temporal.getClass().getSimpleName());
-        }
-    }
+
     
 //    /**
 //     * Returns LocalDateTime from Temporal that is an instance of either LocalDate or LocalDateTime
@@ -905,37 +820,6 @@ public interface VComponent<I>
         }
         if (count == 0) throw new RuntimeException("Invalid VComponent: no instances in recurrence set");
         return count;
-    }
-    
-    /**
-     * Produces property name and attribute, if necessary.
-     * For example:
-     * LocalDate : DTSTART;VALUE=DATE:
-     * LocalDateTime : DTSTART:
-     * ZonedDateTime (UTC) : DTSTART:
-     * ZonedDateTime : DTEND;TZID=America/New_York:
-     * 
-     * @param propertyName
-     * @param t - temporal of LocalDate, LocalDateTime or ZonedDateTime
-     * @return
-     */
-    static String makeDateTimePropertyTag(String propertyName, Temporal t)
-    {
-        if (t instanceof ZonedDateTime)
-        {
-            String zone = VComponent.ZONE_FORMATTER.format(t);
-            if (zone.isEmpty())
-            {
-                return propertyName + ":";                
-            } else
-            {
-                return propertyName + ";" + zone + ":";                
-            }
-        } else
-        {
-            String prefex = (t instanceof LocalDate) ? ";VALUE=DATE:" : ":";
-            return propertyName + prefex;
-        }
     }
 
     /**

@@ -1,10 +1,21 @@
 package jfxtras.labs.icalendar;
 
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
+import static java.time.temporal.ChronoField.YEAR;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.SignStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 
@@ -132,7 +143,156 @@ public enum DateTimeType
      * a date-time one.
      */
     public static final DateTimeType DEFAULT_DATE_TIME_TYPE = DateTimeType.DATE_WITH_UTC_TIME;
+
+    final static DateTimeFormatter LOCAL_DATE_FORMATTER = new DateTimeFormatterBuilder()
+            .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(MONTH_OF_YEAR, 2)
+            .appendValue(DAY_OF_MONTH, 2)
+            .toFormatter();
+    final static DateTimeFormatter LOCAL_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .appendValue(HOUR_OF_DAY, 2)
+            .appendValue(MINUTE_OF_HOUR, 2)
+            .appendValue(SECOND_OF_MINUTE, 2)
+            .toFormatter();
+    public final static DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .append(LOCAL_DATE_FORMATTER)
+            .appendLiteral('T')
+            .append(LOCAL_TIME_FORMATTER)
+            .toFormatter();
+    public final static DateTimeFormatter ZONED_DATE_TIME_UTC_FORMATTER = new DateTimeFormatterBuilder()
+            .append(LOCAL_DATE_TIME_FORMATTER)
+            .appendOffsetId()
+            .toFormatter();
+    final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .optionalStart()
+            .parseCaseInsensitive()
+            .appendLiteral("TZID=")
+            .appendZoneRegionId()
+            .appendLiteral(':')
+            .optionalEnd()
+            .append(LOCAL_DATE_TIME_FORMATTER)
+            .toFormatter();
+    final static DateTimeFormatter ZONE_FORMATTER = new DateTimeFormatterBuilder()
+            .optionalStart()
+            .parseCaseInsensitive()
+            .appendLiteral("TZID=")
+            .appendZoneRegionId()
+            .optionalEnd()
+            .toFormatter();
     
+    /** Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
+     * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000 (LocalDateTime)
+     * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z (ZonedDateTime)
+     * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000 (ZonedDateTime)
+     * FORM #4: DATE ONLY e.g. VALUE=DATE:19970304 (LocalDate)
+     * 
+     * Note: strings can contain optionally contain "VALUE" "=" ("DATE-TIME" / "DATE")) before the date-time portion of the string.
+     * e.g. VALUE=DATE:19960401         VALUE=DATE-TIME:19980101T050000Z
+     * 
+     * Based on ISO.8601.2004
+     */
+    @Deprecated // put regex into abstract methods and loop through all enums for match
+    public
+    static Temporal parseTemporal(String temporalString)
+    {
+        final String form1 = "^[0-9]{8}T([0-9]{6})";
+        final String form2 = "^[0-9]{8}T([0-9]{6})Z";
+        final String form3 = "^(TZID=.*:)[0-9]{8}T([0-9]{6})";
+        final String form4 = "^(VALUE=DATE:)?[0-9]{8}";
+        if (temporalString.matches("^VALUE=DATE-TIME:.*")) // remove optional VALUE=DATE-TIME
+        {
+            temporalString = temporalString.substring(temporalString.indexOf("VALUE=DATE-TIME:")+"VALUE=DATE-TIME:".length()).trim();
+        }
+        if (temporalString.matches(form1))
+        {
+            return LocalDateTime.parse(temporalString, LOCAL_DATE_TIME_FORMATTER);
+        } else if (temporalString.matches(form2))
+        {
+            return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_UTC_FORMATTER);
+        } else if (temporalString.matches(form3))
+        {
+            return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_FORMATTER);            
+        } else if (temporalString.matches(form4))
+        {
+            if (temporalString.matches("^VALUE=DATE:.*"))
+            {
+                temporalString = temporalString.substring(temporalString.indexOf("VALUE=DATE:")+"VALUE=DATE:".length()).trim();
+            }
+            return LocalDate.parse(temporalString, LOCAL_DATE_FORMATTER);
+        } else
+        {
+            throw new IllegalArgumentException("String does not match any DATE or DATE-TIME patterns: " + temporalString);
+        }
+    }
+    
+    /**
+     * Convert temporal, either LocalDate or LocalDateTime to appropriate iCalendar string
+     * Examples:
+     * 19980119T020000
+     * 19980119
+     * 
+     * @param temporal LocalDate or LocalDateTime
+     * @return iCalendar date or date/time string based on ISO.8601.2004
+     */
+    @Deprecated // put inside abstract methods, loop through to find match
+    public
+    static String temporalToString(Temporal temporal)
+    {
+        if (temporal == null) return null;
+        if (temporal instanceof ZonedDateTime)
+        {
+            ZoneOffset offset = ((ZonedDateTime) temporal).getOffset();
+            if (offset == ZoneOffset.UTC)
+            {
+                return ZONED_DATE_TIME_UTC_FORMATTER.format(temporal);
+            } else
+            {
+                return LOCAL_DATE_TIME_FORMATTER.format(temporal); // don't use ZONED_DATE_TIME_FORMATTER because time zone is added to property tag
+            }
+        } else if (temporal instanceof LocalDateTime)
+        {
+            return LOCAL_DATE_TIME_FORMATTER.format(temporal);
+        } else if (temporal instanceof LocalDate)
+        {
+            return LOCAL_DATE_FORMATTER.format(temporal);
+        } else
+        {
+            throw new DateTimeException("Invalid temporal type:" + temporal.getClass().getSimpleName());
+        }
+    }
+    
+    /**
+     * Produces property name and attribute, if necessary.
+     * For example:
+     * LocalDate : DTSTART;VALUE=DATE:
+     * LocalDateTime : DTSTART:
+     * ZonedDateTime (UTC) : DTSTART:
+     * ZonedDateTime : DTEND;TZID=America/New_York:
+     * 
+     * @param propertyName
+     * @param t - temporal of LocalDate, LocalDateTime or ZonedDateTime
+     * @return
+     */
+    static String makeDateTimePropertyTag(String propertyName, Temporal t)
+    {
+        if (t instanceof ZonedDateTime)
+        {
+            String zone = ZONE_FORMATTER.format(t);
+            if (zone.isEmpty())
+            {
+                return propertyName + ":";                
+            } else
+            {
+                return propertyName + ";" + zone + ":";                
+            }
+        } else
+        {
+            String prefex = (t instanceof LocalDate) ? ";VALUE=DATE:" : ":";
+            return propertyName + prefex;
+        }
+    }
+        
     /** Find DateTimeType of Temporal parameter t */
     public static DateTimeType of(Temporal temporal)
     {
@@ -157,93 +317,6 @@ public enum DateTimeType
             throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
         }
     }
-    
-//    /*
-//     * Change a Temporal type to match new DateTimeType outputType
-//     * 
-//     * When changing a ZonedDateTime it is first adjusted to the DEFAULT_ZONE to ensure
-//     * proper local time.
-//     */
-//    @Deprecated // use from method instead
-//    public static Temporal changeTemporal(Temporal temporal, DateTimeType outputType)
-//    {
-//        DateTimeType initialType = of(temporal);
-//        if (initialType == outputType)
-//        {
-//            return temporal; // nothing to do;
-//        } else
-//        {
-//            switch (initialType)
-//            {
-//            case DATE:
-//                switch(outputType)
-//                {
-//                case DATE:
-//                    return temporal; // do nothing
-//                case DATE_WITH_LOCAL_TIME:
-//                    return LocalDate.from(temporal).atStartOfDay();
-//                case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-//                    return LocalDate.from(temporal).atStartOfDay().atZone(DEFAULT_ZONE);
-//                case DATE_WITH_UTC_TIME:
-//                    return LocalDate.from(temporal).atStartOfDay().atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
-//                default:
-//                    throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
-//                }
-//            case DATE_WITH_LOCAL_TIME:
-//                switch(outputType)
-//                {
-//                case DATE:
-//                    return LocalDate.from(temporal);
-//                case DATE_WITH_LOCAL_TIME:
-//                    return temporal; // do nothing
-//                case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-//                    return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE);
-//                case DATE_WITH_UTC_TIME:
-//                    return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
-//                default:
-//                    throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
-//                }
-//            case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-//            {
-//                ZonedDateTime myZonedDateTime;
-//                switch(outputType)
-//                {
-//                case DATE:
-//                    myZonedDateTime = ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE);
-//                    return LocalDate.from(myZonedDateTime);
-//                case DATE_WITH_LOCAL_TIME:
-//                    myZonedDateTime = ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE);
-//                    return LocalDateTime.from(myZonedDateTime);
-//                case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-//                    return temporal; // do nothing
-//                case DATE_WITH_UTC_TIME:
-//                    return ZonedDateTime.from(temporal).withZoneSameInstant(ZoneId.of("Z"));
-//                default:
-//                    throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
-//                }
-//            }
-//            case DATE_WITH_UTC_TIME:
-//            {
-//                ZonedDateTime myZonedDateTime = ZonedDateTime.from(temporal).withZoneSameInstant(DEFAULT_ZONE);
-//                switch(outputType)
-//                {
-//                case DATE:
-//                    return LocalDate.from(myZonedDateTime);
-//                case DATE_WITH_LOCAL_TIME:
-//                    return LocalDateTime.from(myZonedDateTime);
-//                case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-//                    return myZonedDateTime.withZoneSameInstant(DEFAULT_ZONE);
-//                case DATE_WITH_UTC_TIME:
-//                    return temporal; // do nothing
-//                default:
-//                    throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
-//                }
-//            }
-//            default:
-//                throw new DateTimeException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
-//            }
-//        }
-//    }
         
     /**
      * Returns LocalDateTime from Temporal that is an instance of either LocalDate or LocalDateTime
