@@ -299,7 +299,7 @@ public class AppointmentEditController extends Pane
 
         // SETUP REPEATABLE CONTROLLER
         System.out.println("startInstance:" + startInstance);
-        repeatableController.setupData(vComponent, startInstance);
+        repeatableController.setupData(vComponent, startInstance, popup);
     }
 
     private void updateZone()
