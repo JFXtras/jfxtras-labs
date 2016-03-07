@@ -55,7 +55,7 @@ import jfxtras.util.NodeUtil;
  */
 public class ICalendarAgenda extends Agenda
 {   
-    public final static String iCalendarStyleSheet = ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();
+    public final static String ICALENDAR_STYLE_SHEET = ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();
     
     private LocalDateTimeRange dateTimeRange; // date range of current skin, set when localDateTimeRangeCallback fires
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
@@ -138,7 +138,7 @@ public class ICalendarAgenda extends Agenda
                 , repeatWriteCallback // write repeat callback initialized to null
                 , a -> { this.refresh(); return null; }); // refresh agenda
 
-        editPopup.getScene().getStylesheets().addAll(getUserAgentStylesheet(), iCalendarStyleSheet);
+        editPopup.getScene().getStylesheets().addAll(getUserAgentStylesheet(), ICALENDAR_STYLE_SHEET);
         // remove listeners during edit (to prevent creating extra vEvents when making appointments)
         editPopup.setOnShowing((windowEvent) -> 
         {

@@ -57,7 +57,7 @@ public class AppointmentEditLoader extends Stage {
         appointmentPopup.setId("editAppointmentPopup");
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
         Scene scene = new Scene(appointmentPopup);
-        scene.getStylesheets().addAll(ICalendarAgenda.iCalendarStyleSheet);
+        scene.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET);
         
         appointmentEditController.setupData(
                 appointment

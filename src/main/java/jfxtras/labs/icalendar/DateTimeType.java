@@ -254,6 +254,7 @@ public enum DateTimeType
      * @param temporal - either LocalDate or LocalDateTime type
      * @return LocalDateTime
      */
+    @Deprecated // use TemporalType.toLocalDateTime instead
     public static LocalDateTime localDateTimeFromTemporal(Temporal temporal)
     {
         if (temporal == null) return null;

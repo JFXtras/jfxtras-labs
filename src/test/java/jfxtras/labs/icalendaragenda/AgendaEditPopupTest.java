@@ -282,7 +282,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
 
     @Test
-    //@Ignore
     public void canChangeInterval()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -308,9 +307,37 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         closeCurrentWindow();
     }
+
+    @Test
+    public void canSetUntilDate()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+
+        // Set until date
+        click("#untilRadioButton");
+        DatePicker untilDatePicker = find("#untilDatePicker");
+        TestUtil.runThenWaitForPaintPulse( () -> untilDatePicker.setValue(LocalDate.of(2015, 11, 13)));
+
+        // save change
+        click("#saveRepeatButton");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
+        TestUtil.runThenWaitForPaintPulse(() -> c.getSelectionModel().select(ChangeDialogOption.ALL));
+        click("#changeDialogOkButton");
+        
+        // Verify state change
+        assertEquals(4, agenda.appointments().size());
+        
+        closeCurrentWindow();
+    }
     
     @Test
-    //@Ignore
     public void canChangeStartDate()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));

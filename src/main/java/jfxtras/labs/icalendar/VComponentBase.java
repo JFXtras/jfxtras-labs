@@ -39,7 +39,7 @@ import jfxtras.labs.icalendar.rrule.RRule;
  * @see VEvent
  *
  * @param <I> - recurrence instance type
- * @param <T> - Implmentation class
+ * @param <T> - Implementation class
  */
 public abstract class VComponentBase<I, T> implements VComponent<I>
 {

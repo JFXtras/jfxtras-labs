@@ -71,6 +71,18 @@ public interface Frequency {
      * @return
      */
     Stream<Temporal> stream(Temporal start);
+    
+//    /**
+//     * Determines if testedTemporal is a part of the recurrence set.
+//     * This test does NOT consider properties from outside Frequency, such as
+//     * COUNT.  Therefore, all streams are infinite.  Avoid testing values far in
+//     * the future to avoid long test times.  100 years or less should be quick enough
+//     * to be not noticed.
+//     * 
+//     * @param testedTemporal
+//     * @return
+//     */
+//    boolean isInstance(Temporal start, Temporal testedTemporal);
 
     /** Which of the enum type FrenquencyType the implementing class represents */
     FrequencyType frequencyType();
@@ -87,6 +99,7 @@ public interface Frequency {
      * @return
      */
     // TODO - FIX THIS - NOT WORKING FOR RANDOM DATES
+    @Deprecated // may not be needed anymore
     default Temporal makeFrequencyOccurrence(Temporal dateTimeStart, Temporal start)
     {
         if (VComponent.isBefore(start, dateTimeStart)) return dateTimeStart;

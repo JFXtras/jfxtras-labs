@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/** @see ExDate
+ * @see RDate */
 public interface RecurrenceComponent
 {
     /** modified start date/time stream after applying changes (additions or removals) */

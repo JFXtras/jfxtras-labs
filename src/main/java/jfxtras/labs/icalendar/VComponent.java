@@ -544,11 +544,11 @@ public interface VComponent<I>
                     {
                         if (! ((ZonedDateTime) getRRule().getUntil()).getOffset().equals(ZoneOffset.UTC))
                         {
-                            errorsBuilder.append(System.lineSeparator() + "Invalid RRule: UNTIL must be ZonedDateTime with UTC if DTSTART (dateTimeStart) is ZonedDateTime");
+                            errorsBuilder.append(System.lineSeparator() + "Invalid RRule: UNTIL must be DateTimeType DATE_WITH_UTC_TIME (not " + DateTimeType.of(getRRule().getUntil()) + ") if DTSTART (dateTimeStart) is ZonedDateTime");
                         }
                     } else
                     {
-                        errorsBuilder.append(System.lineSeparator() + "Invalid RRule: UNTIL must be ZonedDateTime wth UTC if DTSTART (dateTimeStart) is ZonedDateTime");
+                        errorsBuilder.append(System.lineSeparator() + "Invalid RRule: UNTIL must be ZonedDateTime (not " + getRRule().getUntil().getClass().getSimpleName() + ") with UTC if DTSTART (dateTimeStart) is ZonedDateTime");
                     }
                 }
             }

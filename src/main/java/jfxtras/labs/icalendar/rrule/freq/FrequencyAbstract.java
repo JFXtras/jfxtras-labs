@@ -118,7 +118,6 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         setChronoUnit(chronoUnit);
     }
 
-//    @Override
     @Override
     public Stream<Temporal> stream(Temporal start)
     {
@@ -132,6 +131,12 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         }
         return stream;
     }
+    
+//    @Override
+//    public boolean isInstance(Temporal start, Temporal timeAdjustedSelection)
+//    {
+//        
+//    }
     
     @Override
     public boolean equals(Object obj)

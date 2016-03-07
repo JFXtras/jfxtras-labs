@@ -324,7 +324,6 @@ private final ChangeListener<? super Integer> intervalSpinnerListener = (observa
     makeExceptionDates();
 };
 
-//END ON LISTENERS
 private final ChangeListener<? super LocalDate> untilListener = (observable, oldSelection, newSelection) ->
 {
     if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart())))
@@ -333,37 +332,63 @@ private final ChangeListener<? super LocalDate> untilListener = (observable, old
         untilDatePicker.setValue(oldSelection);
     } else
     {
-        Temporal lastTemporal = findUntil(newSelection);
-        if (! LocalDate.from(lastTemporal).equals(newSelection)) notOccurrenceDateAlert(lastTemporal);
-        vComponent.getRRule().setUntil(lastTemporal);
+        Temporal until = findUntil(newSelection);
+        if (! LocalDate.from(until).equals(newSelection))
+        {
+            notOccurrenceDateAlert(until);
+            untilDatePicker.setValue(LocalDate.from(until));
+        }
+        vComponent.getRRule().setUntil(until);
         refreshSummary();
-//     System.out.println("make exception5 " + observable);
         makeExceptionDates();
     }
 };
 
-// Finds last occurrence on or before d
-// Ensures the Until date is an actual occurrence date
-// TODO - SHOULD THIS METHOD BE STATIC IN A UTILITY CLASS?
-private Temporal findUntil(Temporal d)
+private final ChangeListener<? super Boolean> untilRadioButtonListener = (observable, oldSelection, newSelection) ->
 {
-    final Temporal timeAdjustedSelection;
-    if (vComponent.getDateTimeStart().isSupported(ChronoUnit.NANOS))
+    if (newSelection)
     {
-        LocalTime time = LocalTime.from(vComponent.getDateTimeStart());
-        timeAdjustedSelection = LocalDate.from(d).atTime(time);
-    } else
-    {
-        timeAdjustedSelection = d;
+        if (vComponent.getRRule().getUntil() == null)
+        { // new selection - use date/time one month in the future as default
+            boolean isInstanceFarEnoughInFuture = VComponent.isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD));
+            LocalDate defaultEndOnDateTime = (isInstanceFarEnoughInFuture) ? LocalDate.from(dateTimeStartInstanceNew) : LocalDate.from(vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD));
+            Temporal until = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
+            vComponent.getRRule().setUntil(until);
+        }
+        untilDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
+        untilDatePicker.setDisable(false);
+        untilDatePicker.show();
+        makeExceptionDates();
+    } else {
+        vComponent.getRRule().setUntil(null);
+        untilDatePicker.setDisable(true);
     }
-    vComponent.getRRule().setUntil(timeAdjustedSelection);
-    Iterator<Temporal> iterator = vComponent.getRRule().stream(dateTimeStartInstanceNew).iterator();
-    Temporal lastTemporal = null;
-    while (iterator.hasNext()) { lastTemporal = iterator.next(); }
+};
+
+/**
+ * Finds closest instance, at least one instance past DTSTART, from initialUntilDate
+ * 
+ * @param initialUntilDate - selected date from untilDatePicker
+ * @return - best match for until
+ */
+private Temporal findUntil(LocalDate initialUntilDate)
+{
+    Temporal timeAdjustedSelection = vComponent.getDateTimeStart().with(initialUntilDate);
+
+    // find last instance that is not after initialUntilDate
+    Iterator<Temporal> i = vComponent.getRRule().getFrequency().stream(vComponent.getDateTimeStart()).iterator();
+    Temporal until = i.next();
+    while (i.hasNext())
+    {
+        Temporal temporal = i.next();
+        if (VComponent.isAfter(temporal, timeAdjustedSelection)) break;
+        until = temporal;
+    }
     untilDatePicker.valueProperty().removeListener(untilListener);
-    untilDatePicker.setValue(LocalDate.from(lastTemporal));
+    untilDatePicker.setValue(LocalDate.from(until));
     untilDatePicker.valueProperty().addListener(untilListener);
-    return lastTemporal;
+    
+    return (until instanceof ZonedDateTime) ? DateTimeType.DATE_WITH_UTC_TIME.from(until) : until; // ensure type is DATE_WITH_UTC_TIME
 }
 
 // listen for changes to start date/time (type may change requiring new exception date choices)
@@ -596,27 +621,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     });
     
     untilDatePicker.valueProperty().addListener(untilListener);
-    untilRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
-    {
-        if (newSelection)
-        {
-            if (vComponent.getRRule().getUntil() == null)
-            { // new selection - use date/time one month in the future as default
-                boolean isAfter = VComponent.isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD));
-                Temporal defaultEndOnDateTime = isAfter ? dateTimeStartInstanceNew :
-                    vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD);
-                Temporal matchingOccurrence = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
-                vComponent.getRRule().setUntil(matchingOccurrence);
-            }
-            untilDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
-            untilDatePicker.setDisable(false);
-            untilDatePicker.show();
-            makeExceptionDates();
-        } else {
-            vComponent.getRRule().setUntil(null);
-            untilDatePicker.setDisable(true);
-        }
-    });
+    untilRadioButton.selectedProperty().addListener(untilRadioButtonListener);
     
     // Day of week tooltips
     sundayCheckBox.setTooltip(new Tooltip(resources.getString("sunday")));
@@ -656,6 +661,19 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             throw new RuntimeException("Unsupported VComponent");
         }
 
+//        EventHandler<? super ScrollEvent> value;
+//        exceptionsListView.setOnScrollFinished(value);
+        
+//        scro.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> 
+//        {
+//            int s = exceptionsListView.getItems().size();
+//            if (newSel == exceptionsListView.getItems().get(s))
+//            {
+//                System.out.println("end of list");
+//            }
+//                
+//        });
+//        
         // EXCEPTIONS
         // Note: exceptionComboBox string converter must be setup after the controller's initialization 
         // because the resource bundle isn't instantiated earlier.
