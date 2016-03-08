@@ -320,9 +320,11 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
             setDateTimeEnd(newEnd);
             break;
         case DURATION:
-            setDuration(Duration.between(startInstance, endInstance));
+            endType().setDuration(this, startInstance, endInstance);
+//            setDuration(Duration.between(startInstance, endInstance));
             break;
         }
+//        endType().setDuration(this, startInclusive, endExclusive);
         return super.editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
     }
 

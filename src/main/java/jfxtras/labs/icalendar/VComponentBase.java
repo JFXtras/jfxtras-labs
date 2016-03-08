@@ -824,8 +824,9 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         vComponentOriginal.getRRule().recurrences().add(this);
         
         // Check for validity
-        if (! isValid()) throw new RuntimeException(errorString());
-        if (! vComponentOriginal.isValid()) throw new RuntimeException(vComponentOriginal.errorString());
+        if (! isValid()) { throw new RuntimeException(errorString()); }
+        System.out.println("here:" + vComponentOriginal);
+        if (! vComponentOriginal.isValid()) { throw new RuntimeException(vComponentOriginal.errorString()); }
         
         // Remove old instances, add back ones
         Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to instances

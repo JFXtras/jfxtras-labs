@@ -169,7 +169,21 @@ public class AgendaChangeTest extends AgendaTestAbstract
     @Test
     public void canDragAndDropWholedayToTimeBased()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getWeeklyZoned()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getIndividual2()));
+        
+        // move one appointment
+        move("#AppointmentWholedayHeaderPane2015-11-11/0"); 
+        press(MouseButton.PRIMARY);
+        move("#hourLine10");
+        release(MouseButton.PRIMARY);
+        
+        assertEquals(1, agenda.vComponents().size());
+        VEventImpl vEvent = (VEventImpl) agenda.vComponents().get(0);
+        VEventImpl expectedVEvent = ICalendarStaticVEvents.getIndividual2()
+                .withSequence(1)
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.systemDefault()))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.systemDefault()));
+        assertTrue(VEventImpl.isEqualTo(expectedVEvent, vEvent));
     }
     
     @Test

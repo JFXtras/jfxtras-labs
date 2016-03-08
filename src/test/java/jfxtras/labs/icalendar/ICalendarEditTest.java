@@ -81,7 +81,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     }
 
     /**
-     * Tests ONE event of a daily repeat event changing date and time
+     * Tests editing ONE event of a daily repeat event changing date and time
      */
     @Test
     public void canEditOne1()
@@ -97,15 +97,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertEquals(3, instances.size()); // check if there are only 3 instances
         VEventMock vEventOriginal = new VEventMock(vEvent);
         
-        // select InstanceMock and apply changes
-        Iterator<InstanceMock> instanceIterator = instances.iterator();
-        InstanceMock selectedInstance = instanceIterator.next();
-        Temporal startOriginalInstance = selectedInstance.getStartTemporal();
-        LocalDate date = LocalDate.from(selectedInstance.getStartTemporal()).plus(1, ChronoUnit.DAYS);
-        selectedInstance.setStartTemporal(date.atTime(9, 45)); // change start time
-        selectedInstance.setEndTemporal(date.atTime(11, 0)); // change end time
-        Temporal startInstance = selectedInstance.getStartTemporal();
-        Temporal endInstance = selectedInstance.getEndTemporal();
+        // apply changes
+        Temporal startOriginalInstance = LocalDateTime.of(2015, 11, 15, 10, 0);
+        Temporal startInstance = LocalDateTime.of(2015, 11, 16, 9, 45);
+        Temporal endInstance = LocalDateTime.of(2015, 11, 16, 11, 00);
         
         vEvent.handleEdit(
                 vEventOriginal
@@ -126,6 +121,79 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 LocalDateTime.of(2015, 11, 16, 9, 45)
               , LocalDateTime.of(2015, 11, 18, 10, 0)
               , LocalDateTime.of(2015, 11, 21, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+
+        Collections.sort(vComponents, VComponent.VCOMPONENT_COMPARATOR);
+        VEventMock vEvent0 = (VEventMock) vComponents.get(0);
+        VEventMock vEvent1 = (VEventMock) vComponents.get(1);
+        VEventMock expectedVEvent0 = getDaily2()
+                .withRRule(new RRule()
+                        .withCount(6)
+                        .withFrequency(new Daily().withInterval(3))
+                        .withRecurrences(vEvent1));
+        assertTrue(VEventMock.isEqualTo(expectedVEvent0, vEvent0));
+        
+        VEventMock expectedVEvent1 = getDaily2()
+                .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 15, 10, 0))
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 16, 9, 45))
+                .withDateTimeStamp(vEvent1.getDateTimeStamp())
+                .withDuration(Duration.ofMinutes(75))
+                .withRRule(null)
+                .withSequence(1);
+        assertTrue(VEventMock.isEqualTo(expectedVEvent1, vEvent1));
+    }
+    
+    /**
+     * Tests editing first ONE event of a daily repeat event changing date and time
+     */
+    @Test
+    public void canEditFirstOne()
+    {
+        // Individual InstanceMock
+        VEventMock vEvent = getDaily2();
+        List<VComponent<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        LocalDateTime start = LocalDateTime.of(2015, 11, 8, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 11, 15, 0, 0);
+        List<InstanceMock> instances = new ArrayList<InstanceMock>();
+        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
+        instances.addAll(newInstances);
+        assertEquals(2, instances.size()); // check if there are only 3 instances
+        VEventMock vEventOriginal = new VEventMock(vEvent);
+        
+        // apply changes
+        Temporal startOriginalInstance = LocalDateTime.of(2015, 11, 9, 10, 0);
+        Temporal startInstance = LocalDate.of(2015, 11, 10);
+        Temporal endInstance = LocalDate.of(2015, 11, 11);
+        
+//        // select InstanceMock and apply changes
+//        Iterator<InstanceMock> instanceIterator = instances.iterator();
+//        InstanceMock selectedInstance = instanceIterator.next();
+//        Temporal startOriginalInstance = selectedInstance.getStartTemporal();
+//        LocalDate date = LocalDate.from(selectedInstance.getStartTemporal()).plus(1, ChronoUnit.DAYS);
+//        selectedInstance.setStartTemporal(date.atTime(9, 45)); // change start time
+//        selectedInstance.setEndTemporal(date.atTime(11, 0)); // change end time
+//        Temporal startInstance = selectedInstance.getStartTemporal();
+//        Temporal endInstance = selectedInstance.getEndTemporal();
+        
+        vEvent.handleEdit(
+                vEventOriginal
+              , vComponents
+              , startOriginalInstance
+              , startInstance
+              , endInstance
+              , instances
+              , (m) -> ChangeDialogOption.ONE);
+
+        assertEquals(2, vComponents.size());
+
+        List<Temporal> madeDates = instances.stream()
+                .map(a -> a.getStartTemporal())
+                .sorted()
+                .collect(Collectors.toList());
+        List<Temporal> expectedDates = new ArrayList<Temporal>(Arrays.asList(
+                LocalDate.of(2015, 11, 10)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
 

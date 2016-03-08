@@ -542,18 +542,18 @@ public interface VComponent<I>
                     }
                 }
             }
+            Temporal t1 = getRRule().getFrequency().stream(getDateTimeStart()).findFirst().get();
+            final Temporal first;
+            if (getExDate() != null)
+            {
+                Temporal t2 = Collections.min(getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
+                first = (DateTimeUtilities.isBefore(t1, t2)) ? t1 : t2;
+            } else
+            {
+                first = t1;
+            }           
+            if (! first.equals(getDateTimeStart())) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART (" + getDateTimeStart() + ") must be first occurrence (" + first + ")");
         }
-        Temporal t1 = stream(getDateTimeStart()).findFirst().get();
-        final Temporal first;
-        if (getExDate() != null)
-        {
-            Temporal t2 = Collections.min(getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
-            first = (DateTimeUtilities.isBefore(t1, t2)) ? t1 : t2;
-        } else
-        {
-            first = t1;
-        }           
-        if (! first.equals(getDateTimeStart())) errorsBuilder.append(System.lineSeparator() + "Invalid VComponent.  DTSTART (" + getDateTimeStart() + ") must be first occurrence (" + first + ")");
 
         if (getExDate() != null)
         {

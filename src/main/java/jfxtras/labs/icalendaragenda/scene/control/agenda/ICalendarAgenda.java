@@ -1,9 +1,11 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -110,9 +112,9 @@ public class ICalendarAgenda extends Agenda
      * listen for additions to appointments from agenda. This listener must be removed and added back when a change
      * in the time range  occurs.
      */
-    private ListChangeListener<Appointment> appointmentsChangeListener;
-    public void setAppointmentsChangeListener(ListChangeListener<Appointment> listener) { appointmentsChangeListener = listener; }
-    public ListChangeListener<Appointment> getAppointmentsChangeListener() { return appointmentsChangeListener; }
+    private ListChangeListener<Appointment> appointmentsListChangeListener;
+    public void setAppointmentsChangeListener(ListChangeListener<Appointment> listener) { appointmentsListChangeListener = listener; }
+    public ListChangeListener<Appointment> getAppointmentsChangeListener() { return appointmentsListChangeListener; }
     
     private ListChangeListener<VComponent<Appointment>> vComponentsChangeListener; // listen for changes to vComponents.
     public void setVComponentsChangeListener(ListChangeListener<VComponent<Appointment>> listener) { vComponentsChangeListener = listener; }
@@ -130,7 +132,7 @@ public class ICalendarAgenda extends Agenda
     private Callback<Appointment, Void> iCalendarEditPopupCallback = (Appointment appointment) ->
     {
         VComponent<Appointment> vComponent = findVComponent(appointment); // Match appointment to VComponent
-        appointments().removeListener(appointmentsChangeListener); // remove listener to prevent making extra vEvents during edit
+        appointments().removeListener(appointmentsListChangeListener); // remove listener to prevent making extra vEvents during edit
         Stage editPopup = new AppointmentEditLoader(
                   appointment
                 , vComponent
@@ -142,13 +144,13 @@ public class ICalendarAgenda extends Agenda
         // remove listeners during edit (to prevent creating extra vEvents when making appointments)
         editPopup.setOnShowing((windowEvent) -> 
         {
-            appointments().removeListener(appointmentsChangeListener);
+            appointments().removeListener(appointmentsListChangeListener);
             vComponents().removeListener(vComponentsChangeListener);
         });
         editPopup.show();
         editPopup.setOnHiding((windowEvent) -> 
         {
-            appointments().addListener(appointmentsChangeListener);
+            appointments().addListener(appointmentsListChangeListener);
             vComponents().addListener(vComponentsChangeListener);
         });
         return null;
@@ -204,10 +206,16 @@ public class ICalendarAgenda extends Agenda
         final Temporal endInstance;
         boolean wasDateType = DateTimeType.of(startOriginalInstance).equals(DateTimeType.DATE);
         boolean isNotDateType = ! DateTimeType.of(appointment.getStartTemporal()).equals(DateTimeType.DATE);
+        boolean isChangedToWholeDay = appointment.isWholeDay() && isNotDateType;
         if (wasDateType && isNotDateType)
         {
             startInstance = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getStartTemporal(), ZoneId.systemDefault());
             endInstance = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getEndTemporal(), ZoneId.systemDefault());
+        } else if (isChangedToWholeDay)
+        {
+            startInstance = LocalDate.from(appointment.getStartTemporal());
+            Temporal endInstanceTemp = LocalDate.from(appointment.getEndTemporal());
+            endInstance = (endInstanceTemp.equals(startInstance)) ? endInstanceTemp.plus(1, ChronoUnit.DAYS) : endInstanceTemp; // make period between start and end at least one day
         } else
         {
             startInstance = appointment.getStartTemporal();
@@ -215,7 +223,8 @@ public class ICalendarAgenda extends Agenda
         }
 
         System.out.println("change instances:" + startOriginalInstance + " " + startInstance + " " + endInstance);
-        appointments().removeListener(appointmentsChangeListener);
+        System.out.println("change localdatetime:" + appointment.getStartLocalDateTime() + " " + appointment.getEndLocalDateTime() + " " + appointment.isWholeDay());
+        appointments().removeListener(appointmentsListChangeListener);
         vComponents().removeListener(vComponentsChangeListener);
         boolean changed = vEvent.handleEdit(
                 vEventOriginal
@@ -225,7 +234,7 @@ public class ICalendarAgenda extends Agenda
               , endInstance
               , appointments()
               , oneAllThisAndFutureDialogCallback);
-        appointments().addListener(appointmentsChangeListener);
+        appointments().addListener(appointmentsListChangeListener);
         vComponents().addListener(vComponentsChangeListener);
         
 //        System.out.println("vComponents changed - added:******************************" + vComponents.size());       
@@ -272,7 +281,7 @@ public class ICalendarAgenda extends Agenda
         // Ensures VComponent are synched with appointments.
         // Are assigned here instead of when defined because it removes the vComponentsListener
         // which can't be done before its defined.
-        appointmentsChangeListener = (ListChangeListener.Change<? extends Appointment> change) ->
+        appointmentsListChangeListener = (ListChangeListener.Change<? extends Appointment> change) ->
         {
             while (change.next())
             {
@@ -388,9 +397,9 @@ public class ICalendarAgenda extends Agenda
                                         parent.getRRule().recurrences().add(v);
                                     }
                                 });
-                        appointments().removeListener(appointmentsChangeListener);
+                        appointments().removeListener(appointmentsListChangeListener);
                         appointments().addAll(newAppointments);
-                        appointments().addListener(appointmentsChangeListener);
+                        appointments().addListener(appointmentsListChangeListener);
                     }
                 } else if (change.wasRemoved())
                 {
@@ -425,7 +434,7 @@ public class ICalendarAgenda extends Agenda
         };
 
         // Listen for changes to appointments (additions and deletions)
-        appointments().addListener(appointmentsChangeListener);
+        appointments().addListener(appointmentsListChangeListener);
         
         // Keeps appointmentRecurrenceIDMap and appointmentVComponentMap synched with appointments
         ListChangeListener<Appointment> appointmentsListener2 = (ListChangeListener.Change<? extends Appointment> change) ->
@@ -489,7 +498,7 @@ public class ICalendarAgenda extends Agenda
             this.dateTimeRange = dateTimeRange;
             if (dateTimeRange != null)
             {        
-                appointments().removeListener(appointmentsChangeListener); // remove appointmentListener to prevent making extra vEvents during refresh
+                appointments().removeListener(appointmentsListChangeListener); // remove appointmentListener to prevent making extra vEvents during refresh
                 appointments().clear();
                 vComponents().stream().forEach(v ->
                 {
@@ -505,7 +514,7 @@ public class ICalendarAgenda extends Agenda
                         appointmentVComponentMap.put(System.identityHashCode(a), v); // populate appointment-vComponent map
                     });
                 });
-                appointments().addListener(appointmentsChangeListener); // add back appointmentListener
+                appointments().addListener(appointmentsListChangeListener); // add back appointmentListener
             }
             return null; // return argument for the Callback
         });

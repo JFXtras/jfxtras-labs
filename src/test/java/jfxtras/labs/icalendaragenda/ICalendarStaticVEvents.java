@@ -176,6 +176,7 @@ public final class ICalendarStaticVEvents
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
     
+    // Whole day events
     static VEventImpl getIndividual2()
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
