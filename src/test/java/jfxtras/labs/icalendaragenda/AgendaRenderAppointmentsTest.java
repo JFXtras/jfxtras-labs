@@ -33,8 +33,8 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     public void renderAppointments()
     {
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.appointments().removeListener(agenda.getAppointmentsChangeListener());
-            agenda.setAppointmentsChangeListener(null);
+            agenda.appointments().removeListener(agenda.getAppointmentsListChangeListener());
+            agenda.setAppointmentsListChangeListener(null);
             agenda.appointments().add( new Agenda.AppointmentImplTemporal()
                     .withStartLocalDateTime(LocalDateTime.of(2015, 11, 11, 10, 0))
                     .withEndLocalDateTime(LocalDateTime.of(2015, 11, 11, 12, 0))

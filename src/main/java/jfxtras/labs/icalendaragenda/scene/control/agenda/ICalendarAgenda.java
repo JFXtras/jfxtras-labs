@@ -38,7 +38,7 @@ import jfxtras.labs.icalendar.VComponent.StartEndRange;
 import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentEditLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectOneLoader;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectedOneAppointmentLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.util.NodeUtil;
@@ -113,8 +113,8 @@ public class ICalendarAgenda extends Agenda
      * in the time range  occurs.
      */
     private ListChangeListener<Appointment> appointmentsListChangeListener;
-    public void setAppointmentsChangeListener(ListChangeListener<Appointment> listener) { appointmentsListChangeListener = listener; }
-    public ListChangeListener<Appointment> getAppointmentsChangeListener() { return appointmentsListChangeListener; }
+    public void setAppointmentsListChangeListener(ListChangeListener<Appointment> listener) { appointmentsListChangeListener = listener; }
+    public ListChangeListener<Appointment> getAppointmentsListChangeListener() { return appointmentsListChangeListener; }
     
     private ListChangeListener<VComponent<Appointment>> vComponentsChangeListener; // listen for changes to vComponents.
     public void setVComponentsChangeListener(ListChangeListener<VComponent<Appointment>> listener) { vComponentsChangeListener = listener; }
@@ -162,16 +162,16 @@ public class ICalendarAgenda extends Agenda
      * When one appointment is selected this callback is run.  It can be used to open a popup to provide edit,
      * delete or other edit options.
      */
-    public Callback<Appointment, Void> getOneAppointmentSelectedCallback() { return oneAppointmentSelectedCallback; }
-    private SelectOneLoader oneSelectedPopup; // TODO - is this necessary?
-    private Callback<Appointment, Void> oneAppointmentSelectedCallback = (Appointment appointment) ->
+    public Callback<Appointment, Void> getSelectedOneAppointmentCallback() { return selectedOneAppointmentCallback; }
+    private Callback<Appointment, Void> selectedOneAppointmentCallback = (Appointment appointment) ->
     {
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
-        oneSelectedPopup = new SelectOneLoader(this, appointment, appointments());
+        SelectedOneAppointmentLoader oneSelectedPopup = new SelectedOneAppointmentLoader(this, appointment);
         oneSelectedPopup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
+        oneSelectedPopup.focusedProperty().addListener((obs) -> oneSelectedPopup.hide());
         return null;
     };
-    public void setOneAppointmentSelectedCallback(Callback<Appointment, Void> c) { oneAppointmentSelectedCallback = c; }
+    public void setSelectedOneAppointmentCallback(Callback<Appointment, Void> c) { selectedOneAppointmentCallback = c; }
 
     /*
      * Default simple edit popup that opens after new appointment is created.
@@ -223,8 +223,8 @@ public class ICalendarAgenda extends Agenda
             endInstance = appointment.getEndTemporal();            
         }
 
-        System.out.println("change instances:" + startOriginalInstance + " " + startInstance + " " + endInstance);
-        System.out.println("change localdatetime:" + appointment.getStartLocalDateTime() + " " + appointment.getEndLocalDateTime() + " " + appointment.isWholeDay());
+//        System.out.println("change instances:" + startOriginalInstance + " " + startInstance + " " + endInstance);
+//        System.out.println("change localdatetime:" + appointment.getStartLocalDateTime() + " " + appointment.getEndLocalDateTime() + " " + appointment.isWholeDay());
         appointments().removeListener(appointmentsListChangeListener);
         vComponents().removeListener(vComponentsChangeListener);
         boolean changed = vEvent.handleEdit(
@@ -341,7 +341,6 @@ public class ICalendarAgenda extends Agenda
                 }
                 if (change.wasRemoved())
                 {
-                    if ((oneSelectedPopup != null) && (oneSelectedPopup.isShowing())) oneSelectedPopup.hide();
                     change.getRemoved().stream().forEach(a -> 
                     { // add appointments to EXDATE
                         VComponent<Appointment> v = findVComponent(a);
@@ -482,7 +481,7 @@ public class ICalendarAgenda extends Agenda
                 if (change.wasAdded() && (selectedAppointments().size() == 1))
                 {
                     Appointment appointment = selectedAppointments().get(0);
-                    getOneAppointmentSelectedCallback().call(appointment);
+                    getSelectedOneAppointmentCallback().call(appointment);
                     VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) findVComponent(appointment);
                     System.out.println("selected vEvent:" + vEvent);
                 }
@@ -523,7 +522,7 @@ public class ICalendarAgenda extends Agenda
     
     
     // TODO - SHOULD THESE LISTENERS AND BACKING MAPS GO TO NEW CLASS?
-    private VComponent<Appointment> findVComponent(Appointment appointment)
+    public VComponent<Appointment> findVComponent(Appointment appointment)
     {
         if (appointmentVComponentMap.get(System.identityHashCode(appointment)) == null)
         { // find appointment by searching all VComponents.  Then add it to map if not present.  This can happen if multiple edits occur between refreshes.

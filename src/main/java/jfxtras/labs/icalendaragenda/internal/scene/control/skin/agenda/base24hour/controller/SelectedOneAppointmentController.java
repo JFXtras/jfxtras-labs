@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller;
 
 
-import java.util.Collection;
+import java.time.temporal.Temporal;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -10,25 +10,23 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Popup;
+import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DateTimeUtilities;
-import jfxtras.scene.control.agenda.Agenda;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
  * @author David Bal
  *
  */
-public class SelectOneController extends Rectangle
+public class SelectedOneAppointmentController extends Rectangle
 {
-    
-//    private Pane pane;
-    private Collection<Appointment> appointments;
-//    private Collection<VComponent<Appointment>> repeats;
-//    private Map<Appointment, Repeat> repeatMap;
-    private Agenda agenda;
+    private ICalendarAgenda agenda;
     private Appointment appointment;
-    private Popup popup;
+//    VComponent<Appointment> vComponent;
+//    private Collection<Appointment> appointments;
+
     
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
 
@@ -46,26 +44,18 @@ public class SelectOneController extends Rectangle
     }
 
     public void setupData(
-            Agenda agenda
-          , Appointment appointment
-          , Collection<Appointment> appointments) {
-
-//        this.pane = pane;
+            ICalendarAgenda agenda
+          , Appointment appointment)
+//          , VComponent<Appointment> vComponent
+//          , Collection<Appointment> appointments
+//          , Collection<VComponent<Appointment>> vComponents)
+    {
         this.agenda = agenda;
         this.appointment = appointment;
-        this.appointments = appointments;
-//        this.repeats = repeats;
-//        this.repeatMap = repeatMap;
-//        this.layoutHelp = layoutHelp;
-//        this.popup = popup;
-        
-        // TODO - FORMAT DIFFERENT DATE-TIME TYPES DIFFERENTLY
-//        String start = Settings.DATE_TIME_FORMAT.format(appointment.getStartTemporal());
-//        String end = Settings.DATE_FORMAT_AGENDA_END.format(appointment.getEndTemporal());
-//        String appointmentTime = start + end + " ";
+//        this.vComponent = vComponent;
+//        this.appointments = appointments;
 
         String appointmentTime = DateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
-
         appointmentTimeLabel.setText(appointmentTime);
         nameLabel.setText(appointment.getSummary());
         nameLabel.textProperty().addListener((observable, oldValue, newValue) ->  {
@@ -76,21 +66,23 @@ public class SelectOneController extends Rectangle
     
     @FXML private void handleEditAppointment()
     {
-        // TODO - HOW DO I RUN THIS HERE?
-        // NEED LISTENERS
         agenda.getEditAppointmentCallback().call(appointment);
-//        AppointmentMenu appointmentMenu = new AppointmentMenu(pane, appointment, layoutHelp);
-//        appointmentMenu.showMenu(null);
     }
 
     @FXML private void handleDeleteAppointment()
     {
-        appointments.remove(appointment);
-//        popup.hide();
-//        RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
-//        RepeatableUtilities.deleteAppointments(appointment, appointments, repeats);
+        Temporal startInstance = appointment.getStartTemporal();
+        VComponent<Appointment> vComponent = agenda.findVComponent(appointment);
+        agenda.appointments().removeListener(agenda.getAppointmentsListChangeListener());
+        vComponent.handleDelete(
+                agenda.vComponents()
+              , startInstance
+              , appointment
+              , agenda.appointments()
+              , DeleteChoiceDialog.DELETE_DIALOG_CALLBACK);
+        agenda.appointments().addListener(agenda.getAppointmentsListChangeListener());
 
-//        layoutHelp.skin.setupAppointments();    // refresh appointment graphics
-    }
-    
+//        popup.close();
+//        appointments.remove(appointment);
+    }    
 }
