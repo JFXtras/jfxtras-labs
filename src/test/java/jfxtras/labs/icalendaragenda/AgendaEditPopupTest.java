@@ -35,7 +35,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
-import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
@@ -1365,9 +1365,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "CREATED:" + DateTimeType.temporalToString(v.getDateTimeCreated()) + System.lineSeparator()
+                + "CREATED:" + DateTimeUtilities.format(v.getDateTimeCreated()) + System.lineSeparator()
                 + "DTEND;TZID=" + zone + ":20151111T120000" + System.lineSeparator()
-                + "DTSTAMP:" + DateTimeType.temporalToString(v.getDateTimeStamp()) + System.lineSeparator()
+                + "DTSTAMP:" + DateTimeUtilities.format(v.getDateTimeStamp()) + System.lineSeparator()
                 + "DTSTART;TZID=" + zone + ":20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=WEEKLY;BYDAY=WE,FR,MO" + System.lineSeparator()
                 + "SEQUENCE:1" + System.lineSeparator()
@@ -1419,9 +1419,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "CREATED:" + DateTimeType.temporalToString(v.getDateTimeCreated()) + System.lineSeparator()
+                + "CREATED:" + DateTimeUtilities.format(v.getDateTimeCreated()) + System.lineSeparator()
                 + "DTEND;TZID=" + zone + ":20151111T120000" + System.lineSeparator()
-                + "DTSTAMP:" + DateTimeType.temporalToString(v.getDateTimeStamp()) + System.lineSeparator()
+                + "DTSTAMP:" + DateTimeUtilities.format(v.getDateTimeStamp()) + System.lineSeparator()
                 + "DTSTART;TZID=" + zone + ":20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6" + System.lineSeparator()
                 + "SEQUENCE:1" + System.lineSeparator()

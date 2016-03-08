@@ -21,6 +21,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Callback;
+import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.rrule.RRule;
 
@@ -730,8 +731,8 @@ public interface VComponent<I>
     {
         if (t1.getClass().equals(t2.getClass()))
         {
-            LocalDateTime d1 = DateTimeType.localDateTimeFromTemporal(t1);
-            LocalDateTime d2 = DateTimeType.localDateTimeFromTemporal(t2);
+            LocalDateTime d1 = (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(t1);
+            LocalDateTime d2 = (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(t2);
             return d1.isBefore(d2);
         } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }
@@ -747,8 +748,8 @@ public interface VComponent<I>
     {
         if (t1.getClass().equals(t2.getClass()))
         {
-            LocalDateTime d1 = DateTimeType.localDateTimeFromTemporal(t1);
-            LocalDateTime d2 = DateTimeType.localDateTimeFromTemporal(t2);
+            LocalDateTime d1 = (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(t1);
+            LocalDateTime d2 = (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(t2);
             return d1.isAfter(d2);
         } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }

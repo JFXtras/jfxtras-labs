@@ -36,7 +36,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseLocalDate()
     {
         String string = "19980704";
-        Temporal t = DateTimeType.parseTemporal(string);
+        Temporal t = DateTimeUtilities.parse(string);
         assertEquals(t, LocalDate.of(1998, 7, 4));
     }
     
@@ -45,7 +45,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseLocalDateTime()
     {
         String string = "19980119T020000";
-        Temporal t = DateTimeType.parseTemporal(string);
+        Temporal t = DateTimeUtilities.parse(string);
         assertEquals(t, LocalDateTime.of(1998, 1, 19, 2, 0));
     }
     
@@ -54,7 +54,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseZonedDateTimeUTC()
     {
         String string = "19980119T020000Z";
-        Temporal t = DateTimeType.parseTemporal(string);
+        Temporal t = DateTimeUtilities.parse(string);
         assertEquals(t, ZonedDateTime.of(LocalDateTime.of(1998, 1, 19, 2, 0), ZoneId.of("Z").normalized()));
     }
     
@@ -63,7 +63,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
     public void canParseZonedDateTime()
     {
         String string = "TZID=Europe/London:20160208T073000";
-        Temporal t = DateTimeType.parseTemporal(string);
+        Temporal t = DateTimeUtilities.parse(string);
         assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 7, 30), ZoneId.of("Europe/London")));
     }
     

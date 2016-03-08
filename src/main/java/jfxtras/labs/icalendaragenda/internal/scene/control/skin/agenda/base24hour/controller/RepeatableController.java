@@ -57,7 +57,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ExDate;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.RRule;

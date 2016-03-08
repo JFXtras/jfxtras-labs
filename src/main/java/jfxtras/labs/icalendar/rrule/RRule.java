@@ -19,7 +19,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.DateTimeUtilities;
+import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType;
@@ -192,7 +193,7 @@ public class RRule
         StringBuilder builder = new StringBuilder();
         builder.append(getFrequency().toString());
         if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
-        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + DateTimeType.temporalToString(getUntil()));
+        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + DateTimeUtilities.format(getUntil()));
         String rules = getFrequency()
                 .getByRules()
                 .stream()
@@ -262,7 +263,7 @@ public class RRule
                 rrule.setCount(Integer.parseInt(value));
             } else if (property.equals(UNTIL_NAME))
             { // UNTIL
-                Temporal dateTime = DateTimeType.parseTemporal(value);
+                Temporal dateTime = DateTimeUtilities.parse(value);
                 rrule.setUntil(dateTime);
             } else if (property.equals(INTERVAL_NAME))
             { // INTERVAL

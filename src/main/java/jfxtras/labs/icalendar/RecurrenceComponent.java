@@ -28,7 +28,7 @@ public interface RecurrenceComponent
         }
         return Arrays.asList(string.split(","))
                      .stream()
-                     .map(s -> DateTimeType.parseTemporal(tzid + s)) // if present, add tzid as prefix to every date-time string before parsing
+                     .map(s -> DateTimeUtilities.parse(tzid + s)) // if present, add tzid as prefix to every date-time string before parsing
                      .collect(Collectors.toList());
     }
 }

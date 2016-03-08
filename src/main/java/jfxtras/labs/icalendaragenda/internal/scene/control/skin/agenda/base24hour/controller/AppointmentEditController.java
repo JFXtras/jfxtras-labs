@@ -31,7 +31,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
@@ -44,7 +44,7 @@ import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
-import jfxtras.scene.control.agenda.TemporalType;
+import jfxtras.scene.control.agenda.TemporalUtilities;
 
 /**
  * Make popup to edit VEvents
@@ -240,7 +240,7 @@ public class AppointmentEditController extends Pane
                     newDateTimeStart = lastDateTimeStart;
                 } else
                 {
-                    newDateTimeStart = DateTimeType.DEFAULT_DATE_TIME_TYPE.from(start, ZoneId.systemDefault());
+                    newDateTimeStart = DateTimeUtilities.DEFAULT_DATE_TIME_TYPE.from(start, ZoneId.systemDefault());
                 }
                 
                 final Temporal newDateTimeEnd = newDateTimeStart.plus(lastDuration);
@@ -266,14 +266,14 @@ public class AppointmentEditController extends Pane
         endTextField.setLocale(locale);
         endTextField.localDateTimeProperty().addListener(endTextlistener);
 //        endTextField.setLocalDateTime(DateTimeType.localDateTimeFromTemporal(endInstanceOriginal));
-        endTextField.setLocalDateTime(TemporalType.toLocalDateTime(endInstanceOriginal));
+        endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(endInstanceOriginal));
         endTextField.setParseErrorCallback(errorCallback);
         
         // START DATE/TIME
         startTextField.setLocale(locale);
         startTextField.localDateTimeProperty().addListener(startTextListener);
-        startTextField.setLocalDateTime(TemporalType.toLocalDateTime(startOriginalInstance));
-        startTextField.setLocalDateTime(TemporalType.toLocalDateTime(startOriginalInstance));
+        startTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(startOriginalInstance));
+        startTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(startOriginalInstance));
         startTextField.setParseErrorCallback(errorCallback);
         
         // APPOINTMENT GROUP

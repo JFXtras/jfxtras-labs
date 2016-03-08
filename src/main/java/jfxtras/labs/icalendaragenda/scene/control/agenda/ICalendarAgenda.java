@@ -27,7 +27,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
-import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.DateTimeUtilities;
+import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ExDate;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.VComponent;
@@ -90,7 +91,7 @@ public class ICalendarAgenda extends Agenda
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
     { // default UID generator callback
-        String dateTime = DateTimeType.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String dateTime = DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
         String domain = "jfxtras.org";
         return dateTime + "-" + nextKey++ + domain;
     };
@@ -574,48 +575,5 @@ public class ICalendarAgenda extends Agenda
             }
             return null;
         }
-    }
-    
-//    /**
-//     * Appointment factory methods
-//     * 
-//     * @author David Bal
-//     *
-//     */
-//    static public class AppointmentFactory {
-//
-//        /** returns new Appointment */
-//        public static <T extends Appointment> T newAppointment(Class<T> appointmentClass)
-//        {
-//            try {
-//                return appointmentClass.newInstance();
-//            } catch (InstantiationException | IllegalAccessException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-//    
-//        /** Returns deep copy of source appointment */
-//        @SuppressWarnings("unchecked")
-//        public static <T extends Appointment> T newAppointment(T source)
-//        {
-//            try {
-//                return (T) source.getClass()
-//                        .getConstructor(Appointment.class) // gets copy constructor
-//                        .newInstance(source);               // calls copy constructor
-//            } catch (InstantiationException | IllegalAccessException
-//                    | IllegalArgumentException | InvocationTargetException
-//                    | NoSuchMethodException | SecurityException e) {
-//                e.printStackTrace();
-//            }
-//          return null;
-//
-//        }
-//    }
-
-//    /** Add ResourceBundle for FXML controllers that contains strings for the appointment popups */
-//    public void setResourceBundle(ResourceBundle resources) {
-//        Settings.setup(resources);
-//    }
-        
+    }       
 }

@@ -8,7 +8,7 @@ import java.util.Locale;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.DateTimeType;
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
@@ -66,7 +66,7 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
         // override default UID generator callback 
         agenda.setUidGeneratorCallback((Void) ->
         {
-            String dateTime = DateTimeType.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.of(2015, 11, 8, 0, 0));
+            String dateTime = DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.of(2015, 11, 8, 0, 0));
             String domain = "jfxtras.org";
             return dateTime + "-" + "0" + domain;
         });

@@ -99,7 +99,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     String madeString = e.toComponentText();
     ZonedDateTime until = ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
         .withZoneSameInstant(ZoneId.of("Z")); // depends on time zone, so can't be hard coded
-    String untilString = DateTimeType.ZONED_DATE_TIME_UTC_FORMATTER.format(until);
+    String untilString = DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(until);
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                         + "CATEGORIES:group03" + System.lineSeparator()
                         + "DESCRIPTION:Daily6 Description" + System.lineSeparator()
@@ -159,7 +159,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
         Temporal date = LocalDate.of(2015, 11, 12);
         String expectedString = "20151112";
-        String madeString = DateTimeType.temporalToString(date);
+        String madeString = DateTimeUtilities.format(date);
         assertEquals(expectedString, madeString);
     }
 

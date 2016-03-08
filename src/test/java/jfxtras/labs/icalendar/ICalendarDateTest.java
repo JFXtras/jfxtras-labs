@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
@@ -640,7 +641,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventMock e = getDailyUTC();
         List<Temporal> madeDates = e
                 .stream(e.getDateTimeStart())
-                .map(z -> DateTimeType.localDateTimeFromTemporal(z))
+                .map(z -> DateTimeType.DATE_WITH_LOCAL_TIME.from(z))
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 2, 0)
