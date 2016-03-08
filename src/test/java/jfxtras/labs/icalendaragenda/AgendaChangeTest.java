@@ -167,6 +167,12 @@ public class AgendaChangeTest extends AgendaTestAbstract
     }
     
     @Test
+    public void canDragAndDropWholedayToTimeBased()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getWeeklyZoned()));
+    }
+    
+    @Test
     public void canExpandAppoindment()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
