@@ -206,8 +206,9 @@ public class ICalendarAgenda extends Agenda
         final Temporal endInstance;
         boolean wasDateType = DateTimeType.of(startOriginalInstance).equals(DateTimeType.DATE);
         boolean isNotDateType = ! DateTimeType.of(appointment.getStartTemporal()).equals(DateTimeType.DATE);
+        boolean isChangedToTimeBased = wasDateType && isNotDateType;
         boolean isChangedToWholeDay = appointment.isWholeDay() && isNotDateType;
-        if (wasDateType && isNotDateType)
+        if (isChangedToTimeBased)
         {
             startInstance = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getStartTemporal(), ZoneId.systemDefault());
             endInstance = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getEndTemporal(), ZoneId.systemDefault());

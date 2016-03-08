@@ -3,7 +3,9 @@ package jfxtras.labs.icalendaragenda;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
@@ -183,6 +185,27 @@ public class AgendaChangeTest extends AgendaTestAbstract
                 .withSequence(1)
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.systemDefault()))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.systemDefault()));
+        assertTrue(VEventImpl.isEqualTo(expectedVEvent, vEvent));
+    }
+    
+    @Test
+    public void canDragAndDropTimeBasedToWholeDay()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getIndividual1()));
+        
+        // move one appointment
+        move("#AppointmentRegularBodyPane2015-11-11/0"); 
+        press(MouseButton.PRIMARY);
+        move("#DayHeader2015-11-12"); // header of next day
+        release(MouseButton.PRIMARY);
+        
+        assertEquals(1, agenda.vComponents().size());
+        VEventImpl vEvent = (VEventImpl) agenda.vComponents().get(0);
+        System.out.println(vEvent);
+        VEventImpl expectedVEvent = ICalendarStaticVEvents.getIndividual1()
+                .withSequence(1)
+                .withDateTimeStart(LocalDate.of(2015, 11, 12))
+                .withDuration(Period.ofDays(1));
         assertTrue(VEventImpl.isEqualTo(expectedVEvent, vEvent));
     }
     
