@@ -57,6 +57,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ExDate;
 import jfxtras.labs.icalendar.VComponent;
@@ -170,7 +171,7 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
     {
         Temporal start = dateTimeStartInstanceNew.with(TemporalAdjusters.firstDayOfMonth());
         int ordinalWeekNumber = 0;
-        while (! VComponent.isBefore(dateTimeStartInstanceNew, start))
+        while (! DateTimeUtilities.isBefore(dateTimeStartInstanceNew, start))
         {
             ordinalWeekNumber++;
             start = start.plus(1, ChronoUnit.WEEKS);
@@ -355,7 +356,7 @@ private final ChangeListener<? super Boolean> untilRadioButtonListener = (observ
     {
         if (vComponent.getRRule().getUntil() == null)
         { // new selection - use date/time one month in the future as default
-            boolean isInstanceFarEnoughInFuture = VComponent.isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD));
+            boolean isInstanceFarEnoughInFuture = DateTimeUtilities.isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD));
             LocalDate defaultEndOnDateTime = (isInstanceFarEnoughInFuture) ? LocalDate.from(dateTimeStartInstanceNew) : LocalDate.from(vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD));
             Temporal until = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
             vComponent.getRRule().setUntil(until);
@@ -386,7 +387,7 @@ private Temporal findUntil(LocalDate initialUntilDate)
     while (i.hasNext())
     {
         Temporal temporal = i.next();
-        if (VComponent.isAfter(temporal, timeAdjustedSelection)) break;
+        if (DateTimeUtilities.isAfter(temporal, timeAdjustedSelection)) break;
         until = temporal;
     }
     untilDatePicker.valueProperty().removeListener(untilListener);
@@ -914,7 +915,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
               .limit(EXCEPTION_CHOICE_LIMIT)
               .peek(t ->
               {
-                  if (VComponent.isAfter(t, lastExceptionInMasterList))
+                  if (DateTimeUtilities.isAfter(t, lastExceptionInMasterList))
                   {
                       exceptionMasterList.add(t);
                   }

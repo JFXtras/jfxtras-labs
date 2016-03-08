@@ -17,6 +17,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Pair;
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.VComponentProperty;
@@ -192,8 +193,8 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
         List<Appointment> madeAppointments = new ArrayList<>();
-        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange())); // inclusive
-        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> VComponent.isBefore(a, getEndRange())); // exclusive
+        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! DateTimeUtilities.isBefore(d, getStartRange())); // inclusive
+        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
         removedTooLate.forEach(temporalStart ->
         {
             TemporalAmount duration = endType().getDuration(this);
@@ -224,7 +225,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     @Override
     public List<Appointment> makeInstances(Temporal startRange, Temporal endRange)
     {
-        if (VComponent.isAfter(startRange, endRange)) throw new DateTimeException("endRange must be after startRange");
+        if (DateTimeUtilities.isAfter(startRange, endRange)) throw new DateTimeException("endRange must be after startRange");
         setEndRange(endRange);
         setStartRange(startRange);
         return makeInstances();

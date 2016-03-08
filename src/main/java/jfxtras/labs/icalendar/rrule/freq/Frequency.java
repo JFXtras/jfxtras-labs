@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType;
@@ -102,13 +102,13 @@ public interface Frequency {
     @Deprecated // may not be needed anymore
     default Temporal makeFrequencyOccurrence(Temporal dateTimeStart, Temporal start)
     {
-        if (VComponent.isBefore(start, dateTimeStart)) return dateTimeStart;
+        if (DateTimeUtilities.isBefore(start, dateTimeStart)) return dateTimeStart;
         Iterator<Temporal> i = Stream.iterate(start, a -> a.with(adjuster())).iterator();
         Temporal last = null;
         while (i.hasNext())
         {
             Temporal current = i.next();
-            if (VComponent.isAfter(current, start)) return last;
+            if (DateTimeUtilities.isAfter(current, start)) return last;
             last = current;
         }
         return null; // should never get here

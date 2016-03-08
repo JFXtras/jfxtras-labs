@@ -227,7 +227,7 @@ public class RRule
         {
 //            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), parent.getDateTimeType());
             Temporal convertedUntil = parent.getDateTimeType().from(getUntil(), parent.getZoneId());
-            if (VComponent.isBefore(convertedUntil, parent.getDateTimeStart())) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
+            if (DateTimeUtilities.isBefore(convertedUntil, parent.getDateTimeStart())) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
         }
         if ((getCount() == null) || (getCount() < 0))
         {
@@ -333,7 +333,7 @@ public class RRule
 //            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.of(start));
             ZoneId zone = (start instanceof ZonedDateTime) ? ((ZonedDateTime) start).getZone() : null;
             Temporal convertedUntil = DateTimeType.of(start).from(getUntil(), zone);
-            return takeWhile(filteredStream, a -> ! VComponent.isAfter(a, convertedUntil));
+            return takeWhile(filteredStream, a -> ! DateTimeUtilities.isAfter(a, convertedUntil));
         }
         return filteredStream;
     };

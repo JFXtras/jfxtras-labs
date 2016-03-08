@@ -930,7 +930,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             while (recurrenceIterator.hasNext())
             {
                 VComponent<?> d = recurrenceIterator.next();
-                if (VComponent.isBefore(d.getDateTimeRecurrence(), startInstance))
+                if (DateTimeUtilities.isBefore(d.getDateTimeRecurrence(), startInstance))
                 {
                     recurrenceIterator.remove();
                 } else {
@@ -1202,7 +1202,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             Temporal m  = null;
             for (int i=cacheEnd; i>cacheStart; i--)
             {
-                if (VComponent.isBefore(temporalCache[i], value))
+                if (DateTimeUtilities.isBefore(temporalCache[i], value))
                 {
                     m = temporalCache[i];
                     break;
@@ -1215,7 +1215,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         while (i.hasNext())
         {
             Temporal t = i.next();
-            if (! VComponent.isBefore(t, value)) break;
+            if (! DateTimeUtilities.isBefore(t, value)) break;
             lastT = t;
         }
         return lastT;
@@ -1225,7 +1225,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     public Stream<Temporal> stream(Temporal start)
     {
         // adjust start to ensure its not before dateTimeStart
-        final Temporal start2 = (VComponent.isBefore(start, getDateTimeStart())) ? getDateTimeStart() : start;
+        final Temporal start2 = (DateTimeUtilities.isBefore(start, getDateTimeStart())) ? getDateTimeStart() : start;
         final Stream<Temporal> stream1; // individual or rrule stream
         final Temporal earliestCacheValue;
         final Temporal latestCacheValue;
@@ -1234,7 +1234,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         { // if individual event
             stream1 = Arrays.asList(getDateTimeStart())
                     .stream()
-                    .filter(d -> ! VComponent.isBefore(d, start2));
+                    .filter(d -> ! DateTimeUtilities.isBefore(d, start2));
             earliestCacheValue = null;
             latestCacheValue = null;
         } else
@@ -1305,12 +1305,12 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     
                 // Find match in cache
                 latestCacheValue = temporalCache[cacheEnd];
-                if ((! VComponent.isBefore(start2, temporalCache[cacheStart])))
+                if ((! DateTimeUtilities.isBefore(start2, temporalCache[cacheStart])))
                 {
                     Temporal m = latestCacheValue;
                     for (int i=cacheStart; i<cacheEnd+1; i++)
                     {
-                        if (VComponent.isAfter(temporalCache[i], start2))
+                        if (DateTimeUtilities.isAfter(temporalCache[i], start2))
                         {
                             m = temporalCache[i-1];
                             break;
@@ -1343,7 +1343,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                 { // save new values in cache
                     if (getRRule() != null)
                     {
-                        if (VComponent.isBefore(t, earliestCacheValue))
+                        if (DateTimeUtilities.isBefore(t, earliestCacheValue))
                         {
                             if (skipCounter == CACHE_SKIP)
                             {
@@ -1354,7 +1354,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                                 skipCounter = 0;
                             } else skipCounter++;
                         }
-                        if (VComponent.isAfter(t, latestCacheValue))
+                        if (DateTimeUtilities.isAfter(t, latestCacheValue))
                         {
                             if (skipCounter == CACHE_SKIP)
                             {
@@ -1370,7 +1370,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                         if (cacheStart == CACHE_RANGE) cacheStart = 0;
                     }
                 })
-                .filter(t -> ! VComponent.isBefore(t, start2)); // remove too early events;
+                .filter(t -> ! DateTimeUtilities.isBefore(t, start2)); // remove too early events;
 
         return stream4;
     }
@@ -1393,14 +1393,14 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         { // if individual event
             stream1 = Arrays.asList(getDateTimeStart())
                     .stream()
-                    .filter(d -> ! VComponent.isBefore(d, start));
+                    .filter(d -> ! DateTimeUtilities.isBefore(d, start));
         } else
         { // if has recurrence rule
             stream1 = getRRule().stream(getDateTimeStart());
         }
         Stream<Temporal> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, start); // add recurrence list
         Stream<Temporal> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, start); // remove exceptions
-        return stream3.filter(t -> ! VComponent.isBefore(t, start));
+        return stream3.filter(t -> ! DateTimeUtilities.isBefore(t, start));
     }
     
     public enum RRuleType

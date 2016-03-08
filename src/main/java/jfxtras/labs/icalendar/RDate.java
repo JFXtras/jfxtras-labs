@@ -31,7 +31,7 @@ public class RDate extends RecurrenceComponentAbstract<RDate>
     {
         if (inStream == null)
         {
-            getTemporalStream().filter(d -> ! VComponent.isBefore(d, startTemporal));
+            getTemporalStream().filter(d -> ! DateTimeUtilities.isBefore(d, startTemporal));
         }
         return merge(inStream
                    , getTemporalStream()
@@ -41,7 +41,7 @@ public class RDate extends RecurrenceComponentAbstract<RDate>
     public Stream<Temporal> stream(Temporal startTemporal)
     {
         return getTemporalStream()
-                .filter(d -> ! VComponent.isBefore(d, startTemporal));
+                .filter(d -> ! DateTimeUtilities.isBefore(d, startTemporal));
     }
 
     

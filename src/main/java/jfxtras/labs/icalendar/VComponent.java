@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendar;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -549,7 +548,7 @@ public interface VComponent<I>
         if (getExDate() != null)
         {
             Temporal t2 = Collections.min(getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
-            first = (VComponent.isBefore(t1, t2)) ? t1 : t2;
+            first = (DateTimeUtilities.isBefore(t1, t2)) ? t1 : t2;
         } else
         {
             first = t1;
@@ -689,70 +688,7 @@ public interface VComponent<I>
         LocalDateTime ld2 = (t2.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t2) : LocalDate.from(t2).atStartOfDay();
         return ld1.compareTo(ld2);
     };
-    
 
-    
-//    /**
-//     * Returns LocalDateTime from Temporal that is an instance of either LocalDate or LocalDateTime
-//     * If the parameter is type LocalDate the returned LocalDateTime is atStartofDay.
-//     * If the parameter is type ZonedDateTime the zoneID is changed to ZoneId.systemDefault() before taking the
-//     * LocalDateTime.
-//     * 
-//     * @param temporal - either LocalDate or LocalDateTime type
-//     * @return LocalDateTime
-//     */
-//    static LocalDateTime localDateTimeFromTemporal(Temporal temporal)
-//    {
-//        if (temporal == null) return null;
-//        if (temporal.isSupported(ChronoUnit.NANOS))
-//        {
-//            if (temporal instanceof ZonedDateTime)
-//            {
-//                ZonedDateTime z = ((ZonedDateTime) temporal).withZoneSameInstant(ZoneId.systemDefault());
-//                return LocalDateTime.from(z);                
-//            } else if (temporal instanceof LocalDateTime)
-//            {
-//                return LocalDateTime.from(temporal);                
-//            } else throw new DateTimeException("Invalid temporal type:" + temporal.getClass().getSimpleName());
-//        } else
-//        {
-//            return LocalDate.from(temporal).atStartOfDay();
-//        }
-//    }
-    
-    /** Determines if Temporal is before t2
-     * Works for LocalDate or LocalDateTime
-     * 
-     * @param t1 first Temporal
-     * @param t2 second Temporal (to compare with t1)
-     * @return true if t1 is before t2, false otherwise
-     */
-    static boolean isBefore(Temporal t1, Temporal t2)
-    {
-        if (t1.getClass().equals(t2.getClass()))
-        {
-            LocalDateTime d1 = (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(t1);
-            LocalDateTime d2 = (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(t2);
-            return d1.isBefore(d2);
-        } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
-    }
-
-    /** Determines if Temporal is after t2
-     * Works for LocalDate or LocalDateTime
-     * 
-     * @param t1 first Temporal
-     * @param t2 second Temporal (to compare with t1)
-     * @return true if t1 is after t2, false otherwise
-     */
-    static boolean isAfter(Temporal t1, Temporal t2)
-    {
-        if (t1.getClass().equals(t2.getClass()))
-        {
-            LocalDateTime d1 = (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(t1);
-            LocalDateTime d2 = (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(t2);
-            return d1.isAfter(d2);
-        } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
-    }
 
     /**
      * Return list of all related VComponents that make up entire recurrence set.

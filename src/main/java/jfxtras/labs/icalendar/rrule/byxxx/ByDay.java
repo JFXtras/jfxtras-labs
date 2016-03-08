@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.VComponent;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
@@ -233,7 +234,7 @@ public class ByDay extends ByRuleAbstract
                     int value = byDayPair.dayOfWeek.getValue() + firstDayOfWeekAdjustment;
                     int valueAdj = (value > 7) ? value-7 : value;
                     Temporal newTemporal = t.with(field, valueAdj);
-                    if (! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
+                    if (! DateTimeUtilities.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
                 }
                 Collections.sort(dates, VComponent.TEMPORAL_COMPARATOR);
                 return dates.stream();
@@ -252,7 +253,7 @@ public class ByDay extends ByRuleAbstract
                         for (int weekNum=1; weekNum<=5; weekNum++)
                         {
                             Temporal newTemporal = t.with(TemporalAdjusters.dayOfWeekInMonth(weekNum, byDayPair.dayOfWeek));
-                            if (Month.from(newTemporal) == myMonth && ! VComponent.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
+                            if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
                         }
                     } else
                     { // if never any ordinal numbers then sort is not required
@@ -284,7 +285,7 @@ public class ByDay extends ByRuleAbstract
                     } else
                     { // if never any ordinal numbers then sort is not required
                         Temporal newDate = date.with(dayOfWeekInYear(byDayPair.ordinal, byDayPair.dayOfWeek));
-                        if (! VComponent.isBefore(newDate, startTemporal)) dates.add(newDate);
+                        if (! DateTimeUtilities.isBefore(newDate, startTemporal)) dates.add(newDate);
                     }
                 }
                 if (sortNeeded) Collections.sort(dates, VComponent.TEMPORAL_COMPARATOR);

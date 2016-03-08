@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.VComponentProperty;
 import jfxtras.labs.icalendar.VEvent;
 import jfxtras.labs.icalendar.VEventProperty;
@@ -34,7 +34,7 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
     @Override
     public List<InstanceMock> makeInstances(Temporal startRange, Temporal endRange)
     {
-        if (VComponent.isAfter(startRange, endRange)) throw new DateTimeException("endRange must be after startRange");
+        if (DateTimeUtilities.isAfter(startRange, endRange)) throw new DateTimeException("endRange must be after startRange");
         setEndRange(endRange);
         setStartRange(startRange);
         System.out.println("ranges:" + getStartRange() + " " + getEndRange());
@@ -46,8 +46,8 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
     {
         if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
         List<InstanceMock> madeInstances = new ArrayList<>();
-        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! VComponent.isBefore(d, getStartRange())); // inclusive
-        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> VComponent.isBefore(a, getEndRange())); // exclusive
+        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! DateTimeUtilities.isBefore(d, getStartRange())); // inclusive
+        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
         removedTooLate.forEach(temporalStart ->
         {
             TemporalAmount duration = endType().getDuration(this);

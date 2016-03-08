@@ -450,7 +450,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     {
         StringBuilder errorsBuilder = new StringBuilder(super.errorString());
 
-        if ((getDateTimeEnd() != null) && (! VComponent.isAfter(getDateTimeEnd(), getDateTimeStart())))
+        if ((getDateTimeEnd() != null) && (! DateTimeUtilities.isAfter(getDateTimeEnd(), getDateTimeStart())))
         {
             errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTEND (" + getDateTimeEnd()
             + ") must be after DTSTART (" + getDateTimeStart() + ")");

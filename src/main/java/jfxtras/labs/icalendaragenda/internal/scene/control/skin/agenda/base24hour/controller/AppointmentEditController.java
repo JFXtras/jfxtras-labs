@@ -347,7 +347,7 @@ public class AppointmentEditController extends Pane
         if (vEvent.getExDate() != null)
         {            
             Temporal t2 = Collections.min(vEvent.getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
-            start = (VComponent.isBefore(t1, t2)) ? t1 : t2;
+            start = (DateTimeUtilities.isBefore(t1, t2)) ? t1 : t2;
         } else
         {
           start = t1;
