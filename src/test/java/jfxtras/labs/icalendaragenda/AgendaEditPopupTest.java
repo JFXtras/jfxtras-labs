@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -46,6 +47,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.test.AssertNode;
 import jfxtras.test.TestUtil;
 
 /**
@@ -65,6 +67,22 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         return super.getRootNode();
     }
         
+    @Test
+    public void canProduceEditPopup()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
+
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        
+        Node n = find("#appointmentEditTabPane");
+        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 600.0, 0.01);
+        //TestUtil.sleep(3000);
+    }
+    
     // edit non-repeatable elements
     @Test
     public void canEditNonRepeatProperties()

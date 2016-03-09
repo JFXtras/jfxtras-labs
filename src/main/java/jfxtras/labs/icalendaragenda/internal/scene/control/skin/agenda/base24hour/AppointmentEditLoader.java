@@ -3,8 +3,6 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.io.IOException;
 import java.util.Collection;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
@@ -23,11 +21,8 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * @author David Bal
  * @see AppointmentEditController
  */
-public class AppointmentEditLoader extends Stage {
-
-    private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
-//    private ObjectProperty<WindowCloseType> popupCloseType = new SimpleObjectProperty<WindowCloseType>(WindowCloseType.X); // default to X, meaning click on X to close window)
-
+public class AppointmentEditLoader extends Stage
+{
     // CONSTRUCTOR
     public AppointmentEditLoader(
               Appointment appointment // selected instance
@@ -36,8 +31,6 @@ public class AppointmentEditLoader extends Stage {
             , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
             , Callback<Collection<VComponent<Appointment>>, Void> veventWriteCallback)
     {
-        System.out.println("here:");
-
         String appointmentTime = DateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
         VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) vComponent;
         setTitle(vEvent.getSummary() + ": " + appointmentTime);
@@ -53,7 +46,11 @@ public class AppointmentEditLoader extends Stage {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        appointmentPopup.setId("editAppointmentPopup");
+        
+//        System.out.println("xy:" + appointmentPopup.getPrefHeight() + " " + appointmentPopup.getHeight());
+//        setMaxHeight(appointmentPopup.getMaxHeight());
+//        setMaxWidth(appointmentPopup.getMaxWidth());
+//        appointmentPopup.setId("editAppointmentPopup");
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
         Scene scene = new Scene(appointmentPopup);
         scene.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET);

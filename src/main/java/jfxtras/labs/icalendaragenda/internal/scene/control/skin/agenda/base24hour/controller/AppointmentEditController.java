@@ -25,6 +25,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -80,6 +81,8 @@ public class AppointmentEditController extends Pane
     
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     // TODO - TRY STACK PANE TO REPLACE LocalDateTimeTextField WITH LocalDateTextField WHEN WHOLE DAY
+    @FXML private TabPane appointmentEditTabPane;
+    public TabPane getAppointmentEditTabPane() { return appointmentEditTabPane; }
     @FXML private LocalDateTimeTextField startTextField; // start of instance
     @FXML private LocalDateTimeTextField endTextField; // end of instance
     @FXML private CheckBox wholeDayCheckBox;

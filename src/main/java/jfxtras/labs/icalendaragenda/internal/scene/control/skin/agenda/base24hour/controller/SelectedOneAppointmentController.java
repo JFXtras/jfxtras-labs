@@ -30,7 +30,7 @@ public class SelectedOneAppointmentController extends Rectangle
     
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
 
-    @FXML private AnchorPane anchorPane;
+    @FXML private AnchorPane selectedOneAppointmentAnchorPane;
     @FXML private VBox vBox;
     @FXML private Button editAppointmentButton;
     @FXML private Button deleteAppointmentButton;
@@ -46,14 +46,9 @@ public class SelectedOneAppointmentController extends Rectangle
     public void setupData(
             ICalendarAgenda agenda
           , Appointment appointment)
-//          , VComponent<Appointment> vComponent
-//          , Collection<Appointment> appointments
-//          , Collection<VComponent<Appointment>> vComponents)
     {
         this.agenda = agenda;
         this.appointment = appointment;
-//        this.vComponent = vComponent;
-//        this.appointments = appointments;
 
         String appointmentTime = DateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
         appointmentTimeLabel.setText(appointmentTime);
@@ -81,8 +76,5 @@ public class SelectedOneAppointmentController extends Rectangle
               , agenda.appointments()
               , DeleteChoiceDialog.DELETE_DIALOG_CALLBACK);
         agenda.appointments().addListener(agenda.getAppointmentsListChangeListener());
-
-//        popup.close();
-//        appointments.remove(appointment);
     }    
 }

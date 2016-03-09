@@ -23,6 +23,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
@@ -141,13 +142,30 @@ public class ICalendarAgenda extends Agenda
                 , repeatWriteCallback);
 
         editPopup.getScene().getStylesheets().addAll(getUserAgentStylesheet(), ICALENDAR_STYLE_SHEET);
+
         // remove listeners during edit (to prevent creating extra vEvents when making appointments)
         editPopup.setOnShowing((windowEvent) -> 
         {
             appointments().removeListener(appointmentsListChangeListener);
             vComponents().removeListener(vComponentsChangeListener);
         });
+        
+        /*
+         * POSITION POPUP
+         * Position popup to left or right of bodyPane, where there is room.
+         * Note: assumes the control is displayed at its preferred height and width
+         */
+        Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
+        double prefHeightControl = ((Control) editPopup.getScene().getRoot()).getPrefHeight();
+        double prefWidthControl = ((Control) editPopup.getScene().getRoot()).getPrefWidth();
+        double xLeft = NodeUtil.screenX(bodyPane) - prefWidthControl - 5;
+        double xRight = NodeUtil.screenX(bodyPane) + bodyPane.getWidth() + 5;
+        double x = (xLeft > 0) ? xLeft : xRight;
+        double y = NodeUtil.screenY(bodyPane) - prefHeightControl/2;
+        editPopup.setX(x);
+        editPopup.setY(y);
         editPopup.show();
+        
         editPopup.setOnHiding((windowEvent) -> 
         {
             appointments().addListener(appointmentsListChangeListener);
