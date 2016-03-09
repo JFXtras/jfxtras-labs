@@ -203,6 +203,8 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
         List<String> changedProperties = new ArrayList<>();
         changedProperties.addAll(super.findChangedProperties(vComponentOriginal));
         Arrays.stream(VEventProperty.values())
+                .filter(p -> ! p.equals(VEventProperty.DATE_TIME_END)) // DATE_TIME_END change calculated in changedStartAndEndDateTime
+                .filter(p -> ! p.equals(VEventProperty.DURATION)) // DURATION change calculated in changedStartAndEndDateTime
                 .forEach(p -> 
                 {
                     boolean equals = p.isPropertyEqual(this, (VEvent<?,?>) vComponentOriginal);
@@ -225,7 +227,6 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     {
         super();
     }
-    
     
     // HANDLE EDIT METHODS
     @Override

@@ -627,8 +627,15 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             if (! this.equals(vComponentOriginal)) { newInstances = updateInstances(instances); }
             break;
         case WITH_EXISTING_REPEAT:
+            // Find which properties changed
             List<String> changedPropertyNames = findChangedProperties(vComponentOriginal);
+            /* Note:
+             * time properties must be checked separately because changes are stored in startInstance and endInstance,
+             * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
+             * question is answered. */
             changedPropertyNames.addAll(changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance));
+            // determine if any changed properties warrant dialog
+            changedPropertyNames.stream().forEach(a -> System.out.println("property:" + a));
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
             if (changedPropertyNames.size() > 0) // if changes occurred
             {
@@ -642,7 +649,6 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                 {
                     changeResponse = ChangeDialogOption.ALL;
                 }
-                System.out.println("changeResponse:" + changeResponse);
                 switch (changeResponse)
                 {
                 case ALL:
@@ -695,11 +701,12 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         return changedProperties;
     }
     /* Adjust DTSTART by instance start and end date-time */
-    protected void adjustDateTime(Temporal startOriginalInstance
+    void adjustDateTime(Temporal startOriginalInstance
             , Temporal startInstance
             , Temporal endInstance)
     {
         Temporal newStart = adjustRecurrenceStart(getDateTimeStart(), startOriginalInstance, startInstance, endInstance);
+        System.out.println("new DTSTART:" + newStart);
         setDateTimeStart(newStart);
     }
     
@@ -753,6 +760,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     {
         List<String> changedProperties = new ArrayList<>();
         Arrays.stream(VComponentProperty.values())
+                .filter(p -> ! p.equals(VComponentProperty.DATE_TIME_START)) // DATE_TIME_START change calculated in changedStartAndEndDateTime
                 .forEach(p -> 
                 {
                     boolean equals = p.isPropertyEqual(this, vComponentOriginal);
@@ -769,7 +777,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         instancesTemp.addAll(instances);
         instancesTemp.removeIf(a -> instances().stream().anyMatch(a2 -> a2 == a));
-        instances().clear(); // clear VEvent's outdated collection of appointments
+        instances().clear(); // clear VEvent of outdated appointments
         instancesTemp.addAll(makeInstances()); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
         return instancesTemp;
     }

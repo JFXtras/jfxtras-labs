@@ -331,23 +331,27 @@ public class AppointmentEditController extends Pane
             System.out.println("changes:" + newStartInstance + " " + newEndInstance);
             startTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartInstance));
             endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndInstance));
+            startOriginalInstance = startInstance;
+            // TODO - DON'T DISPLAY ALERT WHEN RUN FROM SAVE
             Platform.runLater(() -> startInstanceChangedAlert(startInstanceBeforeChange, newStartInstance)); // display alert after tab change refresh
         }
-//  TODO - MAKE ONE METHOD FOR BOTH UPPER AND LOWER CODE
-        Temporal testedStart = vEvent.getDateTimeStart();
-        Temporal testedEnd = vEvent.getDateTimeEnd();
-        if (! vEvent.isStreamValue(testedStart))
-        {
-            Temporal instanceBefore = vEvent.previousStreamValue(testedStart);
-            Optional<Temporal> optionalAfter = vEvent.stream(testedStart).findFirst();
-            Temporal newTestedStart = (optionalAfter.isPresent()) ? optionalAfter.get() : instanceBefore;
-            TemporalAmount duration = DateTimeUtilities.durationBetween(testedStart, testedEnd);
+        
+        // Test if DTSTART is not valid, get new one
+        if (! vEvent.isStreamValue(vEvent.getDateTimeStart()))
+        {            
+            Optional<Temporal> optionalAfter = vEvent.stream(vEvent.getDateTimeStart()).findFirst();
+            final Temporal newTestedStart;
+            if (optionalAfter.isPresent())
+            {
+                newTestedStart = optionalAfter.get();
+            } else
+            {
+                throw new RuntimeException("No valid DTSTART in VComponent");
+            }
+            TemporalAmount duration = DateTimeUtilities.durationBetween(vEvent.getDateTimeStart(), vEvent.getDateTimeEnd());
             Temporal newTestedEnd = newTestedStart.plus(duration);
-//            Temporal testedStartBeforeChange = testedStart;
-            System.out.println("changes DTSTART:" + newTestedStart + " " + newTestedEnd);
             vEvent.setDateTimeStart(newTestedStart);
             vEvent.setDateTimeEnd(newTestedEnd);
-//            Platform.runLater(() -> startInstanceChangedAlert(testedStartBeforeChange, newTestedStart)); // display alert after tab change refresh
         }
     }
 
@@ -358,7 +362,11 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleSave()
     {
-        validateStartInstance();
+        if ((vEvent.getRRule() != null) && ! vEvent.getRRule().equals(vEventOriginal.getRRule()))
+        {
+            System.out.println("RUNNING validateStartInstance:");
+            validateStartInstance();
+        }
         vEvent.handleEdit(
                 vEventOriginal
               , vComponents

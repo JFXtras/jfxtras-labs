@@ -197,9 +197,20 @@ public class CalendarController {
 
     public void setupData(LocalDate startDate, LocalDate endDate)
     {
+
+        VEventImpl vEvent3 = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 3, 7, 5, 45), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 7, 4, 0), ZoneId.of("America/Los_Angeles")))
+                .withDescription("WeeklyZoned Description")
+                .withRRule(new RRule()
+                        .withFrequency(new Weekly()
+                                .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
+                .withSummary("WeeklyZoned Summary")
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");        
+            agenda.vComponents().add(vEvent3);
         
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-//            .withInstanceClass(clazz)
             .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
             .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
             .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))

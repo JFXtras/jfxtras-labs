@@ -127,43 +127,6 @@ instances into one property internally.
  * */
 public interface VComponent<I>
 {
-//    final static DateTimeFormatter LOCAL_DATE_FORMATTER = new DateTimeFormatterBuilder()
-//            .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-//            .appendValue(MONTH_OF_YEAR, 2)
-//            .appendValue(DAY_OF_MONTH, 2)
-//            .toFormatter();
-//    final static DateTimeFormatter LOCAL_TIME_FORMATTER = new DateTimeFormatterBuilder()
-//            .appendValue(HOUR_OF_DAY, 2)
-//            .appendValue(MINUTE_OF_HOUR, 2)
-//            .appendValue(SECOND_OF_MINUTE, 2)
-//            .toFormatter();
-//    final static DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-//            .parseCaseInsensitive()
-//            .append(LOCAL_DATE_FORMATTER)
-//            .appendLiteral('T')
-//            .append(LOCAL_TIME_FORMATTER)
-//            .toFormatter();
-//    final static DateTimeFormatter ZONED_DATE_TIME_UTC_FORMATTER = new DateTimeFormatterBuilder()
-//            .append(LOCAL_DATE_TIME_FORMATTER)
-//            .appendOffsetId()
-//            .toFormatter();
-//    final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-//            .optionalStart()
-//            .parseCaseInsensitive()
-//            .appendLiteral("TZID=")
-//            .appendZoneRegionId()
-//            .appendLiteral(':')
-//            .optionalEnd()
-//            .append(LOCAL_DATE_TIME_FORMATTER)
-//            .toFormatter();
-//    final static DateTimeFormatter ZONE_FORMATTER = new DateTimeFormatterBuilder()
-//            .optionalStart()
-//            .parseCaseInsensitive()
-//            .appendLiteral("TZID=")
-//            .appendZoneRegionId()
-//            .optionalEnd()
-//            .toFormatter();
-
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
      * This property defines the categories for a calendar component.
@@ -356,11 +319,13 @@ public interface VComponent<I>
     Callback<Void, String> getUidGeneratorCallback();
     void setUidGeneratorCallback(Callback<Void, String> uidCallback);
     
-    /** Stream of dates or date/times that indicate the start of the event(s).
-     * For a VEvent without RRULE the stream will contain only one date/time element.
-     * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
+    /** Stream of dates or date-times that indicate the series of start date-times of the event(s).
+     * iCalendar calls this series the recurrence set.
+     * For a VEvent without RRULE or RDATE the stream will contain only one element.
+     * In a VEvent with a RRULE the stream should contain more than one date/time element.  It is possible
+     * to define a single-event RRULE, but it is not advisable.  The stream will be infinite 
      * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
-     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
+     * The stream starts on startDateTime, which must be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence.
      * 
      * Start date/times are only produced between the ranges set by setDateTimeRanges
@@ -605,6 +570,20 @@ public interface VComponent<I>
             if (i.hasNext()) return false; // has at least two elements
             else return true; // has only one element
         } else throw new RuntimeException("VComponent stream has no elements");
+    }
+    
+    /** Returns true if startInstance is first in recurrence set, false otherwise */
+    default boolean isFirstRecurrence(Temporal startInstance)
+    {
+        Iterator<Temporal> i = stream(getDateTimeStart()).iterator();
+        if (i.hasNext())
+        {
+            Temporal myTemporal = i.next();
+            return (myTemporal.equals(startInstance));
+        } else
+        {
+            return false;
+        }
     }
     
     /** Returns true if startInstance is last in recurrence set,

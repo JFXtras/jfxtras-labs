@@ -131,9 +131,9 @@ public final class DateTimeUtilities
      * Calculate TemporalAmount between two Temporals.
      * Both temporals must be the same type and representations of a DateTimeType.
      * 
-     * @param startInclusive
-     * @param endExclusive
-     * @return - period for DATE, duration for all other DateTimeTypes
+     * @param startInclusive - the start temporal, not null
+     * @param endExclusive - the end temporal, not null
+     * @return - Period for DATE, Duration for all other DateTimeTypes
      */
     public static TemporalAmount durationBetween(Temporal startInclusive, Temporal endExclusive)
     {
