@@ -546,7 +546,7 @@ public interface VComponent<I>
             final Temporal first;
             if (getExDate() != null)
             {
-                Temporal t2 = Collections.min(getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
+                Temporal t2 = Collections.min(getExDate().getTemporals(), DateTimeUtilities.TEMPORAL_COMPARATOR);
                 first = (DateTimeUtilities.isBefore(t1, t2)) ? t1 : t2;
             } else
             {
@@ -611,7 +611,10 @@ public interface VComponent<I>
      *  false there are recurrences after startInstance */
     default boolean isLastRecurrence(Temporal startInstance)
     {
-        if ((getRRule() != null) && (getRRule().isInfinite())) { return false; }
+        if ((getRRule() != null) && (getRRule().isInfinite()))
+        {
+            return false;
+        }
         Iterator<Temporal> i = stream(getDateTimeStart()).iterator();
         while (i.hasNext())
         {
@@ -622,60 +625,58 @@ public interface VComponent<I>
         throw new RuntimeException("Instance is not in recurrence set:" + startInstance);
     }
     
+    /** returns the last date or date/time of the series.  If infinite returns null */
+    default Temporal lastRecurrence()
+    {
+        if ((getRRule() != null) && (getRRule().isInfinite()))
+        {
+            return null;
+        } else
+        {
+            Iterator<Temporal> i = stream(getDateTimeStart()).iterator();
+            Temporal myTemporal = null;
+            while (i.hasNext())
+            {
+                myTemporal = i.next();
+            }
+            return myTemporal;
+        }       
+    }
+    
     /** Returns true if VComponent has zero instances in recurrence set */
     default boolean isRecurrenceSetEmpty()
     {
         Iterator<Temporal> i = stream(getDateTimeStart()).iterator();
         return ! i.hasNext();
     }
-    
-    /**
-     * Make easy-to-read date range string
-     * Uses DTSTART as start.
-     *      
-     * If VComponent is part of a multi-part series only this segment is considered.
-     * Example: Dec 5, 2015 - Feb 6, 2016
-     *          Nov 12, 2015 - forever
-     *          
-     * return String representing start and end of VComponent.
+        
+    /** Returns true if temporal is in vComponent's stream of start date-time
+     * values, false otherwise.
      */
- // TODO - PUT THESE METHODS ELSEWHERE - NOT NEEDED BY ICALENDAR - USED BY ICALENDARAGENDA???
-//    default String rangeToString() { return rangeToString(getDateTimeStart()); }
-
-    /** returns the last date or date/time of the series.  If infinite returns null */
-    default Temporal lastStartTemporal()
+    default boolean isStreamValue(Temporal temporal)
     {
-        if (getRRule() != null)
+        Iterator<Temporal> startInstanceIterator = stream(temporal).iterator();
+        while (startInstanceIterator.hasNext())
         {
-            if ((getRRule().getCount() == 0) && (getRRule().getUntil() == null))
+            Temporal myStartInstance = startInstanceIterator.next();
+            if (myStartInstance.equals(temporal))
             {
-                return null; // infinite
+                return true;
             }
-            else
-            { // finite (find end)
-                List<Temporal> instances = stream(getDateTimeStart()).collect(Collectors.toList());
-                return instances.get(instances.size()-1);
+            if (DateTimeUtilities.isAfter(myStartInstance, temporal))
+            {
+                return false;
             }
-        } else if (getRDate() != null)
-        { // has RDATE list finite (find end)
-            List<Temporal> instances = stream(getDateTimeStart()).collect(Collectors.toList());
-            return instances.get(instances.size()-1);
-        } else return getDateTimeStart(); // individual            
+        }
+        return false;
     }
     
     /*
-     * UTILITY METHODS
+     * STATIC UTILITY METHODS
      * 
      * Below methods are used to handle dateTimeEnd and dateTimeStart as Temporal objects.  LocalDate
      * objects are compared at start-of-day.
      */
-    
-    final static Comparator<Temporal> TEMPORAL_COMPARATOR = (t1, t2) -> 
-    {
-        LocalDateTime ld1 = (t1.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t1) : LocalDate.from(t1).atStartOfDay();
-        LocalDateTime ld2 = (t2.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t2) : LocalDate.from(t2).atStartOfDay();
-        return ld1.compareTo(ld2);
-    };
     
     /**
      * Sorts VComponents by DTSTART date/time

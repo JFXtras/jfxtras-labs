@@ -78,7 +78,7 @@ public final class ICalendarUtilities
         {
             Map<ChangeDialogOption, StartEndRange> choices = new LinkedHashMap<>();
             choices.put(ChangeDialogOption.ONE, new StartEndRange(startInstance, startInstance));
-            Temporal end = vComponent.lastStartTemporal();
+            Temporal end = vComponent.lastRecurrence();
             if (! vComponent.isIndividual())
             {
                 if (! vComponent.isLastRecurrence(startInstance))

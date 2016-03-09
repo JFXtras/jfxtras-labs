@@ -35,7 +35,7 @@ public class RDate extends RecurrenceComponentAbstract<RDate>
         }
         return merge(inStream
                    , getTemporalStream()
-                   , VComponent.TEMPORAL_COMPARATOR);
+                   , DateTimeUtilities.TEMPORAL_COMPARATOR);
     }
 
     public Stream<Temporal> stream(Temporal startTemporal)

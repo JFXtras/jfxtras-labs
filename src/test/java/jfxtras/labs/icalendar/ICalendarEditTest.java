@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -166,16 +167,6 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         Temporal startInstance = LocalDate.of(2015, 11, 10);
         Temporal endInstance = LocalDate.of(2015, 11, 11);
         
-//        // select InstanceMock and apply changes
-//        Iterator<InstanceMock> instanceIterator = instances.iterator();
-//        InstanceMock selectedInstance = instanceIterator.next();
-//        Temporal startOriginalInstance = selectedInstance.getStartTemporal();
-//        LocalDate date = LocalDate.from(selectedInstance.getStartTemporal()).plus(1, ChronoUnit.DAYS);
-//        selectedInstance.setStartTemporal(date.atTime(9, 45)); // change start time
-//        selectedInstance.setEndTemporal(date.atTime(11, 0)); // change end time
-//        Temporal startInstance = selectedInstance.getStartTemporal();
-//        Temporal endInstance = selectedInstance.getEndTemporal();
-        
         vEvent.handleEdit(
                 vEventOriginal
               , vComponents
@@ -189,7 +180,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         List<Temporal> madeDates = instances.stream()
                 .map(a -> a.getStartTemporal())
-                .sorted()
+                .sorted(DateTimeUtilities.TEMPORAL_COMPARATOR)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<Temporal>(Arrays.asList(
                 LocalDate.of(2015, 11, 10)
@@ -208,10 +199,10 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         assertTrue(VEventMock.isEqualTo(expectedVEvent0, vEvent0));
         
         VEventMock expectedVEvent1 = getDaily2()
-                .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 15, 10, 0))
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 16, 9, 45))
+                .withDateTimeRecurrence(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDateTimeStart(LocalDate.of(2015, 11, 10))
                 .withDateTimeStamp(vEvent1.getDateTimeStamp())
-                .withDuration(Duration.ofMinutes(75))
+                .withDuration(Period.ofDays(1))
                 .withRRule(null)
                 .withSequence(1);
         assertTrue(VEventMock.isEqualTo(expectedVEvent1, vEvent1));
@@ -434,7 +425,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         List<Temporal> madeDates = instances.stream()
                 .map(a -> a.getStartTemporal())
-                .sorted(VComponent.TEMPORAL_COMPARATOR)
+                .sorted(DateTimeUtilities.TEMPORAL_COMPARATOR)
                 .collect(Collectors.toList());
 
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
@@ -494,7 +485,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
 
         List<Temporal> madeDates = instances.stream()
                 .map(a -> a.getStartTemporal())
-                .sorted(VComponent.TEMPORAL_COMPARATOR)
+                .sorted(DateTimeUtilities.TEMPORAL_COMPARATOR)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<Temporal>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2016, 2, 21, 8, 0), ZoneId.of("America/Los_Angeles"))
@@ -534,7 +525,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         
         List<Temporal> madeDates2 = instances.stream()
                 .map(a -> a.getStartTemporal())
-                .sorted(VComponent.TEMPORAL_COMPARATOR)
+                .sorted(DateTimeUtilities.TEMPORAL_COMPARATOR)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates2 = new ArrayList<>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2016, 2, 21, 8, 0), ZoneId.of("America/Los_Angeles"))
@@ -581,7 +572,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         
         List<Temporal> madeDates = instances.stream()
                 .map(a -> a.getStartTemporal())
-                .sorted(VComponent.TEMPORAL_COMPARATOR)
+                .sorted(DateTimeUtilities.TEMPORAL_COMPARATOR)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<Temporal>(Arrays.asList(
                   LocalDate.of(2015, 11, 15)
@@ -626,7 +617,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         // verify changes
         List<Temporal> madeDates = instances.stream()
                 .map(a -> a.getStartTemporal())
-                .sorted(VComponent.TEMPORAL_COMPARATOR)
+                .sorted(DateTimeUtilities.TEMPORAL_COMPARATOR)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<Temporal>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 9, 30)

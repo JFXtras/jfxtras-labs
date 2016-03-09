@@ -891,7 +891,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             while (exceptionIterator.hasNext())
             {
                 Temporal d = exceptionIterator.next();
-                int result = VComponent.TEMPORAL_COMPARATOR.compare(d, startInstance);
+                int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(d, startInstance);
                 if (result < 0)
                 {
                     exceptionIterator.remove();
@@ -911,7 +911,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             while (recurrenceIterator.hasNext())
             {
                 Temporal d = recurrenceIterator.next();
-                int result = VComponent.TEMPORAL_COMPARATOR.compare(d, startInstance);
+                int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(d, startInstance);
                 if (result < 0)
                 {
                     recurrenceIterator.remove();
@@ -1191,7 +1191,6 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * @param value
      * @return
      */
-    @Deprecated // not using anymore - may delete in future
     public Temporal previousStreamValue(Temporal value)
     {
         final Temporal start; 

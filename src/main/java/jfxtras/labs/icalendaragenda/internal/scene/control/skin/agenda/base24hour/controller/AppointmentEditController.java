@@ -11,11 +11,12 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -97,6 +98,7 @@ public class AppointmentEditController extends Pane
     @FXML private Button cancelRepeatButton;
     @FXML private Button deleteAppointmentButton;
     @FXML private RepeatableController<Appointment> repeatableController;
+    @FXML private Tab appointmentTab;
     @FXML private Tab repeatableTab;
     
     private LocalDateTime lastStartTextFieldValue = null; // last LocalDateTime in startTextField
@@ -261,8 +263,8 @@ public class AppointmentEditController extends Pane
         });
 
         // TIME ZONE
-        updateZone();
-        vEvent.dateTimeStartProperty().addListener((o) -> updateZone()); // setup listener to handle future changes
+        updateZone(); // initialize
+        vEvent.dateTimeStartProperty().addListener((obs) -> updateZone()); // setup listener to handle changes
         
         // END DATE/TIME
         Locale locale = Locale.getDefault();
@@ -301,8 +303,52 @@ public class AppointmentEditController extends Pane
         appointmentGroupGridPane.setupData(vComponent, appointmentGroups);
 
         // SETUP REPEATABLE CONTROLLER
-        System.out.println("startInstance:" + startInstance);
         repeatableController.setupData(vComponent, startInstance, popup);
+        
+        // When Appointment tab is selected make sure start and end times are valid, adjust if not
+        appointmentEditTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if (newValue == appointmentTab)
+            {
+                validateStartInstance();
+            }
+        });
+    }
+
+    /* If startInstance isn't valid due to a RRULE change, changes startInstance and
+     * endInstance to closest valid values
+     */
+    private void validateStartInstance()
+    {
+        if (! vEvent.isStreamValue(startInstance))
+        {
+            Temporal instanceBefore = vEvent.previousStreamValue(startInstance);
+            Optional<Temporal> optionalAfter = vEvent.stream(startInstance).findFirst();
+            Temporal newStartInstance = (optionalAfter.isPresent()) ? optionalAfter.get() : instanceBefore;
+            TemporalAmount duration = DateTimeUtilities.durationBetween(startInstance, endInstance);
+            Temporal newEndInstance = newStartInstance.plus(duration);
+            Temporal startInstanceBeforeChange = startInstance;
+            System.out.println("changes:" + newStartInstance + " " + newEndInstance);
+            startTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartInstance));
+            endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndInstance));
+            Platform.runLater(() -> startInstanceChangedAlert(startInstanceBeforeChange, newStartInstance)); // display alert after tab change refresh
+        }
+//  TODO - MAKE ONE METHOD FOR BOTH UPPER AND LOWER CODE
+        Temporal testedStart = vEvent.getDateTimeStart();
+        Temporal testedEnd = vEvent.getDateTimeEnd();
+        if (! vEvent.isStreamValue(testedStart))
+        {
+            Temporal instanceBefore = vEvent.previousStreamValue(testedStart);
+            Optional<Temporal> optionalAfter = vEvent.stream(testedStart).findFirst();
+            Temporal newTestedStart = (optionalAfter.isPresent()) ? optionalAfter.get() : instanceBefore;
+            TemporalAmount duration = DateTimeUtilities.durationBetween(testedStart, testedEnd);
+            Temporal newTestedEnd = newTestedStart.plus(duration);
+//            Temporal testedStartBeforeChange = testedStart;
+            System.out.println("changes DTSTART:" + newTestedStart + " " + newTestedEnd);
+            vEvent.setDateTimeStart(newTestedStart);
+            vEvent.setDateTimeEnd(newTestedEnd);
+//            Platform.runLater(() -> startInstanceChangedAlert(testedStartBeforeChange, newTestedStart)); // display alert after tab change refresh
+        }
     }
 
     private void updateZone()
@@ -312,24 +358,7 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleSave()
     {
-//        ZoneId zone = (vEvent.getDateTimeStart() instanceof ZonedDateTime) ? ZoneId.from(vEvent.getDateTimeStart()) : null;
-//        final Temporal startInstance;
-//        if (wholeDayCheckBox.isSelected())
-//        {
-//            startInstance = LocalDate.from(startTextField.getLocalDateTime());
-//        } else
-//        {
-//            startInstance = vEvent.getDateTimeType().from(startTextField.getLocalDateTime(), zone);
-//        }
-//        final Temporal endInstance;
-//        if (wholeDayCheckBox.isSelected())
-//        {
-//            endInstance = LocalDate.from(endTextField.getLocalDateTime());
-//        } else
-//        {
-//            endInstance = vEvent.getDateTimeType().from(endTextField.getLocalDateTime(), zone);
-//        }
-//System.out.println("instance controller:" + startInstance + " " + endInstance);
+        validateStartInstance();
         vEvent.handleEdit(
                 vEventOriginal
               , vComponents
@@ -344,25 +373,26 @@ public class AppointmentEditController extends Pane
     // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
     @FXML private void handleRepeatSave()
     {
-        // adjust DTSTART if first occurrence is not equal to it
-        Temporal t1 = vEvent.stream(vEvent.getDateTimeStart()).findFirst().get();
-        final Temporal start;
-        if (vEvent.getExDate() != null)
-        {            
-            Temporal t2 = Collections.min(vEvent.getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
-            start = (DateTimeUtilities.isBefore(t1, t2)) ? t1 : t2;
-        } else
-        {
-          start = t1;
-        }
-        long dayShift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), start);
-        if (dayShift > 0)
-        {
-            vEvent.setDateTimeStart(start);
-            long dayShift2 = ChronoUnit.DAYS.between(vEventOriginal.getDateTimeStart(), vEvent.getDateTimeStart());
-            Temporal end = vEvent.getDateTimeEnd().plus(dayShift2, ChronoUnit.DAYS);
-            vEvent.setDateTimeEnd(end);
-        }
+//        // TODO - INSTEAD LISTEN TO CHANGES AND UPDATE AUTOMATICALLY
+//        // adjust DTSTART if first occurrence is not equal to it
+//        Temporal t1 = vEvent.stream(vEvent.getDateTimeStart()).findFirst().get();
+//        final Temporal start;
+//        if (vEvent.getExDate() != null)
+//        {            
+//            Temporal t2 = Collections.min(vEvent.getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
+//            start = (DateTimeUtilities.isBefore(t1, t2)) ? t1 : t2;
+//        } else
+//        {
+//          start = t1;
+//        }
+//        long dayShift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), start);
+//        if (dayShift > 0)
+//        {
+//            vEvent.setDateTimeStart(start);
+//            long dayShift2 = ChronoUnit.DAYS.between(vEventOriginal.getDateTimeStart(), vEvent.getDateTimeStart());
+//            Temporal end = vEvent.getDateTimeEnd().plus(dayShift2, ChronoUnit.DAYS);
+//            vEvent.setDateTimeEnd(end);
+//        }
         handleSave();
     }
     
@@ -374,7 +404,6 @@ public class AppointmentEditController extends Pane
 
     @FXML private void handleDeleteButton()
     {
-        LocalDateTime startInstance = startTextField.getLocalDateTime();
         vEvent.handleDelete(
                 vComponents
               , startInstance
@@ -394,5 +423,21 @@ public class AppointmentEditController extends Pane
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
-    }    
+    }
+    
+    /* Displays an alert notifying that startInstance has changed due to changes in the Repeat tab.
+     * These changes can include the day of the week is not valid or the start date has shifted.
+     * The closest valid date is substituted.
+    */
+    private void startInstanceChangedAlert(Temporal t1, Temporal t2)
+    {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Start time changed");
+        alert.setHeaderText("Time not valid due to repeat rule change");
+        alert.setContentText(Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t1) + " is no longer valid." + System.lineSeparator()
+                    + "It has been replaced by " + Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t2));
+        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOk);
+        alert.showAndWait();
+    }
 }

@@ -761,7 +761,10 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         VEventMock vevent = getGoogleWithExDates();
         vevent.setDateTimeStart(LocalDate.of(2016, 2, 7));
                 
-        List<Temporal> exDates = vevent.getExDate().getTemporals().stream().sorted(VComponent.TEMPORAL_COMPARATOR).collect(Collectors.toList());
+        List<Temporal> exDates = vevent.getExDate().getTemporals()
+                .stream()
+                .sorted(DateTimeUtilities.TEMPORAL_COMPARATOR)
+                .collect(Collectors.toList());
         List<Temporal> expectedExDates = new ArrayList<>(Arrays.asList(
                 LocalDate.of(2016, 2, 9)
               , LocalDate.of(2016, 2, 10)
@@ -1107,7 +1110,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
                 .collect(Collectors.toList());
         madeDates.addAll(madeDatesParent);
         madeDates.addAll(madeDatesRecurrence);
-        Collections.sort(madeDates, VComponent.TEMPORAL_COMPARATOR);
+        Collections.sort(madeDates, DateTimeUtilities.TEMPORAL_COMPARATOR);
         List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
               , LocalDateTime.of(2015, 11, 11, 10, 0)
@@ -1145,7 +1148,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         startDates.addAll(startDatesV0);
         startDates.addAll(startDatesV1);
         startDates.addAll(startDatesV2);
-        Collections.sort(startDates, VComponent.TEMPORAL_COMPARATOR);
+        Collections.sort(startDates, DateTimeUtilities.TEMPORAL_COMPARATOR);
         List<ZonedDateTime> expectedStartDates = new ArrayList<>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 11, 0), ZoneId.of("America/Los_Angeles"))
               , ZonedDateTime.of(LocalDateTime.of(2016, 2, 15, 11, 0), ZoneId.of("America/Los_Angeles"))
@@ -1180,7 +1183,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         endDates.addAll(endDatesV0);
         endDates.addAll(endDatesV1);
         endDates.addAll(endDatesV2);
-        Collections.sort(endDates, VComponent.TEMPORAL_COMPARATOR);
+        Collections.sort(endDates, DateTimeUtilities.TEMPORAL_COMPARATOR);
         List<ZonedDateTime> expectedEndDates = new ArrayList<>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 13, 0), ZoneId.of("America/Los_Angeles"))
               , ZonedDateTime.of(LocalDateTime.of(2016, 2, 15, 13, 0), ZoneId.of("America/Los_Angeles"))

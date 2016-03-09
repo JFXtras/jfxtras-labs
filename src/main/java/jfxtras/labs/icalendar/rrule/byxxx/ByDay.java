@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.VComponent;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
@@ -236,7 +235,7 @@ public class ByDay extends ByRuleAbstract
                     Temporal newTemporal = t.with(field, valueAdj);
                     if (! DateTimeUtilities.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
                 }
-                Collections.sort(dates, VComponent.TEMPORAL_COMPARATOR);
+                Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
         case MONTHS:
@@ -262,7 +261,7 @@ public class ByDay extends ByRuleAbstract
                         if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
                     }
                 }
-                if (sortNeeded) Collections.sort(dates, VComponent.TEMPORAL_COMPARATOR);
+                if (sortNeeded) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
         case YEARS:
@@ -288,7 +287,7 @@ public class ByDay extends ByRuleAbstract
                         if (! DateTimeUtilities.isBefore(newDate, startTemporal)) dates.add(newDate);
                     }
                 }
-                if (sortNeeded) Collections.sort(dates, VComponent.TEMPORAL_COMPARATOR);
+                if (sortNeeded) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
                 return dates.stream();
             }); 
         case HOURS:

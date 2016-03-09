@@ -92,7 +92,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
               , ZonedDateTime.of(LocalDateTime.of(2016, 2, 13, 7, 30), ZoneId.of("Europe/London"))
                 ));
         List<Temporal> temporals = RecurrenceComponent.parseTemporals(string);
-        Collections.sort(temporals, VComponent.TEMPORAL_COMPARATOR);
+        Collections.sort(temporals, DateTimeUtilities.TEMPORAL_COMPARATOR);
         assertEquals(expectedTemporals, temporals);
     }
     

@@ -243,7 +243,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     protected Collection<String> changedStartAndEndDateTime(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
     {
         Collection<String> changedProperties = super.changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance);
-        TemporalAmount durationNew = EndType.calcDuration(startInstance, endInstance);
+        TemporalAmount durationNew = DateTimeUtilities.durationBetween(startInstance, endInstance);
         TemporalAmount durationOriginal = endType().getDuration(this);
         if (! durationOriginal.equals(durationNew)) { changedProperties.add(endType().toString()); }
         return changedProperties;
@@ -256,49 +256,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
             , Temporal endInstance)
     {
         super.adjustDateTime(startOriginalInstance, startInstance, endInstance);
-        // TODO - NEED TO HANDLE DURATION (NOT DTEND)
-//        final TemporalAmount duration;
-//        if (DateTimeType.from(endInstance) == DateTimeType.DATE)
-//        {
-//            duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
-//        } else
-//        {
-//            duration = Duration.between(startInstance, endInstance);
-//        }        
-        System.out.println("start:" + getDuration());
         endType().setDuration(this, startInstance, endInstance);
-        System.out.println("finish:" + getDuration());
-//        switch (endPriority())
-//        {
-//        case DTEND:
-//            break;
-//        case DURATION:
-//            break;
-//        default:
-//            break;
-//        }
-//        final Temporal newEnd;
-//        if (DateTimeType.from(endInstance) == DateTimeType.DATE)
-//        {
-//            TemporalAmount duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
-//            System.out.println("duration:" + duration);
-//            newEnd = LocalDate.from(getDateTimeStart()).plus(duration);
-//        } else
-//        {
-//            TemporalAmount duration = Duration.between(startInstance, endInstance);
-//            newEnd = getDateTimeStart().plus(duration);
-//        }
-//        setDateTimeEnd(newEnd);
-//        final TemporalAmount duration;
-//        if (DateTimeType.from(startInstance) == DateTimeType.DATE)
-//        {
-//            duration = Period.between(LocalDate.from(startInstance), LocalDate.from(endInstance));
-//        } else
-//        {
-//            duration = Duration.between(startInstance, endInstance);            
-//        }
-//        Temporal newEnd = getDateTimeStart().plus(duration);
-//        setDateTimeEnd(newEnd);
     }
 
     @Override // edit end date or date/time
@@ -487,7 +445,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
             @Override
             public void setDuration(VEvent<?,?> vEvent, Temporal startInclusive, Temporal endExclusive)
             {
-                TemporalAmount duration = calcDuration(startInclusive, endExclusive);
+                TemporalAmount duration = DateTimeUtilities.durationBetween(startInclusive, endExclusive);
                 vEvent.setDuration(duration);
             }
 
@@ -502,8 +460,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
         @Override
         public void setDuration(VEvent<?,?> vEvent, Temporal startInclusive, Temporal endExclusive)
         {
-            TemporalAmount duration = calcDuration(startInclusive, endExclusive);
-            System.out.println("duration:" + duration);
+            TemporalAmount duration = DateTimeUtilities.durationBetween(startInclusive, endExclusive);
             Temporal dtEnd = vEvent.getDateTimeStart().plus(duration);
             vEvent.setDateTimeEnd(dtEnd);
         }
@@ -521,9 +478,9 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
         }
     };
 
-        /**
-     * Adds the Duration or Period between two Temporals to the DTSTART or DURATION
-     * of the parameter vEvent.
+     /**
+     * Sets the DURATION or DTEND, of the vEvent depending on the EndType value it contains.  The duration or
+     * period is calculated from the startInclusive and endExclusive parameters.
      * 
      * @param vEvent - VEvent to modify
      * @param startInclusive
@@ -538,20 +495,6 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
      * @param vEvent
      * @return
      */
-    public abstract TemporalAmount getDuration(VEvent<?,?> vEvent);
-    
-    public static TemporalAmount calcDuration(Temporal startInclusive, Temporal endExclusive)
-    {
-        final TemporalAmount duration;
-        if (DateTimeType.of(startInclusive) == DateTimeType.DATE)
-        {
-            duration = Period.between(LocalDate.from(startInclusive), LocalDate.from(endExclusive));
-        } else
-        {
-            duration = Duration.between(startInclusive, endExclusive);
-        }
-        return duration;
-    }
-    
+    public abstract TemporalAmount getDuration(VEvent<?,?> vEvent);    
     }
 }

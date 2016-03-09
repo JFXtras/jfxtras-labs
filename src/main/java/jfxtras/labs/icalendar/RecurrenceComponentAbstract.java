@@ -134,9 +134,9 @@ public abstract class RecurrenceComponentAbstract<T> implements RecurrenceCompon
         
         // Sort both sets as lists and compare each element
         List<Temporal> l1 = new ArrayList<Temporal>(getTemporals());
-        Collections.sort(l1, VComponent.TEMPORAL_COMPARATOR);
+        Collections.sort(l1, DateTimeUtilities.TEMPORAL_COMPARATOR);
         List<Temporal> l2 = new ArrayList<Temporal>(testObj.getTemporals());
-        Collections.sort(l2, VComponent.TEMPORAL_COMPARATOR);
+        Collections.sort(l2, DateTimeUtilities.TEMPORAL_COMPARATOR);
         for (int i=0; i<l1.size(); i++)
         {
             if(! l1.get(i).equals(l2.get(i))) return false;

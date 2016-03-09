@@ -8,15 +8,20 @@ import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
+import java.util.Comparator;
 
 
 /**
@@ -80,6 +85,14 @@ public final class DateTimeUtilities
             .optionalEnd()
             .toFormatter();
     
+    /** Compares two temporals of the same type */
+    public final static Comparator<Temporal> TEMPORAL_COMPARATOR = (t1, t2) -> 
+    {
+        LocalDateTime ld1 = (t1.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t1) : LocalDate.from(t1).atStartOfDay();
+        LocalDateTime ld2 = (t2.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t2) : LocalDate.from(t2).atStartOfDay();
+        return ld1.compareTo(ld2);
+    };
+    
     /** Determines if Temporal is before t2
      * Works for LocalDate or LocalDateTime
      * 
@@ -112,6 +125,31 @@ public final class DateTimeUtilities
             LocalDateTime d2 = DateTimeUtilities.toLocalDateTime(t2);
             return d1.isAfter(d2);
         } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
+    }
+    
+    /**
+     * Calculate TemporalAmount between two Temporals.
+     * Both temporals must be the same type and representations of a DateTimeType.
+     * 
+     * @param startInclusive
+     * @param endExclusive
+     * @return - period for DATE, duration for all other DateTimeTypes
+     */
+    public static TemporalAmount durationBetween(Temporal startInclusive, Temporal endExclusive)
+    {
+        if (! startInclusive.getClass().equals(endExclusive.getClass()))
+        {
+            throw new DateTimeException("Temporal class of parameters startInclusive and endExclusive must be the same.");
+        }
+        final TemporalAmount duration;
+        if (DateTimeType.of(startInclusive) == DateTimeType.DATE)
+        {
+            duration = Period.between(LocalDate.from(startInclusive), LocalDate.from(endExclusive));
+        } else
+        {
+            duration = Duration.between(startInclusive, endExclusive);
+        }
+        return duration;
     }
     
     /** Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
