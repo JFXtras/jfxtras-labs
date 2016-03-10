@@ -401,7 +401,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
         {
             TemporalAmount duration = endType().getDuration(this);
             Temporal plus = d.plus(duration);
-            return ! DateTimeUtilities.isBefore(plus, getStartRange()); 
+            return DateTimeUtilities.isAfter(plus, getStartRange()); 
         }); // inclusive
         Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
         return removedTooLate;

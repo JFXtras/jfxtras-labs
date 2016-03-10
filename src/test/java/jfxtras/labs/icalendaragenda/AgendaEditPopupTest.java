@@ -1306,6 +1306,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         // verify alert opens
         click("#appointmentTab");
         find("#startInstanceChangedAlert");
+        closeCurrentWindow();
         
         // Get properties
         LocalDateTimeTextField startTextField = find("#startTextField");
@@ -1313,25 +1314,10 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // verify properties changed
         assertEquals(LocalDateTime.of(2015, 11, 11, 10, 0), startTextField.getLocalDateTime());
-        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 45), endTextField.getLocalDateTime());       
-    }
-    
-    @Test
-    public void canUpdateVComponentDTStartWhenMadeInvalidByRRuleChange()
-    {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getWeeklyZoned()));
-        VEventImpl vEvent = (VEventImpl) agenda.vComponents().get(0);
+        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 45), endTextField.getLocalDateTime());     
         
-        // Open edit popup
-        move("#AppointmentRegularBodyPane2015-11-09/0");
-        press(MouseButton.SECONDARY);
-        release(MouseButton.SECONDARY);
-        click("#repeatableTab");
-
-        // make changes
-        click("#mondayCheckBox"); // shut off monday
-        click("#saveRepeatButton");
-        
+        // verify VComponent changed
+        click("#saveAppointmentButton");
         VEventImpl expectedVEvent = ICalendarStaticVEvents.getWeeklyZoned()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 45), ZoneId.of("America/Los_Angeles")))
@@ -1340,7 +1326,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
         
-        assertTrue(VEventImpl.isEqualTo(expectedVEvent, vEvent));        
+        assertTrue(VEventImpl.isEqualTo(expectedVEvent, vEvent));  
     }
     
     @Test
