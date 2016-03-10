@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
@@ -229,6 +230,30 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     }
     
     // HANDLE EDIT METHODS
+    @Override
+    void validateStartInstanceAndDTStart(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
+    {
+        // Test if DTSTART is not valid, get new one
+        if (! isStreamValue(getDateTimeStart()))
+        {            
+            Optional<Temporal> optionalAfter = stream(getDateTimeStart()).findFirst();
+            final Temporal newTestedStart;
+            if (optionalAfter.isPresent())
+            {
+                newTestedStart = optionalAfter.get();
+            } else
+            {
+                throw new RuntimeException("No valid DTSTART in VComponent");
+            }
+            TemporalAmount duration = endType().getDuration(this);
+//            Temporal newTestedEnd = newTestedStart.plus(duration);
+            setDateTimeStart(newTestedStart);
+            endType().setDuration(this, duration);
+//            setDateTimeEnd(newTestedEnd);
+        }
+//        return super.validateStartInstanceAndDTStart(startOriginalInstance, startInstance, endInstance);
+    }
+        
     @Override
     protected void becomingIndividual(VComponent<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
     {
@@ -455,6 +480,12 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
             {
                 return vEvent.getDuration();
             }
+
+            @Override
+            public void setDuration(VEvent<?, ?> vEvent, TemporalAmount amount)
+            {
+                vEvent.setDuration(amount);
+            }
         }
       , DTEND
       {
@@ -477,10 +508,24 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
                 return Duration.between(vEvent.getDateTimeStart(), vEvent.getDateTimeEnd());
             }
         }
+
+        @Override
+        public void setDuration(VEvent<?, ?> vEvent, TemporalAmount amount)
+        {
+            vEvent.setDateTimeEnd(vEvent.getDateTimeStart().plus(amount));
+        }
     };
 
+    /**
+     * Sets the DURATION or DTEND, of the vEvent depending on the EndType value vEvent contains.  If the EndType is DTEND it
+     * is calculated by adding the amount to DTSTART.  Otherwise, DURATION is simply set to amount
+     * 
+     * @param vEvent - VEvent to modify
+     * @param amount - TemporalAmount for duration or calculations for DTSTART
+     */
+    public abstract void setDuration(VEvent<?,?> vEvent, TemporalAmount amount);
      /**
-     * Sets the DURATION or DTEND, of the vEvent depending on the EndType value it contains.  The duration or
+     * Sets the DURATION or DTEND, of the vEvent depending on the EndType value vEvent contains.  The duration or
      * period is calculated from the startInclusive and endExclusive parameters.
      * 
      * @param vEvent - VEvent to modify

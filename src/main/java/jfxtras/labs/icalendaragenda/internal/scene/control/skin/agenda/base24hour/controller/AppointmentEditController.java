@@ -310,7 +310,11 @@ public class AppointmentEditController extends Pane
         {
             if (newValue == appointmentTab)
             {
-                validateStartInstance();
+                Runnable alertRunnable = validateStartInstance();
+                if (alertRunnable != null)
+                {
+                    Platform.runLater(alertRunnable); // display alert after tab change refresh
+                }
             }
         });
     }
@@ -318,7 +322,7 @@ public class AppointmentEditController extends Pane
     /* If startInstance isn't valid due to a RRULE change, changes startInstance and
      * endInstance to closest valid values
      */
-    private void validateStartInstance()
+    private Runnable validateStartInstance()
     {
         if (! vEvent.isStreamValue(startInstance))
         {
@@ -328,31 +332,12 @@ public class AppointmentEditController extends Pane
             TemporalAmount duration = DateTimeUtilities.durationBetween(startInstance, endInstance);
             Temporal newEndInstance = newStartInstance.plus(duration);
             Temporal startInstanceBeforeChange = startInstance;
-            System.out.println("changes:" + newStartInstance + " " + newEndInstance);
             startTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartInstance));
             endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndInstance));
             startOriginalInstance = startInstance;
-            // TODO - DON'T DISPLAY ALERT WHEN RUN FROM SAVE
-            Platform.runLater(() -> startInstanceChangedAlert(startInstanceBeforeChange, newStartInstance)); // display alert after tab change refresh
+            return () -> startInstanceChangedAlert(startInstanceBeforeChange, newStartInstance);
         }
-        
-        // Test if DTSTART is not valid, get new one
-        if (! vEvent.isStreamValue(vEvent.getDateTimeStart()))
-        {            
-            Optional<Temporal> optionalAfter = vEvent.stream(vEvent.getDateTimeStart()).findFirst();
-            final Temporal newTestedStart;
-            if (optionalAfter.isPresent())
-            {
-                newTestedStart = optionalAfter.get();
-            } else
-            {
-                throw new RuntimeException("No valid DTSTART in VComponent");
-            }
-            TemporalAmount duration = DateTimeUtilities.durationBetween(vEvent.getDateTimeStart(), vEvent.getDateTimeEnd());
-            Temporal newTestedEnd = newTestedStart.plus(duration);
-            vEvent.setDateTimeStart(newTestedStart);
-            vEvent.setDateTimeEnd(newTestedEnd);
-        }
+        return null;
     }
 
     private void updateZone()
@@ -362,11 +347,6 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleSave()
     {
-        if ((vEvent.getRRule() != null) && ! vEvent.getRRule().equals(vEventOriginal.getRRule()))
-        {
-            System.out.println("RUNNING validateStartInstance:");
-            validateStartInstance();
-        }
         vEvent.handleEdit(
                 vEventOriginal
               , vComponents
@@ -381,26 +361,6 @@ public class AppointmentEditController extends Pane
     // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
     @FXML private void handleRepeatSave()
     {
-//        // TODO - INSTEAD LISTEN TO CHANGES AND UPDATE AUTOMATICALLY
-//        // adjust DTSTART if first occurrence is not equal to it
-//        Temporal t1 = vEvent.stream(vEvent.getDateTimeStart()).findFirst().get();
-//        final Temporal start;
-//        if (vEvent.getExDate() != null)
-//        {            
-//            Temporal t2 = Collections.min(vEvent.getExDate().getTemporals(), VComponent.TEMPORAL_COMPARATOR);
-//            start = (DateTimeUtilities.isBefore(t1, t2)) ? t1 : t2;
-//        } else
-//        {
-//          start = t1;
-//        }
-//        long dayShift = ChronoUnit.DAYS.between(vEvent.getDateTimeStart(), start);
-//        if (dayShift > 0)
-//        {
-//            vEvent.setDateTimeStart(start);
-//            long dayShift2 = ChronoUnit.DAYS.between(vEventOriginal.getDateTimeStart(), vEvent.getDateTimeStart());
-//            Temporal end = vEvent.getDateTimeEnd().plus(dayShift2, ChronoUnit.DAYS);
-//            vEvent.setDateTimeEnd(end);
-//        }
         handleSave();
     }
     

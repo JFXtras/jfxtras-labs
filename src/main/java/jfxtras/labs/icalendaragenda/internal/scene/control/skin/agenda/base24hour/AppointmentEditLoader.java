@@ -47,10 +47,6 @@ public class AppointmentEditLoader extends Stage
             e.printStackTrace();
         }
         
-//        System.out.println("xy:" + appointmentPopup.getPrefHeight() + " " + appointmentPopup.getHeight());
-//        setMaxHeight(appointmentPopup.getMaxHeight());
-//        setMaxWidth(appointmentPopup.getMaxWidth());
-//        appointmentPopup.setId("editAppointmentPopup");
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
         Scene scene = new Scene(appointmentPopup);
         scene.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET);

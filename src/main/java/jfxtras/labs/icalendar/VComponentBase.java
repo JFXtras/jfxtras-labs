@@ -612,6 +612,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
           , Collection<I> instances
           , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
     {
+        validateStartInstanceAndDTStart(startOriginalInstance, startInstance, endInstance);
         final RRuleType rruleType = RRuleType.getRRuleType(getRRule(), vComponentOriginal.getRRule());
         System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
@@ -692,6 +693,29 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         }
         return true;
     }
+    
+    /** If startInstance isn't valid due to a RRULE change, change startInstance and
+     * endInstance to closest valid values
+     */
+    void validateStartInstanceAndDTStart(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
+    {
+//        if (! isStreamValue(startInstance))
+//        {
+//            Temporal instanceBefore = previousStreamValue(startInstance);
+//            Optional<Temporal> optionalAfter = stream(startInstance).findFirst();
+//            Temporal newStartInstance = (optionalAfter.isPresent()) ? optionalAfter.get() : instanceBefore;
+//            TemporalAmount duration = DateTimeUtilities.durationBetween(startInstance, endInstance);
+//            Temporal newEndInstance = newStartInstance.plus(duration);
+//            Temporal startInstanceBeforeChange = startInstance;
+//            System.out.println("changes:" + newStartInstance + " " + newEndInstance);
+////            startTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartInstance));
+////            endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndInstance));
+//            startOriginalInstance = startInstance;
+//            // TODO - DON'T DISPLAY ALERT WHEN RUN FROM SAVE
+////            Platform.runLater(() -> startInstanceChangedAlert(startInstanceBeforeChange, newStartInstance)); // display alert after tab change refresh
+//        }
+//        return startOriginalInstance;
+    }    
     
     /** returns list of date-time properties that have been edited (DTSTART) */
     protected Collection<String> changedStartAndEndDateTime(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
