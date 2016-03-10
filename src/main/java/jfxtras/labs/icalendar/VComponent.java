@@ -337,6 +337,15 @@ public interface VComponent<I>
     Stream<Temporal> stream(Temporal startTemporal);
 
     /**
+     * Produces a stream of start dates or date/times by calling {@link #stream(Temporal)} using {@link #getStartRange()}
+     * as the temporal parameter, minus the duration if the VComponent has one.  This stream is used
+     * by {@link #makeInstances()} to produce the displayed instances of the recurrence set.
+     * 
+     * @return - stream of start dates or date/times between {@link #getStartRange()} and {@link #getEndRange()}
+     */
+    Stream<Temporal> streamLimitedByRange();
+    
+    /**
      * Start of range for which recurrence instances are generated.
      * Should match the start date displayed on the calendar.
      * This is not a part of an iCalendar VComponent.

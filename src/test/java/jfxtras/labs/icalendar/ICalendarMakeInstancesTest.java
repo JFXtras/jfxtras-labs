@@ -144,5 +144,46 @@ public class ICalendarMakeInstancesTest extends ICalendarTestAbstract
         
         assertTrue(newInstances.stream().map(a -> a.isWholeDay()).allMatch(a -> a == true)); // verify all instances are wholeDay
     }
-    
+
+    // instance ending in range, but starting before range
+    @Test
+    public void makeInstancesSplitInstance()
+    {
+        VEventMock vevent = getSplitWeek();
+        
+        // test week event starts - beginning part of instance
+        {
+            LocalDate start = LocalDate.of(2016, 3, 6);
+            LocalDate end = LocalDate.of(2016, 3, 13);
+            List<InstanceMock> newInstances = vevent.makeInstances(start, end)
+                    .stream()
+                    .sorted(InstanceMock.INSTANCE_MOCK_COMPARATOR)
+                    .collect(Collectors.toList());
+            List<Temporal> dates = newInstances.stream()
+                    .map(a -> a.getStartTemporal())
+                    .collect(Collectors.toList());
+            List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2016, 3, 12, 4, 0)
+                    ));        
+            assertEquals(expectedDates, dates);
+        }
+        
+        // test week event ends - ending part of instance
+        {
+            LocalDate start = LocalDate.of(2016, 3, 13);
+            LocalDate end = LocalDate.of(2016, 3, 20);
+            List<InstanceMock> newInstances = vevent.makeInstances(start, end)
+                    .stream()
+                    .sorted(InstanceMock.INSTANCE_MOCK_COMPARATOR)
+                    .collect(Collectors.toList());
+            List<Temporal> dates = newInstances.stream()
+                    .map(a -> a.getStartTemporal())
+                    .collect(Collectors.toList());
+            List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                    LocalDateTime.of(2016, 3, 12, 4, 0)
+                    ));        
+            assertEquals(expectedDates, dates);
+        }
+    }
+
 }

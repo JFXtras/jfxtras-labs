@@ -706,4 +706,15 @@ public abstract class ICalendarTestAbstract
         p1.getRRule().withRecurrences(p3);
         return vComponents;
     }
+
+    protected static VEventMock getSplitWeek()
+    {
+        return new VEventMock()
+                .withDateTimeEnd(LocalDateTime.of(2016, 3, 13, 5, 45))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
+                .withDateTimeStart(LocalDateTime.of(2016, 3, 12, 4, 0))
+                .withDescription("Split Description")
+                .withSummary("Split Summary")
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+    }
 }

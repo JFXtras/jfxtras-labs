@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -391,42 +392,20 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
         return properties;
     }
     
-//    /**
-//     * Needed by parse methods in subclasses 
-//     * 
-//     * Convert a list of strings containing properties of a iCalendar component and
-//     * populate its properties.  Used to make a new object from a List<String>.
-//     * 
-//     * @param vEvent
-//     * @param strings - list of properties
-//     * @return VComponent with parsed properties added
-//     */    
-//    public static VEvent<?,?> parseVEvent(VEvent<?,?> vEvent, String string)
-//    {
-//        Iterator<Pair<String, String>> i = ICalendarUtilities.ComponentStringToPropertyNameAndValueList(string).iterator();
-//        while (i.hasNext())
-//        {
-//            Pair<String, String> linePair = i.next();
-//            String propertyName = linePair.getKey();
-//            String value = linePair.getValue();
-//
-//            // VComponent properties
-//            VComponentProperty vComponentProperty = VComponentProperty.propertyFromString(propertyName);
-//            if (vComponentProperty != null)
-//            {
-//                vComponentProperty.parseAndSetProperty(vEvent, value);
-//                continue;
-//            }
-//            
-//            // VEvent properties
-//            VEventProperty vEventProperty = VEventProperty.propertyFromString(propertyName);
-//            if (vEventProperty != null)
-//            {
-//                vEventProperty.parseAndSetProperty(vEvent, value);
-//            }
-//        }
-//        return vEvent;
-//    }
+    @Override
+    public Stream<Temporal> streamLimitedByRange()
+    {
+        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
+        TemporalAmount amount = endType().getDuration(this);
+        Stream<Temporal> removedTooEarly = stream(getStartRange().minus(amount)).filter(d -> 
+        {
+            TemporalAmount duration = endType().getDuration(this);
+            Temporal plus = d.plus(duration);
+            return ! DateTimeUtilities.isBefore(plus, getStartRange()); 
+        }); // inclusive
+        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
+        return removedTooLate;
+    }
     
     /**
      * Checks that one, and only one, of DTEND or DURATION is set.

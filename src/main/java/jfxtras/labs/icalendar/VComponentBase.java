@@ -32,6 +32,7 @@ import javafx.util.Callback;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.rrule.RRule;
+import jfxtras.labs.icalendar.rrule.RRule.RRuleType;
 
 /**
  * Abstract implementation of VComponent with all common methods for VEvent, VTodo, and VJournal
@@ -1076,42 +1077,6 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         }
     }
     
-//    static List<ChangeDialogOption> makeDialogChoices(VComponent<?> vComponent, Temporal startInstance)
-//    {
-//        List<ChangeDialogOption> choices = new ArrayList<>();
-////        String one = ICalendarUtilities.temporalToStringPretty(startInstance);
-//        choices.add(ChangeDialogOption.ONE);
-//        if (! vComponent.isIndividual())
-//        {
-//            if (! vComponent.isLastRecurrence(startInstance))
-//            {
-////                String future = ICalendarUtilities.rangeToString(vComponent, startInstance);
-//                choices.add(ChangeDialogOption.THIS_AND_FUTURE);
-//            }
-////            String all = ICalendarUtilities.rangeToString(vComponent);
-//            choices.put(ChangeDialogOption.ALL);
-//        }
-//        return choices;
-//    }
-    
-//    private List<ChangeDialogOption> makeDialogChoices(Temporal startInstance)
-//    {
-//        Map<ChangeDialogOption, String> choices = new LinkedHashMap<>();
-//        String one = ICalendarUtilities.temporalToStringPretty(startInstance);
-//        choices.put(ChangeDialogOption.ONE, one);
-//        if (! this.isIndividual())
-//        {
-//            if (! isLastRecurrence(startInstance))
-//            {
-//                String future = ICalendarUtilities.rangeToString(this, startInstance);
-//                choices.put(ChangeDialogOption.THIS_AND_FUTURE, future);
-//            }
-//            String all = ICalendarUtilities.rangeToString(this);
-//            choices.put(ChangeDialogOption.ALL, all);
-//        }
-//        return choices;
-//    }
-    
     /** Deep copy all fields from source to destination 
      * @param <J>*/
     private static <J> void copy(VComponentBase<J,?> source, VComponentBase<J,?> destination)
@@ -1160,52 +1125,6 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
                 });
         return properties;
     }
-    
-//    /**
-//     * Needed by parse methods in subclasses 
-//     * 
-//     * Convert a list of strings containing properties of a iCalendar component and
-//     * populate its properties.  Used to make a new object from a List<String>.
-//     * 
-//     * @param vComponent - VComponent input parameter
-//     * @param strings - list of properties
-//     * @return VComponent with parsed properties added
-//     */
-//    protected static VComponentBase<?,?> parseVComponent(VComponentBase<?,?> vComponent, List<String> strings)
-//    {
-//        Iterator<String> lineIterator = strings.iterator();
-//        while (lineIterator.hasNext())
-//        {
-//            String line = lineIterator.next();
-//            // identify iCalendar property ending index (property name must start at the beginning of the line)
-//            int propertyValueSeparatorIndex = 0;
-//            for (int i=0; i<line.length(); i++)
-//            {
-//                if ((line.charAt(i) == ';') || (line.charAt(i) == ':'))
-//                {
-//                    propertyValueSeparatorIndex = i;
-//                    break;
-//                }
-//            }
-//            if (propertyValueSeparatorIndex == 0)
-//            {
-//                continue; // line doesn't contain a property, get next one
-//            }
-//            String propertyName = line.substring(0, propertyValueSeparatorIndex);
-//            String value = line.substring(propertyValueSeparatorIndex + 1).trim();
-//            if (value.isEmpty())
-//            { // skip empty properties
-//                continue;
-//            }
-//            VComponentProperty property = VComponentProperty.propertyFromString(propertyName);
-//            boolean propertyFound = property.parseAndSetProperty(vComponent, value); // runs method in enum to set property
-//            if (propertyFound)
-//            {
-//                lineIterator.remove();                
-//            }
-//        }
-//        return vComponent;
-//    }
     
     // Variables for start date or date/time cache used as starting Temporal for stream
     private static final int CACHE_RANGE = 51; // number of values in cache
@@ -1435,33 +1354,33 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         return stream3.filter(t -> ! DateTimeUtilities.isBefore(t, start));
     }
     
-    public enum RRuleType
-    {
-        INDIVIDUAL ,
-        WITH_EXISTING_REPEAT ,
-        WITH_NEW_REPEAT, 
-        HAD_REPEAT_BECOMING_INDIVIDUAL;
-      
-        public static RRuleType getRRuleType(RRule rruleNew, RRule rruleOld)
-        {
-            if (rruleNew == null)
-            {
-                if (rruleOld == null)
-                { // doesn't have repeat or have old repeat either
-                    return RRuleType.INDIVIDUAL;
-                } else {
-                    return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
-                }
-            } else
-            { // RRule != null
-                if (rruleOld == null)
-                {
-                    return RRuleType.WITH_NEW_REPEAT;                
-                } else
-                {
-                    return RRuleType.WITH_EXISTING_REPEAT;
-                }
-            }
-        }
-    }
+//    public enum RRuleType
+//    {
+//        INDIVIDUAL ,
+//        WITH_EXISTING_REPEAT ,
+//        WITH_NEW_REPEAT, 
+//        HAD_REPEAT_BECOMING_INDIVIDUAL;
+//      
+//        public static RRuleType getRRuleType(RRule rruleNew, RRule rruleOld)
+//        {
+//            if (rruleNew == null)
+//            {
+//                if (rruleOld == null)
+//                { // doesn't have repeat or have old repeat either
+//                    return RRuleType.INDIVIDUAL;
+//                } else {
+//                    return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
+//                }
+//            } else
+//            { // RRule != null
+//                if (rruleOld == null)
+//                {
+//                    return RRuleType.WITH_NEW_REPEAT;                
+//                } else
+//                {
+//                    return RRuleType.WITH_EXISTING_REPEAT;
+//                }
+//            }
+//        }
+//    }
 }

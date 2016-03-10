@@ -6,7 +6,6 @@ import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
@@ -37,18 +36,14 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
         if (DateTimeUtilities.isAfter(startRange, endRange)) throw new DateTimeException("endRange must be after startRange");
         setEndRange(endRange);
         setStartRange(startRange);
-        System.out.println("ranges:" + getStartRange() + " " + getEndRange());
         return makeInstances();
     }
 
     @Override
     public List<InstanceMock> makeInstances()
     {
-        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
         List<InstanceMock> madeInstances = new ArrayList<>();
-        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! DateTimeUtilities.isBefore(d, getStartRange())); // inclusive
-        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
-        removedTooLate.forEach(temporalStart ->
+        streamLimitedByRange().forEach(temporalStart ->
         {
             TemporalAmount duration = endType().getDuration(this);
             Temporal temporalEnd = temporalStart.plus(duration);

@@ -362,5 +362,35 @@ public class RRule
     static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
+    
+    public enum RRuleType
+    {
+        INDIVIDUAL ,
+        WITH_EXISTING_REPEAT ,
+        WITH_NEW_REPEAT, 
+        HAD_REPEAT_BECOMING_INDIVIDUAL;
+      
+        public static RRuleType getRRuleType(RRule rruleNew, RRule rruleOld)
+        {
+            if (rruleNew == null)
+            {
+                if (rruleOld == null)
+                { // doesn't have repeat or have old repeat either
+                    return RRuleType.INDIVIDUAL;
+                } else {
+                    return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
+                }
+            } else
+            { // RRule != null
+                if (rruleOld == null)
+                {
+                    return RRuleType.WITH_NEW_REPEAT;                
+                } else
+                {
+                    return RRuleType.WITH_EXISTING_REPEAT;
+                }
+            }
+        }
+    }
 
 }

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
@@ -191,12 +190,27 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     @Override
     public List<Appointment> makeInstances()
     {
-        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
+//        System.out.println("makeInstances:");
+//        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
+//        TemporalAmount amount = endType().getDuration(this);
+//        Stream<Temporal> removedTooEarly = stream(getStartRange().minus(amount)).filter(d -> 
+//        {
+//            TemporalAmount duration = endType().getDuration(this);
+//            Temporal plus = d.plus(duration);
+//            System.out.println("too early:" + d + " " + plus + " " + getStartRange());
+//            return ! DateTimeUtilities.isBefore(plus, getStartRange()); 
+//        }); // inclusive
+//        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
+
         List<Appointment> madeAppointments = new ArrayList<>();
-        Stream<Temporal> removedTooEarly = stream(getStartRange()).filter(d -> ! DateTimeUtilities.isBefore(d, getStartRange())); // inclusive
-        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
-        removedTooLate.forEach(temporalStart ->
+
+        // NEW STREAM IN VCOMPONENT WITH RANGE LIMITS
+        
+        // TODO - ADD SPLIT-APPOINTMENTS appointments ending in range, but starting before range
+        // MAYBE DO ADJUSTEMENT TO START TO MAKE END AND SEE IF IT SHOULD BE KEPT
+        streamLimitedByRange().forEach(temporalStart ->
         {
+            System.out.println("appt:" + temporalStart);
             TemporalAmount duration = endType().getDuration(this);
             Temporal temporalEnd = temporalStart.plus(duration);
             Appointment appt = new Agenda.AppointmentImplTemporal()

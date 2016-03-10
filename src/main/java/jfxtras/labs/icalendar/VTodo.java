@@ -2,6 +2,7 @@ package jfxtras.labs.icalendar;
 
 import java.time.temporal.Temporal;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 public class VTodo<I,T> extends VComponentBase<I,T>
 {
@@ -36,6 +37,13 @@ public class VTodo<I,T> extends VComponentBase<I,T>
 
     @Override
     public String toComponentText()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Stream<Temporal> streamLimitedByRange()
     {
         // TODO Auto-generated method stub
         return null;

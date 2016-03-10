@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Node;
@@ -1266,33 +1265,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     
     @Test
     public void canDeleteSeriesThisAndFutureEdit()
-    {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
-        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
-        
-        // Open edit popup
-        move("#hourLine11");
-        press(MouseButton.SECONDARY);
-        release(MouseButton.SECONDARY);
-
-        // delete VComponent
-        click("#deleteAppointmentButton");
-        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
-        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE));
-        click("#changeDialogOkButton");
-        
-        // verify VComponent changes
-        assertEquals(1, agenda.vComponents().size());
-        VEventImpl expectedV = ICalendarStaticVEvents.getDaily1();
-        expectedV.getRRule().setUntil( ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 10, 0), ZoneId.systemDefault())
-                .withZoneSameInstant(ZoneId.of("Z")) );
-        assertTrue(VEventImpl.isEqualTo(expectedV, v));
-    }
-    
-    @Test
-    @Ignore
-    public void canDeleteSeriesWithRecurrencesEdit()
-    // TODO - THIS TEST DOESN'T SEEM TO HAVE RECURRENCES - FIXTHIS
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
         VEventImpl v = (VEventImpl) agenda.vComponents().get(0);

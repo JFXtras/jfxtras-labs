@@ -196,18 +196,29 @@ public class CalendarController {
     }
 
     public void setupData(LocalDate startDate, LocalDate endDate)
-    {        
+    {
+        
+        VEventImpl vEventSplit = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withDateTimeEnd(LocalDateTime.of(2016, 3, 13, 5, 45))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
+                .withDateTimeStart(LocalDateTime.of(2016, 3, 12, 4, 0))
+                .withDescription("Split Description")
+                .withSummary("Split Summary")
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+            agenda.vComponents().add(vEventSplit);
+        
         VEventImpl vEvent3 = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 3, 7, 5, 45), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 7, 4, 0), ZoneId.of("America/Los_Angeles")))
                 .withDescription("WeeklyZoned Description")
                 .withRRule(new RRule()
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 3, 16, 4, 0), ZoneId.of("America/Los_Angeles")).withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
                 .withSummary("WeeklyZoned Summary")
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");        
-            agenda.vComponents().add(vEvent3);
+//            agenda.vComponents().add(vEvent3);
         
         VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
             .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
@@ -219,7 +230,7 @@ public class CalendarController {
                             .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
             .withSummary("WeeklyZoned Summary")
             .withUniqueIdentifier("20150110T080000-0@jfxtras.org");        
-        agenda.vComponents().add(vEvent);
+//        agenda.vComponents().add(vEvent);
         
         
         
@@ -231,7 +242,7 @@ public class CalendarController {
                 .withRRule(new RRule()
                         .withFrequency(new Daily()
                                 .withInterval(3)));
-        agenda.vComponents().add(vEvent2);        
+//        agenda.vComponents().add(vEvent2);        
         
         // replace Agenda's appointmentGroups with the ones used in the test events.
         agenda.appointmentGroups().clear();
