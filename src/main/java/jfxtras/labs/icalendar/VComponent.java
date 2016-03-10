@@ -557,7 +557,10 @@ public interface VComponent<I>
      * 
      * @return true for valid VComponent, false for invalid one
      */
-    default boolean isValid() { return errorString().equals(""); };
+    default boolean isValid()
+    {
+        return errorString().equals("");
+    };
     
     /** Returns true if VComponent is an individual (only one instance in recurrence set),
      *  false if has more than 1 instance */
@@ -653,8 +656,6 @@ public interface VComponent<I>
     /*
      * STATIC UTILITY METHODS
      * 
-     * Below methods are used to handle dateTimeEnd and dateTimeStart as Temporal objects.  LocalDate
-     * objects are compared at start-of-day.
      */
     
     /**

@@ -186,8 +186,8 @@ public class AppointmentEditController extends Pane
         if (vEvent.getDuration() != null)
         {
             Temporal end = vEvent.getDateTimeStart().plus(vEvent.getDuration());
-            vEvent.setDateTimeEnd(end);
             vEvent.setDuration(null);
+            vEvent.setDateTimeEnd(end);
         }
         
         // Copy original VEvent
@@ -211,7 +211,6 @@ public class AppointmentEditController extends Pane
                 lastStartTime = lastStartTextFieldValue.toLocalTime();
                 lastDuration = Duration.between(lastStartTextFieldValue, endTextField.getLocalDateTime());
                 lastDateTimeStart = vEvent.getDateTimeStart();
-//                lastDateTimeEnd = vEvent.getDateTimeEnd();
                 
                 LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
                 vEvent.setDateTimeStart(newDateTimeStart);
@@ -222,9 +221,6 @@ public class AppointmentEditController extends Pane
                 startTextField.setLocalDateTime(start);
                 LocalDateTime end = LocalDate.from(endTextField.getLocalDateTime()).plus(1, ChronoUnit.DAYS).atStartOfDay();
                 endTextField.setLocalDateTime(end);
-
-//                vEvent.setStartRange(LocalDate.from(vEvent.getStartRange())); // change in VComponent
-//                vEvent.setEndRange(LocalDate.from(vEvent.getEndRange()));
             } else
             {
                 final LocalDateTime start;
@@ -249,7 +245,6 @@ public class AppointmentEditController extends Pane
                 }
                 
                 final Temporal newDateTimeEnd = newDateTimeStart.plus(lastDuration);
-//                System.out.println("whole day change:" + newDateTimeStart + " " + newDateTimeEnd);
                 vEvent.setDateTimeStart(newDateTimeStart);
                 vEvent.setDateTimeEnd(newDateTimeEnd);
 
@@ -397,10 +392,12 @@ public class AppointmentEditController extends Pane
      * These changes can include the day of the week is not valid or the start date has shifted.
      * The closest valid date is substituted.
     */
+    // TODO - PUT COMMENTS IN RESOURCES
     private void startInstanceChangedAlert(Temporal t1, Temporal t2)
     {
         Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Start time changed");
+        alert.getDialogPane().setId("startInstanceChangedAlert");
+        alert.getDialogPane().lookupButton(ButtonType.OK).setId("startInstanceChangedAlertOkButton");
         alert.setHeaderText("Time not valid due to repeat rule change");
         alert.setContentText(Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t1) + " is no longer valid." + System.lineSeparator()
                     + "It has been replaced by " + Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t2));

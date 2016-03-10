@@ -40,9 +40,11 @@ import javafx.scene.layout.HBox;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.VComponent;
+import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType;
 import jfxtras.labs.icalendar.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.rrule.freq.Weekly;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.RepeatableController;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
@@ -767,7 +769,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canMakeExceptionListYearly()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -835,7 +836,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canMakeExceptionListEndsCriteria()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -1004,7 +1004,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canRemoveException2()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDailyWithException1()));
@@ -1102,7 +1101,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canEditThisAndFuture()
     {
        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));       
@@ -1230,7 +1228,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canDeleteIndividualEdit()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getIndividual1()));
@@ -1248,7 +1245,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
     
     @Test
-    //@Ignore
     public void canDeleteSeriesEdit()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getDaily1()));
@@ -1318,6 +1314,61 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         expectedV.getRRule().setUntil( ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 10, 0), ZoneId.systemDefault())
                 .withZoneSameInstant(ZoneId.of("Z")) );
         assertTrue(VEventImpl.isEqualTo(expectedV, v));
+    }
+    
+    @Test
+    public void canUpdateAppointmentTimeWhenMadeInvalidByRRuleChange()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getWeeklyZoned()));
+        VEventImpl vEvent = (VEventImpl) agenda.vComponents().get(0);
+        
+        // Open edit popup
+        move("#AppointmentRegularBodyPane2015-11-09/0");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+
+        // make changes
+        click("#mondayCheckBox"); // shut off monday
+
+        // verify alert opens
+        click("#appointmentTab");
+        find("#startInstanceChangedAlert");
+        
+        // Get properties
+        LocalDateTimeTextField startTextField = find("#startTextField");
+        LocalDateTimeTextField endTextField = find("#endTextField");
+        
+        // verify properties changed
+        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 0), startTextField.getLocalDateTime());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 45), endTextField.getLocalDateTime());       
+    }
+    
+    @Test
+    public void canUpdateVComponentDTStartWhenMadeInvalidByRRuleChange()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getWeeklyZoned()));
+        VEventImpl vEvent = (VEventImpl) agenda.vComponents().get(0);
+        
+        // Open edit popup
+        move("#AppointmentRegularBodyPane2015-11-09/0");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        click("#repeatableTab");
+
+        // make changes
+        click("#mondayCheckBox"); // shut off monday
+        click("#saveRepeatButton");
+        
+        VEventImpl expectedVEvent = ICalendarStaticVEvents.getWeeklyZoned()
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 45), ZoneId.of("America/Los_Angeles")))
+                .withSequence(1)
+                .withRRule(new RRule()
+                        .withFrequency(new Weekly()
+                                .withByRules(new ByDay(DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
+        
+        assertTrue(VEventImpl.isEqualTo(expectedVEvent, vEvent));        
     }
     
     @Test

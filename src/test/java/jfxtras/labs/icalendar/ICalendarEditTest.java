@@ -525,32 +525,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , LocalDate.of(2016, 2, 26)
                 ));
         
-        vComponents.stream().forEach(System.out::println);
         assertEquals(expectedDates2, madeDates2);
-    }
-    
-    
-    /**
-     * Changing two instances to wholeday
-     * Tests keeping RECURRENCE-ID as parent DateTimeType
-     */
-    @Test
-    public void canChangeOneWholeDayToDateTime()
-    {
-        VEventMock vEvent = getWholeDayDaily2();
-        List<VComponent<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
-        Temporal start = LocalDate.of(2015, 11, 15);
-        Temporal end = LocalDate.of(2015, 11, 22);
-        List<InstanceMock> instances = new ArrayList<InstanceMock>();
-        Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
-        instances.addAll(newInstances);
-        assertEquals(3, instances.size()); // check if there are only 3 instances
-        VEventMock vEventOriginal = new VEventMock(vEvent);
-        
-        // apply changes
-        Temporal startOriginalInstance = LocalDate.of(2015, 11, 18);
-        Temporal startInstance = ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 8, 0), ZoneId.of("America/New_York"));
-        Temporal endInstance = ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 10, 0), ZoneId.of("America/New_York"));
     }
 
     /**

@@ -196,8 +196,7 @@ public class CalendarController {
     }
 
     public void setupData(LocalDate startDate, LocalDate endDate)
-    {
-
+    {        
         VEventImpl vEvent3 = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 3, 7, 5, 45), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
