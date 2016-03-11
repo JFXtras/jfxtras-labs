@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -165,17 +164,18 @@ private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, 
 };
 
 // Listener for dayOfWeekRadioButton when frequency if monthly
-private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2, newSel2) -> 
+private ChangeListener<? super Boolean> dayOfWeekButtonListener = (observable, oldSelection, newSelection) -> 
 {
-    if (newSel2)
+    if (newSelection)
     {
-        Temporal start = dateTimeStartInstanceNew.with(TemporalAdjusters.firstDayOfMonth());
-        int ordinalWeekNumber = 0;
-        while (! DateTimeUtilities.isBefore(dateTimeStartInstanceNew, start))
-        {
-            ordinalWeekNumber++;
-            start = start.plus(1, ChronoUnit.WEEKS);
-        }
+        int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(dateTimeStartInstanceNew);
+//        Temporal start = dateTimeStartInstanceNew.with(TemporalAdjusters.firstDayOfMonth());
+//        int ordinalWeekNumber = 0;
+//        while (! DateTimeUtilities.isBefore(dateTimeStartInstanceNew, start))
+//        {
+//            ordinalWeekNumber++;
+//            start = start.plus(1, ChronoUnit.WEEKS);
+//        }
         DayOfWeek dayOfWeek = DayOfWeek.from(dateTimeStartInstanceNew);
         Rule byDayRuleMonthly = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
         vComponent.getRRule().getFrequency().addByRule(byDayRuleMonthly);
@@ -192,14 +192,11 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (obs2, oldSel2
 //MAKE EXCEPTION DATES LISTENER
 final private InvalidationListener makeExceptionDatesAndSummaryListener = (obs) -> 
 {
-//   System.out.println("exceptions6:" + obs);
    refreshSummary();
    refreshExceptionDates();
 };
 private void refreshSummary()
 {
-// System.out.println("refresh summary:");
-//   String summaryString = vComponent.getRRule().summary(vComponent.getDateTimeStart());
    String summaryString = makeSummary(vComponent.getRRule(), vComponent.getDateTimeStart());
    repeatSummaryLabel.setText(summaryString);
 }
@@ -469,9 +466,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     checkBoxDayOfWeekMap.put(saturdayCheckBox.selectedProperty(), DayOfWeek.SATURDAY);
     dayOfWeekCheckBoxMap = checkBoxDayOfWeekMap.entrySet().stream().collect(Collectors.toMap(e -> e.getValue(), e -> e.getKey()));
     checkBoxDayOfWeekMap.entrySet().stream().forEach(entry -> entry.getKey().addListener(dayOfWeekCheckBoxListener));
-
-    // DAY OF WEEK RAIO BUTTON LISTENER (FOR MONTHLY)
-    dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekButtonListener);
 
     // Setup frequencyComboBox items
     frequencyComboBox.setItems(FXCollections.observableArrayList(FrequencyType.implementedValues()));
@@ -769,6 +763,9 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 //            }
         }
         repeatableCheckBox.selectedProperty().set(isRepeatable);
+        
+        // DAY OF WEEK RAIO BUTTON LISTENER (FOR MONTHLY)
+        dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekButtonListener);
 
         // LISTENERS TO BE ADDED AFTER INITIALIZATION
         addListeners(); // Listeners to update exception dates

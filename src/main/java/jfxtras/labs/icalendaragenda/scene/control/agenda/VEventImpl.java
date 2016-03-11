@@ -178,7 +178,6 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     {
         return isEqualTo(v1, v2, true);
     }
-    
             
     /**
      * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
@@ -190,27 +189,9 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     @Override
     public List<Appointment> makeInstances()
     {
-//        System.out.println("makeInstances:");
-//        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
-//        TemporalAmount amount = endType().getDuration(this);
-//        Stream<Temporal> removedTooEarly = stream(getStartRange().minus(amount)).filter(d -> 
-//        {
-//            TemporalAmount duration = endType().getDuration(this);
-//            Temporal plus = d.plus(duration);
-//            System.out.println("too early:" + d + " " + plus + " " + getStartRange());
-//            return ! DateTimeUtilities.isBefore(plus, getStartRange()); 
-//        }); // inclusive
-//        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
-
         List<Appointment> madeAppointments = new ArrayList<>();
-
-        // NEW STREAM IN VCOMPONENT WITH RANGE LIMITS
-        
-        // TODO - ADD SPLIT-APPOINTMENTS appointments ending in range, but starting before range
-        // MAYBE DO ADJUSTEMENT TO START TO MAKE END AND SEE IF IT SHOULD BE KEPT
         streamLimitedByRange().forEach(temporalStart ->
         {
-            System.out.println("appt:" + temporalStart);
             TemporalAmount duration = endType().getDuration(this);
             Temporal temporalEnd = temporalStart.plus(duration);
             Appointment appt = new Agenda.AppointmentImplTemporal()

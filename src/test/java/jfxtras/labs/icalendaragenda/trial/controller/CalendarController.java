@@ -4,6 +4,7 @@ package jfxtras.labs.icalendaragenda.trial.controller;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -28,12 +29,13 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
-import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.VComponent;
 import jfxtras.labs.icalendar.rrule.RRule;
 import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.rrule.freq.Daily;
+import jfxtras.labs.icalendar.rrule.freq.Monthly;
 import jfxtras.labs.icalendar.rrule.freq.Weekly;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
@@ -51,19 +53,11 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  * Instantiates and setups the Agenda.
  * Contains listeners to write changes due to calendar interaction.  Properties are in Agenda class.
  */
-public class CalendarController {
-
-//    private MyData data;
-
+public class CalendarController
+{
      public ICalendarAgenda agenda = new ICalendarAgenda();
-     private final static Class<? extends Appointment> clazz = Agenda.AppointmentImplTemporal.class;
-//     private final Callback<Collection<Appointment>, Void> appointmentWriteCallback =
-//             a -> { RepeatableAppointmentImpl.writeToFile(a, Settings.APPOINTMENTS_FILE); return null; };
      private final Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback = null;
-//             r -> { RepeatImpl.writeToFile(r); return null; };
 
-     private LocalDateTimeRange dateTimeRange;
-//     private RepeatMenuOld repeatMenu;
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;
 
@@ -75,8 +69,6 @@ public class CalendarController {
     @FXML private ToggleButton agendaSkinButton;
     
     final private LocalDatePicker localDatePicker = new LocalDatePicker(LocalDate.now());
-//    private LocalDate startDate;
-//    private LocalDate endDate;
     
     public final ObjectProperty<LocalDate> selectedLocalDateProperty = new SimpleObjectProperty<LocalDate>();
     public final ObjectProperty<LocalDateTime> selectedLocalDateTimeProperty = new SimpleObjectProperty<LocalDateTime>(LocalDateTime.now());
@@ -87,29 +79,16 @@ public class CalendarController {
     
     @FXML public void initialize()
     {
-//        agenda.setKeyHandler();
-        // ResouceBundle
-//        Locale myLocale = Locale.getDefault();
-//        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
-//        agenda.setResourceBundle(resources);
-//        Settings.setup(resources);
-        
+       
         daySkinButton.setToggleGroup(skinGroup);
         weekSkinButton.setToggleGroup(skinGroup);
         monthSkinButton.setToggleGroup(skinGroup);
         agendaSkinButton.setToggleGroup(skinGroup);
         weekSkinButton.selectedProperty().set(true);
         
-        // Set I/O callbacks
-//        agenda.setAppointmentWriteCallback(appointmentWriteCallback);
+        // Set I/O callbacks // TODO - NOT SUPPORTED YET
         agenda.setRepeatWriteCallback(repeatWriteCallback);
         agenda.setOneAllThisAndFutureDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK);
-
-        //        // setup appointment groups
-//        final Map<String, Agenda.AppointmentGroup> lAppointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
-//        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
-//            lAppointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);
-//        }
 
         // accept new appointments
         agenda.setNewAppointmentCallback((LocalDateTimeRange dateTimeRange) -> 
@@ -123,55 +102,12 @@ public class CalendarController {
                     .withDescription("")
                     .withAppointmentGroup(agenda.appointmentGroups().get(0));
         });
-
-//        agenda.setEditAppointmentCallback((AppointmentEditData a) -> {
-//            System.out.println("start edit callback");
-//            Stage stage = new RepeatMenuStage2(a);
-//            stage.show();
-//            System.out.println("end edit callback");
-//            return null;
-//        });
-
-//        agenda.setEditAppointmentCallback((Appointment appointment) -> {
-//            repeatMenu = new RepeatMenu(
-//                    (RepeatableAppointment) appointment
-//                    , agenda.dateTimeRange()
-//                    , agenda.appointments()
-//                    , agenda.getRepeats()
-//                    , agenda.appointmentGroups()
-//                    , a -> { AppointmentFactory.writeToFile(a); return null; }
-//                    , r -> { RepeatImpl.writeToFile(r); return null; }); // make new object when closed (problem with passing pane - null for now)
-//            repeatMenu.show();
-//            return null;
-//        });
-        
-//        // manage repeat-made appointments when the range changes
-//        agenda.setLocalDateTimeRangeCallback(dateTimeRange -> {
-//            this.dateTimeRange = dateTimeRange;
-//            LocalDate startDate = dateTimeRange.getStartLocalDateTime().toLocalDate();
-//            LocalDate endDate = dateTimeRange.getEndLocalDateTime().toLocalDate();
-//            System.out.println("dates changed " + startDate + " " + endDate);
-//            System.out.println("2agenda.appointments().size() " + appointments().size());
-//            appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
-//            getRepeats().stream().forEach(r -> r.getAppointments().clear());
-//            getRepeats().stream().forEach(r ->
-//            { // Make new repeat-made appointments inside range
-//                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
-//                appointments().addAll(newAppointments);
-////                agenda.appointments().addAll(newAppointments);
-//                System.out.println("newAppointments " + newAppointments.size());
-////                r.removeOutsideRangeAppointments(data.getAppointments());                 // remove outside range appointments
-//            });
-//            System.out.println("3agenda.appointments().size() " + appointments().size());
-////            System.exit(0);
-//            return null; // return argument for the Callback
-//        });
                 
-        // action
-        agenda.setActionCallback( (appointment) -> {
-            System.out.println("Action on " + appointment);
-            return null;
-        });
+//        // action
+//        agenda.setActionCallback( (appointment) -> {
+//            System.out.println("Action on " + appointment);
+//            return null;
+//        });
         
         agendaBorderPane.setCenter(agenda);
         dateLabel.textProperty().bind(makeLocalDateBindings(localDatePicker.localDateProperty()));
@@ -191,58 +127,99 @@ public class CalendarController {
                   localDatePicker.setLocalDate(newSelection.withDayOfMonth(dayOfMonth));
               });
 
-        agenda.setPadding(new Insets(0, 0, 0, 5)); //(top/right/bottom/left)
-            
+        agenda.setPadding(new Insets(0, 0, 0, 5)); //(top/right/bottom/left)            
     }
 
     public void setupData(LocalDate startDate, LocalDate endDate)
     {
-        
         VEventImpl vEventSplit = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withDateTimeEnd(LocalDateTime.of(2016, 3, 13, 5, 45))
+                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(8))
+                .withDateTimeEnd(LocalDateTime.of(endDate, LocalTime.of(5, 45)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
-                .withDateTimeStart(LocalDateTime.of(2016, 3, 12, 4, 0))
+                .withDateTimeStart(LocalDateTime.of(endDate.minusDays(1), LocalTime.of(15, 45)))
                 .withDescription("Split Description")
                 .withSummary("Split Summary")
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
             agenda.vComponents().add(vEventSplit);
         
-        VEventImpl vEvent3 = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 3, 7, 5, 45), ZoneId.of("America/Los_Angeles")))
+        VEventImpl vEventZonedUntil = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(10))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(9, 45)), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
-                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 7, 4, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")))
                 .withDescription("WeeklyZoned Description")
                 .withRRule(new RRule()
-                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 3, 16, 4, 0), ZoneId.of("America/Los_Angeles")).withZoneSameInstant(ZoneId.of("Z")))
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(15), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")).withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
-                .withSummary("WeeklyZoned Summary")
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");        
-//            agenda.vComponents().add(vEvent3);
+                .withSummary("WeeklyZoned Ends")
+                .withUniqueIdentifier("20150110T080000-1@jfxtras.org");
+            agenda.vComponents().add(vEventZonedUntil);
         
-        VEventImpl vEvent = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-            .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
+        VEventImpl vEventZonedInfinite = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+            .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
+            .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(12, 00)), ZoneId.of("America/Los_Angeles")))
             .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
-            .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
+            .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(7, 30)), ZoneId.of("America/Los_Angeles")))
             .withDescription("WeeklyZoned Description")
             .withRRule(new RRule()
                     .withFrequency(new Weekly()
                             .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
-            .withSummary("WeeklyZoned Summary")
-            .withUniqueIdentifier("20150110T080000-0@jfxtras.org");        
-//        agenda.vComponents().add(vEvent);
+            .withSummary("WeeklyZoned Infinite")
+            .withUniqueIdentifier("20150110T080000-2@jfxtras.org");
+        agenda.vComponents().add(vEventZonedInfinite);
         
-        
-        
-        VEventImpl vEvent2 = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withDateTimeStart(LocalDate.of(2015, 11, 9))
-                .withDateTimeEnd(LocalDate.of(2015, 11, 10))
+        VEventImpl vEventLocalDate = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(15))
+                .withDateTimeStart(startDate)
+                .withDateTimeEnd(startDate.plusDays(1))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withDescription("LocalDate Description")
+                .withSummary("LocalDate Summary")
+                .withUniqueIdentifier("20150110T080000-3@jfxtras.org")
                 .withRRule(new RRule()
                         .withFrequency(new Daily()
                                 .withInterval(3)));
-//        agenda.vComponents().add(vEvent2);        
+        agenda.vComponents().add(vEventLocalDate);        
+
+        VEventImpl vEventLocalDateTime = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
+                .withDateTimeStart(LocalDateTime.of(startDate, LocalTime.of(11, 00)))
+                .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(13, 0)))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withDescription("LocalDateTime Daily Description")
+                .withSummary("LocalDateTime Daily Summary")
+                .withUniqueIdentifier("20150110T080000-4@jfxtras.org")
+                .withRRule(new RRule()
+                        .withFrequency(new Daily()));
+        agenda.vComponents().add(vEventLocalDateTime); 
+        
+        VEventImpl vEventLocalDateTimeMonthly = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(17))
+                .withDateTimeStart(LocalDateTime.of(startDate, LocalTime.of(14, 00)))
+                .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(15, 0)))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withDescription("Monthly Description")
+                .withSummary("Monthly Summary")
+                .withUniqueIdentifier("20150110T080000-5@jfxtras.org")
+                .withRRule(new RRule()
+                        .withFrequency(new Monthly()));
+        agenda.vComponents().add(vEventLocalDateTimeMonthly); 
+        
+        DayOfWeek dayOfWeek = DayOfWeek.from(startDate.plusDays(2));
+        int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(startDate.plusDays(2));
+        VEventImpl vEventLocalDateMonthly = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5))
+                .withDateTimeStart(startDate.plusDays(2))
+                .withDateTimeEnd(startDate.plusDays(3))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withDescription("Monthly Ordinal Description " + dayOfWeek + "#" + ordinalWeekNumber + " in month")
+                .withSummary("Monthly Ordinal Summary")
+                .withUniqueIdentifier("20150110T080000-6@jfxtras.org")
+                .withRRule(new RRule()
+                        .withFrequency(new Monthly()
+                                .withByRules(new ByDay(new ByDay.ByDayPair(dayOfWeek, ordinalWeekNumber)))));
+        agenda.vComponents().add(vEventLocalDateMonthly);
         
         // replace Agenda's appointmentGroups with the ones used in the test events.
         agenda.appointmentGroups().clear();
@@ -260,15 +237,11 @@ public class CalendarController {
     }
     
     @FXML private void handleWeekSkin() {
-        AgendaSkin skin = new AgendaWeekSkin(agenda);
-//        shiftDuration = skin.shiftDuration();
         shiftDuration = Period.ofWeeks(1);
         agenda.setSkin(new AgendaWeekSkin(agenda));
     }
 
     @FXML private void handleDaySkin() {
-        AgendaSkin skin = new AgendaWeekSkin(agenda);
-//        shiftDuration = skin.shiftDuration();
         shiftDuration = Period.ofDays(1);
         agenda.setSkin(new AgendaDaySkin(agenda));
     }

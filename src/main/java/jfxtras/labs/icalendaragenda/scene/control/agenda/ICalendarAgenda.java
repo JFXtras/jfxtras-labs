@@ -310,7 +310,6 @@ public class ICalendarAgenda extends Agenda
                     { // Open little popup - edit, delete
                         ZonedDateTime created = ZonedDateTime.now(ZoneId.of("Z"));
                         Appointment a = change.getAddedSubList().get(0);
-//                        System.out.println("new appt:" + a + " " + appointments().size());
 
                         String originalSummary = a.getSummary();
                         AppointmentGroup originalAppointmentGroup = a.getAppointmentGroup();

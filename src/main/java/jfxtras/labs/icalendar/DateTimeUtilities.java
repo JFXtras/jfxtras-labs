@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -128,6 +129,22 @@ public final class DateTimeUtilities
     }
     
     /**
+     * @param dateBasedTemporal - date based Temporal, such as LocalDate
+     * @return - ordinal week in month, such as 2nd (as in 2nd Wednesday in month)
+     */
+    public static int weekOrdinalInMonth(Temporal dateBasedTemporal)
+    {
+        Temporal start = dateBasedTemporal.with(TemporalAdjusters.firstDayOfMonth());
+        int ordinalWeekNumber = 0;
+        while (! DateTimeUtilities.isBefore(dateBasedTemporal, start))
+        {
+            ordinalWeekNumber++;
+            start = start.plus(1, ChronoUnit.WEEKS);
+        }
+        return ordinalWeekNumber;
+    }
+    
+    /**
      * Calculate TemporalAmount between two Temporals.
      * Both temporals must be the same type and representations of a DateTimeType.
      * 
@@ -165,7 +182,6 @@ public final class DateTimeUtilities
      */
     public static Temporal parse(String temporalString)
     {
-        // remove optional VALUE=DATE-TIME
         final String temporalStringAdjusted;
         if (temporalString.matches("^VALUE=DATE-TIME:.*"))
         {

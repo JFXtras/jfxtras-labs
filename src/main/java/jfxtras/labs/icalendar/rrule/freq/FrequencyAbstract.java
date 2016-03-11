@@ -51,11 +51,10 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     private List<Rule> byRules = new ArrayList<Rule>();
     @Override public void addByRule(Rule byRule)
     {
-//        if (byRules == null) byRules = new ArrayList<Rule>();
         boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
-        if (alreadyPresent){
-            throw new IllegalArgumentException("Can't add BYxxx rule (" 
-                    + byRule.getClass().getSimpleName() + ") more than once.");
+        if (alreadyPresent)
+        {
+            throw new IllegalArgumentException("Can't add BYxxx rule (" + byRule.getClass().getSimpleName() + ") more than once.");
         }
         getByRules().add(byRule);
         Collections.sort(getByRules());

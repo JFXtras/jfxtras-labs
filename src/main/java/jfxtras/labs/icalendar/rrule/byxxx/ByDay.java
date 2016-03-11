@@ -342,8 +342,6 @@ public class ByDay extends ByRuleAbstract
                 return false;
             }
             ByDayPair testObj = (ByDayPair) obj;
-//            System.out.println("ByDayPairequals " + (dayOfWeek == testObj.dayOfWeek)
-//                    + " " + (ordinal == testObj.ordinal));
             return (dayOfWeek == testObj.dayOfWeek)
                     && (ordinal == testObj.ordinal);
         }
