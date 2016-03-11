@@ -69,7 +69,7 @@ public final class DateTimeUtilities
             .append(LOCAL_DATE_TIME_FORMATTER)
             .appendOffsetId()
             .toFormatter();
-    final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+    public final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .optionalStart()
             .parseCaseInsensitive()
             .appendLiteral("TZID=")
@@ -77,6 +77,9 @@ public final class DateTimeUtilities
             .appendLiteral(':')
             .optionalEnd()
             .append(LOCAL_DATE_TIME_FORMATTER)
+            .optionalStart()
+            .appendOffsetId()            
+            .optionalEnd()
             .toFormatter();
     final static DateTimeFormatter ZONE_FORMATTER = new DateTimeFormatterBuilder()
             .optionalStart()
@@ -129,6 +132,9 @@ public final class DateTimeUtilities
     }
     
     /**
+     * returns week of month.
+     * For example, a LocalDate representing March 10, 2016 returns 2, for the 2nd Thursday.
+     * 
      * @param dateBasedTemporal - date based Temporal, such as LocalDate
      * @return - ordinal week in month, such as 2nd (as in 2nd Wednesday in month)
      */
@@ -397,7 +403,7 @@ public final class DateTimeUtilities
                 return false;
             }
         }
-      , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE ("^(TZID=.*:)[0-9]{8}T([0-9]{6})")
+      , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE ("^(TZID=.*:)[0-9]{8}T([0-9]{6})Z?")
         {
             @Override
             public Temporal from(Temporal temporal, ZoneId zone)

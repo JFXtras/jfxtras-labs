@@ -47,7 +47,7 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
     {
         initModality(Modality.APPLICATION_MODAL);
         setTitle(resources.getString("dialog.event.new.title"));
-        String appointmentTime = DateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
+        String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
         setHeaderText(appointmentTime);
         
         // Buttons

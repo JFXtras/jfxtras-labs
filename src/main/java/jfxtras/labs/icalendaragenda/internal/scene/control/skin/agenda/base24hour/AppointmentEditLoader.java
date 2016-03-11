@@ -31,7 +31,7 @@ public class AppointmentEditLoader extends Stage
             , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
             , Callback<Collection<VComponent<Appointment>>, Void> veventWriteCallback)
     {
-        String appointmentTime = DateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
+        String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
         VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) vComponent;
         setTitle(vEvent.getSummary() + ": " + appointmentTime);
         initModality(Modality.APPLICATION_MODAL);

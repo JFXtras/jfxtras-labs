@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendaragenda.trial;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -15,6 +17,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import jfxtras.labs.icalendar.ICalendarUtilities;
+import jfxtras.labs.icalendar.VEvent;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 import jfxtras.labs.icalendaragenda.trial.controller.CalendarController;
 
 public class Main extends Application {
@@ -47,7 +54,17 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
-	    
+	    Callback<String, VEvent<?,?>> makeVEvent = (s) -> VEventImpl.parse(s, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        try
+        {
+            URI file = new URI("file:/home/david/Downloads/Calendar_David_Bal11.ics");
+            ICalendarUtilities.parseICS(file, makeVEvent);
+        } catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+        }
+        System.exit(0);
+        
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));

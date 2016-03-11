@@ -169,13 +169,6 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (observable, o
     if (newSelection)
     {
         int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(dateTimeStartInstanceNew);
-//        Temporal start = dateTimeStartInstanceNew.with(TemporalAdjusters.firstDayOfMonth());
-//        int ordinalWeekNumber = 0;
-//        while (! DateTimeUtilities.isBefore(dateTimeStartInstanceNew, start))
-//        {
-//            ordinalWeekNumber++;
-//            start = start.plus(1, ChronoUnit.WEEKS);
-//        }
         DayOfWeek dayOfWeek = DayOfWeek.from(dateTimeStartInstanceNew);
         Rule byDayRuleMonthly = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
         vComponent.getRRule().getFrequency().addByRule(byDayRuleMonthly);
@@ -752,15 +745,6 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         if (isRepeatable)
         {
             setInitialValues(vComponent);
-//            if (vComponent.getExDate() != null) // add existing ExDate values to exceptionsListView (WHY HERE AND NOT IN SETINITIAL VALUES?)
-//            {
-//                List<Temporal> collect = vComponent
-//                        .getExDate()
-//                        .getTemporals()
-//                        .stream()
-//                        .collect(Collectors.toList());
-//                exceptionsListView.getItems().addAll(collect);
-//            }
         }
         repeatableCheckBox.selectedProperty().set(isRepeatable);
         

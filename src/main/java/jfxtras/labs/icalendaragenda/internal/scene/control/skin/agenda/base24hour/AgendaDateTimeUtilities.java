@@ -8,7 +8,7 @@ import java.time.temporal.Temporal;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.VComponent.StartEndRange;
 
-public class DateTimeUtilities
+public class AgendaDateTimeUtilities
 {
     public static String formatRange(Temporal start, Temporal end)
     {

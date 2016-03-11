@@ -1,19 +1,31 @@
 package jfxtras.labs.icalendar;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.VComponent.StartEndRange;
 
@@ -117,5 +129,57 @@ public final class ICalendarUtilities
 
     public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
+    }
+    
+    /**
+     * Parse iCalendar ics file to a collection of VComponent objects
+     * 
+     * @param icsFilePath
+     * @param makeVEvent
+     * @return
+     */
+    public static Collection<VComponent<?>> parseICS(URI icsFilePath, Callback<String, VEvent<?,?>> makeVEvent)
+    {
+//        long start = System.nanoTime();
+        List<VComponent<?>> vComponents = new ArrayList<>();
+        ExecutorService service =  Executors.newSingleThreadExecutor();
+        List<Callable<Object>> tasks = new ArrayList<>();
+        try
+        {
+            BufferedReader br = Files.newBufferedReader(Paths.get(icsFilePath));
+            Iterator<String> lineIterator = br.lines().iterator();
+            while (lineIterator.hasNext())
+            {
+                String line = lineIterator.next();
+                if (line.equals("BEGIN:VEVENT"))
+                {
+                    StringBuilder vEvent = new StringBuilder(line + System.lineSeparator());
+                    String vEventLine;
+                    do
+                    {
+                        vEventLine = lineIterator.next();
+                        vEvent.append(vEventLine);
+                        vEvent.append(System.lineSeparator());
+                    } while (! vEventLine.equals("END:VEVENT"));
+                    final Runnable readDataThread = new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            vComponents.add(makeVEvent.call(vEvent.toString()));
+                        }
+                    };
+                    tasks.add(Executors.callable(readDataThread));
+                }
+            }
+            service.invokeAll(tasks);
+//            icsStream.re
+        } catch (IOException | InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+//        vComponents.stream().forEach(System.out::println);
+//        long stop = System.nanoTime();
+//        System.out.println(vComponents.size() + " " + (stop-start)/1000000);
+        return vComponents;       
     }
 }

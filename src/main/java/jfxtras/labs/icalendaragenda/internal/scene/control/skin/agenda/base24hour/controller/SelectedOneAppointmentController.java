@@ -11,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import jfxtras.labs.icalendar.VComponent;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DateTimeUtilities;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AgendaDateTimeUtilities;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -50,7 +50,7 @@ public class SelectedOneAppointmentController extends Rectangle
         this.agenda = agenda;
         this.appointment = appointment;
 
-        String appointmentTime = DateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
+        String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
         appointmentTimeLabel.setText(appointmentTime);
         nameLabel.setText(appointment.getSummary());
         nameLabel.textProperty().addListener((observable, oldValue, newValue) ->  {

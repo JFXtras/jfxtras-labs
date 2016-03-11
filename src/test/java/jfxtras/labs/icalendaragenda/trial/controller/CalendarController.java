@@ -208,7 +208,7 @@ public class CalendarController
         
         DayOfWeek dayOfWeek = DayOfWeek.from(startDate.plusDays(2));
         int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(startDate.plusDays(2));
-        VEventImpl vEventLocalDateMonthly = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
+        VEventImpl vEventLocalDateMonthlyOrdinal = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5))
                 .withDateTimeStart(startDate.plusDays(2))
                 .withDateTimeEnd(startDate.plusDays(3))
@@ -219,7 +219,7 @@ public class CalendarController
                 .withRRule(new RRule()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(new ByDay.ByDayPair(dayOfWeek, ordinalWeekNumber)))));
-        agenda.vComponents().add(vEventLocalDateMonthly);
+        agenda.vComponents().add(vEventLocalDateMonthlyOrdinal);
         
         // replace Agenda's appointmentGroups with the ones used in the test events.
         agenda.appointmentGroups().clear();

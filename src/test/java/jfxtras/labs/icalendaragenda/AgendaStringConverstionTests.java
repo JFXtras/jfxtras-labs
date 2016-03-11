@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DateTimeUtilities;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AgendaDateTimeUtilities;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.RepeatableController;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 
@@ -83,11 +83,11 @@ public class AgendaStringConverstionTests
     @Test
     public void canMakeRangeToString1()
     {
-        String dateTimeString = DateTimeUtilities.formatRange(LocalDateTime.of(2015, 11, 11, 10, 0), LocalDateTime.of(2015, 12, 25, 12, 0));
+        String dateTimeString = AgendaDateTimeUtilities.formatRange(LocalDateTime.of(2015, 11, 11, 10, 0), LocalDateTime.of(2015, 12, 25, 12, 0));
         assertEquals("Wed, November 11, 2015 10:00 AM - Fri, December 25, 2015 12:00 PM", dateTimeString);
-        String dateString = DateTimeUtilities.formatRange(LocalDate.of(2015, 11, 9), LocalDate.of(2015, 11, 24));
+        String dateString = AgendaDateTimeUtilities.formatRange(LocalDate.of(2015, 11, 9), LocalDate.of(2015, 11, 24));
         assertEquals("Mon, November 9, 2015 - Tue, November 24, 2015", dateString);
-        String dateForeverString = DateTimeUtilities.formatRange(LocalDateTime.of(2015, 11, 9, 10, 0), null);
+        String dateForeverString = AgendaDateTimeUtilities.formatRange(LocalDateTime.of(2015, 11, 9, 10, 0), null);
         assertEquals("Mon, November 9, 2015 10:00 AM - forever", dateForeverString);
     }
 }

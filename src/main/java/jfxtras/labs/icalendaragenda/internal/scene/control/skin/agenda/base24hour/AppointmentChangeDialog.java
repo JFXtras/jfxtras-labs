@@ -73,11 +73,11 @@ public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
         getDialogPane().setContent(grid);
         
         // Match header with range string
-        String range = DateTimeUtilities.formatRange(choiceMap.get(initialSelection));
+        String range = AgendaDateTimeUtilities.formatRange(choiceMap.get(initialSelection));
         setHeaderText(Settings.REPEAT_CHANGE_CHOICES.get(initialSelection) + ":" + System.lineSeparator() + range); // initial header text
         comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> 
         {
-            String range2 = DateTimeUtilities.formatRange(choiceMap.get(newSelection));
+            String range2 = AgendaDateTimeUtilities.formatRange(choiceMap.get(newSelection));
             setHeaderText(Settings.REPEAT_CHANGE_CHOICES.get(newSelection) + ":" + System.lineSeparator() + range2);
         });
         

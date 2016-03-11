@@ -898,7 +898,6 @@ import jfxtras.labs.icalendar.rrule.RRule;
         {
             String propertyName = propertyValuePair.getKey();
             String value = propertyValuePair.getValue();
-            
             // VComponent properties
             VComponentProperty vComponentProperty = VComponentProperty.propertyFromString(propertyName);
             if (vComponentProperty != null)
