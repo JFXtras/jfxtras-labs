@@ -37,12 +37,11 @@ public enum VEventProperty
     DESCRIPTION ("DESCRIPTION", true)
     {
         @Override
-        public boolean parseAndSetProperty(VEvent<?,?> vEvent, String value)
+        public void parseAndSetProperty(VEvent<?,?> vEvent, String value)
         {
             if (vEvent.getDescription() == null)
             {
                 vEvent.setDescription(value);
-                return true;
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -81,7 +80,7 @@ public enum VEventProperty
   , DURATION ("DURATION", true)
     {
         @Override
-        public boolean parseAndSetProperty(VEvent<?,?> vEvent, String value)
+        public void parseAndSetProperty(VEvent<?,?> vEvent, String value)
         {
             if (vEvent.getDuration() == null)
             {
@@ -89,7 +88,6 @@ public enum VEventProperty
                 {
                     vEvent.endPriority = EndType.DURATION;
                     vEvent.setDuration(Duration.parse(value));
-                    return true;
                 } else
                 {
                     throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
@@ -142,7 +140,7 @@ public enum VEventProperty
   , DATE_TIME_END ("DTEND", true)
     {
         @Override
-        public boolean parseAndSetProperty(VEvent<?,?> vEvent, String value)
+        public void parseAndSetProperty(VEvent<?,?> vEvent, String value)
         {
             if (vEvent.getDateTimeEnd() == null)
             {
@@ -151,7 +149,6 @@ public enum VEventProperty
                     vEvent.endPriority = EndType.DTEND;
                     Temporal dateTime = DateTimeUtilities.parse(value);
                     vEvent.setDateTimeEnd(dateTime);
-                    return true;
                 } else
                 {
                     throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
@@ -206,10 +203,9 @@ public enum VEventProperty
   , LOCATION ("LOCATION", true)
     {
         @Override
-        public boolean parseAndSetProperty(VEvent<?,?> vEvent, String value)
+        public void parseAndSetProperty(VEvent<?,?> vEvent, String value)
         {
             vEvent.setLocation(value);
-            return true;
         }
 
         @Override
@@ -277,8 +273,8 @@ public enum VEventProperty
     
     /** sets VEvent's property for this VEventProperty to parameter value
      * value is a string that is parsed if necessary to the appropriate type
-     * returns true, if property was found and set */
-    public abstract boolean parseAndSetProperty(VEvent<?,?> vEvent, String value);
+     */
+    public abstract void parseAndSetProperty(VEvent<?,?> vEvent, String value);
 
     /** gets VEvent's property value for this VEventProperty */
     public abstract Object getPropertyValue(VEvent<?,?> vEvent);

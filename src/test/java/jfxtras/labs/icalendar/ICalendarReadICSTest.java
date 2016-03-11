@@ -5,26 +5,24 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
-import javafx.util.Callback;
-import jfxtras.labs.icalendar.components.VEvent;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
+import jfxtras.labs.icalendar.components.VCalendarUtilities;
+import jfxtras.labs.icalendar.mocks.VEventMock;
 
 public class ICalendarReadICSTest
 {
     @Test
     public void canReadYahoo()
     {
-      Callback<String, VEvent<?,?>> makeVEvent = (s) -> VEventImpl.parse(s, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        VCalendar vCalendar = new VCalendar()
+                .withVEventCallback((s) -> VEventMock.parse(s));
+//      Callback<String, VEvent<?,?>> makeVEvent = (s) -> VEventImpl.parse(s, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
       try
       {
           URI file = new URI("file:/home/david/Downloads/Calendar_David_Bal11.ics");
-          ICalendarUtilities.parseICS(file, makeVEvent);
+          VCalendarUtilities.parseICalendarICS(file, vCalendar.getMakeVEventCallback());
       } catch (URISyntaxException e)
       {
           e.printStackTrace();
       }
-      System.exit(0);
-
     }
 }

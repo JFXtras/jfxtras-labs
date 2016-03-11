@@ -17,9 +17,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.trial.controller.CalendarController;
 
-public class ICalendarAgendaTrial1 extends Application {
-	
-
+public class ICalendarAgendaTrial1 extends Application
+{
     private static LocalDate firstDayOfWeekLocalDate = getFirstDayOfWeekLocalDate();
     private static LocalDate getFirstDayOfWeekLocalDate()
     { // copied from AgendaWeekSkin
@@ -36,7 +35,6 @@ public class ICalendarAgendaTrial1 extends Application {
         else {
             lDisplayedDateTime = lDisplayedDateTime.plusDays(-lCurrentDayOfWeek - (7-lFirstDayOfWeek));
         }
-        
         return lDisplayedDateTime;
     }
     
@@ -56,7 +54,7 @@ public class ICalendarAgendaTrial1 extends Application {
         
         Scene scene = new Scene(root, 1366, 768);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Repeatable Agenda Demo");
+        primaryStage.setTitle("ICalendar Agenda Demo");
         primaryStage.show();
         
     }

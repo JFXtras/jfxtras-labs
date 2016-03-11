@@ -13,19 +13,19 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="5.0">
                <children>
-                  <Label text="Name" />
+                  <Label text="%selected.one.name" />
                   <Label fx:id="nameLabel" HBox.hgrow="ALWAYS" />
                </children>
                <VBox.margin>
                   <Insets top="7.0" />
                </VBox.margin>
             </HBox>
-            <Label fx:id="appointmentTimeLabel" text="Label" />
+            <Label fx:id="appointmentTimeLabel" />
             <HBox spacing="5.0">
                <children>
                   <HBox HBox.hgrow="ALWAYS" />
-                  <Button fx:id="editAppointmentButton" mnemonicParsing="false" onAction="#handleEditAppointment" prefWidth="93.0" text="Edit" />
-                  <Button fx:id="deleteAppointmentButton" mnemonicParsing="false" onAction="#handleDeleteAppointment" prefWidth="93.0" text="Delete" />
+                  <Button fx:id="editAppointmentButton" mnemonicParsing="false" onAction="#handleEditAppointment" prefWidth="93.0" text="%edit" />
+                  <Button fx:id="deleteAppointmentButton" mnemonicParsing="false" onAction="#handleDeleteAppointment" prefWidth="93.0" text="%delete" />
                   <HBox layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>

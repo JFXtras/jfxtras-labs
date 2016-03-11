@@ -791,7 +791,7 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
             }
         };
       
-        // Map to match up string tag to ICalendarProperty enum
+        // Map to match up string tag to VComponentProperty enum
         private static Map<String, VComponentProperty> propertyFromTagMap = makePropertiesFromNameMap();
         private static Map<String, VComponentProperty> makePropertiesFromNameMap()
         {
