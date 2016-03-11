@@ -21,8 +21,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.VComponent;
-import jfxtras.labs.icalendar.rrule.RRule;
+import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 import jfxtras.test.TestUtil;
 

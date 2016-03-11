@@ -24,11 +24,11 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.icalendar.rrule.RRule;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.rrule.byxxx.Rule;
-import jfxtras.labs.icalendar.rrule.freq.Frequency;
-import jfxtras.labs.icalendar.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
 /*

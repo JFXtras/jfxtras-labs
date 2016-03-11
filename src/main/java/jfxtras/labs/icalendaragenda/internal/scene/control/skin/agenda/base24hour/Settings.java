@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.rrule.freq.Frequency.FrequencyType;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency.FrequencyType;
 
 // TODO - MAKE SEPARATE RESOURCE FILE FOR THESE
 public final class Settings

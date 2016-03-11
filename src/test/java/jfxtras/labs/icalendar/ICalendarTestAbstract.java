@@ -11,18 +11,21 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.icalendar.rrule.RRule;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
-import jfxtras.labs.icalendar.rrule.byxxx.ByMonth;
-import jfxtras.labs.icalendar.rrule.byxxx.ByMonthDay;
-import jfxtras.labs.icalendar.rrule.byxxx.ByWeekNo;
-import jfxtras.labs.icalendar.rrule.freq.Daily;
-import jfxtras.labs.icalendar.rrule.freq.Monthly;
-import jfxtras.labs.icalendar.rrule.freq.Weekly;
-import jfxtras.labs.icalendar.rrule.freq.Yearly;
+import jfxtras.labs.icalendar.properties.recurrence.ExDate;
+import jfxtras.labs.icalendar.properties.recurrence.RDate;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonth;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonthDay;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByWeekNo;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay.ByDayPair;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Monthly;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Yearly;
 
 public abstract class ICalendarTestAbstract
 {

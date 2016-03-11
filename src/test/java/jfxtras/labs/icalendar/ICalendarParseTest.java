@@ -18,16 +18,17 @@ import java.util.List;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.icalendar.rrule.RRule;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
-import jfxtras.labs.icalendar.rrule.byxxx.ByMonth;
-import jfxtras.labs.icalendar.rrule.byxxx.ByMonthDay;
-import jfxtras.labs.icalendar.rrule.byxxx.ByWeekNo;
-import jfxtras.labs.icalendar.rrule.freq.Daily;
-import jfxtras.labs.icalendar.rrule.freq.Frequency;
-import jfxtras.labs.icalendar.rrule.freq.Monthly;
-import jfxtras.labs.icalendar.rrule.freq.Yearly;
+import jfxtras.labs.icalendar.properties.recurrence.Recurrence;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonth;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonthDay;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByWeekNo;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay.ByDayPair;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Monthly;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Yearly;
 
 public class ICalendarParseTest extends ICalendarTestAbstract
 {
@@ -77,7 +78,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
               , LocalDate.of(1997, 2, 17)
               , LocalDate.of(1997, 4, 21)
                 ));
-        List<Temporal> temporals = RecurrenceComponent.parseTemporals(string);
+        List<Temporal> temporals = Recurrence.parseTemporals(string);
         assertEquals(expectedTemporals, temporals);
     }
 
@@ -91,7 +92,7 @@ public class ICalendarParseTest extends ICalendarTestAbstract
               , ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 7, 30), ZoneId.of("Europe/London"))
               , ZonedDateTime.of(LocalDateTime.of(2016, 2, 13, 7, 30), ZoneId.of("Europe/London"))
                 ));
-        List<Temporal> temporals = RecurrenceComponent.parseTemporals(string);
+        List<Temporal> temporals = Recurrence.parseTemporals(string);
         Collections.sort(temporals, DateTimeUtilities.TEMPORAL_COMPARATOR);
         assertEquals(expectedTemporals, temporals);
     }

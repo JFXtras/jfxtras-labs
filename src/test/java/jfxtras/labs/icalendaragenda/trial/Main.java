@@ -19,7 +19,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.VEvent;
+import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 import jfxtras.labs.icalendaragenda.trial.controller.CalendarController;

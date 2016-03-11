@@ -11,8 +11,9 @@ import java.time.ZonedDateTime;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType;
+import jfxtras.labs.icalendar.properties.recurrence.ExDate;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleType;
 
 public class ICalendarEqualsTest extends ICalendarTestAbstract
 {

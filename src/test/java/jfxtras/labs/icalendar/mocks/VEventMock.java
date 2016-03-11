@@ -11,9 +11,9 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.VComponentProperty;
-import jfxtras.labs.icalendar.VEvent;
-import jfxtras.labs.icalendar.VEventProperty;
+import jfxtras.labs.icalendar.components.VComponentProperty;
+import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventProperty;
 
 /**
  * Mock VEvent class for testing

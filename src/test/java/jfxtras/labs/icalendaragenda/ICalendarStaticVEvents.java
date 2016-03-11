@@ -8,13 +8,13 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import jfxtras.labs.icalendar.ExDate;
-import jfxtras.labs.icalendar.rrule.RRule;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.rrule.freq.Daily;
-import jfxtras.labs.icalendar.rrule.freq.Monthly;
-import jfxtras.labs.icalendar.rrule.freq.Weekly;
-import jfxtras.labs.icalendar.rrule.freq.Yearly;
+import jfxtras.labs.icalendar.properties.recurrence.ExDate;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Monthly;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Yearly;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 

@@ -58,16 +58,16 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
-import jfxtras.labs.icalendar.ExDate;
-import jfxtras.labs.icalendar.VComponent;
-import jfxtras.labs.icalendar.rrule.RRule;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.rrule.byxxx.ByDay.ByDayPair;
-import jfxtras.labs.icalendar.rrule.byxxx.Rule;
-import jfxtras.labs.icalendar.rrule.byxxx.Rule.ByRuleType;
-import jfxtras.labs.icalendar.rrule.freq.Frequency;
-import jfxtras.labs.icalendar.rrule.freq.Frequency.FrequencyType;
-import jfxtras.labs.icalendar.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.properties.recurrence.ExDate;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay.ByDayPair;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleType;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency.FrequencyType;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 
 /**

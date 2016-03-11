@@ -11,6 +11,7 @@ import java.time.temporal.Temporal;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendar.components.VComponentProperty;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 
 public class ICalendarToStringTest extends ICalendarTestAbstract
