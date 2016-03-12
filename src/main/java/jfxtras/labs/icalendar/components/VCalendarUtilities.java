@@ -2,9 +2,8 @@ package jfxtras.labs.icalendar.components;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,13 +28,13 @@ public final class VCalendarUtilities
      * @param icsFilePath - URI of ics file
      * @param vCalendar - vCalendar object with callbacks set for making components (e.g. makeVEventCallback)
      */
-    public static void parseICalendarFile(URI icsFilePath, VCalendar vCalendar)
+    public static void parseICalendarFile(Path icsFilePath, VCalendar vCalendar)
     {
-        ExecutorService service =  Executors.newSingleThreadExecutor();
+        ExecutorService service = Executors.newSingleThreadExecutor();
         List<Callable<Object>> tasks = new ArrayList<>();
         try
         {
-            BufferedReader br = Files.newBufferedReader(Paths.get(icsFilePath));
+            BufferedReader br = Files.newBufferedReader(icsFilePath);
             Iterator<String> lineIterator = br.lines().iterator();
             while (lineIterator.hasNext())
             {
@@ -64,10 +63,7 @@ public final class VCalendarUtilities
                             } // otherwise, unknown property should be ignored
                         });
             }
-            vCalendar.vEvents().stream().forEach(System.out::println);
-            System.out.println(vCalendar.vEvents().size());
-            service.invokeAll(tasks);
-            System.out.println(vCalendar.vEvents().size());
+                service.invokeAll(tasks);
         } catch (IOException | InterruptedException e)
         {
             e.printStackTrace();

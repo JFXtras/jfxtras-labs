@@ -70,8 +70,7 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
     
     /** Make new VEventMock and populate properties by parsing a string of line-separated
      * content lines
-     *  */
-    @Deprecated
+     */
     public static VEventMock parse(String string)
     {
         VEventMock vEvent = new VEventMock();

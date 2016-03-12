@@ -131,7 +131,6 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     /** Make new VEventImpl and populate properties by parsing a string of line-separated
      * content lines
      *  */
-    @Deprecated // use callback in VCalendar instead
     public static VEventImpl parse(String string, List<AppointmentGroup> appointmentGroups)
     {
         VEventImpl vEvent = new VEventImpl(appointmentGroups);

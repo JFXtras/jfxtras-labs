@@ -1,7 +1,10 @@
 package jfxtras.labs.icalendar;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import static org.junit.Assert.assertEquals;
+
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Test;
 
@@ -11,18 +14,18 @@ import jfxtras.labs.icalendar.mocks.VEventMock;
 public class ICalendarReadICSTest
 {
     @Test
-    public void canReadYahoo()
+    public void canReadYahooICS()
     {
         VCalendar vCalendar = new VCalendar()
                 .withVEventCallback((s) -> VEventMock.parse(s));
-//      Callback<String, VEvent<?,?>> makeVEvent = (s) -> VEventImpl.parse(s, ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-      try
-      {
-          URI file = new URI("file:/home/david/Downloads/Calendar_David_Bal11.ics");
-          VCalendarUtilities.parseICalendarFile(file, vCalendar);
-      } catch (URISyntaxException e)
-      {
-          e.printStackTrace();
-      }
+        
+        String fileName = "Yahoo_Sample_Calendar.ics";
+        URL url = getClass().getResource(fileName);
+        Path path = Paths.get(url.getFile());
+        VCalendarUtilities.parseICalendarFile(path, vCalendar);
+        
+        assertEquals(7, vCalendar.vEvents().size());
+        
+        // TODO - TEST EQUALITY ON THE VCOMPONENTS
     }
 }
