@@ -11,9 +11,9 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.components.VComponentProperty;
+import jfxtras.labs.icalendar.components.VComponentUtilities;
 import jfxtras.labs.icalendar.components.VEvent;
-import jfxtras.labs.icalendar.components.VEventProperty;
+import jfxtras.labs.icalendar.components.VEventUtilities;
 
 /**
  * Mock VEvent class for testing
@@ -71,6 +71,7 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
     /** Make new VEventMock and populate properties by parsing a string of line-separated
      * content lines
      *  */
+    @Deprecated
     public static VEventMock parse(String string)
     {
         VEventMock vEvent = new VEventMock();
@@ -80,18 +81,18 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
             Pair<String, String> propertyValuePair = i.next();
             
             // parse each property-value pair by all associated property enums
-            VEventProperty.parse(vEvent, propertyValuePair);
-            VComponentProperty.parse(vEvent, propertyValuePair);
+            VEventUtilities.parse(vEvent, propertyValuePair);
+            VComponentUtilities.parse(vEvent, propertyValuePair);
         }
         return vEvent;
     }
     
     public static boolean isEqualTo(VEventMock v1, VEventMock v2)
     {
-        return VEventProperty.isEqualTo(v1, v2, true);
+        return VEventUtilities.isEqualTo(v1, v2, true);
     }
     public static boolean isEqualTo(VEventMock v1, VEventMock v2, boolean verbose)
     {
-        return VEventProperty.isEqualTo(v1, v2, verbose);
+        return VEventUtilities.isEqualTo(v1, v2, verbose);
     }
 }

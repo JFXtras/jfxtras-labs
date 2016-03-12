@@ -17,7 +17,70 @@ import jfxtras.labs.icalendar.properties.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.recurrence.Recurrence;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 
-/**
+public final class VComponentUtilities
+{
+    
+    /**
+     * Tests equality between two VComponent objects.  Treats v1 as expected.  Produces a JUnit-like
+     * output if objects are not equal.
+     * 
+     * @param v1 - expected VComponent
+     * @param v2 - actual VComponent
+     * @param verbose - true = display list of unequal properties, false no display output
+     * @return - equality result
+     */
+    public static <T> boolean isEqualTo(VComponent<?> v1, VComponent<?> v2, boolean verbose)
+    {
+        List<String> changedProperties = new ArrayList<>();
+        Arrays.stream(VComponentProperty.values())
+        .forEach(p -> 
+        {
+            if (! (p.isPropertyEqual(v1, v2)))
+            {
+                changedProperties.add(p.toString() + " not equal:" + p.getPropertyValue(v1) + " " + p.getPropertyValue(v2));
+            }
+        });
+
+        if (changedProperties.size() == 0)
+        {
+            return true;
+        } else
+        {
+            if (verbose)
+            {
+            System.out.println("VComponent not Equal:"
+                    + System.lineSeparator()
+                    + "expecting:" + System.lineSeparator()
+                    + v1 + System.lineSeparator()
+                    + "but was:" + System.lineSeparator()
+                    + v2 + System.lineSeparator()
+                    + changedProperties.stream().collect(Collectors.joining(System.lineSeparator()))
+                    );
+            }
+            return false;
+        }
+    }
+    
+    /**
+     * Parses the property-value pair to the matching property, if a match is found.
+     * If no matching property, does nothing.
+     * 
+     * @param vComponent - object to add property values
+     * @param propertyValuePair - property name-value pair (e.g. DTSTART and TZID=America/Los_Angeles:20160214T110000)
+     */
+    public static void parse(VComponent<?> vComponent, Pair<String, String> propertyValuePair)
+    {
+        String propertyName = propertyValuePair.getKey();
+        String value = propertyValuePair.getValue();
+        // VComponent properties
+        VComponentProperty vComponentProperty = VComponentProperty.propertyFromString(propertyName);
+        if (vComponentProperty != null)
+        {
+            vComponentProperty.parseAndSetProperty(vComponent, value);
+        }
+    }
+    
+    /**
      * VComponent properties with the following data and methods:
      * iCalendar property name
      * setVComponent - parse string method
@@ -844,69 +907,6 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
         public abstract boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2);
         
         /** Copies property value from one v1 to v2 */
-        public abstract void copyProperty(VComponent<?> source, VComponent<?> destination);
-
-        /*
-         * STATIC METHODS
-         */
-        
-        /**
-         * Tests equality between two VComponent objects.  Treats v1 as expected.  Produces a JUnit-like
-         * output if objects are not equal.
-         * 
-         * @param v1 - expected VComponent
-         * @param v2 - actual VComponent
-         * @param verbose - true = display list of unequal properties, false no display output
-         * @return - equality result
-         */
-        public static <T> boolean isEqualTo(VComponent<?> v1, VComponent<?> v2, boolean verbose)
-        {
-            List<String> changedProperties = new ArrayList<>();
-            Arrays.stream(VComponentProperty.values())
-            .forEach(p -> 
-            {
-                if (! (p.isPropertyEqual(v1, v2)))
-                {
-                    changedProperties.add(p.toString() + " not equal:" + p.getPropertyValue(v1) + " " + p.getPropertyValue(v2));
-                }
-            });
-
-            if (changedProperties.size() == 0)
-            {
-                return true;
-            } else
-            {
-                if (verbose)
-                {
-                System.out.println("VComponent not Equal:"
-                        + System.lineSeparator()
-                        + "expecting:" + System.lineSeparator()
-                        + v1 + System.lineSeparator()
-                        + "but was:" + System.lineSeparator()
-                        + v2 + System.lineSeparator()
-                        + changedProperties.stream().collect(Collectors.joining(System.lineSeparator()))
-                        );
-                }
-                return false;
-            }
-        }
-        
-        /**
-         * Parses the property-value pair to the matching property, if a match is found.
-         * If no matching property, does nothing.
-         * 
-         * @param vComponent - object to add property values
-         * @param propertyValuePair - property name-value pair (e.g. DTSTART and TZID=America/Los_Angeles:20160214T110000)
-         */
-        public static void parse(VComponent<?> vComponent, Pair<String, String> propertyValuePair)
-        {
-            String propertyName = propertyValuePair.getKey();
-            String value = propertyValuePair.getValue();
-            // VComponent properties
-            VComponentProperty vComponentProperty = VComponentProperty.propertyFromString(propertyName);
-            if (vComponentProperty != null)
-            {
-                vComponentProperty.parseAndSetProperty(vComponent, value);
-            }
-        }
+        public abstract void copyProperty(VComponent<?> source, VComponent<?> destination);        
+    }
 }

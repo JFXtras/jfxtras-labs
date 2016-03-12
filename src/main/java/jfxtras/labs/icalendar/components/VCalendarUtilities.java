@@ -6,6 +6,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,29 +15,22 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javafx.util.Callback;
 import javafx.util.Pair;
+import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.VCalendar;
 
 public final class VCalendarUtilities
 {
     private VCalendarUtilities() { }
     
-    
     /**
-     * Parse iCalendar ics file to a collection of VComponent objects
+     * Parse iCalendar ics and add its properties to vCalendar parameter
      * 
-     * @param icsFilePath
-     * @param makeVEvent
-     * @return
+     * @param icsFilePath - URI of ics file
+     * @param vCalendar - vCalendar object with callbacks set for making components (e.g. makeVEventCallback)
      */
-    public static VCalendar parseICalendarICS(URI icsFilePath, Callback<String, VEvent<?,?>> makeVEvent)
+    public static void parseICalendarFile(URI icsFilePath, VCalendar vCalendar)
     {
-//        long start = System.nanoTime();
-        
-        // divide up by begin and end - the components - then parse the components
-        VCalendar vcalendar = new VCalendar();
-        List<VComponent<?>> vComponents = new ArrayList<>();
         ExecutorService service =  Executors.newSingleThreadExecutor();
         List<Callable<Object>> tasks = new ArrayList<>();
         try
@@ -46,36 +40,38 @@ public final class VCalendarUtilities
             while (lineIterator.hasNext())
             {
                 String line = lineIterator.next();
-                if (line.equals("BEGIN:VEVENT"))
-                {
-                    StringBuilder vEvent = new StringBuilder(line + System.lineSeparator());
-                    String vEventLine;
-                    do
-                    {
-                        vEventLine = lineIterator.next();
-                        vEvent.append(vEventLine);
-                        vEvent.append(System.lineSeparator());
-                    } while (! vEventLine.equals("END:VEVENT"));
-                    final Runnable readDataThread = new Runnable() {
-                        @Override
-                        public void run()
+                Pair<String, String> p = ICalendarUtilities.parsePropertyLine(line);
+                String propertyName = p.getKey();
+                Arrays.stream(VCalendarProperty.values())
+                        .forEach(property -> 
                         {
-                            vComponents.add(makeVEvent.call(vEvent.toString()));
-                        }
-                    };
-                    tasks.add(Executors.callable(readDataThread));
-                }
+                            boolean matchOneLineProperty = propertyName.equals(property.toString());
+                            if (matchOneLineProperty)
+                            {
+                                property.parseAndSetProperty(vCalendar, p.getValue());
+                            } else if (line.equals(property.startDelimiter()))
+                            {// multi-line property
+                                StringBuilder propertyValue = new StringBuilder(line + System.lineSeparator());
+                                boolean matchEnd = false;
+                                do
+                                {
+                                    String propertyLine = lineIterator.next();
+                                    matchEnd = propertyLine.equals(property.endDelimiter());
+                                    propertyValue.append(propertyLine + System.lineSeparator());
+                                } while (! matchEnd);
+                                Runnable multiLinePropertyRunnable = () -> property.parseAndSetProperty(vCalendar, propertyValue.toString());
+                                tasks.add(Executors.callable(multiLinePropertyRunnable));
+                            } // otherwise, unknown property should be ignored
+                        });
             }
+            vCalendar.vEvents().stream().forEach(System.out::println);
+            System.out.println(vCalendar.vEvents().size());
             service.invokeAll(tasks);
-//            icsStream.re
+            System.out.println(vCalendar.vEvents().size());
         } catch (IOException | InterruptedException e)
         {
             e.printStackTrace();
-        }
-//        vComponents.stream().forEach(System.out::println);
-//        long stop = System.nanoTime();
-//        System.out.println(vComponents.size() + " " + (stop-start)/1000000);
-        return vcalendar;       
+        }  
     }
     
     /**
@@ -102,7 +98,7 @@ public final class VCalendarUtilities
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                if (vCalendar.getCalendarScale() == null)
+                if ((vCalendar.getCalendarScale() == VCalendar.DEFAULT_CALENDAR_SCALE) || (vCalendar.getCalendarScale() == null))
                 {
                     vCalendar.setCalendarScale(value);
                 } else
@@ -110,6 +106,12 @@ public final class VCalendarUtilities
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
                 }
             }
+
+            @Override
+            public String startDelimiter() { return toString(); }
+
+            @Override
+            public String endDelimiter() { return null; }
         } ,
         OBJECT_METHOD ("METHOD") {
             @Override
@@ -120,15 +122,22 @@ public final class VCalendarUtilities
                     vCalendar.setObjectMethod(value);
                 } else
                 {
+                    System.out.println("method:" + vCalendar.getObjectMethod() + "e");
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
                 }
             }
+
+            @Override
+            public String startDelimiter() { return toString(); }
+
+            @Override
+            public String endDelimiter() { return null; }
         } ,
         PRODUCT_IDENTIFIER ("PRODID") {
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                if (vCalendar.getProductIdentifier() == null)
+                if ((vCalendar.getProductIdentifier() == VCalendar.DEFAULT_PRODUCT_IDENTIFIER) || (vCalendar.getProductIdentifier() == null))
                 {
                     vCalendar.setProductIdentifier(value);
                 } else
@@ -136,6 +145,12 @@ public final class VCalendarUtilities
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
                 }
             }
+
+            @Override
+            public String startDelimiter() { return toString(); }
+
+            @Override
+            public String endDelimiter() { return null; }
         } ,
         ALARM_COMPONENT ("VALARM") {
             @Override
@@ -143,6 +158,12 @@ public final class VCalendarUtilities
             {
                 throw new RuntimeException(toString() + " not supported.");
             }
+
+            @Override
+            public String startDelimiter() { return "BEGIN:" + toString(); }
+
+            @Override
+            public String endDelimiter() { return "END:" + toString(); }
         } ,
         EVENT_COMPONENT ("VEVENT") {
             @Override
@@ -150,12 +171,18 @@ public final class VCalendarUtilities
             {
                 vCalendar.vEvents().add( vCalendar.getMakeVEventCallback().call(value) );
             }
+
+            @Override
+            public String startDelimiter() { return "BEGIN:" + toString(); }
+
+            @Override
+            public String endDelimiter() { return "END:" + toString(); }
         } ,
         ICALENDAR_SPECIFICATION_VERSION ("VERSION") {
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                if (vCalendar.getICalendarSpecificationVersion() == null)
+                if ((vCalendar.getICalendarSpecificationVersion() == VCalendar.DEFAULT_ICALENDAR_SPECIFICATION_VERSION) || (vCalendar.getICalendarSpecificationVersion() == null))
                 {
                     vCalendar.setICalendarSpecificationVersion(value);
                 } else
@@ -163,13 +190,25 @@ public final class VCalendarUtilities
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
                 }
             }
+
+            @Override
+            public String startDelimiter() { return toString(); }
+
+            @Override
+            public String endDelimiter() { return null; }
         } ,
         FREE_BUSY_COMPONENT ("VFREEBUSY") {
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                throw new RuntimeException(toString() + " not supported.");
+                // not supported - ignore property
             }
+
+            @Override
+            public String startDelimiter() { return "BEGIN:" + toString(); }
+
+            @Override
+            public String endDelimiter() { return "END:" + toString(); }
         } ,
         JOURNALCOMPONENT ("VJOURNAL") {
             @Override
@@ -177,13 +216,25 @@ public final class VCalendarUtilities
             {
                 vCalendar.vJournals().add( vCalendar.getMakeVJournalCallback().call(value) );
             }
+
+            @Override
+            public String startDelimiter() { return "BEGIN:" + toString(); }
+
+            @Override
+            public String endDelimiter() { return "END:" + toString(); }
         } ,
         TIME_ZONE_COMPONENT ("VTIMEZONE") {
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                throw new RuntimeException(toString() + " not supported.");
+                // not supported - ignore property
             }
+
+            @Override
+            public String startDelimiter() { return "BEGIN:" + toString(); }
+
+            @Override
+            public String endDelimiter() { return "END:" + toString(); }
         } ,
         TO_DO_COMPONENT ("VTODO") {
             @Override
@@ -191,6 +242,12 @@ public final class VCalendarUtilities
             {
                 vCalendar.vTodos().add( vCalendar.getMakeVTodoCallback().call(value) );
             }
+
+            @Override
+            public String startDelimiter() { return "BEGIN:" + toString(); }
+
+            @Override
+            public String endDelimiter() { return "END:" + toString(); }
         };
         
         // Map to match up string tag to VCalendarProperty enum
@@ -225,7 +282,13 @@ public final class VCalendarUtilities
          * value is a string that is parsed if necessary to the appropriate type
          */
         public abstract void parseAndSetProperty(VCalendar vCalendar, String value);
-        
+
+        /** returns string that delimitates beginning of property */
+        public abstract String startDelimiter();
+
+        /** returns string that delimitates end of property.  Is null for one-line properties*/
+        public abstract String endDelimiter();
+
         /*
          * STATIC METHODS
          */

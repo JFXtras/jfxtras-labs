@@ -7,5 +7,5 @@ package jfxtras.labs.icalendar.components;
  */
 public class VAlarm
 {
-
+    public VAlarm() { throw new RuntimeException("not supported"); }
 }

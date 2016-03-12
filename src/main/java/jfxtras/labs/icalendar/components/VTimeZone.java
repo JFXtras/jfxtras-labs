@@ -1,8 +1,5 @@
 package jfxtras.labs.icalendar.components;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
 /**
  * VTIMEZONE: RFC 5545 iCalendar 3.6.5. page 62
  * currently not supported - ZonedDateTime is providing time zone information
@@ -17,10 +14,5 @@ import java.time.ZonedDateTime;
  */
 public class VTimeZone
 {
-
-    public VTimeZone()
-    {
-        ZonedDateTime.now();
-        ZoneId.getAvailableZoneIds();
-    }
+    public VTimeZone() { throw new RuntimeException("not supported"); }
 }

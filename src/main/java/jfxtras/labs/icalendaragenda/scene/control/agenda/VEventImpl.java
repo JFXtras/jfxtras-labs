@@ -19,9 +19,9 @@ import javafx.util.Pair;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VComponent;
-import jfxtras.labs.icalendar.components.VComponentProperty;
+import jfxtras.labs.icalendar.components.VComponentUtilities;
 import jfxtras.labs.icalendar.components.VEvent;
-import jfxtras.labs.icalendar.components.VEventProperty;
+import jfxtras.labs.icalendar.components.VEventUtilities;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -131,6 +131,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     /** Make new VEventImpl and populate properties by parsing a string of line-separated
      * content lines
      *  */
+    @Deprecated // use callback in VCalendar instead
     public static VEventImpl parse(String string, List<AppointmentGroup> appointmentGroups)
     {
         VEventImpl vEvent = new VEventImpl(appointmentGroups);
@@ -141,8 +142,8 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
             
             // parse each property-value pair by all associated property enums
             // TODO - CONSIDER MAKING A VEventImpl ENUM
-            VEventProperty.parse(vEvent, propertyValuePair);
-            VComponentProperty.parse(vEvent, propertyValuePair);
+            VEventUtilities.parse(vEvent, propertyValuePair);
+            VComponentUtilities.parse(vEvent, propertyValuePair);
         }
         return vEvent;
     }
@@ -161,7 +162,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
         // VEventImpl properties
         boolean appointmentGroupEquals = (v1.getAppointmentGroup() == null) ? (v2.getAppointmentGroup() == null) : v1.getAppointmentGroup().equals(v2.getAppointmentGroup());
 //        if (! appointmentGroupEquals && verbose) { System.out.println("Appointment Group:" + " not equal:" + v1.getAppointmentGroup() + " " + v2.getAppointmentGroup()); }
-        boolean vEventResult = VEventProperty.isEqualTo(v1, v2, verbose);
+        boolean vEventResult = VEventUtilities.isEqualTo(v1, v2, verbose);
         return vEventResult && appointmentGroupEquals;
     }
     

@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 public class VTodo<I,T> extends VComponentBase<I,T>
 {
+    public VTodo() { throw new RuntimeException("not supported"); }
 
     @Override
     public boolean isValid()

@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.icalendar.components.VAlarm;
+import jfxtras.labs.icalendar.components.VCalendarUtilities;
 import jfxtras.labs.icalendar.components.VCalendarUtilities.VCalendarProperty;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.components.VEvent;
@@ -55,11 +56,15 @@ import jfxtras.labs.icalendar.components.VTodo;
  * 
  * @author David Bal
  *
+ * @see VCalendarUtilities
  */
 public class VCalendar
 {
     // version of this project, not associated with the iCalendar specification version
     private static String version = "1.0";
+    public static final String DEFAULT_PRODUCT_IDENTIFIER = "JFxtras iCalendar " + version;
+    public static final String DEFAULT_CALENDAR_SCALE = "GREGORIAN";
+    public static final String DEFAULT_ICALENDAR_SPECIFICATION_VERSION = "2.0";
     
     /**
      *  CALSCALE: RFC 5545 iCalendar 3.7.1. page 76
@@ -78,7 +83,7 @@ public class VCalendar
      * CALSCALE:GREGORIAN
      * */
     public StringProperty calendarScaleProperty() { return calendarScale; }
-    final private StringProperty calendarScale = new SimpleStringProperty(this, VCalendarProperty.CALENDAR_SCALE.toString(), "GREGORIAN");
+    final private StringProperty calendarScale = new SimpleStringProperty(this, VCalendarProperty.CALENDAR_SCALE.toString(), DEFAULT_CALENDAR_SCALE);
     public String getCalendarScale() { return calendarScale.get(); }
     public void setCalendarScale(String value) { calendarScale.set(value); }
     public VCalendar withCalendarScale(String s) { setCalendarScale(s); return this; }
@@ -93,8 +98,8 @@ public class VCalendar
      * */
     public StringProperty objectMethodProperty() { return objectMethod; }
     final private StringProperty objectMethod = new SimpleStringProperty(this, VCalendarProperty.OBJECT_METHOD.toString());
-    public String getObjectMethod() { return productIdentifier.get(); }
-    public void setObjectMethod(String value) { productIdentifier.set(value); }
+    public String getObjectMethod() { return objectMethod.get(); }
+    public void setObjectMethod(String value) { objectMethod.set(value); }
     public VCalendar withObjectMethod(String s) { setObjectMethod(s); return this; }
 
     
@@ -109,7 +114,7 @@ public class VCalendar
      * PRODID:-//JFxtras//JFXtras iCalendar 1.0//EN
      * */
     public StringProperty productIdentifierProperty() { return productIdentifier; }
-    final private StringProperty productIdentifier = new SimpleStringProperty(this, VCalendarProperty.PRODUCT_IDENTIFIER.toString(), "JFxtras iCalendar " + version);
+    final private StringProperty productIdentifier = new SimpleStringProperty(this, VCalendarProperty.PRODUCT_IDENTIFIER.toString(), DEFAULT_PRODUCT_IDENTIFIER);
     public String getProductIdentifier() { return productIdentifier.get(); }
     public void setProductIdentifier(String value) { productIdentifier.set(value); }
     public VCalendar withProductIdentifier(String s) { setProductIdentifier(s); return this; }
@@ -127,7 +132,7 @@ public class VCalendar
      * VERSION:2.0
      * */
     public StringProperty iCalendarSpecificationVersionProperty() { return iCalendarSpecificationVersion; }
-    final private StringProperty iCalendarSpecificationVersion = new SimpleStringProperty(this, VCalendarProperty.ICALENDAR_SPECIFICATION_VERSION.toString(), "2.0");
+    final private StringProperty iCalendarSpecificationVersion = new SimpleStringProperty(this, VCalendarProperty.ICALENDAR_SPECIFICATION_VERSION.toString(), DEFAULT_ICALENDAR_SPECIFICATION_VERSION);
     public String getICalendarSpecificationVersion() { return iCalendarSpecificationVersion.get(); }
     public void setICalendarSpecificationVersion(String value) { iCalendarSpecificationVersion.set(value); }
     public VCalendar withICalendarSpecificationVersion(String s) { setICalendarSpecificationVersion(s); return this; }

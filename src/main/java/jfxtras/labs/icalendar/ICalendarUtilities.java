@@ -32,35 +32,41 @@ public final class ICalendarUtilities
      * Returns list of property name and property value list wrapped in a Pair.  DTSTART
      * property is put on top if present.
      */
+    @Deprecated // this my be replaced by running parsePropertyLine in a loop by the enums
     public static List<Pair<String,String>> ComponentStringToPropertyNameAndValueList(String string)
     {        
         return Arrays
             .stream(string.split(System.lineSeparator()))
             .map(line -> {
-                int propertyValueSeparatorIndex = 0;
-                for (int i=0; i<line.length(); i++)
-                {
-                    if ((line.charAt(i) == ';') || (line.charAt(i) == ':'))
-                    {
-                        propertyValueSeparatorIndex = i;
-                        break;
-                    }
-                }
-                if (propertyValueSeparatorIndex == 0)
-                {
-                    return null; // line doesn't contain a property, skip
-                }
-                String propertyName = line.substring(0, propertyValueSeparatorIndex);
-                String value = line.substring(propertyValueSeparatorIndex + 1).trim();
-                if (value.isEmpty())
-                { // skip empty properties
-                    return null;
-                }
-                return new Pair<String,String>(propertyName, value);
+                return parsePropertyLine(line);
             })
             .filter(p -> p != null)
             .sorted(DTSTART_COMPARATOR)
             .collect(Collectors.toList());
+    }
+
+    public static Pair<String, String> parsePropertyLine(String line)
+    {
+        int propertyValueSeparatorIndex = 0;
+        for (int i=0; i<line.length(); i++)
+        {
+            if ((line.charAt(i) == ';') || (line.charAt(i) == ':'))
+            {
+                propertyValueSeparatorIndex = i;
+                break;
+            }
+        }
+        if (propertyValueSeparatorIndex == 0)
+        {
+            return null; // line doesn't contain a property, skip
+        }
+        String propertyName = line.substring(0, propertyValueSeparatorIndex);
+        String value = line.substring(propertyValueSeparatorIndex + 1).trim();
+        if (value.isEmpty())
+        { // skip empty properties
+            return null;
+        }
+        return new Pair<String,String>(propertyName, value);
     }
     
     /**

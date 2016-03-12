@@ -19,7 +19,7 @@ public class ICalendarReadICSTest
       try
       {
           URI file = new URI("file:/home/david/Downloads/Calendar_David_Bal11.ics");
-          VCalendarUtilities.parseICalendarICS(file, vCalendar.getMakeVEventCallback());
+          VCalendarUtilities.parseICalendarFile(file, vCalendar);
       } catch (URISyntaxException e)
       {
           e.printStackTrace();

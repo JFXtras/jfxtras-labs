@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 public class VJournal<I,T> extends VComponentBase<I,T>
 {
 
+    public VJournal() { throw new RuntimeException("not supported"); }
+
     @Override
     public boolean isValid()
     {

@@ -9,5 +9,5 @@ package jfxtras.labs.icalendar.components;
  */
 public class VFreeBusy
 {
-
+    public VFreeBusy() { throw new RuntimeException("not supported"); }
 }
