@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.DateTimeUtilities;
+import jfxtras.labs.icalendar.properties.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.recurrence.Recurrence;
@@ -146,9 +147,9 @@ public final class VComponentUtilities
       , COMMENT ("COMMENT", true)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
-                vComponent.setComment(value); // TODO - collect multiple values - comma separate? Use list?            
+                vComponent.setComment(new Comment(contentLine));
                 return true;
             }
 
@@ -161,7 +162,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return ((vComponent.getComment() == null) || (vComponent.getComment().isEmpty())) ? null : vComponent.commentProperty().getName()
+                return ((vComponent.getComment() == null) || (vComponent.getComment().getText().isEmpty())) ? null : toString()
                         + ":" + vComponent.getComment();
             }
 
@@ -186,11 +187,11 @@ public final class VComponentUtilities
       , CREATED ("CREATED", false)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
                 if (vComponent.getDateTimeCreated() == null)
                 {
-                    ZonedDateTime dateTime = ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
+                    ZonedDateTime dateTime = ZonedDateTime.parse(contentLine, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
                     vComponent.setDateTimeCreated(dateTime);
                     return true;
                 } else
@@ -208,7 +209,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getDateTimeCreated() == null) ? null : vComponent.dateTimeCreatedProperty().getName() + ":"
+                return (vComponent.getDateTimeCreated() == null) ? null : toString() + ":"
                         + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeCreated());
             }
 
@@ -233,11 +234,11 @@ public final class VComponentUtilities
       , DATE_TIME_STAMP ("DTSTAMP", false)
             {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
                 if (vComponent.getDateTimeStamp() == null)
                 {
-                    ZonedDateTime dateTime = ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
+                    ZonedDateTime dateTime = ZonedDateTime.parse(contentLine, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
                     vComponent.setDateTimeStamp(dateTime);
                     return true;
                 } else
@@ -255,7 +256,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getDateTimeStamp() == null) ? null : vComponent.dateTimeStampProperty().getName() + ":"
+                return (vComponent.getDateTimeStamp() == null) ? null : toString() + ":"
                         + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeStamp());
             }
 
@@ -279,11 +280,11 @@ public final class VComponentUtilities
       , DATE_TIME_START ("DTSTART", true)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
                 if (vComponent.getDateTimeStart() == null)
                 {
-                    Temporal dateTime = DateTimeUtilities.parse(value);
+                    Temporal dateTime = DateTimeUtilities.parse(contentLine);
                     vComponent.setDateTimeStart(dateTime);
                     return true;
                 } else
@@ -306,7 +307,7 @@ public final class VComponentUtilities
                     return null;
                 } else
                 {
-                    String tag = DateTimeUtilities.dateTimePropertyTag(vComponent.dateTimeStartProperty().getName(), vComponent.getDateTimeStart());
+                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), vComponent.getDateTimeStart());
                     return tag + DateTimeUtilities.format(vComponent.getDateTimeStart());
                 }
             }
@@ -330,9 +331,9 @@ public final class VComponentUtilities
       , EXCEPTIONS ("EXDATE", false)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
-                Collection<Temporal> temporals = Recurrence.parseTemporals(value);
+                Collection<Temporal> temporals = Recurrence.parseTemporals(contentLine);
                 if (vComponent.getExDate() == null)
                 {
                     vComponent.setExDate(new ExDate());
@@ -358,12 +359,12 @@ public final class VComponentUtilities
                     if (vComponent.isExDatesOnOneLine())
                     {
                         Temporal firstTemporal = vComponent.getExDate().getTemporals().iterator().next();
-                        String tag = DateTimeUtilities.dateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
+                        String tag = DateTimeUtilities.dateTimePropertyTag(toString(), firstTemporal);
                         return tag + vComponent.getExDate().toString();
                     } else
                     {
                         Temporal firstTemporal = vComponent.getExDate().getTemporals().iterator().next();
-                        String tag = DateTimeUtilities.dateTimePropertyTag(vComponent.exDateProperty().getName(), firstTemporal);
+                        String tag = DateTimeUtilities.dateTimePropertyTag(toString(), firstTemporal);
                         return vComponent.getExDate()
                                 .getTemporals()
                                 .stream()
@@ -408,11 +409,11 @@ public final class VComponentUtilities
       , LAST_MODIFIED ("LAST-MODIFIED", false)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
                 if (vComponent.getDateTimeLastModified() == null)
                 {
-                    ZonedDateTime dateTime = ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
+                    ZonedDateTime dateTime = ZonedDateTime.parse(contentLine, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
                     vComponent.setDateTimeLastModified(dateTime);
                     return true;
                 } else
@@ -430,7 +431,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getDateTimeLastModified() == null) ? null : vComponent.dateTimeLastModifiedProperty().getName() + ":"
+                return (vComponent.getDateTimeLastModified() == null) ? null : toString() + ":"
                         + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeLastModified());
             }
 
@@ -458,9 +459,9 @@ public final class VComponentUtilities
       , ORGANIZER ("ORGANIZER", true)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
-                vComponent.setOrganizer(value);
+                vComponent.setOrganizer(contentLine);
                 return true;
             }
 
@@ -473,7 +474,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return ((vComponent.getOrganizer() == null) || (vComponent.getOrganizer().isEmpty())) ? null : vComponent.organizerProperty().getName() + ":"
+                return ((vComponent.getOrganizer() == null) || (vComponent.getOrganizer().isEmpty())) ? null : toString() + ":"
                         + vComponent.getOrganizer().toString();
             }
 
@@ -496,9 +497,9 @@ public final class VComponentUtilities
       , RECURRENCES ("RDATE", false)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
-                Collection<Temporal> temporals = Recurrence.parseTemporals(value);
+                Collection<Temporal> temporals = Recurrence.parseTemporals(contentLine);
                 if (vComponent.getRDate() == null)
                 {
                     vComponent.setRDate(new RDate());
@@ -522,7 +523,7 @@ public final class VComponentUtilities
                 } else
                 {
                     Temporal firstTemporal = vComponent.getRDate().getTemporals().iterator().next();
-                    String tag = DateTimeUtilities.dateTimePropertyTag(vComponent.rDateProperty().getName(), firstTemporal);
+                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), firstTemporal);
                     return tag + vComponent.getRDate().toString();
                 }
             }
@@ -560,11 +561,11 @@ public final class VComponentUtilities
       , RECURRENCE_ID ("RECURRENCE-ID", false)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
                 if (vComponent.getDateTimeRecurrence() == null)
                 {
-                    Temporal dateTime = DateTimeUtilities.parse(value);
+                    Temporal dateTime = DateTimeUtilities.parse(contentLine);
                     vComponent.setDateTimeRecurrence(dateTime);
                     return true;
                 } else
@@ -587,8 +588,7 @@ public final class VComponentUtilities
                     return null;
                 } else
                 {
-                    String tag = DateTimeUtilities.dateTimePropertyTag(vComponent.dateTimeRecurrenceProperty().getName()
-                            , vComponent.getDateTimeRecurrence());
+                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), vComponent.getDateTimeRecurrence());
                     return tag + DateTimeUtilities.format(vComponent.getDateTimeRecurrence());
                 }
             }
@@ -617,11 +617,11 @@ public final class VComponentUtilities
       , RECURRENCE_RULE ("RRULE", false)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
                 if (vComponent.getRRule() == null)
                 {
-                    vComponent.setRRule(RRule.parseRRule(value));
+                    vComponent.setRRule(RRule.parseRRule(contentLine));
                     return true;
                 } else
                 {
@@ -638,7 +638,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getRRule() == null) ? null : vComponent.rRuleProperty().getName() + ":"
+                return (vComponent.getRRule() == null) ? null : toString() + ":"
                         + vComponent.getRRule().toString();
             }
 
@@ -676,9 +676,9 @@ public final class VComponentUtilities
       , RELATED_TO ("RELATED-TO", false)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
-                vComponent.setRelatedTo(value); // TODO - collect multiple values - comma separate? Use list?
+                vComponent.setRelatedTo(contentLine); // TODO - collect multiple values - comma separate? Use list?
                 return true;
             }
 
@@ -691,7 +691,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return ((vComponent.getRelatedTo() == null) || (vComponent.getRelatedTo().isEmpty())) ? null : vComponent.relatedToProperty().getName() + ":"
+                return ((vComponent.getRelatedTo() == null) || (vComponent.getRelatedTo().isEmpty())) ? null : toString() + ":"
                         + vComponent.getRelatedTo().toString();
             }
 
@@ -724,11 +724,11 @@ public final class VComponentUtilities
       , SEQUENCE ("SEQUENCE", false)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
                 if (vComponent.getSequence() == 0)
                 {
-                    vComponent.setSequence(Integer.parseInt(value));
+                    vComponent.setSequence(Integer.parseInt(contentLine));
                     return true;
                 } else
                 {
@@ -745,7 +745,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return (vComponent.getSequence() == 0) ? null : vComponent.sequenceProperty().getName() + ":"
+                return (vComponent.getSequence() == 0) ? null : toString() + ":"
                         + Integer.toString(vComponent.getSequence());
             }
 
@@ -770,11 +770,11 @@ public final class VComponentUtilities
       , SUMMARY ("SUMMARY", true)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
                 if (vComponent.getSummary() == null)
                 {
-                    vComponent.setSummary(value);
+                    vComponent.setSummary(contentLine);
                     return true;
                 } else
                 {
@@ -791,7 +791,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return ((vComponent.getSummary() == null) || (vComponent.getSummary().isEmpty())) ? null : vComponent.summaryProperty().getName() + ":"
+                return ((vComponent.getSummary() == null) || (vComponent.getSummary().isEmpty())) ? null : toString() + ":"
                         + vComponent.getSummary();
             }
 
@@ -816,11 +816,11 @@ public final class VComponentUtilities
       , UNIQUE_IDENTIFIER ("UID", false)
         {
             @Override
-            public boolean parseAndSetProperty(VComponent<?> vComponent, String value)
+            public boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine)
             {
                 if (vComponent.getUniqueIdentifier() == null)
                 {
-                    vComponent.setUniqueIdentifier(value);
+                    vComponent.setUniqueIdentifier(contentLine);
                     return true;
                 } else
                 {
@@ -837,7 +837,7 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return ((vComponent.getUniqueIdentifier() == null) || (vComponent.getUniqueIdentifier().isEmpty())) ? null : vComponent.uniqueIdentifierProperty().getName()
+                return ((vComponent.getUniqueIdentifier() == null) || (vComponent.getUniqueIdentifier().isEmpty())) ? null : toString()
                         + ":" + vComponent.getUniqueIdentifier();
             }
 
@@ -895,7 +895,7 @@ public final class VComponentUtilities
         /** sets VComponent's property for this VComponentProperty to parameter value
          * value is a string that is parsed if necessary to the appropriate type
          * returns true, if property was found and set */
-        public abstract boolean parseAndSetProperty(VComponent<?> vComponent, String value);
+        public abstract boolean parseAndSetProperty(VComponent<?> vComponent, String contentLine);
 
         /** gets VComponent's property value for this VComponentProperty */
         public abstract Object getPropertyValue(VComponent<?> vComponent);

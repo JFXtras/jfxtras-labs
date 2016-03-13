@@ -75,10 +75,25 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
          their site. - - John
      * */
     @Override
-    public Comment getComment() { return comment; }
-    private Comment comment;
+    public ObjectProperty<Comment> commentProperty()
+    {
+        if (comment == null) comment = new SimpleObjectProperty<Comment>(this, VComponentProperty.COMMENT.toString(), _comment);
+        return comment;
+    }
+    private ObjectProperty<Comment> comment;
+    @Override public Comment getComment() { return (comment == null) ? _comment : comment.get(); }
+    private Comment _comment;
     @Override
-    public void setComment(Comment comment) { this.comment = comment; }
+    public void setComment(Comment comment)
+    {
+        if (this.comment == null)
+        {
+            _comment = comment;
+        } else
+        {
+            this.comment.set(comment);            
+        }
+    }
 //    @Override
 //    public StringProperty commentProperty()
 //    {

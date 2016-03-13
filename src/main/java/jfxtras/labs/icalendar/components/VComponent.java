@@ -158,6 +158,7 @@ public interface VComponent<I>
 //    StringProperty commentProperty();
 //    void setComment(String value);
     Comment getComment();
+    ObjectProperty<Comment> commentProperty();
     void setComment(Comment comment);
 //    StringProperty commentTextProperty();
 //    void setCommentText(String value);

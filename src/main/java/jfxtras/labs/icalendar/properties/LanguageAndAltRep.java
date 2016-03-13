@@ -6,7 +6,7 @@ public interface LanguageAndAltRep
 {
     StringProperty textProperty();
     String getText();
-    void setText(String language);
+    void setText(String text);
     
     StringProperty languageProperty();
     String getLanguage();

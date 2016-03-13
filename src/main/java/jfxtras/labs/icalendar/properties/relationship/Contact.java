@@ -7,6 +7,10 @@ import jfxtras.labs.icalendar.properties.LanguageAndAltRepBaseBase;
 
 public class Contact extends LanguageAndAltRepBaseBase<Contact>
 {
+    public Contact(String contentLine)
+    {
+        super(contentLine);
+    }
     /**
      * CONTACT: RFC 5545 iCalendar 3.8.4.2. page 109
      *  This property is used to represent contact information or
@@ -20,4 +24,15 @@ public class Contact extends LanguageAndAltRepBaseBase<Contact>
     @Override public String getText() { return textProperty.get(); }
     @Override public void setText(String value) { textProperty.set(value); }
     public Contact withText(String s) { setText(s); return this; }
+    
+//    /**
+//     * Obtains an instance of Contact by parsing contentLine
+//     * 
+//     * @param contentLine
+//     * @return
+//     */
+//    public static Contact parseContentLine(String contentLine)
+//    {
+//        return new Contact(contentLine);
+//    }
 }

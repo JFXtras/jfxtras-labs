@@ -7,6 +7,11 @@ import jfxtras.labs.icalendar.properties.LanguageAndAltRepBaseBase;
 
 public class Comment extends LanguageAndAltRepBaseBase<Comment>
 {
+    public Comment(String contentLine)
+    {
+        super(contentLine);
+    }
+    
     /**
      * COMMENT: RFC 5545 iCalendar 3.8.1.4. page 83
      * This property specifies non-processing information intended

@@ -8,6 +8,12 @@ public abstract class LanguageAndAltRepBaseBase<T> implements LanguageAndAltRep
     private final static String LANGUAGE_NAME = "LANGUAGE";
     private final static String ALTERNATE_TEXT_REPRESENTATION_NAME = "ALTREP";
     
+    protected LanguageAndAltRepBaseBase(String contentLine)
+    {
+        // TODO add Language and alternateTextRepresentation
+        setText(contentLine);
+    }
+    
     /**
      *  LANGUAGE: RFC 5545 iCalendar 3.2.10. page 21
      * To specify the language for text values in a property or property parameter.
