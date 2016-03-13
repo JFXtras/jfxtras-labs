@@ -33,6 +33,7 @@ import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
+import jfxtras.labs.icalendar.properties.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
@@ -74,27 +75,32 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
          their site. - - John
      * */
     @Override
-    public StringProperty commentProperty()
-    {
-        if (comment == null) comment = new SimpleStringProperty(this, VComponentProperty.COMMENT.toString(), _comment);
-        return comment;
-    }
-    private StringProperty comment;
-    private String _comment;
+    public Comment getComment() { return comment; }
+    private Comment comment;
     @Override
-    public String getComment() { return (comment == null) ? _comment : comment.get(); }
-    @Override
-    public void setComment(String comment)
-    {
-        if (this.comment == null)
-        {
-            _comment = comment;
-        } else
-        {
-            this.comment.set(comment);            
-        }
-    }
-    public T withComment(String comment) { setComment(comment); return (T) this; }
+    public void setComment(Comment comment) { this.comment = comment; }
+//    @Override
+//    public StringProperty commentProperty()
+//    {
+//        if (comment == null) comment = new SimpleStringProperty(this, VComponentProperty.COMMENT.toString(), _comment);
+//        return comment;
+//    }
+//    private StringProperty comment;
+//    private String _comment;
+//    @Override
+//    public String getComment() { return (comment == null) ? _comment : comment.get(); }
+//    @Override
+//    public void setComment(String comment)
+//    {
+//        if (this.comment == null)
+//        {
+//            _comment = comment;
+//        } else
+//        {
+//            this.comment.set(comment);            
+//        }
+//    }
+//    public T withComment(String comment) { setComment(comment); return (T) this; }
 
     /**
      * CREATED: Date-Time Created, from RFC 5545 iCalendar 3.8.7.1 page 136

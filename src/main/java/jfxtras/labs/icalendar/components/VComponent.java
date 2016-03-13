@@ -23,6 +23,7 @@ import javafx.util.Callback;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendar.properties.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
@@ -153,9 +154,13 @@ public interface VComponent<I>
          As a matter of fact\, the venue for the meeting ought to be at
          their site. - - John
      * */
-    String getComment();
-    StringProperty commentProperty();
-    void setComment(String value);
+//    String getComment();
+//    StringProperty commentProperty();
+//    void setComment(String value);
+    Comment getComment();
+    void setComment(Comment comment);
+//    StringProperty commentTextProperty();
+//    void setCommentText(String value);
     
     /**
      * CREATED: Date-Time Created, from RFC 5545 iCalendar 3.8.7.1 page 136
