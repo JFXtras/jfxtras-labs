@@ -194,7 +194,7 @@ public class AppointmentEditController extends Pane
         vEventOriginal = (VEvent<Appointment,?>) VComponentFactory.newVComponent(vEvent);
         
         // String bindings
-        summaryTextField.textProperty().bindBidirectional(vEvent.summaryProperty());
+        summaryTextField.textProperty().bindBidirectional(vEvent.getSummary().textProperty());
         descriptionTextArea.textProperty().bindBidirectional(vEvent.descriptionProperty());
         locationTextField.textProperty().bindBidirectional(vEvent.locationProperty());
         
@@ -342,6 +342,8 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleSave()
     {
+        System.out.println("summary text:" + vEvent.getSummary().getText());
+        System.out.println("summary text:" + vEventOriginal.getSummary().getText());
         vEvent.handleEdit(
                 vEventOriginal
               , vComponents

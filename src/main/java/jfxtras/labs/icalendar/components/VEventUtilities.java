@@ -114,7 +114,7 @@ public final class VEventUtilities
             @Override
             public String makeContentLine(VEvent<?,?> vEvent)
             {
-                return ((vEvent.getDescription() == null) || (vEvent.getDescription().isEmpty())) ? null : vEvent.descriptionProperty().getName()
+                return ((vEvent.getDescription() == null) || (vEvent.getDescription().isEmpty())) ? null : toString()
                         + ":" + vEvent.getDescription();
             }
     
@@ -169,7 +169,7 @@ public final class VEventUtilities
                     return null;
                 } else if (vEvent.endPriority == EndType.DURATION)
                 {
-                    return vEvent.durationProperty().getName() + ":" + vEvent.getDuration();
+                    return toString() + ":" + vEvent.getDuration();
                 } else
                 {
                     throw new RuntimeException("DURATION and EndPriority don't match");                
@@ -230,7 +230,7 @@ public final class VEventUtilities
                     return null;
                 } else if (vEvent.endPriority == EndType.DTEND)
                 {
-                    String tag = DateTimeUtilities.dateTimePropertyTag(vEvent.dateTimeEndProperty().getName(), vEvent.getDateTimeEnd());
+                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), vEvent.getDateTimeEnd());
                     return tag + DateTimeUtilities.format(vEvent.getDateTimeEnd());
                 } else
                 {
@@ -274,7 +274,7 @@ public final class VEventUtilities
             @Override
             public String makeContentLine(VEvent<?,?> vEvent)
             {
-                return ((vEvent.getLocation() == null) || (vEvent.getLocation().isEmpty())) ? null : vEvent.locationProperty().getName()
+                return ((vEvent.getLocation() == null) || (vEvent.getLocation().isEmpty())) ? null : toString()
                         + ":" + vEvent.getLocation();
             }
     

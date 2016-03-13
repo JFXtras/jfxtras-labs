@@ -24,6 +24,7 @@ import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.properties.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
@@ -312,9 +313,12 @@ public interface VComponent<I>
      * Example:
      * SUMMARY:Department Party
      * */
-    String getSummary();
-    StringProperty summaryProperty();
-    void setSummary(String value);
+    Summary getSummary();
+    ObjectProperty<Summary> summaryProperty();
+    void setSummary(Summary summary);
+//    String getSummary();
+//    StringProperty summaryProperty();
+//    void setSummary(String value);
     
     /**
      * UID, Unique identifier, as defined by RFC 5545, iCalendar 3.8.4.7 page 117

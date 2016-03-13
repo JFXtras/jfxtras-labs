@@ -34,6 +34,7 @@ import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
 import jfxtras.labs.icalendar.properties.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
@@ -540,13 +541,13 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * SUMMARY:Department Party
      * */
     @Override
-    public StringProperty summaryProperty() { return summaryProperty; }
-    final private StringProperty summaryProperty = new SimpleStringProperty(this, VComponentProperty.SUMMARY.toString());
+    public ObjectProperty<Summary> summaryProperty() { return summary; }
+    private ObjectProperty<Summary> summary = new SimpleObjectProperty<>(this, VComponentProperty.SUMMARY.toString());
     @Override
-    public String getSummary() { return summaryProperty.get(); }
+    public Summary getSummary() { return summary.get(); }
     @Override
-    public void setSummary(String summary) { summaryProperty.set(summary); }
-    public T withSummary(String summary) { setSummary(summary); return (T) this; }
+    public void setSummary(Summary summary) { this.summary.set(summary); }
+    public T withSummary(Summary summary) { setSummary(summary); return (T) this; }
     
     /**
      * Unique identifier, UID as defined by RFC 5545, iCalendar 3.8.4.7 page 117
@@ -662,7 +663,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
              * question is answered. */
             changedPropertyNames.addAll(changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance));
             // determine if any changed properties warrant dialog
-            changedPropertyNames.stream().forEach(a -> System.out.println("property:" + a));
+//            changedPropertyNames.stream().forEach(a -> System.out.println("changed property:" + a));
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
             if (changedPropertyNames.size() > 0) // if changes occurred
             {
@@ -725,22 +726,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      */
     void validateStartInstanceAndDTStart(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
     {
-//        if (! isStreamValue(startInstance))
-//        {
-//            Temporal instanceBefore = previousStreamValue(startInstance);
-//            Optional<Temporal> optionalAfter = stream(startInstance).findFirst();
-//            Temporal newStartInstance = (optionalAfter.isPresent()) ? optionalAfter.get() : instanceBefore;
-//            TemporalAmount duration = DateTimeUtilities.durationBetween(startInstance, endInstance);
-//            Temporal newEndInstance = newStartInstance.plus(duration);
-//            Temporal startInstanceBeforeChange = startInstance;
-//            System.out.println("changes:" + newStartInstance + " " + newEndInstance);
-////            startTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartInstance));
-////            endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndInstance));
-//            startOriginalInstance = startInstance;
-//            // TODO - DON'T DISPLAY ALERT WHEN RUN FROM SAVE
-////            Platform.runLater(() -> startInstanceChangedAlert(startInstanceBeforeChange, newStartInstance)); // display alert after tab change refresh
-//        }
-//        return startOriginalInstance;
+        // only done in subclasses
     }    
     
     /** returns list of date-time properties that have been edited (DTSTART) */

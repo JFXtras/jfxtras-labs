@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.components;
+package jfxtras.labs.icalendar;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,8 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javafx.util.Pair;
-import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.VCalendar;
 
 public final class VCalendarUtilities
 {

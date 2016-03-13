@@ -20,6 +20,7 @@ import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.components.VComponentUtilities;
+import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VEventUtilities;
 import jfxtras.scene.control.agenda.Agenda;
@@ -107,7 +108,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
         setDateTimeCreated(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setDescription(appointment.getDescription());
         setLocation(appointment.getLocation());
-        setSummary(appointment.getSummary());
+        VComponentProperty.SUMMARY.parseAndSetProperty(this, appointment.getSummary());
         setUniqueIdentifier(getUidGeneratorCallback().call(null));
         instances().add(appointment);
         if (! errorString().equals("")) throw new IllegalArgumentException(errorString());
@@ -198,7 +199,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
                     .withStartTemporal(temporalStart)
                     .withEndTemporal(temporalEnd)
                     .withDescription(getDescription())
-                    .withSummary(getSummary())
+                    .withSummary(getSummary().getText())
                     .withLocation(getLocation())
                     .withWholeDay(isWholeDay())
                     .withAppointmentGroup(getAppointmentGroup());

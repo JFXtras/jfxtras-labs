@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.properties.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.recurrence.Recurrence;
@@ -774,7 +775,7 @@ public final class VComponentUtilities
             {
                 if (vComponent.getSummary() == null)
                 {
-                    vComponent.setSummary(contentLine);
+                    vComponent.setSummary(new Summary(contentLine));
                     return true;
                 } else
                 {
@@ -791,20 +792,22 @@ public final class VComponentUtilities
             @Override
             public String makeContentLine(VComponent<?> vComponent)
             {
-                return ((vComponent.getSummary() == null) || (vComponent.getSummary().isEmpty())) ? null : toString() + ":"
+                return ((vComponent.getSummary() == null) || (vComponent.getSummary().getText().isEmpty())) ? null : toString() + ":"
                         + vComponent.getSummary();
             }
 
             @Override
             public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
+                System.out.println("test summary equals:" + v1.getSummary().equals(v2.getSummary()));
                 return (v1.getSummary() == null) ? (v2.getSummary() == null) : v1.getSummary().equals(v2.getSummary());
             }
 
             @Override
             public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
-                destination.setSummary(source.getSummary());
+                destination.setSummary(new Summary(source.getSummary()));
+//                destination.setSummary(source.getSummary());
             }
         }
       /**

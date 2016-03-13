@@ -3,9 +3,9 @@ package jfxtras.labs.icalendar.properties.relationship;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
-import jfxtras.labs.icalendar.properties.LanguageAndAltRepBaseBase;
+import jfxtras.labs.icalendar.properties.LanguageAndAltRepTextProperty;
 
-public class Contact extends LanguageAndAltRepBaseBase<Contact>
+public class Contact extends LanguageAndAltRepTextProperty<Contact>
 {
     public Contact(String contentLine)
     {
@@ -24,15 +24,4 @@ public class Contact extends LanguageAndAltRepBaseBase<Contact>
     @Override public String getText() { return textProperty.get(); }
     @Override public void setText(String value) { textProperty.set(value); }
     public Contact withText(String s) { setText(s); return this; }
-    
-//    /**
-//     * Obtains an instance of Contact by parsing contentLine
-//     * 
-//     * @param contentLine
-//     * @return
-//     */
-//    public static Contact parseContentLine(String contentLine)
-//    {
-//        return new Contact(contentLine);
-//    }
 }
