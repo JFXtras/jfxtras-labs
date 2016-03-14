@@ -38,7 +38,6 @@ import jfxtras.labs.icalendar.properties.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule.RRuleType;
 
 /**
  * Abstract implementation of VComponent with all common methods for VEvent, VTodo, and VJournal
@@ -548,6 +547,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     @Override
     public void setSummary(Summary summary) { this.summary.set(summary); }
     public T withSummary(Summary summary) { setSummary(summary); return (T) this; }
+    public T withSummary(String summaryText) { setSummary(new Summary(summaryText)); return (T) this; }
     
     /**
      * Unique identifier, UID as defined by RFC 5545, iCalendar 3.8.4.7 page 117
@@ -640,7 +640,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
           , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
     {
         validateStartInstanceAndDTStart(startOriginalInstance, startInstance, endInstance);
-        final RRuleType rruleType = RRuleType.getRRuleType(getRRule(), vComponentOriginal.getRRule());
+        final RRuleStatus rruleType = RRuleStatus.getRRuleType(getRRule(), vComponentOriginal.getRRule());
         System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         Collection<I> newInstances = null;
@@ -780,7 +780,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         return changedPropertyNames.stream()
                 .map(s ->  
                 {
-                    VComponentProperty p = VComponentProperty.propertyFromString(s);
+                    VComponentProperty p = VComponentProperty.propertyFromName(s);
                     return (p != null) ? p.isDialogRequired() : false;
                 })
                 .anyMatch(b -> b == true);
@@ -1128,7 +1128,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         Arrays.stream(VComponentProperty.values())
                 .forEach(p ->
                 {
-                    String newLine = p.makeContentLine(this);
+                    String newLine = p.makePropertyString(this);
                     if (newLine != null)
                     {
                         properties.add(newLine);
@@ -1365,33 +1365,33 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         return stream3.filter(t -> ! DateTimeUtilities.isBefore(t, start));
     }
     
-//    public enum RRuleType
-//    {
-//        INDIVIDUAL ,
-//        WITH_EXISTING_REPEAT ,
-//        WITH_NEW_REPEAT, 
-//        HAD_REPEAT_BECOMING_INDIVIDUAL;
-//      
-//        public static RRuleType getRRuleType(RRule rruleNew, RRule rruleOld)
-//        {
-//            if (rruleNew == null)
-//            {
-//                if (rruleOld == null)
-//                { // doesn't have repeat or have old repeat either
-//                    return RRuleType.INDIVIDUAL;
-//                } else {
-//                    return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
-//                }
-//            } else
-//            { // RRule != null
-//                if (rruleOld == null)
-//                {
-//                    return RRuleType.WITH_NEW_REPEAT;                
-//                } else
-//                {
-//                    return RRuleType.WITH_EXISTING_REPEAT;
-//                }
-//            }
-//        }
-//    }
+    private enum RRuleStatus
+    {
+        INDIVIDUAL ,
+        WITH_EXISTING_REPEAT ,
+        WITH_NEW_REPEAT, 
+        HAD_REPEAT_BECOMING_INDIVIDUAL;
+      
+        public static RRuleStatus getRRuleType(RRule rruleNew, RRule rruleOld)
+        {
+            if (rruleNew == null)
+            {
+                if (rruleOld == null)
+                { // doesn't have repeat or have old repeat either
+                    return RRuleStatus.INDIVIDUAL;
+                } else {
+                    return RRuleStatus.HAD_REPEAT_BECOMING_INDIVIDUAL;
+                }
+            } else
+            { // RRule != null
+                if (rruleOld == null)
+                {
+                    return RRuleStatus.WITH_NEW_REPEAT;                
+                } else
+                {
+                    return RRuleStatus.WITH_EXISTING_REPEAT;
+                }
+            }
+        }
+    }
 }

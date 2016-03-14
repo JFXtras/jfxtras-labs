@@ -3,9 +3,9 @@ package jfxtras.labs.icalendar.properties.relationship;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
-import jfxtras.labs.icalendar.properties.LanguageAndAltRepTextProperty;
+import jfxtras.labs.icalendar.properties.TextPropertyAbstract;
 
-public class Contact extends LanguageAndAltRepTextProperty<Contact>
+public class Contact extends TextPropertyAbstract<Contact>
 {
     public Contact(String contentLine)
     {

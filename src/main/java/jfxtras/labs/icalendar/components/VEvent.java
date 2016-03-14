@@ -195,7 +195,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
             return changedPropertyNames.stream()
                     .map(s ->  
                     {
-                        VEventProperty p = VEventProperty.propertyFromString(s);
+                        VEventProperty p = VEventProperty.propertyFromName(s);
                         return (p != null) ? p.isDialogRequired() : false;
                     })
                     .anyMatch(b -> b == true);
@@ -340,6 +340,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     
     /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. 
      * */
+    @Deprecated // loop through VEventProperty copy methods directly
     private static void copy(VEvent<?,?> source, VEvent<?,?> destination)
     {
         Arrays.stream(VEventProperty.values())
@@ -386,7 +387,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
         Arrays.stream(VEventProperty.values())
                 .forEach(p ->
                 {
-                    String newLine = p.makeContentLine(this);
+                    String newLine = p.makePropertyString(this);
                     if (newLine != null)
                     {
                         properties.add(newLine);

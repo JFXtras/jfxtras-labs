@@ -36,7 +36,7 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  */
 public class ICalendarDateTest extends ICalendarTestAbstract
 {
-    
+    /** tests converting ISO.8601.2004 date-time string to LocalDateTime */
     /** Tests daily stream with FREQ=YEARLY */
     @Test
     public void yearlyStreamTest1()

@@ -6,6 +6,8 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Comparator;
 
+import jfxtras.labs.icalendar.properties.descriptive.Summary;
+
 public class InstanceMock
 {    
     public final static Comparator<InstanceMock> INSTANCE_MOCK_COMPARATOR = (i1, i2) -> 
@@ -29,8 +31,15 @@ public class InstanceMock
     
     private String summary;
     public String getSummary() { return summary; }
-    public void setSummary(String value) { summary = value; }
-    public InstanceMock withSummary(String value) { setSummary(value); return this; }
+    public void setSummary(Summary summary)
+    {
+        if (summary != null)
+        {
+            this.summary = summary.getText();
+        }
+    }
+    public InstanceMock withSummary(Summary summary) { setSummary(summary); return this; }
+    public InstanceMock withSummary(String text) { setSummary(new Summary(text)); return this; }
     
     public static boolean isEqualTo(InstanceMock i1, InstanceMock i2)
     {

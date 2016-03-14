@@ -132,10 +132,10 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     /** Make new VEventImpl and populate properties by parsing a string of line-separated
      * content lines
      *  */
-    public static VEventImpl parse(String string, List<AppointmentGroup> appointmentGroups)
+    public static VEventImpl parse(String vEventString, List<AppointmentGroup> appointmentGroups)
     {
         VEventImpl vEvent = new VEventImpl(appointmentGroups);
-        Iterator<Pair<String, String>> i = ICalendarUtilities.ComponentStringToPropertyNameAndValueList(string).iterator();
+        Iterator<Pair<String, String>> i = ICalendarUtilities.ComponentStringToPropertyList(vEventString).iterator();
         while (i.hasNext())
         {
             Pair<String, String> propertyValuePair = i.next();
@@ -199,7 +199,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
                     .withStartTemporal(temporalStart)
                     .withEndTemporal(temporalEnd)
                     .withDescription(getDescription())
-                    .withSummary(getSummary().getText())
+                    .withSummary(VComponentProperty.SUMMARY.makePropertyString(this))
                     .withLocation(getLocation())
                     .withWholeDay(isWholeDay())
                     .withAppointmentGroup(getAppointmentGroup());

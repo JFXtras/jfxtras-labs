@@ -64,7 +64,7 @@ public final class VEventUtilities
         String value = propertyValuePair.getValue();
         
         // VEvent properties
-        VEventProperty vEventProperty = VEventProperty.propertyFromString(propertyName);
+        VEventProperty vEventProperty = VEventProperty.propertyFromName(propertyName);
         if (vEventProperty != null)
         {
             vEventProperty.parseAndSetProperty(vEvent, value);
@@ -112,7 +112,7 @@ public final class VEventUtilities
             }
     
             @Override
-            public String makeContentLine(VEvent<?,?> vEvent)
+            public String makePropertyString(VEvent<?,?> vEvent)
             {
                 return ((vEvent.getDescription() == null) || (vEvent.getDescription().isEmpty())) ? null : toString()
                         + ":" + vEvent.getDescription();
@@ -162,7 +162,7 @@ public final class VEventUtilities
             }
             
             @Override
-            public String makeContentLine(VEvent<?,?> vEvent)
+            public String makePropertyString(VEvent<?,?> vEvent)
             {
                 if (vEvent.getDuration() == null)
                 {
@@ -223,7 +223,7 @@ public final class VEventUtilities
             }
     
             @Override
-            public String makeContentLine(VEvent<?,?> vEvent)
+            public String makePropertyString(VEvent<?,?> vEvent)
             {
                 if (vEvent.getDateTimeEnd() == null)
                 {
@@ -272,7 +272,7 @@ public final class VEventUtilities
             }
             
             @Override
-            public String makeContentLine(VEvent<?,?> vEvent)
+            public String makePropertyString(VEvent<?,?> vEvent)
             {
                 return ((vEvent.getLocation() == null) || (vEvent.getLocation().isEmpty())) ? null : toString()
                         + ":" + vEvent.getLocation();
@@ -303,6 +303,12 @@ public final class VEventUtilities
             }
             return map;
         }
+        /** get VEventProperty enum from property name */
+        public static VEventProperty propertyFromName(String propertyName)
+        {
+            return propertyFromTagMap.get(propertyName.toUpperCase());
+        }
+        
         private String name;
         /* indicates if providing a dialog to allow user to confirm edit is required. 
          * False means no confirmation is required or property is only modified by the implementation, not by the user */
@@ -318,12 +324,6 @@ public final class VEventUtilities
         public String toString() { return name; }
         public boolean isDialogRequired() { return dialogRequired; }
         
-        /** get VComponentProperty enum from property name */
-        public static VEventProperty propertyFromString(String propertyName)
-        {
-            return propertyFromTagMap.get(propertyName.toUpperCase());
-        }
-        
         /*
          * ABSTRACT METHODS
          */
@@ -337,12 +337,12 @@ public final class VEventUtilities
         public abstract Object getPropertyValue(VEvent<?,?> vEvent);
         
         /** makes content line (RFC 5545 3.1) from a VEvent property  */
-        public abstract String makeContentLine(VEvent<?,?> vEvent);
+        public abstract String makePropertyString(VEvent<?,?> vEvent);
         
         /** Checks is corresponding property is equal between v1 and v2 */
         public abstract boolean isPropertyEqual(VEvent<?,?> v1, VEvent<?,?> v2);
         
-        /** Copies property value from one v1 to v2 */
+        /** Copies property value from source to destination */
         public abstract void copyProperty(VEvent<?,?> source, VEvent<?,?> destination);
         
     }

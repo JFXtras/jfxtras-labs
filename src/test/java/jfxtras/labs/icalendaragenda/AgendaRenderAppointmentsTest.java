@@ -208,6 +208,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     public void renderRegularAppointment2()
     {
         agenda.setNewAppointmentDrawnCallback((a) -> ButtonData.OK_DONE); // remove dialog, just return OK
+        System.out.println("range:" + agenda.getDateTimeRange());
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             agenda.appointments().add( new Agenda.AppointmentImplTemporal()
@@ -224,8 +225,6 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
         find("#AppointmentRegularBodyPane2015-11-" + dayOfMonth + "/0");
         
         Appointment a = agenda.appointments().get(0);
-        System.out.println(a.getStartTemporal() + " " + a.getEndTemporal());
-        // TODO - somewhere - not in Agenda - AUTOMATICALLY CONVERTS TO DEFAULT TIME ZONE
         
         Assert.assertEquals(1, agenda.appointments().size());
         VComponent<Appointment> v = agenda.vComponents().get(0);

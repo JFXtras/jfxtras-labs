@@ -6,6 +6,7 @@ import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -21,7 +22,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
+import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.properties.ICalendarProperty;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleType;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
@@ -35,7 +38,7 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
  * @author David Bal
  *
  */
-public class RRule
+public class RRule implements ICalendarProperty
 {
     private final static String COUNT_NAME = "COUNT";
     private final static String UNTIL_NAME = "UNTIL";
@@ -123,6 +126,52 @@ public class RRule
 //    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
     public RRule withRecurrences(VComponent<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
+    /*
+     * CONSTRUCTORS
+     */
+    
+    public RRule() { }
+
+    // construct new object by parsing property line
+    public RRule(String propertyString)
+    {
+        parse(propertyString);
+    }
+
+    // Copy constructor
+    public RRule(RRule originalObject)
+    {
+//        setAlternateTextRepresentation(originalObject.getAlternateTextRepresentation());
+//        setLanguage(originalObject.getLanguage());
+//        setText(originalObject.getText());
+    }
+    
+    @Override
+    public void parse(String propertyString)
+    {
+        Map<String, String> p = ICalendarUtilities.PropertyLineToParameterMap(propertyString);
+        p.entrySet().stream().forEach(e ->
+        {
+            RRuleProperty.propertyFromName(e.getKey()).setValue(this, e.getValue());
+        });
+    }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getFrequency().toString());
+        if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
+        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + DateTimeUtilities.format(getUntil()));
+        String rules = getFrequency()
+                .getByRules()
+                .stream()
+                .map(r -> ";" + r.toString())
+                .collect(Collectors.joining());
+        builder.append(rules);
+        return builder.toString();
+    }
+    
     /** Deep copy all fields from source to destination */
     private static void copy(RRule source, RRule destination)
     {
@@ -186,22 +235,6 @@ public class RRule
         hash = (31 * hash) + ((recurrences() == null) ? 0 : recurrences().hashCode());
         return hash;
     }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getFrequency().toString());
-        if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
-        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + DateTimeUtilities.format(getUntil()));
-        String rules = getFrequency()
-                .getByRules()
-                .stream()
-                .map(r -> ";" + r.toString())
-                .collect(Collectors.joining());
-        builder.append(rules);
-        return builder.toString();
-    }
     
     /**
      * Checks to see if object contains required properties.  Returns empty string if it is
@@ -241,6 +274,7 @@ public class RRule
     }
 
     /** Return new RRule with its properties set by parsing iCalendar compliant RRULE string */
+    @Deprecated // replace with generic static method for dividing all properties into list of parameters and value
     public static RRule parseRRule(String rRuleString)
     {
         RRule rrule = new RRule();
@@ -361,36 +395,6 @@ public class RRule
 
     static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
-    }
-    
-    public enum RRuleType
-    {
-        INDIVIDUAL ,
-        WITH_EXISTING_REPEAT ,
-        WITH_NEW_REPEAT, 
-        HAD_REPEAT_BECOMING_INDIVIDUAL;
-      
-        public static RRuleType getRRuleType(RRule rruleNew, RRule rruleOld)
-        {
-            if (rruleNew == null)
-            {
-                if (rruleOld == null)
-                { // doesn't have repeat or have old repeat either
-                    return RRuleType.INDIVIDUAL;
-                } else {
-                    return RRuleType.HAD_REPEAT_BECOMING_INDIVIDUAL;
-                }
-            } else
-            { // RRule != null
-                if (rruleOld == null)
-                {
-                    return RRuleType.WITH_NEW_REPEAT;                
-                } else
-                {
-                    return RRuleType.WITH_EXISTING_REPEAT;
-                }
-            }
-        }
     }
 
 }

@@ -23,18 +23,16 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
         VEventMock v = getGoogleWithExDates();
 
-        String madeString = VComponentProperty.EXCEPTIONS.makeContentLine(v);
+        String madeString = VComponentProperty.EXCEPTIONS.makePropertyString(v);
         String expectedString = "EXDATE;TZID=America/Los_Angeles:20160212T123000" + System.lineSeparator()
                                 + "EXDATE;TZID=America/Los_Angeles:20160210T123000" + System.lineSeparator()
                                 + "EXDATE;TZID=America/Los_Angeles:20160209T123000";
         assertEquals(expectedString, madeString);
         
         v.setExDatesOnOneLine(true);
-        String madeString2 = VComponentProperty.EXCEPTIONS.makeContentLine(v);
+        String madeString2 = VComponentProperty.EXCEPTIONS.makePropertyString(v);
         String expectedString2 = "EXDATE;TZID=America/Los_Angeles:20160209T123000,20160210T123000,20160212T123000";
         assertEquals(expectedString2, madeString2);
-        
-        
     }
     
     /** Tests FREQ=YEARLY */
@@ -55,6 +53,7 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
                               + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
+        System.out.println(e);
         assertEquals(expectedString, madeString);
     }
 

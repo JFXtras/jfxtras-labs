@@ -1,8 +1,8 @@
 package jfxtras.labs.icalendar.properties.descriptive;
 
-import jfxtras.labs.icalendar.properties.LanguageAndAltRepTextProperty;
+import jfxtras.labs.icalendar.properties.TextPropertyAbstract;
 
-public class Resources extends LanguageAndAltRepTextProperty<Comment>
+public class Resources extends TextPropertyAbstract<Comment>
 {
     public Resources(String contentLine)
     {

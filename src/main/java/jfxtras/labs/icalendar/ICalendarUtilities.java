@@ -21,6 +21,12 @@ import javafx.util.Pair;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.components.VComponent.StartEndRange;
 
+/**
+ * Static utility methods used throughout iCalendar
+ * 
+ * @author David Bal
+ *
+ */
 public final class ICalendarUtilities
 {
     private ICalendarUtilities() { };
@@ -30,20 +36,50 @@ public final class ICalendarUtilities
         String propertyName1 = p1.getKey();
         return (propertyName1.equals("DTSTART")) ? -1 : 1;
     };
+    /** key mapping to property value, instead of parameter value*/
+    public final static String PROPERTY_VALUE_KEY = ":";
     
     /**
-     * Returns list of property name and property value list wrapped in a Pair.
+     * Starting with lines-separated list of content lines, the lines are unwrapped and 
+     * converted into a list of property name and property value list wrapped in a Pair.
      * DTSTART property is put on top, if present.
      * 
      * This method unwraps multi-line content lines as defined in iCalendar RFC5545 3.1, page 9
+     * 
+     * For example:
+     * string is
+     * BEGIN:VEVENT
+     * SUMMARY:test1
+     * DTSTART;TZID=Etc/GMT:20160306T080000Z
+     * DTEND;TZID=Etc/GMT:20160306T093000Z
+     * RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
+     * UID:fc3577e0-8155-4fa2-a085-a15bdc50a5b4
+     * DTSTAMP:20160313T053147Z
+     * END:VEVENT
+     *  
+     *  results in list of Pair<String,String>
+     *  Pair 1, key = SUMMARY, value = test1
+     *  Pair 2, key = DTSTART, value = TZID=Etc/GMT:20160306T080000Z
+     *  Pair 3, key = DTEND, value = TZID=Etc/GMT:20160306T093000Z
+     *  Pair 4, key = RRULE, value = FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
+     *  Pair 5, key = UID, value = fc3577e0-8155-4fa2-a085-a15bdc50a5b4
+     *  Pair 6, key = DTSTAMP, value = 20160313T053147Z
+     *  
+     *  Note: the list of Pair<String,String> is used instead of a Map<String,String> because some properties
+     *  can appear more than once resulting in duplicate key values.
+     *  
+     * @param componentString
+     * @return
      */
-    public static List<Pair<String,String>> ComponentStringToPropertyNameAndValueList(String string)
+    public static List<Pair<String,String>> ComponentStringToPropertyList(String componentString)
     {
         List<Pair<String,String>> propertyPairs = new ArrayList<>();
         String storedLine = "";
-        Iterator<String> lineIterator = Arrays.stream( string.split(System.lineSeparator()) ).iterator();
+        Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
         while (lineIterator.hasNext())
         {
+            // unwrap lines by storing previous line, adding to it if next is a continuation
+            // when no more continuation lines are found loop back and start with last storedLine
             String startLine;
             if (storedLine.isEmpty())
             {
@@ -62,8 +98,8 @@ public final class ICalendarUtilities
                     builder.append(anotherLine.substring(1, anotherLine.length()));
                 } else
                 {
-                    storedLine = anotherLine;
-                    break;  // exit while loop
+                    storedLine = anotherLine; // save for next iteration
+                    break;  // no continuation line, exit while loop
                 }
             }
             String line = builder.toString();
@@ -73,6 +109,54 @@ public final class ICalendarUtilities
         Collections.sort(propertyPairs, DTSTART_COMPARATOR);
         return propertyPairs;
     }
+    
+    /**
+     * For example:
+     * FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
+     * 
+     *  results in a Map<String,String> (Note: this property has no value, only a group of parameters, so there is no element with the ":" key)
+     *  Key         Value
+     *  FREQ        DAILY                           Frequency parameter
+     *  UNTIL       20160417T235959Z                Until parameter
+     *  INTERVAL    1                               Interval parameter
+     *  
+     *  Another example
+     *  CN=David Bal;SENT-BY="mailto:ddbal1@yahoo.com":mailto:ddbal1@yahoo.com
+     *  results in a Map<String,String>
+     *  Key         Value
+     *  CN          David Bal                       Common Name parameter
+     *  SENT-BY     "mailto:ddbal1@yahoo.com"         Sent By parameter (quotes will be stripped in the parameter enum's parsing method)
+     *  :           mailto:ddbal1@yahoo.com         ***NOTE the ":" key indicates the property value
+     * 
+     * @param propertyLine
+     * @return
+     */
+    public static Map<String,String> PropertyLineToParameterMap(String propertyLine)
+    {
+        return Arrays.stream(propertyLine.split(";"))
+                .collect(Collectors.toMap(
+                    p -> 
+                    {
+                        if (p.contains("="))
+                        {
+                            return p.substring(0, p.indexOf('=')-1); // parameter key
+                        } else
+                        {
+                            return PROPERTY_VALUE_KEY; // indicates property value key
+                        }
+                    },
+                    p ->
+                    {
+                        if (p.contains("="))
+                        {
+                            return p.substring(p.indexOf('=')+1); // parameter value
+                        } else
+                        {
+                            return p; // property value
+                        }
+                    }));
+    }
+
 
     @Deprecated
     public static List<Pair<String,String>> ComponentStringToPropertyNameAndValueListNoUnwrap(String string)

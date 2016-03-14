@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendar.properties.descriptive;
 
-import jfxtras.labs.icalendar.properties.LanguageAndAltRepTextProperty;
+import jfxtras.labs.icalendar.properties.TextPropertyAbstract;
 
 /**
  * COMMENT: RFC 5545 iCalendar 3.8.1.4. page 83
@@ -12,7 +12,7 @@ import jfxtras.labs.icalendar.properties.LanguageAndAltRepTextProperty;
      As a matter of fact\, the venue for the meeting ought to be at
      their site. - - John
  */
-public class Comment extends LanguageAndAltRepTextProperty<Comment>
+public class Comment extends TextPropertyAbstract<Comment>
 {
     public Comment(String contentLine)
     {

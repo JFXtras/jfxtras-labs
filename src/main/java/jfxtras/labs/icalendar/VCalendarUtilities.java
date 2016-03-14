@@ -75,6 +75,7 @@ public final class VCalendarUtilities
      * @param vCalendar - object to add property values
      * @param propertyValuePair - property name-value pair (e.g. DTSTART and TZID=America/Los_Angeles:20160214T110000)
      */
+    @Deprecated // make instance variable - implement ICalendarProperty
     public static void parse(VCalendar vCalendar, Pair<String, String> propertyValuePair)
     {
         String propertyName = propertyValuePair.getKey();
