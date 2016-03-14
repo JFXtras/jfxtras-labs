@@ -6,7 +6,6 @@ import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -25,9 +24,8 @@ import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.properties.ICalendarProperty;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleType;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities;
 
 /**
  * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -40,9 +38,9 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
  */
 public class RRule implements ICalendarProperty
 {
-    private final static String COUNT_NAME = "COUNT";
-    private final static String UNTIL_NAME = "UNTIL";
-    private final static String INTERVAL_NAME = "INTERVAL";
+//    private final static String COUNT_NAME = "COUNT";
+//    private final static String UNTIL_NAME = "UNTIL";
+//    private final static String INTERVAL_NAME = "INTERVAL";
             
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
@@ -60,7 +58,7 @@ public class RRule implements ICalendarProperty
      */
     public IntegerProperty countProperty()
     {
-        if (count == null) count = new SimpleIntegerProperty(this, COUNT_NAME, _count);
+        if (count == null) count = new SimpleIntegerProperty(this, RRuleParameter.COUNT.toString(), _count);
         return count;
     }
     private IntegerProperty count;
@@ -93,7 +91,7 @@ public class RRule implements ICalendarProperty
      */
     public SimpleObjectProperty<Temporal> untilProperty()
     {
-        if (until == null) until = new SimpleObjectProperty<Temporal>(this, UNTIL_NAME, _until);
+        if (until == null) until = new SimpleObjectProperty<Temporal>(this, RRuleParameter.UNTIL.toString(), _until);
         return until;
     }
     private SimpleObjectProperty<Temporal> until;
@@ -135,41 +133,53 @@ public class RRule implements ICalendarProperty
     // construct new object by parsing property line
     public RRule(String propertyString)
     {
-        parse(propertyString);
+        ICalendarUtilities.propertyLineToParameterMap(propertyString)
+                .entrySet()
+                .stream()
+                .forEach(e ->
+                {
+                    System.out.println("rrule parameters:" + e.getKey() + " " + e.getValue());
+                    RRuleParameter.propertyFromName(e.getKey())
+                            .setValue(this, e.getValue());
+                });
     }
 
     // Copy constructor
-    public RRule(RRule originalObject)
+    public RRule(RRule source)
     {
-//        setAlternateTextRepresentation(originalObject.getAlternateTextRepresentation());
-//        setLanguage(originalObject.getLanguage());
-//        setText(originalObject.getText());
+        Arrays.stream(RRuleParameter.values())
+                .forEach(p -> p.copyProperty(source, this));
     }
     
-    @Override
-    public void parse(String propertyString)
-    {
-        Map<String, String> p = ICalendarUtilities.PropertyLineToParameterMap(propertyString);
-        p.entrySet().stream().forEach(e ->
-        {
-            RRuleProperty.propertyFromName(e.getKey()).setValue(this, e.getValue());
-        });
-    }
+//    @Override
+//    public void parse(String propertyString)
+//    {
+//        Map<String, String> p = ICalendarUtilities.PropertyLineToParameterMap(propertyString);
+//        p.entrySet().stream().forEach(e ->
+//        {
+//            RRuleProperty.propertyFromName(e.getKey()).setValue(this, e.getValue());
+//        });
+//    }
     
     @Override
     public String toString()
     {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getFrequency().toString());
-        if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
-        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + DateTimeUtilities.format(getUntil()));
-        String rules = getFrequency()
-                .getByRules()
-                .stream()
-                .map(r -> ";" + r.toString())
-                .collect(Collectors.joining());
-        builder.append(rules);
-        return builder.toString();
+//        StringBuilder builder = new StringBuilder();
+        return Arrays.stream(RRuleParameter.values())
+                .map(p -> p.toParameterString(this))
+//                .peek(p -> System.out.println("rrule parameter:" + p))
+                .filter(s -> s != null)
+                .collect(Collectors.joining(";"));
+//        builder.append(getFrequency().toString());
+//        if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
+//        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + DateTimeUtilities.format(getUntil()));
+//        String rules = getFrequency()
+//                .getByRules()
+//                .stream()
+//                .map(r -> ";" + r.toString())
+//                .collect(Collectors.joining());
+//        builder.append(rules);
+//        return builder.toString();
     }
     
     /** Deep copy all fields from source to destination */
@@ -183,7 +193,7 @@ public class RRule implements ICalendarProperty
         {
             try {
                 Frequency newFreqency = source.getFrequency().getClass().newInstance();
-                Frequency.copy(source.getFrequency(), newFreqency);
+                FrequencyUtilities.copy(source.getFrequency(), newFreqency);
                 destination.setFrequency(newFreqency);
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
@@ -274,59 +284,61 @@ public class RRule implements ICalendarProperty
     }
 
     /** Return new RRule with its properties set by parsing iCalendar compliant RRULE string */
-    @Deprecated // replace with generic static method for dividing all properties into list of parameters and value
-    public static RRule parseRRule(String rRuleString)
-    {
-        RRule rrule = new RRule();
-        Integer interval = null;
-        
-        // Parse string
-        for (String element : rRuleString.split(";"))
-        {
-            String property = element.substring(0, element.indexOf("="));
-            String value = element.substring(element.indexOf("=") + 1).trim();
-            if (property.equals(rrule.frequencyProperty().getName()))
-            { // FREQ
-                Frequency freq = Frequency.FrequencyType
-                        .valueOf(value)
-                        .newInstance();
-                rrule.setFrequency(freq);
-                if (interval != null) rrule.getFrequency().setInterval(interval);
-            } else if (property.equals(COUNT_NAME))
-            { // COUNT
-                rrule.setCount(Integer.parseInt(value));
-            } else if (property.equals(UNTIL_NAME))
-            { // UNTIL
-                Temporal dateTime = DateTimeUtilities.parse(value);
-                rrule.setUntil(dateTime);
-            } else if (property.equals(INTERVAL_NAME))
-            { // INTERVAL
-                if (rrule.getFrequency() != null)
-                {
-                    rrule.getFrequency().setInterval(Integer.parseInt(value));
-                } else
-                {
-                    interval = Integer.parseInt(value);
-                }
-            } else
-            {
-                for (ByRuleType b : ByRuleType.values())
-                {
-                    if (property.equals(b.toString()))
-                    {
-                        Rule rule = null;
-                        try {
-                            rule = b.newInstance(value);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        rrule.getFrequency().addByRule(rule);
-                    }
-                }
-            }            
-        }
-        return rrule;
-    }
+//    @Deprecated // replace with generic static method for dividing all properties into list of parameters and value
+//    public static RRule parseRRule(String propertyString)
+//    {
+//        return new RRule(propertyString);
+//        rrule.parse(propertyString);
+//        return rrule;
+//        Integer interval = null;
+//        
+//        // Parse string
+//        for (String element : rRuleString.split(";"))
+//        {
+//            String property = element.substring(0, element.indexOf("="));
+//            String value = element.substring(element.indexOf("=") + 1).trim();
+//            if (property.equals(rrule.frequencyProperty().getName()))
+//            { // FREQ
+//                Frequency freq = Frequency.FrequencyType
+//                        .valueOf(value)
+//                        .newInstance();
+//                rrule.setFrequency(freq);
+//                if (interval != null) rrule.getFrequency().setInterval(interval);
+//            } else if (property.equals(COUNT_NAME))
+//            { // COUNT
+//                rrule.setCount(Integer.parseInt(value));
+//            } else if (property.equals(UNTIL_NAME))
+//            { // UNTIL
+//                Temporal dateTime = DateTimeUtilities.parse(value);
+//                rrule.setUntil(dateTime);
+//            } else if (property.equals(INTERVAL_NAME))
+//            { // INTERVAL
+//                if (rrule.getFrequency() != null)
+//                {
+//                    rrule.getFrequency().setInterval(Integer.parseInt(value));
+//                } else
+//                {
+//                    interval = Integer.parseInt(value);
+//                }
+//            } else
+//            {
+//                for (ByRuleType b : ByRuleType.values())
+//                {
+//                    if (property.equals(b.toString()))
+//                    {
+//                        Rule rule = null;
+//                        try {
+//                            rule = b.newInstance(value);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        rrule.getFrequency().addByRule(rule);
+//                    }
+//                }
+//            }            
+//        }
+//        return rrule;
+//    }
 
     /**
      * Determines if recurrence set is goes on forever

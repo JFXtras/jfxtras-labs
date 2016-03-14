@@ -13,7 +13,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleType;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter;
 
 public class ICalendarEqualsTest extends ICalendarTestAbstract
 {
@@ -23,7 +23,7 @@ public class ICalendarEqualsTest extends ICalendarTestAbstract
         VEventMock vevent = getMonthly5();
         VEventMock vevent2 = getMonthly5();
         assertTrue(VEventMock.isEqualTo(vevent, vevent2));
-        ByDay rule = (ByDay) vevent2.getRRule().getFrequency().getByRuleByType(ByRuleType.BYDAY);
+        ByDay rule = (ByDay) vevent2.getRRule().getFrequency().byRules().get(ByRuleParameter.BY_DAY);
         rule.addDayOfWeek(DayOfWeek.SATURDAY);
         assertFalse(VEventMock.isEqualTo(vevent, vevent2, false));
     }

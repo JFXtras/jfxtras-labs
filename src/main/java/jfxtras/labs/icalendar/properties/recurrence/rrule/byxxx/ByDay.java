@@ -29,7 +29,7 @@ import jfxtras.labs.icalendar.DateTimeUtilities;
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
 {
-    private final static ByRuleType MY_RULE = ByRuleType.BYDAY;
+    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_DAY;
 
     private final TemporalField field;
     private final int firstDayOfWeekAdjustment;
@@ -91,7 +91,7 @@ public class ByDay extends ByRuleAbstract
     //CONSTRUCTORS
     /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
      * This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleType#newInstance(String)}
+     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter#newInstance(String)}
      */
     public ByDay(String dayPairs)
     {
@@ -202,7 +202,7 @@ public class ByDay extends ByRuleAbstract
                     return (d.ordinal == 0) ? day : d.ordinal + day;
                 })
                 .collect(Collectors.joining());
-        return ByRuleType.BYDAY + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleParameter.BY_DAY + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     @Override // TODO - try to REMOVE startTemporal

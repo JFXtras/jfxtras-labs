@@ -2,16 +2,21 @@ package jfxtras.labs.icalendar.properties.recurrence.rrule.freq;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
 
 public abstract class FrequencyAbstract<T> implements Frequency {
     
@@ -47,18 +52,19 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     /** BYxxx Rules 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * Each BYxxx rule can only occur once */
-    @Override public List<Rule> getByRules() { return byRules; }
-    private List<Rule> byRules = new ArrayList<Rule>();
-    @Override public void addByRule(Rule byRule)
-    {
-        boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
-        if (alreadyPresent)
-        {
-            throw new IllegalArgumentException("Can't add BYxxx rule (" + byRule.getClass().getSimpleName() + ") more than once.");
-        }
-        getByRules().add(byRule);
-        Collections.sort(getByRules());
-    }
+//    @Override public List<Rule> getByRules() { return byRules; }
+    @Override public Map<ByRuleParameter, Rule> byRules() { return byRules; }
+    private final Map<ByRuleParameter, Rule> byRules = new HashMap<>();
+//    @Override public void addByRule(Rule byRule)
+//    {
+//        boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
+//        if (alreadyPresent)
+//        {
+//            throw new IllegalArgumentException("Can't add BYxxx rule (" + byRule.getClass().getSimpleName() + ") more than once.");
+//        }
+//        getByRules().add(byRule);
+//        Collections.sort(getByRules());
+//    }
 
     /** Add varargs of ByRules to Frequency 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
@@ -67,66 +73,82 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     {
         for (Rule r : byRules)
         {
-            addByRule(r);
+//            addByRule(r);
+            byRules().put(r.getByRuleType(), r);
         }
         return (T) this;
     }
 
     /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times
      * For example:
+     * 
      * following FREQ=WEEKLY it is WEEKS
      * following FREQ=YEARLY it is YEARS
      * following FREQ=YEARLY;BYWEEKNO=20 it is WEEKS
      * following FREQ=YEARLY;BYMONTH=3 it is MONTHS
      * following FREQ=YEARLY;BYMONTH=3;BYDAY=TH it is DAYS
+     * 
+     * Note: ChronoUnit is wrapped in an ObjectProperty to enable receiving classes to have the
+     * reference to the object and make changes to it.  If I passed a ChronoUnit object, which is an enum,
+     * changes are not propagated back.  In that case, I would need a reference to the Frequency object that owns
+     * it.  The ObjectProperty wrapper is easier.
      */
-    @Override
-    public ObjectProperty<ChronoUnit> getChronoUnit() { return chronoUnit; };
-    private ObjectProperty<ChronoUnit> chronoUnit;
-    private final ChronoUnit initialChronoUnit;
-    @Override
-    public void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit)
-    {
-        switch (chronoUnit.get())
-        {
-        case DAYS:
-        case MONTHS:
-        case WEEKS:
-        case YEARS:
-            this.chronoUnit = chronoUnit;
-            break;
-        case HOURS:
-        case MINUTES:
-        case SECONDS:
-            throw new RuntimeException("ChronoUnit not implemented: " + chronoUnit);
-        default:
-            throw new RuntimeException("Invalid ChronoUnit: " + chronoUnit);
-        }
-    }
+//    @Override
+    ObjectProperty<ChronoUnit> chronoUnitProperty() { return chronoUnit; }
+    ChronoUnit getChronoUnit() { return chronoUnit.get(); };
+    private ObjectProperty<ChronoUnit> chronoUnit = new SimpleObjectProperty<ChronoUnit>();
+////    private final ChronoUnit initialChronoUnit;
+//    @Override
+    public void setChronoUnit(ChronoUnit chronoUnit) { this.chronoUnit.set(chronoUnit); }
+//    {
+//        switch (chronoUnit.get())
+//        {
+//        case DAYS:
+//        case MONTHS:
+//        case WEEKS:
+//        case YEARS:
+//            this.chronoUnit = chronoUnit;
+//            break;
+//        case HOURS:
+//        case MINUTES:
+//        case SECONDS:
+//            throw new RuntimeException("ChronoUnit not implemented: " + chronoUnit);
+//        default:
+//            throw new RuntimeException("Invalid ChronoUnit: " + chronoUnit);
+//        }
+//    }
     
     
     @Override
-    public FrequencyType frequencyType() { return frequencyType; }
-    final private FrequencyType frequencyType;
-
+    public FrequencyParameter frequencyType() { return frequencyType; }
+    final private FrequencyParameter frequencyType;
+    
+    @Override
+    public TemporalAdjuster adjuster() { return (temporal) -> temporal.plus(getInterval(), frequencyType.getChronoUnit()); }
+    
     // CONSTRUCTOR
-    public FrequencyAbstract(FrequencyType frequencyType, ObjectProperty<ChronoUnit> chronoUnit)
+    public FrequencyAbstract(FrequencyParameter frequencyType)
     {
         this.frequencyType = frequencyType;
-        this.initialChronoUnit = chronoUnit.get();
-        setChronoUnit(chronoUnit);
+//        this.initialChronoUnit = chronoUnit.get();
+        setChronoUnit(frequencyType.getChronoUnit());
     }
 
     @Override
     public Stream<Temporal> stream(Temporal start)
     {
-        getChronoUnit().set(initialChronoUnit); // start with Frequency ChronoUnit when making a stream
+        setChronoUnit(frequencyType.getChronoUnit()); // start with Frequency ChronoUnit when making a stream
         Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
-        Iterator<Rule> rulesIterator = getByRules().stream().sorted().iterator();
+        Iterator<Rule> rulesIterator = byRules()
+                .entrySet()
+                .stream()
+                .map(e -> e.getValue())
+                .sorted()
+                .iterator();
         while (rulesIterator.hasNext())
         {
             Rule rule = rulesIterator.next();
-            stream = rule.stream(stream, getChronoUnit(), start);
+            stream = rule.stream(stream, chronoUnitProperty(), start);
         }
         return stream;
     }
@@ -148,13 +170,14 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         
         boolean intervalEquals = (getInterval() == null) ?
                 (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
+        System.out.println("interval:" + getInterval() + " " + testObj.getInterval());
         boolean rulesEquals;
-        if (getByRules().size() == testObj.getByRules().size())
+        if (byRules().size() == testObj.byRules().size())
         {
             List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
-            for (int i=0; i<getByRules().size(); i++)
+            for (int i=0; i<byRules().size(); i++)
             {
-                boolean e = getByRules().get(i).equals(testObj.getByRules().get(i));
+                boolean e = byRules().get(i).equals(testObj.byRules().get(i));
                 rulesEqualsArray.add(e);
             }
             rulesEquals = rulesEqualsArray.stream().allMatch(a -> a == true );
@@ -162,6 +185,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         {
             rulesEquals = false;
         }
+        System.out.println("byRules:" + byRules() + " " + testObj.byRules());
         System.out.println("frequency " + intervalEquals + " " + rulesEquals);
         return intervalEquals && rulesEquals;
     }
@@ -171,16 +195,17 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     {
         int hash = 7;
         hash = (31 * hash) + getInterval().hashCode();
-        hash = (31 * hash) + getByRules().hashCode();
+        hash = (31 * hash) + byRules().hashCode();
         return hash;
     }
     
     @Override
     public String toString()
     {
-        StringBuilder builder = new StringBuilder("FREQ=" + frequencyType().toString());
-        if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
-        return builder.toString();
+        return frequencyType().toString();
+//        StringBuilder builder = new StringBuilder("FREQ=" + frequencyType().toString());
+//        if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
+//        return builder.toString();
     }
 
 }

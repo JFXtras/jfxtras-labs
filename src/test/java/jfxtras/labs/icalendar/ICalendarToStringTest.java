@@ -23,14 +23,14 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     {
         VEventMock v = getGoogleWithExDates();
 
-        String madeString = VComponentProperty.EXCEPTIONS.makePropertyString(v);
+        String madeString = VComponentProperty.EXCEPTIONS.toPropertyString(v);
         String expectedString = "EXDATE;TZID=America/Los_Angeles:20160212T123000" + System.lineSeparator()
                                 + "EXDATE;TZID=America/Los_Angeles:20160210T123000" + System.lineSeparator()
                                 + "EXDATE;TZID=America/Los_Angeles:20160209T123000";
         assertEquals(expectedString, madeString);
         
         v.setExDatesOnOneLine(true);
-        String madeString2 = VComponentProperty.EXCEPTIONS.makePropertyString(v);
+        String madeString2 = VComponentProperty.EXCEPTIONS.toPropertyString(v);
         String expectedString2 = "EXDATE;TZID=America/Los_Angeles:20160209T123000,20160210T123000,20160212T123000";
         assertEquals(expectedString2, madeString2);
     }

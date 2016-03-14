@@ -23,5 +23,6 @@ public class Contact extends TextPropertyAbstract<Contact>
     final private StringProperty textProperty = new SimpleStringProperty(this, VComponentProperty.CATEGORIES.toString());
     @Override public String getText() { return textProperty.get(); }
     @Override public void setText(String value) { textProperty.set(value); }
+    @Override
     public Contact withText(String s) { setText(s); return this; }
 }

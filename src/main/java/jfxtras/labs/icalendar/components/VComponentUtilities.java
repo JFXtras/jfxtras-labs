@@ -112,7 +112,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return ((vComponent.getCategories() == null) || (vComponent.getCategories().isEmpty())) ? null : vComponent.categoriesProperty().getName()
                         + ":" + vComponent.getCategories();
@@ -155,7 +155,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return ((vComponent.getComment() == null) || (vComponent.getComment().getText().isEmpty())) ? null : toString()
                         + ":" + vComponent.getComment();
@@ -201,7 +201,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getDateTimeCreated() == null) ? null : toString() + ":"
                         + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeCreated());
@@ -247,7 +247,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getDateTimeStamp() == null) ? null : toString() + ":"
                         + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeStamp());
@@ -292,7 +292,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 if (vComponent.getDateTimeStart() == null)
                 {
@@ -340,7 +340,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 if (vComponent.getExDate() == null)
                 {
@@ -419,7 +419,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getDateTimeLastModified() == null) ? null : toString() + ":"
                         + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeLastModified());
@@ -461,7 +461,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return ((vComponent.getOrganizer() == null) || (vComponent.getOrganizer().isEmpty())) ? null : toString() + ":"
                         + vComponent.getOrganizer().toString();
@@ -503,7 +503,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 if (vComponent.getRDate() == null)
                 {
@@ -568,7 +568,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 if (vComponent.getDateTimeRecurrence() == null)
                 {
@@ -608,7 +608,7 @@ public final class VComponentUtilities
             {
                 if (vComponent.getRRule() == null)
                 {
-                    vComponent.setRRule(RRule.parseRRule(contentLine));
+                    vComponent.setRRule(new RRule(contentLine));
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -622,7 +622,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getRRule() == null) ? null : toString() + ":"
                         + vComponent.getRRule().toString();
@@ -637,19 +637,15 @@ public final class VComponentUtilities
             @Override
             public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
-                if (source.getRRule() != null)
-                {
-                    if (destination.getRRule() == null)
-                    { // make new RRule object for destination if necessary
-                        try {
-                            RRule newRRule = source.getRRule().getClass().newInstance();
-                            destination.setRRule(newRRule);
-                        } catch (InstantiationException | IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    source.getRRule().copyTo(destination.getRRule());
-                }
+                destination.setRRule(new RRule(source.getRRule()));
+//                if (source.getRRule() != null)
+//                {
+//                    if (destination.getRRule() == null)
+//                    { // make new RRule object for destination if necessary
+//
+//                    }
+//                    source.getRRule().copyTo(destination.getRRule());
+//                }
             }
         }
       /**
@@ -674,7 +670,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return ((vComponent.getRelatedTo() == null) || (vComponent.getRelatedTo().isEmpty())) ? null : toString() + ":"
                         + vComponent.getRelatedTo().toString();
@@ -727,7 +723,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getSequence() == 0) ? null : toString() + ":"
                         + Integer.toString(vComponent.getSequence());
@@ -775,7 +771,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return ((vComponent.getSummary() == null) || (vComponent.getSummary().getText().isEmpty())) ? null : vComponent.getSummary().toString();
             }
@@ -820,7 +816,7 @@ public final class VComponentUtilities
             }
             
             @Override
-            public String makePropertyString(VComponent<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return ((vComponent.getUniqueIdentifier() == null) || (vComponent.getUniqueIdentifier().isEmpty())) ? null : toString()
                         + ":" + vComponent.getUniqueIdentifier();
@@ -885,7 +881,7 @@ public final class VComponentUtilities
         public abstract Object getPropertyValue(VComponent<?> vComponent);
                 
         /** makes content line (RFC 5545 3.1) from a vComponent property  */
-        public abstract String makePropertyString(VComponent<?> vComponent);       
+        public abstract String toPropertyString(VComponent<?> vComponent);       
 
         /** Checks is corresponding property is equal between v1 and v2 */
         public abstract boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2);

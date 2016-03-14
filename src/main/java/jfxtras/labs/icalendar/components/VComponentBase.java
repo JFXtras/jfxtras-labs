@@ -1128,7 +1128,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         Arrays.stream(VComponentProperty.values())
                 .forEach(p ->
                 {
-                    String newLine = p.makePropertyString(this);
+                    String newLine = p.toPropertyString(this);
                     if (newLine != null)
                     {
                         properties.add(newLine);

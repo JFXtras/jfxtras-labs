@@ -8,7 +8,7 @@ import javafx.beans.property.ObjectProperty;
 
 public class ByHour extends ByRuleAbstract
 {
-    private final static ByRuleType MY_RULE = ByRuleType.BYHOUR;
+    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_HOUR;
 
     public ByHour()
     {

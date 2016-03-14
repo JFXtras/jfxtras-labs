@@ -71,7 +71,7 @@ public final class ICalendarUtilities
      * @param componentString
      * @return
      */
-    public static List<Pair<String,String>> ComponentStringToPropertyList(String componentString)
+    public static List<Pair<String,String>> componentStringToPropertyList(String componentString)
     {
         List<Pair<String,String>> propertyPairs = new ArrayList<>();
         String storedLine = "";
@@ -111,6 +111,7 @@ public final class ICalendarUtilities
     }
     
     /**
+     * Converts property line into a property-parameter/value map
      * For example:
      * FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
      * 
@@ -131,7 +132,7 @@ public final class ICalendarUtilities
      * @param propertyLine
      * @return
      */
-    public static Map<String,String> PropertyLineToParameterMap(String propertyLine)
+    public static Map<String,String> propertyLineToParameterMap(String propertyLine)
     {
         return Arrays.stream(propertyLine.split(";"))
                 .collect(Collectors.toMap(
@@ -139,7 +140,7 @@ public final class ICalendarUtilities
                     {
                         if (p.contains("="))
                         {
-                            return p.substring(0, p.indexOf('=')-1); // parameter key
+                            return p.substring(0, p.indexOf('=')); // parameter key
                         } else
                         {
                             return PROPERTY_VALUE_KEY; // indicates property value key
@@ -157,9 +158,23 @@ public final class ICalendarUtilities
                     }));
     }
 
-
+    /**
+     * Converts property-parameter/value map into property line.  This is the opposite operation
+     * of {@link #propertyLineToParameterMap(String)}
+     * 
+     * @param parameterMap
+     * @return
+     */
+    @Deprecated // May use enum makeLine methods instead
+    public static String parameterMapToPropertyLine(Map<String,String> parameterMap)
+    {
+        return parameterMap.entrySet().stream()
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(Collectors.joining(";"));
+    }
+    
     @Deprecated
-    public static List<Pair<String,String>> ComponentStringToPropertyNameAndValueListNoUnwrap(String string)
+    public static List<Pair<String,String>> componentStringToPropertyNameAndValueListNoUnwrap(String string)
     {
         return Arrays
                 .stream(string.split(System.lineSeparator()))

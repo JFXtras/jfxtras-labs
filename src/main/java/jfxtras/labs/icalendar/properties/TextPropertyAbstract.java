@@ -33,19 +33,19 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
     // construct new object by parsing property line
     protected TextPropertyAbstract(String propertyString)
     {
-        parse(propertyString);
+        ICalendarUtilities.propertyLineToParameterMap(propertyString)
+                .entrySet()
+                .stream()
+                .forEach(e ->
+                {
+                    TextPropertyParameter.propertyFromName(e.getKey())
+                            .setValue(this, e.getValue());
+                });
     }
 
     // Copy constructor
     protected TextPropertyAbstract(TextPropertyAbstract<?> source)
     {
-//        String propertyName = propertyValuePair.getKey();
-//        String value = propertyValuePair.getValue();
-//        VCalendarProperty vCalendarProperty = VCalendarProperty.propertyFromString(propertyName);
-//        if (vCalendarProperty != null)
-//        {
-//            vCalendarProperty.parseAndSetProperty(vCalendar, value);
-//        }
         Arrays.stream(TextPropertyParameter.values())
                 .forEach(p -> p.copyProperty(source, this));
     }
@@ -54,20 +54,19 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
     public String toString()
     {
         return Arrays.stream(TextPropertyParameter.values())
-                .map(p -> p.makeParameterString(this))
+                .map(p -> p.toParameterString(this))
                 .filter(s -> ! (s == null))
                 .collect(Collectors.joining(";"));
     }
 
-    @Override
-    public void parse(String propertyString)
-    {
-        Map<String, String> p = ICalendarUtilities.PropertyLineToParameterMap(propertyString);
-        p.entrySet().stream().forEach(e ->
-        {
-            TextPropertyParameter.propertyFromName(e.getKey()).setValue(this, e.getValue());
-        });
-    }
+//    public void parse(String propertyString)
+//    {
+//        Map<String, String> p = ICalendarUtilities.PropertyLineToParameterMap(propertyString);
+//        p.entrySet().stream().forEach(e ->
+//        {
+//            TextPropertyParameter.propertyFromName(e.getKey()).setValue(this, e.getValue());
+//        });
+//    }
     
     @Override
     public boolean equals(Object obj)
@@ -198,7 +197,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             }
 
             @Override
-            public String makeParameterString(TextPropertyAbstract<?> textProperty)
+            public String toParameterString(TextPropertyAbstract<?> textProperty)
             {
                 if (textProperty.getAlternateTextRepresentation() != null)
                 {
@@ -222,7 +221,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             }
 
             @Override
-            public String makeParameterString(TextPropertyAbstract<?> textProperty)
+            public String toParameterString(TextPropertyAbstract<?> textProperty)
             {
                 if (textProperty.getLanguage() != null)
                 {
@@ -245,7 +244,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             }
 
             @Override
-            public String makeParameterString(TextPropertyAbstract<?> textProperty)
+            public String toParameterString(TextPropertyAbstract<?> textProperty)
             {
                 if (textProperty.getText() != null)
                 {
@@ -261,8 +260,8 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             }
         };
         
-        // Map to match up string tag to TextPropertyParameter enum
-        private static Map<String, TextPropertyParameter> propertyFromTagMap = makePropertiesFromNameMap();
+        // Map to match up name to enum
+        private static Map<String, TextPropertyParameter> propertyFromNameMap = makePropertiesFromNameMap();
         private static Map<String, TextPropertyParameter> makePropertiesFromNameMap()
         {
             Map<String, TextPropertyParameter> map = new HashMap<>();
@@ -273,10 +272,10 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             }
             return map;
         }
-        /** get TextPropertyParameter enum from property name */
+        /** get enum from name */
         public static TextPropertyParameter propertyFromName(String propertyName)
         {
-            return propertyFromTagMap.get(propertyName.toUpperCase());
+            return propertyFromNameMap.get(propertyName.toUpperCase());
         }
         
         private String name;
@@ -293,7 +292,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
         public abstract void setValue(TextPropertyAbstract<?> textProperty, String value);
         
         /** makes content line (RFC 5545 3.1) from a vComponent property  */
-        public abstract String makeParameterString(TextPropertyAbstract<?> textProperty);
+        public abstract String toParameterString(TextPropertyAbstract<?> textProperty);
         
         /** Copies property value from source to destination */
         public abstract void copyProperty(TextPropertyAbstract<?> source, TextPropertyAbstract<?> destination);  

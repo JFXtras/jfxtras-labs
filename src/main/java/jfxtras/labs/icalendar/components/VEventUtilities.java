@@ -112,7 +112,7 @@ public final class VEventUtilities
             }
     
             @Override
-            public String makePropertyString(VEvent<?,?> vEvent)
+            public String toPropertyString(VEvent<?,?> vEvent)
             {
                 return ((vEvent.getDescription() == null) || (vEvent.getDescription().isEmpty())) ? null : toString()
                         + ":" + vEvent.getDescription();
@@ -162,7 +162,7 @@ public final class VEventUtilities
             }
             
             @Override
-            public String makePropertyString(VEvent<?,?> vEvent)
+            public String toPropertyString(VEvent<?,?> vEvent)
             {
                 if (vEvent.getDuration() == null)
                 {
@@ -223,7 +223,7 @@ public final class VEventUtilities
             }
     
             @Override
-            public String makePropertyString(VEvent<?,?> vEvent)
+            public String toPropertyString(VEvent<?,?> vEvent)
             {
                 if (vEvent.getDateTimeEnd() == null)
                 {
@@ -272,7 +272,7 @@ public final class VEventUtilities
             }
             
             @Override
-            public String makePropertyString(VEvent<?,?> vEvent)
+            public String toPropertyString(VEvent<?,?> vEvent)
             {
                 return ((vEvent.getLocation() == null) || (vEvent.getLocation().isEmpty())) ? null : toString()
                         + ":" + vEvent.getLocation();
@@ -337,7 +337,7 @@ public final class VEventUtilities
         public abstract Object getPropertyValue(VEvent<?,?> vEvent);
         
         /** makes content line (RFC 5545 3.1) from a VEvent property  */
-        public abstract String makePropertyString(VEvent<?,?> vEvent);
+        public abstract String toPropertyString(VEvent<?,?> vEvent);
         
         /** Checks is corresponding property is equal between v1 and v2 */
         public abstract boolean isPropertyEqual(VEvent<?,?> v1, VEvent<?,?> v2);

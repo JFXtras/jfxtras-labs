@@ -387,7 +387,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
         Arrays.stream(VEventProperty.values())
                 .forEach(p ->
                 {
-                    String newLine = p.makePropertyString(this);
+                    String newLine = p.toPropertyString(this);
                     if (newLine != null)
                     {
                         properties.add(newLine);

@@ -19,7 +19,7 @@ import javafx.beans.property.ObjectProperty;
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByWeekNo extends ByRuleAbstract
 {
-    private final static ByRuleType MY_RULE = ByRuleType.BYWEEKNO;
+    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_WEEK_NUMBER;
 
     /** sorted array of weeks of the year
      * (i.e. 5, 10 = 5th and 10th weeks of the year, -3 = 3rd from last week of the year)
@@ -46,7 +46,7 @@ public class ByWeekNo extends ByRuleAbstract
     // CONSTRUCTORS
     /** takes String of comma-delimited integers, parses it to array of ints 
      * This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleType#newInstance(String)}
+     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter#newInstance(String)}
      */
     public ByWeekNo(String weekNumbersString)
     {
@@ -111,7 +111,7 @@ public class ByWeekNo extends ByRuleAbstract
         String days = Arrays.stream(getWeekNumbers())
                 .mapToObj(d -> d + ",")
                 .collect(Collectors.joining());
-        return ByRuleType.BYWEEKNO + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleParameter.BY_WEEK_NUMBER + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     @Override

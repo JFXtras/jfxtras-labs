@@ -41,8 +41,9 @@ import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleType;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.RepeatableController;
@@ -200,16 +201,16 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         click("#repeatableTab");
 
         // Get properties
-        ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+        ComboBox<FrequencyParameter> frequencyComboBox = find("#frequencyComboBox");
 
         // Check initial state
-        assertEquals(Frequency.FrequencyType.DAILY, frequencyComboBox.getSelectionModel().getSelectedItem());
-        assertEquals(Frequency.FrequencyType.DAILY, v.getRRule().getFrequency().frequencyType());
+        assertEquals(FrequencyParameter.DAILY, frequencyComboBox.getSelectionModel().getSelectedItem());
+        assertEquals(FrequencyParameter.DAILY, v.getRRule().getFrequency().frequencyType());
         
         // Change property and verify state change
         // WEEKLY
         {
-        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.WEEKLY));
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyParameter.WEEKLY));
 
         // Days of the week properties
         CheckBox su = (CheckBox) find("#sundayCheckBox");
@@ -222,9 +223,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // Get weekly properties
         Frequency f = v.getRRule().getFrequency();
-        assertEquals(Frequency.FrequencyType.WEEKLY, f.frequencyType());
-        assertEquals(1, f.getByRules().size());
-        ByDay rule = (ByDay) f.getByRuleByType(ByRuleType.BYDAY);
+        assertEquals(FrequencyParameter.WEEKLY, f.frequencyType());
+        assertEquals(1, f.byRules().size());
+        ByDay rule = (ByDay) f.byRules().get(ByRuleParameter.BY_DAY);
 
         // Check initial state
         List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
@@ -267,7 +268,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // MONTHLY
         {
-        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.MONTHLY));
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyParameter.MONTHLY));
         
         // Monthly properties
         RadioButton dayOfMonth = find("#dayOfMonthRadioButton");
@@ -277,26 +278,26 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         // Check initial state
         assertTrue(dayOfMonth.isSelected());
         assertFalse(dayOfWeek.isSelected());
-        assertEquals(Frequency.FrequencyType.MONTHLY, f.frequencyType());
-        assertEquals(0, f.getByRules().size());
+        assertEquals(FrequencyParameter.MONTHLY, f.frequencyType());
+        assertEquals(0, f.byRules().size());
         
         // Toggle monthly options and check
         TestUtil.runThenWaitForPaintPulse(() -> dayOfWeek.setSelected(true));
         assertFalse(dayOfMonth.isSelected());
         assertTrue(dayOfWeek.isSelected());
-        assertEquals(1, f.getByRules().size());
-        ByDay rule = (ByDay) f.getByRuleByType(ByRuleType.BYDAY);
+        assertEquals(1, f.byRules().size());
+        ByDay rule = (ByDay) f.byRules().get(ByRuleParameter.BY_DAY);
         assertEquals("BYDAY=2WE", rule.toString()); // 2nd Wednesday of the month
         }
         
         // YEARLY
         {
-        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.YEARLY));
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyParameter.YEARLY));
         Frequency f = v.getRRule().getFrequency(); // refresh reference
 
         // Check initial state
-        assertEquals(Frequency.FrequencyType.YEARLY, f.frequencyType());
-        assertEquals(0, f.getByRules().size());
+        assertEquals(FrequencyParameter.YEARLY, f.frequencyType());
+        assertEquals(0, f.byRules().size());
         }
         closeCurrentWindow();
     }
@@ -379,8 +380,8 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // Change property and verify state change
         // Frequency - Weekly
-        ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
-        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.WEEKLY));
+        ComboBox<FrequencyParameter> frequencyComboBox = find("#frequencyComboBox");
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyParameter.WEEKLY));
         click("#saveRepeatButton");
         ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse(() -> c.getSelectionModel().select(ChangeDialogOption.ALL));
@@ -533,11 +534,11 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // Get properties
         ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
-        ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+        ComboBox<FrequencyParameter> frequencyComboBox = find("#frequencyComboBox");
 
         // Change property and verify state change
         // Frequency - Weekly
-        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.WEEKLY));
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyParameter.WEEKLY));
         {
             List<Temporal> exceptions = exceptionComboBox.getItems()
                     .stream()
@@ -564,9 +565,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // Get weekly properties
         Frequency f = v.getRRule().getFrequency();
-        assertEquals(Frequency.FrequencyType.WEEKLY, f.frequencyType());
-        assertEquals(1, f.getByRules().size());
-        ByDay rule = (ByDay) f.getByRuleByType(ByRuleType.BYDAY);
+        assertEquals(FrequencyParameter.WEEKLY, f.frequencyType());
+        assertEquals(1, f.byRules().size());
+        ByDay rule = (ByDay) f.byRules().get(ByRuleParameter.BY_DAY);
 
         // Check initial state
         List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
@@ -724,11 +725,11 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // Get properties
         ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
-        ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+        ComboBox<FrequencyParameter> frequencyComboBox = find("#frequencyComboBox");
         
         // Change property and verify state change
         // Frequency - Monthly
-        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.MONTHLY));
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyParameter.MONTHLY));
         RadioButton dayOfMonthRadioButton = find("#dayOfMonthRadioButton");
         RadioButton dayOfWeekRadioButton = find("#dayOfWeekRadioButton");
         
@@ -781,10 +782,10 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // Get properties
         ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
-        ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+        ComboBox<FrequencyParameter> frequencyComboBox = find("#frequencyComboBox");
         
         // Change property and verify state change
-        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(Frequency.FrequencyType.YEARLY));
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyParameter.YEARLY));
         
         // Check initial state
         List<Temporal> exceptions = exceptionComboBox.getItems().stream().limit(5)
@@ -1343,12 +1344,12 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
         // Get properties
         CheckBox repeatableCheckBox = find("#repeatableCheckBox");
-        ComboBox<Frequency.FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+        ComboBox<FrequencyParameter> frequencyComboBox = find("#frequencyComboBox");
         RadioButton endNeverRadioButton = find("#endNeverRadioButton");
         
         // Check initial state
         assertTrue(repeatableCheckBox.isSelected());
-        assertEquals(Frequency.FrequencyType.DAILY, frequencyComboBox.getSelectionModel().getSelectedItem());
+        assertEquals(FrequencyParameter.DAILY, frequencyComboBox.getSelectionModel().getSelectedItem());
         assertTrue(endNeverRadioButton.isSelected());
         assertEquals((Integer) 1, v.getRRule().getFrequency().getInterval());
         assertEquals((Integer) 0, v.getRRule().getCount());

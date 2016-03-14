@@ -8,7 +8,7 @@ import javafx.beans.property.ObjectProperty;
 
 public class ByYearDay extends ByRuleAbstract
 {
-    private final static ByRuleType MY_RULE = ByRuleType.BYYEARDAY;
+    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_YEAR_DAY;
 
     public ByYearDay()
     {

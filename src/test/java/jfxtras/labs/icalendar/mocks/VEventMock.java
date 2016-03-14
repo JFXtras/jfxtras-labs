@@ -74,7 +74,7 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
     public static VEventMock parse(String vEventString)
     {
         VEventMock vEvent = new VEventMock();
-        Iterator<Pair<String, String>> i = ICalendarUtilities.ComponentStringToPropertyList(vEventString).iterator();
+        Iterator<Pair<String, String>> i = ICalendarUtilities.componentStringToPropertyList(vEventString).iterator();
         while (i.hasNext())
         {
             Pair<String, String> propertyValuePair = i.next();

@@ -1,19 +1,17 @@
 package jfxtras.labs.icalendar.properties.recurrence.rrule.freq;
 
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleType;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
  * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.)
@@ -43,23 +41,26 @@ public interface Frequency {
       following order: BYMONTH, BYWEEKNO, BYYEARDAY, BYMONTHDAY, BYDAY,
       BYHOUR, BYMINUTE, BYSECOND and BYSETPOS; then COUNT and UNTIL are
       evaluated.*/
-    List<Rule> getByRules();
-    /** Adds new byRule to collection and ensures that type of rule isn't already present */
-    void addByRule(Rule rule);
-    /** return ByRule object from byRules list by enum type.  Returns null if not present */
-    default public Rule getByRuleByType(Rule.ByRuleType byRule)
-    {
-        Optional<Rule> rule = getByRules()
-                .stream()
-                .filter(a -> a.getByRuleType() == byRule)
-                .findFirst();
-        return (rule.isPresent()) ? rule.get() : null;
-    }
+    Map<ByRuleParameter, Rule> byRules();
+//    List<Rule> getByRules();
+//    /** Adds new byRule to collection and ensures that type of rule isn't already present 
+//     * @return */
+    default void addByRule(Rule rule) { byRules().put(rule.getByRuleType(), rule); }
+//    /** return ByRule object from byRules list by enum type.  Returns null if not present */
+//    @Deprecated // use enum lookup to find
+//    default public Rule lookupByRule(ByRuleParameter byRule)
+//    {
+//        Optional<Rule> rule = getByRules()
+//                .stream()
+//                .filter(a -> a.getByRuleType() == byRule)
+//                .findFirst();
+//        return (rule.isPresent()) ? rule.get() : null;
+//    }
     
-    /** ChronoUnit of last modification to stream
-     *  Enables usage of switch statement in BYxxx rules */
-    ObjectProperty<ChronoUnit> getChronoUnit();
-    void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit);
+//    /** ChronoUnit of last modification to stream
+//     *  Enables usage of switch statement in BYxxx rules */
+//    ObjectProperty<ChronoUnit> getChronoUnit();
+//    void setChronoUnit(ObjectProperty<ChronoUnit> chronoUnit);
 
     /** Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
      * Rules.
@@ -85,7 +86,7 @@ public interface Frequency {
 //    boolean isInstance(Temporal start, Temporal testedTemporal);
 
     /** Which of the enum type FrenquencyType the implementing class represents */
-    FrequencyType frequencyType();
+    FrequencyParameter frequencyType();
         
     /** Temporal adjuster every class implementing Frequency must provide that modifies frequency dates 
      * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
@@ -117,6 +118,7 @@ public interface Frequency {
      * Checks to see if object contains required properties.  Returns empty string if it is
      * valid.  Returns string of errors if not valid.
      */
+    @Deprecated // put tests into enum
     default String makeErrorString()
     {
         StringBuilder builder = new StringBuilder();
@@ -124,22 +126,23 @@ public interface Frequency {
         switch (frequencyType())
         {
         case DAILY:
-            if (getByRuleByType(ByRuleType.BYWEEKNO) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
-            if (getByRuleByType(ByRuleType.BYYEARDAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
+            if (byRules().get(ByRuleParameter.BY_WEEK_NUMBER) != null)
+            if (byRules().get(ByRuleParameter.BY_WEEK_NUMBER) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
+            if (byRules().get(ByRuleParameter.BY_YEAR_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
             break;
         case MONTHLY:
-            if (getByRuleByType(ByRuleType.BYWEEKNO) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
-            if (getByRuleByType(ByRuleType.BYYEARDAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
+            if (byRules().get(ByRuleParameter.BY_WEEK_NUMBER) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
+            if (byRules().get(ByRuleParameter.BY_YEAR_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
             break;
         case WEEKLY:
-            if (getByRuleByType(ByRuleType.BYWEEKNO) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
-            if (getByRuleByType(ByRuleType.BYYEARDAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
-            if (getByRuleByType(ByRuleType.BYMONTHDAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYMONTHDAY not available when FREQ is " + frequencyType());
+            if (byRules().get(ByRuleParameter.BY_WEEK_NUMBER) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
+            if (byRules().get(ByRuleParameter.BY_YEAR_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
+            if (byRules().get(ByRuleParameter.BY_MONTH_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYMONTHDAY not available when FREQ is " + frequencyType());
             break;
         case YEARLY:
-            if ((getByRuleByType(ByRuleType.BYWEEKNO) != null) && (getByRuleByType(ByRuleType.BYDAY) != null))
+            if ((byRules().get(ByRuleParameter.BY_WEEK_NUMBER) != null) && (byRules().get(ByRuleParameter.BY_DAY) != null))
             {
-                ByDay byDay = (ByDay) getByRuleByType(ByRuleType.BYDAY);
+                ByDay byDay = (ByDay) byRules().get(ByRuleParameter.BY_DAY);
                 if (byDay.hasOrdinals()) builder.append(System.lineSeparator()
                         + "Invalid RRule. The BYDAY rule part MUST NOT be specified with a numeric value with the FREQ rule part set to YEARLY when the BYWEEKNO rule part is specified");
             }
@@ -155,65 +158,7 @@ public interface Frequency {
         
         }
         return builder.toString();
-    }
-    
-    /** Enumeration of FREQ rules 
-     * Is used to make new instances of the different Frequencies by matching FREQ property
-     * to its matching class */
-    public static enum FrequencyType
-    {
-        YEARLY (Yearly.class) ,
-        MONTHLY (Monthly.class) ,
-        WEEKLY (Weekly.class) ,
-        DAILY (Daily.class) ,
-        HOURLY (Hourly.class) ,
-        MINUTELY (Minutely.class) ,
-        SECONDLY (Secondly.class);
-      
-        private Class<? extends Frequency> clazz;
-          
-        FrequencyType(Class<? extends Frequency> clazz)
-        {
-            this.clazz = clazz;
-        }
-
-        public Frequency newInstance()
-        {
-            try {
-                return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        /** return array of implemented FrequencyTypes */
-        public static FrequencyType[] implementedValues()
-        {
-            return new FrequencyType[] { DAILY, WEEKLY, MONTHLY, YEARLY };
-        }
-    }
-
-    /** Deep copy all fields from source to destination */
-    static void copy(Frequency source, Frequency destination)
-    {
-        destination.setChronoUnit(source.getChronoUnit());
-        if (source.getInterval() != null) destination.setInterval(source.getInterval());
-        if (source.getByRules() != null)
-        {
-            source.getByRules().stream().forEach(r ->
-            {
-                try {
-                    Rule newRule = r.getClass().newInstance();
-                    Rule.copy(r, newRule);
-                    destination.addByRule(newRule);
-                } catch (InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-    }
-    
+    }    
 }
 
 

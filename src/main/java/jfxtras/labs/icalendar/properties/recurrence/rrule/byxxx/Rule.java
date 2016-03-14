@@ -1,11 +1,13 @@
 package jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
 
 /**
  * Interface for a rule that applies a modification to a Stream of start date/times, such
@@ -37,7 +39,7 @@ public interface Rule extends Comparable<Rule>
     Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal);
 
     /** order to process rules */
-    ByRuleType getByRuleType();
+    ByRuleParameter getByRuleType();
 //    Integer getProcessOrder();
 
     void copyTo(Rule destination);
@@ -54,45 +56,57 @@ public interface Rule extends Comparable<Rule>
      * The class is used to make new instances of the different Rules by matching RRULE property
      * to its matching class
      * */
-    static enum ByRuleType
+    @Deprecated // will probably use RRuleParameters instead
+    static enum ByRuleParameter
     {
-        BYSECOND (BySecond.class, 70) // Not implemented
-      , BYMINUTE (ByMinute.class, 60) // Not implemented
-      , BYHOUR (ByHour.class, 50) // Not implemented
-      , BYDAY (ByDay.class, 40)
-      , BYMONTHDAY (ByMonthDay.class, 30)
-      , BYYEARDAY (ByYearDay.class, 20) // Not implemented
-      , BYWEEKNO (ByWeekNo.class, 10)
-      , BYMONTH (ByMonth.class, 0)
-      , BYSETPOS (BySetPos.class, 80); // Not implemented
+        BY_SECOND ("BYSECOND", 70) // Not implemented
+      , BY_MINUTE ("BYMINUTE", 60) // Not implemented
+      , BY_HOUR ("BYHOUR", 50) // Not implemented
+      , BY_DAY ("BYDAY", 40)
+      , BY_MONTH_DAY ("BYMONTHDAY", 30)
+      , BY_YEAR_DAY ("BYYEARDAY", 20) // Not implemented
+      , BY_WEEK_NUMBER ("BYWEEKNO", 10)
+      , BY_MONTH ("BYMONTH", 0)
+      , BY_SET_POSITION ("BYSETPOS", 80); // Not implemented
       
-        private Class<? extends Rule> clazz;
-
-        private int processOrder;
-        public int getProcessOrder() { return processOrder; }
-
-        ByRuleType(Class<? extends Rule> clazz, int processOrder)
+        // Map to match up name to enum
+        private static Map<String, ByRuleParameter> propertyFromTagMap = makePropertiesFromNameMap();
+        private static Map<String, ByRuleParameter> makePropertiesFromNameMap()
         {
-            this.clazz = clazz;
-            this.processOrder = processOrder;
-        }
-
-        /** return new instance of the matching ByRule object */
-        public Rule newInstance()
-        {
-            try {
-                return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+            Map<String, ByRuleParameter> map = new HashMap<>();
+            ByRuleParameter[] values = ByRuleParameter.values();
+            for (int i=0; i<values.length; i++)
+            {
+                map.put(values[i].toString(), values[i]);
             }
-            return null;
+            return map;
+        }
+        /** get enum from name */
+        public static ByRuleParameter propertyFromName(String propertyName)
+        {
+            return propertyFromTagMap.get(propertyName.toUpperCase());
+        }
+        
+        /** Returns the iCalendar property name (e.g. LANGUAGE) */
+        @Override public String toString() { return name; }
+        
+        private String name;
+        private int sortOrder;
+        public int getSortOrder() { return sortOrder; }
+
+        ByRuleParameter(String name, int sortOrder)
+        {
+            this.sortOrder = sortOrder;
+            this.name = name;
         }
 
-        /** Returns new instance of the matching ByRule and populates its value
-         * by parsing the String parameter */
-        public Rule newInstance(String string) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+        public String toParameterString(Frequency frequency)
         {
-            return clazz.getConstructor(String.class).newInstance(string);
+            return frequency.byRules().get(this).toString();
         }
+        
+        /*
+         * ABSTRACT METHODS
+         */
     }
 }
