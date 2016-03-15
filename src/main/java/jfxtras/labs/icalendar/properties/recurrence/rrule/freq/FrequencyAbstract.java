@@ -3,11 +3,9 @@ package jfxtras.labs.icalendar.properties.recurrence.rrule.freq;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
@@ -15,7 +13,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
 
 public abstract class FrequencyAbstract<T> implements Frequency {
@@ -52,9 +49,11 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     /** BYxxx Rules 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * Each BYxxx rule can only occur once */
-//    @Override public List<Rule> getByRules() { return byRules; }
-    @Override public Map<ByRuleParameter, ByRule> byRules() { return byRules; }
-    private final Map<ByRuleParameter, ByRule> byRules = new HashMap<>();
+    @Override public Collection<ByRule> byRules() { return byRules; }
+    private final Collection<ByRule> byRules = new TreeSet<>();
+    
+//    @Override public Map<ByRuleParameter, ByRule> byRules() { return byRules; }
+//    private final Map<ByRuleParameter, ByRule> byRules = new HashMap<>();
 //    @Override public void addByRule(Rule byRule)
 //    {
 //        boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
@@ -71,9 +70,10 @@ public abstract class FrequencyAbstract<T> implements Frequency {
      * Each BYxxx rule can only occur once */
     public T withByRules(ByRule...byRules)
     {
-        for (ByRule r : byRules)
+        for (ByRule myByRule : byRules)
         {
-            byRules().put(ByRuleParameter.propertyFromByRule(r), r);
+//            byRules().put(ByRuleParameter.propertyFromByRule(r), r);
+            byRules().add(myByRule);
         }
         return (T) this;
     }
@@ -92,31 +92,10 @@ public abstract class FrequencyAbstract<T> implements Frequency {
      * changes are not propagated back.  In that case, I would need a reference to the Frequency object that owns
      * it.  The ObjectProperty wrapper is easier.
      */
-//    @Override
     ObjectProperty<ChronoUnit> chronoUnitProperty() { return chronoUnit; }
     ChronoUnit getChronoUnit() { return chronoUnit.get(); };
     private ObjectProperty<ChronoUnit> chronoUnit = new SimpleObjectProperty<ChronoUnit>();
-////    private final ChronoUnit initialChronoUnit;
-//    @Override
     public void setChronoUnit(ChronoUnit chronoUnit) { this.chronoUnit.set(chronoUnit); }
-//    {
-//        switch (chronoUnit.get())
-//        {
-//        case DAYS:
-//        case MONTHS:
-//        case WEEKS:
-//        case YEARS:
-//            this.chronoUnit = chronoUnit;
-//            break;
-//        case HOURS:
-//        case MINUTES:
-//        case SECONDS:
-//            throw new RuntimeException("ChronoUnit not implemented: " + chronoUnit);
-//        default:
-//            throw new RuntimeException("Invalid ChronoUnit: " + chronoUnit);
-//        }
-//    }
-    
     
     @Override
     public FrequencyParameter frequencyType() { return frequencyType; }
@@ -131,6 +110,28 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         this.frequencyType = frequencyType;
 //        this.initialChronoUnit = chronoUnit.get();
         setChronoUnit(frequencyType.getChronoUnit());
+//        ListChangeListener<? super ByRule> listchange = (change) ->
+//        {
+//            while (change.next())
+//            {
+//                if (change.wasAdded())
+//                {
+//                    change.getAddedSubList().stream().forEach(newByRule ->
+//                    {
+//                        boolean alreadyPresent = byRules()
+//                                .stream()
+//                                .anyMatch(myByRule -> ByRuleParameter.propertyFromByRule(myByRule) == ByRuleParameter.propertyFromByRule(newByRule));
+//                        System.out.println("change byRule:" + alreadyPresent);
+//                        if (alreadyPresent)
+//                        {
+//                            throw new IllegalArgumentException("Can't add BYxxx rule (" + newByRule.getClass().getSimpleName() + ") more than once.");
+//                        }
+//                        Collections.sort(byRules());
+//                    });
+//                }
+//            }
+//        };
+//        byRules().addListener(listchange);
     }
 
     @Override
@@ -139,9 +140,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         setChronoUnit(frequencyType.getChronoUnit()); // start with Frequency ChronoUnit when making a stream
         Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
         Iterator<ByRule> rulesIterator = byRules()
-                .entrySet()
                 .stream()
-                .map(e -> e.getValue())
                 .sorted()
                 .iterator();
         while (rulesIterator.hasNext())
@@ -169,23 +168,9 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         
         boolean intervalEquals = (getInterval() == null) ?
                 (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
-//        System.out.println("interval:" + getInterval() + " " + testObj.getInterval());
-        boolean rulesEquals;
-        if (byRules().size() == testObj.byRules().size())
-        {
-            List<Boolean> rulesEqualsArray = new ArrayList<Boolean>();
-            for (int i=0; i<byRules().size(); i++)
-            {
-                boolean e = byRules().get(i).equals(testObj.byRules().get(i));
-                rulesEqualsArray.add(e);
-            }
-            rulesEquals = rulesEqualsArray.stream().allMatch(a -> a == true );
-        } else
-        {
-            rulesEquals = false;
-        }
-//        System.out.println("byRules:" + byRules() + " " + testObj.byRules());
-//        System.out.println("frequency " + intervalEquals + " " + rulesEquals);
+        System.out.println("getInterval " + getInterval() + " " + testObj.getInterval());
+        boolean rulesEquals = byRules().equals(testObj.byRules());
+        System.out.println("frequency " + intervalEquals + " " + rulesEquals);
         return intervalEquals && rulesEquals;
     }
     

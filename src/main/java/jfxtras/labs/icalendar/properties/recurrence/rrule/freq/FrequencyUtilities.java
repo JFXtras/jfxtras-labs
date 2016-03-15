@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
 
 public class FrequencyUtilities
 {
@@ -18,12 +17,12 @@ public class FrequencyUtilities
         if (source.byRules() != null)
         {
          // TODO - replace with enum loop
-            source.byRules().entrySet().stream().map(e -> e.getValue()).forEach(r ->
+            source.byRules().stream().forEach(r ->
             {
                 try {
                     ByRule newRule = r.getClass().newInstance();
                     ByRule.copy(r, newRule);
-                    destination.byRules().put(ByRuleParameter.propertyFromByRule(newRule), newRule);
+                    destination.byRules().add(newRule);
 //                    destination.addByRule(newRule);
                 } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();

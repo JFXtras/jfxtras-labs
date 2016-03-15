@@ -13,136 +13,42 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
  * */
 public enum ByRuleParameter
 {
-    BY_SECOND ("BYSECOND", BySecond.class, 70) {
-        @Override
-        public void setValue(Frequency frequency, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
+    BY_SECOND ("BYSECOND", BySecond.class, 70)
+    {
         @Override ByRule newInstance(String value) { return new BySecond(value); }
-    } // Not implemented
-  , BY_MINUTE ("BYMINUTE", ByMinute.class, 60) {
-    @Override
-    public void setValue(Frequency frequency, String value)
-    {
-        // TODO Auto-generated method stub
-        
     }
-
-    @Override
-    ByRule newInstance(String value)
+  , BY_MINUTE ("BYMINUTE", ByMinute.class, 60)
     {
-        // TODO Auto-generated method stub
-        return null;
+        @Override ByRule newInstance(String value) { return new ByMinute(value); }
     }
-} // Not implemented
-  , BY_HOUR ("BYHOUR", ByHour.class, 50) {
-    @Override
-    public void setValue(Frequency frequency, String value)
+  , BY_HOUR ("BYHOUR", ByHour.class, 50)
     {
-        // TODO Auto-generated method stub
-        
+        @Override ByRule newInstance(String value) { return new ByHour(value); }
     }
-
-    @Override
-    ByRule newInstance(String value)
+  , BY_DAY ("BYDAY", ByDay.class, 40)
     {
-        // TODO Auto-generated method stub
-        return null;
+        @Override ByRule newInstance(String value) { return new ByDay(value); }
     }
-} // Not implemented
-  , BY_DAY ("BYDAY", ByDay.class, 40) {
-    @Override
-    public void setValue(Frequency frequency, String value)
+  , BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class, 30)
     {
-        // TODO Auto-generated method stub
-        
+        @Override ByRule newInstance(String value) { return new ByMonthDay(value); }
     }
-
-    @Override
-    ByRule newInstance(String value)
+  , BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class, 20)
     {
-        // TODO Auto-generated method stub
-        return null;
+        @Override ByRule newInstance(String value) { return new ByYearDay(value); }
     }
-}
-  , BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class, 30) {
-    @Override
-    public void setValue(Frequency frequency, String value)
+  , BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 10)
     {
-        // TODO Auto-generated method stub
-        
+        @Override ByRule newInstance(String value) { return new ByWeekNumber(value); }
     }
-
-    @Override
-    ByRule newInstance(String value)
+  , BY_MONTH ("BYMONTH", ByMonth.class, 0)
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-}
-  , BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class, 20) {
-    @Override
-    public void setValue(Frequency frequency, String value)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    ByRule newInstance(String value)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-} // Not implemented
-  , BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 10) {
-    @Override
-    public void setValue(Frequency frequency, String value)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    ByRule newInstance(String value)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-}
-  , BY_MONTH ("BYMONTH", ByMonth.class, 0) {
-    @Override
-    public void setValue(Frequency frequency, String value)
-    {
-        if (frequency.byRules().get(this) == null)
-        {
-            frequency.byRules().put(this, new ByMonth(value));
-        } else
-        {
-            throw new IllegalArgumentException(toString() + " can only appear once in calendar component");
-        }
-    }
-
         @Override ByRule newInstance(String value) { return new ByMonth(value); }
     }
-  , BY_SET_POSITION ("BYSETPOS", BySetPosition.class, 80) {
-    @Override
-    public void setValue(Frequency frequency, String value)
+  , BY_SET_POSITION ("BYSETPOS", BySetPosition.class, 80)
     {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    ByRule newInstance(String value)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-}; // Not implemented
+        @Override ByRule newInstance(String value) { return new BySetPosition(value); }
+    };
   
     // Map to match up name to enum
     private static Map<String, ByRuleParameter> propertyFromNameMap = makePropertiesFromNameMap();
@@ -197,16 +103,16 @@ public enum ByRuleParameter
 
     public String toParameterString(Frequency frequency)
     {
-        return frequency.byRules().get(this).toString();
+        return frequency.lookupByRule(this).toString();
     }
     
     /** Add ByRule to Frequency's ByRule map.  Parses string value
      * into new ByRule */
     public void setValue(Frequency frequency, String value)
     {
-        if (frequency.byRules().get(this) == null)
+        if (frequency.lookupByRule(this) == null)
         {
-            frequency.byRules().put(this, newInstance(value));
+            frequency.byRules().add(newInstance(value));
         } else
         {
             throw new IllegalArgumentException(toString() + " can only appear once in calendar component");

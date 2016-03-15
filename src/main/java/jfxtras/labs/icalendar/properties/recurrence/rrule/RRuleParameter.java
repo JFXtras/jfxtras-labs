@@ -80,7 +80,7 @@ public enum RRuleParameter
         {
             if (rrule.getFrequency() != null)
             {
-                if (rrule.getFrequency().getInterval() == 0)
+                if (rrule.getFrequency().getInterval() == 1)
                 {
                     rrule.getFrequency().setInterval(Integer.parseInt(value));
                 } else
@@ -96,8 +96,8 @@ public enum RRuleParameter
         @Override
         public String toParameterString(RRule rrule)
         {
-            // TODO Auto-generated method stub
-            return null;
+            Integer interval = rrule.getFrequency().getInterval();
+            return (interval != 1) ? toString() + "=" + interval.toString(): null;
         }
 
         @Override
@@ -113,7 +113,7 @@ public enum RRuleParameter
         {
             if (rrule.getUntil() == null)
             {
-                if (rrule.getCount() == null)
+                if (rrule.getCount() == 0)
                 {
                     rrule.setUntil(DateTimeUtilities.parse(value));                    
                 } else
@@ -160,203 +160,6 @@ public enum RRuleParameter
             
         }
     };
-//    BY_SECOND ("BYSECOND", 170) {
-//        @Override
-//        public void setValue(RRule rrule, String value)
-//        {
-//            // TODO Auto-generated method stub
-//            
-//        }
-//
-//        @Override
-//        public String toParameterString(RRule rrule)
-//        {
-//            // TODO Auto-generated method stub
-//            return null;
-//        }
-//
-//        @Override
-//        public void copyProperty(RRule source, RRule destination)
-//        {
-//            // TODO Auto-generated method stub
-//            
-//        }
-//    } // Not implemented
-//  , BY_MINUTE ("BYMINUTE", 160) {
-//    @Override
-//    public void setValue(RRule rrule, String value)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//
-//    @Override
-//    public String toParameterString(RRule rrule)
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public void copyProperty(RRule source, RRule destination)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//} // Not implemented
-//  , BY_HOUR ("BYHOUR", 150) {
-//    @Override
-//    public void setValue(RRule rrule, String value)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//
-//    @Override
-//    public String toParameterString(RRule rrule)
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public void copyProperty(RRule source, RRule destination)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//} // Not implemented
-//  , BY_DAY ("BYDAY", 140) {
-//    @Override
-//    public void setValue(RRule rrule, String value)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//
-//    @Override
-//    public String toParameterString(RRule rrule)
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public void copyProperty(RRule source, RRule destination)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//}
-//  , BY_MONTH_DAY ("BYMONTHDAY", 130) {
-//    @Override
-//    public void setValue(RRule rrule, String value)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//
-//    @Override
-//    public String toParameterString(RRule rrule)
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public void copyProperty(RRule source, RRule destination)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//}
-//  , BY_YEAR_DAY ("BYYEARDAY", 120) {
-//    @Override
-//    public void setValue(RRule rrule, String value)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//
-//    @Override
-//    public String toParameterString(RRule rrule)
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public void copyProperty(RRule source, RRule destination)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//} // Not implemented
-//  , BY_WEEK_NUMBER ("BYWEEKNO", 110) {
-//    @Override
-//    public void setValue(RRule rrule, String value)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//
-//    @Override
-//    public String toParameterString(RRule rrule)
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public void copyProperty(RRule source, RRule destination)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//}
-//  , BY_MONTH ("BYMONTH", 100) {
-//    @Override
-//    public void setValue(RRule rrule, String value)
-//    {
-//        rrule.getFrequency().byRules().put(this, new ByMonth(value));
-//    }
-//
-//    @Override
-//    public String toParameterString(RRule rrule)
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public void copyProperty(RRule source, RRule destination)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//}
-//  , BY_SET_POSITION ("BYSETPOS", 180) {
-//    @Override
-//    public void setValue(RRule rrule, String value)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//
-//    @Override
-//    public String toParameterString(RRule rrule)
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public void copyProperty(RRule source, RRule destination)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-//}; // Not implemented
         
     // Map to match up name to enum
     private static Map<String, RRuleParameter> propertyFromNameMap = makePropertiesFromNameMap();

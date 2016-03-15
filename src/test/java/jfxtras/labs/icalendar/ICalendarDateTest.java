@@ -26,8 +26,6 @@ import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
@@ -1009,12 +1007,10 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         }
 
         // Change RRule
-        RRule rule = new RRule();
-        v.setRRule(rule);
-        Frequency weekly = new Weekly().withInterval(2);;
-        rule.setFrequency(weekly);
-        ByRule byRule = new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
-        weekly.addByRule(byRule);
+        RRule rule = new RRule()
+                .withFrequency(new Weekly()
+                        .withInterval(2)
+                        .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
 
         { // check new repeatable stream
             List<Temporal> madeDates = v                

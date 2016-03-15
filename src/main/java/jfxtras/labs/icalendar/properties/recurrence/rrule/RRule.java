@@ -181,11 +181,16 @@ public class RRule implements ICalendarProperty
                 .map(p -> p.toParameterString(this))
                 .filter(s -> s != null);
 
-        Stream<String> byRuleParameterStream = getFrequency().byRules().entrySet()
+        //        (p1.getKey().getSortOrder().equals(RRuleParameter.FREQUENCY)) ? -1 : 1;
+        Stream<String> byRuleParameterStream = getFrequency().byRules()
                 .stream()
-//                .map(e -> e.getValue())
-//                .sorted() // ByRules have specific sort order
-                .map(e -> e.getKey().toParameterString(this.getFrequency()));
+//                .sorted((Comparator<? super Entry<ByRuleParameter, ByRule>>) (p1, p2) ->
+//                {
+//                    int s1 = p1.getKey().getSortOrder();
+//                    int s2 = p2.getKey().getSortOrder();
+//                    return Integer.compare(s1, s2);
+//                }) // ByRules have specific sort order
+                .map(e -> ByRuleParameter.propertyFromByRule(e).toParameterString(this.getFrequency()));
         
         return Stream.concat(rruleParameterStream, byRuleParameterStream)
                 .collect(Collectors.joining(";"));

@@ -225,7 +225,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Frequency f = v.getRRule().getFrequency();
         assertEquals(FrequencyParameter.WEEKLY, f.frequencyType());
         assertEquals(1, f.byRules().size());
-        ByDay rule = (ByDay) f.byRules().get(ByRuleParameter.BY_DAY);
+        ByDay rule = (ByDay) f.lookupByRule(ByRuleParameter.BY_DAY);
 
         // Check initial state
         List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
@@ -286,7 +286,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         assertFalse(dayOfMonth.isSelected());
         assertTrue(dayOfWeek.isSelected());
         assertEquals(1, f.byRules().size());
-        ByDay rule = (ByDay) f.byRules().get(ByRuleParameter.BY_DAY);
+        ByDay rule = (ByDay) f.lookupByRule(ByRuleParameter.BY_DAY);
         assertEquals("BYDAY=2WE", rule.toString()); // 2nd Wednesday of the month
         }
         
@@ -567,7 +567,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Frequency f = v.getRRule().getFrequency();
         assertEquals(FrequencyParameter.WEEKLY, f.frequencyType());
         assertEquals(1, f.byRules().size());
-        ByDay rule = (ByDay) f.byRules().get(ByRuleParameter.BY_DAY);
+        ByDay rule = (ByDay) f.lookupByRule(ByRuleParameter.BY_DAY);
 
         // Check initial state
         List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
