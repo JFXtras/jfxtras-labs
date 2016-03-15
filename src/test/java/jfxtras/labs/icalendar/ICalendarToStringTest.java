@@ -136,7 +136,6 @@ public class ICalendarToStringTest extends ICalendarTestAbstract
     @Test
     public void dailyWithException1ToString()
     {
-
     VEventMock e = getDailyWithException1();
     e.setExDatesOnOneLine(true);
     String madeString = e.toComponentText();

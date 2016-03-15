@@ -15,40 +15,7 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilitie
  */
 public enum RRuleParameter
 {
-    COUNT ("COUNT") {
-        @Override
-        public void setValue(RRule rrule, String value)
-        {
-            if (rrule.getCount() == null)
-            {
-                if (rrule.getUntil() == null)
-                {
-                    rrule.setCount(Integer.parseInt(value));                    
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can't be set while " + UNTIL.toString() + " has a value");                                        
-                }
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only appear once in calendar component");
-            }
-        }
-
-        @Override
-        public String toParameterString(RRule rrule)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void copyProperty(RRule source, RRule destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-    },
-    FREQUENCY ("FREQ") {
+    FREQUENCY ("FREQ") { // FREQUENCY needs to be first
         @Override
         public void setValue(RRule rrule, String value)
         {
@@ -73,7 +40,6 @@ public enum RRuleParameter
             FrequencyUtilities.copy(source.getFrequency(), destination.getFrequency());
         }
     },
-
     INTERVAL ("INTERVAL") {
         @Override
         public void setValue(RRule rrule, String value)
@@ -97,7 +63,39 @@ public enum RRuleParameter
         public String toParameterString(RRule rrule)
         {
             Integer interval = rrule.getFrequency().getInterval();
-            return (interval != 1) ? toString() + "=" + interval.toString(): null;
+            return (interval > 1) ? toString() + "=" + interval.toString(): null; // 1 is default interval, therefore only output interval > 1
+        }
+
+        @Override
+        public void copyProperty(RRule source, RRule destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+    },
+    COUNT ("COUNT") {
+        @Override
+        public void setValue(RRule rrule, String value)
+        {
+            if (rrule.getCount() == null)
+            {
+                if (rrule.getUntil() == null)
+                {
+                    rrule.setCount(Integer.parseInt(value));                    
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can't be set while " + UNTIL.toString() + " has a value");                                        
+                }
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only appear once in calendar component");
+            }
+        }
+
+        @Override
+        public String toParameterString(RRule rrule)
+        {
+            return (rrule.getCount() == null) ? null : toString() + "=" + rrule.getCount();
         }
 
         @Override
@@ -129,7 +127,7 @@ public enum RRuleParameter
         @Override
         public String toParameterString(RRule rrule)
         {
-            return null;
+            return (rrule.getUntil() == null) ? null : toString() + "=" + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(rrule.getUntil());
         }
 
         @Override
@@ -140,6 +138,7 @@ public enum RRuleParameter
         }
     },
     WEEK_START ("WKST") { // TODO - THIS PROPERTY MAY BE BEST HANDLED BY LOCALE - NOT PROCESSED NOW
+        // TODO - SUPPOSE TO COME AFTER BYRULES
         @Override
         public void setValue(RRule rrule, String value)
         {
@@ -191,7 +190,7 @@ public enum RRuleParameter
     /** Returns the iCalendar property name (e.g. LANGUAGE) */
     @Override public String toString() { return name; }
     
-//    public int getSortOrder() { return sortOrder; }
+//    public int sortOrder() { return sortOrder; }
     
     /** sets parameter value */
     public abstract void setValue(RRule rrule, String value);

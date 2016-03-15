@@ -13,39 +13,39 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
  * */
 public enum ByRuleParameter
 {
-    BY_SECOND ("BYSECOND", BySecond.class, 70)
+    BY_SECOND ("BYSECOND", BySecond.class, 170)
     {
         @Override ByRule newInstance(String value) { return new BySecond(value); }
     }
-  , BY_MINUTE ("BYMINUTE", ByMinute.class, 60)
+  , BY_MINUTE ("BYMINUTE", ByMinute.class, 160)
     {
         @Override ByRule newInstance(String value) { return new ByMinute(value); }
     }
-  , BY_HOUR ("BYHOUR", ByHour.class, 50)
+  , BY_HOUR ("BYHOUR", ByHour.class, 150)
     {
         @Override ByRule newInstance(String value) { return new ByHour(value); }
     }
-  , BY_DAY ("BYDAY", ByDay.class, 40)
+  , BY_DAY ("BYDAY", ByDay.class, 140)
     {
         @Override ByRule newInstance(String value) { return new ByDay(value); }
     }
-  , BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class, 30)
+  , BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class, 130)
     {
         @Override ByRule newInstance(String value) { return new ByMonthDay(value); }
     }
-  , BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class, 20)
+  , BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class, 120)
     {
         @Override ByRule newInstance(String value) { return new ByYearDay(value); }
     }
-  , BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 10)
+  , BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 110)
     {
         @Override ByRule newInstance(String value) { return new ByWeekNumber(value); }
     }
-  , BY_MONTH ("BYMONTH", ByMonth.class, 0)
+  , BY_MONTH ("BYMONTH", ByMonth.class, 100)
     {
         @Override ByRule newInstance(String value) { return new ByMonth(value); }
     }
-  , BY_SET_POSITION ("BYSETPOS", BySetPosition.class, 80)
+  , BY_SET_POSITION ("BYSETPOS", BySetPosition.class, 180)
     {
         @Override ByRule newInstance(String value) { return new BySetPosition(value); }
     };
@@ -92,7 +92,7 @@ public enum ByRuleParameter
     private String name;
     private int sortOrder;
     private Class<? extends ByRule> myClass;
-    public int getSortOrder() { return sortOrder; }
+    public int sortOrder() { return sortOrder; }
 
     ByRuleParameter(String name, Class<? extends ByRule> myClass, int sortOrder)
     {

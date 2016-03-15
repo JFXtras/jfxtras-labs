@@ -3,16 +3,19 @@ package jfxtras.labs.icalendar.properties.recurrence.rrule.freq;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
 
 public abstract class FrequencyAbstract<T> implements Frequency {
@@ -49,8 +52,11 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     /** BYxxx Rules 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * Each BYxxx rule can only occur once */
-    @Override public Collection<ByRule> byRules() { return byRules; }
-    private final Collection<ByRule> byRules = new TreeSet<>();
+    @Override public ObservableList<ByRule> byRules() { return byRules; }
+    private final ObservableList<ByRule> byRules = FXCollections.observableArrayList();
+
+//    @Override public ObservableSet<ByRule> byRules() { return byRules; }
+//    private final ObservableSet<ByRule> byRules = FXCollections.observableSet(new TreeSet<>());
     
 //    @Override public Map<ByRuleParameter, ByRule> byRules() { return byRules; }
 //    private final Map<ByRuleParameter, ByRule> byRules = new HashMap<>();
@@ -74,6 +80,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         {
 //            byRules().put(ByRuleParameter.propertyFromByRule(r), r);
             byRules().add(myByRule);
+            System.out.println("byRules:" + byRules().size() + " " + myByRule + " " + myByRule.hashCode());
         }
         return (T) this;
     }
@@ -110,28 +117,45 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         this.frequencyType = frequencyType;
 //        this.initialChronoUnit = chronoUnit.get();
         setChronoUnit(frequencyType.getChronoUnit());
-//        ListChangeListener<? super ByRule> listchange = (change) ->
+//        SetChangeListener<? super ByRule> listchange = (change) ->
 //        {
-//            while (change.next())
+//            ByRule newByRule = change.getElementAdded();
+//            long alreadyPresent = byRules()
+//                    .stream()
+//                    .map(r -> ByRuleParameter.propertyFromByRule(r))
+//                    .filter(p -> p.equals(newByRule))
+//                    .count();
+////                        .anyMatch(myByRule -> ByRuleParameter.propertyFromByRule(myByRule) == ByRuleParameter.propertyFromByRule(newByRule));
+//            System.out.println("change byRule:" + alreadyPresent + " " + newByRule + " " + byRules().size());
+//            if (alreadyPresent > 1)
 //            {
-//                if (change.wasAdded())
-//                {
-//                    change.getAddedSubList().stream().forEach(newByRule ->
-//                    {
-//                        boolean alreadyPresent = byRules()
-//                                .stream()
-//                                .anyMatch(myByRule -> ByRuleParameter.propertyFromByRule(myByRule) == ByRuleParameter.propertyFromByRule(newByRule));
-//                        System.out.println("change byRule:" + alreadyPresent);
-//                        if (alreadyPresent)
-//                        {
-//                            throw new IllegalArgumentException("Can't add BYxxx rule (" + newByRule.getClass().getSimpleName() + ") more than once.");
-//                        }
-//                        Collections.sort(byRules());
-//                    });
-//                }
+//                throw new IllegalArgumentException("Can't add BYxxx rule (" + newByRule.getClass().getSimpleName() + ") more than once.");
 //            }
 //        };
-//        byRules().addListener(listchange);
+        ListChangeListener<? super ByRule> listchange = (change) ->
+        {
+            while (change.next())
+            {
+                if (change.wasAdded())
+                {
+                    change.getAddedSubList().stream().forEach(c ->
+                    {
+                        ByRule newByRule = c;
+                        long alreadyPresent = byRules()
+                                .stream()
+                                .map(r -> ByRuleParameter.propertyFromByRule(r))
+                                .filter(p -> p.equals(ByRuleParameter.propertyFromByRule(c)))
+                                .count();
+                        if (alreadyPresent > 1)
+                        {
+                            throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + ByRuleParameter.propertyFromByRule(c) + ") more than once.");
+                        }
+                    });
+                    Collections.sort(byRules()); // sort additions
+                }
+            }
+        };
+        byRules().addListener(listchange);
     }
 
     @Override

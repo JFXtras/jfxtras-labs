@@ -1007,10 +1007,10 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         }
 
         // Change RRule
-        RRule rule = new RRule()
+        v.setRRule(new RRule()
                 .withFrequency(new Weekly()
                         .withInterval(2)
-                        .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
+                        .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
 
         { // check new repeatable stream
             List<Temporal> madeDates = v                

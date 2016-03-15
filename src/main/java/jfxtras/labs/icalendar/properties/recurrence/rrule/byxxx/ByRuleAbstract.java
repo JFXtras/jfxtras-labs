@@ -39,8 +39,8 @@ public abstract class ByRuleAbstract implements ByRule, Comparable<ByRule>
     @Override
     public int compareTo(ByRule byRule)
     {        
-        int p1 = ByRuleParameter.propertyFromByRule(this).getSortOrder();
-        int p2 = ByRuleParameter.propertyFromByRule(byRule).getSortOrder();
+        int p1 = ByRuleParameter.propertyFromByRule(this).sortOrder();
+        int p2 = ByRuleParameter.propertyFromByRule(byRule).sortOrder();
         return Integer.compare(p1, p2);
     }
 }

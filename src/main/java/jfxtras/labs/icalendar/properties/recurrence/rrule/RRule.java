@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendar.properties.recurrence.rrule;
 
+import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
@@ -55,6 +56,7 @@ public class RRule implements ICalendarProperty
      * Uses lazy initialization of property because often COUNT stays as the default value of 0.
      * Value of 0 means COUNT is not used.
      */
+    private final int initialCount = 0;
     public IntegerProperty countProperty()
     {
         if (count == null) count = new SimpleIntegerProperty(this, RRuleParameter.COUNT.toString(), _count);
@@ -62,12 +64,12 @@ public class RRule implements ICalendarProperty
     }
     private IntegerProperty count;
     public Integer getCount() { return (count == null) ? _count : count.getValue(); }
-    private int _count = 0;
+    private int _count = initialCount;
     public void setCount(Integer i)
     {
-        if ((getUntil() == null) || (i == 0))
+        if ((getUntil() == null) || (i == initialCount))
         {
-            if (i >= 0)
+            if (i >= initialCount)
             {
                 if (count == null)
                 {
@@ -96,16 +98,21 @@ public class RRule implements ICalendarProperty
     private SimpleObjectProperty<Temporal> until;
     public Temporal getUntil() { return (until == null) ? _until : until.getValue(); }
     private Temporal _until;
-    public void setUntil(Temporal t)
+    public void setUntil(Temporal until)
     {
-        if (getCount() == 0)
+        if (getCount() == initialCount)
         {
-            if (until == null)
+            // check Temporal type
+            if ((DateTimeType.of(until) != DateTimeType.DATE) && (DateTimeType.of(until) != DateTimeType.DATE_WITH_UTC_TIME))
             {
-                _until = t;
+                throw new DateTimeException("UNTIL must be either LocalDate or ZonedDateTime with UTC ZoneID - not:" + until.getClass().getSimpleName());
+            }
+            if (this.until == null)
+            {
+                _until = until;
             } else
             {
-                until.set(t);
+                this.until.set(until);
             }
         } else throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
     }
@@ -175,23 +182,33 @@ public class RRule implements ICalendarProperty
     @Override
     public String toString()
     {
+//        Comparator<? super RRuleParameter> comparator = (Comparator<? super RRuleParameter>) (p1, p2) -> 
+//            (p1.equals(RRuleParameter.FREQUENCY)) ? -1 : 1;
         Stream<String> rruleParameterStream = Arrays.stream(RRuleParameter.values())
-                .sorted((Comparator<? super RRuleParameter>) (p1, p2) -> 
-                    (p1.equals(RRuleParameter.FREQUENCY)) ? -1 : 1) // FREQ must be first
                 .map(p -> p.toParameterString(this))
                 .filter(s -> s != null);
 
-        //        (p1.getKey().getSortOrder().equals(RRuleParameter.FREQUENCY)) ? -1 : 1;
+//        Map<Integer, String> rruleMap = Arrays.stream(RRuleParameter.values())
+//                .filter(e -> ! (e.toParameterString(this) == null))
+//                .collect(Collectors.toMap(p -> p.sortOrder(), p -> p.toParameterString(this)));
+//
+//        Map<Integer, String> byRuleMap = getFrequency().byRules().stream()
+//                .collect(Collectors.toMap(p -> ByRuleParameter.propertyFromByRule(p).getSortOrder(),
+//                                          p -> ByRuleParameter.propertyFromByRule(p).toParameterString(this.getFrequency())));
+//        
+//        Map<Integer, String> comboMap = new HashMap<>();
+//        comboMap.putAll(rruleMap);
+//        comboMap.putAll(byRuleMap);
+//        
+//        return comboMap.entrySet().stream()
+//                .sorted((Comparator<? super Entry<Integer, String>>) (p1, p2) -> Integer.compare(p1.getKey(), p2.getKey()))
+//                .map(e -> e.getValue())
+//                .collect(Collectors.joining(";"));
+        
         Stream<String> byRuleParameterStream = getFrequency().byRules()
                 .stream()
-//                .sorted((Comparator<? super Entry<ByRuleParameter, ByRule>>) (p1, p2) ->
-//                {
-//                    int s1 = p1.getKey().getSortOrder();
-//                    int s2 = p2.getKey().getSortOrder();
-//                    return Integer.compare(s1, s2);
-//                }) // ByRules have specific sort order
                 .map(e -> ByRuleParameter.propertyFromByRule(e).toParameterString(this.getFrequency()));
-        
+
         return Stream.concat(rruleParameterStream, byRuleParameterStream)
                 .collect(Collectors.joining(";"));
     }

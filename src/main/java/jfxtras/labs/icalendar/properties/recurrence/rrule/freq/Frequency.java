@@ -2,12 +2,12 @@ package jfxtras.labs.icalendar.properties.recurrence.rrule.freq;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
@@ -43,7 +43,7 @@ public interface Frequency {
       BYHOUR, BYMINUTE, BYSECOND and BYSETPOS; then COUNT and UNTIL are
       evaluated.*/
 //    Map<ByRuleParameter, ByRule> byRules();
-    Collection<ByRule> byRules();
+    ObservableList<ByRule> byRules();
 
     default public ByRule lookupByRule(ByRuleParameter byRule)
     {

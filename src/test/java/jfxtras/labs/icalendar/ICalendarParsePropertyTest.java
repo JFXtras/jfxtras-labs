@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
@@ -24,8 +26,7 @@ public class ICalendarParsePropertyTest extends ICalendarTestAbstract
     @Test
     public void canParseSummary()
     {
-        String propertyString = "TEST SUMMARY";
-        Summary madeSummary = new Summary(propertyString);
+        Summary madeSummary = new Summary("TEST SUMMARY");
         String expectedSummary = "SUMMARY:TEST SUMMARY";
         assertEquals(expectedSummary, madeSummary.toString());
     }
@@ -62,20 +63,61 @@ public class ICalendarParsePropertyTest extends ICalendarTestAbstract
         RRule rRule = new RRule(s);
         RRule expectedRRule = new RRule()
                 .withFrequency(new Yearly()
-                        .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2)), new ByWeekNumber(20)));
+                        .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2), new ByDayPair(DayOfWeek.MONDAY, 3)), new ByWeekNumber(20)));
         assertEquals(expectedRRule, rRule);
     }
 
     @Test
     public void canParseRRule4()
     {
-        String s = "FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000";
+        String s = "FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z";
         RRule rRule = new RRule(s);
         RRule expectedRRule = new RRule()
-                .withUntil(LocalDateTime.of(2015, 12, 1, 10, 0))
+                .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0),ZoneId.of("Z")))
                 .withFrequency(new Daily()
                         .withInterval(2));
         System.out.println(rRule);
         assertEquals(expectedRRule, rRule);
     }
+    
+    /*
+     * Catch errors
+     */
+//    @Rule
+//    public final ExpectedException exception = ExpectedException.none();
+//    
+//    @Test // (expected=IllegalArgumentException.class)
+//    public void canStopTwoSameByRules()
+//    {
+//        try {
+//            Yearly y = new Yearly();
+//            y.byRules().add(new ByMonth(Month.JANUARY));
+//            y.byRules().add(new ByDay(DayOfWeek.SUNDAY));
+//            y.byRules().add(new ByMonth(Month.MARCH));
+//        } catch (Exception ex) {
+//            System.out.println("ok");
+////            assertEquals("Can't add ByMonth (BYMONTH) more than once.", ex.getMessage());
+//        }
+////        fail("expected IllegalArgumentException Can't add ByMonth (BYMONTH) more than once.");
+////        exception.expect(RuntimeException.class);
+////        exception.expectMessage("Can't add ByMonth (BYMONTH) more than once.");
+//    }
+//    
+//    @Test(expected=IndexOutOfBoundsException.class)
+//    public void testIndexOutOfBoundsException() {
+//        ArrayList emptyList = new ArrayList();
+//        Object o = emptyList.get(0);
+//    }
+//    
+////    @Rule
+////    public final ExpectedException exception = ExpectedException.none();
+//    
+//    @Test
+//    public void doStuffThrowsIndexOutOfBoundsException() {
+//        ArrayList emptyList = new ArrayList();
+//
+//      exception.expect(IndexOutOfBoundsException.class);
+//      Object o = emptyList.get(0);
+//    }
+
 }
