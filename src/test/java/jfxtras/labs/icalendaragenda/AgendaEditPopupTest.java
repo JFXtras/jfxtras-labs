@@ -41,7 +41,7 @@ import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;

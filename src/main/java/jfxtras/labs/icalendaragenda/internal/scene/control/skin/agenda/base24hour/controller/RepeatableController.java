@@ -63,8 +63,8 @@ import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay.ByDayPair;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
@@ -170,11 +170,11 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (observable, o
     {
         int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(dateTimeStartInstanceNew);
         DayOfWeek dayOfWeek = DayOfWeek.from(dateTimeStartInstanceNew);
-        Rule byDayRuleMonthly = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
+        ByRule byDayRuleMonthly = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
         vComponent.getRRule().getFrequency().addByRule(byDayRuleMonthly);
     } else
     { // remove rule to reset to default behavior of repeat by day of month
-        Rule r = vComponent.getRRule().getFrequency().byRules().get(Rule.ByRuleParameter.BY_DAY);
+        ByRule r = vComponent.getRRule().getFrequency().byRules().get(ByRuleParameter.BY_DAY);
         vComponent.getRRule().getFrequency().byRules().remove(r);
     }
     refreshSummary();
@@ -223,13 +223,13 @@ private final ChangeListener<? super FrequencyParameter> frequencyListener = (ob
     case YEARLY:
         break;
     case MONTHLY:
-        Rule r = vComponent.getRRule().getFrequency().byRules().get(Rule.ByRuleParameter.BY_DAY);
+        ByRule r = vComponent.getRRule().getFrequency().byRules().get(ByRuleParameter.BY_DAY);
         vComponent.getRRule().getFrequency().byRules().remove(r);
         dayOfMonthRadioButton.selectedProperty().set(true);
         dayOfWeekRadioButton.selectedProperty().set(false);
         break;
     case WEEKLY:
-        Rule r2 = vComponent.getRRule().getFrequency().byRules().get(Rule.ByRuleParameter.BY_DAY);
+        ByRule r2 = vComponent.getRRule().getFrequency().byRules().get(ByRuleParameter.BY_DAY);
         vComponent.getRRule().getFrequency().byRules().remove(r2);
         if (dayOfWeekList.isEmpty())
         {
@@ -786,7 +786,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         switch(frequencyType)
         {
         case MONTHLY:
-            ByDay rule = (ByDay) vComponent.getRRule().getFrequency().byRules().get(Rule.ByRuleParameter.BY_DAY);
+            ByDay rule = (ByDay) vComponent.getRRule().getFrequency().byRules().get(ByRuleParameter.BY_DAY);
             if (rule == null)
             {
                 dayOfMonthRadioButton.selectedProperty().set(true);
@@ -839,7 +839,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         // Set day of week properties
         if (rRule.getFrequency().frequencyType() == FrequencyParameter.WEEKLY)
         {
-            Rule rule = rRule.getFrequency().byRules().get(Rule.ByRuleParameter.BY_DAY);
+            ByRule rule = rRule.getFrequency().byRules().get(ByRuleParameter.BY_DAY);
             ((ByDay) rule).dayOfWeekWithoutOrdinalList()
                     .stream()
                     .forEach(d -> 
@@ -1106,8 +1106,10 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             String unsupportedByRules = rRule.getFrequency().byRules().entrySet()
                     .stream()
                     .map(e -> e.getValue())
-                    .filter(b -> b.getByRuleType() != ByRuleParameter.BY_DAY)
-                    .map(b -> b.getByRuleType().toString())
+                    .filter(b -> ByRuleParameter.propertyFromByRule(b) != ByRuleParameter.BY_DAY)
+                    .map(b -> ByRuleParameter.propertyFromByRule(b).toString())
+//                    .filter(b -> b.getByRuleType() != ByRuleParameter.BY_DAY)
+//                    .map(b -> b.getByRuleType().toString())
                     .collect(Collectors.joining(","));
             System.out.println("RRULE contains unsupported ByRule" + ((unsupportedRules > 1) ? "s:" : ":") + unsupportedByRules);
             return false;

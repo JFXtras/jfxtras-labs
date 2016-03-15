@@ -4,12 +4,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
 
 public class FrequencyUtilities
 {
     /** Deep copy all fields from source to destination */
-    @Deprecated
+    @Deprecated // replace with enum loop copy
     public static void copy(Frequency source, Frequency destination)
     {
 //        destination.setChronoUnit(source.getChronoUnit());
@@ -20,9 +21,9 @@ public class FrequencyUtilities
             source.byRules().entrySet().stream().map(e -> e.getValue()).forEach(r ->
             {
                 try {
-                    Rule newRule = r.getClass().newInstance();
-                    Rule.copy(r, newRule);
-                    destination.byRules().put(newRule.getByRuleType(), newRule);
+                    ByRule newRule = r.getClass().newInstance();
+                    ByRule.copy(r, newRule);
+                    destination.byRules().put(ByRuleParameter.propertyFromByRule(newRule), newRule);
 //                    destination.addByRule(newRule);
                 } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();

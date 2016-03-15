@@ -14,7 +14,7 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonthDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByWeekNo;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByWeekNumber;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Monthly;
@@ -37,12 +37,10 @@ public class ICalendarParsePropertyTest extends ICalendarTestAbstract
     {
         String s = "FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU";
         RRule rRule = new RRule(s);
-        RRule expectedRRule = new RRule();
-        Frequency frequency = new Yearly()
-                .withInterval(2);
-        frequency.addByRule(new ByMonth(Month.JANUARY));
-        frequency.addByRule(new ByDay(DayOfWeek.SUNDAY));
-        expectedRRule.setFrequency(frequency);
+        RRule expectedRRule = new RRule()
+                .withFrequency(new Yearly()
+                        .withInterval(2)
+                        .withByRules(new ByMonth(Month.JANUARY), new ByDay(DayOfWeek.SUNDAY)));
         System.out.println("rule:" + rRule);
         assertEquals(expectedRRule, rRule);
     }
@@ -68,7 +66,7 @@ public class ICalendarParsePropertyTest extends ICalendarTestAbstract
         RRule expectedRRule = new RRule();
         Frequency frequency = new Yearly();
         frequency.addByRule(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2), new ByDayPair(DayOfWeek.MONDAY, 3)));
-        frequency.addByRule(new ByWeekNo(20));
+        frequency.addByRule(new ByWeekNumber(20));
         expectedRRule.setFrequency(frequency);
         assertEquals(expectedRRule, rRule);
     }

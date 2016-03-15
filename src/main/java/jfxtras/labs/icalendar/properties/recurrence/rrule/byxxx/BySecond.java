@@ -8,11 +8,13 @@ import javafx.beans.property.ObjectProperty;
 
 public class BySecond extends ByRuleAbstract
 {
-    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_SECOND;
-
     public BySecond()
     {
-        super(MY_RULE);
+        throw new RuntimeException("not implemented");
+    }
+    
+    public BySecond(String value)
+    {
         throw new RuntimeException("not implemented");
     }
     
@@ -24,7 +26,7 @@ public class BySecond extends ByRuleAbstract
     }
 
     @Override
-    public void copyTo(Rule destination) {
+    public void copyTo(ByRule destination) {
         // TODO Auto-generated method stub
         
     }

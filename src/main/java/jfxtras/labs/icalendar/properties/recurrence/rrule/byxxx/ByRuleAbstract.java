@@ -6,34 +6,41 @@ package jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx;
  * 
  * @author David Bal
  * @see ByMonth
- * @see ByWeekNo
+ * @see ByWeekNumber
  * @see ByYearDay
  * @see ByMonthDay
  * @see ByDay
  * @see ByHour
  * @see ByMinute
  * @see BySecond
- * @see BySetPos
+ * @see BySetPosition
  */
-public abstract class ByRuleAbstract implements Rule, Comparable<Rule>
+public abstract class ByRuleAbstract implements ByRule, Comparable<ByRule>
 {
-    /** ByRule enum containing order in which ByRules are processed */
-    final private ByRuleParameter byRule;
-    @Override public ByRuleParameter getByRuleType() { return byRule; }
+//    /** ByRule enum containing order in which ByRules are processed */
+//    final private ByRuleParameter byRule;
+//    @Override public ByRuleParameter getByRuleType() { return byRule; }
+//
+//    /** Constructor that takes ByRule type as parameter 
+//     * The type contains the processing order as defined in RFC 5545 iCalendar page 44 */
+//    ByRuleAbstract(ByRuleParameter byRule)
+//    {
+//        this.byRule = byRule;
+//    }
 
-    /** Constructor that takes ByRule type as parameter 
-     * The type contains the processing order as defined in RFC 5545 iCalendar page 44 */
-    ByRuleAbstract(ByRuleParameter byRule)
+    ByRuleAbstract() { }
+
+    // Constructor that parses a string value
+    ByRuleAbstract(String value)
     {
-        this.byRule = byRule;
+        super();
     }
 
     @Override
-    public int compareTo(Rule byRule)
-    {
-        int p1 = getByRuleType().getSortOrder();
-        int p2 = byRule.getByRuleType().getSortOrder();
-        return (p2 > p1) ? -1 :
-               (p2 < p1) ? 1 : 0;
+    public int compareTo(ByRule byRule)
+    {        
+        int p1 = ByRuleParameter.propertyFromByRule(this).getSortOrder();
+        int p2 = ByRuleParameter.propertyFromByRule(byRule).getSortOrder();
+        return Integer.compare(p1, p2);
     }
 }

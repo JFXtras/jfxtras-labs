@@ -6,13 +6,15 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 
-public class BySetPos extends ByRuleAbstract
+public class BySetPosition extends ByRuleAbstract
 {
-    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_SET_POSITION;
-
-    public BySetPos()
+    public BySetPosition()
     {
-        super(MY_RULE);
+        throw new RuntimeException("not implemented");
+    }
+    
+    public BySetPosition(String value)
+    {
         throw new RuntimeException("not implemented");
     }
     
@@ -24,7 +26,7 @@ public class BySetPos extends ByRuleAbstract
     }
 
     @Override
-    public void copyTo(Rule destination) {
+    public void copyTo(ByRule destination) {
         // TODO Auto-generated method stub
         
     }

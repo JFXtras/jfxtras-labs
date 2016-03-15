@@ -29,8 +29,6 @@ import jfxtras.labs.icalendar.DateTimeUtilities;
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
 public class ByDay extends ByRuleAbstract
 {
-    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_DAY;
-
     private final TemporalField field;
     private final int firstDayOfWeekAdjustment;
     /** Array of days of the week.  Ordinal number is optional.  Without will include all
@@ -91,7 +89,7 @@ public class ByDay extends ByRuleAbstract
     //CONSTRUCTORS
     /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
      * This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter#newInstance(String)}
+     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule.ByRuleParameter#newInstance(String)}
      */
     public ByDay(String dayPairs)
     {
@@ -126,12 +124,10 @@ public class ByDay extends ByRuleAbstract
      */
     public ByDay()
     {
-        super(MY_RULE);
         field = WeekFields.of(Locale.getDefault()).dayOfWeek();
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
     }
-
     
     /** Constructor with varargs ByDayPair */
     public ByDay(ByDayPair... byDayPairs)
@@ -161,7 +157,7 @@ public class ByDay extends ByRuleAbstract
 
     
     @Override
-    public void copyTo(Rule destination)
+    public void copyTo(ByRule destination)
     {
         ByDay destination2 = (ByDay) destination;
         destination2.byDayPairs = new ByDayPair[byDayPairs.length];

@@ -9,8 +9,8 @@ import java.util.stream.Stream;
 import javafx.beans.property.IntegerProperty;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
@@ -41,11 +41,15 @@ public interface Frequency {
       following order: BYMONTH, BYWEEKNO, BYYEARDAY, BYMONTHDAY, BYDAY,
       BYHOUR, BYMINUTE, BYSECOND and BYSETPOS; then COUNT and UNTIL are
       evaluated.*/
-    Map<ByRuleParameter, Rule> byRules();
+    Map<ByRuleParameter, ByRule> byRules();
 //    List<Rule> getByRules();
 //    /** Adds new byRule to collection and ensures that type of rule isn't already present 
 //     * @return */
-    default void addByRule(Rule rule) { byRules().put(rule.getByRuleType(), rule); }
+    default void addByRule(ByRule rule)
+    {
+        ByRuleParameter byRuleType = ByRuleParameter.propertyFromByRule(rule);
+        byRules().put(byRuleType, rule);
+    }
 //    /** return ByRule object from byRules list by enum type.  Returns null if not present */
 //    @Deprecated // use enum lookup to find
 //    default public Rule lookupByRule(ByRuleParameter byRule)

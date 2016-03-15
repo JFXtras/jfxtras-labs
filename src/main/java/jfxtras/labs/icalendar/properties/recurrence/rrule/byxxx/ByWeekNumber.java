@@ -17,10 +17,8 @@ import java.util.stream.Stream;
 import javafx.beans.property.ObjectProperty;
 
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
-public class ByWeekNo extends ByRuleAbstract
+public class ByWeekNumber extends ByRuleAbstract
 {
-    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_WEEK_NUMBER;
-
     /** sorted array of weeks of the year
      * (i.e. 5, 10 = 5th and 10th weeks of the year, -3 = 3rd from last week of the year)
      * Uses a varargs parameter to allow any number of value.
@@ -35,48 +33,38 @@ public class ByWeekNo extends ByRuleAbstract
         }
         this.weekNumbers = weekNumbers;
     }
-    public ByWeekNo withWeekNumbers(int... weekNumbers) { setWeekNumbers(weekNumbers); return this; }
+    public ByWeekNumber withWeekNumbers(int... weekNumbers) { setWeekNumbers(weekNumbers); return this; }
 
     /** Start of week - default start of week is Monday */
     public DayOfWeek getWeekStart() { return weekStart; }
     private DayOfWeek weekStart = DayOfWeek.MONDAY; // default to start on Monday
     public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
-    public ByWeekNo withWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; return this; }
+    public ByWeekNumber withWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; return this; }
 
     // CONSTRUCTORS
     /** takes String of comma-delimited integers, parses it to array of ints 
      * This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter#newInstance(String)}
+     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule.ByRuleParameter#newInstance(String)}
      */
-    public ByWeekNo(String weekNumbersString)
+    public ByWeekNumber(String weekNumbersString)
     {
-        this();
         int[] days = Arrays
                 .stream(weekNumbersString.split(","))
                 .mapToInt(s -> Integer.parseInt(s))
                 .toArray();
         setWeekNumbers(days);
     }
-
-    /**
-     * This constructor is required by {@link jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency#copy}
-     */
-    public ByWeekNo()
-    {
-        super(MY_RULE);
-    }
     
     /** Constructor requires weeks of the year int value(s) */
-    public ByWeekNo(int...weekNumbers)
+    public ByWeekNumber(int...weekNumbers)
     {
-        this();
         setWeekNumbers(weekNumbers);
     }
 
     @Override
-    public void copyTo(Rule destination)
+    public void copyTo(ByRule destination)
     {
-        ByWeekNo destination2 = (ByWeekNo) destination;
+        ByWeekNumber destination2 = (ByWeekNumber) destination;
         destination2.weekNumbers = new int[weekNumbers.length];
         for (int i=0; i<weekNumbers.length; i++)
         {
@@ -91,7 +79,7 @@ public class ByWeekNo extends ByRuleAbstract
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        ByWeekNo testObj = (ByWeekNo) obj;
+        ByWeekNumber testObj = (ByWeekNumber) obj;
         
         boolean weekNumbersEquals = Arrays.equals(getWeekNumbers(), testObj.getWeekNumbers());
         return weekNumbersEquals;

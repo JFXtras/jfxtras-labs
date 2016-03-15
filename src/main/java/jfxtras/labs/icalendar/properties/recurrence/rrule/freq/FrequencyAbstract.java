@@ -14,8 +14,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
 
 public abstract class FrequencyAbstract<T> implements Frequency {
@@ -53,8 +53,8 @@ public abstract class FrequencyAbstract<T> implements Frequency {
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * Each BYxxx rule can only occur once */
 //    @Override public List<Rule> getByRules() { return byRules; }
-    @Override public Map<ByRuleParameter, Rule> byRules() { return byRules; }
-    private final Map<ByRuleParameter, Rule> byRules = new HashMap<>();
+    @Override public Map<ByRuleParameter, ByRule> byRules() { return byRules; }
+    private final Map<ByRuleParameter, ByRule> byRules = new HashMap<>();
 //    @Override public void addByRule(Rule byRule)
 //    {
 //        boolean alreadyPresent = getByRules().stream().anyMatch(a -> a.getClass() == byRule.getClass());
@@ -69,12 +69,11 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     /** Add varargs of ByRules to Frequency 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * Each BYxxx rule can only occur once */
-    public T withByRules(Rule...byRules)
+    public T withByRules(ByRule...byRules)
     {
-        for (Rule r : byRules)
+        for (ByRule r : byRules)
         {
-//            addByRule(r);
-            byRules().put(r.getByRuleType(), r);
+            byRules().put(ByRuleParameter.propertyFromByRule(r), r);
         }
         return (T) this;
     }
@@ -139,7 +138,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     {
         setChronoUnit(frequencyType.getChronoUnit()); // start with Frequency ChronoUnit when making a stream
         Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
-        Iterator<Rule> rulesIterator = byRules()
+        Iterator<ByRule> rulesIterator = byRules()
                 .entrySet()
                 .stream()
                 .map(e -> e.getValue())
@@ -147,7 +146,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
                 .iterator();
         while (rulesIterator.hasNext())
         {
-            Rule rule = rulesIterator.next();
+            ByRule rule = rulesIterator.next();
             stream = rule.stream(stream, chronoUnitProperty(), start);
         }
         return stream;
@@ -170,7 +169,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         
         boolean intervalEquals = (getInterval() == null) ?
                 (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
-        System.out.println("interval:" + getInterval() + " " + testObj.getInterval());
+//        System.out.println("interval:" + getInterval() + " " + testObj.getInterval());
         boolean rulesEquals;
         if (byRules().size() == testObj.byRules().size())
         {
@@ -185,8 +184,8 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         {
             rulesEquals = false;
         }
-        System.out.println("byRules:" + byRules() + " " + testObj.byRules());
-        System.out.println("frequency " + intervalEquals + " " + rulesEquals);
+//        System.out.println("byRules:" + byRules() + " " + testObj.byRules());
+//        System.out.println("frequency " + intervalEquals + " " + rulesEquals);
         return intervalEquals && rulesEquals;
     }
     

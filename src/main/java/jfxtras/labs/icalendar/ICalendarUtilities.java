@@ -20,6 +20,7 @@ import java.util.stream.StreamSupport;
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.components.VComponent.StartEndRange;
+import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
 
 /**
  * Static utility methods used throughout iCalendar
@@ -31,11 +32,9 @@ public final class ICalendarUtilities
 {
     private ICalendarUtilities() { };
     
-    final private static Comparator<? super Pair<String, String>> DTSTART_COMPARATOR = (p1, p2) ->
-    {
-        String propertyName1 = p1.getKey();
-        return (propertyName1.equals("DTSTART")) ? -1 : 1;
-    };
+    final private static Comparator<? super Pair<String, String>> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
+        (p1.getKey().equals(VComponentProperty.DATE_TIME_START.toString())) ? -1 : 1;
+
     /** key mapping to property value, instead of parameter value*/
     public final static String PROPERTY_VALUE_KEY = ":";
     
@@ -106,7 +105,7 @@ public final class ICalendarUtilities
             Pair<String, String> pair = parsePropertyLine(line);
             if (pair != null) { propertyPairs.add(pair); }
         }
-        Collections.sort(propertyPairs, DTSTART_COMPARATOR);
+        Collections.sort(propertyPairs, DTSTART_FIRST_COMPARATOR);
         return propertyPairs;
     }
     
@@ -134,7 +133,9 @@ public final class ICalendarUtilities
      */
     public static Map<String,String> propertyLineToParameterMap(String propertyLine)
     {
+        System.out.println("propertyline:" + propertyLine);
         return Arrays.stream(propertyLine.split(";"))
+//                .peek(System.out::println)
                 .collect(Collectors.toMap(
                     p -> 
                     {
@@ -182,7 +183,7 @@ public final class ICalendarUtilities
                     return parsePropertyLine(line);
                 })
                 .filter(p -> p != null)
-                .sorted(DTSTART_COMPARATOR)
+                .sorted(DTSTART_FIRST_COMPARATOR)
                 .collect(Collectors.toList());        
     }
 

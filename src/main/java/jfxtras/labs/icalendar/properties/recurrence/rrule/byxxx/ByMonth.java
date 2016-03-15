@@ -15,8 +15,6 @@ import javafx.beans.property.ObjectProperty;
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract
 {
-    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_MONTH;
-
     /** sorted array of months to be included
      * January = 1 - December = 12
      * Uses a varargs parameter to allow any number of months
@@ -27,34 +25,24 @@ public class ByMonth extends ByRuleAbstract
 
     // CONSTRUCTORS
     /** This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter#newInstance(String)}
+     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule.ByRuleParameter#newInstance(String)}
      */
     public ByMonth(String months)
     {
-        this();
         setMonths(
           Arrays.asList(months.split(","))
                 .stream()
                 .map(s -> Month.of(Integer.parseInt(s)))
                 .toArray(size -> new Month[size]));
     }
-
-    /**
-     * This constructor is required by {@link jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency#copy}
-     */
-    public ByMonth()
-    {
-        super(MY_RULE);
-    }
     
     public ByMonth(Month... months)
     {
-        this();
         setMonths(months);
     }
 
     @Override
-    public void copyTo(Rule destination)
+    public void copyTo(ByRule destination)
     {
         ByMonth destination2 = (ByMonth) destination;
         destination2.months = months;

@@ -4,8 +4,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -24,6 +26,7 @@ import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.properties.ICalendarProperty;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities;
 
@@ -37,11 +40,7 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilitie
  *
  */
 public class RRule implements ICalendarProperty
-{
-//    private final static String COUNT_NAME = "COUNT";
-//    private final static String UNTIL_NAME = "UNTIL";
-//    private final static String INTERVAL_NAME = "INTERVAL";
-            
+{            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
      */
@@ -136,11 +135,23 @@ public class RRule implements ICalendarProperty
         ICalendarUtilities.propertyLineToParameterMap(propertyString)
                 .entrySet()
                 .stream()
+                .sorted((Comparator<? super Entry<String, String>>) (p1, p2) ->
+                    (p1.getKey().equals(RRuleParameter.FREQUENCY.toString())) ? -1 : 1) // FREQ must be first
                 .forEach(e ->
                 {
-                    System.out.println("rrule parameters:" + e.getKey() + " " + e.getValue());
-                    RRuleParameter.propertyFromName(e.getKey())
-                            .setValue(this, e.getValue());
+                    // check parameter to see if its in RRuleParameter enum
+                    RRuleParameter rRuleParameter = RRuleParameter.propertyFromName(e.getKey());
+                    if (rRuleParameter != null)
+                    {
+                        rRuleParameter.setValue(this, e.getValue());
+                    } else
+                    { // if null try to match ByRuleParameter enum
+                        ByRuleParameter byRuleParameter = ByRuleParameter.propertyFromName(e.getKey());
+                        if (byRuleParameter != null)
+                        {
+                            byRuleParameter.setValue(this.getFrequency(), e.getValue());
+                        }
+                    }
                 });
     }
 
@@ -164,25 +175,24 @@ public class RRule implements ICalendarProperty
     @Override
     public String toString()
     {
-//        StringBuilder builder = new StringBuilder();
-        return Arrays.stream(RRuleParameter.values())
+        Stream<String> rruleParameterStream = Arrays.stream(RRuleParameter.values())
+                .sorted((Comparator<? super RRuleParameter>) (p1, p2) -> 
+                    (p1.equals(RRuleParameter.FREQUENCY)) ? -1 : 1) // FREQ must be first
                 .map(p -> p.toParameterString(this))
-//                .peek(p -> System.out.println("rrule parameter:" + p))
-                .filter(s -> s != null)
+                .filter(s -> s != null);
+
+        Stream<String> byRuleParameterStream = getFrequency().byRules().entrySet()
+                .stream()
+//                .map(e -> e.getValue())
+//                .sorted() // ByRules have specific sort order
+                .map(e -> e.getKey().toParameterString(this.getFrequency()));
+        
+        return Stream.concat(rruleParameterStream, byRuleParameterStream)
                 .collect(Collectors.joining(";"));
-//        builder.append(getFrequency().toString());
-//        if (getCount() > 0) builder.append(";" + countProperty().getName() + "=" + getCount());
-//        if (getUntil() != null) builder.append(";" + untilProperty().getName() + "=" + DateTimeUtilities.format(getUntil()));
-//        String rules = getFrequency()
-//                .getByRules()
-//                .stream()
-//                .map(r -> ";" + r.toString())
-//                .collect(Collectors.joining());
-//        builder.append(rules);
-//        return builder.toString();
     }
     
     /** Deep copy all fields from source to destination */
+    @Deprecated // revise with looping through enum
     private static void copy(RRule source, RRule destination)
     {
         if (source.getCount() > 0)
@@ -217,6 +227,7 @@ public class RRule implements ICalendarProperty
     }
 
     @Override
+    @Deprecated // revise with looping through enum
     public boolean equals(Object obj)
     {
         if (obj == this) return true;

@@ -29,43 +29,33 @@ public class ByMonthDay extends ByRuleAbstract
     public int[] getDaysOfMonth() { return daysOfMonth; }
     private int[] daysOfMonth;
     public void setDaysOfMonth(int... daysOfMonth) { this.daysOfMonth = daysOfMonth; }
-    public Rule withDaysOfMonth(int... daysOfMonth) { setDaysOfMonth(daysOfMonth); return this; }
+    public ByRule withDaysOfMonth(int... daysOfMonth) { setDaysOfMonth(daysOfMonth); return this; }
     
 //    private int[] validDays; // array of valid days of month for current month
 
     /** Constructor 
      * takes String of comma-delimited integers, parses it to array of ints
      * This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.Rule.ByRuleParameter#newInstance(String)}
+     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule.ByRuleParameter#newInstance(String)}
      */
     public ByMonthDay(String daysOfMonthString)
     {
-        this();
         int[] days = Arrays
                 .stream(daysOfMonthString.split(","))
                 .mapToInt(s -> Integer.parseInt(s))
                 .toArray();
         setDaysOfMonth(days);
     }
-    
-    /**
-     * This constructor is required by {@link jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency#copy}
-     */
-    public ByMonthDay()
-    {
-        super(MY_RULE);
-    }
 
     /** Constructor 
      * Contains varargs of daysOfMonth */
     public ByMonthDay(int... daysOfMonth)
     {
-        this();
         setDaysOfMonth(daysOfMonth);
     }
 
     @Override
-    public void copyTo(Rule destination)
+    public void copyTo(ByRule destination)
     {
         ByMonthDay destination2 = (ByMonthDay) destination;
         destination2.daysOfMonth = new int[daysOfMonth.length];

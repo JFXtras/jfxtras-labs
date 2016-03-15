@@ -20,7 +20,7 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonthDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByWeekNo;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByWeekNumber;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Monthly;
@@ -155,7 +155,7 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0))
                 .withRRule(new RRule()
                         .withFrequency(new Yearly()
-                                .withByRules(new ByWeekNo(20).withWeekStart(DayOfWeek.MONDAY)
+                                .withByRules(new ByWeekNumber(20).withWeekStart(DayOfWeek.MONDAY)
                                            , new ByDay(DayOfWeek.MONDAY))));
     }
         
