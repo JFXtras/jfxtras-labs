@@ -41,24 +41,33 @@ public class ByWeekNumber extends ByRuleAbstract
     public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
     public ByWeekNumber withWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; return this; }
 
-    // CONSTRUCTORS
+    /*
+     * CONSTRUCTORS
+     */
+    public ByWeekNumber()
+    {
+        super(ByWeekNumber.class);
+    }
+    
     /** takes String of comma-delimited integers, parses it to array of ints 
-     * This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule.ByRuleParameter#newInstance(String)}
      */
     public ByWeekNumber(String weekNumbersString)
     {
-        int[] days = Arrays
-                .stream(weekNumbersString.split(","))
+        this(Arrays.stream(weekNumbersString.split(","))
                 .mapToInt(s -> Integer.parseInt(s))
-                .toArray();
-        setWeekNumbers(days);
+                .toArray());
     }
     
     /** Constructor requires weeks of the year int value(s) */
     public ByWeekNumber(int...weekNumbers)
     {
+        this();
         setWeekNumbers(weekNumbers);
+    }
+    
+    public ByWeekNumber(ByRule source)
+    {
+        super(source);
     }
 
     @Override
@@ -99,7 +108,7 @@ public class ByWeekNumber extends ByRuleAbstract
         String days = Arrays.stream(getWeekNumbers())
                 .mapToObj(d -> d + ",")
                 .collect(Collectors.joining());
-        return ByRuleParameter.BY_WEEK_NUMBER + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleEnum.BY_WEEK_NUMBER + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     @Override

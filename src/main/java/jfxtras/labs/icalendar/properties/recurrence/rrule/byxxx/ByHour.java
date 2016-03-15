@@ -10,12 +10,18 @@ public class ByHour extends ByRuleAbstract
 {
     public ByHour()
     {
+        super(ByHour.class);
         throw new RuntimeException("not implemented");
     }
     
     public ByHour(String value)
     {
-        throw new RuntimeException("not implemented");
+        this();
+    }
+    
+    public ByHour(ByRule source)
+    {
+        super(source);
     }
     
     @Override

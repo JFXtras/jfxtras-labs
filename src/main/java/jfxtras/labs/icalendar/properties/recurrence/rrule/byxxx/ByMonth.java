@@ -23,12 +23,17 @@ public class ByMonth extends ByRuleAbstract
     private Month[] months;
     private void setMonths(Month... months) { this.months = months; }
 
-    // CONSTRUCTORS
-    /** This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule.ByRuleParameter#newInstance(String)}
+    /*
+     * CONSTRUCTORS
      */
+    public ByMonth()
+    {
+        super(ByMonth.class);
+    }
+    
     public ByMonth(String months)
     {
+        this();
         setMonths(
           Arrays.asList(months.split(","))
                 .stream()
@@ -38,7 +43,13 @@ public class ByMonth extends ByRuleAbstract
     
     public ByMonth(Month... months)
     {
+        this();
         setMonths(months);
+    }
+    
+    public ByMonth(ByRule source)
+    {
+        super(source);
     }
 
     @Override
@@ -74,7 +85,7 @@ public class ByMonth extends ByRuleAbstract
         String days = Arrays.stream(getMonths())
                 .map(d -> d.getValue() + ",")
                 .collect(Collectors.joining());
-        return ByRuleParameter.BY_MONTH + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleEnum.BY_MONTH + "=" + days.substring(0, days.length()-1); // remove last comma
     }
 
     @Override

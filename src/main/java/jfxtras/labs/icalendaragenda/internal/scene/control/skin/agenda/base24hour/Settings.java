@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
 
 // TODO - MAKE SEPARATE RESOURCE FILE FOR THESE
 public final class Settings
@@ -36,34 +36,34 @@ public final class Settings
 //    public static DateTimeFormatter DATE_AGENDA_END = DateTimeFormatter.ofPattern("-hh:mm a");
     public static DateTimeFormatter TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern("HH:mm");
 
-    public static final Map<FrequencyParameter, String> REPEAT_FREQUENCIES = defaultRepeatFrequenciesMap();
-    private static Map<FrequencyParameter, String> defaultRepeatFrequenciesMap()
+    public static final Map<FrequencyEnum, String> REPEAT_FREQUENCIES = defaultRepeatFrequenciesMap();
+    private static Map<FrequencyEnum, String> defaultRepeatFrequenciesMap()
     {
-        Map<FrequencyParameter, String> map = new HashMap<>();
-        map.put(FrequencyParameter.DAILY, "Daily");
-        map.put(FrequencyParameter.WEEKLY, "Weekly");
-        map.put(FrequencyParameter.MONTHLY, "Monthly");
-        map.put(FrequencyParameter.YEARLY, "Yearly");
+        Map<FrequencyEnum, String> map = new HashMap<>();
+        map.put(FrequencyEnum.DAILY, "Daily");
+        map.put(FrequencyEnum.WEEKLY, "Weekly");
+        map.put(FrequencyEnum.MONTHLY, "Monthly");
+        map.put(FrequencyEnum.YEARLY, "Yearly");
         return map;
     }
-    public static final Map<FrequencyParameter, String> REPEAT_FREQUENCIES_PLURAL = defaultRepeatFrequenciesPluralMap();
-    private static Map<FrequencyParameter, String> defaultRepeatFrequenciesPluralMap()
+    public static final Map<FrequencyEnum, String> REPEAT_FREQUENCIES_PLURAL = defaultRepeatFrequenciesPluralMap();
+    private static Map<FrequencyEnum, String> defaultRepeatFrequenciesPluralMap()
     {
-        Map<FrequencyParameter, String> map = new HashMap<>();
-        map.put(FrequencyParameter.DAILY, "days");
-        map.put(FrequencyParameter.WEEKLY, "weeks");
-        map.put(FrequencyParameter.MONTHLY, "months");
-        map.put(FrequencyParameter.YEARLY, "years");
+        Map<FrequencyEnum, String> map = new HashMap<>();
+        map.put(FrequencyEnum.DAILY, "days");
+        map.put(FrequencyEnum.WEEKLY, "weeks");
+        map.put(FrequencyEnum.MONTHLY, "months");
+        map.put(FrequencyEnum.YEARLY, "years");
         return map;
     }
-    public static final Map<FrequencyParameter, String> REPEAT_FREQUENCIES_SINGULAR = defaultRepeatFrequenciesSingluarMap();
-    private static Map<FrequencyParameter, String> defaultRepeatFrequenciesSingluarMap()
+    public static final Map<FrequencyEnum, String> REPEAT_FREQUENCIES_SINGULAR = defaultRepeatFrequenciesSingluarMap();
+    private static Map<FrequencyEnum, String> defaultRepeatFrequenciesSingluarMap()
     {
-        Map<FrequencyParameter, String> map = new HashMap<>();
-        map.put(FrequencyParameter.DAILY, "day");
-        map.put(FrequencyParameter.WEEKLY, "week");
-        map.put(FrequencyParameter.MONTHLY, "month");
-        map.put(FrequencyParameter.YEARLY, "year");
+        Map<FrequencyEnum, String> map = new HashMap<>();
+        map.put(FrequencyEnum.DAILY, "day");
+        map.put(FrequencyEnum.WEEKLY, "week");
+        map.put(FrequencyEnum.MONTHLY, "month");
+        map.put(FrequencyEnum.YEARLY, "year");
         return map;
     }
     public static final Map<ChangeDialogOption, String> REPEAT_CHANGE_CHOICES = defaultRepeatChangeChoicesMap();
@@ -124,20 +124,20 @@ public final class Settings
         TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern(resourcesIn.getString("time.format.agenda"));
         TIME_FORMAT_END = DateTimeFormatter.ofPattern(resourcesIn.getString("time.format"));
         
-        REPEAT_FREQUENCIES.put(FrequencyParameter.DAILY, resourcesIn.getString("daily"));
-        REPEAT_FREQUENCIES.put(FrequencyParameter.WEEKLY, resourcesIn.getString("weekly"));
-        REPEAT_FREQUENCIES.put(FrequencyParameter.MONTHLY, resourcesIn.getString("monthly"));
-        REPEAT_FREQUENCIES.put(FrequencyParameter.YEARLY, resourcesIn.getString("yearly"));
+        REPEAT_FREQUENCIES.put(FrequencyEnum.DAILY, resourcesIn.getString("daily"));
+        REPEAT_FREQUENCIES.put(FrequencyEnum.WEEKLY, resourcesIn.getString("weekly"));
+        REPEAT_FREQUENCIES.put(FrequencyEnum.MONTHLY, resourcesIn.getString("monthly"));
+        REPEAT_FREQUENCIES.put(FrequencyEnum.YEARLY, resourcesIn.getString("yearly"));
         
-        REPEAT_FREQUENCIES_PLURAL.put(FrequencyParameter.DAILY, resourcesIn.getString("days"));
-        REPEAT_FREQUENCIES_PLURAL.put(FrequencyParameter.WEEKLY, resourcesIn.getString("weeks"));
-        REPEAT_FREQUENCIES_PLURAL.put(FrequencyParameter.MONTHLY, resourcesIn.getString("months"));
-        REPEAT_FREQUENCIES_PLURAL.put(FrequencyParameter.YEARLY, resourcesIn.getString("years"));
+        REPEAT_FREQUENCIES_PLURAL.put(FrequencyEnum.DAILY, resourcesIn.getString("days"));
+        REPEAT_FREQUENCIES_PLURAL.put(FrequencyEnum.WEEKLY, resourcesIn.getString("weeks"));
+        REPEAT_FREQUENCIES_PLURAL.put(FrequencyEnum.MONTHLY, resourcesIn.getString("months"));
+        REPEAT_FREQUENCIES_PLURAL.put(FrequencyEnum.YEARLY, resourcesIn.getString("years"));
         
-        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyParameter.DAILY, resourcesIn.getString("day"));
-        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyParameter.WEEKLY, resourcesIn.getString("week"));
-        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyParameter.MONTHLY, resourcesIn.getString("month"));
-        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyParameter.YEARLY, resourcesIn.getString("year"));
+        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyEnum.DAILY, resourcesIn.getString("day"));
+        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyEnum.WEEKLY, resourcesIn.getString("week"));
+        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyEnum.MONTHLY, resourcesIn.getString("month"));
+        REPEAT_FREQUENCIES_SINGULAR.put(FrequencyEnum.YEARLY, resourcesIn.getString("year"));
 
         REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ONE, resourcesIn.getString("dialog.one"));
         REPEAT_CHANGE_CHOICES.put(ChangeDialogOption.ALL, resourcesIn.getString("dialog.all"));

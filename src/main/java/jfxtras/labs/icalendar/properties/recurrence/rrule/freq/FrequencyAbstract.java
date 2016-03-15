@@ -15,8 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
 
 public abstract class FrequencyAbstract<T> implements Frequency {
     
@@ -78,9 +77,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     {
         for (ByRule myByRule : byRules)
         {
-//            byRules().put(ByRuleParameter.propertyFromByRule(r), r);
             byRules().add(myByRule);
-            System.out.println("byRules:" + byRules().size() + " " + myByRule + " " + myByRule.hashCode());
         }
         return (T) this;
     }
@@ -105,34 +102,20 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     public void setChronoUnit(ChronoUnit chronoUnit) { this.chronoUnit.set(chronoUnit); }
     
     @Override
-    public FrequencyParameter frequencyType() { return frequencyType; }
-    final private FrequencyParameter frequencyType;
+    public FrequencyEnum frequencyType() { return frequencyType; }
+    final private FrequencyEnum frequencyType;
     
     @Override
     public TemporalAdjuster adjuster() { return (temporal) -> temporal.plus(getInterval(), frequencyType.getChronoUnit()); }
     
     // CONSTRUCTOR
-    public FrequencyAbstract(FrequencyParameter frequencyType)
+    public FrequencyAbstract(FrequencyEnum frequencyType)
     {
         this.frequencyType = frequencyType;
-//        this.initialChronoUnit = chronoUnit.get();
         setChronoUnit(frequencyType.getChronoUnit());
-//        SetChangeListener<? super ByRule> listchange = (change) ->
-//        {
-//            ByRule newByRule = change.getElementAdded();
-//            long alreadyPresent = byRules()
-//                    .stream()
-//                    .map(r -> ByRuleParameter.propertyFromByRule(r))
-//                    .filter(p -> p.equals(newByRule))
-//                    .count();
-////                        .anyMatch(myByRule -> ByRuleParameter.propertyFromByRule(myByRule) == ByRuleParameter.propertyFromByRule(newByRule));
-//            System.out.println("change byRule:" + alreadyPresent + " " + newByRule + " " + byRules().size());
-//            if (alreadyPresent > 1)
-//            {
-//                throw new IllegalArgumentException("Can't add BYxxx rule (" + newByRule.getClass().getSimpleName() + ") more than once.");
-//            }
-//        };
-        ListChangeListener<? super ByRule> listchange = (change) ->
+        
+        // Listener that ensures user doesn't add same ByRule a second time.  Also keeps the byRules list sorted.
+        byRules().addListener((ListChangeListener<? super ByRule>) (change) ->
         {
             while (change.next())
             {
@@ -143,19 +126,25 @@ public abstract class FrequencyAbstract<T> implements Frequency {
                         ByRule newByRule = c;
                         long alreadyPresent = byRules()
                                 .stream()
-                                .map(r -> ByRuleParameter.propertyFromByRule(r))
-                                .filter(p -> p.equals(ByRuleParameter.propertyFromByRule(c)))
+                                .map(r -> r.byRuleType())
+                                .filter(p -> p.equals(c.byRuleType()))
                                 .count();
                         if (alreadyPresent > 1)
                         {
-                            throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + ByRuleParameter.propertyFromByRule(c) + ") more than once.");
+                            throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + c.byRuleType() + ") more than once.");
                         }
                     });
                     Collections.sort(byRules()); // sort additions
                 }
             }
-        };
-        byRules().addListener(listchange);
+        });
+    }
+    
+    // Copy constructor
+    public FrequencyAbstract(Frequency source)
+    {
+        this(source.frequencyType());
+        source.byRules().stream().forEach(b -> byRules().add(b.byRuleType().newInstance(b))); // copy each ByRule
     }
 
     @Override
@@ -174,12 +163,6 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         }
         return stream;
     }
-    
-//    @Override
-//    public boolean isInstance(Temporal start, Temporal timeAdjustedSelection)
-//    {
-//        
-//    }
     
     @Override
     public boolean equals(Object obj)

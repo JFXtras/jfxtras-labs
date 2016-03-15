@@ -10,14 +10,20 @@ public class BySecond extends ByRuleAbstract
 {
     public BySecond()
     {
+        super(BySecond.class);
         throw new RuntimeException("not implemented");
     }
-    
+        
     public BySecond(String value)
     {
-        throw new RuntimeException("not implemented");
+        this();
     }
     
+    public BySecond(ByRule source)
+    {
+        super(source);
+    }
+
     @Override
     public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
             Temporal startDateTime) {

@@ -10,12 +10,18 @@ public class ByMinute extends ByRuleAbstract
 {
     public ByMinute()
     {
+        super(ByMinute.class);
         throw new RuntimeException("not implemented");
     }
     
     public ByMinute(String value)
     {
-        throw new RuntimeException("not implemented");
+        this();
+    }
+    
+    public ByMinute(ByRule source)
+    {
+        super(source);
     }
     
     @Override

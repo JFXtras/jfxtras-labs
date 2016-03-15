@@ -10,12 +10,18 @@ public class ByYearDay extends ByRuleAbstract
 {
     public ByYearDay()
     {
+        super(ByYearDay.class);
         throw new RuntimeException("not implemented");
     }
     
     public ByYearDay(String value)
     {
-        throw new RuntimeException("not implemented");
+        this();
+    }
+    
+    public ByYearDay(ByRule source)
+    {
+        super(source);
     }
 
     @Override

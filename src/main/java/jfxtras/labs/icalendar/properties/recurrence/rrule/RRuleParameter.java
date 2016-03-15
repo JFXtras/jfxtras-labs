@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
 
 /**
  * RRule properties with the following data and methods:
@@ -21,7 +21,7 @@ public enum RRuleParameter
         {
             if (rrule.getFrequency() == null)
             {
-                rrule.setFrequency( FrequencyParameter.propertyFromName(value).newInstance() );                
+                rrule.setFrequency( FrequencyEnum.propertyFromName(value).newInstance() );                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only appear once in calendar component");
@@ -37,7 +37,8 @@ public enum RRuleParameter
         @Override
         public void copyProperty(RRule source, RRule destination)
         {
-            FrequencyUtilities.copy(source.getFrequency(), destination.getFrequency());
+            Frequency copiedFrequency = source.getFrequency().frequencyType().newInstance(source.getFrequency()); // copy frequency
+            destination.setFrequency(copiedFrequency);
         }
     },
     INTERVAL ("INTERVAL") {

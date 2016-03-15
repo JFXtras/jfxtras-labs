@@ -20,7 +20,7 @@ import javafx.beans.property.ObjectProperty;
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
 {
-    private final static ByRuleParameter MY_RULE = ByRuleParameter.BY_MONTH_DAY;
+    private final static ByRuleEnum MY_RULE = ByRuleEnum.BY_MONTH_DAY;
 
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
@@ -31,27 +31,34 @@ public class ByMonthDay extends ByRuleAbstract
     public void setDaysOfMonth(int... daysOfMonth) { this.daysOfMonth = daysOfMonth; }
     public ByRule withDaysOfMonth(int... daysOfMonth) { setDaysOfMonth(daysOfMonth); return this; }
     
-//    private int[] validDays; // array of valid days of month for current month
-
-    /** Constructor 
-     * takes String of comma-delimited integers, parses it to array of ints
-     * This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule.ByRuleParameter#newInstance(String)}
+    /*
+     * CONSTRUCTORS
+     */
+    
+    public ByMonthDay()
+    {
+        super(ByMonthDay.class);
+    }
+    
+    /** Constructor takes String of comma-delimited integers, parses it to array of ints
      */
     public ByMonthDay(String daysOfMonthString)
     {
-        int[] days = Arrays
-                .stream(daysOfMonthString.split(","))
+        this(Arrays.stream(daysOfMonthString.split(","))
                 .mapToInt(s -> Integer.parseInt(s))
-                .toArray();
-        setDaysOfMonth(days);
+                .toArray());
     }
 
-    /** Constructor 
-     * Contains varargs of daysOfMonth */
+    /** Constructor contains varargs of daysOfMonth */
     public ByMonthDay(int... daysOfMonth)
     {
+        this();
         setDaysOfMonth(daysOfMonth);
+    }
+    
+    public ByMonthDay(ByRule source)
+    {
+        super(source);
     }
 
     @Override
@@ -91,7 +98,7 @@ public class ByMonthDay extends ByRuleAbstract
         String days = Arrays.stream(getDaysOfMonth())
                 .mapToObj(d -> d + ",")
                 .collect(Collectors.joining());
-        return ByRuleParameter.BY_MONTH_DAY + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleEnum.BY_MONTH_DAY + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     /**

@@ -7,7 +7,6 @@ import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Spliterator;
@@ -27,9 +26,8 @@ import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.properties.ICalendarProperty;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities;
 
 /**
  * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -153,7 +151,7 @@ public class RRule implements ICalendarProperty
                         rRuleParameter.setValue(this, e.getValue());
                     } else
                     { // if null try to match ByRuleParameter enum
-                        ByRuleParameter byRuleParameter = ByRuleParameter.propertyFromName(e.getKey());
+                        ByRuleEnum byRuleParameter = ByRuleEnum.propertyFromName(e.getKey());
                         if (byRuleParameter != null)
                         {
                             byRuleParameter.setValue(this.getFrequency(), e.getValue());
@@ -207,46 +205,46 @@ public class RRule implements ICalendarProperty
         
         Stream<String> byRuleParameterStream = getFrequency().byRules()
                 .stream()
-                .map(e -> ByRuleParameter.propertyFromByRule(e).toParameterString(this.getFrequency()));
+                .map(e -> e.byRuleType().toParameterString(this.getFrequency()));
 
         return Stream.concat(rruleParameterStream, byRuleParameterStream)
                 .collect(Collectors.joining(";"));
     }
     
     /** Deep copy all fields from source to destination */
-    @Deprecated // revise with looping through enum
-    private static void copy(RRule source, RRule destination)
-    {
-        if (source.getCount() > 0)
-        {
-            destination.setCount(source.getCount());
-        }
-        if (source.getFrequency() != null)
-        {
-            try {
-                Frequency newFreqency = source.getFrequency().getClass().newInstance();
-                FrequencyUtilities.copy(source.getFrequency(), newFreqency);
-                destination.setFrequency(newFreqency);
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        if (source.getUntil() != null)
-        {
-            destination.setUntil(source.getUntil());
-        }
-        Iterator<VComponent<?>> i = source.recurrences().iterator();
-        while (i.hasNext())
-        {
-            destination.recurrences().add(i.next());
-        }
-    }
+//    @Deprecated // revise with looping through enum
+//    private static void copy(RRule source, RRule destination)
+//    {
+//        if (source.getCount() > 0)
+//        {
+//            destination.setCount(source.getCount());
+//        }
+//        if (source.getFrequency() != null)
+//        {
+//            try {
+//                Frequency newFreqency = source.getFrequency().getClass().newInstance();
+//                FrequencyUtilities.copy(source.getFrequency(), newFreqency);
+//                destination.setFrequency(newFreqency);
+//            } catch (InstantiationException | IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        if (source.getUntil() != null)
+//        {
+//            destination.setUntil(source.getUntil());
+//        }
+//        Iterator<VComponent<?>> i = source.recurrences().iterator();
+//        while (i.hasNext())
+//        {
+//            destination.recurrences().add(i.next());
+//        }
+//    }
     
-    /** Deep copy all fields from this to destination */
-    public void copyTo(RRule destination)
-    {
-        copy(this, destination);
-    }
+//    /** Deep copy all fields from this to destination */
+//    public void copyTo(RRule destination)
+//    {
+//        copy(this, destination);
+//    }
 
     @Override
     @Deprecated // revise with looping through enum

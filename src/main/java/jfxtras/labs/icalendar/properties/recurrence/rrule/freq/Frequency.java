@@ -11,8 +11,8 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleEnum;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
  * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.)
@@ -45,11 +45,11 @@ public interface Frequency {
 //    Map<ByRuleParameter, ByRule> byRules();
     ObservableList<ByRule> byRules();
 
-    default public ByRule lookupByRule(ByRuleParameter byRule)
+    default public ByRule lookupByRule(ByRuleEnum byRuleType)
     {
         Optional<ByRule> rule = byRules()
                 .stream()
-                .filter(a -> ByRuleParameter.propertyFromByRule(a) == byRule)
+                .filter(r -> r.byRuleType() == byRuleType)
                 .findFirst();
         return (rule.isPresent()) ? rule.get() : null;
     }
@@ -66,7 +66,7 @@ public interface Frequency {
     Stream<Temporal> stream(Temporal start);
 
     /** Which of the enum type FrenquencyType the implementing class represents */
-    FrequencyParameter frequencyType();
+    FrequencyEnum frequencyType();
         
     /** Temporal adjuster every class implementing Frequency must provide that modifies frequency dates 
      * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
@@ -106,23 +106,23 @@ public interface Frequency {
         switch (frequencyType())
         {
         case DAILY:
-            if (lookupByRule(ByRuleParameter.BY_WEEK_NUMBER) != null)
-            if (lookupByRule(ByRuleParameter.BY_WEEK_NUMBER) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
-            if (lookupByRule(ByRuleParameter.BY_YEAR_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
+            if (lookupByRule(ByRuleEnum.BY_WEEK_NUMBER) != null)
+            if (lookupByRule(ByRuleEnum.BY_WEEK_NUMBER) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
+            if (lookupByRule(ByRuleEnum.BY_YEAR_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
             break;
         case MONTHLY:
-            if (lookupByRule(ByRuleParameter.BY_WEEK_NUMBER) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
-            if (lookupByRule(ByRuleParameter.BY_YEAR_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
+            if (lookupByRule(ByRuleEnum.BY_WEEK_NUMBER) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
+            if (lookupByRule(ByRuleEnum.BY_YEAR_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
             break;
         case WEEKLY:
-            if (lookupByRule(ByRuleParameter.BY_WEEK_NUMBER) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
-            if (lookupByRule(ByRuleParameter.BY_YEAR_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
-            if (lookupByRule(ByRuleParameter.BY_MONTH_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYMONTHDAY not available when FREQ is " + frequencyType());
+            if (lookupByRule(ByRuleEnum.BY_WEEK_NUMBER) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYWEEKNO not available when FREQ is " + frequencyType());
+            if (lookupByRule(ByRuleEnum.BY_YEAR_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYYEARDAY not available when FREQ is " + frequencyType());
+            if (lookupByRule(ByRuleEnum.BY_MONTH_DAY) != null) builder.append(System.lineSeparator() + "Invalid RRule. BYMONTHDAY not available when FREQ is " + frequencyType());
             break;
         case YEARLY:
-            if ((lookupByRule(ByRuleParameter.BY_WEEK_NUMBER) != null) && (lookupByRule(ByRuleParameter.BY_DAY) != null))
+            if ((lookupByRule(ByRuleEnum.BY_WEEK_NUMBER) != null) && (lookupByRule(ByRuleEnum.BY_DAY) != null))
             {
-                ByDay byDay = (ByDay) lookupByRule(ByRuleParameter.BY_DAY);
+                ByDay byDay = (ByDay) lookupByRule(ByRuleEnum.BY_DAY);
                 if (byDay.hasOrdinals()) builder.append(System.lineSeparator()
                         + "Invalid RRule. The BYDAY rule part MUST NOT be specified with a numeric value with the FREQ rule part set to YEARLY when the BYWEEKNO rule part is specified");
             }

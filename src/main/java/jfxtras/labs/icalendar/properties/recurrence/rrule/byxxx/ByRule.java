@@ -24,6 +24,9 @@ import javafx.beans.property.ObjectProperty;
  */
 public interface ByRule extends Comparable<ByRule>
 {
+    
+    ByRuleEnum byRuleType();
+    
     /** 
      * New stream of date/times made after applying rule that either filters out some date/times
      * or adds additional date/times.

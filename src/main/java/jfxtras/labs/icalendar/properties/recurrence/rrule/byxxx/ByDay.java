@@ -88,9 +88,16 @@ public class ByDay extends ByRuleAbstract
     
     //CONSTRUCTORS
     /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
-     * This constructor is REQUIRED by 
-     * {@link jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule.ByRuleParameter#newInstance(String)}
      */
+    public ByDay()
+    {
+        super(ByDay.class);
+        // TODO - USE WKST PROPERTY FOR START OF WEEK
+        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
+    }
+    
     public ByDay(String dayPairs)
     {
         this();
@@ -119,21 +126,19 @@ public class ByDay extends ByRuleAbstract
         byDayPairs = dayPairsList.toArray(byDayPairs);
     }
     
-    /**
-     * This constructor is required by {@link jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency#copy}
-     */
-    public ByDay()
-    {
-        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
-    }
-    
     /** Constructor with varargs ByDayPair */
     public ByDay(ByDayPair... byDayPairs)
     {
         this();
         setByDayPair(byDayPairs);
+    }
+    
+    public ByDay(ByRule source)
+    {
+        super(source);
+        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
     }
 
     /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
@@ -198,7 +203,7 @@ public class ByDay extends ByRuleAbstract
                     return (d.ordinal == 0) ? day : d.ordinal + day;
                 })
                 .collect(Collectors.joining());
-        return ByRuleParameter.BY_DAY + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleEnum.BY_DAY + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     @Override // TODO - try to REMOVE startTemporal

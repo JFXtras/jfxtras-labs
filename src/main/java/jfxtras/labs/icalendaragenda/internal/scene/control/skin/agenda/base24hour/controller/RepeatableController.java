@@ -64,9 +64,9 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyParameter;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 
@@ -91,7 +91,7 @@ private Temporal dateTimeStartInstanceNew;
 
 @FXML private CheckBox repeatableCheckBox;
 @FXML private GridPane repeatableGridPane;
-@FXML private ComboBox<FrequencyParameter> frequencyComboBox;
+@FXML private ComboBox<FrequencyEnum> frequencyComboBox;
 @FXML private Spinner<Integer> intervalSpinner;
 @FXML private Label frequencyLabel;
 @FXML private Label eventLabel;
@@ -141,7 +141,7 @@ private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, 
     ByDay rule = (ByDay) vComponent
             .getRRule()
             .getFrequency()
-            .lookupByRule(ByRuleParameter.BY_DAY);
+            .lookupByRule(ByRuleEnum.BY_DAY);
     if (newSel)
     {
         if (! dayOfWeekList.contains(dayOfWeek))
@@ -174,7 +174,7 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (observable, o
         vComponent.getRRule().getFrequency().byRules().add(byDayRuleMonthly);
     } else
     { // remove rule to reset to default behavior of repeat by day of month
-        ByRule r = vComponent.getRRule().getFrequency().lookupByRule(ByRuleParameter.BY_DAY);
+        ByRule r = vComponent.getRRule().getFrequency().lookupByRule(ByRuleEnum.BY_DAY);
         vComponent.getRRule().getFrequency().byRules().remove(r);
     }
     refreshSummary();
@@ -203,7 +203,7 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
 };
 
 // FREQUENCY CHANGE LISTENER
-private final ChangeListener<? super FrequencyParameter> frequencyListener = (obs, oldSel, newSel) -> 
+private final ChangeListener<? super FrequencyEnum> frequencyListener = (obs, oldSel, newSel) -> 
 {
     // Change Frequency if different.  Copy Interval, null ExDate
     if (vComponent.getRRule().getFrequency().frequencyType() != newSel)
@@ -223,13 +223,13 @@ private final ChangeListener<? super FrequencyParameter> frequencyListener = (ob
     case YEARLY:
         break;
     case MONTHLY:
-        ByRule r = vComponent.getRRule().getFrequency().lookupByRule(ByRuleParameter.BY_DAY);
+        ByRule r = vComponent.getRRule().getFrequency().lookupByRule(ByRuleEnum.BY_DAY);
         vComponent.getRRule().getFrequency().byRules().remove(r);
         dayOfMonthRadioButton.selectedProperty().set(true);
         dayOfWeekRadioButton.selectedProperty().set(false);
         break;
     case WEEKLY:
-        ByRule r2 = vComponent.getRRule().getFrequency().lookupByRule(ByRuleParameter.BY_DAY);
+        ByRule r2 = vComponent.getRRule().getFrequency().lookupByRule(ByRuleEnum.BY_DAY);
         vComponent.getRRule().getFrequency().byRules().remove(r2);
         if (dayOfWeekList.isEmpty())
         {
@@ -267,7 +267,7 @@ private final ChangeListener<? super FrequencyParameter> frequencyListener = (ob
     refreshExceptionDates();
 };
 
-private void setFrequencyVisibility(FrequencyParameter f)
+private void setFrequencyVisibility(FrequencyEnum f)
 {
     // Setup monthlyVBox and weeklyHBox setting visibility
     switch (f)
@@ -462,18 +462,18 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 
     // Setup frequencyComboBox items
     
-    FrequencyParameter[] supportedFrequencyProperties = new FrequencyParameter[] { FrequencyParameter.DAILY,
-                                                                                 FrequencyParameter.WEEKLY,
-                                                                                 FrequencyParameter.MONTHLY,
-                                                                                 FrequencyParameter.YEARLY };
+    FrequencyEnum[] supportedFrequencyProperties = new FrequencyEnum[] { FrequencyEnum.DAILY,
+                                                                                 FrequencyEnum.WEEKLY,
+                                                                                 FrequencyEnum.MONTHLY,
+                                                                                 FrequencyEnum.YEARLY };
     frequencyComboBox.setItems(FXCollections.observableArrayList(supportedFrequencyProperties));
-    frequencyComboBox.setConverter(new StringConverter<FrequencyParameter>()
+    frequencyComboBox.setConverter(new StringConverter<FrequencyEnum>()
     {
-        @Override public String toString(FrequencyParameter frequencyType)
+        @Override public String toString(FrequencyEnum frequencyType)
         {
             return Settings.REPEAT_FREQUENCIES.get(frequencyType);
         }
-        @Override public FrequencyParameter fromString(String string) {
+        @Override public FrequencyEnum fromString(String string) {
             throw new RuntimeException("not required for non editable ComboBox");
         }
     });
@@ -781,12 +781,12 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         int initialInterval = (vComponent.getRRule().getFrequency().getInterval() > 0) ?
                 vComponent.getRRule().getFrequency().getInterval() : INITIAL_INTERVAL;
         intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, initialInterval));
-        FrequencyParameter frequencyType = vComponent.getRRule().getFrequency().frequencyType();
+        FrequencyEnum frequencyType = vComponent.getRRule().getFrequency().frequencyType();
         frequencyComboBox.setValue(frequencyType); // will trigger frequencyListener
         switch(frequencyType)
         {
         case MONTHLY:
-            ByDay rule = (ByDay) vComponent.getRRule().getFrequency().lookupByRule(ByRuleParameter.BY_DAY);
+            ByDay rule = (ByDay) vComponent.getRRule().getFrequency().lookupByRule(ByRuleEnum.BY_DAY);
             if (rule == null)
             {
                 dayOfMonthRadioButton.selectedProperty().set(true);
@@ -837,9 +837,9 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     private void setDayOfWeek(RRule rRule)
     {
         // Set day of week properties
-        if (rRule.getFrequency().frequencyType() == FrequencyParameter.WEEKLY)
+        if (rRule.getFrequency().frequencyType() == FrequencyEnum.WEEKLY)
         {
-            ByRule rule = rRule.getFrequency().lookupByRule(ByRuleParameter.BY_DAY);
+            ByRule rule = rRule.getFrequency().lookupByRule(ByRuleEnum.BY_DAY);
             ((ByDay) rule).dayOfWeekWithoutOrdinalList()
                     .stream()
                     .forEach(d -> 
@@ -1032,7 +1032,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         builder.append(frequencyText);
         
         // NOTE: only ByRule allowed for this control is ByDay - others are not supported by this control
-        ByDay byDay = (ByDay) rRule.getFrequency().lookupByRule(ByRuleParameter.BY_DAY);
+        ByDay byDay = (ByDay) rRule.getFrequency().lookupByRule(ByRuleEnum.BY_DAY);
         switch (rRule.getFrequency().frequencyType())
         {
         case DAILY: // add nothing else
@@ -1098,7 +1098,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
             return true;
         }
-        ByDay byDay = (ByDay) rRule.getFrequency().lookupByRule(ByRuleParameter.BY_DAY);
+        ByDay byDay = (ByDay) rRule.getFrequency().lookupByRule(ByRuleEnum.BY_DAY);
         int byRulesSize = rRule.getFrequency().byRules().size();
         int unsupportedRules = (byDay == null) ? byRulesSize : byRulesSize-1;
         if (unsupportedRules > 0)
@@ -1106,8 +1106,8 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             String unsupportedByRules = rRule.getFrequency().byRules()
                     .stream()
 //                    .map(e -> e.getValue())
-                    .filter(b -> ByRuleParameter.propertyFromByRule(b) != ByRuleParameter.BY_DAY)
-                    .map(b -> ByRuleParameter.propertyFromByRule(b).toString())
+                    .filter(b -> b.byRuleType() != ByRuleEnum.BY_DAY)
+                    .map(b -> b.byRuleType().toString())
 //                    .filter(b -> b.getByRuleType() != ByRuleParameter.BY_DAY)
 //                    .map(b -> b.getByRuleType().toString())
                     .collect(Collectors.joining(","));

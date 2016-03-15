@@ -10,12 +10,18 @@ public class BySetPosition extends ByRuleAbstract
 {
     public BySetPosition()
     {
+        super(BySetPosition.class);
         throw new RuntimeException("not implemented");
     }
     
     public BySetPosition(String value)
     {
-        throw new RuntimeException("not implemented");
+        this();
+    }
+    
+    public BySetPosition(ByRule source)
+    {
+        super(source);
     }
     
     @Override

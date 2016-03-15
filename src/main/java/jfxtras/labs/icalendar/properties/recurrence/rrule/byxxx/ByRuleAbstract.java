@@ -17,30 +17,46 @@ package jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx;
  */
 public abstract class ByRuleAbstract implements ByRule, Comparable<ByRule>
 {
-//    /** ByRule enum containing order in which ByRules are processed */
-//    final private ByRuleParameter byRule;
-//    @Override public ByRuleParameter getByRuleType() { return byRule; }
+    /** ByRule enum containing order in which ByRules are processed */
+    final private ByRuleEnum byRuleEnum;
+    @Override public ByRuleEnum byRuleType() { return byRuleEnum; }
 //
 //    /** Constructor that takes ByRule type as parameter 
 //     * The type contains the processing order as defined in RFC 5545 iCalendar page 44 */
-//    ByRuleAbstract(ByRuleParameter byRule)
+//    ByRuleAbstract(ByRuleType byRule)
 //    {
 //        this.byRule = byRule;
 //    }
+    
+    /*
+     * Constructors
+     */
 
-    ByRuleAbstract() { }
+    ByRuleAbstract(Class<? extends ByRule> byRuleClass)
+    {
+        byRuleEnum = ByRuleEnum.propertyFromByRuleClass(byRuleClass);
+    }
 
     // Constructor that parses a string value
-    ByRuleAbstract(String value)
+    ByRuleAbstract(Class<? extends ByRule> byRuleClass, String value)
     {
-        super();
+        this(byRuleClass);
+    }
+    
+    // Copy constructor
+    ByRuleAbstract(ByRule source)
+    {
+        byRuleEnum = source.byRuleType();
+        source.copyTo(this);
     }
 
     @Override
     public int compareTo(ByRule byRule)
     {        
-        int p1 = ByRuleParameter.propertyFromByRule(this).sortOrder();
-        int p2 = ByRuleParameter.propertyFromByRule(byRule).sortOrder();
+//        int p1 = ByRuleType.propertyFromByRule(this).sortOrder();
+//        int p2 = ByRuleType.propertyFromByRule(byRule).sortOrder();
+        int p1 = byRuleType().sortOrder();
+        int p2 = byRule.byRuleType().sortOrder();
         return Integer.compare(p1, p2);
     }
 }
