@@ -173,8 +173,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         }
         Frequency testObj = (Frequency) obj;
         
-        boolean intervalEquals = (getInterval() == null) ?
-                (testObj.getInterval() == null) : getInterval().equals(testObj.getInterval());
+        boolean intervalEquals = getInterval().equals(testObj.getInterval());
         System.out.println("getInterval " + getInterval() + " " + testObj.getInterval());
         boolean rulesEquals = byRules().equals(testObj.byRules());
         System.out.println("frequency " + intervalEquals + " " + rulesEquals);

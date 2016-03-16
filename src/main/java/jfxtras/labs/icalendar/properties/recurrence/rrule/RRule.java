@@ -54,7 +54,7 @@ public class RRule implements ICalendarProperty
      * Uses lazy initialization of property because often COUNT stays as the default value of 0.
      * Value of 0 means COUNT is not used.
      */
-    private final int initialCount = 0;
+    final static int INITIAL_COUNT = 0;
     public IntegerProperty countProperty()
     {
         if (count == null) count = new SimpleIntegerProperty(this, RRuleParameter.COUNT.toString(), _count);
@@ -62,12 +62,12 @@ public class RRule implements ICalendarProperty
     }
     private IntegerProperty count;
     public Integer getCount() { return (count == null) ? _count : count.getValue(); }
-    private int _count = initialCount;
+    private int _count = INITIAL_COUNT;
     public void setCount(Integer i)
     {
-        if ((getUntil() == null) || (i == initialCount))
+        if ((getUntil() == null) || (i == INITIAL_COUNT))
         {
-            if (i >= initialCount)
+            if (i >= INITIAL_COUNT)
             {
                 if (count == null)
                 {
@@ -98,7 +98,7 @@ public class RRule implements ICalendarProperty
     private Temporal _until;
     public void setUntil(Temporal until)
     {
-        if (getCount() == initialCount)
+        if (getCount() == INITIAL_COUNT)
         {
             // check Temporal type
             if ((DateTimeType.of(until) != DateTimeType.DATE) && (DateTimeType.of(until) != DateTimeType.DATE_WITH_UTC_TIME))
@@ -165,6 +165,7 @@ public class RRule implements ICalendarProperty
     {
         Arrays.stream(RRuleParameter.values())
                 .forEach(p -> p.copyProperty(source, this));
+        source.recurrences().stream().forEach(r -> recurrences().add(r));
     }
     
 //    @Override
@@ -247,7 +248,6 @@ public class RRule implements ICalendarProperty
 //    }
 
     @Override
-    @Deprecated // revise with looping through enum
     public boolean equals(Object obj)
     {
         if (obj == this) return true;
@@ -256,15 +256,21 @@ public class RRule implements ICalendarProperty
         }
         RRule testObj = (RRule) obj;
 
-        boolean countEquals = getCount().equals(testObj.getCount());
-        boolean frequencyEquals = getFrequency().equals(testObj.getFrequency()); // RRule requires a frequency
-        System.out.println("untils:" + getUntil() + " " + testObj.getUntil() + ((getUntil() != null) ? getUntil().hashCode() : "")
-                + " " + ((testObj.getUntil() != null) ? testObj.getUntil().hashCode() : ""));
-        boolean untilEquals = (getUntil() == null) ? (testObj.getUntil() == null) : getUntil().equals(testObj.getUntil());
+        boolean propertiesEquals = Arrays.stream(RRuleParameter.values())
+                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
+                .map(e -> e.isPropertyEqual(this, testObj))
+                .allMatch(b -> b == true);
         boolean recurrencesEquals = (recurrences() == null) ? (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());
-
-        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals + " " + untilEquals);
-        return countEquals && frequencyEquals && recurrencesEquals && untilEquals;
+        return propertiesEquals && recurrencesEquals;
+//        System.out.println("propertiesEquals" + propertiesEquals);
+//        boolean countEquals = getCount().equals(testObj.getCount());
+//        boolean frequencyEquals = getFrequency().equals(testObj.getFrequency()); // RRule requires a frequency
+//        System.out.println("untils:" + getUntil() + " " + testObj.getUntil() + ((getUntil() != null) ? getUntil().hashCode() : "")
+//                + " " + ((testObj.getUntil() != null) ? testObj.getUntil().hashCode() : ""));
+//        boolean untilEquals = (getUntil() == null) ? (testObj.getUntil() == null) : getUntil().equals(testObj.getUntil());
+//
+//        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals + " " + untilEquals);
+//        return countEquals && frequencyEquals && recurrencesEquals && untilEquals;
     }
     
     @Override

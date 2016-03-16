@@ -116,7 +116,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
               , (m) -> ChangeDialogOption.ONE);
 
         assertEquals(2, vComponents.size());
-
+//System.out.println("appointments:" + instances.size());
         List<Temporal> madeDates = instances.stream()
                 .map(a -> a.getStartTemporal())
                 .sorted()

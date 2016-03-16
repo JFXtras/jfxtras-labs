@@ -40,8 +40,14 @@ public enum RRuleParameter
             Frequency copiedFrequency = source.getFrequency().frequencyType().newInstance(source.getFrequency()); // copy frequency
             destination.setFrequency(copiedFrequency);
         }
+
+        @Override
+        public boolean isPropertyEqual(RRule r1, RRule r2)
+        {
+            return r1.getFrequency().equals(r2.getFrequency());
+        }
     },
-    INTERVAL ("INTERVAL") {
+    INTERVAL ("INTERVAL") { // TODO - SHOULD THIS GO UNDER FREQUENCY??? HOW? ITS THE ONLY PARAMETER THERE
         @Override
         public void setValue(RRule rrule, String value)
         {
@@ -70,15 +76,20 @@ public enum RRuleParameter
         @Override
         public void copyProperty(RRule source, RRule destination)
         {
-            // TODO Auto-generated method stub
-            
+            destination.getFrequency().setInterval(source.getFrequency().getInterval());
+        }
+
+        @Override
+        public boolean isPropertyEqual(RRule r1, RRule r2)
+        {
+            return r1.getFrequency().getInterval().equals(r2.getFrequency().getInterval());
         }
     },
     COUNT ("COUNT") {
         @Override
         public void setValue(RRule rrule, String value)
         {
-            if (rrule.getCount() == null)
+            if (rrule.getCount() == RRule.INITIAL_COUNT)
             {
                 if (rrule.getUntil() == null)
                 {
@@ -96,14 +107,19 @@ public enum RRuleParameter
         @Override
         public String toParameterString(RRule rrule)
         {
-            return (rrule.getCount() == null) ? null : toString() + "=" + rrule.getCount();
+            return (rrule.getCount() == RRule.INITIAL_COUNT) ? null : toString() + "=" + rrule.getCount();
         }
 
         @Override
         public void copyProperty(RRule source, RRule destination)
         {
-            // TODO Auto-generated method stub
-            
+            destination.setCount(source.getCount());
+        }
+
+        @Override
+        public boolean isPropertyEqual(RRule r1, RRule r2)
+        {
+            return r1.getCount().equals(r2.getCount());
         }
     },
     UNTIL ("UNTIL") {
@@ -112,7 +128,7 @@ public enum RRuleParameter
         {
             if (rrule.getUntil() == null)
             {
-                if (rrule.getCount() == 0)
+                if (rrule.getCount() == RRule.INITIAL_COUNT)
                 {
                     rrule.setUntil(DateTimeUtilities.parse(value));                    
                 } else
@@ -128,14 +144,22 @@ public enum RRuleParameter
         @Override
         public String toParameterString(RRule rrule)
         {
-            return (rrule.getUntil() == null) ? null : toString() + "=" + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(rrule.getUntil());
+            return (rrule.getUntil() == null) ? null : toString() + "=" + DateTimeUtilities.format(rrule.getUntil());
         }
 
         @Override
         public void copyProperty(RRule source, RRule destination)
         {
-            // TODO Auto-generated method stub
-            
+            if (source.getUntil() != null)
+            {
+                destination.setUntil(source.getUntil());
+            }
+        }
+
+        @Override
+        public boolean isPropertyEqual(RRule r1, RRule r2)
+        {
+            return (r1.getUntil() == null) ? (r2.getUntil() == null) : r1.getUntil().equals(r2.getUntil());
         }
     },
     WEEK_START ("WKST") { // TODO - THIS PROPERTY MAY BE BEST HANDLED BY LOCALE - NOT PROCESSED NOW
@@ -158,6 +182,13 @@ public enum RRuleParameter
         {
             // TODO Auto-generated method stub
             
+        }
+
+        @Override
+        public boolean isPropertyEqual(RRule r1, RRule r2)
+        {
+            // TODO Auto-generated method stub
+            return true;
         }
     };
         
@@ -201,5 +232,8 @@ public enum RRuleParameter
     
     /** Copies property value from source to destination */
     public abstract void copyProperty(RRule source, RRule destination);
+    
+    /** Checks is corresponding property is equal between r1 and r2 */
+    public abstract boolean isPropertyEqual(RRule r1, RRule r2);
         
 }

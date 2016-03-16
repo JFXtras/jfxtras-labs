@@ -869,7 +869,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         
         // Check for validity
         if (! isValid()) { throw new RuntimeException(errorString()); }
-        System.out.println("here:" + vComponentOriginal);
+//        System.out.println("here:" + vComponentOriginal);
         if (! vComponentOriginal.isValid()) { throw new RuntimeException(vComponentOriginal.errorString()); }
         
         // Remove old instances, add back ones
