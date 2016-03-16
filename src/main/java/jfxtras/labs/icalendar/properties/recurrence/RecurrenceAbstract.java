@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendar.properties.recurrence;
 
+import java.time.DateTimeException;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,9 +27,8 @@ public abstract class RecurrenceAbstract<T> implements Recurrence
      * 3.8.5.1, RFC 5545 iCalendar
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
+    private Class<? extends Temporal> temporalClass;
     public ObservableSet<Temporal> getTemporals() { return vDateTimes; }
-//    private Set<Temporal> vDateTimes = new HashSet<Temporal>();
-//    public void setTemporals(Set<Temporal> temporals) { vDateTimes = temporals; }
     private ObservableSet<Temporal> vDateTimes = FXCollections.observableSet(new HashSet<Temporal>());
     void setVDateTimes(Temporal...dateOrDateTime)
     {
@@ -36,20 +36,7 @@ public abstract class RecurrenceAbstract<T> implements Recurrence
         {
             this.getTemporals().add(d);
         }
-//        if (dateOrDateTime.length > 0) temporalClass(); // test class sameness
-//        Class<? extends Temporal> firstClass = dateOrDateTime[0].getClass();
-//        checkTemporalTypes(firstClass);
     }
-
-//    /** Class of encapsulated Temporal objects - LocalDate, LocalDateTime or ZonedDateTime */
-//    protected Class<? extends Temporal> temporalClass()
-//    {
-//        if (getTemporals().size() > 0)
-//        {
-//            Class<? extends Temporal> clazz = getTemporals().iterator().next().getClass();
-//            return clazz;                
-//        } else return null;
-//    }
     
     protected Stream<Temporal> getTemporalStream()
     {
@@ -69,29 +56,36 @@ public abstract class RecurrenceAbstract<T> implements Recurrence
         return (T) this;
     }
     
-//    /* checks if all Temporal objects in vDateTimes are the same */
-//    @Deprecated // obsolete because of new checking
-//    private void checkTemporalTypes(Class<? extends Temporal> clazz)
-//    {
-//        boolean same =  getTemporals()
-//                .stream()
-//                .allMatch(v -> v.getClass().equals(clazz));
-//        if (! same) throw new IllegalArgumentException("Not all Temporal objects in VDateTime class of type:" + clazz.getSimpleName());
-//    }
-    
     // CONSTRUCTORS
     public RecurrenceAbstract()
     {
+        // Ensure Temporal class of newly added element matches earlier elements
         SetChangeListener<? super Temporal> listener = (SetChangeListener.Change<? extends Temporal> change) ->
         {
+            System.out.println("recurrence change:");
             if (change.wasAdded())
             {
-                Temporal newTemporal = change.getElementAdded();
-                
-//                if (change.wasAdded())
-//                {
-//                    
-//                }
+                Class<? extends Temporal> newTemporalClass = change.getElementAdded().getClass();
+                if (temporalClass != null)
+                {
+//                    Class<? extends Temporal> originalTemporalClass = getTemporals().iterator().next().getClass();
+                    System.out.println("classes:" + temporalClass + " " + newTemporalClass);
+                    if (newTemporalClass != temporalClass)
+                    {
+                        getTemporals().remove(change.getElementAdded());
+                        throw new DateTimeException("Added element " + change.getElementAdded() + " is wrong Temporal class:"
+                                + newTemporalClass.getSimpleName() + ". Must match other elements of class:" + temporalClass.getSimpleName());
+                    }
+                } else
+                {
+                    temporalClass = newTemporalClass;
+                }
+            } else if (change.wasRemoved())
+            {
+                if (getTemporals().isEmpty())
+                {
+                    temporalClass = null; // when collection is emptied nulify temporalClass
+                }
             }
         };
 
@@ -102,7 +96,6 @@ public abstract class RecurrenceAbstract<T> implements Recurrence
         this();
         withTemporals(dateOrDateTime);
     }
-//    public RecurrenceComponentAbstract(LocalDate... date) { withDates(date); }
 
     /** Deep copy all fields from source to destination 
      * @param <U>*/

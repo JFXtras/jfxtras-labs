@@ -12,11 +12,11 @@ import org.junit.runners.Suite.SuiteClasses;
               , ICalendarEditTest.class
               , ICalendarEqualsTest.class
               , ICalendarMakeInstancesTest.class
-              , ICalendarParseComponentTest.class
+              , ICalendarParseVEventTest.class
               , ICalendarParseDateTest.class
               , ICalendarParsePropertyTest.class
               , ICalendarReadICSTest.class
-              , ICalendarToStringTest.class
+              , ICalendarVEventToStringTest.class
               })
 public class AllTests {
 

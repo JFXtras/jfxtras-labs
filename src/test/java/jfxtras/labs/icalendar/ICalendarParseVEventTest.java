@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendar.mocks.VEventMock;
 
-public class ICalendarParseComponentTest extends ICalendarTestAbstract
+public class ICalendarParseVEventTest extends ICalendarTestAbstract
 {           
     /** Tests FREQ=YEARLY */
     @Test

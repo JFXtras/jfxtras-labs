@@ -16,6 +16,7 @@ public interface Recurrence
     public Stream<Temporal> stream(Stream<Temporal> inStream, Temporal startDateTime);
     
     /** parses a comma delimited string of of iCalendar date-times*/
+    @Deprecated // use parameter parse instead
     public static List<Temporal> parseTemporals(String string)
     {
         // find time zone id, if present

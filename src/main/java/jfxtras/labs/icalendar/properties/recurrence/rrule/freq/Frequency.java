@@ -42,7 +42,6 @@ public interface Frequency {
       following order: BYMONTH, BYWEEKNO, BYYEARDAY, BYMONTHDAY, BYDAY,
       BYHOUR, BYMINUTE, BYSECOND and BYSETPOS; then COUNT and UNTIL are
       evaluated.*/
-//    Map<ByRuleParameter, ByRule> byRules();
     ObservableList<ByRule> byRules();
 
     default public ByRule lookupByRule(ByRuleEnum byRuleType)

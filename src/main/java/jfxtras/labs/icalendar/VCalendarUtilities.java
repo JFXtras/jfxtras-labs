@@ -37,9 +37,9 @@ public final class VCalendarUtilities
             while (lineIterator.hasNext())
             {
                 String line = lineIterator.next();
-                Pair<String, String> p = ICalendarUtilities.parsePropertyLine(line);
+                Pair<String, String> p = ICalendarUtilities.parsePropertyLine(line); // TODO - REPLACE WITH PROPERTY NAME GET
                 String propertyName = p.getKey();
-                Arrays.stream(VCalendarProperty.values())
+                Arrays.stream(VCalendarComponent.values())
                         .forEach(property -> 
                         {
                             boolean matchOneLineProperty = propertyName.equals(property.toString());
@@ -80,14 +80,14 @@ public final class VCalendarUtilities
     {
         String propertyName = propertyValuePair.getKey();
         String value = propertyValuePair.getValue();
-        VCalendarProperty vCalendarProperty = VCalendarProperty.propertyFromString(propertyName);
+        VCalendarComponent vCalendarProperty = VCalendarComponent.propertyFromString(propertyName);
         if (vCalendarProperty != null)
         {
             vCalendarProperty.parseAndSetProperty(vCalendar, value);
         }
     }
     
-    public enum VCalendarProperty
+    public enum VCalendarComponent
     {
         CALENDAR_SCALE ("CALSCALE") {
             @Override
@@ -246,11 +246,11 @@ public final class VCalendarUtilities
         };
         
         // Map to match up string tag to VCalendarProperty enum
-        private static Map<String, VCalendarProperty> propertyFromTagMap = makePropertiesFromNameMap();
-        private static Map<String, VCalendarProperty> makePropertiesFromNameMap()
+        private static Map<String, VCalendarComponent> propertyFromTagMap = makePropertiesFromNameMap();
+        private static Map<String, VCalendarComponent> makePropertiesFromNameMap()
         {
-            Map<String, VCalendarProperty> map = new HashMap<>();
-            VCalendarProperty[] values = VCalendarProperty.values();
+            Map<String, VCalendarComponent> map = new HashMap<>();
+            VCalendarComponent[] values = VCalendarComponent.values();
             for (int i=0; i<values.length; i++)
             {
                 map.put(values[i].toString(), values[i]);
@@ -260,7 +260,7 @@ public final class VCalendarUtilities
         
         private String name;
         
-        VCalendarProperty(String name)
+        VCalendarComponent(String name)
         {
             this.name = name;
         }
@@ -289,7 +289,7 @@ public final class VCalendarUtilities
          */
     
         /** get VCalendarProperty enum from property name */
-        public static VCalendarProperty propertyFromString(String propertyName)
+        public static VCalendarComponent propertyFromString(String propertyName)
         {
             return propertyFromTagMap.get(propertyName.toUpperCase());
         }

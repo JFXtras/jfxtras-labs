@@ -13,6 +13,8 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -35,8 +37,7 @@ public final class ICalendarUtilities
     final private static Comparator<? super Pair<String, String>> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
         (p1.getKey().equals(VComponentProperty.DATE_TIME_START.toString())) ? -1 : 1;
 
-    /** key mapping to property value, instead of parameter value*/
-    public final static String PROPERTY_VALUE_KEY = ":";
+
     
     /**
      * Starting with lines-separated list of content lines, the lines are unwrapped and 
@@ -131,9 +132,11 @@ public final class ICalendarUtilities
      * @param propertyLine
      * @return
      */
+    /** key mapping to property value, instead of parameter value*/
+    public final static String PROPERTY_VALUE_KEY = ":";
     public static Map<String,String> propertyLineToParameterMap(String propertyLine)
     {
-        System.out.println("propertyline:" + propertyLine);
+//        System.out.println("propertyline:" + propertyLine);
         return Arrays.stream(propertyLine.split(";"))
 //                .peek(System.out::println)
                 .collect(Collectors.toMap(
@@ -158,6 +161,104 @@ public final class ICalendarUtilities
                         }
                     }));
     }
+    
+    /**
+     * Converts property line into a property-parameter/value map
+     * For example:
+     * RDATE;VALUE=DATE:19970304,19970504,19970704,19970904
+     * 
+     *  results in a Map<String,String> (Note: this property has no value, only a group of parameters, so there is no element with the ":" key)
+     *  Key         Value
+     *  RDATE       19970304,19970504,19970704,19970904
+     *  VALUE       DATE
+     *  
+     *  Another example
+     *  ORGANIZER;CN=David Bal;SENT-BY="mailto:ddbal1@yahoo.com":mailto:ddbal1@yahoo.com
+     *  results in a Map<String,String>
+     *  Key         Value
+     *  CN          David Bal                       Common Name parameter
+     *  SENT-BY     "mailto:ddbal1@yahoo.com"         Sent By parameter (quotes will be stripped in the parameter enum's parsing method)
+     *  ORGANIZER   mailto:ddbal1@yahoo.com
+     * 
+     * STATUS:CONFIRMED
+     * Key         Value
+     * STATUS      CONFIRMED
+     * 
+     * RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
+     * Key         Value
+     * RRULE
+     * FREQ        DAILY                           Frequency parameter
+     * UNTIL       20160417T235959Z                Until parameter
+     * INTERVAL    1                               Interval parameter
+     * 
+     * @param propertyLine
+     * @return
+     */
+    public static Map<String,String> propertyLineToParameterMap2(String propertyLine)
+    {
+        System.out.println("propertyline:" + propertyLine);
+        
+//        Arrays.stream(propertyLine.split(";|(.*=.*(\"mailto:)?.*:)")).forEach(System.out::println);
+//        Arrays.stream(propertyLine.split("(;)")).forEach(System.out::println);
+
+        Map<String,String> parameterMap = new LinkedHashMap<>();
+
+        // Extract property name and its value, if any
+        int parameterValueStart = 0;
+        for (int i=0; i<propertyLine.length(); i++)
+        {
+            if ((propertyLine.charAt(i) == ';') || (propertyLine.charAt(i) == ':'))
+            {
+                parameterValueStart = i+1;
+                break;
+            }
+        }
+        if (parameterValueStart == 0)
+        {
+            return null; // line doesn't contain a property, skip
+        }
+        String propertyName = propertyLine.substring(0, parameterValueStart-1);
+        
+//        Arrays.stream(propertyLine.split("(mailto)(?!.*:)")).forEach(System.out::println);
+//        Arrays.stream(propertyLine.split("(\":)|:(?!.*:)")).forEach(System.out::println);
+        final String propertyValue;
+        Pattern pattern = Pattern.compile(".*\":(.*)"); // match ":
+        Matcher m = pattern.matcher(propertyLine);
+        if (m.find())
+        {
+            propertyValue = m.group(1);
+        } else
+        {
+            Pattern pattern2 = Pattern.compile(":(?!.*=)(.*)"); // match last :
+            Matcher m2 = pattern2.matcher(propertyLine);
+            if (m2.find())
+            {
+                propertyValue = m2.group(1);
+            } else
+            {
+                propertyValue = "";
+            }
+        }
+        int parameterValueEnd = propertyLine.lastIndexOf(propertyValue)-1;
+        String remainingLine = propertyLine.substring(parameterValueStart, parameterValueEnd).replace("\"", "");
+        System.out.println("remaining line:" + remainingLine);
+        parameterMap.put(propertyName, propertyValue);
+//        System.out.println("propertyValue=" + propertyValue);
+        
+//        List<String> animals = new ArrayList<String>();
+//        while (m.find()) {
+//            System.out.println("Found a " + m.group(1));
+//            animals.add(m.group());
+//        }
+
+        parameterMap.putAll(Arrays.stream(remainingLine.split(";"))
+//                .peek(System.out::println)
+                .collect(Collectors.toMap(
+                    p -> p.substring(0, p.indexOf('=')), // parameter key
+                    p -> p.substring(p.indexOf('=')+1)) // parameter value
+                    ));
+        return parameterMap;
+    }
 
     /**
      * Converts property-parameter/value map into property line.  This is the opposite operation
@@ -167,6 +268,7 @@ public final class ICalendarUtilities
      * @return
      */
     @Deprecated // May use enum makeLine methods instead
+    // TODO - NEED LINE WRAPPING
     public static String parameterMapToPropertyLine(Map<String,String> parameterMap)
     {
         return parameterMap.entrySet().stream()
@@ -201,6 +303,7 @@ public final class ICalendarUtilities
      * @param line - single content line from calendar
      * @return - pair where key is property name and value is its value as a string
      */
+    @Deprecated // going to split line into map in propertyLineToParameterMap - first element will be property name/value
     public static Pair<String, String> parsePropertyLine(String line)
     {
         int propertyValueSeparatorIndex = 0;

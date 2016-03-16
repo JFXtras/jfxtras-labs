@@ -14,7 +14,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 
-public class ICalendarToStringTest extends ICalendarTestAbstract
+public class ICalendarVEventToStringTest extends ICalendarTestAbstract
 {
 
     /* Tests both multi-line EXDATE and comma separated EXDATE */
