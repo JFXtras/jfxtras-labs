@@ -62,7 +62,7 @@ public enum RRuleParameter
                 }
             } else
             {
-                throw new RuntimeException(FREQUENCY + "must be set before " + this + " can be set");
+                throw new RuntimeException(FREQUENCY + " must be set before " + this + " can be set");
             }
         }
 

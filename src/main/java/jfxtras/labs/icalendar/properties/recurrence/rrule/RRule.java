@@ -137,11 +137,12 @@ public class RRule implements ICalendarProperty
     // construct new object by parsing property line
     public RRule(String propertyString)
     {
-        ICalendarUtilities.propertyLineToParameterMap(propertyString)
+        ICalendarUtilities.propertyLineToParameterMap2(propertyString)
                 .entrySet()
                 .stream()
                 .sorted((Comparator<? super Entry<String, String>>) (p1, p2) ->
                     (p1.getKey().equals(RRuleParameter.FREQUENCY.toString())) ? -1 : 1) // FREQ must be first
+                .peek(System.out::println)
                 .forEach(e ->
                 {
                     // check parameter to see if its in RRuleParameter enum

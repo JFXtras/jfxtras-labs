@@ -61,6 +61,7 @@ public final class VEventUtilities
     public static void parse(VEvent<?,?> vEvent, Pair<String, String> propertyValuePair)
     {
         String propertyName = propertyValuePair.getKey();
+        // TODO - MAY METHOD TO EXTRACT PROPERTY NAME FROM LINE
         String value = propertyValuePair.getValue();
         
         // VEvent properties
@@ -68,6 +69,8 @@ public final class VEventUtilities
         if (vEventProperty != null)
         {
             vEventProperty.parseAndSetProperty(vEvent, value);
+            // TODO - ITS THE PROPERTY'S JOB TO PARSE THE LINE AND SET PARAMETERS - STILL SEND STRING.
+            // TODO - VALUE NEEDS PROPERTY NAME THOUGH - NOT STRIPPED OFF
         }
     }
     /**

@@ -134,33 +134,33 @@ public final class ICalendarUtilities
      */
     /** key mapping to property value, instead of parameter value*/
     public final static String PROPERTY_VALUE_KEY = ":";
-    public static Map<String,String> propertyLineToParameterMap(String propertyLine)
-    {
-//        System.out.println("propertyline:" + propertyLine);
-        return Arrays.stream(propertyLine.split(";"))
-//                .peek(System.out::println)
-                .collect(Collectors.toMap(
-                    p -> 
-                    {
-                        if (p.contains("="))
-                        {
-                            return p.substring(0, p.indexOf('=')); // parameter key
-                        } else
-                        {
-                            return PROPERTY_VALUE_KEY; // indicates property value key
-                        }
-                    },
-                    p ->
-                    {
-                        if (p.contains("="))
-                        {
-                            return p.substring(p.indexOf('=')+1); // parameter value
-                        } else
-                        {
-                            return p; // property value
-                        }
-                    }));
-    }
+//    public static Map<String,String> propertyLineToParameterMap(String propertyLine)
+//    {
+////        System.out.println("propertyline:" + propertyLine);
+//        return Arrays.stream(propertyLine.split(";"))
+////                .peek(System.out::println)
+//                .collect(Collectors.toMap(
+//                    p -> 
+//                    {
+//                        if (p.contains("="))
+//                        {
+//                            return p.substring(0, p.indexOf('=')); // parameter key
+//                        } else
+//                        {
+//                            return PROPERTY_VALUE_KEY; // indicates property value key
+//                        }
+//                    },
+//                    p ->
+//                    {
+//                        if (p.contains("="))
+//                        {
+//                            return p.substring(p.indexOf('=')+1); // parameter value
+//                        } else
+//                        {
+//                            return p; // property value
+//                        }
+//                    }));
+//    }
     
     /**
      * Converts property line into a property-parameter/value map
@@ -196,7 +196,7 @@ public final class ICalendarUtilities
      */
     public static Map<String,String> propertyLineToParameterMap2(String propertyLine)
     {
-        System.out.println("propertyline:" + propertyLine);
+       System.out.println("propertyline:" + propertyLine);
         
 //        Arrays.stream(propertyLine.split(";|(.*=.*(\"mailto:)?.*:)")).forEach(System.out::println);
 //        Arrays.stream(propertyLine.split("(;)")).forEach(System.out::println);
@@ -239,10 +239,15 @@ public final class ICalendarUtilities
                 propertyValue = "";
             }
         }
-        int parameterValueEnd = propertyLine.lastIndexOf(propertyValue)-1;
-        String remainingLine = propertyLine.substring(parameterValueStart, parameterValueEnd).replace("\"", "");
-        System.out.println("remaining line:" + remainingLine);
-        parameterMap.put(propertyName, propertyValue);
+        parameterMap.put(PROPERTY_VALUE_KEY, propertyValue);
+//      parameterMap.put(propertyName, propertyValue);
+        
+        int parameterValueEnd = propertyLine.lastIndexOf(propertyValue);
+//        System.out.println("se:" + parameterValueStart + " " + parameterValueEnd);
+        if (parameterValueEnd > parameterValueStart)
+        {
+            String remainingLine = propertyLine.substring(parameterValueStart, parameterValueEnd).replace("\"", "");
+          System.out.println("remaining line:" + remainingLine);
 //        System.out.println("propertyValue=" + propertyValue);
         
 //        List<String> animals = new ArrayList<String>();
@@ -251,12 +256,13 @@ public final class ICalendarUtilities
 //            animals.add(m.group());
 //        }
 
-        parameterMap.putAll(Arrays.stream(remainingLine.split(";"))
-//                .peek(System.out::println)
-                .collect(Collectors.toMap(
-                    p -> p.substring(0, p.indexOf('=')), // parameter key
-                    p -> p.substring(p.indexOf('=')+1)) // parameter value
-                    ));
+            parameterMap.putAll(Arrays.stream(remainingLine.split(";"))
+                    .peek(System.out::println)
+                    .collect(Collectors.toMap(
+                        p -> p.substring(0, p.indexOf('=')), // parameter key
+                        p -> p.substring(p.indexOf('=')+1)) // parameter value
+                        ));
+        }
         return parameterMap;
     }
 

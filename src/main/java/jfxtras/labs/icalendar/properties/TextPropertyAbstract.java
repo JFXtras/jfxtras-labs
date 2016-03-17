@@ -33,7 +33,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
     // construct new object by parsing property line
     protected TextPropertyAbstract(String propertyString)
     {
-        ICalendarUtilities.propertyLineToParameterMap(propertyString)
+        ICalendarUtilities.propertyLineToParameterMap2(propertyString)
                 .entrySet()
                 .stream()
                 .forEach(e ->
@@ -56,7 +56,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
         return Arrays.stream(TextPropertyParameter.values())
                 .map(p -> p.toParameterString(this))
                 .filter(s -> ! (s == null))
-                .collect(Collectors.joining(";"));
+                .collect(Collectors.joining(";")); // TODO - THE VALUE IS ADDED WITH A : INSTEAD
     }
 
 //    public void parse(String propertyString)

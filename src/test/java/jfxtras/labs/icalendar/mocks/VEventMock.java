@@ -75,12 +75,15 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
     {
         VEventMock vEvent = new VEventMock();
         Iterator<Pair<String, String>> i = ICalendarUtilities.componentStringToPropertyList(vEventString).iterator();
+        // TODO - MAYBE MAKE ITERATOR<STRING> AND LEAVE PROPERTY NAME ON
         while (i.hasNext())
         {
             Pair<String, String> propertyValuePair = i.next();
             
             // parse each property-value pair by all associated property enums
             VEventUtilities.parse(vEvent, propertyValuePair);
+            // RETURN BOOLEAN IF PARSE IS SUCCESSFUL SO I CAN SKIP NEXT ONES
+            // TODO - INSTEAD PARSE COMPLETE LINE - USE propertyLineToParameterMap2
             VComponentUtilities.parse(vEvent, propertyValuePair);
         }
         return vEvent;

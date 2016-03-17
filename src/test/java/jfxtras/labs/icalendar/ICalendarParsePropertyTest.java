@@ -26,7 +26,7 @@ public class ICalendarParsePropertyTest extends ICalendarTestAbstract
     @Test
     public void canParseSummary()
     {
-        Summary madeSummary = new Summary("TEST SUMMARY");
+        Summary madeSummary = new Summary("SUMMARY:TEST SUMMARY");
         String expectedSummary = "SUMMARY:TEST SUMMARY";
         assertEquals(expectedSummary, madeSummary.toString());
     }
@@ -35,7 +35,7 @@ public class ICalendarParsePropertyTest extends ICalendarTestAbstract
     @Test
     public void canParseRRule1()
     {
-        String s = "FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU";
+        String s = "RRULE:FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU";
         RRule rRule = new RRule(s);
         RRule expectedRRule = new RRule()
                 .withFrequency(new Yearly()
