@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -109,6 +110,81 @@ public final class ICalendarUtilities
         Collections.sort(propertyPairs, DTSTART_FIRST_COMPARATOR);
         return propertyPairs;
     }
+    
+    public static Map<String,String> propertyLineToParameterMap3(String propertyLine)
+    {
+       System.out.println("propertyline:" + propertyLine);
+       Map<String,String> parameterMap = new HashMap<>();
+       
+//       Predicate<Character> p1 = (c) -> c == ':';
+//       Predicate<Character> p2 = (c) -> c == ':';
+
+       // find start of properties
+       int nameEnd;
+       for (nameEnd = 0; nameEnd < propertyLine.length(); nameEnd++)
+       {
+           if ((propertyLine.charAt(nameEnd) == ';') || (propertyLine.charAt(nameEnd) == ':'))
+           {
+               nameEnd--;
+               break;
+           }           
+       }
+       if (nameEnd == propertyLine.length())
+       {
+           return null;
+       }
+       System.out.println("nameEnd:" + nameEnd);
+//       String propertyName = propertyLine.substring(0, nameEnd);
+       
+       // find parameters
+       int parameterStart = nameEnd+1;
+       int parameterEnd = nameEnd;
+//       int index = parameterStart+1;
+       while (parameterEnd < propertyLine.length())
+       {
+           final String name;
+           final String value;
+           System.out.println("start char:" + propertyLine.charAt(parameterStart));
+           if (propertyLine.charAt(parameterStart) == ':')
+           { // found property value.  It continues to end of the string.
+               parameterEnd = propertyLine.length();
+               name = PROPERTY_VALUE_KEY;
+               value = propertyLine.substring(parameterStart, parameterEnd);
+           } else if (propertyLine.charAt(parameterStart) == ';')
+           { // found parameter/value pair.
+               System.out.println("found parameter:");
+               int equalsPosition = propertyLine.indexOf('=', parameterStart);
+               name = propertyLine.substring(parameterStart, equalsPosition-1);
+               char valueStart = propertyLine.charAt(equalsPosition+1);
+               if (valueStart == '\"')
+               { // DQUOTE delimited parameter value
+                   parameterEnd = propertyLine.indexOf('\"', valueStart+1);
+                   value = propertyLine.substring(equalsPosition+1, parameterEnd);
+               } else
+               { // regular parameter value
+                   System.out.println("found regular parameter:");
+                   for (parameterEnd = equalsPosition+2; parameterEnd < propertyLine.length(); parameterEnd++)
+                   {
+                       if ((propertyLine.charAt(parameterEnd) == ';') || (propertyLine.charAt(parameterEnd) == ':'))
+                       {
+                           parameterEnd--;
+                           break;
+                       }           
+                   }
+                   System.out.println("parameterEnd:" + parameterEnd);
+                   value = propertyLine.substring(equalsPosition+1, parameterEnd);                   
+               }
+           } else
+           {
+               throw new IllegalArgumentException("Invalid property line:" + propertyLine);
+           }
+           parameterMap.put(name, value);
+           parameterStart = parameterEnd+1;
+       }
+       
+       return parameterMap;
+    }
+
     
     /**
      * Converts property line into a property-parameter/value map
