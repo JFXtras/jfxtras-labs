@@ -111,6 +111,11 @@ public final class ICalendarUtilities
         return propertyPairs;
     }
     
+    /**
+     * 
+     * @param propertyLine - name-stripped property line
+     * @return
+     */
     public static Map<String,String> propertyLineToParameterMap3(String propertyLine)
     {
        System.out.println("propertyline:" + propertyLine);
@@ -120,41 +125,47 @@ public final class ICalendarUtilities
 //       Predicate<Character> p2 = (c) -> c == ':';
 
        // find start of properties
-       int nameEnd;
-       for (nameEnd = 0; nameEnd < propertyLine.length(); nameEnd++)
+       int parameterStart;
+       for (parameterStart = 0; parameterStart < propertyLine.length(); parameterStart++)
        {
-           if ((propertyLine.charAt(nameEnd) == ';') || (propertyLine.charAt(nameEnd) == ':'))
+           if ((propertyLine.charAt(parameterStart) == ';') || (propertyLine.charAt(parameterStart) == ':'))
            {
-               nameEnd--;
+               parameterStart++;
                break;
-           }           
+           } else if (propertyLine.charAt(parameterStart) == '=')
+           { // propertyLine doesn't contain the property name, start searching for parameters at beginning
+               parameterStart = 0;
+               break;
+           }
        }
-       if (nameEnd == propertyLine.length())
-       {
-           return null;
-       }
-       System.out.println("nameEnd:" + nameEnd);
+//       if (nameEnd == propertyLine.length())
+//       {
+//           return null;
+//       }
+       System.out.println("parameterStart:" + parameterStart);
 //       String propertyName = propertyLine.substring(0, nameEnd);
        
        // find parameters
-       int parameterStart = nameEnd+1;
-       int parameterEnd = nameEnd;
+//       int parameterStart = nameEnd+1;
+       int parameterEnd = parameterStart;
+       char firstCharacter = (parameterStart == 0) ? ';' : propertyLine.charAt(parameterStart-1);
 //       int index = parameterStart+1;
        while (parameterEnd < propertyLine.length())
        {
            final String name;
            final String value;
-           System.out.println("start char:" + propertyLine.charAt(parameterStart));
-           if (propertyLine.charAt(parameterStart) == ':')
+        System.out.println("start char:" + firstCharacter);
+           if (firstCharacter == ':')
            { // found property value.  It continues to end of the string.
+               System.out.println("found value:");
                parameterEnd = propertyLine.length();
                name = PROPERTY_VALUE_KEY;
                value = propertyLine.substring(parameterStart, parameterEnd);
-           } else if (propertyLine.charAt(parameterStart) == ';')
+           } else if (firstCharacter == ';')
            { // found parameter/value pair.
-               System.out.println("found parameter:");
                int equalsPosition = propertyLine.indexOf('=', parameterStart);
-               name = propertyLine.substring(parameterStart, equalsPosition-1);
+               name = propertyLine.substring(parameterStart, equalsPosition);
+               System.out.println("found parameter:" + name);
                char valueStart = propertyLine.charAt(equalsPosition+1);
                if (valueStart == '\"')
                { // DQUOTE delimited parameter value
@@ -167,19 +178,23 @@ public final class ICalendarUtilities
                    {
                        if ((propertyLine.charAt(parameterEnd) == ';') || (propertyLine.charAt(parameterEnd) == ':'))
                        {
-                           parameterEnd--;
+//                           parameterEnd--;
                            break;
                        }           
                    }
-                   System.out.println("parameterEnd:" + parameterEnd);
                    value = propertyLine.substring(equalsPosition+1, parameterEnd);                   
+                   System.out.println("parameterEnd:" + parameterEnd + " " + value);
                }
            } else
            {
                throw new IllegalArgumentException("Invalid property line:" + propertyLine);
            }
            parameterMap.put(name, value);
-           parameterStart = parameterEnd+1;
+           if (parameterEnd < propertyLine.length())
+           {
+               parameterStart = parameterEnd+1;
+               firstCharacter = propertyLine.charAt(parameterStart-1);
+           }
        }
        
        return parameterMap;
