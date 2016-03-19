@@ -1,9 +1,10 @@
-package jfxtras.labs.icalendar;
+package jfxtras.labs.icalendar.component;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendar.ICalendarTestAbstract;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 
 public class ICalendarParseVEventTest extends ICalendarTestAbstract
@@ -25,6 +26,7 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
         VEventMock vEvent = VEventMock.parse(vEventString);
+        System.out.println(vEvent);
         VEventMock expectedVEvent = getYearly1();
         assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }
@@ -37,6 +39,25 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                               + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
                               + "DTSTART:20151109T100000" + System.lineSeparator()
                               + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14" + System.lineSeparator()
+                              + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                              + "END:VEVENT";
+        VEventMock vEvent = VEventMock.parse(vEventString);
+        System.out.println(vEvent);
+        VEventMock expectedVEvent = getDaily3();
+        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+    }
+    
+    @Test
+    public void canIgnoreBlankLines()
+    {
+        String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+                              + "DTEND:20151109T110000" + System.lineSeparator()
+                              + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
+                              + System.lineSeparator()
+                              + "DTSTART:20151109T100000" + System.lineSeparator()
+                              + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14" + System.lineSeparator()
+                              + System.lineSeparator()
+                              + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
         VEventMock vEvent = VEventMock.parse(vEventString);

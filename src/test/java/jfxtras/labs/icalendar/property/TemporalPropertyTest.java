@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar;
+package jfxtras.labs.icalendar.property;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,44 +14,43 @@ import java.util.List;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.properties.recurrence.Recurrence;
 
-public class ICalendarParseDateTest
+/** tests parsing ISO.8601.2004 date string properties */
+public class TemporalPropertyTest
 {
-    /** tests converting ISO.8601.2004 date string to LocalDate */
     @Test
     public void canParseLocalDate()
     {
-        String string = "19980704";
-        Temporal t = DateTimeUtilities.parse(string);
-        assertEquals(t, LocalDate.of(1998, 7, 4));
+        String s = "DTSTART;VALUE=DATE:20160307";
+        Temporal t = DateTimeUtilities.parse(s);
+        assertEquals(t, LocalDate.of(2016, 3, 7));
+    }
+    
+    @Test
+    public void canParseZonedDateTimeUTC()
+    {
+        String s = "DTSTART;TZID=Etc/GMT:20160306T123000Z";
+        Temporal t = DateTimeUtilities.parse(s);
+        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 12, 30), ZoneId.of("Z")));
+    }
+
+    @Test
+    public void canParseZonedDateTime()
+    {
+        String s = "DTEND;TZID=America/Los_Angeles:19970512T093000";
+        Temporal t = DateTimeUtilities.parse(s);
+        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(1997, 5, 12, 9, 30), ZoneId.of("America/Los_Angeles")));
     }
     
     /** tests converting ISO.8601.2004 date-time string to LocalDateTime */
     @Test
     public void canParseLocalDateTime()
     {
-        String string = "19980119T020000";
+        String string = "DTSTART:20160306T123000";
         Temporal t = DateTimeUtilities.parse(string);
-        assertEquals(t, LocalDateTime.of(1998, 1, 19, 2, 0));
-    }
-    
-    /** tests converting ISO.8601.2004 date-time UTC string to ZonedLocalDate */
-    @Test
-    public void canParseZonedDateTimeUTC()
-    {
-        String string = "19980119T020000Z";
-        Temporal t = DateTimeUtilities.parse(string);
-        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(1998, 1, 19, 2, 0), ZoneId.of("Z").normalized()));
-    }
-    
-    /** tests converting ISO.8601.2004 date-time UTC string to ZonedLocalDate */
-    @Test
-    public void canParseZonedDateTime()
-    {
-        String string = "TZID=Europe/London:20160208T073000";
-        Temporal t = DateTimeUtilities.parse(string);
-        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 7, 30), ZoneId.of("Europe/London")));
+        assertEquals(t, LocalDateTime.of(2016, 3, 6, 12, 30));
     }
     
     @Test
@@ -82,4 +81,5 @@ public class ICalendarParseDateTest
         Collections.sort(temporals, DateTimeUtilities.TEMPORAL_COMPARATOR);
         assertEquals(expectedTemporals, temporals);
     }
+
 }

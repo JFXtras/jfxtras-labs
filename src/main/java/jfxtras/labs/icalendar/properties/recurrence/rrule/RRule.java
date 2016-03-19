@@ -137,12 +137,13 @@ public class RRule implements ICalendarProperty
     // construct new object by parsing property line
     public RRule(String propertyString)
     {
-        ICalendarUtilities.propertyLineToParameterMap2(propertyString)
+        String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+        ICalendarUtilities.propertyLineToParameterMap(rruleString)
                 .entrySet()
                 .stream()
                 .sorted((Comparator<? super Entry<String, String>>) (p1, p2) ->
                     (p1.getKey().equals(RRuleParameter.FREQUENCY.toString())) ? -1 : 1) // FREQ must be first
-                .peek(System.out::println)
+//                .peek(System.out::println)
                 .forEach(e ->
                 {
                     // check parameter to see if its in RRuleParameter enum
@@ -155,7 +156,7 @@ public class RRule implements ICalendarProperty
                         ByRuleEnum byRuleParameter = ByRuleEnum.propertyFromName(e.getKey());
                         if (byRuleParameter != null)
                         {
-                            byRuleParameter.setValue(this.getFrequency(), e.getValue());
+                            byRuleParameter.setValue(getFrequency(), e.getValue());
                         }
                     }
                 });
@@ -258,7 +259,7 @@ public class RRule implements ICalendarProperty
         RRule testObj = (RRule) obj;
 
         boolean propertiesEquals = Arrays.stream(RRuleParameter.values())
-                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
+//                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
                 .map(e -> e.isPropertyEqual(this, testObj))
                 .allMatch(b -> b == true);
         boolean recurrencesEquals = (recurrences() == null) ? (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());

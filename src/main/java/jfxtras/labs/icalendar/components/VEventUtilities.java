@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javafx.util.Pair;
 import jfxtras.labs.icalendar.DateTimeUtilities;
+import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VEvent.EndType;
 
 public final class VEventUtilities
@@ -57,21 +57,20 @@ public final class VEventUtilities
      * 
      * @param vEvent - object to add property values
      * @param propertyValuePair - property name-value pair (e.g. DTSTART and TZID=America/Los_Angeles:20160214T110000)
+     * @return - true if property found and set, false otherwise
      */
-    public static void parse(VEvent<?,?> vEvent, Pair<String, String> propertyValuePair)
+//    public static boolean parse(VEvent<?,?> vEvent, Pair<String, String> propertyValuePair)
+    public static boolean parse(VEvent<?,?> vEvent, String propertyLine)
     {
-        String propertyName = propertyValuePair.getKey();
-        // TODO - MAY METHOD TO EXTRACT PROPERTY NAME FROM LINE
-        String value = propertyValuePair.getValue();
-        
-        // VEvent properties
+        String propertyName = ICalendarUtilities.getPropertyName(propertyLine);
+        System.out.println("parsing property:" + propertyName);
         VEventProperty vEventProperty = VEventProperty.propertyFromName(propertyName);
         if (vEventProperty != null)
         {
-            vEventProperty.parseAndSetProperty(vEvent, value);
-            // TODO - ITS THE PROPERTY'S JOB TO PARSE THE LINE AND SET PARAMETERS - STILL SEND STRING.
-            // TODO - VALUE NEEDS PROPERTY NAME THOUGH - NOT STRIPPED OFF
+            vEventProperty.parseAndSetProperty(vEvent, propertyLine);
+            return true;
         }
+        return false;
     }
     /**
      * VEvent specific properties with the following data and methods:
@@ -97,11 +96,11 @@ public final class VEventUtilities
         DESCRIPTION ("DESCRIPTION", true)
         {
             @Override
-            public void parseAndSetProperty(VEvent<?,?> vEvent, String value)
+            public void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine)
             {
                 if (vEvent.getDescription() == null)
                 {
-                    vEvent.setDescription(value);
+                    vEvent.setDescription(propertyLine);
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -140,14 +139,16 @@ public final class VEventUtilities
       , DURATION ("DURATION", true)
         {
             @Override
-            public void parseAndSetProperty(VEvent<?,?> vEvent, String value)
+            public void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine)
             {
                 if (vEvent.getDuration() == null)
                 {
                     if (vEvent.getDateTimeEnd() == null)
                     {
                         vEvent.endPriority = EndType.DURATION;
-                        vEvent.setDuration(Duration.parse(value));
+                        String durationString = ICalendarUtilities.propertyLineToParameterMap(propertyLine)
+                                .get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+                        vEvent.setDuration(Duration.parse(durationString));
                     } else
                     {
                         throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
@@ -200,14 +201,17 @@ public final class VEventUtilities
       , DATE_TIME_END ("DTEND", true)
         {
             @Override
-            public void parseAndSetProperty(VEvent<?,?> vEvent, String value)
+            public void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine)
             {
                 if (vEvent.getDateTimeEnd() == null)
                 {
                     if (vEvent.getDuration() == null)
                     {
                         vEvent.endPriority = EndType.DTEND;
-                        Temporal dateTime = DateTimeUtilities.parse(value);
+                        System.out.println("dtend string:" + propertyLine);
+//                        ICalendarUtilities.propertyLineToParameterMap(propertyLine);
+
+                        Temporal dateTime = DateTimeUtilities.parse(propertyLine);
                         vEvent.setDateTimeEnd(dateTime);
                     } else
                     {
@@ -233,8 +237,8 @@ public final class VEventUtilities
                     return null;
                 } else if (vEvent.endPriority == EndType.DTEND)
                 {
-                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), vEvent.getDateTimeEnd());
-                    return tag + DateTimeUtilities.format(vEvent.getDateTimeEnd());
+//                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), vEvent.getDateTimeEnd());
+                    return toString() + ":" + DateTimeUtilities.format(vEvent.getDateTimeEnd());
                 } else
                 {
                     throw new RuntimeException("DTEND and EndPriority don't match");
@@ -263,9 +267,9 @@ public final class VEventUtilities
       , LOCATION ("LOCATION", true)
         {
             @Override
-            public void parseAndSetProperty(VEvent<?,?> vEvent, String value)
+            public void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine)
             {
-                vEvent.setLocation(value);
+                vEvent.setLocation(propertyLine);
             }
     
             @Override
@@ -334,7 +338,7 @@ public final class VEventUtilities
         /** sets VEvent's property for this VEventProperty to parameter value
          * value is a string that is parsed if necessary to the appropriate type
          */
-        public abstract void parseAndSetProperty(VEvent<?,?> vEvent, String value);
+        public abstract void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine);
     
         /** gets VEvent's property value for this VEventProperty */
         public abstract Object getPropertyValue(VEvent<?,?> vEvent);

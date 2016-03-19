@@ -23,6 +23,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Map;
 
 
 /**
@@ -69,18 +70,19 @@ public final class DateTimeUtilities
             .append(LOCAL_DATE_TIME_FORMATTER)
             .appendOffsetId()
             .toFormatter();
-    public final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .optionalStart()
-            .parseCaseInsensitive()
-            .appendLiteral("TZID=")
-            .appendZoneRegionId()
-            .appendLiteral(':')
-            .optionalEnd()
-            .append(LOCAL_DATE_TIME_FORMATTER)
-            .optionalStart()
-            .appendOffsetId()            
-            .optionalEnd()
-            .toFormatter();
+    @Deprecated
+//    public final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+//            .optionalStart()
+//            .parseCaseInsensitive()
+//            .appendLiteral("TZID=")
+//            .appendZoneRegionId()
+//            .appendLiteral(':')
+//            .optionalEnd()
+//            .append(LOCAL_DATE_TIME_FORMATTER)
+//            .optionalStart()
+//            .appendOffsetId()            
+//            .optionalEnd()
+//            .toFormatter();
     final static DateTimeFormatter ZONE_FORMATTER = new DateTimeFormatterBuilder()
             .optionalStart()
             .parseCaseInsensitive()
@@ -175,18 +177,55 @@ public final class DateTimeUtilities
         return duration;
     }
     
-    /** Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
+    /**
+     * Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
      * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000 (LocalDateTime)
      * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z (ZonedDateTime)
      * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000 (ZonedDateTime)
      * FORM #4: DATE ONLY e.g. VALUE=DATE:19970304 (LocalDate)
      * 
-     * Note: strings can contain optionally contain "VALUE" "=" ("DATE-TIME" / "DATE")) before the date-time portion of the string.
-     * e.g. VALUE=DATE:19960401         VALUE=DATE-TIME:19980101T050000Z
      * 
-     * Based on ISO.8601.2004
+     * @param temporalPropertyLine
+     * @return
      */
-    public static Temporal parse(String temporalString)
+    public static Temporal parse(String temporalPropertyLine)
+    {
+        Map<String, String> parameterMap = ICalendarUtilities.propertyLineToParameterMap(temporalPropertyLine);
+        return Arrays.stream(DateTimeType.values())
+                .map(d -> d.parse(parameterMap))
+                .filter(d -> d != null)
+                .findAny()
+                .get();
+    }
+//    
+//    /**
+//     * Matches 
+//     * 
+//     * @param temporalString
+//     * @return
+//     */
+//    private static Temporal parseTemporalString(String temporalString)
+//    {
+//        return Arrays.stream(DateTimeType.values())
+//            .map(d -> d.parse(temporalString))
+//            .filter(d -> d != null)
+//            .findFirst()
+//            .get();
+//    }
+    
+//    /** Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
+//     * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000 (LocalDateTime)
+//     * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z (ZonedDateTime)
+//     * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000 (ZonedDateTime)
+//     * FORM #4: DATE ONLY e.g. VALUE=DATE:19970304 (LocalDate)
+//     * 
+//     * Note: strings can contain optionally contain "VALUE" "=" ("DATE-TIME" / "DATE")) before the date-time portion of the string.
+//     * e.g. VALUE=DATE:19960401         VALUE=DATE-TIME:19980101T050000Z
+//     * 
+//     * Based on ISO.8601.2004
+//     */
+//    @Deprecated // obsolete - use parameter map instead
+    public static Temporal parseOld(String temporalString)
     {
         final String temporalStringAdjusted;
         if (temporalString.matches("^VALUE=DATE-TIME:.*"))
@@ -196,11 +235,12 @@ public final class DateTimeUtilities
         {
             temporalStringAdjusted = temporalString;
         }
-        return Arrays.stream(DateTimeType.values())
+        System.out.println("temporalStringAdjusted:"  + temporalStringAdjusted + " " + Arrays.stream(DateTimeType.values())
                 .filter(d -> temporalStringAdjusted.matches(d.getPattern()))
                 .findFirst()
-                .get()
-                .parse(temporalString);
+                .get());
+//                .parse(temporalString);
+        return null;
     }
     
     /**
@@ -227,10 +267,11 @@ public final class DateTimeUtilities
      * @param temporal - temporal of LocalDate, LocalDateTime or ZonedDateTime
      * @return
      */
-    public static String dateTimePropertyTag(String propertyName, Temporal temporal)
-    {
-        return DateTimeType.of(temporal).propertyTag(propertyName, temporal);
-    }
+//    @Deprecated
+//    public static String dateTimePropertyTag(String propertyName, Temporal temporal)
+//    {
+//        return DateTimeType.of(temporal).propertyTag(propertyName, temporal);
+//    }
     
     
     /**
@@ -277,26 +318,37 @@ public final class DateTimeUtilities
                 return LOCAL_DATE_FORMATTER.format(temporal);
             }
 
-            @Override
-            String propertyTag(String propertyName, Temporal temporal)
-            {
-                return propertyName + ";VALUE=DATE:";
-            }
+//            @Override
+//            String propertyTag(String propertyName, Temporal temporal)
+//            {
+//                return propertyName + ";VALUE=DATE:";
+//            }
 
-            @Override
-            Temporal parse(String temporalString)
-            {
-                if (temporalString.matches("^VALUE=DATE:.*"))
-                {
-                    temporalString = temporalString.substring(temporalString.indexOf("VALUE=DATE:")+"VALUE=DATE:".length()).trim();
-                }
-                return LocalDate.parse(temporalString, LOCAL_DATE_FORMATTER);
-            }
+//            @Override
+//            Temporal parse(String temporalString)
+//            {
+//                if (temporalString.matches("^VALUE=DATE:.*"))
+//                {
+//                    temporalString = temporalString.substring(temporalString.indexOf("VALUE=DATE:")+"VALUE=DATE:".length()).trim();
+//                }
+//                return LocalDate.parse(temporalString, LOCAL_DATE_FORMATTER);
+//            }
 
             @Override
             boolean is(Temporal temporal)
             {
                 return temporal instanceof LocalDate;
+            }
+
+            @Override
+            Temporal parse(Map<String, String> parameterMap)
+            {
+                String temporalString = parameterMap.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+                if (temporalString.matches(getPattern()))
+                {
+                    return LocalDate.parse(temporalString, LOCAL_DATE_FORMATTER);                    
+                }
+                return null;
             }
         }
       , DATE_WITH_LOCAL_TIME ("^[0-9]{8}T([0-9]{6})")
@@ -330,22 +382,36 @@ public final class DateTimeUtilities
                 return LOCAL_DATE_TIME_FORMATTER.format(temporal);
             }
 
-            @Override
-            String propertyTag(String propertyName, Temporal temporal)
-            {
-                return propertyName + ":";
-            }
+//            @Override
+//            String propertyTag(String propertyName, Temporal temporal)
+//            {
+//                return propertyName + ":";
+//            }
 
-            @Override
-            Temporal parse(String temporalString)
-            {
-                return LocalDateTime.parse(temporalString, LOCAL_DATE_TIME_FORMATTER);
-            }
+//            @Override
+//            Temporal parse(String temporalString)
+//            {
+//                return LocalDateTime.parse(temporalString, LOCAL_DATE_TIME_FORMATTER);
+//            }
 
             @Override
             boolean is(Temporal temporal)
             {
                 return temporal instanceof LocalDateTime;
+            }
+
+            @Override
+            Temporal parse(Map<String, String> parameterMap)
+            {
+                String tzidParameter = parameterMap.get("TZID"); // time zone parameter
+                String temporalString = parameterMap.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+                boolean isTzidEmpty = tzidParameter == null;
+                boolean isPatternMatch = temporalString.matches(getPattern());
+                if (isTzidEmpty && isPatternMatch)
+                {
+                    return LocalDateTime.parse(temporalString, LOCAL_DATE_TIME_FORMATTER);
+                }
+                return null;
             }
         }
       , DATE_WITH_UTC_TIME ("^[0-9]{8}T([0-9]{6})Z")
@@ -380,17 +446,17 @@ public final class DateTimeUtilities
                 return ZONED_DATE_TIME_UTC_FORMATTER.format(temporal);
             }
 
-            @Override
-            String propertyTag(String propertyName, Temporal temporal)
-            {
-                return propertyName + ":";
-            }
+//            @Override
+//            String propertyTag(String propertyName, Temporal temporal)
+//            {
+//                return propertyName + ":";
+//            }
 
-            @Override
-            Temporal parse(String temporalString)
-            {
-                return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_UTC_FORMATTER);
-            }
+//            @Override
+//            Temporal parse(String temporalString)
+//            {
+//                return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_UTC_FORMATTER);
+//            }
 
             @Override
             boolean is(Temporal temporal)
@@ -402,8 +468,20 @@ public final class DateTimeUtilities
                 }
                 return false;
             }
+
+            @Override
+            Temporal parse(Map<String, String> parameterMap)
+            {
+                String temporalString = parameterMap.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+                boolean isPatternMatch = temporalString.matches(getPattern());
+                if (isPatternMatch)
+                {
+                    return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_UTC_FORMATTER);
+                }
+                return null;
+            }
         }
-      , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE ("^(TZID=.*:)[0-9]{8}T([0-9]{6})Z?")
+      , DATE_WITH_LOCAL_TIME_AND_TIME_ZONE ("^[0-9]{8}T([0-9]{6})Z?")
         {
             @Override
             public Temporal from(Temporal temporal, ZoneId zone)
@@ -434,29 +512,45 @@ public final class DateTimeUtilities
                 return LOCAL_DATE_TIME_FORMATTER.format(temporal); // don't use ZONED_DATE_TIME_FORMATTER because time zone is added to property tag
             }
 
-            @Override
-            String propertyTag(String propertyName, Temporal temporal)
-            {
-                String zone = ZONE_FORMATTER.format(temporal);
-                return propertyName + ";" + zone + ":";
-            }
-
-            @Override
-            Temporal parse(String temporalString)
-            {
-                return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_FORMATTER);
-            }
+//            @Override
+//            String propertyTag(String propertyName, Temporal temporal)
+//            {
+//                String zone = ZONE_FORMATTER.format(temporal);
+//                return propertyName + ";" + zone + ":";
+//            }
+//
+//            @Override
+//            Temporal parse(String temporalString)
+//            {
+//                return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_FORMATTER);
+//            }
 
             @Override
             boolean is(Temporal temporal)
             {
                 return temporal instanceof ZonedDateTime;
             }
+
+            @Override
+            Temporal parse(Map<String, String> parameterMap)
+            {
+              String tzidParameter = parameterMap.get("TZID"); // time zone parameter
+              String temporalString = parameterMap.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+              boolean isTzidEmpty = tzidParameter == null;
+              boolean isPatternMatch = temporalString.matches(getPattern());
+              if (! isTzidEmpty && isPatternMatch)
+              {
+                  ZoneId zone = ZoneId.of(tzidParameter);
+                  LocalDateTime localDateTime = LocalDateTime.parse(temporalString, LOCAL_DATE_TIME_FORMATTER);
+                  return localDateTime.atZone(zone);
+              }
+              return null;
+            }
         };
         
         private String pattern;
         public String getPattern() { return pattern; }
-        
+
         DateTimeType(String pattern)
         {
             this.pattern = pattern;
@@ -476,37 +570,47 @@ public final class DateTimeUtilities
          */
         abstract boolean is(Temporal temporal);
         
-        /** Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
-         * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000 (LocalDateTime)
-         * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z (ZonedDateTime)
-         * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000 (ZonedDateTime)
-         * FORM #4: DATE ONLY e.g. VALUE=DATE:19970304 (LocalDate)
-         * 
-         * Note: strings can contain optionally contain "VALUE" "=" ("DATE-TIME" / "DATE")) before the date-time portion of the string.
-         * e.g. VALUE=DATE:19960401         VALUE=DATE-TIME:19980101T050000Z
-         * 
-         * Based on ISO.8601.2004
-         */
-        abstract Temporal parse(String temporalString);
-        
+//        /** Parse iCalendar date or date/time string into LocalDate, LocalDateTime or ZonedDateTime for following formats:
+//         * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000 (LocalDateTime)
+//         * FORM #2: DATE WITH UTC TIME e.g. 19980119T070000Z (ZonedDateTime)
+//         * FORM #3: DATE WITH LOCAL TIME AND TIME ZONE REFERENCE e.g. TZID=America/New_York:19980119T020000 (ZonedDateTime)
+//         * FORM #4: DATE ONLY e.g. VALUE=DATE:19970304 (LocalDate)
+//         * 
+//         * Note: strings can contain optionally contain "VALUE" "=" ("DATE-TIME" / "DATE")) before the date-time portion of the string.
+//         * e.g. VALUE=DATE:19960401         VALUE=DATE-TIME:19980101T050000Z
+//         * 
+//         * Based on ISO.8601.2004
+//         */
+//        @Deprecated // use map version below
+//        abstract Temporal parse(String temporalString);
+
         /**
-         * Produces property name and attribute, if necessary.
-         * For example:
-         * LocalDate : DTSTART;VALUE=DATE:
-         * LocalDateTime : DTSTART:
-         * ZonedDateTime (UTC) : DTSTART:
-         * ZonedDateTime : DTEND;TZID=America/New_York:
+         * Parses parameter map to Temporal.  Returns if no match.
          * 
-         * @param propertyName - e.g. DTSTART
-         * @param temporal - temporal of LocalDate, LocalDateTime or ZonedDateTime
-         * @return
+         * @param parameterMap - map of parameters from propertyLineToParameterMap
+         * @return - parsed Temporal, if matches, null otherwise
          */
-        abstract String propertyTag(String propertyName, Temporal temporal);
+        abstract Temporal parse(Map<String,String> parameterMap);
+
+//        /**
+//         * Produces property name and attribute, if necessary.
+//         * For example:
+//         * LocalDate : DTSTART;VALUE=DATE:
+//         * LocalDateTime : DTSTART:
+//         * ZonedDateTime (UTC) : DTSTART:
+//         * ZonedDateTime : DTEND;TZID=America/New_York:
+//         * 
+//         * @param propertyName - e.g. DTSTART
+//         * @param temporal - temporal of LocalDate, LocalDateTime or ZonedDateTime
+//         * @return
+//         */
+//        @Deprecated
+//        abstract String propertyTag(String propertyName, Temporal temporal);
     
-        /** Format temporal to  */
+        /** Format temporal to embedded DateTimeFormatter */
         abstract String formatDateTimeType(Temporal temporal);
         
-        /** Convert temporal to new DateTimeType  - for DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
+        /** Convert temporal to new DateTimeType - for DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
         public abstract Temporal from(Temporal temporal, ZoneId zone);
         
         /** Convert temporal to new DateTimeType  - for all types, but DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */

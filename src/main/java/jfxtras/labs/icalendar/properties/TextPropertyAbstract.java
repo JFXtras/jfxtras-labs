@@ -33,16 +33,22 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
     // construct new object by parsing property line
     protected TextPropertyAbstract(String propertyString)
     {
-        ICalendarUtilities.propertyLineToParameterMap2(propertyString)
-                .entrySet()
+        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
+                map.entrySet()
                 .stream()
                 .forEach(e ->
                 {
                     TextPropertyParameter.propertyFromName(e.getKey())
                             .setValue(this, e.getValue());
                 });
+        setText(map.get(ICalendarUtilities.PROPERTY_VALUE_KEY));
     }
 
+    /*
+     * CONSTRUCTORS
+     */
+    public TextPropertyAbstract() { }
+    
     // Copy constructor
     protected TextPropertyAbstract(TextPropertyAbstract<?> source)
     {
@@ -53,12 +59,22 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
     @Override
     public String toString()
     {
+        return super.toString() + System.lineSeparator() + toContentLine();
+    }
+
+    /**
+     * Prepare property content line for iCalendar output files.  See RFC 5545 3.5
+     * Contains component property with its value and any populated parameters.  
+     * 
+     * @return - the content line
+     */
+    public String toContentLine()
+    {
         return Arrays.stream(TextPropertyParameter.values())
                 .map(p -> p.toParameterString(this))
                 .filter(s -> ! (s == null))
-                .collect(Collectors.joining(";")); // TODO - THE VALUE IS ADDED WITH A : INSTEAD
+                .collect(Collectors.joining());        
     }
-
 //    public void parse(String propertyString)
 //    {
 //        Map<String, String> p = ICalendarUtilities.PropertyLineToParameterMap(propertyString);
@@ -79,6 +95,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
         boolean languageEquals = (getLanguage() == null) ? (testObj.getLanguage() == null) : getLanguage().equals(testObj.getLanguage());
         boolean alternateTextRepresentationEquals = (getAlternateTextRepresentation() == null) ? (testObj.getAlternateTextRepresentation() == null) : getAlternateTextRepresentation().equals(testObj.getAlternateTextRepresentation());
         boolean textEquals = getText().equals(testObj.getText());
+//        System.out.println("text property equals:" + languageEquals + " " + alternateTextRepresentationEquals + " " + textEquals);
         return languageEquals && alternateTextRepresentationEquals && textEquals;
     }
     
@@ -118,7 +135,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             this.language.set(language);            
         }
     }
-    public T withLanguage(String comment) { setLanguage(comment); return (T) this; }
+    public T withLanguage(String language) { setLanguage(language); return (T) this; }
     
     /**
      * Alternate Text Representation
@@ -172,7 +189,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             this.alternateTextRepresentation.set(alternateTextRepresentation);            
         }
     }
-    public T withAlternateTextRepresentation(String comment) { setLanguage(comment); return (T) this; }
+    public T withAlternateTextRepresentation(String comment) { setAlternateTextRepresentation(comment); return (T) this; }
     
     /**
      * Required String part of the property.  This is the part that appears after any
@@ -201,7 +218,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             {
                 if (textProperty.getAlternateTextRepresentation() != null)
                 {
-                    return toString() + "=" + textProperty.getAlternateTextRepresentation();
+                    return ";" + toString() + "=" + ICalendarUtilities.addDQuotesIfNecessary(textProperty.getAlternateTextRepresentation());
                 }
                 return null;
             }
@@ -209,7 +226,6 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             @Override
             public void copyProperty(TextPropertyAbstract<?> source, TextPropertyAbstract<?> destination)
             {
-                System.out.println("source:" + source);
                 destination.setAlternateTextRepresentation(source.getAlternateTextRepresentation());
             }
         },
@@ -225,7 +241,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             {
                 if (textProperty.getLanguage() != null)
                 {
-                    return toString() + "=" + textProperty.getLanguage();
+                    return ";" + toString() + "=" + textProperty.getLanguage();
                 }
                 return null;
             }
@@ -248,7 +264,7 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
             {
                 if (textProperty.getText() != null)
                 {
-                    return toString() + textProperty.getText();
+                    return ":" + textProperty.getText();
                 }
                 return null;
             }

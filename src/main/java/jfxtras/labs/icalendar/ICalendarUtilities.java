@@ -35,8 +35,16 @@ public final class ICalendarUtilities
 {
     private ICalendarUtilities() { };
     
-    final private static Comparator<? super Pair<String, String>> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
+    @Deprecated
+    final private static Comparator<? super Pair<String, String>> DTSTART_FIRST_COMPARATOR_PAIR = (p1, p2) ->
         (p1.getKey().equals(VComponentProperty.DATE_TIME_START.toString())) ? -1 : 1;
+    final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
+    {
+        int endIndex = VComponentProperty.DATE_TIME_START.toString().length();
+        String myString = p1.substring(0, endIndex);
+        return (myString.equals(VComponentProperty.DATE_TIME_START.toString())) ? -1 : 1;
+    };
+    public final static String PROPERTY_VALUE_KEY = ":";
 
 
     
@@ -72,9 +80,10 @@ public final class ICalendarUtilities
      * @param componentString
      * @return
      */
-    public static List<Pair<String,String>> componentStringToPropertyList(String componentString)
+    public static List<String> componentStringToPropertyList(String componentString)
     {
-        List<Pair<String,String>> propertyPairs = new ArrayList<>();
+//        List<Pair<String,String>> propertyPairs = new ArrayList<>();
+        List<String> propertyLines = new ArrayList<>();
         String storedLine = "";
         Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
         while (lineIterator.hasNext())
@@ -104,11 +113,12 @@ public final class ICalendarUtilities
                 }
             }
             String line = builder.toString();
-            Pair<String, String> pair = parsePropertyLine(line);
-            if (pair != null) { propertyPairs.add(pair); }
+            propertyLines.add(line);
+//            Pair<String, String> pair = parsePropertyLine(line);
+//            if (pair != null) { propertyPairs.add(pair); }
         }
-        Collections.sort(propertyPairs, DTSTART_FIRST_COMPARATOR);
-        return propertyPairs;
+        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list
+        return propertyLines;
     }
     
     /**
@@ -116,15 +126,11 @@ public final class ICalendarUtilities
      * @param propertyLine - name-stripped property line
      * @return
      */
-    public static Map<String,String> propertyLineToParameterMap3(String propertyLine)
+    public static Map<String,String> propertyLineToParameterMap(String propertyLine)
     {
-       System.out.println("propertyline:" + propertyLine);
        Map<String,String> parameterMap = new HashMap<>();
-       
-//       Predicate<Character> p1 = (c) -> c == ':';
-//       Predicate<Character> p2 = (c) -> c == ':';
-
-       // find start of properties
+//       System.out.println("propertyLine:" + propertyLine);
+       // find start of parameters (go past property name)
        int parameterStart;
        for (parameterStart = 0; parameterStart < propertyLine.length(); parameterStart++)
        {
@@ -138,52 +144,41 @@ public final class ICalendarUtilities
                break;
            }
        }
-//       if (nameEnd == propertyLine.length())
-//       {
-//           return null;
-//       }
-       System.out.println("parameterStart:" + parameterStart);
-//       String propertyName = propertyLine.substring(0, nameEnd);
        
        // find parameters
-//       int parameterStart = nameEnd+1;
        int parameterEnd = parameterStart;
        char firstCharacter = (parameterStart == 0) ? ';' : propertyLine.charAt(parameterStart-1);
-//       int index = parameterStart+1;
        while (parameterEnd < propertyLine.length())
        {
            final String name;
            final String value;
-        System.out.println("start char:" + firstCharacter);
            if (firstCharacter == ':')
            { // found property value.  It continues to end of the string.
-               System.out.println("found value:");
                parameterEnd = propertyLine.length();
                name = PROPERTY_VALUE_KEY;
                value = propertyLine.substring(parameterStart, parameterEnd);
+//               System.out.println("value:" + value);
            } else if (firstCharacter == ';')
            { // found parameter/value pair.
                int equalsPosition = propertyLine.indexOf('=', parameterStart);
-               name = propertyLine.substring(parameterStart, equalsPosition);
-               System.out.println("found parameter:" + name);
+               name = propertyLine.substring(parameterStart, equalsPosition).toUpperCase();
                char valueStart = propertyLine.charAt(equalsPosition+1);
                if (valueStart == '\"')
                { // DQUOTE delimited parameter value
-                   parameterEnd = propertyLine.indexOf('\"', valueStart+1);
-                   value = propertyLine.substring(equalsPosition+1, parameterEnd);
+                   parameterEnd = Math.min(propertyLine.indexOf('\"', valueStart+1)+1, propertyLine.length());
+                   value = propertyLine.substring(equalsPosition+2, parameterEnd-1); // removes quotes
+///                   System.out.println("parameter:" + value);
                } else
                { // regular parameter value
-                   System.out.println("found regular parameter:");
                    for (parameterEnd = equalsPosition+2; parameterEnd < propertyLine.length(); parameterEnd++)
                    {
                        if ((propertyLine.charAt(parameterEnd) == ';') || (propertyLine.charAt(parameterEnd) == ':'))
                        {
-//                           parameterEnd--;
                            break;
                        }           
                    }
-                   value = propertyLine.substring(equalsPosition+1, parameterEnd);                   
-                   System.out.println("parameterEnd:" + parameterEnd + " " + value);
+                   value = propertyLine.substring(equalsPosition+1, parameterEnd);
+//                   System.out.println("parameter:" + value);
                }
            } else
            {
@@ -198,6 +193,31 @@ public final class ICalendarUtilities
        }
        
        return parameterMap;
+    }
+    
+    /**
+     * Returns iCalendar property name from property content line.
+     * 
+     * @param propertyLine - a iCalendar property line.  The property name must be at the beginning of the line
+     * @return - property name
+     */
+    public static String getPropertyName(String propertyLine)
+    {
+        int propertyNameEnd;
+        for (propertyNameEnd=0; propertyNameEnd<propertyLine.length(); propertyNameEnd++)
+        {
+            if ((propertyLine.charAt(propertyNameEnd) == ';') || (propertyLine.charAt(propertyNameEnd) == ':'))
+            {
+                break;
+            }
+        }
+        if (propertyNameEnd < propertyLine.length())
+        {
+            return propertyLine.substring(0, propertyNameEnd);
+        } else
+        {
+            throw new IllegalArgumentException("Illegal property line.  No value after name:" + propertyLine);
+        }
     }
 
     
@@ -224,7 +244,7 @@ public final class ICalendarUtilities
      * @return
      */
     /** key mapping to property value, instead of parameter value*/
-    public final static String PROPERTY_VALUE_KEY = ":";
+    
 //    public static Map<String,String> propertyLineToParameterMap(String propertyLine)
 //    {
 ////        System.out.println("propertyline:" + propertyLine);
@@ -285,7 +305,8 @@ public final class ICalendarUtilities
      * @param propertyLine
      * @return
      */
-    public static Map<String,String> propertyLineToParameterMap2(String propertyLine)
+    @Deprecated
+    public static Map<String,String> propertyLineToParameterMapOld(String propertyLine)
     {
        System.out.println("propertyline:" + propertyLine);
         
@@ -382,7 +403,7 @@ public final class ICalendarUtilities
                     return parsePropertyLine(line);
                 })
                 .filter(p -> p != null)
-                .sorted(DTSTART_FIRST_COMPARATOR)
+                .sorted(DTSTART_FIRST_COMPARATOR_PAIR)
                 .collect(Collectors.toList());        
     }
 
@@ -423,6 +444,24 @@ public final class ICalendarUtilities
             return null;
         }
         return new Pair<String,String>(propertyName, value);
+    }
+    
+    /*
+     * MAKE STRING METHODS
+     */
+    
+    public static String addDQuotesIfNecessary(String text)
+    {
+        boolean hasDQuote = text.contains("\"");
+        boolean hasColon = text.contains(":");
+        boolean hasSemiColon = text.contains(";");
+        if (hasDQuote || hasColon || hasSemiColon)
+        {
+            return "\"" + text + "\""; // add double quotes
+        } else
+        {
+            return text;
+        }
     }
     
     /**

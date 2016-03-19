@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +16,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
-import javafx.util.Pair;
 import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.components.VComponentUtilities;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
@@ -135,15 +134,16 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     public static VEventImpl parse(String vEventString, List<AppointmentGroup> appointmentGroups)
     {
         VEventImpl vEvent = new VEventImpl(appointmentGroups);
-        Iterator<Pair<String, String>> i = ICalendarUtilities.componentStringToPropertyList(vEventString).iterator();
-        while (i.hasNext())
+        Iterator<String> lineIterator = Arrays.stream( vEventString.split(System.lineSeparator()) ).iterator();
+        while (lineIterator.hasNext())
         {
-            Pair<String, String> propertyValuePair = i.next();
-            
-            // parse each property-value pair by all associated property enums
-            // TODO - CONSIDER MAKING A VEventImpl ENUM
-            VEventUtilities.parse(vEvent, propertyValuePair);
-            VComponentUtilities.parse(vEvent, propertyValuePair);
+            String line = lineIterator.next();
+            // parse each property name by its associated property enums
+            boolean success = VEventUtilities.parse(vEvent, line);
+            if (! success)
+            {
+                VComponentUtilities.parse(vEvent, line);
+            }
         }
         return vEvent;
     }

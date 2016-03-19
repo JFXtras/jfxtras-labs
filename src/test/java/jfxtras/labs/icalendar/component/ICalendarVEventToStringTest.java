@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar;
+package jfxtras.labs.icalendar.component;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,6 +11,8 @@ import java.time.temporal.Temporal;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendar.DateTimeUtilities;
+import jfxtras.labs.icalendar.ICalendarTestAbstract;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 

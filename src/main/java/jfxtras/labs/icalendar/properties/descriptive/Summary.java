@@ -14,10 +14,12 @@ public class Summary extends TextPropertyAbstract<Comment>
     {
         super(summary);
     }
+    
+    public Summary() { }
 
     @Override
-    public String toString()
+    public String toContentLine()
     {
-        return VComponentProperty.SUMMARY.toString() + super.toString();
+        return VComponentProperty.SUMMARY.toString() + super.toContentLine();
     }
 }
