@@ -411,9 +411,6 @@ public final class VComponentUtilities
                 if (vComponent.getDateTimeLastModified() == null)
                 {
                     ZonedDateTime dateTime = (ZonedDateTime) DateTimeUtilities.parse(propertyLine);
-//                    String dateString = ICalendarUtilities.propertyLineToParameterMap(propertyLine)
-//                            .get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-//                    ZonedDateTime dateTime = ZonedDateTime.parse(dateString, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
                     vComponent.setDateTimeLastModified(dateTime);
                 } else
                 {
@@ -810,7 +807,9 @@ public final class VComponentUtilities
             {
                 if (vComponent.getUniqueIdentifier() == null)
                 {
-                    vComponent.setUniqueIdentifier(propertyLine);
+                    int beginIndex = propertyLine.indexOf(':')+1;
+                    String value = propertyLine.substring(beginIndex);
+                    vComponent.setUniqueIdentifier(value);
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -826,7 +825,7 @@ public final class VComponentUtilities
             @Override
             public String toPropertyString(VComponent<?> vComponent)
             {
-                System.out.println("uid:" + vComponent.getUniqueIdentifier());
+                System.out.println("uid2:" + vComponent.getUniqueIdentifier());
                 return ((vComponent.getUniqueIdentifier() == null) || (vComponent.getUniqueIdentifier().isEmpty())) ? null : toString()
                         + ":" + vComponent.getUniqueIdentifier();
             }

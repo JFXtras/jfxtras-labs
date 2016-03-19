@@ -130,6 +130,7 @@ public enum RRuleParameter
             {
                 if (rrule.getCount() == RRule.INITIAL_COUNT)
                 {
+                    System.out.println("until:" + value + " " + DateTimeUtilities.parse(value));
                     rrule.setUntil(DateTimeUtilities.parse(value));                    
                 } else
                 {

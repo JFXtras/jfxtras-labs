@@ -54,6 +54,22 @@ public class TemporalPropertyTest
     }
     
     @Test
+    public void canParseZonedDateTimeUTC2()
+    {
+        String string = "DTEND:20160306T123000Z";
+        Temporal t = DateTimeUtilities.parse(string);
+        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 12, 30), ZoneId.of("Z")));
+    }
+
+    @Test
+    public void canParseZonedDateTimeUTCAlone()
+    {
+        String string = "20160306T123000Z";
+        Temporal t = DateTimeUtilities.parse(string);
+        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 12, 30), ZoneId.of("Z")));
+    }
+    
+    @Test
     public void canParseDateList()
     {
         String string = "19970101,19970120,19970217,19970421";

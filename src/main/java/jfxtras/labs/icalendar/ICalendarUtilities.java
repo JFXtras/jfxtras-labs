@@ -129,25 +129,35 @@ public final class ICalendarUtilities
     public static Map<String,String> propertyLineToParameterMap(String propertyLine)
     {
        Map<String,String> parameterMap = new HashMap<>();
-//       System.out.println("propertyLine:" + propertyLine);
+
        // find start of parameters (go past property name)
-       int parameterStart;
+       int parameterStart=0;
        for (parameterStart = 0; parameterStart < propertyLine.length(); parameterStart++)
        {
+           parameterStart++;
            if ((propertyLine.charAt(parameterStart) == ';') || (propertyLine.charAt(parameterStart) == ':'))
            {
                parameterStart++;
                break;
-           } else if (propertyLine.charAt(parameterStart) == '=')
-           { // propertyLine doesn't contain the property name, start searching for parameters at beginning
+           } else if (propertyLine.charAt(parameterStart) == '=') // propertyLine doesn't contain the property name, start searching for parameters at beginning
+           {
                parameterStart = 0;
                break;
            }
        }
+
+       char firstCharacter;
+       if (parameterStart == propertyLine.length())
+       {
+           parameterStart = 0; // reset to front of line because it only contains a value
+           firstCharacter = ':';
+       } else
+       {
+           firstCharacter = (parameterStart == 0) ? ';' : propertyLine.charAt(parameterStart-1);
+       }
        
        // find parameters
        int parameterEnd = parameterStart;
-       char firstCharacter = (parameterStart == 0) ? ';' : propertyLine.charAt(parameterStart-1);
        while (parameterEnd < propertyLine.length())
        {
            final String name;
@@ -157,7 +167,7 @@ public final class ICalendarUtilities
                parameterEnd = propertyLine.length();
                name = PROPERTY_VALUE_KEY;
                value = propertyLine.substring(parameterStart, parameterEnd);
-//               System.out.println("value:" + value);
+               System.out.println("value:" + value);
            } else if (firstCharacter == ';')
            { // found parameter/value pair.
                int equalsPosition = propertyLine.indexOf('=', parameterStart);
@@ -167,7 +177,7 @@ public final class ICalendarUtilities
                { // DQUOTE delimited parameter value
                    parameterEnd = Math.min(propertyLine.indexOf('\"', valueStart+1)+1, propertyLine.length());
                    value = propertyLine.substring(equalsPosition+2, parameterEnd-1); // removes quotes
-///                   System.out.println("parameter:" + value);
+                   System.out.println("parameter:" + value);
                } else
                { // regular parameter value
                    for (parameterEnd = equalsPosition+2; parameterEnd < propertyLine.length(); parameterEnd++)
@@ -178,7 +188,7 @@ public final class ICalendarUtilities
                        }           
                    }
                    value = propertyLine.substring(equalsPosition+1, parameterEnd);
-//                   System.out.println("parameter:" + value);
+                  System.out.println("parameter:" + value);
                }
            } else
            {
@@ -197,12 +207,17 @@ public final class ICalendarUtilities
     
     /**
      * Returns iCalendar property name from property content line.
+     * Returns empty string if propertyLine is null or empty
      * 
      * @param propertyLine - a iCalendar property line.  The property name must be at the beginning of the line
      * @return - property name
      */
     public static String getPropertyName(String propertyLine)
     {
+        if ((propertyLine == null) || propertyLine.isEmpty())
+        {
+            return "";
+        }
         int propertyNameEnd;
         for (propertyNameEnd=0; propertyNameEnd<propertyLine.length(); propertyNameEnd++)
         {
