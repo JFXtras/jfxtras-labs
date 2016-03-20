@@ -16,7 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Parent;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.TestUtil;
 
@@ -182,7 +182,7 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
             agenda.vComponents().add(ICalendarStaticVEvents.getIndividualZoned());
         });
         
-        VComponentDisplayable<Appointment> v = agenda.vComponents().get(0);
+        VComponentDisplayableOld<Appointment> v = agenda.vComponents().get(0);
         System.out.println("v:" + v + " " + agenda.appointments().size());
         List<Temporal> startZoneDates = agenda.appointments()
                 .stream()

@@ -58,9 +58,9 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRule;
@@ -84,7 +84,7 @@ final public static int INITIAL_COUNT = 10;
 final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on) 
 final private static int INITIAL_INTERVAL = 1;
     
-private VComponentDisplayable<T> vComponent;
+private VComponentDisplayableOld<T> vComponent;
 private Temporal dateTimeStartInstanceNew;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -430,7 +430,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             if (vComponent.getRRule() == null)
             {
                 // setup new default RRule
-                RRule rRule = new RRule()
+                RecurrenceRule rRule = new RecurrenceRule()
                         .withFrequency(new Weekly()
                         .withByRules(new ByDay(DayOfWeek.from(dateTimeStartInstanceNew)))); // default RRule
                 vComponent.setRRule(rRule);
@@ -649,7 +649,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
  * @param dateTimeStartInstanceNew : start date-time for edited event
  */
     public void setupData(
-            VComponentDisplayable<T> vComponent
+            VComponentDisplayableOld<T> vComponent
           , Temporal dateTimeStartInstanceNew
           , Stage stage)
     {
@@ -776,7 +776,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     }
     
     /* Set controls to values in rRule */
-    private void setInitialValues(VComponentDisplayable<T> vComponent)
+    private void setInitialValues(VComponentDisplayableOld<T> vComponent)
     {
         int initialInterval = (vComponent.getRRule().getFrequency().getInterval() > 0) ?
                 vComponent.getRRule().getFrequency().getInterval() : INITIAL_INTERVAL;
@@ -834,7 +834,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 
      * This method is called only during setup */
-    private void setDayOfWeek(RRule rRule)
+    private void setDayOfWeek(RecurrenceRule rRule)
     {
         // Set day of week properties
         if (rRule.getFrequency().frequencyType() == FrequencyEnum.WEEKLY)
@@ -1010,7 +1010,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
      * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
      * @return Easy to read summary of repeat rule
      */
-    public static String makeSummary(RRule rRule, Temporal startTemporal)
+    public static String makeSummary(RecurrenceRule rRule, Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();
         if (rRule.getCount() == 1) return (Settings.resources == null) ? "Once" : Settings.resources.getString("rrule.summary.once");
@@ -1091,9 +1091,9 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         return builder.toString();
     }
     
-    private boolean isSupported(VComponentDisplayable<?> vComponent)
+    private boolean isSupported(VComponentDisplayableOld<?> vComponent)
     {
-        RRule rRule = vComponent.getRRule();
+        RecurrenceRule rRule = vComponent.getRRule();
         if (rRule == null)
         {
             return true;

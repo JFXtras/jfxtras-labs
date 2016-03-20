@@ -33,22 +33,23 @@ import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
+import jfxtras.labs.icalendar.properties.descriptive.Categories;
 import jfxtras.labs.icalendar.properties.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.RDate;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
 
 /**
  * Abstract implementation of VComponent with all common methods for VEvent, VTodo, and VJournal
  * 
  * @author David Bal
- * @see VEvent
+ * @see VEventOld
  *
  * @param <I> - recurrence instance type
  * @param <T> - Implementation class
  */
-public abstract class VComponentDisplayableBase<I, T> implements VComponentDisplayable<I>
+public abstract class VComponentDisplayableBase<I, T> implements VComponentDisplayableOld<I>
 {
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -58,11 +59,11 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
      * CATEGORIES:MEETING
      */
     // TODO - NEED TO ACCEPT MULTIPLE CATEGORIES - CHANGE TO OBSERVABLE LIST OR SET OR USE COMMA-DELIMATED STRING - NEED TO PUT BOX AROUND APPOINTMENT GROUP FOR THE SELECTED ONE, BUT MULTIPLE CHECKS ARE ALLOWED
-    @Override public StringProperty categoriesProperty() { return categoriesProperty; }
-    final private StringProperty categoriesProperty = new SimpleStringProperty(this, VComponentPropertyOld.CATEGORIES.toString());
-    @Override public String getCategories() { return categoriesProperty.get(); }
-    @Override public void setCategories(String value) { categoriesProperty.set(value); }
-    public T withCategories(String s) { setCategories(s); return (T) this; }
+    @Override public ObjectProperty<Categories> categoriesProperty() { return categoriesProperty; }
+    final private ObjectProperty<Categories> categoriesProperty = new SimpleObjectProperty<>(this, VComponentPropertyOld.CATEGORIES.toString());
+    @Override public Categories getCategories() { return categoriesProperty.get(); }
+    @Override public void setCategories(Categories value) { categoriesProperty.set(value); }
+    public T withCategories(Categories categories) { setCategories(categories); return (T) this; }
     
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -471,11 +472,11 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
 
     
     @Override // TODO - MAKE OBJECT PROPERTY???
-    public VComponentDisplayable<I> getParent() { return parent; }
-    private VComponentDisplayable<I> parent;
+    public VComponentDisplayableOld<I> getParent() { return parent; }
+    private VComponentDisplayableOld<I> parent;
     @Override
-    public void setParent(VComponentDisplayable<I> parent) { this.parent = parent; }
-    public T withParent(VComponentDisplayable<I> parent) { setParent(parent); return (T) this; }
+    public void setParent(VComponentDisplayableOld<I> parent) { this.parent = parent; }
+    public T withParent(VComponentDisplayableOld<I> parent) { setParent(parent); return (T) this; }
 
     
     /**
@@ -483,17 +484,17 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
      * If event is not repeating value is null
      */
     @Override
-    public ObjectProperty<RRule> rRuleProperty()
+    public ObjectProperty<RecurrenceRule> rRuleProperty()
     {
-        if (rRule == null) rRule = new SimpleObjectProperty<RRule>(this, VComponentPropertyOld.RECURRENCE_RULE.toString(), _rRule);
+        if (rRule == null) rRule = new SimpleObjectProperty<RecurrenceRule>(this, VComponentPropertyOld.RECURRENCE_RULE.toString(), _rRule);
         return rRule;
     }
-    private ObjectProperty<RRule> rRule;
-    private RRule _rRule;
+    private ObjectProperty<RecurrenceRule> rRule;
+    private RecurrenceRule _rRule;
     @Override
-    public RRule getRRule() { return (rRule == null) ? _rRule : rRule.get(); }
+    public RecurrenceRule getRRule() { return (rRule == null) ? _rRule : rRule.get(); }
     @Override
-    public void setRRule(RRule rRule)
+    public void setRRule(RecurrenceRule rRule)
     {
         if (this.rRule == null)
         {
@@ -503,7 +504,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
             this.rRule.set(rRule);
         }
     }
-    public T withRRule(RRule rRule) { setRRule(rRule); return (T) this; }
+    public T withRRule(RecurrenceRule rRule) { setRRule(rRule); return (T) this; }
     
     /**
      *  SEQUENCE: RFC 5545 iCalendar 3.8.7.4. page 138
@@ -547,7 +548,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     @Override
     public void setSummary(Summary summary) { this.summary.set(summary); }
     public T withSummary(Summary summary) { setSummary(summary); return (T) this; }
-    public T withSummary(String summaryText) { setSummary(new Summary(summaryText)); return (T) this; }
+//    public T withSummary(String summaryText) { setSummary(new Summary(summaryText)); return (T) this; }
     
     /**
      * Unique identifier, UID as defined by RFC 5545, iCalendar 3.8.4.7 page 117
@@ -631,8 +632,8 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     
     @Override
     public boolean handleEdit(
-            VComponentDisplayable<I> vComponentOriginal
-          , Collection<VComponentDisplayable<I>> vComponents
+            VComponentDisplayableOld<I> vComponentOriginal
+          , Collection<VComponentDisplayableOld<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
@@ -667,7 +668,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
             if (changedPropertyNames.size() > 0) // if changes occurred
             {
-                List<VComponentDisplayable<I>> relatedVComponents = Arrays.asList(this); // TODO - support related components
+                List<VComponentDisplayableOld<I>> relatedVComponents = Arrays.asList(this); // TODO - support related components
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
@@ -772,7 +773,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     /**
      * Return true if ANY changed property requires a dialog, false otherwise
      * 
-     * @param changedPropertyNames - list from {@link #findChangedProperties(VComponentDisplayable)}
+     * @param changedPropertyNames - list from {@link #findChangedProperties(VComponentDisplayableOld)}
      * @return
      */
     boolean requiresChangeDialog(List<String> changedPropertyNames)
@@ -792,7 +793,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
      * 
      * equal checks are encapsulated inside the enum VComponentProperty
      */
-    List<String> findChangedProperties(VComponentDisplayable<I> vComponentOriginal)
+    List<String> findChangedProperties(VComponentDisplayableOld<I> vComponentOriginal)
     {
         List<String> changedProperties = new ArrayList<>();
         Arrays.stream(VComponentPropertyOld.values())
@@ -825,9 +826,9 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
      * @param vComponentOriginal
      * @param startInstance
      * @param endInstance
-     * @see #handleEdit(VComponentDisplayable, Collection, Temporal, Temporal, Temporal, Collection, Callback)
+     * @see #handleEdit(VComponentDisplayableOld, Collection, Temporal, Temporal, Temporal, Collection, Callback)
      */
-    protected void becomingIndividual(VComponentDisplayable<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
+    protected void becomingIndividual(VComponentDisplayableOld<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
     {
         setRRule(null);
         setRDate(null);
@@ -842,11 +843,11 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
      * Edit one instance of a VEvent with a RRule.  The instance becomes a new VEvent without a RRule
      * as with the same UID as the parent and a recurrence-id for the replaced date or date/time.
      * 
-     * @see #handleEdit(VComponentDisplayable, Collection, Temporal, Temporal, Temporal, Collection)
+     * @see #handleEdit(VComponentDisplayableOld, Collection, Temporal, Temporal, Temporal, Collection)
      */
     protected Collection<I> editOne(
-            VComponentDisplayable<I> vComponentOriginal
-          , Collection<VComponentDisplayable<I>> vComponents
+            VComponentDisplayableOld<I> vComponentOriginal
+          , Collection<VComponentDisplayableOld<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
@@ -892,11 +893,11 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
      * @param endInstance 
      * @param <T>
      * 
-     * @see VComponentDisplayable#handleEdit(VComponentDisplayable, Collection, Temporal, Temporal, Temporal, Collection)
+     * @see VComponentDisplayableOld#handleEdit(VComponentDisplayableOld, Collection, Temporal, Temporal, Temporal, Collection)
      */
     protected Collection<I> editThisAndFuture(
-            VComponentDisplayable<I> vComponentOriginal
-          , Collection<VComponentDisplayable<I>> vComponents
+            VComponentDisplayableOld<I> vComponentOriginal
+          , Collection<VComponentDisplayableOld<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
@@ -971,10 +972,10 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
         if (getRRule().recurrences() != null)
         {
             getRRule().recurrences().clear();
-            final Iterator<VComponentDisplayable<?>> recurrenceIterator = getRRule().recurrences().iterator();
+            final Iterator<VComponentDisplayableOld<?>> recurrenceIterator = getRRule().recurrences().iterator();
             while (recurrenceIterator.hasNext())
             {
-                VComponentDisplayable<?> d = recurrenceIterator.next();
+                VComponentDisplayableOld<?> d = recurrenceIterator.next();
                 if (DateTimeUtilities.isBefore(d.getDateTimeRecurrence(), startInstance))
                 {
                     recurrenceIterator.remove();
@@ -1012,7 +1013,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     
     @Override
     public void handleDelete(
-            Collection<VComponentDisplayable<I>> vComponents
+            Collection<VComponentDisplayableOld<I>> vComponents
           , Temporal startInstance
           , I instance
           , Collection<I> instances
@@ -1032,7 +1033,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
             switch (changeResponse)
             {
             case ALL:
-                List<VComponentDisplayable<?>> relatedVComponents = new ArrayList<>();
+                List<VComponentDisplayableOld<?>> relatedVComponents = new ArrayList<>();
                 if (this.getDateTimeRecurrence() == null)
                 { // is parent
                     relatedVComponents.addAll(this.getRRule().recurrences());
@@ -1112,7 +1113,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     
     /** Deep copy all fields from source to destination */
     @Override
-    public void copyTo(VComponentDisplayable<I> destination)
+    public void copyTo(VComponentDisplayableOld<I> destination)
     {
         copy(this, (VComponentDisplayableBase<I,?>) destination);
     }
@@ -1143,7 +1144,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     private int skipCounter = 0; // counter that increments up to CACHE_SKIP, indicates time to record a value, then resets to 0
     private Temporal[] temporalCache; // the start date or date/time cache
     private Temporal dateTimeStartLast; // last dateTimeStart, when changes indicates clearing the cache is necessary
-    private RRule rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
+    private RecurrenceRule rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
     private int cacheStart = 0; // start index where cache values are stored (starts in middle)
     private int cacheEnd = 0; // end index where cache values are stored
 
@@ -1372,7 +1373,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
         WITH_NEW_REPEAT, 
         HAD_REPEAT_BECOMING_INDIVIDUAL;
       
-        public static RRuleStatus getRRuleType(RRule rruleNew, RRule rruleOld)
+        public static RRuleStatus getRRuleType(RecurrenceRule rruleNew, RecurrenceRule rruleOld)
         {
             if (rruleNew == null)
             {

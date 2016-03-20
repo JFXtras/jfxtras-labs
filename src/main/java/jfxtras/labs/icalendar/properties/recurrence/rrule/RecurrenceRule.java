@@ -24,8 +24,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
-import jfxtras.labs.icalendar.properties.ComponentProperty;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.properties.VComponentProperty;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
 
@@ -38,7 +38,7 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
  * @author David Bal
  *
  */
-public class RRule implements ComponentProperty
+public class RecurrenceRule implements VComponentProperty
 {            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
@@ -47,7 +47,7 @@ public class RRule implements ComponentProperty
     private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, "FREQ");
     public Frequency getFrequency() { return frequency.get(); }
     public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
-    public RRule withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
+    public RecurrenceRule withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
     
     /**
      * COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends
@@ -80,7 +80,7 @@ public class RRule implements ComponentProperty
         }
         else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
     }
-    public RRule withCount(int count) { setCount(count); return this; }
+    public RecurrenceRule withCount(int count) { setCount(count); return this; }
 
     /**
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
@@ -114,7 +114,7 @@ public class RRule implements ComponentProperty
             }
         } else throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
     }
-    public RRule withUntil(Temporal until) { setUntil(until); return this; }
+    public RecurrenceRule withUntil(Temporal until) { setUntil(until); return this; }
     
     /**
      * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
@@ -123,19 +123,19 @@ public class RRule implements ComponentProperty
      * the recurrence instance.  The UID matches the UID of the parent calendar component.
      * See 3.8.4.4 of RFC 5545 iCalendar
      */
-    public Set<VComponentDisplayable<?>> recurrences() { return recurrences; }
-    private Set<VComponentDisplayable<?>> recurrences = new HashSet<>();
+    public Set<VComponentDisplayableOld<?>> recurrences() { return recurrences; }
+    private Set<VComponentDisplayableOld<?>> recurrences = new HashSet<>();
 //    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
-    public RRule withRecurrences(VComponentDisplayable<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
+    public RecurrenceRule withRecurrences(VComponentDisplayableOld<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
     /*
      * CONSTRUCTORS
      */
     
-    public RRule() { }
+    public RecurrenceRule() { }
 
     // construct new object by parsing property line
-    public RRule(String propertyString)
+    public RecurrenceRule(String propertyString)
     {
         String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
         ICalendarUtilities.propertyLineToParameterMap(rruleString)
@@ -163,7 +163,7 @@ public class RRule implements ComponentProperty
     }
 
     // Copy constructor
-    public RRule(RRule source)
+    public RecurrenceRule(RecurrenceRule source)
     {
         Arrays.stream(RRuleParameter.values())
                 .forEach(p -> p.copyProperty(source, this));
@@ -256,7 +256,7 @@ public class RRule implements ComponentProperty
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        RRule testObj = (RRule) obj;
+        RecurrenceRule testObj = (RecurrenceRule) obj;
 
         boolean propertiesEquals = Arrays.stream(RRuleParameter.values())
 //                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
@@ -289,7 +289,7 @@ public class RRule implements ComponentProperty
      * Checks to see if object contains required properties.  Returns empty string if it is
      * valid.  Returns string of errors if not valid.
      */
-    public String makeErrorString(VComponentDisplayable<?> parent)
+    public String makeErrorString(VComponentDisplayableOld<?> parent)
     {
         StringBuilder builder = new StringBuilder();
         if (recurrences() != null)

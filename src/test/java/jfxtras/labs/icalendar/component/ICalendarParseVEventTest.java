@@ -61,7 +61,6 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
         VEventMock vEvent = VEventMock.parse(vEventString);
-        System.out.println(vEvent);
         VEventMock expectedVEvent = getDaily3();
         assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }

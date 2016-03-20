@@ -27,7 +27,7 @@ import jfxtras.labs.icalendar.properties.relationship.Contact;
  * @author David Bal
  * @param <T> - concrete extended class
  */
-public abstract class TextPropertyAbstract<T> implements ComponentProperty
+public abstract class TextPropertyAbstract<T> implements VComponentProperty
 {   
     /**
      * LANGUAGE: RFC 5545 iCalendar 3.2.10. page 21
@@ -132,6 +132,7 @@ public abstract class TextPropertyAbstract<T> implements ComponentProperty
     // construct new object by parsing property line
     protected TextPropertyAbstract(String textPropertyName, String propertyString)
     {
+        this(textPropertyName);
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
                 map.entrySet()
                 .stream()
@@ -143,7 +144,7 @@ public abstract class TextPropertyAbstract<T> implements ComponentProperty
         setText(map.get(ICalendarUtilities.PROPERTY_VALUE_KEY));
     }
 
-    public TextPropertyAbstract() { }
+    public TextPropertyAbstract(String textPropertyName) { this.textPropertyName = textPropertyName; }
     
     // Copy constructor
     protected TextPropertyAbstract(TextPropertyAbstract<?> source)
@@ -156,18 +157,20 @@ public abstract class TextPropertyAbstract<T> implements ComponentProperty
     @Override
     public String toString()
     {
-        return super.toString() + System.lineSeparator() + toContentLine();
+        return super.toString() + ", " + toContentLine();
     }
 
     /**
-     * Prepare property content line for iCalendar output files.  See RFC 5545 3.5
-     * Contains component property with its value and any populated parameters.  
+     * Return property content line for iCalendar output files.  See RFC 5545 3.5
+     * Contains component property with its value and any populated parameters.
+     * 
+     * For example: SUMMARY;LANGUAGE=en-US:Company Holiday Party
      * 
      * @return - the content line
      */
     public String toContentLine()
     {
-        return Arrays.stream(TextPropertyParameter.values())
+        return textPropertyName + Arrays.stream(TextPropertyParameter.values())
                 .map(p -> p.toParameterString(this))
                 .filter(s -> ! (s == null))
                 .collect(Collectors.joining());        

@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
@@ -42,7 +42,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventMock vEvent = getDaily2();
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
         Collection<InstanceMock> newInstances = vEvent.makeInstances(start, end);
         instances.addAll(newInstances);
@@ -92,7 +92,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual InstanceMock
         VEventMock vEvent = getDaily2();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -128,11 +128,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
 
-        Collections.sort(vComponents, VComponentDisplayable.VCOMPONENT_COMPARATOR);
+        Collections.sort(vComponents, VComponentDisplayableOld.VCOMPONENT_COMPARATOR);
         VEventMock vEvent0 = (VEventMock) vComponents.get(0);
         VEventMock vEvent1 = (VEventMock) vComponents.get(1);
         VEventMock expectedVEvent0 = getDaily2()
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withCount(6)
                         .withFrequency(new Daily().withInterval(3))
                         .withRecurrences(vEvent1));
@@ -156,7 +156,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual InstanceMock
         VEventMock vEvent = getDaily2();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 8, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 15, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -191,11 +191,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
 
-        Collections.sort(vComponents, VComponentDisplayable.VCOMPONENT_COMPARATOR);
+        Collections.sort(vComponents, VComponentDisplayableOld.VCOMPONENT_COMPARATOR);
         VEventMock vEvent0 = (VEventMock) vComponents.get(0);
         VEventMock vEvent1 = (VEventMock) vComponents.get(1);
         VEventMock expectedVEvent0 = getDaily2()
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withCount(6)
                         .withFrequency(new Daily().withInterval(3))
                         .withRecurrences(vEvent1));
@@ -215,7 +215,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     public void canEditThisAndFuture1()
     {
         VEventMock vEvent = getDaily1();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -256,11 +256,11 @@ public class ICalendarEditTest extends ICalendarTestAbstract
                 ));
         assertEquals(expectedDates, madeDates);
         
-        Collections.sort(vComponents, VComponentDisplayable.VCOMPONENT_COMPARATOR);
+        Collections.sort(vComponents, VComponentDisplayableOld.VCOMPONENT_COMPARATOR);
         VEventMock vEvent0 = (VEventMock) vComponents.get(0);
         VEventMock vEvent1 = (VEventMock) vComponents.get(1);
         VEventMock expectedVEvent0 = getDaily1()
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Daily())
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 16, 10, 0), ZoneId.systemDefault())
                                 .withZoneSameInstant(ZoneId.of("Z"))));
@@ -284,7 +284,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual InstanceMock
         VEventMock vEvent = getDaily2();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -333,7 +333,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual InstanceMock
         VEventMock vEvent = getWeeklyZoned();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -391,7 +391,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     {
         // Individual InstanceMock
         VEventMock vEvent = getGoogleWithExDates();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2016, 2, 7, 0, 0);
         LocalDateTime end = LocalDateTime.of(2016, 2, 14, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -452,7 +452,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     public void canChangeTwoWholeDay()
     {
         VEventMock vEvent = getGoogleRepeatable();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         Temporal start = ZonedDateTime.of(LocalDateTime.of(2016, 2, 21, 0, 0), ZoneId.of("America/Los_Angeles"));
         Temporal end = ZonedDateTime.of(LocalDateTime.of(2016, 2, 28, 0, 0), ZoneId.of("America/Los_Angeles"));
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -537,7 +537,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     @Test
     public void canUpdateRecurrenceIdWhenEditAll()
     {
-        List<VComponentDisplayable<InstanceMock>> vComponents = getRecurrenceSetDaily1();
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = getRecurrenceSetDaily1();
         VEventMock vEvent = (VEventMock) vComponents.get(0);
         Temporal start = LocalDateTime.of(2015, 11, 8, 0, 0);
         Temporal end = LocalDateTime.of(2015, 11, 15, 0, 0);
@@ -585,7 +585,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
     public void canUpdateDTStartWhenMadeInvalidByRRuleChange()
     {
         VEventMock vEvent = getWeekly2();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 8, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 15, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -595,7 +595,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventMock vEventOriginal = new VEventMock(vEvent);
         
         // apply changes
-        vEvent.setRRule(new RRule()
+        vEvent.setRRule(new RecurrenceRule()
                 .withFrequency(new Weekly()
                         .withInterval(2)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.FRIDAY)))); // remove WEDNESDAY
@@ -625,7 +625,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventMock expectedVEvent = getWeekly2()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 13, 10, 0))
                 .withSequence(1)
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.FRIDAY))));

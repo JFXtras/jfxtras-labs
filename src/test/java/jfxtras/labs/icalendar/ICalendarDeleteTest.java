@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
 
 public class ICalendarDeleteTest extends ICalendarTestAbstract
@@ -34,7 +34,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
     public void canDeleteOne()
     {
         VEventMock vEvent = getWeeklyZoned();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -79,7 +79,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
     public void canDeleteAll()
     {
         VEventMock vEvent = getWeeklyZoned();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -111,7 +111,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
     public void canDeleteThisAndFuture()
     {
         VEventMock vEvent = getDailyUTC();
-        List<VComponentDisplayable<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -144,7 +144,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
         assertEquals(expectedDates, madeDates);
 
         VEventMock expectedVEvent = getDailyUTC()
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 15, 10, 0), ZoneOffset.UTC))
                         .withFrequency(new Daily()
                                 .withInterval(2)));

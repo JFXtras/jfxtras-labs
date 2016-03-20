@@ -17,11 +17,12 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.components.VComponentUtilities;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventOld;
 import jfxtras.labs.icalendar.components.VEventUtilities;
+import jfxtras.labs.icalendar.properties.descriptive.Description;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -33,7 +34,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * @author David Bal
  *
  */
-public class VEventImpl extends VEvent<Appointment, VEventImpl>
+public class VEventImpl extends VEventOld<Appointment, VEventImpl>
 {
     public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroup; }
     private ObjectProperty<AppointmentGroup> appointmentGroup = new SimpleObjectProperty<AppointmentGroup>(this, "CATEGORIES");
@@ -64,7 +65,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
         }
     };
     private final ChangeListener<? super AppointmentGroup> appointmentGroupListener = 
-            (obs, oldValue, newValue) -> setCategories(newValue.getDescription());
+            (obs, oldValue, newValue) -> getCategories().setText(newValue.getDescription());
         
     /*
      * CONSTRUCTORS
@@ -100,12 +101,13 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     public VEventImpl(Appointment appointment, ObservableList<AppointmentGroup> appointmentGroups)
     {
         this(appointmentGroups);
-        setCategories(appointment.getAppointmentGroup().getDescription());
+        VComponentPropertyOld.CATEGORIES.parseAndSetProperty(this, appointment.getAppointmentGroup().getDescription());
+//        setCategories(appointment.getAppointmentGroup().getDescription());
         setDateTimeStart(appointment.getStartTemporal());
         setDateTimeEnd(appointment.getEndTemporal());
         setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setDateTimeCreated(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
-        setDescription(appointment.getDescription());
+        setDescription(new Description(appointment.getDescription()));
         setLocation(appointment.getLocation());
         VComponentPropertyOld.SUMMARY.parseAndSetProperty(this, appointment.getSummary());
         setUniqueIdentifier(getUidGeneratorCallback().call(null));
@@ -122,7 +124,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     
     /** Deep copy all fields from source to destination */
     @Override
-    public void copyTo(VComponentDisplayable<Appointment> destination)
+    public void copyTo(VComponentDisplayableOld<Appointment> destination)
     {
         super.copyTo(destination);
         copy(this, (VEventImpl) destination);
@@ -198,7 +200,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
             Appointment appt = new Agenda.AppointmentImplTemporal()
                     .withStartTemporal(temporalStart)
                     .withEndTemporal(temporalEnd)
-                    .withDescription(getDescription())
+                    .withDescription(getDescription().getText())
                     .withSummary(VComponentPropertyOld.SUMMARY.toPropertyString(this))
                     .withLocation(getLocation())
                     .withWholeDay(isWholeDay())

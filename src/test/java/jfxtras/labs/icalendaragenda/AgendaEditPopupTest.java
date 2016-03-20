@@ -38,8 +38,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.properties.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
@@ -1122,7 +1123,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
        // verify VComponent changes
        assertEquals(2, agenda.vComponents().size());
-       agenda.vComponents().sort(VComponentDisplayable.VCOMPONENT_COMPARATOR);
+       agenda.vComponents().sort(VComponentDisplayableOld.VCOMPONENT_COMPARATOR);
 
        VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
        VEventImpl expectedV0 = ICalendarStaticVEvents.getDaily1();
@@ -1132,7 +1133,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
        VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
        VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1()
-               .withSummary("new summary")
+               .withSummary(new Summary("new summary"))
                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
                .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0))
                .withRelatedTo("20150110T080000-0@jfxtras.org")
@@ -1181,7 +1182,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         
         // verify VComponent changes
         assertEquals(2, agenda.vComponents().size());
-        agenda.vComponents().sort(VComponentDisplayable.VCOMPONENT_COMPARATOR);
+        agenda.vComponents().sort(VComponentDisplayableOld.VCOMPONENT_COMPARATOR);
         VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
         VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
         VEventImpl expectedV0 = ICalendarStaticVEvents.getDaily1();
@@ -1189,7 +1190,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         assertTrue(VEventImpl.isEqualTo(expectedV0, v0));
 
         VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1()
-                .withSummary("new summary")
+                .withSummary(new Summary("new summary"))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0))
                 .withDateTimeStamp(v1.getDateTimeStamp()) // time stamp is time-based so copy it to guarantee equality.
@@ -1323,7 +1324,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 45), ZoneId.of("America/Los_Angeles")))
                 .withSequence(1)
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
         
@@ -1391,7 +1392,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         click("#saveRepeatButton");
                 
         Assert.assertEquals(2, agenda.appointments().size());
-        VComponentDisplayable<Appointment> v = agenda.vComponents().get(0);
+        VComponentDisplayableOld<Appointment> v = agenda.vComponents().get(0);
         String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
@@ -1445,7 +1446,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         type("6");
         click("#saveRepeatButton");
         Assert.assertEquals(2, agenda.appointments().size());
-        VComponentDisplayable<Appointment> v = agenda.vComponents().get(0);
+        VComponentDisplayableOld<Appointment> v = agenda.vComponents().get(0);
         String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()

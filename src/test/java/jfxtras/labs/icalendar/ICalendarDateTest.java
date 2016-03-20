@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
 import jfxtras.scene.control.agenda.TemporalUtilities;
@@ -1007,7 +1007,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         }
 
         // Change RRule
-        v.setRRule(new RRule()
+        v.setRRule(new RecurrenceRule()
                 .withFrequency(new Weekly()
                         .withInterval(2)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));

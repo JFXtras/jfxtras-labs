@@ -21,8 +21,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 import jfxtras.test.TestUtil;
 
@@ -55,10 +55,10 @@ public class AgendaChangeTest extends AgendaTestAbstract
         // check change to state
         assertEquals(2, agenda.vComponents().size());
         assertEquals(6, agenda.appointments().size());
-        Collections.sort(agenda.vComponents(), VComponentDisplayable.VCOMPONENT_COMPARATOR);
+        Collections.sort(agenda.vComponents(), VComponentDisplayableOld.VCOMPONENT_COMPARATOR);
         VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
         VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
-        RRule r = ICalendarStaticVEvents.getDaily1().getRRule().withRecurrences(v1);
+        RecurrenceRule r = ICalendarStaticVEvents.getDaily1().getRRule().withRecurrences(v1);
         VEventImpl expectedV0 = ICalendarStaticVEvents.getDaily1()
                 .withRRule(r);
         assertTrue(VEventImpl.isEqualTo(expectedV0, v0));
@@ -125,10 +125,10 @@ public class AgendaChangeTest extends AgendaTestAbstract
         // check change to state
         assertEquals(2, agenda.vComponents().size());
         assertEquals(3, agenda.appointments().size());
-        Collections.sort(agenda.vComponents(), VComponentDisplayable.VCOMPONENT_COMPARATOR);
+        Collections.sort(agenda.vComponents(), VComponentDisplayableOld.VCOMPONENT_COMPARATOR);
         VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
         VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
-        RRule r = ICalendarStaticVEvents.getWeeklyZoned().getRRule().withRecurrences(v1);
+        RecurrenceRule r = ICalendarStaticVEvents.getWeeklyZoned().getRRule().withRecurrences(v1);
         VEventImpl expectedV0 = ICalendarStaticVEvents.getWeeklyZoned()
                 .withRRule(r);
         assertTrue(VEventImpl.isEqualTo(expectedV0, v0));

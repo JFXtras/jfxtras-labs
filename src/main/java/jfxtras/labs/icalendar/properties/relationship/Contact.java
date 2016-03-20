@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendar.properties.relationship;
 
 import jfxtras.labs.icalendar.properties.TextPropertyAbstract;
-import jfxtras.labs.icalendar.properties.VComponentProperty;
+import jfxtras.labs.icalendar.properties.ComponentProperty;
 
 /**
  * CONTACT: RFC 5545 iCalendar 3.8.4.2. page 109
@@ -13,9 +13,11 @@ import jfxtras.labs.icalendar.properties.VComponentProperty;
  */
 public class Contact extends TextPropertyAbstract<Contact>
 {
+    private final static String NAME = ComponentProperty.CONTACT.toString();
+    
     public Contact(String contentLine)
     {
-        super(contentLine, VComponentProperty.CONTACT.toString());
+        super(NAME, contentLine);
     }
     
     public Contact(Contact contact)
@@ -23,11 +25,5 @@ public class Contact extends TextPropertyAbstract<Contact>
         super(contact);
     }
     
-    public Contact() { }
-
-    @Override
-    public String toContentLine()
-    {
-        return VComponentProperty.CONTACT.toString() + super.toContentLine();
-    }
+    public Contact() { super(NAME); }
 }

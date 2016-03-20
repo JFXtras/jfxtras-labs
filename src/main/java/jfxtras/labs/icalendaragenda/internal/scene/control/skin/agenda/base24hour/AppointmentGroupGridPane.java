@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -33,13 +33,13 @@ public AppointmentGroupGridPane()
     checkIcon.getStyleClass().add("check-icon");
 }
 
-public AppointmentGroupGridPane(VComponentDisplayable<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
+public AppointmentGroupGridPane(VComponentDisplayableOld<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
 {
     this();
     setupData(vComponent, appointmentGroups);
 }
  
- public void setupData(VComponentDisplayable<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
+ public void setupData(VComponentDisplayableOld<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
  {
 //      myIcon = new SVGPath();
 //     myIcon.setFill(Color.rgb(0, 255, 0, .9));
@@ -74,7 +74,7 @@ public AppointmentGroupGridPane(VComponentDisplayable<Appointment> vComponent, L
 
              // assign appointment group, store description in CATEGORIES field
              AppointmentGroup g = appointmentGroups.get(appointmentGroupSelected.getValue());
-             vComponent.setCategories(g.getDescription());
+             vComponent.getCategories().setText(g.getDescription());
          });
          lCnt++;
      }

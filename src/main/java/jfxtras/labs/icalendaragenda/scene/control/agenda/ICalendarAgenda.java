@@ -33,9 +33,9 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
-import jfxtras.labs.icalendar.components.VEvent;
-import jfxtras.labs.icalendar.components.VComponentDisplayable.StartEndRange;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.components.VEventOld;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld.StartEndRange;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentEditLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
@@ -66,13 +66,13 @@ public class ICalendarAgenda extends Agenda
     
     /** VComponents are iCalendar compliant calendar components.
      * They make appointments for Agenda to render. */
-    public ObservableList<VComponentDisplayable<Appointment>> vComponents() { return vComponents; }
-    private ObservableList<VComponentDisplayable<Appointment>> vComponents = FXCollections.observableArrayList();
+    public ObservableList<VComponentDisplayableOld<Appointment>> vComponents() { return vComponents; }
+    private ObservableList<VComponentDisplayableOld<Appointment>> vComponents = FXCollections.observableArrayList();
     
     /** VEvent class - used in factory to instantiate new VEvent objects */
-    Class<? extends VComponentDisplayable<Appointment>> getVEventClass() { return vEventClass; }
-    private Class<? extends VComponentDisplayable<Appointment>> vEventClass = VEventImpl.class; // default class, change if other implementation is used
-    public void setVEventClass(Class<? extends VComponentDisplayable<Appointment>> clazz) { vEventClass = clazz; }
+    Class<? extends VComponentDisplayableOld<Appointment>> getVEventClass() { return vEventClass; }
+    private Class<? extends VComponentDisplayableOld<Appointment>> vEventClass = VEventImpl.class; // default class, change if other implementation is used
+    public void setVEventClass(Class<? extends VComponentDisplayableOld<Appointment>> clazz) { vEventClass = clazz; }
 
     /* 
      * Match up maps
@@ -80,7 +80,7 @@ public class ICalendarAgenda extends Agenda
      * map stores start date/time of Appointments as they are made so I can get the original date/time
      * if Agenda changes one (e.g. drag-n-drop).  The original is needed for RECURRENCE-ID.  */
     private final Map<Integer, Temporal> appointmentStartOriginalMap = new HashMap<>();
-    private final Map<Integer, VComponentDisplayable<Appointment>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VComponent that made it */
+    private final Map<Integer, VComponentDisplayableOld<Appointment>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VComponent that made it */
     
     // not here - in VEventImpl
 //    // Extended appointment class used by the implementor - used to instantiate new appointment objects
@@ -89,7 +89,7 @@ public class ICalendarAgenda extends Agenda
 //    public void setAppointmentClass(Class<? extends Appointment> clazz) { appointmentClass = clazz; }
 
     /** Callback for creating unique identifier values
-     * @see VComponentDisplayable#getUidGeneratorCallback() */
+     * @see VComponentDisplayableOld#getUidGeneratorCallback() */
     public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
     private static Integer nextKey = 0;
     private Callback<Void, String> uidGeneratorCallback = (Void) ->
@@ -101,8 +101,8 @@ public class ICalendarAgenda extends Agenda
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
     
     // I/O callbacks, must be set to provide I/O functionality, null by default - TODO - NOT IMPLEMENTED YET
-    private Callback<Collection<VComponentDisplayable< Appointment>>, Void> repeatWriteCallback = null;
-    public void setRepeatWriteCallback(Callback<Collection<VComponentDisplayable<Appointment>>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
+    private Callback<Collection<VComponentDisplayableOld< Appointment>>, Void> repeatWriteCallback = null;
+    public void setRepeatWriteCallback(Callback<Collection<VComponentDisplayableOld<Appointment>>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
 
     private Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback = null; // TODO - NOT IMPLEMENTED YET
     public void setAppointmentGroupWriteCallback(Callback<Collection<AppointmentGroup>, Void> appointmentWriteCallback) { this.appointmentGroupWriteCallback = appointmentGroupWriteCallback; }
@@ -117,9 +117,9 @@ public class ICalendarAgenda extends Agenda
     public void setAppointmentsListChangeListener(ListChangeListener<Appointment> listener) { appointmentsListChangeListener = listener; }
     public ListChangeListener<Appointment> getAppointmentsListChangeListener() { return appointmentsListChangeListener; }
     
-    private ListChangeListener<VComponentDisplayable<Appointment>> vComponentsChangeListener; // listen for changes to vComponents.
-    public void setVComponentsChangeListener(ListChangeListener<VComponentDisplayable<Appointment>> listener) { vComponentsChangeListener = listener; }
-    public ListChangeListener<VComponentDisplayable<Appointment>> getVComponentsChangeListener() { return vComponentsChangeListener; }
+    private ListChangeListener<VComponentDisplayableOld<Appointment>> vComponentsChangeListener; // listen for changes to vComponents.
+    public void setVComponentsChangeListener(ListChangeListener<VComponentDisplayableOld<Appointment>> listener) { vComponentsChangeListener = listener; }
+    public ListChangeListener<VComponentDisplayableOld<Appointment>> getVComponentsChangeListener() { return vComponentsChangeListener; }
 
     /*
      * Callback for determing scope of edit change - defaults to always answering ALL
@@ -132,7 +132,7 @@ public class ICalendarAgenda extends Agenda
     // It has controls for repeatable events
     private Callback<Appointment, Void> iCalendarEditPopupCallback = (Appointment appointment) ->
     {
-        VComponentDisplayable<Appointment> vComponent = findVComponent(appointment); // Match appointment to VComponent
+        VComponentDisplayableOld<Appointment> vComponent = findVComponent(appointment); // Match appointment to VComponent
         appointments().removeListener(appointmentsListChangeListener); // remove listener to prevent making extra vEvents during edit
         Stage editPopup = new AppointmentEditLoader(
                   appointment
@@ -217,8 +217,8 @@ public class ICalendarAgenda extends Agenda
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
         // TODO - NEED ANOTHER VERSION OF THIS CODE FOR VTODO
-        VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) findVComponent(appointment);
-        VEvent<Appointment,?> vEventOriginal = (VEvent<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
+        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
+        VEventOld<Appointment,?> vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
         Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
         final Temporal startInstance;
         final Temporal endInstance;
@@ -283,7 +283,7 @@ public class ICalendarAgenda extends Agenda
                 {
                     if (event.getCode().equals(KeyCode.DELETE) && (! selectedAppointments().isEmpty()))
                     {
-                        VComponentDisplayable<Appointment> v = appointmentVComponentMap.get(System.identityHashCode(selectedAppointments().get(0)));
+                        VComponentDisplayableOld<Appointment> v = appointmentVComponentMap.get(System.identityHashCode(selectedAppointments().get(0)));
                         appointments().removeAll(selectedAppointments());
                     }
                 });
@@ -329,7 +329,7 @@ public class ICalendarAgenda extends Agenda
                             // fall through
                         case OTHER: // ADVANCED EDIT
 //                            System.out.println("Advanced edit:");
-                            VComponentDisplayable<Appointment> newVComponent = VComponentFactory
+                            VComponentDisplayableOld<Appointment> newVComponent = VComponentFactory
                                     .newVComponent(getVEventClass(), a, appointmentGroups());
                             Temporal startRange = getDateTimeRange().getStartLocalDateTime();
                             Temporal endRange = getDateTimeRange().getEndLocalDateTime();
@@ -360,7 +360,7 @@ public class ICalendarAgenda extends Agenda
                 {
                     change.getRemoved().stream().forEach(a -> 
                     { // add appointments to EXDATE
-                        VComponentDisplayable<Appointment> v = findVComponent(a);
+                        VComponentDisplayableOld<Appointment> v = findVComponent(a);
                         if (v.getExDate() == null) v.setExDate(new ExDate());
 //                        Temporal t = (a.isWholeDay()) ? LocalDate.from(a.getStartLocalDateTime()) : a.getStartLocalDateTime();
                         v.getExDate().getTemporals().add(a.getStartTemporal());
@@ -371,7 +371,7 @@ public class ICalendarAgenda extends Agenda
         };
         
         // fires when VComponents are added outside the edit popup, such as initialization
-        vComponentsChangeListener = (ListChangeListener.Change<? extends VComponentDisplayable<Appointment>> change) ->
+        vComponentsChangeListener = (ListChangeListener.Change<? extends VComponentDisplayableOld<Appointment>> change) ->
         {
             System.out.println("vcomponents changed:" + vComponents.size());
             while (change.next())
@@ -402,7 +402,7 @@ public class ICalendarAgenda extends Agenda
                                     // add recurrence-id Temporal to parents (required to skip recurrences when making appointments)
                                     if (v.getDateTimeRecurrence() != null)
                                     {
-                                        VComponentDisplayable<Appointment> parent = vComponents().stream()
+                                        VComponentDisplayableOld<Appointment> parent = vComponents().stream()
                                                 .filter(v2 -> 
                                                 {
                                                     boolean isParent1 = v2.getUniqueIdentifier().equals(v.getUniqueIdentifier());
@@ -434,7 +434,7 @@ public class ICalendarAgenda extends Agenda
                             // move deleted recurrence-id into ExDates (ensure deleted instance stays deleted)
                             if (v.getDateTimeRecurrence() != null)
                             {
-                                VComponentDisplayable<Appointment> parent = vComponents().stream()
+                                VComponentDisplayableOld<Appointment> parent = vComponents().stream()
                                         .filter(v2 -> 
                                         {
                                             boolean isParent1 = v2.getUniqueIdentifier().equals(v.getUniqueIdentifier());
@@ -499,7 +499,7 @@ public class ICalendarAgenda extends Agenda
                 {
                     Appointment appointment = selectedAppointments().get(0);
                     getSelectedOneAppointmentCallback().call(appointment);
-                    VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) findVComponent(appointment);
+                    VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
                     System.out.println("selected vEvent:" + vEvent);
                 }
             }
@@ -539,11 +539,11 @@ public class ICalendarAgenda extends Agenda
     
     
     // TODO - SHOULD THESE LISTENERS AND BACKING MAPS GO TO NEW CLASS?
-    public VComponentDisplayable<Appointment> findVComponent(Appointment appointment)
+    public VComponentDisplayableOld<Appointment> findVComponent(Appointment appointment)
     {
         if (appointmentVComponentMap.get(System.identityHashCode(appointment)) == null)
         { // find appointment by searching all VComponents.  Then add it to map if not present.  This can happen if multiple edits occur between refreshes.
-            Optional<VComponentDisplayable<Appointment>> v2 = vComponents.stream()
+            Optional<VComponentDisplayableOld<Appointment>> v2 = vComponents.stream()
                     .filter(v -> v.instances().stream()
                             .map(a -> System.identityHashCode(a))
                             .filter(h -> h.equals(System.identityHashCode(appointment)))
@@ -574,8 +574,8 @@ public class ICalendarAgenda extends Agenda
          * @param appointmentGroups - list of AppointmentGroups
          * @return
          */
-        public static <U extends Appointment> VComponentDisplayable<U> newVComponent(
-                Class<? extends VComponentDisplayable<U>> vComponentClass
+        public static <U extends Appointment> VComponentDisplayableOld<U> newVComponent(
+                Class<? extends VComponentDisplayableOld<U>> vComponentClass
               , U appointment
               , ObservableList<AppointmentGroup> appointmentGroups)
         {
@@ -590,7 +590,7 @@ public class ICalendarAgenda extends Agenda
         }
         
         @SuppressWarnings("unchecked")
-        public static <U extends Appointment> VComponentDisplayable<U> newVComponent(VComponentDisplayable<U> vComponent)
+        public static <U extends Appointment> VComponentDisplayableOld<U> newVComponent(VComponentDisplayableOld<U> vComponent)
         {
             try {
                 return vComponent.getClass()

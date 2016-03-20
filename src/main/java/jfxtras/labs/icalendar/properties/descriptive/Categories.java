@@ -2,12 +2,14 @@ package jfxtras.labs.icalendar.properties.descriptive;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import jfxtras.labs.icalendar.parameter.Parameter;
-import jfxtras.labs.icalendar.properties.ComponentProperty;
+import jfxtras.labs.icalendar.parameter.ICalendarParameter;
 import jfxtras.labs.icalendar.properties.VComponentProperty;
+import jfxtras.labs.icalendar.properties.ComponentProperty;
 
-public class Categories implements ComponentProperty
+public class Categories implements VComponentProperty
 {
+    private final static String NAME = ComponentProperty.CATEGORIES.toString();
+    
     /**
      * LANGUAGE: RFC 5545 iCalendar 3.2.10. page 21
      * Optional
@@ -18,7 +20,7 @@ public class Categories implements ComponentProperty
      * */
     public StringProperty languageProperty()
     {
-        if (language == null) language = new SimpleStringProperty(this, Parameter.LANGUAGE.toString(), _language);
+        if (language == null) language = new SimpleStringProperty(this, ICalendarParameter.LANGUAGE.toString(), _language);
         return language;
     }
     private StringProperty language;
@@ -47,8 +49,27 @@ public class Categories implements ComponentProperty
      * CATEGORIES:MEETING
      */
     public StringProperty textProperty() { return textProperty; }
-    final private StringProperty textProperty = new SimpleStringProperty(this, VComponentProperty.CATEGORIES.toString());
+    final private StringProperty textProperty = new SimpleStringProperty(this, ComponentProperty.CATEGORIES.toString());
     public String getText() { return textProperty.get(); }
     public void setText(String value) { textProperty.set(value); }
     public Categories withText(String s) { setText(s); return this; }
+    
+    public String toContentLine()
+    {
+        StringBuilder builder = new StringBuilder(NAME);
+        if (getLanguage() != null)
+        {
+            builder.append(";" + toString() + "=" + getLanguage());
+        }
+        builder.append(":" + getText());
+        return builder.toString();
+    }
+    
+    /*
+     * CONSTRUCTORS
+     */
+//    public Categories(String contentLine)
+//    {
+//        super(NAME, contentLine);
+//    }
 }

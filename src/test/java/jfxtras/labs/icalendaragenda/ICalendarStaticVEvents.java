@@ -8,8 +8,11 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+import jfxtras.labs.icalendar.properties.descriptive.Categories;
+import jfxtras.labs.icalendar.properties.descriptive.Description;
+import jfxtras.labs.icalendar.properties.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
+import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Monthly;
@@ -36,9 +39,9 @@ public final class ICalendarStaticVEvents
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
                 .withUniqueIdentifier("20151109T082900-0@jfxtras.org")
                 .withDuration(Duration.ofHours(1))
-                .withDescription("Yearly1 Description")
-                .withSummary("Yearly1 Summary")
-                .withRRule(new RRule()
+                .withDescription(new Description("Yearly1 Description"))
+                .withSummary(new Summary("Yearly1 Summary"))
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Yearly()));
     }
         
@@ -47,7 +50,7 @@ public final class ICalendarStaticVEvents
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Monthly()));
     }
     
@@ -56,7 +59,7 @@ public final class ICalendarStaticVEvents
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.MONDAY, 3)))));
     }
@@ -67,7 +70,7 @@ public final class ICalendarStaticVEvents
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()));
     }
 
@@ -78,11 +81,11 @@ public final class ICalendarStaticVEvents
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
                 .withDuration(Duration.ofMinutes(45))
-                .withDescription("Weekly1 Description")
-                .withSummary("Weekly1 Summary")
+                .withDescription(new Description("Weekly1 Description"))
+                .withSummary(new Summary("Weekly1 Summary"))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -104,11 +107,11 @@ public final class ICalendarStaticVEvents
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
-                .withDescription("WeeklyZoned Description")
-                .withRRule(new RRule()
+                .withDescription(new Description("WeeklyZoned Description"))
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
-                .withSummary("WeeklyZoned Summary")
+                .withSummary(new Summary("WeeklyZoned Summary"))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
     
@@ -119,11 +122,11 @@ public final class ICalendarStaticVEvents
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
-                .withDescription("Daily1 Description")
-                .withSummary("Daily1 Summary")
+                .withDescription(new Description("Daily1 Description"))
+                .withSummary(new Summary("Daily1 Summary"))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Daily()));
     }
 
@@ -132,14 +135,14 @@ public final class ICalendarStaticVEvents
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
-                .withCategories("group03")
+                .withCategories(new Categories("group03"))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(90))
-                .withDescription("Daily2 Description")
-                .withSummary("Daily2 Summary")
+                .withDescription(new Description("Daily2 Description"))
+                .withSummary(new Summary("Daily2 Summary"))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withCount(6)
                         .withFrequency(new Daily()
                                 .withInterval(3)));
@@ -152,11 +155,11 @@ public final class ICalendarStaticVEvents
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
-                .withDescription("Daily6 Description")
-                .withSummary("Daily6 Summary")
+                .withDescription(new Description("Daily6 Description"))
+                .withSummary(new Summary("Daily6 Summary"))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
                                 .withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Daily()
@@ -170,8 +173,8 @@ public final class ICalendarStaticVEvents
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30))
                 .withDuration(Duration.ofMinutes(60))
-                .withDescription("Individual Description")
-                .withSummary("Individual Summary")
+                .withDescription(new Description("Individual Description"))
+                .withSummary(new Summary("Individual Summary"))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
@@ -212,12 +215,12 @@ public final class ICalendarStaticVEvents
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
-                .withCategories("group06")
+                .withCategories(new Categories("group06"))
                 .withDateTimeStart(LocalDate.of(2015, 11, 9))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 11))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RRule()
+                .withRRule(new RecurrenceRule()
                         .withUntil(LocalDate.of(2015, 11, 24))
                         .withFrequency(new Daily()
                                 .withInterval(3)));

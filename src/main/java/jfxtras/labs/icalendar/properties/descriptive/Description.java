@@ -1,13 +1,15 @@
 package jfxtras.labs.icalendar.properties.descriptive;
 
 import jfxtras.labs.icalendar.properties.TextPropertyAbstract;
-import jfxtras.labs.icalendar.properties.VComponentProperty;
+import jfxtras.labs.icalendar.properties.ComponentProperty;
 
 public class Description extends TextPropertyAbstract<Description>
 {
+    private final static String NAME = ComponentProperty.DESCRIPTION.toString();
+    
     public Description(String contentLine)
     {
-        super(contentLine, VComponentProperty.DESCRIPTION.toString());
+        super(NAME, contentLine);
     }
     
     public Description(Description description)
@@ -15,11 +17,5 @@ public class Description extends TextPropertyAbstract<Description>
         super(description);
     }
     
-    public Description() { }
-
-    @Override
-    public String toContentLine()
-    {
-        return VComponentProperty.DESCRIPTION.toString() + super.toContentLine();
-    }
+    public Description() { super(NAME); }
 }

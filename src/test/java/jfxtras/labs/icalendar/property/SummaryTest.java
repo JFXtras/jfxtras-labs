@@ -21,6 +21,16 @@ public class SummaryTest
         expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party");
         assertEquals(expectedMap, valueMap);
     }
+    
+    @Test
+    public void canParseSummaryProperty2()
+    {
+        String s = "Department Party";
+        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
+        SortedMap<String, String> expectedMap = new TreeMap<>();
+        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party");
+        assertEquals(expectedMap, valueMap);
+    }
  
     @Test
     public void canParseSummary()
@@ -30,5 +40,11 @@ public class SummaryTest
         assertEquals(expectedSummary, madeSummary.toContentLine());
     }
     
-
+    @Test
+    public void canParseSummary2()
+    {
+        Summary madeSummary = new Summary("TEST SUMMARY2");
+        String expectedSummary = "SUMMARY:TEST SUMMARY2";
+        assertEquals(expectedSummary, madeSummary.toContentLine());
+    }
 }

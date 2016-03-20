@@ -34,8 +34,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.components.VComponentDisplayable;
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.components.VEventOld;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
@@ -69,12 +69,12 @@ public class AppointmentEditController extends Pane
     private Temporal startOriginalInstance;
     private Temporal endInstanceOriginal;
     
-    private VEvent<Appointment,?> vEvent;
+    private VEventOld<Appointment,?> vEvent;
 //    private VComponent<Appointment> vEventOld;
-    private VEvent<Appointment,?> vEventOriginal;
+    private VEventOld<Appointment,?> vEventOriginal;
     private Collection<Appointment> appointments;
-    private Collection<VComponentDisplayable<Appointment>> vComponents;
-    private Callback<Collection<VComponentDisplayable<Appointment>>, Void> vEventWriteCallback;
+    private Collection<VComponentDisplayableOld<Appointment>> vComponents;
+    private Callback<Collection<VComponentDisplayableOld<Appointment>>, Void> vEventWriteCallback;
     private Stage popup;
 
     /** Indicates how the popup window closed */
@@ -156,12 +156,12 @@ public class AppointmentEditController extends Pane
     
     public void setupData(
               Appointment appointment
-            , VComponentDisplayable<Appointment> vComponent
+            , VComponentDisplayableOld<Appointment> vComponent
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
-            , Collection<VComponentDisplayable<Appointment>> vComponents
+            , Collection<VComponentDisplayableOld<Appointment>> vComponents
             , List<AppointmentGroup> appointmentGroups
-            , Callback<Collection<VComponentDisplayable<Appointment>>, Void> vEventWriteCallback
+            , Callback<Collection<VComponentDisplayableOld<Appointment>>, Void> vEventWriteCallback
             , Stage popup)
     {
         appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET);
@@ -173,7 +173,7 @@ public class AppointmentEditController extends Pane
         this.vComponents = vComponents;
         this.popup = popup;
         this.vEventWriteCallback = vEventWriteCallback;
-        vEvent = (VEvent<Appointment,?>) vComponent;
+        vEvent = (VEventOld<Appointment,?>) vComponent;
         
         // Disable repeat rules for events with recurrence-id
         if (vComponent.getDateTimeRecurrence() != null)
@@ -191,11 +191,11 @@ public class AppointmentEditController extends Pane
         }
         
         // Copy original VEvent
-        vEventOriginal = (VEvent<Appointment,?>) VComponentFactory.newVComponent(vEvent);
+        vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent);
         
         // String bindings
         summaryTextField.textProperty().bindBidirectional(vEvent.getSummary().textProperty());
-        descriptionTextArea.textProperty().bindBidirectional(vEvent.descriptionProperty());
+        descriptionTextArea.textProperty().bindBidirectional(vEvent.getDescription().textProperty());
         locationTextField.textProperty().bindBidirectional(vEvent.locationProperty());
         
         // WHOLE DAY
@@ -291,7 +291,7 @@ public class AppointmentEditController extends Pane
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
-            vEvent.setCategories(newSelection);
+            vEvent.getCategories().setText(newSelection);
             // TODO - ensure groupTextField has unique description text
 //            groupNameEdited.set(true);
         });

@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.components.VEvent.EndType;
+import jfxtras.labs.icalendar.components.VEventOld.EndType;
+import jfxtras.labs.icalendar.properties.descriptive.Description;
 
 public final class VEventUtilities
 {
@@ -25,7 +26,7 @@ public final class VEventUtilities
      * @param verbose - true = display list of unequal properties, false no display output
      * @return - equality result
      */
-    public static <T> boolean isEqualTo(VEvent<?,?> v1, VEvent<?,?> v2, boolean verbose)
+    public static <T> boolean isEqualTo(VEventOld<?,?> v1, VEventOld<?,?> v2, boolean verbose)
     {
         boolean vComponentResult = VComponentUtilities.isEqualTo(v1, v2, verbose);
         List<String> changedProperties = new ArrayList<>();
@@ -60,7 +61,7 @@ public final class VEventUtilities
      * @return - true if property found and set, false otherwise
      */
 //    public static boolean parse(VEvent<?,?> vEvent, Pair<String, String> propertyValuePair)
-    public static boolean parse(VEvent<?,?> vEvent, String propertyLine)
+    public static boolean parse(VEventOld<?,?> vEvent, String propertyLine)
     {
         String propertyName = ICalendarUtilities.getPropertyName(propertyLine);
         System.out.println("parsing property:" + propertyName);
@@ -96,11 +97,11 @@ public final class VEventUtilities
         DESCRIPTION ("DESCRIPTION", true)
         {
             @Override
-            public void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine)
+            public void parseAndSetProperty(VEventOld<?,?> vEvent, String propertyLine)
             {
                 if (vEvent.getDescription() == null)
                 {
-                    vEvent.setDescription(propertyLine);
+                    vEvent.setDescription(new Description(propertyLine));
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -108,26 +109,25 @@ public final class VEventUtilities
             }
     
             @Override
-            public Object getPropertyValue(VEvent<?,?> vEvent)
+            public Object getPropertyValue(VEventOld<?,?> vEvent)
             {
                 return vEvent.getDescription();
             }
     
             @Override
-            public String toPropertyString(VEvent<?,?> vEvent)
+            public String toPropertyString(VEventOld<?,?> vEvent)
             {
-                return ((vEvent.getDescription() == null) || (vEvent.getDescription().isEmpty())) ? null : toString()
-                        + ":" + vEvent.getDescription();
+                return ((vEvent.getDescription() == null) || (vEvent.getDescription().getText().isEmpty())) ? null : vEvent.getDescription().toContentLine();
             }
     
             @Override
-            public boolean isPropertyEqual(VEvent<?,?> v1, VEvent<?,?> v2)
+            public boolean isPropertyEqual(VEventOld<?,?> v1, VEventOld<?,?> v2)
             {
                 return (v1.getDescription() == null) ? (v2.getDescription() == null) : v1.getDescription().equals(v2.getDescription());
             }
     
             @Override
-            public void copyProperty(VEvent<?,?> source, VEvent<?,?> destination)
+            public void copyProperty(VEventOld<?,?> source, VEventOld<?,?> destination)
             {
                 destination.setDescription(source.getDescription());
             }
@@ -139,7 +139,7 @@ public final class VEventUtilities
       , DURATION ("DURATION", true)
         {
             @Override
-            public void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine)
+            public void parseAndSetProperty(VEventOld<?,?> vEvent, String propertyLine)
             {
                 if (vEvent.getDuration() == null)
                 {
@@ -160,13 +160,13 @@ public final class VEventUtilities
             }
     
             @Override
-            public Object getPropertyValue(VEvent<?,?> vEvent)
+            public Object getPropertyValue(VEventOld<?,?> vEvent)
             {
                 return vEvent.getDuration();
             }
             
             @Override
-            public String toPropertyString(VEvent<?,?> vEvent)
+            public String toPropertyString(VEventOld<?,?> vEvent)
             {
                 if (vEvent.getDuration() == null)
                 {
@@ -181,13 +181,13 @@ public final class VEventUtilities
             }
     
             @Override
-            public boolean isPropertyEqual(VEvent<?,?> v1, VEvent<?,?> v2)
+            public boolean isPropertyEqual(VEventOld<?,?> v1, VEventOld<?,?> v2)
             {
                 return (v1.getDuration() == null) ? (v2.getDuration() == null) : v1.getDuration().equals(v2.getDuration());
             }
     
             @Override
-            public void copyProperty(VEvent<?,?> source, VEvent<?,?> destination)
+            public void copyProperty(VEventOld<?,?> source, VEventOld<?,?> destination)
             {
                 destination.setDuration(source.getDuration());
             }
@@ -201,7 +201,7 @@ public final class VEventUtilities
       , DATE_TIME_END ("DTEND", true)
         {
             @Override
-            public void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine)
+            public void parseAndSetProperty(VEventOld<?,?> vEvent, String propertyLine)
             {
                 if (vEvent.getDateTimeEnd() == null)
                 {
@@ -224,13 +224,13 @@ public final class VEventUtilities
             }
     
             @Override
-            public Object getPropertyValue(VEvent<?,?> vEvent)
+            public Object getPropertyValue(VEventOld<?,?> vEvent)
             {
                 return vEvent.getDateTimeEnd();
             }
     
             @Override
-            public String toPropertyString(VEvent<?,?> vEvent)
+            public String toPropertyString(VEventOld<?,?> vEvent)
             {
                 if (vEvent.getDateTimeEnd() == null)
                 {
@@ -246,13 +246,13 @@ public final class VEventUtilities
             }
     
             @Override
-            public boolean isPropertyEqual(VEvent<?,?> v1, VEvent<?,?> v2)
+            public boolean isPropertyEqual(VEventOld<?,?> v1, VEventOld<?,?> v2)
             {
                 return (v1.getDateTimeEnd() == null) ? (v2.getDateTimeEnd() == null) : v1.getDateTimeEnd().equals(v2.getDateTimeEnd());
             }
     
             @Override
-            public void copyProperty(VEvent<?,?> source, VEvent<?,?> destination)
+            public void copyProperty(VEventOld<?,?> source, VEventOld<?,?> destination)
             {
                 destination.setDateTimeEnd(source.getDateTimeEnd());
             }
@@ -267,32 +267,32 @@ public final class VEventUtilities
       , LOCATION ("LOCATION", true)
         {
             @Override
-            public void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine)
+            public void parseAndSetProperty(VEventOld<?,?> vEvent, String propertyLine)
             {
                 vEvent.setLocation(propertyLine);
             }
     
             @Override
-            public Object getPropertyValue(VEvent<?,?> vEvent)
+            public Object getPropertyValue(VEventOld<?,?> vEvent)
             {
                 return vEvent.getLocation();
             }
             
             @Override
-            public String toPropertyString(VEvent<?,?> vEvent)
+            public String toPropertyString(VEventOld<?,?> vEvent)
             {
                 return ((vEvent.getLocation() == null) || (vEvent.getLocation().isEmpty())) ? null : toString()
                         + ":" + vEvent.getLocation();
             }
     
             @Override
-            public boolean isPropertyEqual(VEvent<?,?> v1, VEvent<?,?> v2)
+            public boolean isPropertyEqual(VEventOld<?,?> v1, VEventOld<?,?> v2)
             {
                 return (v1.getLocation() == null) ? (v2.getLocation() == null) : v1.getLocation().equals(v2.getLocation());
             }
     
             @Override
-            public void copyProperty(VEvent<?,?> source, VEvent<?,?> destination)
+            public void copyProperty(VEventOld<?,?> source, VEventOld<?,?> destination)
             {
                 destination.setLocation(source.getLocation());
             }
@@ -338,19 +338,19 @@ public final class VEventUtilities
         /** sets VEvent's property for this VEventProperty to parameter value
          * value is a string that is parsed if necessary to the appropriate type
          */
-        public abstract void parseAndSetProperty(VEvent<?,?> vEvent, String propertyLine);
+        public abstract void parseAndSetProperty(VEventOld<?,?> vEvent, String propertyLine);
     
         /** gets VEvent's property value for this VEventProperty */
-        public abstract Object getPropertyValue(VEvent<?,?> vEvent);
+        public abstract Object getPropertyValue(VEventOld<?,?> vEvent);
         
         /** makes content line (RFC 5545 3.1) from a VEvent property  */
-        public abstract String toPropertyString(VEvent<?,?> vEvent);
+        public abstract String toPropertyString(VEventOld<?,?> vEvent);
         
         /** Checks is corresponding property is equal between v1 and v2 */
-        public abstract boolean isPropertyEqual(VEvent<?,?> v1, VEvent<?,?> v2);
+        public abstract boolean isPropertyEqual(VEventOld<?,?> v1, VEventOld<?,?> v2);
         
         /** Copies property value from source to destination */
-        public abstract void copyProperty(VEvent<?,?> source, VEvent<?,?> destination);
+        public abstract void copyProperty(VEventOld<?,?> source, VEventOld<?,?> destination);
         
     }
 }
