@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
 import jfxtras.labs.icalendar.properties.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.descriptive.Description;
 import jfxtras.labs.icalendar.properties.descriptive.Location;
@@ -28,87 +27,8 @@ import jfxtras.labs.icalendar.properties.relationship.Contact;
  * @author David Bal
  * @param <T> - concrete extended class
  */
-public abstract class TextPropertyAbstract<T> implements ICalendarProperty
-{
-    // construct new object by parsing property line
-    protected TextPropertyAbstract(String propertyString)
-    {
-        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
-                map.entrySet()
-                .stream()
-                .forEach(e ->
-                {
-                    TextPropertyParameter.propertyFromName(e.getKey())
-                            .setValue(this, e.getValue());
-                });
-        setText(map.get(ICalendarUtilities.PROPERTY_VALUE_KEY));
-    }
-
-    /*
-     * CONSTRUCTORS
-     */
-    public TextPropertyAbstract() { }
-    
-    // Copy constructor
-    protected TextPropertyAbstract(TextPropertyAbstract<?> source)
-    {
-        Arrays.stream(TextPropertyParameter.values())
-                .forEach(p -> p.copyProperty(source, this));
-    }
-    
-    @Override
-    public String toString()
-    {
-        return super.toString() + System.lineSeparator() + toContentLine();
-    }
-
-    /**
-     * Prepare property content line for iCalendar output files.  See RFC 5545 3.5
-     * Contains component property with its value and any populated parameters.  
-     * 
-     * @return - the content line
-     */
-    public String toContentLine()
-    {
-        return Arrays.stream(TextPropertyParameter.values())
-                .map(p -> p.toParameterString(this))
-                .filter(s -> ! (s == null))
-                .collect(Collectors.joining());        
-    }
-//    public void parse(String propertyString)
-//    {
-//        Map<String, String> p = ICalendarUtilities.PropertyLineToParameterMap(propertyString);
-//        p.entrySet().stream().forEach(e ->
-//        {
-//            TextPropertyParameter.propertyFromName(e.getKey()).setValue(this, e.getValue());
-//        });
-//    }
-    
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        TextPropertyAbstract<?> testObj = (TextPropertyAbstract<?>) obj;
-        boolean languageEquals = (getLanguage() == null) ? (testObj.getLanguage() == null) : getLanguage().equals(testObj.getLanguage());
-        boolean alternateTextRepresentationEquals = (getAlternateTextRepresentation() == null) ? (testObj.getAlternateTextRepresentation() == null) : getAlternateTextRepresentation().equals(testObj.getAlternateTextRepresentation());
-        boolean textEquals = getText().equals(testObj.getText());
-//        System.out.println("text property equals:" + languageEquals + " " + alternateTextRepresentationEquals + " " + textEquals);
-        return languageEquals && alternateTextRepresentationEquals && textEquals;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        int hash = 7;
-        hash = (31 * hash) + getText().hashCode();
-        hash = (31 * hash) + ((getLanguage() == null) ? 0 : getLanguage().hashCode());
-        hash = (31 * hash) + ((getAlternateTextRepresentation() == null) ? 0 : getAlternateTextRepresentation().hashCode());
-        return hash;
-    }
-    
+public abstract class TextPropertyAbstract<T> implements ComponentProperty
+{   
     /**
      * LANGUAGE: RFC 5545 iCalendar 3.2.10. page 21
      * Optional
@@ -199,10 +119,92 @@ public abstract class TextPropertyAbstract<T> implements ICalendarProperty
      * The text is "Eat at Joe's"
      */
     public StringProperty textProperty() { return textProperty; }
-    final private StringProperty textProperty = new SimpleStringProperty(this, VComponentProperty.CATEGORIES.toString());
+    private String textPropertyName;
+    final private StringProperty textProperty = new SimpleStringProperty(this, textPropertyName);
     public String getText() { return textProperty.get(); }
     public void setText(String value) { textProperty.set(value); }
     public T withText(String s) { setText(s); return (T) this; }
+
+    /*
+     * CONSTRUCTORS
+     */
+    
+    // construct new object by parsing property line
+    protected TextPropertyAbstract(String textPropertyName, String propertyString)
+    {
+        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
+                map.entrySet()
+                .stream()
+                .forEach(e ->
+                {
+                    TextPropertyParameter.propertyFromName(e.getKey())
+                            .setValue(this, e.getValue());
+                });
+        setText(map.get(ICalendarUtilities.PROPERTY_VALUE_KEY));
+    }
+
+    public TextPropertyAbstract() { }
+    
+    // Copy constructor
+    protected TextPropertyAbstract(TextPropertyAbstract<?> source)
+    {
+        this.textPropertyName = source.textPropertyName;
+        Arrays.stream(TextPropertyParameter.values())
+                .forEach(p -> p.copyProperty(source, this));
+    }
+    
+    @Override
+    public String toString()
+    {
+        return super.toString() + System.lineSeparator() + toContentLine();
+    }
+
+    /**
+     * Prepare property content line for iCalendar output files.  See RFC 5545 3.5
+     * Contains component property with its value and any populated parameters.  
+     * 
+     * @return - the content line
+     */
+    public String toContentLine()
+    {
+        return Arrays.stream(TextPropertyParameter.values())
+                .map(p -> p.toParameterString(this))
+                .filter(s -> ! (s == null))
+                .collect(Collectors.joining());        
+    }
+//    public void parse(String propertyString)
+//    {
+//        Map<String, String> p = ICalendarUtilities.PropertyLineToParameterMap(propertyString);
+//        p.entrySet().stream().forEach(e ->
+//        {
+//            TextPropertyParameter.propertyFromName(e.getKey()).setValue(this, e.getValue());
+//        });
+//    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        TextPropertyAbstract<?> testObj = (TextPropertyAbstract<?>) obj;
+        boolean languageEquals = (getLanguage() == null) ? (testObj.getLanguage() == null) : getLanguage().equals(testObj.getLanguage());
+        boolean alternateTextRepresentationEquals = (getAlternateTextRepresentation() == null) ? (testObj.getAlternateTextRepresentation() == null) : getAlternateTextRepresentation().equals(testObj.getAlternateTextRepresentation());
+        boolean textEquals = getText().equals(testObj.getText());
+//        System.out.println("text property equals:" + languageEquals + " " + alternateTextRepresentationEquals + " " + textEquals);
+        return languageEquals && alternateTextRepresentationEquals && textEquals;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = (31 * hash) + getText().hashCode();
+        hash = (31 * hash) + ((getLanguage() == null) ? 0 : getLanguage().hashCode());
+        hash = (31 * hash) + ((getAlternateTextRepresentation() == null) ? 0 : getAlternateTextRepresentation().hashCode());
+        return hash;
+    }    
     
     private enum TextPropertyParameter
     {

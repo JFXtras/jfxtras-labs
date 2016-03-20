@@ -7,6 +7,7 @@ import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
 
+// TODO - SHOULD ALL RRULE PARAMETERS GO HERE? - BY RULE ONES TOO?
 /**
  * RRule properties with the following data and methods:
  * 

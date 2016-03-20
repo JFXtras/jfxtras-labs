@@ -24,8 +24,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.components.VComponent;
-import jfxtras.labs.icalendar.properties.ICalendarProperty;
+import jfxtras.labs.icalendar.components.VComponentDisplayable;
+import jfxtras.labs.icalendar.properties.ComponentProperty;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
 
@@ -38,7 +38,7 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Frequency;
  * @author David Bal
  *
  */
-public class RRule implements ICalendarProperty
+public class RRule implements ComponentProperty
 {            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
@@ -123,10 +123,10 @@ public class RRule implements ICalendarProperty
      * the recurrence instance.  The UID matches the UID of the parent calendar component.
      * See 3.8.4.4 of RFC 5545 iCalendar
      */
-    public Set<VComponent<?>> recurrences() { return recurrences; }
-    private Set<VComponent<?>> recurrences = new HashSet<>();
+    public Set<VComponentDisplayable<?>> recurrences() { return recurrences; }
+    private Set<VComponentDisplayable<?>> recurrences = new HashSet<>();
 //    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
-    public RRule withRecurrences(VComponent<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
+    public RRule withRecurrences(VComponentDisplayable<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
     /*
      * CONSTRUCTORS
@@ -289,7 +289,7 @@ public class RRule implements ICalendarProperty
      * Checks to see if object contains required properties.  Returns empty string if it is
      * valid.  Returns string of errors if not valid.
      */
-    public String makeErrorString(VComponent<?> parent)
+    public String makeErrorString(VComponentDisplayable<?> parent)
     {
         StringBuilder builder = new StringBuilder();
         if (recurrences() != null)

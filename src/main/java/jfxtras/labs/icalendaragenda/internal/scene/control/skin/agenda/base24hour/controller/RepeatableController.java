@@ -58,7 +58,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
-import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VComponentDisplayable;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
@@ -84,7 +84,7 @@ final public static int INITIAL_COUNT = 10;
 final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on) 
 final private static int INITIAL_INTERVAL = 1;
     
-private VComponent<T> vComponent;
+private VComponentDisplayable<T> vComponent;
 private Temporal dateTimeStartInstanceNew;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -649,7 +649,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
  * @param dateTimeStartInstanceNew : start date-time for edited event
  */
     public void setupData(
-            VComponent<T> vComponent
+            VComponentDisplayable<T> vComponent
           , Temporal dateTimeStartInstanceNew
           , Stage stage)
     {
@@ -776,7 +776,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     }
     
     /* Set controls to values in rRule */
-    private void setInitialValues(VComponent<T> vComponent)
+    private void setInitialValues(VComponentDisplayable<T> vComponent)
     {
         int initialInterval = (vComponent.getRRule().getFrequency().getInterval() > 0) ?
                 vComponent.getRRule().getFrequency().getInterval() : INITIAL_INTERVAL;
@@ -1091,7 +1091,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         return builder.toString();
     }
     
-    private boolean isSupported(VComponent<?> vComponent)
+    private boolean isSupported(VComponentDisplayable<?> vComponent)
     {
         RRule rRule = vComponent.getRRule();
         if (rRule == null)

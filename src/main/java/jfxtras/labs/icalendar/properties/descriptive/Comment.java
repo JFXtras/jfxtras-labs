@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendar.properties.descriptive;
 
 import jfxtras.labs.icalendar.properties.TextPropertyAbstract;
+import jfxtras.labs.icalendar.properties.VComponentProperty;
 
 /**
  * COMMENT: RFC 5545 iCalendar 3.8.1.4. page 83
@@ -16,6 +17,6 @@ public class Comment extends TextPropertyAbstract<Comment>
 {
     public Comment(String contentLine)
     {
-        super(contentLine);
+        super(contentLine, VComponentProperty.COMMENT.toString());
     }
 }

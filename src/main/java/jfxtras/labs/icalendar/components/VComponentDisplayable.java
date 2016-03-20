@@ -125,14 +125,14 @@ this limitation is a future goal. - I plan on fixing this problem by combining m
 instances into one property internally.
 
  * @param <I> - type of recurrence instance, such as an appointment implementation
- * @see VComponentBase
+ * @see VComponentDisplayableBase
  * @see VEvent
  * @see VTodo // not implemented yet
  * @see VJournal // not implemented yet
  * 
  * @author David Bal
  * */
-public interface VComponent<I>
+public interface VComponentDisplayable<I>
 {
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -275,8 +275,8 @@ public interface VComponent<I>
     void setDateTimeRecurrence(Temporal dtRecurrence);
     
     /** If VComponent has RECURRENCE-ID this returns its parent component */
-    VComponent<I> getParent();
-    void setParent(VComponent<I> v);
+    VComponentDisplayable<I> getParent();
+    void setParent(VComponentDisplayable<I> v);
     
     /**
      * RRULE, Recurrence Rule as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -459,8 +459,8 @@ public interface VComponent<I>
      * @return - true if changed, false otherwise
      */
     boolean handleEdit(
-            VComponent<I> vComponentOriginal
-          , Collection<VComponent<I>> vComponents
+            VComponentDisplayable<I> vComponentOriginal
+          , Collection<VComponentDisplayable<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
@@ -479,7 +479,7 @@ public interface VComponent<I>
      *    Note: Can use a stub for testing (e.g. (m) -> ChangeDialogOption.ALL).
      */
     void handleDelete(
-            Collection<VComponent<I>> vComponents
+            Collection<VComponentDisplayable<I>> vComponents
           , Temporal startInstance
           , I instance
           , Collection<I> instances
@@ -491,7 +491,7 @@ public interface VComponent<I>
      * @param destination
      */
     // TODO - MOVE TO VCOMPONENT PROPERTY ENUM
-    void copyTo(VComponent<I> destination);
+    void copyTo(VComponentDisplayable<I> destination);
     
     // DEFAULT METHODS
     // TODO - CONSIDER MOVING SOME OF THE BELOW METHODS TO ABSTRACT
@@ -685,7 +685,7 @@ public interface VComponent<I>
     /**
      * Sorts VComponents by DTSTART date/time
      */
-    final static Comparator<? super VComponent<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
+    final static Comparator<? super VComponentDisplayable<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
     {
         Temporal t1 = v1.getDateTimeStart();
         LocalDateTime ld1 = (t1.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t1) : LocalDate.from(t1).atStartOfDay();
@@ -705,7 +705,7 @@ public interface VComponent<I>
      * @param vComponent : VComponent to match to parent, children and branches
      * @return
      */
-    static <U> List<VComponent<U>> findRelatedVComponents(Collection<VComponent<U>> vComponents, VComponent<U> vComponent)
+    static <U> List<VComponentDisplayable<U>> findRelatedVComponents(Collection<VComponentDisplayable<U>> vComponents, VComponentDisplayable<U> vComponent)
     {
         String uid = vComponent.getUniqueIdentifier();
         return vComponents.stream()
@@ -725,7 +725,7 @@ public interface VComponent<I>
      * @return
      */
     @Deprecated // matched by relatedTo - too inclusive.  Will be probably deleted in future.
-    static <U> List<VComponent<U>> findRelatedVComponents2(Collection<VComponent<U>> vComponents, VComponent<U> vComponent)
+    static <U> List<VComponentDisplayable<U>> findRelatedVComponents2(Collection<VComponentDisplayable<U>> vComponents, VComponentDisplayable<U> vComponent)
     {
         final String uid = (vComponent.getRelatedTo() != null) ? vComponent.getRelatedTo() : vComponent.getUniqueIdentifier();
         System.out.println("uid:" + uid + " " + vComponents.size());
@@ -748,13 +748,13 @@ public interface VComponent<I>
      * @param relatives
      * @return
      */
-    static <U> int countVComponents(Collection<VComponent<U>> relatives)
+    static <U> int countVComponents(Collection<VComponentDisplayable<U>> relatives)
     {        
         int count=0;
-        Iterator<VComponent<U>> i = relatives.iterator();
+        Iterator<VComponentDisplayable<U>> i = relatives.iterator();
         while (i.hasNext())
         {
-            VComponent<U> v = i.next();
+            VComponentDisplayable<U> v = i.next();
             if (v.getRRule() == null && v.getRDate() == null) count++; // individual
             else if ((v.getRRule().getUntil() == null) && (v.getRRule().getCount() == 0)) count = -1; // infinite
             else count += v.getRRule().stream(v.getDateTimeStart()).count();

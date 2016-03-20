@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarTestAbstract;
-import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
+import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 
 public class ICalendarVEventToStringTest extends ICalendarTestAbstract
@@ -25,14 +25,14 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract
     {
         VEventMock v = getGoogleWithExDates();
 
-        String madeString = VComponentProperty.EXCEPTIONS.toPropertyString(v);
+        String madeString = VComponentPropertyOld.EXCEPTIONS.toPropertyString(v);
         String expectedString = "EXDATE;TZID=America/Los_Angeles:20160212T123000" + System.lineSeparator()
                                 + "EXDATE;TZID=America/Los_Angeles:20160210T123000" + System.lineSeparator()
                                 + "EXDATE;TZID=America/Los_Angeles:20160209T123000";
         assertEquals(expectedString, madeString);
         
         v.setExDatesOnOneLine(true);
-        String madeString2 = VComponentProperty.EXCEPTIONS.toPropertyString(v);
+        String madeString2 = VComponentPropertyOld.EXCEPTIONS.toPropertyString(v);
         String expectedString2 = "EXDATE;TZID=America/Los_Angeles:20160209T123000,20160210T123000,20160212T123000";
         assertEquals(expectedString2, madeString2);
     }

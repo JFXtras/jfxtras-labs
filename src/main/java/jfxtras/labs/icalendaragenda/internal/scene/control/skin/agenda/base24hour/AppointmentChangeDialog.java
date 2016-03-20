@@ -11,7 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.components.VComponent.StartEndRange;
+import jfxtras.labs.icalendar.components.VComponentDisplayable.StartEndRange;
 
 /**
  * Dialog that can be either an edit or a delete choice dialog.

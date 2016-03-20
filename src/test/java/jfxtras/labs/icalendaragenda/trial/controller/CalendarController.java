@@ -31,7 +31,7 @@ import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VComponentDisplayable;
 import jfxtras.labs.icalendar.properties.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
 import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
@@ -57,7 +57,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 public class CalendarController
 {
      public ICalendarAgenda agenda = new ICalendarAgenda();
-     private final Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback = null;
+     private final Callback<Collection<VComponentDisplayable<Appointment>>, Void> repeatWriteCallback = null;
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;

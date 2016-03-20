@@ -7,7 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.icalendar.VCalendarUtilities.VCalendarComponent;
 import jfxtras.labs.icalendar.components.VAlarm;
-import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VComponentDisplayable;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.components.VJournal;
@@ -145,7 +145,7 @@ public class VCalendar
      * 
      * A grouping of component properties that describe an event.
      * 
-     * @see VComponent
+     * @see VComponentDisplayable
      * @see VEvent
      */
     public ObservableList<VEvent<?, ?>> vEvents() { return vEvents; }
@@ -169,7 +169,7 @@ public class VCalendar
      * 
      * A grouping of component properties that describe a task that needs to be completed.
      * 
-     * @see VComponent
+     * @see VComponentDisplayable
      * @see VTodo
      */
     public ObservableList<VTodo<?,?>> vTodos() { return vTodos; }
@@ -191,7 +191,7 @@ public class VCalendar
      * 
      * A grouping of component properties that describe a task that needs to be completed.
      * 
-     * @see VComponent
+     * @see VComponentDisplayable
      * @see VJournal
      */
     public ObservableList<VJournal<?,?>> vJournals() { return vJournals; }

@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
-import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VComponentDisplayable;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -33,13 +33,13 @@ public AppointmentGroupGridPane()
     checkIcon.getStyleClass().add("check-icon");
 }
 
-public AppointmentGroupGridPane(VComponent<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
+public AppointmentGroupGridPane(VComponentDisplayable<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
 {
     this();
     setupData(vComponent, appointmentGroups);
 }
  
- public void setupData(VComponent<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
+ public void setupData(VComponentDisplayable<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
  {
 //      myIcon = new SVGPath();
 //     myIcon.setFill(Color.rgb(0, 255, 0, .9));

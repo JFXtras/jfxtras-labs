@@ -1,13 +1,13 @@
 package jfxtras.labs.icalendar.properties.descriptive;
 
-import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
 import jfxtras.labs.icalendar.properties.TextPropertyAbstract;
+import jfxtras.labs.icalendar.properties.VComponentProperty;
 
 public class Summary extends TextPropertyAbstract<Comment>
 {
     public Summary(String contentLine)
     {
-        super(contentLine);
+        super(contentLine, VComponentProperty.SUMMARY.toString());
     }
 
     public Summary(Summary summary)

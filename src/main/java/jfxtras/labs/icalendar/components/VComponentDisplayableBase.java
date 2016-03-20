@@ -32,7 +32,7 @@ import javafx.util.Callback;
 import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
+import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
 import jfxtras.labs.icalendar.properties.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.recurrence.ExDate;
@@ -48,7 +48,7 @@ import jfxtras.labs.icalendar.properties.recurrence.rrule.RRule;
  * @param <I> - recurrence instance type
  * @param <T> - Implementation class
  */
-public abstract class VComponentBase<I, T> implements VComponent<I>
+public abstract class VComponentDisplayableBase<I, T> implements VComponentDisplayable<I>
 {
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -59,7 +59,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      */
     // TODO - NEED TO ACCEPT MULTIPLE CATEGORIES - CHANGE TO OBSERVABLE LIST OR SET OR USE COMMA-DELIMATED STRING - NEED TO PUT BOX AROUND APPOINTMENT GROUP FOR THE SELECTED ONE, BUT MULTIPLE CHECKS ARE ALLOWED
     @Override public StringProperty categoriesProperty() { return categoriesProperty; }
-    final private StringProperty categoriesProperty = new SimpleStringProperty(this, VComponentProperty.CATEGORIES.toString());
+    final private StringProperty categoriesProperty = new SimpleStringProperty(this, VComponentPropertyOld.CATEGORIES.toString());
     @Override public String getCategories() { return categoriesProperty.get(); }
     @Override public void setCategories(String value) { categoriesProperty.set(value); }
     public T withCategories(String s) { setCategories(s); return (T) this; }
@@ -77,7 +77,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     @Override
     public ObjectProperty<Comment> commentProperty()
     {
-        if (comment == null) comment = new SimpleObjectProperty<Comment>(this, VComponentProperty.COMMENT.toString(), _comment);
+        if (comment == null) comment = new SimpleObjectProperty<Comment>(this, VComponentPropertyOld.COMMENT.toString(), _comment);
         return comment;
     }
     private ObjectProperty<Comment> comment;
@@ -124,7 +124,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      */
     @Override
     public ObjectProperty<ZonedDateTime> dateTimeCreatedProperty() { return dateTimeCreated; }
-    final private ObjectProperty<ZonedDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, VComponentProperty.CREATED.toString());
+    final private ObjectProperty<ZonedDateTime> dateTimeCreated = new SimpleObjectProperty<>(this, VComponentPropertyOld.CREATED.toString());
     @Override
     public ZonedDateTime getDateTimeCreated() { return dateTimeCreated.get(); }
     @Override
@@ -145,7 +145,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      */
     @Override
     public ObjectProperty<ZonedDateTime> dateTimeStampProperty() { return dateTimeStamp; }
-    final private ObjectProperty<ZonedDateTime> dateTimeStamp = new SimpleObjectProperty<>(this, VComponentProperty.DATE_TIME_STAMP.toString());
+    final private ObjectProperty<ZonedDateTime> dateTimeStamp = new SimpleObjectProperty<>(this, VComponentPropertyOld.DATE_TIME_STAMP.toString());
     @Override
     public ZonedDateTime getDateTimeStamp() { return dateTimeStamp.get(); }
     @Override
@@ -180,7 +180,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      */
     @Override
     public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
-    final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, VComponentProperty.DATE_TIME_START.toString());
+    final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, VComponentPropertyOld.DATE_TIME_START.toString());
     @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
     @Override
     public void setDateTimeStart(Temporal dtStart)
@@ -290,7 +290,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     @Override
     public ObjectProperty<ExDate> exDateProperty()
     {
-        if (exDate == null) exDate = new SimpleObjectProperty<>(this, VComponentProperty.EXCEPTIONS.toString(), _exDate);
+        if (exDate == null) exDate = new SimpleObjectProperty<>(this, VComponentPropertyOld.EXCEPTIONS.toString(), _exDate);
         return exDate;
     }
     private ObjectProperty<ExDate> exDate;
@@ -328,7 +328,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      */
     @Override
     public ObjectProperty<ZonedDateTime> dateTimeLastModifiedProperty() { return dateTimeLastModified; }
-    final private ObjectProperty<ZonedDateTime> dateTimeLastModified = new SimpleObjectProperty<ZonedDateTime>(this, VComponentProperty.LAST_MODIFIED.toString());
+    final private ObjectProperty<ZonedDateTime> dateTimeLastModified = new SimpleObjectProperty<ZonedDateTime>(this, VComponentPropertyOld.LAST_MODIFIED.toString());
     @Override
     public ZonedDateTime getDateTimeLastModified() { return dateTimeLastModified.getValue(); }
     @Override
@@ -354,7 +354,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     @Override
     public StringProperty organizerProperty()
     {
-        if (organizer == null) organizer = new SimpleStringProperty(this, VComponentProperty.ORGANIZER.toString(), _organizer);
+        if (organizer == null) organizer = new SimpleStringProperty(this, VComponentPropertyOld.ORGANIZER.toString(), _organizer);
         return organizer;
     }
     private StringProperty organizer;
@@ -382,7 +382,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     @Override
     public ObjectProperty<RDate> rDateProperty()
     {
-        if (rDate == null) rDate = new SimpleObjectProperty<RDate>(this, VComponentProperty.RECURRENCES.toString(), _rDate);
+        if (rDate == null) rDate = new SimpleObjectProperty<RDate>(this, VComponentPropertyOld.RECURRENCES.toString(), _rDate);
         return rDate;
     }
     private ObjectProperty<RDate> rDate;
@@ -415,7 +415,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      */
     @Override
     public StringProperty relatedToProperty() { return relatedTo; }
-    final private StringProperty relatedTo = new SimpleStringProperty(this, VComponentProperty.RELATED_TO.toString());
+    final private StringProperty relatedTo = new SimpleStringProperty(this, VComponentPropertyOld.RELATED_TO.toString());
     @Override
     public String getRelatedTo() { return relatedTo.getValue(); }
     @Override
@@ -441,7 +441,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     @Override
     public ObjectProperty<Temporal> dateTimeRecurrenceProperty()
     {
-        if (dateTimeRecurrence == null) dateTimeRecurrence = new SimpleObjectProperty<>(this, VComponentProperty.RECURRENCE_ID.toString(), _dateTimeRecurrence);
+        if (dateTimeRecurrence == null) dateTimeRecurrence = new SimpleObjectProperty<>(this, VComponentPropertyOld.RECURRENCE_ID.toString(), _dateTimeRecurrence);
         return dateTimeRecurrence;
     }
     private ObjectProperty<Temporal> dateTimeRecurrence;
@@ -471,11 +471,11 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
 
     
     @Override // TODO - MAKE OBJECT PROPERTY???
-    public VComponent<I> getParent() { return parent; }
-    private VComponent<I> parent;
+    public VComponentDisplayable<I> getParent() { return parent; }
+    private VComponentDisplayable<I> parent;
     @Override
-    public void setParent(VComponent<I> parent) { this.parent = parent; }
-    public T withParent(VComponent<I> parent) { setParent(parent); return (T) this; }
+    public void setParent(VComponentDisplayable<I> parent) { this.parent = parent; }
+    public T withParent(VComponentDisplayable<I> parent) { setParent(parent); return (T) this; }
 
     
     /**
@@ -485,7 +485,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     @Override
     public ObjectProperty<RRule> rRuleProperty()
     {
-        if (rRule == null) rRule = new SimpleObjectProperty<RRule>(this, VComponentProperty.RECURRENCE_RULE.toString(), _rRule);
+        if (rRule == null) rRule = new SimpleObjectProperty<RRule>(this, VComponentPropertyOld.RECURRENCE_RULE.toString(), _rRule);
         return rRule;
     }
     private ObjectProperty<RRule> rRule;
@@ -521,7 +521,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      */
     @Override
     public IntegerProperty sequenceProperty() { return sequenceProperty; }
-    final private IntegerProperty sequenceProperty = new SimpleIntegerProperty(this, VComponentProperty.SEQUENCE.toString(), 0);
+    final private IntegerProperty sequenceProperty = new SimpleIntegerProperty(this, VComponentPropertyOld.SEQUENCE.toString(), 0);
     @Override
     public int getSequence() { return sequenceProperty.get(); }
     @Override
@@ -541,7 +541,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * */
     @Override
     public ObjectProperty<Summary> summaryProperty() { return summary; }
-    private ObjectProperty<Summary> summary = new SimpleObjectProperty<>(this, VComponentProperty.SUMMARY.toString());
+    private ObjectProperty<Summary> summary = new SimpleObjectProperty<>(this, VComponentPropertyOld.SUMMARY.toString());
     @Override
     public Summary getSummary() { return summary.get(); }
     @Override
@@ -557,7 +557,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      */
     @Override
     public StringProperty uniqueIdentifierProperty() { return uniqueIdentifier; }
-    final private StringProperty uniqueIdentifier = new SimpleStringProperty(this, VComponentProperty.UNIQUE_IDENTIFIER.toString());
+    final private StringProperty uniqueIdentifier = new SimpleStringProperty(this, VComponentPropertyOld.UNIQUE_IDENTIFIER.toString());
     @Override
     public String getUniqueIdentifier() { return uniqueIdentifier.getValue(); }
     @Override
@@ -622,17 +622,17 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
 
     // CONSTRUCTORS
     /** Copy constructor */
-    public VComponentBase(VComponentBase<I, T> vcomponent)
+    public VComponentDisplayableBase(VComponentDisplayableBase<I, T> vcomponent)
     {
         copy(vcomponent, this);
     }
     
-    public VComponentBase() { }
+    public VComponentDisplayableBase() { }
     
     @Override
     public boolean handleEdit(
-            VComponent<I> vComponentOriginal
-          , Collection<VComponent<I>> vComponents
+            VComponentDisplayable<I> vComponentOriginal
+          , Collection<VComponentDisplayable<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
@@ -667,7 +667,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             boolean provideDialog = requiresChangeDialog(changedPropertyNames);
             if (changedPropertyNames.size() > 0) // if changes occurred
             {
-                List<VComponent<I>> relatedVComponents = Arrays.asList(this); // TODO - support related components
+                List<VComponentDisplayable<I>> relatedVComponents = Arrays.asList(this); // TODO - support related components
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
@@ -733,7 +733,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     protected Collection<String> changedStartAndEndDateTime(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
     {
         Collection<String> changedProperties = new ArrayList<>();
-        if (! startOriginalInstance.equals(startInstance)) { changedProperties.add(VComponentProperty.DATE_TIME_START.toString()); }
+        if (! startOriginalInstance.equals(startInstance)) { changedProperties.add(VComponentPropertyOld.DATE_TIME_START.toString()); }
         return changedProperties;
     }
     /* Adjust DTSTART by instance start and end date-time */
@@ -772,7 +772,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     /**
      * Return true if ANY changed property requires a dialog, false otherwise
      * 
-     * @param changedPropertyNames - list from {@link #findChangedProperties(VComponent)}
+     * @param changedPropertyNames - list from {@link #findChangedProperties(VComponentDisplayable)}
      * @return
      */
     boolean requiresChangeDialog(List<String> changedPropertyNames)
@@ -780,7 +780,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         return changedPropertyNames.stream()
                 .map(s ->  
                 {
-                    VComponentProperty p = VComponentProperty.propertyFromName(s);
+                    VComponentPropertyOld p = VComponentPropertyOld.propertyFromName(s);
                     return (p != null) ? p.isDialogRequired() : false;
                 })
                 .anyMatch(b -> b == true);
@@ -792,11 +792,11 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * 
      * equal checks are encapsulated inside the enum VComponentProperty
      */
-    List<String> findChangedProperties(VComponent<I> vComponentOriginal)
+    List<String> findChangedProperties(VComponentDisplayable<I> vComponentOriginal)
     {
         List<String> changedProperties = new ArrayList<>();
-        Arrays.stream(VComponentProperty.values())
-                .filter(p -> ! p.equals(VComponentProperty.DATE_TIME_START)) // DATE_TIME_START change calculated in changedStartAndEndDateTime
+        Arrays.stream(VComponentPropertyOld.values())
+                .filter(p -> ! p.equals(VComponentPropertyOld.DATE_TIME_START)) // DATE_TIME_START change calculated in changedStartAndEndDateTime
                 .forEach(p -> 
                 {
                     boolean equals = p.isPropertyEqual(this, vComponentOriginal);
@@ -825,9 +825,9 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * @param vComponentOriginal
      * @param startInstance
      * @param endInstance
-     * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection, Callback)
+     * @see #handleEdit(VComponentDisplayable, Collection, Temporal, Temporal, Temporal, Collection, Callback)
      */
-    protected void becomingIndividual(VComponent<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
+    protected void becomingIndividual(VComponentDisplayable<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
     {
         setRRule(null);
         setRDate(null);
@@ -842,11 +842,11 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * Edit one instance of a VEvent with a RRule.  The instance becomes a new VEvent without a RRule
      * as with the same UID as the parent and a recurrence-id for the replaced date or date/time.
      * 
-     * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
+     * @see #handleEdit(VComponentDisplayable, Collection, Temporal, Temporal, Temporal, Collection)
      */
     protected Collection<I> editOne(
-            VComponent<I> vComponentOriginal
-          , Collection<VComponent<I>> vComponents
+            VComponentDisplayable<I> vComponentOriginal
+          , Collection<VComponentDisplayable<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
@@ -892,11 +892,11 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
      * @param endInstance 
      * @param <T>
      * 
-     * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
+     * @see VComponentDisplayable#handleEdit(VComponentDisplayable, Collection, Temporal, Temporal, Temporal, Collection)
      */
     protected Collection<I> editThisAndFuture(
-            VComponent<I> vComponentOriginal
-          , Collection<VComponent<I>> vComponents
+            VComponentDisplayable<I> vComponentOriginal
+          , Collection<VComponentDisplayable<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
@@ -971,10 +971,10 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
         if (getRRule().recurrences() != null)
         {
             getRRule().recurrences().clear();
-            final Iterator<VComponent<?>> recurrenceIterator = getRRule().recurrences().iterator();
+            final Iterator<VComponentDisplayable<?>> recurrenceIterator = getRRule().recurrences().iterator();
             while (recurrenceIterator.hasNext())
             {
-                VComponent<?> d = recurrenceIterator.next();
+                VComponentDisplayable<?> d = recurrenceIterator.next();
                 if (DateTimeUtilities.isBefore(d.getDateTimeRecurrence(), startInstance))
                 {
                     recurrenceIterator.remove();
@@ -1012,7 +1012,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     
     @Override
     public void handleDelete(
-            Collection<VComponent<I>> vComponents
+            Collection<VComponentDisplayable<I>> vComponents
           , Temporal startInstance
           , I instance
           , Collection<I> instances
@@ -1032,7 +1032,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
             switch (changeResponse)
             {
             case ALL:
-                List<VComponent<?>> relatedVComponents = new ArrayList<>();
+                List<VComponentDisplayable<?>> relatedVComponents = new ArrayList<>();
                 if (this.getDateTimeRecurrence() == null)
                 { // is parent
                     relatedVComponents.addAll(this.getRRule().recurrences());
@@ -1090,9 +1090,9 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     
     /** Deep copy all fields from source to destination 
      * @param <J>*/
-    private static <J> void copy(VComponentBase<J,?> source, VComponentBase<J,?> destination)
+    private static <J> void copy(VComponentDisplayableBase<J,?> source, VComponentDisplayableBase<J,?> destination)
     {
-        Arrays.stream(VComponentProperty.values())
+        Arrays.stream(VComponentPropertyOld.values())
         .forEach(p ->
         {
             p.copyProperty(source, destination);
@@ -1112,9 +1112,9 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     
     /** Deep copy all fields from source to destination */
     @Override
-    public void copyTo(VComponent<I> destination)
+    public void copyTo(VComponentDisplayable<I> destination)
     {
-        copy(this, (VComponentBase<I,?>) destination);
+        copy(this, (VComponentDisplayableBase<I,?>) destination);
     }
 
     /**
@@ -1125,7 +1125,7 @@ public abstract class VComponentBase<I, T> implements VComponent<I>
     List<String> makeContentLines()
     {
         List<String> properties = new ArrayList<>();
-        Arrays.stream(VComponentProperty.values())
+        Arrays.stream(VComponentPropertyOld.values())
                 .forEach(p ->
                 {
                     String newLine = p.toPropertyString(this);

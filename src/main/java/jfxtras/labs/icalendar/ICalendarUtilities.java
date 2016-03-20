@@ -21,9 +21,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javafx.util.Pair;
-import jfxtras.labs.icalendar.components.VComponent;
-import jfxtras.labs.icalendar.components.VComponent.StartEndRange;
-import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
+import jfxtras.labs.icalendar.components.VComponentDisplayable;
+import jfxtras.labs.icalendar.components.VComponentDisplayable.StartEndRange;
+import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
 
 /**
  * Static utility methods used throughout iCalendar
@@ -37,12 +37,12 @@ public final class ICalendarUtilities
     
     @Deprecated
     final private static Comparator<? super Pair<String, String>> DTSTART_FIRST_COMPARATOR_PAIR = (p1, p2) ->
-        (p1.getKey().equals(VComponentProperty.DATE_TIME_START.toString())) ? -1 : 1;
+        (p1.getKey().equals(VComponentPropertyOld.DATE_TIME_START.toString())) ? -1 : 1;
     final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
     {
-        int endIndex = VComponentProperty.DATE_TIME_START.toString().length();
+        int endIndex = VComponentPropertyOld.DATE_TIME_START.toString().length();
         String myString = p1.substring(0, endIndex);
-        return (myString.equals(VComponentProperty.DATE_TIME_START.toString())) ? -1 : 1;
+        return (myString.equals(VComponentPropertyOld.DATE_TIME_START.toString())) ? -1 : 1;
     };
     public final static String PROPERTY_VALUE_KEY = ":";
 
@@ -491,7 +491,7 @@ public final class ICalendarUtilities
       , THIS_AND_FUTURE      // selected instance and all in the future
       , CANCEL;              // do nothing
         
-        public static Map<ChangeDialogOption, StartEndRange> makeDialogChoices(VComponent<?> vComponent, Temporal startInstance)
+        public static Map<ChangeDialogOption, StartEndRange> makeDialogChoices(VComponentDisplayable<?> vComponent, Temporal startInstance)
         {
             Map<ChangeDialogOption, StartEndRange> choices = new LinkedHashMap<>();
             choices.put(ChangeDialogOption.ONE, new StartEndRange(startInstance, startInstance));

@@ -87,7 +87,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
  * @author David Bal
  * @see VEventImpl
  */
-public abstract class VEvent<I, T> extends VComponentBase<I, T>
+public abstract class VEvent<I, T> extends VComponentDisplayableBase<I, T>
 {
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
@@ -203,7 +203,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     }
 
     @Override
-    List<String> findChangedProperties(VComponent<I> vComponentOriginal)
+    List<String> findChangedProperties(VComponentDisplayable<I> vComponentOriginal)
     {
         List<String> changedProperties = new ArrayList<>();
         changedProperties.addAll(super.findChangedProperties(vComponentOriginal));
@@ -259,7 +259,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
     }
         
     @Override
-    protected void becomingIndividual(VComponent<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
+    protected void becomingIndividual(VComponentDisplayable<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
     {
         super.becomingIndividual(vComponentOriginal, startInstance, endInstance);
         if ((vComponentOriginal.getRRule() != null) && (endType() == EndType.DTEND))
@@ -291,8 +291,8 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
 
     @Override // edit end date or date/time
     protected Collection<I> editOne(
-            VComponent<I> vComponentOriginal
-          , Collection<VComponent<I>> vComponents
+            VComponentDisplayable<I> vComponentOriginal
+          , Collection<VComponentDisplayable<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
@@ -318,8 +318,8 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
 
     @Override // edit end date or date/time
     protected Collection<I> editThisAndFuture(
-            VComponent<I> vComponentOriginal
-          , Collection<VComponent<I>> vComponents
+            VComponentDisplayable<I> vComponentOriginal
+          , Collection<VComponentDisplayable<I>> vComponents
           , Temporal startOriginalInstance
           , Temporal startInstance
           , Temporal endInstance
@@ -353,7 +353,7 @@ public abstract class VEvent<I, T> extends VComponentBase<I, T>
 
     /** Deep copy all fields from this to destination */
     @Override
-    public void copyTo(VComponent<I> destination)
+    public void copyTo(VComponentDisplayable<I> destination)
     {
         super.copyTo(destination);
         copy(this, (VEvent<?,?>) destination);

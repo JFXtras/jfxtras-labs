@@ -32,6 +32,7 @@ public class FrequencyUtilities
 //        }
 //    }
     
+    // TODO - MOVE OUT OF CLASS INTO OWN FILE ENUM
     /** Enumeration of FREQ rules
      * 
      * Note: Enum value equals iCalendar property name so toString doesn't need to be overridden

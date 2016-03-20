@@ -34,7 +34,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VComponentDisplayable;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
@@ -73,8 +73,8 @@ public class AppointmentEditController extends Pane
 //    private VComponent<Appointment> vEventOld;
     private VEvent<Appointment,?> vEventOriginal;
     private Collection<Appointment> appointments;
-    private Collection<VComponent<Appointment>> vComponents;
-    private Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback;
+    private Collection<VComponentDisplayable<Appointment>> vComponents;
+    private Callback<Collection<VComponentDisplayable<Appointment>>, Void> vEventWriteCallback;
     private Stage popup;
 
     /** Indicates how the popup window closed */
@@ -156,12 +156,12 @@ public class AppointmentEditController extends Pane
     
     public void setupData(
               Appointment appointment
-            , VComponent<Appointment> vComponent
+            , VComponentDisplayable<Appointment> vComponent
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
-            , Collection<VComponent<Appointment>> vComponents
+            , Collection<VComponentDisplayable<Appointment>> vComponents
             , List<AppointmentGroup> appointmentGroups
-            , Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback
+            , Callback<Collection<VComponentDisplayable<Appointment>>, Void> vEventWriteCallback
             , Stage popup)
     {
         appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET);

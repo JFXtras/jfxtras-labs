@@ -17,9 +17,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VComponentDisplayable;
 import jfxtras.labs.icalendar.components.VComponentUtilities;
-import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentProperty;
+import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VEventUtilities;
 import jfxtras.scene.control.agenda.Agenda;
@@ -107,7 +107,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
         setDateTimeCreated(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         setDescription(appointment.getDescription());
         setLocation(appointment.getLocation());
-        VComponentProperty.SUMMARY.parseAndSetProperty(this, appointment.getSummary());
+        VComponentPropertyOld.SUMMARY.parseAndSetProperty(this, appointment.getSummary());
         setUniqueIdentifier(getUidGeneratorCallback().call(null));
         instances().add(appointment);
         if (! errorString().equals("")) throw new IllegalArgumentException(errorString());
@@ -122,7 +122,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
     
     /** Deep copy all fields from source to destination */
     @Override
-    public void copyTo(VComponent<Appointment> destination)
+    public void copyTo(VComponentDisplayable<Appointment> destination)
     {
         super.copyTo(destination);
         copy(this, (VEventImpl) destination);
@@ -199,7 +199,7 @@ public class VEventImpl extends VEvent<Appointment, VEventImpl>
                     .withStartTemporal(temporalStart)
                     .withEndTemporal(temporalEnd)
                     .withDescription(getDescription())
-                    .withSummary(VComponentProperty.SUMMARY.toPropertyString(this))
+                    .withSummary(VComponentPropertyOld.SUMMARY.toPropertyString(this))
                     .withLocation(getLocation())
                     .withWholeDay(isWholeDay())
                     .withAppointmentGroup(getAppointmentGroup());
