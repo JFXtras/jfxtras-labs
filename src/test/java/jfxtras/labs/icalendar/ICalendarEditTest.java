@@ -22,14 +22,15 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Daily;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
 
 public class ICalendarEditTest extends ICalendarTestAbstract
 {

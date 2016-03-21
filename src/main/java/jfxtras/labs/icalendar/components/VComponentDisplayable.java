@@ -8,10 +8,10 @@ import java.util.stream.Stream;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
-import jfxtras.labs.icalendar.properties.descriptive.Categories;
-import jfxtras.labs.icalendar.properties.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.relationship.Contact;
-import jfxtras.labs.icalendar.properties.relationship.RelatedTo;
+import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
+import jfxtras.labs.icalendar.properties.component.relationship.Contact;
+import jfxtras.labs.icalendar.properties.component.relationship.RelatedTo;
 
 /**
  * Calendar component that is displayable in a graphic.  Has methods to generate recurrence

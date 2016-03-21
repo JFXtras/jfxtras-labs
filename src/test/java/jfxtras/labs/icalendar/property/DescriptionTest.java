@@ -7,8 +7,8 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.properties.descriptive.Description;
+import jfxtras.labs.icalendar.properties.component.descriptive.Description;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 public class DescriptionTest
 {    

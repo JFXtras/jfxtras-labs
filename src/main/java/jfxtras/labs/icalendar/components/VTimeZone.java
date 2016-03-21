@@ -5,7 +5,7 @@ import java.time.ZoneOffset;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
-import jfxtras.labs.icalendar.properties.timezone.TimeZoneName;
+import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 
 public interface VTimeZone extends VComponentRepeatable
 {

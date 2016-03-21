@@ -5,8 +5,8 @@ import java.time.temporal.TemporalAmount;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Pair;
-import jfxtras.labs.icalendar.properties.descriptive.Location;
-import jfxtras.labs.icalendar.properties.descriptive.Resources;
+import jfxtras.labs.icalendar.properties.component.descriptive.Location;
+import jfxtras.labs.icalendar.properties.component.descriptive.Resources;
 
 /**
  * Calendar component with location, among other properties

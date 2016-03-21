@@ -12,16 +12,16 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay.ByDayPair;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonth;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByMonthDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByWeekNumber;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Daily;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Monthly;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Yearly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByMonth;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByMonthDay;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Daily;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Monthly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Yearly;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 public class RRuleTest
 {

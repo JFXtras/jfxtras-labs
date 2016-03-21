@@ -5,8 +5,8 @@ import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendar.properties.recurrence.RDate;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 
 /**
  * Calendar components that can repeat

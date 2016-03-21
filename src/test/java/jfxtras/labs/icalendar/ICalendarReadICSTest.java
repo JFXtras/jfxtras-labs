@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.mocks.VEventMock;
+import jfxtras.labs.icalendar.utilities.VCalendarUtilities;
 
 public class ICalendarReadICSTest
 {

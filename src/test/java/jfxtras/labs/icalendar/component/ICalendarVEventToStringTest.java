@@ -11,10 +11,10 @@ import java.time.temporal.Temporal;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.ICalendarTestAbstract;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
 import jfxtras.labs.icalendar.mocks.VEventMock;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 public class ICalendarVEventToStringTest extends ICalendarTestAbstract
 {

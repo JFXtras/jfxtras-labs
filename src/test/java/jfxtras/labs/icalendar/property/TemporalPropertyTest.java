@@ -14,8 +14,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.properties.recurrence.Recurrence;
+import jfxtras.labs.icalendar.properties.component.recurrence.Recurrence;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /** tests parsing ISO.8601.2004 date string properties */
 public class TemporalPropertyTest

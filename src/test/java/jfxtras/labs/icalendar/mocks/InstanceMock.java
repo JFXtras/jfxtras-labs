@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Comparator;
 
-import jfxtras.labs.icalendar.properties.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 
 public class InstanceMock
 {    

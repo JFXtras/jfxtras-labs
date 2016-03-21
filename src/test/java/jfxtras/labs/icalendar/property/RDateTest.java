@@ -11,8 +11,8 @@ import java.util.TreeMap;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.properties.recurrence.RDate;
+import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 public class RDateTest
 {    

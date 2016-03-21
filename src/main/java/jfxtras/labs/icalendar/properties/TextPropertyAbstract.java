@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.properties.descriptive.Comment;
-import jfxtras.labs.icalendar.properties.descriptive.Description;
-import jfxtras.labs.icalendar.properties.descriptive.Location;
-import jfxtras.labs.icalendar.properties.descriptive.Resources;
-import jfxtras.labs.icalendar.properties.descriptive.Summary;
-import jfxtras.labs.icalendar.properties.relationship.Contact;
+import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.descriptive.Description;
+import jfxtras.labs.icalendar.properties.component.descriptive.Location;
+import jfxtras.labs.icalendar.properties.component.descriptive.Resources;
+import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.relationship.Contact;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**
  * Implemented methods for following properties:

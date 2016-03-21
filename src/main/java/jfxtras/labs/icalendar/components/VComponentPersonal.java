@@ -4,8 +4,8 @@ import java.time.ZonedDateTime;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
-import jfxtras.labs.icalendar.properties.relationship.Attendee;
-import jfxtras.labs.icalendar.properties.relationship.Organizer;
+import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
 
 /**
  * VComponents that involve communication between people

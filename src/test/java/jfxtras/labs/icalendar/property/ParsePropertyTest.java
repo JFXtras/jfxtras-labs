@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.ICalendarUtilities;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 public class ParsePropertyTest
 {

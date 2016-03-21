@@ -5,8 +5,8 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
-import jfxtras.labs.icalendar.properties.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * A calendar component that can contain a child event, such as an Alarm

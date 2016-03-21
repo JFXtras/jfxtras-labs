@@ -5,7 +5,6 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.VCalendarUtilities.VCalendarComponent;
 import jfxtras.labs.icalendar.components.VAlarmOld;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.components.VEventOld;
@@ -13,6 +12,8 @@ import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.components.VJournalOld;
 import jfxtras.labs.icalendar.components.VTimeZoneOld;
 import jfxtras.labs.icalendar.components.VTodoOld;
+import jfxtras.labs.icalendar.utilities.VCalendarUtilities;
+import jfxtras.labs.icalendar.utilities.VCalendarUtilities.VCalendarComponent;
 
 /**
  * API Based on

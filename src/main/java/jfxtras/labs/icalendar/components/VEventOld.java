@@ -19,12 +19,12 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
-import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VEventUtilities.VEventProperty;
 import jfxtras.labs.icalendar.properties.ComponentProperty;
-import jfxtras.labs.icalendar.properties.descriptive.Description;
+import jfxtras.labs.icalendar.properties.component.descriptive.Description;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 
 /**

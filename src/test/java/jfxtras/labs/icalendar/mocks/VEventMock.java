@@ -9,10 +9,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.DateTimeUtilities;
 import jfxtras.labs.icalendar.components.VComponentUtilities;
 import jfxtras.labs.icalendar.components.VEventOld;
 import jfxtras.labs.icalendar.components.VEventUtilities;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /**
  * Mock VEvent class for testing

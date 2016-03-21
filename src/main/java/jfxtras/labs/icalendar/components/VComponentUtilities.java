@@ -10,15 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.ICalendarUtilities;
-import jfxtras.labs.icalendar.properties.descriptive.Categories;
-import jfxtras.labs.icalendar.properties.descriptive.Comment;
-import jfxtras.labs.icalendar.properties.descriptive.Summary;
-import jfxtras.labs.icalendar.properties.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.recurrence.RDate;
-import jfxtras.labs.icalendar.properties.recurrence.Recurrence;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
+import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
+import jfxtras.labs.icalendar.properties.component.recurrence.Recurrence;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 public final class VComponentUtilities
 {

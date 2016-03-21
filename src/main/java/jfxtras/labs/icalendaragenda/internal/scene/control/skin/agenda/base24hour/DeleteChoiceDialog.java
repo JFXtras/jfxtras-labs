@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld.StartEndRange;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
 
 
 /**

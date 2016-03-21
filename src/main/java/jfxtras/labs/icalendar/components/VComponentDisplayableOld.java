@@ -20,15 +20,15 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
-import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
-import jfxtras.labs.icalendar.properties.descriptive.Categories;
-import jfxtras.labs.icalendar.properties.descriptive.Comment;
-import jfxtras.labs.icalendar.properties.descriptive.Summary;
-import jfxtras.labs.icalendar.properties.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.recurrence.RDate;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
+import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
 
 /** Interface for VEVENT, VTODO, VJOURNAL calendar components. 
  *
@@ -186,7 +186,8 @@ public interface VComponentDisplayableOld<I>
     void setDateTimeStamp(ZonedDateTime dtStamp);
     
     /**
-     * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
+     * DTSTART: Date-Time Start
+     * RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */

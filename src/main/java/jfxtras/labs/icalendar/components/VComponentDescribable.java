@@ -1,9 +1,9 @@
 package jfxtras.labs.icalendar.components;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendar.properties.descriptive.Attachment;
-import jfxtras.labs.icalendar.properties.descriptive.Description;
-import jfxtras.labs.icalendar.properties.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
+import jfxtras.labs.icalendar.properties.component.descriptive.Description;
+import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 
 /**
  * Describable VComponents

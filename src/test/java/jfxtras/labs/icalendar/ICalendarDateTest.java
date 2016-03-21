@@ -22,11 +22,12 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Weekly;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
 /*

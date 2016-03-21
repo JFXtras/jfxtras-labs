@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.ICalendarUtilities;
 import jfxtras.labs.icalendar.components.VEventOld.EndType;
-import jfxtras.labs.icalendar.properties.descriptive.Description;
+import jfxtras.labs.icalendar.properties.component.descriptive.Description;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 public final class VEventUtilities
 {

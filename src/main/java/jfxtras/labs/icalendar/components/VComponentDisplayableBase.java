@@ -29,16 +29,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.SetChangeListener;
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.DateTimeUtilities;
-import jfxtras.labs.icalendar.DateTimeUtilities.DateTimeType;
-import jfxtras.labs.icalendar.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
-import jfxtras.labs.icalendar.properties.descriptive.Categories;
-import jfxtras.labs.icalendar.properties.descriptive.Comment;
-import jfxtras.labs.icalendar.properties.descriptive.Summary;
-import jfxtras.labs.icalendar.properties.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.recurrence.RDate;
-import jfxtras.labs.icalendar.properties.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
+import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
 
 /**
  * Abstract implementation of VComponent with all common methods for VEvent, VTodo, and VJournal
