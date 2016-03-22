@@ -6,7 +6,7 @@ import javafx.collections.ObservableList;
  * top-level interface for all iCalendar properties
  * 
  * @author David Bal
- * @see PropertyType - enum of all supported Properties
+ * @see PropertyEnum - enum of all supported Properties
  * @see PropertyBase
  * @see PropertyTextBase2
  */
@@ -35,7 +35,7 @@ public interface Property
      * 
      * @return - the property name
      */
-    String propertyName();
+    PropertyEnum propertyType();
     
     /**
      * The value of the property.
@@ -51,9 +51,9 @@ public interface Property
     
     /**
      * other-param, 3.2 RFC 5545 page 14
+     * the parameter name and value are combined into one object
      */
-    ObservableList<Object> getOtherParameters();
-    void setOtherParameters(ObservableList<Object> other);
+    ObservableList<Object> otherParameters();
     
 //    /**
 //     * List of all parameters in this property

@@ -34,7 +34,7 @@ public abstract class ByRuleAbstract implements ByRule, Comparable<ByRule>
 
     ByRuleAbstract(Class<? extends ByRule> byRuleClass)
     {
-        byRuleEnum = ByRuleEnum.propertyFromByRuleClass(byRuleClass);
+        byRuleEnum = ByRuleEnum.enumFromClass(byRuleClass);
     }
 
     // Constructor that parses a string value

@@ -6,48 +6,39 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendar.parameters.ICalendarParameter;
-import jfxtras.labs.icalendar.parameters.Parameter;
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 public abstract class PropertyBase implements Property
 {
-    // Uses lazy initialization because its rarely used
     @Override
-    public ObservableList<Object> getOtherParameters()
-    {
-        if (otherParameters == null)
-        {
-            otherParameters = FXCollections.observableArrayList();
-        }
-        return otherParameters;
-    }
-    ObservableList<Object> otherParameters;
-    @Override
-    public void setOtherParameters(ObservableList<Object> other)
-    {
-        this.otherParameters = other;
-    }
+    public ObservableList<Object> otherParameters() { return otherParameters; }
+    private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
     
-    /** The name of the property in the content line, such as DESCRIPTION */
+    /** The type of the property in the content line, such as DESCRIPTION */
     @Override
-    public String propertyName() { return propertyName; }
-    private String propertyName;
+    public PropertyEnum propertyType() { return propertyType; }
+    private PropertyEnum propertyType;
 
     /**
-     * List of all parameters in this property
+     * List of all parameter enums in this property
      */
-    public List<Parameter> parameters() { return parameters; }
-    private List<Parameter> parameters = new ArrayList<>();
+    public List<ParameterEnum> parameters() { return parameters; }
+    private List<ParameterEnum> parameters = new ArrayList<>();
     
     /*
      * CONSTRUCTORS
      */
     
-    // construct new property by parsing content line
-    public PropertyBase(String name, String propertyString)
+    /**
+     * construct new property by parsing content line
+     * sets parameters by running parseAndSet for each parameter enum
+     * 
+     * @param propertyString
+     */
+    public PropertyBase(String propertyString)
     {
-        this(name);
+        this();
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
         
         // add parameters
@@ -57,10 +48,10 @@ public abstract class PropertyBase implements Property
             .forEach(e ->
             {
     //            System.out.println("parameter:" + e.getKey());
-                ICalendarParameter p = ICalendarParameter.enumFromName(e.getKey());
+                ParameterEnum p = ParameterEnum.enumFromName(e.getKey());
                 if (p != null)
                 {
-                    p.parseAndSetValue(this, e.getValue());
+                    p.parseAndSet(this, e.getValue());
                 }                    
             });
         // add property value
@@ -68,16 +59,17 @@ public abstract class PropertyBase implements Property
     }
     
     // construct empty property
-    public PropertyBase(String name)
+    public PropertyBase()
     {
-        this.propertyName = name;        
+        propertyType = PropertyEnum.enumFromClass(getClass());
     }
     
     // copy constructor
     public PropertyBase(Property source)
     {
-        this.propertyName = source.propertyName();
-        parameters().stream().forEach(p -> p.copyTo(this));
+        this.propertyType = source.propertyType();
+        parameters().stream().forEach(p -> p.copyTo(source, this));
+//        parameters().stream().forEach(p -> p.copyTo(this));
 //        ICalendarParameter.values(getClass())
 //                .stream()
 //                .forEach(p -> p.copyTo(source, this));
@@ -88,7 +80,7 @@ public abstract class PropertyBase implements Property
     
     /*
      * NEED THE FOLLOWING
-     * TO STRING
+     * TO STRING - works with parameters list
      * PARSE STRING
      * COPY
      * EQUALS
@@ -105,8 +97,9 @@ public abstract class PropertyBase implements Property
     @Override
     public String toContentLine()
     {
-        StringBuilder builder = new StringBuilder(propertyName());
-        parameters().stream().forEach(p -> builder.append(p.toContentLine()));
+        StringBuilder builder = new StringBuilder(propertyType().toString());
+        parameters().stream().forEach(p -> builder.append(p.toContentLine(this)));
+        otherParameters().stream().forEach(p -> builder.append(";" + p));
         builder.append(":" + getValue().toString());
         return builder.toString();
     }

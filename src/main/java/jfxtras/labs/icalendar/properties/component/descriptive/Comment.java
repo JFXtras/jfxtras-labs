@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
 import jfxtras.labs.icalendar.properties.PropertyTextBase3;
-import jfxtras.labs.icalendar.properties.PropertyType;
 
 /**
  * COMMENT: RFC 5545 iCalendar 3.8.1.4. page 83
@@ -15,17 +14,18 @@ import jfxtras.labs.icalendar.properties.PropertyType;
  */
 public class Comment extends PropertyTextBase3<Comment>
 {
-    private final static String NAME = PropertyType.COMMENT.toString();
-
     public Comment(String propertyString)
     {
-        super(NAME, propertyString);
+        super(propertyString);
     }
     
-    public Comment(Comment comment)
+    public Comment(Comment source)
     {
-        super(comment);
+        super(source);
     }
     
-    public Comment() { super(NAME); }
+    public Comment()
+    {
+        super();
+    }
 }

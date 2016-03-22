@@ -1,21 +1,21 @@
 package jfxtras.labs.icalendar.properties.calendar;
 
 import jfxtras.labs.icalendar.properties.PropertyTextBase;
-import jfxtras.labs.icalendar.properties.PropertyType;
 
 public class ProductIdentifier extends PropertyTextBase<ProductIdentifier>
 {
-    private final static String NAME = PropertyType.PRODUCT_IDENTIFIER.toString();
-
-    @Override
-    public void parseAndSetValue(String value)
+    public ProductIdentifier(String propertyString)
     {
-        // TODO Auto-generated method stub
-        
+        super(propertyString);
     }
-
+    
+    public ProductIdentifier(ProductIdentifier source)
+    {
+        super(source);
+    }
+    
     public ProductIdentifier()
     {
-        super(NAME);
+        super();
     }
 }

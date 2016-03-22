@@ -11,7 +11,7 @@ import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyTextBase2;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 
-public enum ICalendarParameter
+public enum ParameterEnum
 {
     ALTERNATE_TEXT_REPRESENTATION ("ALTREP", new Class[] { Comment.class }) {
         @Override
@@ -22,7 +22,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -44,7 +44,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -66,7 +66,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -88,7 +88,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -110,7 +110,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -132,7 +132,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -154,7 +154,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -176,7 +176,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -198,7 +198,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -220,7 +220,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -243,7 +243,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -265,7 +265,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -287,7 +287,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -309,7 +309,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -331,7 +331,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -353,7 +353,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -375,7 +375,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -397,7 +397,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -419,7 +419,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -441,7 +441,7 @@ public enum ICalendarParameter
         }
 
         @Override
-        public void parseAndSetValue(Property property, String value)
+        public void parseAndSet(Property property, String value)
         {
             // TODO Auto-generated method stub
             
@@ -456,18 +456,18 @@ public enum ICalendarParameter
     };
     
     // Map to match up name to enum
-    private static Map<String, ICalendarParameter> enumFromNameMap = makeEnumFromNameMap();
-    private static Map<String, ICalendarParameter> makeEnumFromNameMap()
+    private static Map<String, ParameterEnum> enumFromNameMap = makeEnumFromNameMap();
+    private static Map<String, ParameterEnum> makeEnumFromNameMap()
     {
-        Map<String, ICalendarParameter> map = new HashMap<>();
-        ICalendarParameter[] values = ICalendarParameter.values();
+        Map<String, ParameterEnum> map = new HashMap<>();
+        ParameterEnum[] values = ParameterEnum.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].toString(), values[i]);
         }
         return map;
     }
-    public static ICalendarParameter enumFromName(String propertyName)
+    public static ParameterEnum enumFromName(String propertyName)
     {
         return enumFromNameMap.get(propertyName.toUpperCase());
     }
@@ -475,25 +475,25 @@ public enum ICalendarParameter
     private String name;
     @Override  public String toString() { return name; }
     private Class propertyClasses[];
-    ICalendarParameter(String name, Class[] propertyClasses)
+    ParameterEnum(String name, Class[] propertyClasses)
     {
         this.name = name;
         this.propertyClasses = propertyClasses;
     }
     
-    private static Map<Class<? extends Property>, List<ICalendarParameter>> enumListFrompropertyClass = makeEnumListFrompropertyClass();
-    private static Map<Class<? extends Property>, List<ICalendarParameter>> makeEnumListFrompropertyClass()
+    private static Map<Class<? extends Property>, List<ParameterEnum>> enumListFrompropertyClass = makeEnumListFrompropertyClass();
+    private static Map<Class<? extends Property>, List<ParameterEnum>> makeEnumListFrompropertyClass()
     {
-        Map<Class<? extends Property>, List<ICalendarParameter>> map = new HashMap<>();
-        ICalendarParameter[] values = ICalendarParameter.values();
+        Map<Class<? extends Property>, List<ParameterEnum>> map = new HashMap<>();
+        ParameterEnum[] values = ParameterEnum.values();
         for (int i=0; i<values.length; i++)
         {
-            ICalendarParameter myParameter = values[i];
+            ParameterEnum myParameter = values[i];
             for (int classIndex=0; classIndex<myParameter.propertyClasses.length; classIndex++)
             {
                 Class<? extends Property> c = myParameter.propertyClasses[classIndex];
 //                System.out.println("c:" + c);
-                List<ICalendarParameter> parameterList = map.get(c);
+                List<ParameterEnum> parameterList = map.get(c);
                 if (parameterList == null)
                 {
                     parameterList = new ArrayList<>();
@@ -530,7 +530,7 @@ public enum ICalendarParameter
      * @param propertyClass - implementation of Property
      * @return - list of associated parameters
      */
-    public static List<ICalendarParameter> values(Class<? extends Property> propertyClass)
+    public static List<ParameterEnum> values(Class<? extends Property> propertyClass)
     {
         return enumListFrompropertyClass.get(propertyClass);
     }
@@ -542,7 +542,7 @@ public enum ICalendarParameter
     public abstract String toContentLine(Property property);
     
     /** parses value and sets property associated with enum */
-    public abstract void parseAndSetValue(Property property, String value);
+    public abstract void parseAndSet(Property property, String value);
     
     public abstract void copyTo(Property source, Property destination);
 

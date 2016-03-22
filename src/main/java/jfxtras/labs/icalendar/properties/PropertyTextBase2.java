@@ -2,8 +2,8 @@ package jfxtras.labs.icalendar.properties;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendar.parameters.ICalendarParameter;
 import jfxtras.labs.icalendar.parameters.Language;
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 
 /**
@@ -28,17 +28,7 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
     {
         if (language == null)
         {
-            language = new SimpleObjectProperty<>(this, ICalendarParameter.LANGUAGE.toString(), _language);
-            language.addListener((observable, oldValue, newValue) ->
-            {
-                if (newValue == null)
-                {
-                    parameters().remove(oldValue);
-                } else
-                {
-                    parameters().add(newValue);
-                }
-            });
+            language = new SimpleObjectProperty<>(this, ParameterEnum.LANGUAGE.toString(), _language);
         }
         return language;
     }
@@ -46,6 +36,13 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
     private ObjectProperty<Language> language;
     public void setLanguage(Language language)
     {
+        if (language != null)
+        {
+            
+        } else
+        {
+            
+        }
         if (this.language == null)
         {
             _language = language;
@@ -56,18 +53,12 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
     }
     public T withLanguage(String content) { setLanguage(new Language(content)); return (T) this; }    
     
-    @Override
-    public void parseAndSetValue(String value)
-    {
-        setValue(value);
-    }
-    
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyTextBase2(String name, String propertyString)
+    protected PropertyTextBase2(String propertyString)
     {
-        super(name, propertyString);
+        super(propertyString);
     }
     
     // copy constructor
@@ -80,10 +71,6 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
         }
     }
     
-    public PropertyTextBase2(String name)
-    {
-        super(name);
-    }
-
+    public PropertyTextBase2() { super(); }
 
 }

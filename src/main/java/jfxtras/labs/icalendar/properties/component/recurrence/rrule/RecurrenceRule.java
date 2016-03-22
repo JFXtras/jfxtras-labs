@@ -57,7 +57,7 @@ public class RecurrenceRule implements VComponentProperty
     final static int INITIAL_COUNT = 0;
     public IntegerProperty countProperty()
     {
-        if (count == null) count = new SimpleIntegerProperty(this, RRuleParameter.COUNT.toString(), _count);
+        if (count == null) count = new SimpleIntegerProperty(this, RRuleEnum.COUNT.toString(), _count);
         return count;
     }
     private IntegerProperty count;
@@ -90,7 +90,7 @@ public class RecurrenceRule implements VComponentProperty
      */
     public SimpleObjectProperty<Temporal> untilProperty()
     {
-        if (until == null) until = new SimpleObjectProperty<Temporal>(this, RRuleParameter.UNTIL.toString(), _until);
+        if (until == null) until = new SimpleObjectProperty<Temporal>(this, RRuleEnum.UNTIL.toString(), _until);
         return until;
     }
     private SimpleObjectProperty<Temporal> until;
@@ -142,18 +142,18 @@ public class RecurrenceRule implements VComponentProperty
                 .entrySet()
                 .stream()
                 .sorted((Comparator<? super Entry<String, String>>) (p1, p2) ->
-                    (p1.getKey().equals(RRuleParameter.FREQUENCY.toString())) ? -1 : 1) // FREQ must be first
+                    (p1.getKey().equals(RRuleEnum.FREQUENCY.toString())) ? -1 : 1) // FREQ must be first
 //                .peek(System.out::println)
                 .forEach(e ->
                 {
                     // check parameter to see if its in RRuleParameter enum
-                    RRuleParameter rRuleParameter = RRuleParameter.propertyFromName(e.getKey());
+                    RRuleEnum rRuleParameter = RRuleEnum.propertyFromName(e.getKey());
                     if (rRuleParameter != null)
                     {
                         rRuleParameter.setValue(this, e.getValue());
                     } else
                     { // if null try to match ByRuleParameter enum
-                        ByRuleEnum byRuleParameter = ByRuleEnum.propertyFromName(e.getKey());
+                        ByRuleEnum byRuleParameter = ByRuleEnum.enumFromName(e.getKey());
                         if (byRuleParameter != null)
                         {
                             byRuleParameter.setValue(getFrequency(), e.getValue());
@@ -165,7 +165,7 @@ public class RecurrenceRule implements VComponentProperty
     // Copy constructor
     public RecurrenceRule(RecurrenceRule source)
     {
-        Arrays.stream(RRuleParameter.values())
+        Arrays.stream(RRuleEnum.values())
                 .forEach(p -> p.copyProperty(source, this));
         source.recurrences().stream().forEach(r -> recurrences().add(r));
     }
@@ -185,7 +185,7 @@ public class RecurrenceRule implements VComponentProperty
     {
 //        Comparator<? super RRuleParameter> comparator = (Comparator<? super RRuleParameter>) (p1, p2) -> 
 //            (p1.equals(RRuleParameter.FREQUENCY)) ? -1 : 1;
-        Stream<String> rruleParameterStream = Arrays.stream(RRuleParameter.values())
+        Stream<String> rruleParameterStream = Arrays.stream(RRuleEnum.values())
                 .map(p -> p.toParameterString(this))
                 .filter(s -> s != null);
 
@@ -258,7 +258,7 @@ public class RecurrenceRule implements VComponentProperty
         }
         RecurrenceRule testObj = (RecurrenceRule) obj;
 
-        boolean propertiesEquals = Arrays.stream(RRuleParameter.values())
+        boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
 //                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
                 .map(e -> e.isPropertyEqual(this, testObj))
                 .allMatch(b -> b == true);

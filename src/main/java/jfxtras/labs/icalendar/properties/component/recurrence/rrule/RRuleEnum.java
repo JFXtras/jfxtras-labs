@@ -14,7 +14,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
-public enum RRuleParameter
+public enum RRuleEnum
 {
     FREQUENCY ("FREQ") { // FREQUENCY needs to be first
         @Override
@@ -195,11 +195,11 @@ public enum RRuleParameter
     };
         
     // Map to match up name to enum
-    private static Map<String, RRuleParameter> propertyFromNameMap = makePropertiesFromNameMap();
-    private static Map<String, RRuleParameter> makePropertiesFromNameMap()
+    private static Map<String, RRuleEnum> propertyFromNameMap = makePropertiesFromNameMap();
+    private static Map<String, RRuleEnum> makePropertiesFromNameMap()
     {
-        Map<String, RRuleParameter> map = new HashMap<>();
-        RRuleParameter[] values = RRuleParameter.values();
+        Map<String, RRuleEnum> map = new HashMap<>();
+        RRuleEnum[] values = RRuleEnum.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].toString(), values[i]);
@@ -207,7 +207,7 @@ public enum RRuleParameter
         return map;
     }
     /** get enum from name */
-    public static RRuleParameter propertyFromName(String propertyName)
+    public static RRuleEnum propertyFromName(String propertyName)
     {
         return propertyFromNameMap.get(propertyName.toUpperCase());
     }
@@ -215,7 +215,7 @@ public enum RRuleParameter
     private String name;
 //    private int sortOrder;
     
-    RRuleParameter(String name)
+    RRuleEnum(String name)
     {
         this.name = name;
 //        this.sortOrder = sortOrder;

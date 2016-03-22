@@ -11,10 +11,10 @@ import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.parameters.Encoding;
 import jfxtras.labs.icalendar.parameters.FormatType;
-import jfxtras.labs.icalendar.parameters.ICalendarParameter;
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.Value;
 import jfxtras.labs.icalendar.properties.PropertyBase;
-import jfxtras.labs.icalendar.properties.PropertyType;
+import jfxtras.labs.icalendar.properties.PropertyEnum;
 
 /**
  * ATTACH: Attachment
@@ -33,14 +33,13 @@ import jfxtras.labs.icalendar.properties.PropertyType;
  */
 public class Attachment extends PropertyBase
 {
-    private final static String NAME = PropertyType.ATTACHMENT.toString();
-
     /*
      * PROPERTY VALUE
      */
+    @Override
     public URI getValue() { return value.get(); }
     public ObjectProperty<URI> valueProperty() { return value; }
-    private ObjectProperty<URI> value = new SimpleObjectProperty<>(this, PropertyType.ATTACHMENT.toString() + "_URI");
+    private ObjectProperty<URI> value = new SimpleObjectProperty<>(this, PropertyEnum.ATTACHMENT.toString() + "_URI");
     public void setValue(URI value) { this.value.set(value); }
     @Override
     public void parseAndSetValue(String value)
@@ -75,7 +74,7 @@ public class Attachment extends PropertyBase
     {
         if (encoding == null)
         {
-            encoding = new SimpleObjectProperty<>(this, ICalendarParameter.INLINE_ENCODING.toString(), _encoding);
+            encoding = new SimpleObjectProperty<>(this, ParameterEnum.INLINE_ENCODING.toString(), _encoding);
         }
         return encoding.get();
     }
@@ -109,7 +108,7 @@ public class Attachment extends PropertyBase
     {
         if (formatType == null)
         {
-            formatType = new SimpleObjectProperty<>(this, ICalendarParameter.FORMAT_TYPE.toString(), _formatType);
+            formatType = new SimpleObjectProperty<>(this, ParameterEnum.FORMAT_TYPE.toString(), _formatType);
         }
         return formatType.get();
     }
@@ -137,7 +136,7 @@ public class Attachment extends PropertyBase
     {
         if (valueParameter == null)
         {
-            valueParameter = new SimpleObjectProperty<>(this, ICalendarParameter.VALUE_DATE_TYPES.toString(), _valueParameter);
+            valueParameter = new SimpleObjectProperty<>(this, ParameterEnum.VALUE_DATE_TYPES.toString(), _valueParameter);
         }
         return valueParameter.get();
     }
@@ -160,11 +159,22 @@ public class Attachment extends PropertyBase
     public Attachment withValueParameter(Value valueParameter) { setValueParameter(valueParameter); return this; }
     
     /*
-     * CONSTRUCTOR
+     * CONSTRUCTORS
      */
     
     public Attachment(String propertyString)
     {
-        super(NAME, propertyString);
+        super(propertyString);
     }
+    
+    public Attachment(Attachment source)
+    {
+        super(source);
+    }
+    
+    public Attachment()
+    {
+        super();
+    }
+
 }

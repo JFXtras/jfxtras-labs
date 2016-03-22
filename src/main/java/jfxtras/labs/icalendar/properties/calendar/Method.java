@@ -1,21 +1,21 @@
 package jfxtras.labs.icalendar.properties.calendar;
 
 import jfxtras.labs.icalendar.properties.PropertyTextBase;
-import jfxtras.labs.icalendar.properties.PropertyType;
 
 public class Method extends PropertyTextBase<Method>
 {
-    private final static String NAME = PropertyType.METHOD.toString();
-
-    @Override
-    public void parseAndSetValue(String value)
+    public Method(String propertyString)
     {
-        // TODO Auto-generated method stub
-        
+        super(propertyString);
     }
-
+    
+    public Method(Method source)
+    {
+        super(source);
+    }
+    
     public Method()
     {
-        super(NAME);
+        super();
     }
 }

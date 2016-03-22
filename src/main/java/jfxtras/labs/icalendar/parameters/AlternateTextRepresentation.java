@@ -9,14 +9,14 @@ public class AlternateTextRepresentation implements Parameter
     }
 
     @Override
-    public void parseAndSetValue(String value)
+    public String toContentLine()
     {
         // TODO Auto-generated method stub
-        
+        return null;
     }
 
     @Override
-    public String toContentLine()
+    public Object getValue()
     {
         // TODO Auto-generated method stub
         return null;

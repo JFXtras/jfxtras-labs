@@ -19,11 +19,11 @@ public class FormatType
 {
     public String getTypeName() { return typeName.get(); }
     StringProperty typeNameProperty() { return typeName; }
-    private StringProperty typeName = new SimpleStringProperty(this, ICalendarParameter.FORMAT_TYPE.toString() + "_TYPE_NAME");
+    private StringProperty typeName = new SimpleStringProperty(this, ParameterEnum.FORMAT_TYPE.toString() + "_TYPE_NAME");
     public void setTypeName(String typeName) { this.typeName.set(typeName); }
 
     public String getSubtypeName() { return subtypeName.get(); }
     StringProperty subtypeNameProperty() { return subtypeName; }
-    private StringProperty subtypeName = new SimpleStringProperty(this, ICalendarParameter.FORMAT_TYPE.toString() + "_SUBTYPE_NAME");
+    private StringProperty subtypeName = new SimpleStringProperty(this, ParameterEnum.FORMAT_TYPE.toString() + "_SUBTYPE_NAME");
     public void setSubtypeName(String subtypeName) { this.subtypeName.set(subtypeName); }
 }

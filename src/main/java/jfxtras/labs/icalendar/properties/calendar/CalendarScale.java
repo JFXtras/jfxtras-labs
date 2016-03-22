@@ -1,22 +1,21 @@
 package jfxtras.labs.icalendar.properties.calendar;
 
 import jfxtras.labs.icalendar.properties.PropertyTextBase;
-import jfxtras.labs.icalendar.properties.PropertyType;
 
 public class CalendarScale extends PropertyTextBase<CalendarScale>
 {
-    private final static String NAME = PropertyType.CALENDAR_SCALE.toString();
-
-    @Override
-    public void parseAndSetValue(String value)
+    public CalendarScale(String propertyString)
     {
-        // TODO Auto-generated method stub
-        
+        super(propertyString);
     }
-
+    
+    public CalendarScale(CalendarScale source)
+    {
+        super(source);
+    }
+    
     public CalendarScale()
     {
-        super(NAME);
+        super();
     }
-
 }

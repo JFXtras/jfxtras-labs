@@ -60,8 +60,8 @@ public enum ByRuleEnum
     };
   
     // Map to match up name to enum
-    private static Map<String, ByRuleEnum> propertyFromNameMap = makePropertiesFromNameMap();
-    private static Map<String, ByRuleEnum> makePropertiesFromNameMap()
+    private static Map<String, ByRuleEnum> enumFromNameMap = makeEnumFromNameMap();
+    private static Map<String, ByRuleEnum> makeEnumFromNameMap()
     {
         Map<String, ByRuleEnum> map = new HashMap<>();
         ByRuleEnum[] values = ByRuleEnum.values();
@@ -72,14 +72,14 @@ public enum ByRuleEnum
         return map;
     }
     /** get enum from name */
-    public static ByRuleEnum propertyFromName(String propertyName)
+    public static ByRuleEnum enumFromName(String propertyName)
     {
-        return propertyFromNameMap.get(propertyName.toUpperCase());
+        return enumFromNameMap.get(propertyName.toUpperCase());
     }
     
     // Map to match up class to enum
-    private static Map<Class<? extends ByRule>, ByRuleEnum> propertyFromClassMap = makePropertiesFromClassMap();
-    private static Map<Class<? extends ByRule>, ByRuleEnum> makePropertiesFromClassMap()
+    private static Map<Class<? extends ByRule>, ByRuleEnum> enumFromClassMap = makeEnumFromClassMap();
+    private static Map<Class<? extends ByRule>, ByRuleEnum> makeEnumFromClassMap()
     {
         Map<Class<? extends ByRule>, ByRuleEnum> map = new HashMap<>();
         ByRuleEnum[] values = ByRuleEnum.values();
@@ -90,9 +90,9 @@ public enum ByRuleEnum
         return map;
     }
     /** get enum from ByRule */
-    static ByRuleEnum propertyFromByRuleClass(Class<? extends ByRule> byRuleClass)
+    static ByRuleEnum enumFromClass(Class<? extends ByRule> byRuleClass)
     {
-        return propertyFromClassMap.get(byRuleClass);
+        return enumFromClassMap.get(byRuleClass);
     }
     
     /** Returns the iCalendar property name (e.g. LANGUAGE) */

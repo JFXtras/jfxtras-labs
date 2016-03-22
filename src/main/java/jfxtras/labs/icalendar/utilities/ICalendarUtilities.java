@@ -233,7 +233,6 @@ public final class ICalendarUtilities
             throw new IllegalArgumentException("Illegal property line.  No value after name:" + propertyLine);
         }
     }
-
     
     /**
      * Converts property line into a property-parameter/value map
