@@ -116,7 +116,7 @@ public final class VComponentUtilities
             @Override
             public String toPropertyString(VComponentDisplayableOld<?> vComponent)
             {
-                return ((vComponent.getCategories() == null) || (vComponent.getCategories().getText().isEmpty())) ? null : vComponent.getCategories().toContentLine();
+                return ((vComponent.getCategories() == null) || (vComponent.getCategories().getValue().isEmpty())) ? null : vComponent.getCategories().toContentLine();
             }
 
             @Override
@@ -159,7 +159,7 @@ public final class VComponentUtilities
             @Override
             public String toPropertyString(VComponentDisplayableOld<?> vComponent)
             {
-                return ((vComponent.getComment() == null) || (vComponent.getComment().getText().isEmpty())) ? null : toString()
+                return ((vComponent.getComment() == null) || (vComponent.getComment().getValue().isEmpty())) ? null : toString()
                         + ":" + vComponent.getComment();
             }
 
@@ -779,7 +779,7 @@ public final class VComponentUtilities
             @Override
             public String toPropertyString(VComponentDisplayableOld<?> vComponent)
             {
-                return ((vComponent.getSummary() == null) || (vComponent.getSummary().getText().isEmpty())) ? null : vComponent.getSummary().toContentLine();
+                return ((vComponent.getSummary() == null) || (vComponent.getSummary().getValue().isEmpty())) ? null : vComponent.getSummary().toContentLine();
             }
 
             @Override

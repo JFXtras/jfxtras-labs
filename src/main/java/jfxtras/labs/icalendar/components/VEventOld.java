@@ -20,7 +20,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import jfxtras.labs.icalendar.components.VEventUtilities.VEventProperty;
-import jfxtras.labs.icalendar.properties.ComponentProperty;
+import jfxtras.labs.icalendar.properties.PropertyType;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
@@ -101,7 +101,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
      *  MUST attend this meeting.\nRSVP to team leader.
      */
     public ObjectProperty<Description> descriptionProperty() { return description; }
-    final private ObjectProperty<Description> description = new SimpleObjectProperty<>(this, ComponentProperty.DESCRIPTION.toString());
+    final private ObjectProperty<Description> description = new SimpleObjectProperty<>(this, PropertyType.DESCRIPTION.toString());
     public Description getDescription() { return description.getValue(); }
     public void setDescription(Description description) { this.description.set(description); }
     public T withDescription(Description description) { setDescription(description); return (T) this; }
@@ -110,7 +110,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
      * Can't be used if DTEND is used.  Must be one or the other.
      * */
-    final private ObjectProperty<TemporalAmount> duration = new SimpleObjectProperty<>(this, ComponentProperty.DURATION.toString());
+    final private ObjectProperty<TemporalAmount> duration = new SimpleObjectProperty<>(this, PropertyType.DURATION.toString());
     public ObjectProperty<TemporalAmount> durationProperty() { return duration; }
     public TemporalAmount getDuration() { return duration.getValue(); }
     public void setDuration(TemporalAmount duration)
@@ -133,7 +133,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
      * Can't be used if DURATION is used.  Must be one or the other.
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
-    final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, ComponentProperty.DATE_TIME_END.toString());
+    final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_END.toString());
     public ObjectProperty<Temporal> dateTimeEndProperty() { return dateTimeEnd; }
     public void setDateTimeEnd(Temporal dtEnd)
     {
@@ -167,7 +167,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
      * LOCATION:Conference Room - F123\, Bldg. 002
      */
     public StringProperty locationProperty() { return locationProperty; }
-    final private StringProperty locationProperty = new SimpleStringProperty(this, ComponentProperty.LOCATION.toString());
+    final private StringProperty locationProperty = new SimpleStringProperty(this, PropertyType.LOCATION.toString());
     public String getLocation() { return locationProperty.getValue(); }
     public void setLocation(String location) { locationProperty.setValue(location); }
     public T withLocation(String location) { setLocation(location); return (T) this; }

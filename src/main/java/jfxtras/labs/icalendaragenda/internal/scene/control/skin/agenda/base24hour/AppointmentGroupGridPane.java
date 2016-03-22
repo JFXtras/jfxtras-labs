@@ -74,7 +74,7 @@ public AppointmentGroupGridPane(VComponentDisplayableOld<Appointment> vComponent
 
              // assign appointment group, store description in CATEGORIES field
              AppointmentGroup g = appointmentGroups.get(appointmentGroupSelected.getValue());
-             vComponent.getCategories().setText(g.getDescription());
+             vComponent.getCategories().setValue(g.getDescription());
          });
          lCnt++;
      }

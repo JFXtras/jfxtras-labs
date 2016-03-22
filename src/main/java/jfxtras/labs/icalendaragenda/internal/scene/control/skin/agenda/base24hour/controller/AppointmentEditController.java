@@ -194,8 +194,8 @@ public class AppointmentEditController extends Pane
         vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent);
         
         // String bindings
-        summaryTextField.textProperty().bindBidirectional(vEvent.getSummary().textProperty());
-        descriptionTextArea.textProperty().bindBidirectional(vEvent.getDescription().textProperty());
+        summaryTextField.textProperty().bindBidirectional(vEvent.getSummary().valueProperty());
+        descriptionTextArea.textProperty().bindBidirectional(vEvent.getDescription().valueProperty());
         locationTextField.textProperty().bindBidirectional(vEvent.locationProperty());
         
         // WHOLE DAY
@@ -291,7 +291,7 @@ public class AppointmentEditController extends Pane
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
-            vEvent.getCategories().setText(newSelection);
+            vEvent.getCategories().setValue(newSelection);
             // TODO - ensure groupTextField has unique description text
 //            groupNameEdited.set(true);
         });
@@ -342,8 +342,8 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleSave()
     {
-        System.out.println("summary text:" + vEvent.getSummary().getText());
-        System.out.println("summary text:" + vEventOriginal.getSummary().getText());
+        System.out.println("summary text:" + vEvent.getSummary().getValue());
+        System.out.println("summary text:" + vEventOriginal.getSummary().getValue());
         vEvent.handleEdit(
                 vEventOriginal
               , vComponents

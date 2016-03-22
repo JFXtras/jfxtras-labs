@@ -5,17 +5,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.events.Comment;
+
 import jfxtras.labs.icalendar.properties.Property;
+import jfxtras.labs.icalendar.properties.PropertyTextBase2;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 
 public enum ICalendarParameter
 {
-    ALTERNATE_TEXT_REPRESENTATION ("ALTREP", new Class[] { }) {
+    ALTERNATE_TEXT_REPRESENTATION ("ALTREP", new Class[] { Comment.class }) {
         @Override
         public String toContentLine(Property property)
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     COMMON_NAME ("CN", new Class[] { }) {
@@ -25,6 +42,20 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     CALENDAR_USER_TYPE ("CUTYPE", new Class[] { }) {
         @Override
@@ -32,6 +63,20 @@ public enum ICalendarParameter
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     DELEGATORS ("DELEGATED-FROM", new Class[] { }) {
@@ -41,6 +86,20 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     DELEGATEES ("DELEGATED-TO", new Class[] { }) {
         @Override
@@ -48,6 +107,20 @@ public enum ICalendarParameter
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     DIRECTORY_ENTRY_REFERENCE ("DIR", new Class[] { }) {
@@ -57,6 +130,20 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     INLINE_ENCODING ("ENCODING", new Class[] { }) {
         @Override
@@ -64,6 +151,20 @@ public enum ICalendarParameter
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     FORMAT_TYPE ("FMTTYPE", new Class[] { }) {
@@ -73,6 +174,20 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     FREE_BUSY_TIME_TYPE ("FBTYPE", new Class[] { }) {
         @Override
@@ -81,13 +196,42 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
-    LANGUAGE ("LANGUAGE", new Class[] { Categories.class }) {
+    LANGUAGE ("LANGUAGE", new Class[] { Categories.class, Comment.class }) {
         @Override
         public String toContentLine(Property property)
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            PropertyTextBase2<?> source2 = (PropertyTextBase2<?>) source;
+            PropertyTextBase2<?> destination2 = (PropertyTextBase2<?>) destination;
+//            destination2.setLanguage(new Language(source2.getLanguage()));
         }
     },
     GROUP_OR_LIST_MEMBERSHIP ("MEMBER", new Class[] { }) {
@@ -97,6 +241,20 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     PARTICIPATION_STATUS ("PARTSTAT", new Class[] { }) {
         @Override
@@ -104,6 +262,20 @@ public enum ICalendarParameter
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     RECURRENCE_IDENTIFIER_RANGE ("RANGE", new Class[] { }) {
@@ -113,6 +285,20 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     ALARM_TRIGGER_RELATIONSHIP ("RELATED", new Class[] { }) {
         @Override
@@ -120,6 +306,20 @@ public enum ICalendarParameter
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     RELATIONSHIP_TYPE ("RELTYPE", new Class[] { }) {
@@ -129,6 +329,20 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     PARTICIPATION_ROLE ("ROLE", new Class[] { }) {
         @Override
@@ -136,6 +350,20 @@ public enum ICalendarParameter
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     RSVP_EXPECTATION ("RSVP", new Class[] { }) {
@@ -145,6 +373,20 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     SENT_BY ("SENT-BY", new Class[] { }) {
         @Override
@@ -152,6 +394,20 @@ public enum ICalendarParameter
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     TIME_ZONE_IDENTIFIER ("TZID", new Class[] { }) {
@@ -161,6 +417,20 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     VALUE_DATE_TYPES ("VALUE", new Class[] { }) {
         @Override
@@ -169,9 +439,23 @@ public enum ICalendarParameter
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parseAndSetValue(Property property, String value)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyTo(Property source, Property destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     };
     
-    // Map to match up name to ICalendarParameter
+    // Map to match up name to enum
     private static Map<String, ICalendarParameter> enumFromNameMap = makeEnumFromNameMap();
     private static Map<String, ICalendarParameter> makeEnumFromNameMap()
     {
@@ -197,31 +481,40 @@ public enum ICalendarParameter
         this.propertyClasses = propertyClasses;
     }
     
-    private static Map<Class, List<ICalendarParameter>> enumListFrompropertyClass = makeEnumListFrompropertyClass();
-    private static Map<Class, List<ICalendarParameter>> makeEnumListFrompropertyClass()
+    private static Map<Class<? extends Property>, List<ICalendarParameter>> enumListFrompropertyClass = makeEnumListFrompropertyClass();
+    private static Map<Class<? extends Property>, List<ICalendarParameter>> makeEnumListFrompropertyClass()
     {
-        Map<Class, List<ICalendarParameter>> map = new HashMap<>();
+        Map<Class<? extends Property>, List<ICalendarParameter>> map = new HashMap<>();
         ICalendarParameter[] values = ICalendarParameter.values();
         for (int i=0; i<values.length; i++)
         {
             ICalendarParameter myParameter = values[i];
             for (int classIndex=0; classIndex<myParameter.propertyClasses.length; classIndex++)
             {
-                Class c = myParameter.propertyClasses[classIndex];
-                List<ICalendarParameter> parameterList = (map.get(c) == null) ? new ArrayList<>() : map.get(c);
+                Class<? extends Property> c = myParameter.propertyClasses[classIndex];
+//                System.out.println("c:" + c);
+                List<ICalendarParameter> parameterList = map.get(c);
+                if (parameterList == null)
+                {
+                    parameterList = new ArrayList<>();
+                    map.put(c, parameterList);
+                }
+//                List<ICalendarParameter> parameterList = (map.get(c) == null) ? new ArrayList<>() : map.get(c);
                 parameterList.add(myParameter);
             }
         }
+//        List<Class<? extends Property>> l = new ArrayList<Class<? extends Property>Arrays.asList(Categories.class);
+        System.out.println("map:" + map.size());
         return map;
     }
     
-    /**
-     * The Parameter values for TextProperty1
-     */
-    public static ICalendarParameter[] textProperty1ParameterValues()
-    {
-        return new ICalendarParameter[] { LANGUAGE };
-    }
+//    /**
+//     * The Parameter values for TextProperty1
+//     */
+//    public static ICalendarParameter[] textProperty1ParameterValues()
+//    {
+//        return new ICalendarParameter[] { LANGUAGE };
+//    }
     
 //    public void setValue(VComponentProperty textProperty1, String value)
 //    {
@@ -230,11 +523,13 @@ public enum ICalendarParameter
 //        // how about a bunch of interfaces to define all the setters and getters?
 //        
 //    }
-    public void setValue(Property property, String value)
-    {
-        // TODO Auto-generated method stub
-        
-    }
+    
+    /**
+     * Returns list of iCalendar parameters that are associated with propertyClass.
+     * 
+     * @param propertyClass - implementation of Property
+     * @return - list of associated parameters
+     */
     public static List<ICalendarParameter> values(Class<? extends Property> propertyClass)
     {
         return enumListFrompropertyClass.get(propertyClass);
@@ -245,4 +540,10 @@ public enum ICalendarParameter
      */
     /** makes content line (RFC 5545 3.1) from a vComponent property  */
     public abstract String toContentLine(Property property);
+    
+    /** parses value and sets property associated with enum */
+    public abstract void parseAndSetValue(Property property, String value);
+    
+    public abstract void copyTo(Property source, Property destination);
+
 }

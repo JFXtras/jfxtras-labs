@@ -1,11 +1,11 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
-import jfxtras.labs.icalendar.properties.TextPropertyAbstract;
-import jfxtras.labs.icalendar.properties.ComponentProperty;
+import jfxtras.labs.icalendar.properties.PropertyTextBase3;
+import jfxtras.labs.icalendar.properties.PropertyType;
 
-public class Location extends TextPropertyAbstract<Comment>
+public class Location extends PropertyTextBase3<Location>
 {    
-    private final static String NAME = ComponentProperty.LOCATION.toString();
+    private final static String NAME = PropertyType.LOCATION.toString();
 
     public Location(String contentLine)
     {

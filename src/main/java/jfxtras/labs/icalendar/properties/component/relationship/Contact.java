@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendar.properties.component.relationship;
 
-import jfxtras.labs.icalendar.properties.TextPropertyAbstract;
-import jfxtras.labs.icalendar.properties.ComponentProperty;
+import jfxtras.labs.icalendar.properties.PropertyTextBase3;
+import jfxtras.labs.icalendar.properties.PropertyType;
 
 /**
  * CONTACT: RFC 5545 iCalendar 3.8.4.2. page 109
@@ -11,19 +11,22 @@ import jfxtras.labs.icalendar.properties.ComponentProperty;
  * Example:
  * CONTACT:Jim Dolittle\, ABC Industries\, +1-919-555-1234
  */
-public class Contact extends TextPropertyAbstract<Contact>
+public class Contact extends PropertyTextBase3<Contact>
 {
-    private final static String NAME = ComponentProperty.CONTACT.toString();
+    private final static String NAME = PropertyType.CONTACT.toString();
     
     public Contact(String contentLine)
     {
         super(NAME, contentLine);
     }
     
-    public Contact(Contact contact)
+    public Contact(Contact source)
     {
-        super(contact);
+        super(source);
     }
     
-    public Contact() { super(NAME); }
+    public Contact()
+    {
+        super(NAME);
+    }
 }

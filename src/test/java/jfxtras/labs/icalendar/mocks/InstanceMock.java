@@ -35,7 +35,7 @@ public class InstanceMock
     {
         if (summary != null)
         {
-            this.summary = summary.getText();
+            this.summary = summary.getValue();
         }
     }
     public InstanceMock withSummary(Summary summary) { setSummary(summary); return this; }

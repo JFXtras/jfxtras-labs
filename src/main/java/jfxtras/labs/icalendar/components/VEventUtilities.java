@@ -117,7 +117,7 @@ public final class VEventUtilities
             @Override
             public String toPropertyString(VEventOld<?,?> vEvent)
             {
-                return ((vEvent.getDescription() == null) || (vEvent.getDescription().getText().isEmpty())) ? null : vEvent.getDescription().toContentLine();
+                return ((vEvent.getDescription() == null) || (vEvent.getDescription().getValue().isEmpty())) ? null : vEvent.getDescription().toContentLine();
             }
     
             @Override

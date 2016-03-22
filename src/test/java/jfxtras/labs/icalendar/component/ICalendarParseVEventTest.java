@@ -68,6 +68,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
     @Test
     public void canParseDailyUTC()
     {
+//        System.out.println(ICalendarParameter.values(Categories.class));
+//        System.exit(0);
         String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "CATEGORIES:group03" + System.lineSeparator()
                               + "DESCRIPTION:DailyUTC Description" + System.lineSeparator()
@@ -79,6 +81,7 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
         VEventMock vEvent = VEventMock.parse(vEventString);
+        System.out.println("text:" + vEvent.getCategories().getValue());
         VEventMock expectedVEvent = getDailyUTC();
         assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
     }

@@ -1,15 +1,21 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
-import jfxtras.labs.icalendar.properties.ComponentProperty;
-import jfxtras.labs.icalendar.properties.Property2Base;
+import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VJournal;
+import jfxtras.labs.icalendar.components.VTodo;
+import jfxtras.labs.icalendar.properties.PropertyTextBase2;
+import jfxtras.labs.icalendar.properties.PropertyType;
 
-public class Categories extends Property2Base<Categories>
+/**
+ * 
+ * @see VEvent
+ * @see VTodo
+ * @see VJournal
+ */
+public class Categories extends PropertyTextBase2<Categories>
 {
-    private final static String NAME = ComponentProperty.CATEGORIES.toString();
+    private final static String NAME = PropertyType.CATEGORIES.toString();
     
-    /*
-     * CONSTRUCTORS
-     */
     public Categories(String propertyString)
     {
         super(NAME, propertyString);

@@ -19,10 +19,10 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.components.VComponentUtilities;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
-import jfxtras.labs.icalendar.properties.component.descriptive.Description;
-import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendar.components.VEventOld;
 import jfxtras.labs.icalendar.components.VEventUtilities;
+import jfxtras.labs.icalendar.properties.component.descriptive.Description;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -65,7 +65,7 @@ public class VEventImpl extends VEventOld<Appointment, VEventImpl>
         }
     };
     private final ChangeListener<? super AppointmentGroup> appointmentGroupListener = 
-            (obs, oldValue, newValue) -> getCategories().setText(newValue.getDescription());
+            (obs, oldValue, newValue) -> getCategories().setValue(newValue.getDescription());
         
     /*
      * CONSTRUCTORS
@@ -200,7 +200,7 @@ public class VEventImpl extends VEventOld<Appointment, VEventImpl>
             Appointment appt = new Agenda.AppointmentImplTemporal()
                     .withStartTemporal(temporalStart)
                     .withEndTemporal(temporalEnd)
-                    .withDescription(getDescription().getText())
+                    .withDescription(getDescription().getValue())
                     .withSummary(VComponentPropertyOld.SUMMARY.toPropertyString(this))
                     .withLocation(getLocation())
                     .withWholeDay(isWholeDay())
