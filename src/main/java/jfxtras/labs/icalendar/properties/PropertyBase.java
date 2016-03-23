@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendar.properties;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 import javafx.collections.FXCollections;
@@ -9,6 +9,14 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
+/**
+ * Base iCalendar property class
+ * Contains other-parameters
+ * Also contains methods used by all properties
+ * 
+ * @author David Bal
+ *
+ */
 public abstract class PropertyBase implements Property
 {
     @Override
@@ -23,8 +31,9 @@ public abstract class PropertyBase implements Property
     /**
      * List of all parameter enums in this property
      */
-    public List<ParameterEnum> parameters() { return parameters; }
-    private List<ParameterEnum> parameters = new ArrayList<>();
+    // TODO - MAY NOT KEEP?  MAY JUST LOOP THROUGH ALL PARAMETERS INSTEAD
+    public Collection<ParameterEnum> parameters() { return parameters; }
+    private Collection<ParameterEnum> parameters = new HashSet<>();
     
     /*
      * CONSTRUCTORS
@@ -96,5 +105,37 @@ public abstract class PropertyBase implements Property
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         builder.append(":" + getValue().toString());
         return builder.toString();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        // TODO Auto-generated method stub
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        PropertyBase testObj = (PropertyBase) obj;
+        boolean valueEquals = getValue().equals(testObj.getValue());
+        boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
+        boolean parametersEquals = parameters()
+               .stream()
+               .map(p -> p.isEqualTo(this, testObj))
+//              .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
+              .allMatch(b -> b == true);
+        return valueEquals && otherParametersEquals && parametersEquals;
+    }
+
+    @Override
+    public String toString()
+    {
+        // TODO Auto-generated method stub
+        return super.toString();
     }
 }

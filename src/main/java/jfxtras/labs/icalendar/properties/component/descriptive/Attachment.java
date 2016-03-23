@@ -10,9 +10,9 @@ import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.parameters.Encoding;
-import jfxtras.labs.icalendar.parameters.FormatType;
+import jfxtras.labs.icalendar.parameters.Format;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.Value;
+import jfxtras.labs.icalendar.parameters.Value.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 
@@ -103,8 +103,8 @@ public class Attachment extends PropertyBase
      * specify the content type of a referenced object.
      */
     // Uses lazy initialization because its rarely used
-    public FormatType getFormatType() { return (formatType == null) ? _formatType : formatType.get(); }
-    public FormatType formatTypeProperty()
+    public Format getFormatType() { return (formatType == null) ? _formatType : formatType.get(); }
+    public Format formatTypeProperty()
     {
         if (formatType == null)
         {
@@ -112,9 +112,9 @@ public class Attachment extends PropertyBase
         }
         return formatType.get();
     }
-    private FormatType _formatType;
-    private ObjectProperty<FormatType> formatType;
-    public void setFormatType(FormatType formatType)
+    private Format _formatType;
+    private ObjectProperty<Format> formatType;
+    public void setFormatType(Format formatType)
     {
         if (this.formatType == null)
         {
@@ -131,32 +131,32 @@ public class Attachment extends PropertyBase
      * Explicitly specify the value type format for a property value.
      */
     // Uses lazy initialization because its rarely used
-    public Value getValueParameter() { return (valueParameter == null) ? _valueParameter : valueParameter.get(); }
-    public Value valueParameterProperty()
+    public ValueType getValueParameter() { return (valueType == null) ? _valueType : valueType.get(); }
+    public ValueType valueTypeProperty()
     {
-        if (valueParameter == null)
+        if (valueType == null)
         {
-            valueParameter = new SimpleObjectProperty<>(this, ParameterEnum.VALUE_DATE_TYPES.toString(), _valueParameter);
+            valueType = new SimpleObjectProperty<>(this, ParameterEnum.VALUE_DATA_TYPES.toString(), _valueType);
         }
-        return valueParameter.get();
+        return valueType.get();
     }
-    private Value _valueParameter;
-    private ObjectProperty<Value> valueParameter;
-    public void setValueParameter(Value valueParameter)
+    private ValueType _valueType;
+    private ObjectProperty<ValueType> valueType;
+    public void setValueParameter(ValueType valueType)
     {
-        if (valueParameter != Value.BINARY)
+        if (valueType != ValueType.BINARY)
         {
-            throw new IllegalArgumentException("Attachment property only allows VALUE to be set to" + Value.BINARY);
+            throw new IllegalArgumentException("Attachment property only allows VALUE to be set to" + ValueType.BINARY);
         }
-        if (this.valueParameter == null)
+        if (this.valueType == null)
         {
-            _valueParameter = valueParameter;
+            _valueType = valueType;
         } else
         {
-            this.valueParameter.set(valueParameter);
+            this.valueType.set(valueType);
         }
     }
-    public Attachment withValueParameter(Value valueParameter) { setValueParameter(valueParameter); return this; }
+    public Attachment withValueParameter(ValueType valueType) { setValueParameter(valueType); return this; }
     
     /*
      * CONSTRUCTORS

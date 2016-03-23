@@ -21,11 +21,11 @@ import jfxtras.labs.icalendar.properties.calendar.Version;
 public abstract class PropertyTextBase<T> extends PropertyBase
 {
     @Override
-    public String getValue() { return text.get(); }
-    public StringProperty valueProperty() { return text; }
-    final private StringProperty text = new SimpleStringProperty(this, propertyType().toString());
-    public void setValue(String value) { text.set(value); }
-    public T withValue(String value) { setValue(value); return (T) this; }
+    public String getValue() { return value.get(); }
+    public StringProperty valueProperty() { return value; }
+    final private StringProperty value = new SimpleStringProperty(this, propertyType().toString());
+    public void setValue(String text) { this.value.set(text); }
+    public T withValue(String text) { setValue(text); return (T) this; }
     
     @Override
     public void parseAndSetValue(String value)
@@ -53,5 +53,8 @@ public abstract class PropertyTextBase<T> extends PropertyBase
         }
     }
 
-    public PropertyTextBase() { super(); }
+    public PropertyTextBase()
+    {
+        super();
+    }
 }

@@ -38,10 +38,10 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
     {
         if (language != null)
         {
-            
+            parameters().add(ParameterEnum.LANGUAGE);
         } else
         {
-            
+            parameters().remove(ParameterEnum.LANGUAGE);            
         }
         if (this.language == null)
         {

@@ -5,6 +5,7 @@ import javafx.beans.property.StringProperty;
 
 public class ParameterTextBase implements Parameter
 {
+    @Deprecated // make class map in enum
     private final String parameterName;
     
     @Override

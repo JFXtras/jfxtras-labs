@@ -15,7 +15,7 @@ import javafx.beans.property.StringProperty;
  *   agenda.doc
  * 
  */
-public class FormatType
+public class Format
 {
     public String getTypeName() { return typeName.get(); }
     StringProperty typeNameProperty() { return typeName; }

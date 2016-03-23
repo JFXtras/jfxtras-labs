@@ -432,7 +432,7 @@ public enum ParameterEnum
             
         }
     },
-    VALUE_DATE_TYPES ("VALUE", new Class[] { }) {
+    VALUE_DATA_TYPES ("VALUE", new Class[] { }) {
         @Override
         public String toContentLine(Property property)
         {
@@ -545,5 +545,11 @@ public enum ParameterEnum
     public abstract void parseAndSet(Property property, String value);
     
     public abstract void copyTo(Property source, Property destination);
+    
+    public boolean isEqualTo(Property propertyBase, Property testObj)
+    {
+        // TODO Auto-generated method stub
+        return true;
+    }
 
 }
