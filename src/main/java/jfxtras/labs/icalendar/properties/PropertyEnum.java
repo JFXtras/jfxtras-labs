@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
+import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 
@@ -13,7 +14,7 @@ public enum PropertyEnum
     ATTACHMENT ("ATTACH", null), // Descriptive
     ATTENDEE ("ATTENDEE", null), // Relationship
     CALENDAR_SCALE ("CALSCALE", CalendarScale.class), // Calendar
-    CATEGORIES ("CATEGORIES", null), // Descriptive
+    CATEGORIES ("CATEGORIES", Categories.class), // Descriptive
     CLASSIFICATION ("CLASS", null), // Descriptive
     COMMENT ("COMMENT", null), // Descriptive
     CONTACT ("CONTACT", null), // Relationship
@@ -83,7 +84,12 @@ public enum PropertyEnum
     /** get enum from ByRule */
     public static PropertyEnum enumFromClass(Class<? extends Property> myClass)
     {
-        return enumFromClassMap.get(myClass);
+        PropertyEnum p = enumFromClassMap.get(myClass);
+        if (p == null)
+        {
+            throw new IllegalArgumentException(PropertyEnum.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
+        }
+        return p;
     }
     
     private String name;

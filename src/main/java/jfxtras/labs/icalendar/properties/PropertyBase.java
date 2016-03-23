@@ -55,8 +55,10 @@ public abstract class PropertyBase implements Property
                 }                    
             });
         // add property value
-        parseAndSetValue(map.get(ICalendarUtilities.PROPERTY_VALUE_KEY));
+        propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
     }
+    private String propertyValueString;
+    String getPropertyValueString() { return propertyValueString; }
     
     // construct empty property
     public PropertyBase()
@@ -77,14 +79,6 @@ public abstract class PropertyBase implements Property
 //        setValue = source.getValue();
 //        source.copyValueTo(this);
     }
-    
-    /*
-     * NEED THE FOLLOWING
-     * TO STRING - works with parameters list
-     * PARSE STRING
-     * COPY
-     * EQUALS
-     */
     
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.5

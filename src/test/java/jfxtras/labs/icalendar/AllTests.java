@@ -19,8 +19,8 @@ import jfxtras.labs.icalendar.property.SummaryTest;
               , ICalendarEqualsTest.class
               , ICalendarMakeInstancesTest.class
               , ICalendarParseVEventTest.class
-              , ICalendarReadICSTest.class
               , ICalendarVEventToStringTest.class
+              , ICalendarReadICSTest.class
               , DescriptionTest.class
               , RDateTest.class
               , SummaryTest.class

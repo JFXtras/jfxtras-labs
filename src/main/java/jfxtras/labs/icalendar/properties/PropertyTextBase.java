@@ -23,13 +23,14 @@ public abstract class PropertyTextBase<T> extends PropertyBase
     @Override
     public String getValue() { return text.get(); }
     public StringProperty valueProperty() { return text; }
-    private StringProperty text = new SimpleStringProperty(this, propertyType().toString());
-    public void setValue(String text) { this.text.set(text); }
-    public T withValue(String text) { setValue(text); return (T) this; }
+    final private StringProperty text = new SimpleStringProperty(this, propertyType().toString());
+    public void setValue(String value) { text.set(value); }
+    public T withValue(String value) { setValue(value); return (T) this; }
     
     @Override
     public void parseAndSetValue(String value)
     {
+//        System.out.println("value:base:" + this.text + " " + valueProperty());
         setValue(value);
     }
     
@@ -39,6 +40,7 @@ public abstract class PropertyTextBase<T> extends PropertyBase
     protected PropertyTextBase(String propertyString)
     {
         super(propertyString);
+        parseAndSetValue(getPropertyValueString());
     }
 
     // copy constructor
