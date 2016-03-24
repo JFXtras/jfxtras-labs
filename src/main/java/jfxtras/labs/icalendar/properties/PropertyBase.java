@@ -60,7 +60,7 @@ public abstract class PropertyBase<T> implements Property
             this.valueType.set(value);
         }
     }
-    public T withValue(String content) { setValue(ValueType.valueOf(content)); return (T) this; } 
+    public T withValue(String value) { setValue(ValueType.valueOf(value)); return (T) this; } 
     
     @Override
     public ObservableList<Object> otherParameters() { return otherParameters; }
@@ -74,7 +74,6 @@ public abstract class PropertyBase<T> implements Property
     /**
      * List of all parameter enums in this property
      */
-    // TODO - MAY NOT KEEP?  MAY JUST LOOP THROUGH ALL PARAMETERS INSTEAD
     @Override
     public Collection<ParameterEnum> parameters() { return parameters; }
     private Collection<ParameterEnum> parameters = new HashSet<>();
@@ -173,7 +172,7 @@ public abstract class PropertyBase<T> implements Property
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        PropertyBase testObj = (PropertyBase) obj;
+        PropertyBase<?> testObj = (PropertyBase<?>) obj;
         boolean valueEquals = getValue().equals(testObj.getValue());
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
         boolean parametersEquals = parameters()

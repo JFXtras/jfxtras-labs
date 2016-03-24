@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,7 @@ import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyTextBase2;
 import jfxtras.labs.icalendar.properties.PropertyTextBase3;
+import jfxtras.labs.icalendar.properties.PropertyTimeBase;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 
 public enum ParameterEnum
@@ -19,15 +22,19 @@ public enum ParameterEnum
         @Override
         public String toContentLine(Property property)
         {
-            PropertyTextBase3<?> alternateTextProperty = (PropertyTextBase3<?>) property;
-            return ";" + toString() + "=\"" + alternateTextProperty.getAlternateTextRepresentation() + "\"";
+            return ";" + toString() + "=\"" + ((PropertyTextBase3<?>) property).getAlternateTextRepresentation() + "\"";
         }
 
         @Override
         public void parseAndSet(Property property, String value)
         {
-            // TODO Auto-generated method stub
-            
+            try
+            {
+                ((PropertyTextBase3<?>) property).setAlternateTextRepresentation(new URI(value));
+            } catch (URISyntaxException e)
+            {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -217,15 +224,13 @@ public enum ParameterEnum
         @Override
         public String toContentLine(Property property)
         {
-            PropertyTextBase2<?> languageProperty = (PropertyTextBase2<?>) property;
-            return ";" + toString() + "=" + languageProperty.getLanguage();
+            return ";" + toString() + "=" + ((PropertyTextBase2<?>) property).getLanguage();
         }
 
         @Override
         public void parseAndSet(Property property, String value)
         {
-            // TODO Auto-generated method stub
-            
+            ((PropertyTextBase2<?>) property).setLanguage(value);
         }
 
         @Override
@@ -416,15 +421,13 @@ public enum ParameterEnum
         @Override
         public String toContentLine(Property property)
         {
-            // TODO Auto-generated method stub
-            return null;
+            return ";" + toString() + "=" + ((PropertyTimeBase<?>) property).getTimeZoneIdentifier().toString();
         }
 
         @Override
         public void parseAndSet(Property property, String value)
         {
-            // TODO Auto-generated method stub
-            
+            ((PropertyTimeBase<?>) property).setTimeZoneIdentifier(value);
         }
 
         @Override
@@ -438,15 +441,13 @@ public enum ParameterEnum
         @Override
         public String toContentLine(Property property)
         {
-            PropertyBase<?> propertyWithValueType = (PropertyBase<?>) property;
-            return ";" + toString() + "=" + propertyWithValueType.getValueType().toString();
+            return ";" + toString() + "=" + ((PropertyBase<?>) property).getValueType().toString();
         }
 
         @Override
         public void parseAndSet(Property property, String value)
         {
-            PropertyBase property2 = (PropertyBase) property;
-            property2.setValue(ValueType.valueOf(value));
+            ((PropertyBase<?>) property).setValue(ValueType.valueOf(value));
         }
 
         @Override

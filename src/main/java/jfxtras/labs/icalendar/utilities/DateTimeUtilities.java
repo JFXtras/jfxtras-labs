@@ -188,6 +188,7 @@ public final class DateTimeUtilities
      * @param temporalPropertyLine
      * @return
      */
+    @Deprecated // use new 
     public static Temporal parse(String temporalPropertyLine)
     {
         Map<String, String> parameterMap = ICalendarUtilities.propertyLineToParameterMap(temporalPropertyLine);
@@ -197,6 +198,15 @@ public final class DateTimeUtilities
                 .filter(d -> d != null)
                 .findAny()
                 .get();
+    }
+    
+    public static Temporal parse(String temporalString, ZoneId zone)
+    {
+        return Arrays.stream(DateTimeType.values())
+                .map(d -> d.parse(temporalString, zone))
+                .filter(d -> d != null)
+                .findAny()
+                .get();        
     }
 //    
 //    /**
@@ -288,7 +298,8 @@ public final class DateTimeUtilities
     
     public enum DateTimeType
     {
-        DATE ("^(VALUE=DATE:)?[0-9]{8}")
+//        DATE ("^(VALUE=DATE:)?[0-9]{8}")
+        DATE ("^[0-9]{8}")
         {
             @Override
             public Temporal from(Temporal temporal, ZoneId zone)
@@ -341,10 +352,21 @@ public final class DateTimeUtilities
                 return temporal instanceof LocalDate;
             }
 
+            @Deprecated
             @Override
             Temporal parse(Map<String, String> parameterMap)
             {
                 String temporalString = parameterMap.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+                if (temporalString.matches(getPattern()))
+                {
+                    return LocalDate.parse(temporalString, LOCAL_DATE_FORMATTER);                    
+                }
+                return null;
+            }
+
+            @Override
+            public Temporal parse(String temporalString, ZoneId zone)
+            {
                 if (temporalString.matches(getPattern()))
                 {
                     return LocalDate.parse(temporalString, LOCAL_DATE_FORMATTER);                    
@@ -401,12 +423,25 @@ public final class DateTimeUtilities
                 return temporal instanceof LocalDateTime;
             }
 
+            @Deprecated
             @Override
             Temporal parse(Map<String, String> parameterMap)
             {
                 String tzidParameter = parameterMap.get("TZID"); // time zone parameter
                 String temporalString = parameterMap.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
                 boolean isTzidEmpty = tzidParameter == null;
+                boolean isPatternMatch = temporalString.matches(getPattern());
+                if (isTzidEmpty && isPatternMatch)
+                {
+                    return LocalDateTime.parse(temporalString, LOCAL_DATE_TIME_FORMATTER);
+                }
+                return null;
+            }
+
+            @Override
+            public Temporal parse(String temporalString, ZoneId zone)
+            {
+                boolean isTzidEmpty = zone == null;
                 boolean isPatternMatch = temporalString.matches(getPattern());
                 if (isTzidEmpty && isPatternMatch)
                 {
@@ -470,10 +505,22 @@ public final class DateTimeUtilities
                 return false;
             }
 
+            @Deprecated
             @Override
             Temporal parse(Map<String, String> parameterMap)
             {
                 String temporalString = parameterMap.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+                boolean isPatternMatch = temporalString.matches(getPattern());
+                if (isPatternMatch)
+                {
+                    return ZonedDateTime.parse(temporalString, ZONED_DATE_TIME_UTC_FORMATTER);
+                }
+                return null;
+            }
+
+            @Override
+            public Temporal parse(String temporalString, ZoneId zone)
+            {
                 boolean isPatternMatch = temporalString.matches(getPattern());
                 if (isPatternMatch)
                 {
@@ -532,6 +579,7 @@ public final class DateTimeUtilities
                 return temporal instanceof ZonedDateTime;
             }
 
+            @Deprecated
             @Override
             Temporal parse(Map<String, String> parameterMap)
             {
@@ -546,6 +594,19 @@ public final class DateTimeUtilities
                   return localDateTime.atZone(zone);
               }
               return null;
+            }
+
+            @Override
+            public Temporal parse(String temporalString, ZoneId zone)
+            {
+                boolean isTzidEmpty = zone == null;
+                boolean isPatternMatch = temporalString.matches(getPattern());
+                if (! isTzidEmpty && isPatternMatch)
+                {
+                    LocalDateTime localDateTime = LocalDateTime.parse(temporalString, LOCAL_DATE_TIME_FORMATTER);
+                    return localDateTime.atZone(zone);
+                }
+                return null;
             }
         };
         
@@ -591,7 +652,10 @@ public final class DateTimeUtilities
          * @param parameterMap - map of parameters from propertyLineToParameterMap
          * @return - parsed Temporal, if matches, null otherwise
          */
+        @Deprecated
         abstract Temporal parse(Map<String,String> parameterMap);
+        
+        public abstract Temporal parse(String value, ZoneId zone);
 
 //        /**
 //         * Produces property name and attribute, if necessary.

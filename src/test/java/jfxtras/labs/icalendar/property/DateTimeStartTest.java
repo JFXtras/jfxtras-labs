@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
@@ -22,13 +24,22 @@ public class DateTimeStartTest
     }
     
     @Test
-    public void canParseDateTimeStartComplex()
+    public void canParseDateTimeStartDate()
     {
         DateTimeStart dateTimeStart = new DateTimeStart("DTSTART;VALUE=DATE:20160322");
-        System.out.println("valueparameter:" + dateTimeStart.getValueType());
         String expectedContentLine = "DTSTART;VALUE=DATE:20160322";
         String madeContentLine = dateTimeStart.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(LocalDate.of(2016, 3, 22), dateTimeStart.getValue());
+    }
+    
+    @Test
+    public void canParseDateTimeStartZoned()
+    {
+        DateTimeStart dateTimeStart = new DateTimeStart("DTSTART;TZID=America/Los_Angeles:20160306T043000");
+        String expectedContentLine = "DTSTART;TZID=America/Los_Angeles:20160306T043000";
+        String madeContentLine = dateTimeStart.toContentLine();
+        assertEquals(expectedContentLine, madeContentLine);
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")), dateTimeStart.getValue());
     }
 }
