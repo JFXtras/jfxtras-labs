@@ -1,6 +1,9 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.util.Collection;
+
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
 
 /**
  * top-level interface for all iCalendar properties
@@ -12,12 +15,12 @@ import javafx.collections.ObservableList;
  */
 public interface Property
 {
-    /**
-     * Parse content line string into property's value type
-     * 
-     * @param value - string value
-     */
-    void parseAndSetValue(String value);
+//    /**
+//     * Parse content line string into property's value and parameters
+//     * 
+//     * @param value - string value
+//     */
+//    void parseAndSetValue(String value);
 
     /**
      * Converts the property's value to a string for the content line
@@ -54,6 +57,12 @@ public interface Property
      * the parameter name and value are combined into one object
      */
     ObservableList<Object> otherParameters();
+    
+    /**
+     * Names of all the parameters embedded inside the property
+     * Each parameter MUST not appear more than once.
+     */
+    Collection<ParameterEnum> parameters();
     
 //    /**
 //     * List of all parameters in this property

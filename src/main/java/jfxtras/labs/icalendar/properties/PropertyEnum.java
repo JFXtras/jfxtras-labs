@@ -7,6 +7,7 @@ import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 
 public enum PropertyEnum
 {
@@ -21,7 +22,7 @@ public enum PropertyEnum
     DATE_TIME_COMPLETED ("COMPLETED", null), // Date and Time
     DATE_TIME_DUE ("DUE", null), // Date and Time
     DATE_TIME_END ("DTEND", null), // Date and Time
-    DATE_TIME_START ("DTSTART", null), // Date and Time
+    DATE_TIME_START ("DTSTART", DateTimeStart.class), // Date and Time
     DESCRIPTION ("DESCRIPTION", Description.class), // Descriptive
     DURATION ("DURATION", null), // Date and Time
     EXCEPTION_DATE_TIMES ("EXDATE", null), // Recurrence

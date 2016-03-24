@@ -18,43 +18,43 @@ import jfxtras.labs.icalendar.properties.calendar.Version;
  * @see ProductIdentifier
  * @see Version
  */
-public abstract class PropertyTextBase<T> extends PropertyBase
+public abstract class PropertyTextBase<T> extends PropertyBase<T>
 {
     @Override
     public String getValue() { return value.get(); }
     public StringProperty valueProperty() { return value; }
     final private StringProperty value = new SimpleStringProperty(this, propertyType().toString());
     public void setValue(String text) { this.value.set(text); }
-    public T withValue(String text) { setValue(text); return (T) this; }
-    
     @Override
-    public void parseAndSetValue(String value)
-    {
-//        System.out.println("value:base:" + this.text + " " + valueProperty());
-        setValue(value);
-    }
-    
+    public T withValue(String text) { setValue(text); return (T) this; }
+        
     /*
      * CONSTRUCTORS
      */    
     protected PropertyTextBase(String propertyString)
     {
         super(propertyString);
-        parseAndSetValue(getPropertyValueString());
+        setValue(getPropertyValueString());
     }
 
     // copy constructor
-    public PropertyTextBase(PropertyTextBase<T> property)
+    public PropertyTextBase(PropertyTextBase<T> source)
     {
-        super(property);
+        super(source);
         if (getValue() != null)
         {
-            setValue(property.getValue());
+            setValue(source.getValue());
         }
     }
 
     public PropertyTextBase()
     {
         super();
+    }
+    
+    @Override
+    public String toContentLine()
+    {
+        return super.toContentLine() + ":" + getValue().toString();
     }
 }

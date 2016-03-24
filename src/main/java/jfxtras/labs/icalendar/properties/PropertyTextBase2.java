@@ -2,7 +2,6 @@ package jfxtras.labs.icalendar.properties;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendar.parameters.Language;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 
@@ -23,8 +22,8 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
      * SUMMARY;LANGUAGE=en-US:Company Holiday Party
      * LOCATION;LANGUAGE=no:Tyskland
      */
-    public Language getLanguage() { return (language == null) ? _language : language.get(); }
-    public ObjectProperty<Language> languageProperty()
+    public String getLanguage() { return (language == null) ? _language : language.get(); }
+    public ObjectProperty<String> languageProperty()
     {
         if (language == null)
         {
@@ -32,9 +31,9 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
         }
         return language;
     }
-    private Language _language;
-    private ObjectProperty<Language> language;
-    public void setLanguage(Language language)
+    private String _language;
+    private ObjectProperty<String> language;
+    public void setLanguage(String language)
     {
         if (language != null)
         {
@@ -51,7 +50,7 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
             this.language.set(language);
         }
     }
-    public T withLanguage(String content) { setLanguage(new Language(content)); return (T) this; }    
+    public T withLanguage(String content) { setLanguage(content); return (T) this; }    
     
     /*
      * CONSTRUCTORS

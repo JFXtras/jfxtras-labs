@@ -8,7 +8,9 @@ import java.util.Map;
 import javax.xml.stream.events.Comment;
 
 import jfxtras.labs.icalendar.properties.Property;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyTextBase2;
+import jfxtras.labs.icalendar.properties.PropertyTextBase3;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 
 public enum ParameterEnum
@@ -17,8 +19,8 @@ public enum ParameterEnum
         @Override
         public String toContentLine(Property property)
         {
-            // TODO Auto-generated method stub
-            return null;
+            PropertyTextBase3<?> alternateTextProperty = (PropertyTextBase3<?>) property;
+            return ";" + toString() + "=\"" + alternateTextProperty.getAlternateTextRepresentation() + "\"";
         }
 
         @Override
@@ -215,8 +217,8 @@ public enum ParameterEnum
         @Override
         public String toContentLine(Property property)
         {
-            // TODO Auto-generated method stub
-            return null;
+            PropertyTextBase2<?> languageProperty = (PropertyTextBase2<?>) property;
+            return ";" + toString() + "=" + languageProperty.getLanguage();
         }
 
         @Override
@@ -436,15 +438,15 @@ public enum ParameterEnum
         @Override
         public String toContentLine(Property property)
         {
-            // TODO Auto-generated method stub
-            return null;
+            PropertyBase<?> propertyWithValueType = (PropertyBase<?>) property;
+            return ";" + toString() + "=" + propertyWithValueType.getValueType().toString();
         }
 
         @Override
         public void parseAndSet(Property property, String value)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyBase property2 = (PropertyBase) property;
+            property2.setValue(ValueType.valueOf(value));
         }
 
         @Override
@@ -474,14 +476,16 @@ public enum ParameterEnum
     
     private String name;
     @Override  public String toString() { return name; }
-    private Class propertyClasses[];
-    ParameterEnum(String name, Class[] propertyClasses)
+    private Class<? extends Property> propertyClasses[];
+    ParameterEnum(String name, Class<?>[] propertyClasses)
     {
         this.name = name;
-        this.propertyClasses = propertyClasses;
+        this.propertyClasses = (Class<? extends Property>[]) propertyClasses;
     }
     
+    @Deprecated
     private static Map<Class<? extends Property>, List<ParameterEnum>> enumListFrompropertyClass = makeEnumListFrompropertyClass();
+    @Deprecated
     private static Map<Class<? extends Property>, List<ParameterEnum>> makeEnumListFrompropertyClass()
     {
         Map<Class<? extends Property>, List<ParameterEnum>> map = new HashMap<>();
@@ -504,7 +508,7 @@ public enum ParameterEnum
             }
         }
 //        List<Class<? extends Property>> l = new ArrayList<Class<? extends Property>Arrays.asList(Categories.class);
-        System.out.println("map:" + map.size());
+//        System.out.println("map:" + map.size());
         return map;
     }
     
@@ -530,6 +534,7 @@ public enum ParameterEnum
      * @param propertyClass - implementation of Property
      * @return - list of associated parameters
      */
+    @Deprecated
     public static List<ParameterEnum> values(Class<? extends Property> propertyClass)
     {
         return enumListFrompropertyClass.get(propertyClass);
@@ -550,6 +555,12 @@ public enum ParameterEnum
     {
         // TODO Auto-generated method stub
         return true;
+    }
+    
+    public Object getValue()
+    {
+        // TODO Auto-generated method stub
+        return "test";
     }
 
 }

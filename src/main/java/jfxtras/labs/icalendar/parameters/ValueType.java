@@ -12,8 +12,8 @@ package jfxtras.labs.icalendar.parameters;
  *   agenda.doc
  * 
  */
-public class Value implements Parameter
-{
+//public class Value implements Parameter
+//{
     public enum ValueType
     {
         BINARY ("BINARY"), 
@@ -38,24 +38,24 @@ public class Value implements Parameter
         {
             this.name = name;
         }
-    }
-
-    public Value(String content)
-    {
-        // TODO Auto-generated constructor stub
-    }
-
-    @Override
-    public String toContentLine()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Object getValue()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
+//    }
+//
+//    public Value(String content)
+//    {
+//        // TODO Auto-generated constructor stub
+//    }
+//
+//    @Override
+//    public String toContentLine()
+//    {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+//
+//    @Override
+//    public Object getValue()
+//    {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
 }

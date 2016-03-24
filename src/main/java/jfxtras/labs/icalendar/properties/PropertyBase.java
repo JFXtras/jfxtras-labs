@@ -2,11 +2,15 @@ package jfxtras.labs.icalendar.properties;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**
@@ -17,8 +21,47 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * @author David Bal
  *
  */
-public abstract class PropertyBase implements Property
+public abstract class PropertyBase<T> implements Property
 {
+    /**
+     * VALUE
+     * To specify the value for text values in a property or property parameter.
+     * This parameter is optional for properties when the default value type is used.
+     * 
+     * Examples:
+     * VALUE=DATE-TIME  (Date-Time is default value, so it isn't necessary to specify)
+     * VALUE=DATE
+     */
+    public ValueType getValueType() { return (valueType == null) ? _valueType : valueType.get(); }
+    public ObjectProperty<ValueType> valueParameterProperty()
+    {
+        if (valueType == null)
+        {
+            valueType = new SimpleObjectProperty<>(this, ParameterEnum.VALUE_DATA_TYPES.toString(), _valueType);
+        }
+        return valueType;
+    }
+    private ValueType _valueType;
+    private ObjectProperty<ValueType> valueType;
+    public void setValue(ValueType value)
+    {
+        if (value != null)
+        {
+            parameters().add(ParameterEnum.VALUE_DATA_TYPES);
+        } else
+        {
+            parameters().remove(ParameterEnum.VALUE_DATA_TYPES);            
+        }
+        if (this.valueType == null)
+        {
+            _valueType = value;
+        } else
+        {
+            this.valueType.set(value);
+        }
+    }
+    public T withValue(String content) { setValue(ValueType.valueOf(content)); return (T) this; } 
+    
     @Override
     public ObservableList<Object> otherParameters() { return otherParameters; }
     private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
@@ -32,6 +75,7 @@ public abstract class PropertyBase implements Property
      * List of all parameter enums in this property
      */
     // TODO - MAY NOT KEEP?  MAY JUST LOOP THROUGH ALL PARAMETERS INSTEAD
+    @Override
     public Collection<ParameterEnum> parameters() { return parameters; }
     private Collection<ParameterEnum> parameters = new HashSet<>();
     
@@ -56,8 +100,8 @@ public abstract class PropertyBase implements Property
             .filter(e -> ! (e.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
             .forEach(e ->
             {
-    //            System.out.println("parameter:" + e.getKey());
                 ParameterEnum p = ParameterEnum.enumFromName(e.getKey());
+                System.out.println("parameter:" + e.getKey() + " " + e.getValue() + " " + p);
                 if (p != null)
                 {
                     p.parseAndSet(this, e.getValue());
@@ -67,7 +111,7 @@ public abstract class PropertyBase implements Property
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
     }
     private String propertyValueString;
-    String getPropertyValueString() { return propertyValueString; }
+    protected String getPropertyValueString() { return propertyValueString; }
     
     // construct empty property
     public PropertyBase()
@@ -92,6 +136,8 @@ public abstract class PropertyBase implements Property
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.5
      * Contains component property with its value and any populated parameters.
+     * Only property name and parameter name/value pairs are added here.
+     * Property value is added in subclasses
      * 
      * For example: SUMMARY;LANGUAGE=en-US:Company Holiday Party
      * 
@@ -103,15 +149,21 @@ public abstract class PropertyBase implements Property
         StringBuilder builder = new StringBuilder(propertyType().toString());
         parameters().stream().forEach(p -> builder.append(p.toContentLine(this)));
         otherParameters().stream().forEach(p -> builder.append(";" + p));
-        builder.append(":" + getValue().toString());
         return builder.toString();
     }
 
     @Override
     public int hashCode()
     {
-        // TODO Auto-generated method stub
-        return super.hashCode();
+        int hash = 7;
+        hash = (31 * hash) + getValue().hashCode();
+        Iterator<ParameterEnum> i = parameters().iterator();
+        while (i.hasNext())
+        {
+            ParameterEnum parameter = i.next();
+            hash = (31 * hash) + parameter.getValue().hashCode();
+        }
+        return hash;
     }
 
     @Override
@@ -135,7 +187,6 @@ public abstract class PropertyBase implements Property
     @Override
     public String toString()
     {
-        // TODO Auto-generated method stub
-        return super.toString();
+        return super.toString() + "," + toContentLine();
     }
 }

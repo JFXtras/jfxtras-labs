@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.parameters;
 
+@Deprecated
+
 public class AlternateTextRepresentation implements Parameter
 {
 

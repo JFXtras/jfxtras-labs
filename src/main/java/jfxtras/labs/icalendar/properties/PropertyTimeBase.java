@@ -4,10 +4,9 @@ import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.Value;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
-public class PropertyTimeBase<T> extends PropertyBase
+public class PropertyTimeBase<T> extends PropertyBase<T>
 {
     @Override
     public Temporal getValue() { return value.get(); }
@@ -16,49 +15,33 @@ public class PropertyTimeBase<T> extends PropertyBase
     public void setValue(Temporal temporal) { this.value.set(temporal); }
     public T withValue(Temporal temporal) { setValue(temporal); return (T) this; }
     
-    /**
-     * VALUE
-     * To specify the value for text values in a property or property parameter.
-     * 
-     * Examples:
-     * VALUE=BINARY
-     * VALUE=DATE
-     */
-    public Value getValueType() { return (valueType == null) ? _valueType : valueType.get(); }
-    public ObjectProperty<Value> valueParameterProperty()
+    /*
+     * CONSTRUCTORS
+     */    
+    protected PropertyTimeBase(String propertyString)
     {
-        if (valueType == null)
-        {
-            valueType = new SimpleObjectProperty<>(this, ParameterEnum.VALUE_DATA_TYPES.toString(), _valueType);
-        }
-        return valueType;
-    }
-    private Value _valueType;
-    private ObjectProperty<Value> valueType;
-    public void setValue(Value value)
-    {
-        if (value != null)
-        {
-            parameters().add(ParameterEnum.VALUE_DATA_TYPES);
-        } else
-        {
-            parameters().remove(ParameterEnum.VALUE_DATA_TYPES);            
-        }
-        if (this.valueType == null)
-        {
-            _valueType = value;
-        } else
-        {
-            this.valueType.set(value);
-        }
-    }
-    public T withValue(String content) { setValue(new Value(content)); return (T) this; } 
-    
-    @Override
-    public void parseAndSetValue(String value)
-    {
-        // TODO Auto-generated method stub
-        
+        super(propertyString);
+        setValue(DateTimeUtilities.parse(getPropertyValueString()));
     }
 
+    // copy constructor
+    public PropertyTimeBase(PropertyTimeBase<T> source)
+    {
+        super(source);
+        if (getValue() != null)
+        {
+            setValue(source.getValue());
+        }
+    }
+
+    public PropertyTimeBase()
+    {
+        super();
+    }
+    
+    @Override
+    public String toContentLine()
+    {
+        return super.toContentLine() + ":" + DateTimeUtilities.format(getValue());
+    }
 }

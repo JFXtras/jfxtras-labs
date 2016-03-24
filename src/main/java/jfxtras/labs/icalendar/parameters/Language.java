@@ -8,6 +8,7 @@ package jfxtras.labs.icalendar.parameters;
  * SUMMARY;LANGUAGE=en-US:Company Holiday Party
  * LOCATION;LANGUAGE=no:Tyskland
  */
+@Deprecated
 public class Language extends ParameterTextBase
 {
     private final static String NAME = ParameterEnum.LANGUAGE.toString();

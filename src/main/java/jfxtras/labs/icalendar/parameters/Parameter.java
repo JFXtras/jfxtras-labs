@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendar.parameters;
 
+@Deprecated
 public interface Parameter
 {
 //    /**

@@ -12,7 +12,7 @@ import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.parameters.Encoding;
 import jfxtras.labs.icalendar.parameters.Format;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.Value.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 
@@ -41,17 +41,17 @@ public class Attachment extends PropertyBase
     public ObjectProperty<URI> valueProperty() { return value; }
     private ObjectProperty<URI> value = new SimpleObjectProperty<>(this, PropertyEnum.ATTACHMENT.toString() + "_URI");
     public void setValue(URI value) { this.value.set(value); }
-    @Override
-    public void parseAndSetValue(String value)
-    {
-        try
-        {
-            setValue(new URI(value));
-        } catch (URISyntaxException e)
-        {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    public void parseAndSetValue(String value)
+//    {
+//        try
+//        {
+//            setValue(new URI(value));
+//        } catch (URISyntaxException e)
+//        {
+//            e.printStackTrace();
+//        }
+//    }
     
     /*
      * PROPERTY PARAMETERS
@@ -162,9 +162,10 @@ public class Attachment extends PropertyBase
      * CONSTRUCTORS
      */
     
-    public Attachment(String propertyString)
+    public Attachment(String propertyString) throws URISyntaxException
     {
         super(propertyString);
+        setValue(new URI(getPropertyValueString()));
     }
     
     public Attachment(Attachment source)

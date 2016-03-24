@@ -166,7 +166,7 @@ public final class ICalendarUtilities
                parameterEnd = propertyLine.length();
                name = PROPERTY_VALUE_KEY;
                value = propertyLine.substring(parameterStart, parameterEnd);
-               System.out.println("value:" + value);
+//               System.out.println("value:" + value);
            } else if (firstCharacter == ';')
            { // found parameter/value pair.
                int equalsPosition = propertyLine.indexOf('=', parameterStart);
@@ -176,7 +176,7 @@ public final class ICalendarUtilities
                { // DQUOTE delimited parameter value
                    parameterEnd = Math.min(propertyLine.indexOf('\"', valueStart+1)+1, propertyLine.length());
                    value = propertyLine.substring(equalsPosition+2, parameterEnd-1); // removes quotes
-                   System.out.println("parameter:" + value);
+//                   System.out.println("parameter:" + value);
                } else
                { // regular parameter value
                    for (parameterEnd = equalsPosition+2; parameterEnd < propertyLine.length(); parameterEnd++)
@@ -187,7 +187,7 @@ public final class ICalendarUtilities
                        }           
                    }
                    value = propertyLine.substring(equalsPosition+1, parameterEnd);
-                  System.out.println("parameter:" + value);
+//                  System.out.println("parameter:" + value);
                }
            } else
            {
