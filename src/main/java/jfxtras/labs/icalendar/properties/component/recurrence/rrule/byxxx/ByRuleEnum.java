@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx;
 import java.util.HashMap;
 import java.util.Map;
 
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Frequency;
 
 /** Enumeration of Byxxx rules parts
  * Contains values including the object's class and the order for processing Byxxx Rules

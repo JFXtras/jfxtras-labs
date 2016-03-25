@@ -14,10 +14,10 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Daily;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Monthly;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Weekly;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Yearly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Daily;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Monthly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Weekly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Yearly;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 

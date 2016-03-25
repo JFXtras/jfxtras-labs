@@ -3,8 +3,8 @@ package jfxtras.labs.icalendar.properties.component.recurrence.rrule;
 import java.util.HashMap;
 import java.util.Map;
 
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Frequency;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Frequency;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.FrequencyUtilities.FrequencyEnum;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 // TODO - SHOULD ALL RRULE PARAMETERS GO HERE? - BY RULE ONES TOO?

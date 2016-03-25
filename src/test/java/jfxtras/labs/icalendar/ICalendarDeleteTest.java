@@ -22,7 +22,7 @@ import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Daily;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Daily;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
 
 public class ICalendarDeleteTest extends ICalendarTestAbstract

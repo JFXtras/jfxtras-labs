@@ -25,10 +25,10 @@ import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByMont
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Daily;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Monthly;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Weekly;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Yearly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Daily;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Monthly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Weekly;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Yearly;
 
 public abstract class ICalendarTestAbstract
 {

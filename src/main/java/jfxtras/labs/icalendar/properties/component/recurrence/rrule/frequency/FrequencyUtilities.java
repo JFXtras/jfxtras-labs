@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq;
+package jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency;
 
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq;
+package jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -15,7 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.FrequencyUtilities.FrequencyEnum;
 
 public abstract class FrequencyAbstract<T> implements Frequency {
     

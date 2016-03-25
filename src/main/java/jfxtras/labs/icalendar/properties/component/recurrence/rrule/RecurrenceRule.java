@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -21,13 +22,16 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
-import jfxtras.labs.icalendar.properties.VComponentProperty;
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
+import jfxtras.labs.icalendar.properties.Property;
+import jfxtras.labs.icalendar.properties.PropertyEnum;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.Frequency;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Frequency;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**
  * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -38,7 +42,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
  * @author David Bal
  *
  */
-public class RecurrenceRule implements VComponentProperty
+public class RecurrenceRule implements Property
 {            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
@@ -183,35 +187,7 @@ public class RecurrenceRule implements VComponentProperty
     @Override
     public String toString()
     {
-//        Comparator<? super RRuleParameter> comparator = (Comparator<? super RRuleParameter>) (p1, p2) -> 
-//            (p1.equals(RRuleParameter.FREQUENCY)) ? -1 : 1;
-        Stream<String> rruleParameterStream = Arrays.stream(RRuleEnum.values())
-                .map(p -> p.toParameterString(this))
-                .filter(s -> s != null);
-
-//        Map<Integer, String> rruleMap = Arrays.stream(RRuleParameter.values())
-//                .filter(e -> ! (e.toParameterString(this) == null))
-//                .collect(Collectors.toMap(p -> p.sortOrder(), p -> p.toParameterString(this)));
-//
-//        Map<Integer, String> byRuleMap = getFrequency().byRules().stream()
-//                .collect(Collectors.toMap(p -> ByRuleParameter.propertyFromByRule(p).getSortOrder(),
-//                                          p -> ByRuleParameter.propertyFromByRule(p).toParameterString(this.getFrequency())));
-//        
-//        Map<Integer, String> comboMap = new HashMap<>();
-//        comboMap.putAll(rruleMap);
-//        comboMap.putAll(byRuleMap);
-//        
-//        return comboMap.entrySet().stream()
-//                .sorted((Comparator<? super Entry<Integer, String>>) (p1, p2) -> Integer.compare(p1.getKey(), p2.getKey()))
-//                .map(e -> e.getValue())
-//                .collect(Collectors.joining(";"));
-        
-        Stream<String> byRuleParameterStream = getFrequency().byRules()
-                .stream()
-                .map(e -> e.byRuleType().toParameterString(this.getFrequency()));
-
-        return Stream.concat(rruleParameterStream, byRuleParameterStream)
-                .collect(Collectors.joining(";"));
+        return super.toString() + "," + toContentLine();
     }
     
     /** Deep copy all fields from source to destination */
@@ -446,6 +422,45 @@ public class RecurrenceRule implements VComponentProperty
 
     static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
+    }
+    @Override
+    public String toContentLine()
+    {
+        Stream<String> rruleParameterStream = Arrays.stream(RRuleEnum.values())
+                .map(p -> p.toParameterString(this))
+                .filter(s -> s != null);
+
+        Stream<String> byRuleParameterStream = getFrequency().byRules()
+                .stream()
+                .map(e -> e.byRuleType().toParameterString(this.getFrequency()));
+
+        return Stream.concat(rruleParameterStream, byRuleParameterStream)
+                .collect(Collectors.joining(";"));
+    }
+    @Override
+    public PropertyEnum propertyType()
+    {
+        return PropertyEnum.RECURRENCE_RULE;
+    }
+    
+    @Override
+    public Object getValue()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public ObservableList<Object> otherParameters()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    // TODO - THESE DON'T EXIST HERE?  IS THIS A PROBLEM?
+    public Collection<ParameterEnum> parameters()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq;
+package jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
@@ -11,7 +11,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.FrequencyUtilities.FrequencyEnum;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 

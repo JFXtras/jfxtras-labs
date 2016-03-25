@@ -22,9 +22,10 @@ import javafx.beans.property.StringProperty;
 import jfxtras.labs.icalendar.components.VEventUtilities.VEventProperty;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 
 /**
@@ -133,16 +134,16 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
      * Can't be used if DURATION is used.  Must be one or the other.
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
-    final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_END.toString());
-    public ObjectProperty<Temporal> dateTimeEndProperty() { return dateTimeEnd; }
-    public void setDateTimeEnd(Temporal dtEnd)
+    final private ObjectProperty<DateTimeEnd> dateTimeEnd = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_END.toString());
+    public ObjectProperty<DateTimeEnd> dateTimeEndProperty() { return dateTimeEnd; }
+    public void setDateTimeEnd(DateTimeEnd dtEnd)
     {
         if (dtEnd == null)
         {
             endPriority = null;
         } else
         {
-            DateTimeType myDateTimeType = DateTimeType.of(dtEnd);
+            DateTimeType myDateTimeType = DateTimeType.of(dtEnd.getValue());
             if ((lastDtStartDateTimeType() != null) && (myDateTimeType != lastDtStartDateTimeType()))
             {
                 throw new DateTimeException("DTEND must have the same DateTimeType as DTSTART, (" + myDateTimeType + " and " + lastDtStartDateTimeType() + ", respectively");
@@ -151,8 +152,8 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
          }
         dateTimeEnd.set(dtEnd);
     }
-    public Temporal getDateTimeEnd() { return dateTimeEnd.get(); }
-    public T withDateTimeEnd(Temporal dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
+    public DateTimeEnd getDateTimeEnd() { return dateTimeEnd.get(); }
+    public T withDateTimeEnd(DateTimeEnd dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
 
     /** Indicates end option, DURATION or DTEND. 
      * Getter and setter methods in EndPriority enum */
@@ -176,12 +177,13 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
     void ensureDateTimeTypeConsistency(DateTimeType dateTimeType, ZoneId zone)
     {
         // DTEND
-        if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.of(getDateTimeEnd())))
+        if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.of(getDateTimeEnd().getValue())))
         {
             // convert to new Temporal type
 //            Temporal newDateTimeEnd = DateTimeType.changeTemporal(getDateTimeEnd(), dateTimeType);
-            Temporal newDateTimeEnd = dateTimeType.from(getDateTimeEnd(), zone);
-            setDateTimeEnd(newDateTimeEnd);
+            Temporal newDateTimeEnd = dateTimeType.from(getDateTimeEnd().getValue(), zone);
+            getDateTimeEnd().setValue(newDateTimeEnd);
+//            setDateTimeEnd(newDateTimeEnd);
         }
         super.ensureDateTimeTypeConsistency(dateTimeType, zone);
     }
@@ -266,7 +268,8 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
         super.becomingIndividual(vComponentOriginal, startInstance, endInstance);
         if ((vComponentOriginal.getRRule() != null) && (endType() == EndType.DTEND))
         { // RRULE was removed, update DTEND
-            setDateTimeEnd(endInstance);
+//            setDateTimeEnd(endInstance);            
+            getDateTimeEnd().setValue(endInstance);
         }
     }
     
@@ -306,8 +309,9 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
         {
         case DTEND:
             Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
-            Temporal newEnd = getDateTimeEnd().plus(dayShift);
-            setDateTimeEnd(newEnd);
+            Temporal newEnd = getDateTimeEnd().getValue().plus(dayShift);
+            getDateTimeEnd().setValue(newEnd);
+//            setDateTimeEnd(newEnd);
             break;
         case DURATION:
             endType().setDuration(this, startInstance, endInstance);
@@ -335,8 +339,9 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
         {
             duration = Duration.between(getDateTimeStart(), startInstance);
         }
-        Temporal endNew = getDateTimeEnd().plus(duration);
-        setDateTimeEnd(endNew);
+        Temporal endNew = getDateTimeEnd().getValue().plus(duration);
+        getDateTimeEnd().setValue(endNew);
+//        setDateTimeEnd(endNew);
         return super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
     }
     
@@ -421,7 +426,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
     {
         StringBuilder errorsBuilder = new StringBuilder(super.errorString());
 
-        if ((getDateTimeEnd() != null) && (! DateTimeUtilities.isAfter(getDateTimeEnd(), getDateTimeStart())))
+        if ((getDateTimeEnd() != null) && (! DateTimeUtilities.isAfter(getDateTimeEnd().getValue(), getDateTimeStart())))
         {
             errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTEND (" + getDateTimeEnd()
             + ") must be after DTSTART (" + getDateTimeStart() + ")");
@@ -439,7 +444,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
         if (! isEndDateTimeNull)
         {
             Class<? extends Temporal> startClass = getDateTimeStart().getClass();
-            Class<? extends Temporal> endClass = getDateTimeEnd().getClass();
+            Class<? extends Temporal> endClass = getDateTimeEnd().getValue().getClass();
             if (! startClass.equals(endClass))
             {
                 errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTSTART and DTEND must be same Temporal type");
@@ -479,7 +484,8 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
         {
             TemporalAmount duration = DateTimeUtilities.durationBetween(startInclusive, endExclusive);
             Temporal dtEnd = vEvent.getDateTimeStart().plus(duration);
-            vEvent.setDateTimeEnd(dtEnd);
+//            vEvent.setDateTimeEnd(dtEnd);
+            vEvent.getDateTimeEnd().setValue(dtEnd);
         }
 
         @Override
@@ -487,17 +493,17 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
         {
             if (vEvent.isWholeDay())
             {
-                return Period.between(LocalDate.from(vEvent.getDateTimeStart()), LocalDate.from(vEvent.getDateTimeEnd()));
+                return Period.between(LocalDate.from(vEvent.getDateTimeStart()), LocalDate.from(vEvent.getDateTimeEnd().getValue()));
             } else
             {
-                return Duration.between(vEvent.getDateTimeStart(), vEvent.getDateTimeEnd());
+                return Duration.between(vEvent.getDateTimeStart(), vEvent.getDateTimeEnd().getValue());
             }
         }
 
         @Override
         public void setDuration(VEventOld<?, ?> vEvent, TemporalAmount amount)
         {
-            vEvent.setDateTimeEnd(vEvent.getDateTimeStart().plus(amount));
+            vEvent.getDateTimeEnd().setValue(vEvent.getDateTimeStart().plus(amount));
         }
     };
 

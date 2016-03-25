@@ -212,7 +212,8 @@ public final class VEventUtilities
 //                        ICalendarUtilities.propertyLineToParameterMap(propertyLine);
 
                         Temporal dateTime = DateTimeUtilities.parse(propertyLine);
-                        vEvent.setDateTimeEnd(dateTime);
+//                        vEvent.setDateTimeEnd(dateTime);
+                        vEvent.getDateTimeEnd().setValue(dateTime);
                     } else
                     {
                         throw new IllegalArgumentException("Invalid VEvent: Can't contain both DTEND and DURATION.");
@@ -238,7 +239,7 @@ public final class VEventUtilities
                 } else if (vEvent.endPriority == EndType.DTEND)
                 {
 //                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), vEvent.getDateTimeEnd());
-                    return toString() + ":" + DateTimeUtilities.format(vEvent.getDateTimeEnd());
+                    return toString() + ":" + DateTimeUtilities.format(vEvent.getDateTimeEnd().getValue());
                 } else
                 {
                     throw new RuntimeException("DTEND and EndPriority don't match");

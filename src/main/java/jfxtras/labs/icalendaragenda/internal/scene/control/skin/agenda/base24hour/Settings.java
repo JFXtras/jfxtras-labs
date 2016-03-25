@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.freq.FrequencyUtilities.FrequencyEnum;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.FrequencyUtilities.FrequencyEnum;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
 
 // TODO - MAKE SEPARATE RESOURCE FILE FOR THESE

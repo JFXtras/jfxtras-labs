@@ -118,6 +118,10 @@ public class PropertyTimeBase<T> extends PropertyBase<T>
         super();
     }
     
+    /*
+     * OVERRIDDEN METHODS
+     */
+    
     @Override
     public String toContentLine()
     {
