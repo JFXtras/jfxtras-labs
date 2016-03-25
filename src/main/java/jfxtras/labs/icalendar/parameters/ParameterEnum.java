@@ -447,7 +447,7 @@ public enum ParameterEnum
         @Override
         public void parseAndSet(Property property, String value)
         {
-            ((PropertyBase<?>) property).setValue(ValueType.valueOf(value));
+            ((PropertyBase<?>) property).setValueType(ValueType.valueOf(value));
         }
 
         @Override

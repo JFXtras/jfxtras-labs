@@ -154,6 +154,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
     }
     public DateTimeEnd getDateTimeEnd() { return dateTimeEnd.get(); }
     public T withDateTimeEnd(DateTimeEnd dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
+    public T withDateTimeEnd(Temporal dtEnd) { setDateTimeEnd(new DateTimeEnd().withValue(dtEnd)); return (T) this; }
 
     /** Indicates end option, DURATION or DTEND. 
      * Getter and setter methods in EndPriority enum */

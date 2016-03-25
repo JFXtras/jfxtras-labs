@@ -28,7 +28,7 @@ public class DescriptionTest
         Description expectedDescription = new Description()
                 .withAlternateTextRepresentation(new URI("CID:part3.msg.970415T083000@example.com"))
                 .withLanguage("en")
-                .withValue("Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management");
+                .withValueType("Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management");
         assertEquals(expectedDescription, madeDescription);
         assertEquals(contentLine, expectedDescription.toContentLine());
     }

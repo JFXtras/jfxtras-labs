@@ -24,7 +24,8 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 public abstract class PropertyBase<T> implements Property
 {
     /**
-     * VALUE
+     * VALUE: Value Data Types
+     * RFC 5545, 3.2.20, page 28
      * To specify the value for text values in a property or property parameter.
      * This parameter is optional for properties when the default value type is used.
      * 
@@ -43,7 +44,7 @@ public abstract class PropertyBase<T> implements Property
     }
     private ValueType _valueType;
     private ObjectProperty<ValueType> valueType;
-    public void setValue(ValueType value)
+    public void setValueType(ValueType value)
     {
         if (value != null)
         {
@@ -60,7 +61,7 @@ public abstract class PropertyBase<T> implements Property
             this.valueType.set(value);
         }
     }
-    public T withValue(String value) { setValue(ValueType.valueOf(value)); return (T) this; } 
+    public T withValueType(ValueType value) { setValueType(value); return (T) this; } 
     
     @Override
     public ObservableList<Object> otherParameters() { return otherParameters; }

@@ -1,7 +1,11 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
@@ -25,9 +29,21 @@ public abstract class PropertyTextBase<T> extends PropertyBase<T>
     public StringProperty valueProperty() { return value; }
     final private StringProperty value = new SimpleStringProperty(this, propertyType().toString());
     public void setValue(String text) { this.value.set(text); }
-    @Override
     public T withValue(String text) { setValue(text); return (T) this; }
-        
+
+    final private static List<ValueType> SUPPORTED_VALUED_TYPES = Arrays.asList(ValueType.TEXT);
+    @Override
+    public void setValueType(ValueType value)
+    {        
+        if (SUPPORTED_VALUED_TYPES.contains(value))
+        {
+            super.setValueType(value);            
+        } else
+        {
+            throw new IllegalArgumentException("Only Value types supported are: " + SUPPORTED_VALUED_TYPES);
+        }
+    }
+    
     /*
      * CONSTRUCTORS
      */    

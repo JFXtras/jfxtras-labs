@@ -1,11 +1,18 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
@@ -31,7 +38,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @see DateTimeStart
  * @see FreeBusyTime
  */
-public class PropertyTimeBase<T> extends PropertyBase<T>
+public abstract class PropertyTimeBase<T> extends PropertyBase<T>
 {
     @Override
     /**
@@ -50,7 +57,31 @@ public class PropertyTimeBase<T> extends PropertyBase<T>
     public Temporal getValue() { return value.get(); }
     public ObjectProperty<Temporal> valueProperty() { return value; }
     final private ObjectProperty<Temporal> value = new SimpleObjectProperty<Temporal>(this, propertyType().toString());
-    public void setValue(Temporal temporal){ this.value.set(temporal); }
+    public void setValue(Temporal temporal)
+    {
+        if ((temporal instanceof LocalDate) || (temporal instanceof LocalDateTime) || (temporal instanceof ZonedDateTime))
+        {
+            this.value.set(temporal);
+            if (temporal instanceof ZonedDateTime)
+            {
+                ZoneId zone = ((ZonedDateTime) temporal).getZone();
+                if (! zone.normalized().equals(ZoneOffset.UTC))
+                {
+                    setTimeZoneIdentifier(zone);
+                }
+            }
+        } else
+        {
+            throw new IllegalArgumentException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
+        }
+//        if (temporal instanceof LocalDate)
+//        {
+//            setValueType(ValueType.DATE);
+//        } else if ((temporal instanceof LocalDateTime) || (temporal instanceof ZonedDateTime))
+//        {
+//            setValueType(ValueType.DATE_TIME);            
+//        }
+    }
     public T withValue(Temporal temporal) { setValue(temporal); return (T) this; }
     
     /**
@@ -58,13 +89,13 @@ public class PropertyTimeBase<T> extends PropertyBase<T>
      * To specify the identifier for the time zone definition for
      * a time component in the property value.
      * The time zone should be one from the public-domain TZ database (TZDB) for 
-     * interoperability with ZonedDateTime and ZoneID classes.
+     * interoperability with ZonedDateTime and ZoneId classes.
      * 
      * Example:
      * DTSTART;TZID=America/New_York:19980119T020000
      */
-    public String getTimeZoneIdentifier() { return (timeZoneIdentifier == null) ? _timeZoneIdentifier : timeZoneIdentifier.get(); }
-    public ObjectProperty<String> timeZoneIdentifierProperty()
+    public ZoneId getTimeZoneIdentifier() { return (timeZoneIdentifier == null) ? _timeZoneIdentifier : timeZoneIdentifier.get(); }
+    public ObjectProperty<ZoneId> timeZoneIdentifierProperty()
     {
         if (timeZoneIdentifier == null)
         {
@@ -72,9 +103,13 @@ public class PropertyTimeBase<T> extends PropertyBase<T>
         }
         return timeZoneIdentifier;
     }
-    private String _timeZoneIdentifier;
-    private ObjectProperty<String> timeZoneIdentifier;
+    private ZoneId _timeZoneIdentifier;
+    private ObjectProperty<ZoneId> timeZoneIdentifier;
     public void setTimeZoneIdentifier(String value)
+    {
+        setTimeZoneIdentifier(ZoneId.of(value));
+    }
+    public void setTimeZoneIdentifier(ZoneId value)
     {
         if (value != null)
         {
@@ -91,20 +126,56 @@ public class PropertyTimeBase<T> extends PropertyBase<T>
             this.timeZoneIdentifier.set(value);
         }
     }
-    public T withTimeZoneIdentifier(String content) { setTimeZoneIdentifier(String.valueOf(content)); return (T) this; } 
+    public T withTimeZoneIdentifier(ZoneId content) { setTimeZoneIdentifier(content); return (T) this; }
+    public T withTimeZoneIdentifier(String content) { setTimeZoneIdentifier(content); return (T) this; }
+    
+    /*
+     * Overtide ValueType
+     */
+    final private static List<ValueType> SUPPORTED_VALUED_TYPES = Arrays.asList(ValueType.DATE, ValueType.DATE_TIME);
+    @Override
+    public void setValueType(ValueType value)
+    {        
+        if (SUPPORTED_VALUED_TYPES.contains(value))
+        {
+            final boolean typeAndValueMatch;
+            if (getValue() != null)
+            {
+                typeAndValueMatch = (getValue() instanceof LocalDate) ? value == ValueType.DATE : value == ValueType.DATE_TIME;                
+            } else
+            {
+                typeAndValueMatch = true;
+            }
+            if (typeAndValueMatch)
+            {
+                super.setValueType(value);                
+            } else
+            {
+                throw new IllegalArgumentException("ValueType doesn't match Temporal value: " + value + ", " + getValue());                
+            }
+        } else
+        {
+            throw new IllegalArgumentException("Only ValueType values supported are: " + SUPPORTED_VALUED_TYPES);
+        }
+    }
     
     /*
      * CONSTRUCTORS
-     */    
+     */
+    protected PropertyTimeBase(Temporal temporal)
+    {
+        setValue(temporal);
+    }
+    
     protected PropertyTimeBase(String propertyString)
     {
         super(propertyString);
-        ZoneId zone = ZoneId.of(getTimeZoneIdentifier());
+        ZoneId zone = getTimeZoneIdentifier();
         setValue(DateTimeUtilities.parse(getPropertyValueString(), zone));
     }
 
     // copy constructor
-    public PropertyTimeBase(PropertyTimeBase<T> source)
+    protected PropertyTimeBase(PropertyTimeBase<T> source)
     {
         super(source);
         if (getValue() != null)
@@ -113,7 +184,7 @@ public class PropertyTimeBase<T> extends PropertyBase<T>
         }
     }
 
-    public PropertyTimeBase()
+    protected PropertyTimeBase()
     {
         super();
     }

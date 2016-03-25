@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 
 public class DateTimeStartTest
@@ -41,5 +42,21 @@ public class DateTimeStartTest
         String madeContentLine = dateTimeStart.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")), dateTimeStart.getValue());
+    }
+    
+    @Test
+    public void canBuildDateTimeStartZoned()
+    {
+        DateTimeStart dateTimeStart = new DateTimeStart()
+                .withValue(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
+                .withValueType(ValueType.DATE_TIME);
+        System.out.println(dateTimeStart);
+    }
+    
+    @Test
+    public void canBuildDateTimeStartZoned2()
+    {
+        DateTimeStart dateTimeStart = new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
+        System.out.println(dateTimeStart);
     }
 }
