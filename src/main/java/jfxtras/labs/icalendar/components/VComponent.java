@@ -23,8 +23,8 @@ public interface VComponent
      * X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.
      *  org/mysubj.au
      */
-    ObservableList<String> getXProp();
-    void setXProp(ObservableList<String> xprop);
+    ObservableList<String> getXProperties();
+    void setXProperties(ObservableList<String> xprop);
     
     /**
      * 3.8.8.1.  IANA Properties
@@ -34,7 +34,7 @@ public interface VComponent
      * NON-SMOKING;VALUE=BOOLEAN:TRUE
      * DRESSCODE:CASUAL
      */
-    ObservableList<String> getIANA();
-    void setIANA(ObservableList<String> iana);
+    ObservableList<String> getIANAProperties();
+    void setIANAProperties(ObservableList<String> iana);
     
 }

@@ -28,8 +28,19 @@ public class DescriptionTest
         Description expectedDescription = new Description()
                 .withAlternateTextRepresentation(new URI("CID:part3.msg.970415T083000@example.com"))
                 .withLanguage("en")
-                .withValueType("Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management");
+                .withValue("Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management");
         assertEquals(expectedDescription, madeDescription);
         assertEquals(contentLine, expectedDescription.toContentLine());
+    }
+    
+    @Test
+    public void canParseDescriptionWithOtherParameters()
+    {
+        String contentLine = "DESCRIPTION;MYPARAMETER=some value;IGNORE ME;PARAMETER2=other value:Example description";
+        Description madeDescription = new Description(contentLine);
+        Description expectedDescription = new Description("Example description")
+                .withOtherParameters("MYPARAMETER=some value", "PARAMETER2=other value");
+        assertEquals(expectedDescription, madeDescription);
+        assertEquals("DESCRIPTION;MYPARAMETER=some value;PARAMETER2=other value:Example description", expectedDescription.toContentLine());
     }
 }

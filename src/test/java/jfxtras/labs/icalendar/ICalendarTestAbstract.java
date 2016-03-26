@@ -14,9 +14,6 @@ import java.util.List;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
-import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
-import jfxtras.labs.icalendar.properties.component.descriptive.Description;
-import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
@@ -58,15 +55,15 @@ public abstract class ICalendarTestAbstract
     protected VEventMock getYearly1()
     {
         return new VEventMock()
-                .withCategories(new Categories("group13"))
+                .withCategories("group13")
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
                 .withUniqueIdentifier("20151109T082900-0@jfxtras.org")
                 .withDuration(Duration.ofHours(1))
-                .withDescription(new Description("Yearly1 Description"))
-                .withSummary(new Summary("Yearly1 Summary"))
+                .withDescription("Yearly1 Description")
+                .withSummary("Yearly1 Summary")
                 .withRRule(new RecurrenceRule()
                         .withFrequency(new Yearly()));
     }
@@ -255,8 +252,8 @@ public abstract class ICalendarTestAbstract
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
                 .withDuration(Duration.ofMinutes(45))
-                .withDescription(new Description("Weekly1 Description"))
-                .withSummary(new Summary("Weekly1 Summary"))
+                .withDescription("Weekly1 Description")
+                .withSummary("Weekly1 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -271,8 +268,8 @@ public abstract class ICalendarTestAbstract
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0))
                 .withDuration(Duration.ofMinutes(45))
-                .withDescription(new Description("Weekly3 Description"))
-                .withSummary(new Summary("Weekly3 Summary"))
+                .withDescription("Weekly3 Description")
+                .withSummary("Weekly3 Summary")
                 .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -291,8 +288,8 @@ public abstract class ICalendarTestAbstract
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2016, 1, 3, 5, 0))
                 .withDateTimeEnd(LocalDateTime.of(2016, 1, 3, 7, 0))
-                .withDescription(new Description("Weekly5 Description"))
-                .withSummary(new Summary("Weekly5 Summary"))
+                .withDescription("Weekly5 Description")
+                .withSummary("Weekly5 Summary")
                 .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.WEDNESDAY))));      
@@ -305,11 +302,11 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
-                .withDescription(new Description("WeeklyZoned Description"))
+                .withDescription("WeeklyZoned Description")
                 .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
-                .withSummary(new Summary("WeeklyZoned Summary"))
+                .withSummary("WeeklyZoned Summary")
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
 
@@ -320,8 +317,8 @@ public abstract class ICalendarTestAbstract
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
-                .withDescription(new Description("Daily1 Description"))
-                .withSummary(new Summary("Daily1 Summary"))
+                .withDescription("Daily1 Description")
+                .withSummary("Daily1 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -332,11 +329,11 @@ public abstract class ICalendarTestAbstract
     protected static VEventMock getDaily2()
     {
         return new VEventMock()
-                .withCategories(new Categories("group03"))
+                .withCategories("group03")
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(90))
-                .withDescription(new Description("Daily2 Description"))
-                .withSummary(new Summary("Daily2 Summary"))
+                .withDescription("Daily2 Description")
+                .withSummary("Daily2 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -387,11 +384,11 @@ public abstract class ICalendarTestAbstract
     protected static VEventMock getDaily6()
     {
         return new VEventMock()
-                .withCategories(new Categories("group03"))
+                .withCategories("group03")
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
-                .withDescription(new Description("Daily6 Description"))
-                .withSummary(new Summary("Daily6 Summary"))
+                .withDescription("Daily6 Description")
+                .withSummary("Daily6 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -408,8 +405,8 @@ public abstract class ICalendarTestAbstract
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
-                .withDescription(new Description("Daily6 Description"))
-                .withSummary(new Summary("Daily6 Summary"))
+                .withDescription("Daily6 Description")
+                .withSummary("Daily6 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -422,11 +419,11 @@ public abstract class ICalendarTestAbstract
     public static VEventMock getDailyUTC()
     {
         return new VEventMock()
-                .withCategories(new Categories("group03"))
+                .withCategories("group03")
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneOffset.UTC))
-                .withDescription(new Description("DailyUTC Description"))
-                .withSummary(new Summary("DailyUTC Summary"))
+                .withDescription("DailyUTC Description")
+                .withSummary("DailyUTC Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -438,11 +435,11 @@ public abstract class ICalendarTestAbstract
     public static VEventMock getDailyJapanZone()
     {
         return new VEventMock()
-                .withCategories(new Categories("group03"))
+                .withCategories("group03")
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 0), ZoneId.of("Japan")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 9, 0), ZoneId.of("Japan")))
-                .withDescription(new Description("Japan Description"))
-                .withSummary(new Summary("Japan Summary"))
+                .withDescription("Japan Description")
+                .withSummary("Japan Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -456,8 +453,8 @@ public abstract class ICalendarTestAbstract
         return new VEventMock()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30))
                 .withDuration(Duration.ofMinutes(60))
-                .withDescription(new Description("Individual Description"))
-                .withSummary(new Summary("Individual Summary"))
+                .withDescription("Individual Description")
+                .withSummary("Individual Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
@@ -528,7 +525,7 @@ public abstract class ICalendarTestAbstract
     protected static VEventMock getWholeDayDaily3()
     {
         return new VEventMock()
-                .withCategories(new Categories("group06"))
+                .withCategories("group06")
                 .withDateTimeStart(LocalDate.of(2015, 11, 9))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 11))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -605,7 +602,7 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 12, 30), ZoneOffset.UTC))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
-                .withSummary(new Summary("test1"))
+                .withSummary("test1")
                 .withUniqueIdentifier("vpqej26mlpg3adcncqqs7t7a34@google.com");
     }
     
@@ -621,7 +618,7 @@ public abstract class ICalendarTestAbstract
                 .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.TUESDAY, DayOfWeek.FRIDAY))))
-                .withSummary(new Summary("test2"))
+                .withSummary("test2")
                 .withUniqueIdentifier("im8hmpakeigu3d85j3vq9q8bcc@google.com");
     }
     
@@ -641,7 +638,7 @@ public abstract class ICalendarTestAbstract
                 .withRRule(new RecurrenceRule()
                         .withFrequency(new Daily())
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneOffset.UTC)))
-                .withSummary(new Summary("test3"))
+                .withSummary("test3")
                 .withUniqueIdentifier("86801l7316n97h75cefk1ruc00@google.com");
     }
     
@@ -658,7 +655,7 @@ public abstract class ICalendarTestAbstract
                 .withRRule(new RecurrenceRule()
                         .withFrequency(new Daily())
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 2, 18, 18, 59, 59), ZoneOffset.UTC)))
-                .withSummary(new Summary("test4"))
+                .withSummary("test4")
                 .withUniqueIdentifier("mrrfvnj5acdcvn13273on9nrhs@google.com");
     }
     
@@ -680,7 +677,7 @@ public abstract class ICalendarTestAbstract
                 .withRRule(new RecurrenceRule()
                         .withFrequency(new Daily())
                         .withCount(6))
-                .withSummary(new Summary("test5"))
+                .withSummary("test5")
                 .withUniqueIdentifier("mrrfvnj5acdcvn13273on9nrhs_R20160218T190000@google.com");
     }
     
@@ -696,7 +693,7 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 16, 7, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeRecurrence(ZonedDateTime.of(LocalDateTime.of(2016, 2, 16, 11, 0), ZoneId.of("America/Los_Angeles")))
                 .withSequence(1)
-                .withSummary(new Summary("test6"))
+                .withSummary("test6")
                 .withUniqueIdentifier("mrrfvnj5acdcvn13273on9nrhs@google.com");
     }
     
@@ -719,8 +716,8 @@ public abstract class ICalendarTestAbstract
                 .withDateTimeEnd(LocalDateTime.of(2016, 3, 13, 5, 45))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(2016, 3, 12, 4, 0))
-                .withDescription(new Description("Split Description"))
-                .withSummary(new Summary("Split Summary"))
+                .withDescription("Split Description")
+                .withSummary("Split Summary")
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
 }

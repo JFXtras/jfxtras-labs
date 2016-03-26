@@ -1,19 +1,20 @@
 package jfxtras.labs.icalendar.components;
 
-import java.time.ZonedDateTime;
-
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.StringProperty;
+import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
+import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
+import jfxtras.labs.icalendar.properties.component.relationship.UniformResourceLocator;
+import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
 
 /**
  * VComponents that involve communication between people
  * 
  * @author David Bal
- * @see VEventOld
- * @see VTodoOld
- * @see VJournalOld
+ * @see VEvent
+ * @see VTodo
+ * @see VJournal
  * @see VFreeBusy
  */
 public interface VComponentPersonal extends VComponentPrimary
@@ -43,9 +44,9 @@ public interface VComponentPersonal extends VComponentPrimary
      * Example:
      * DTSTAMP:19971210T080000Z
      */
-    ZonedDateTime getDateTimeStamp();
-    ObjectProperty<ZonedDateTime> dateTimeStampProperty();
-    void setDateTimeStamp(ZonedDateTime dtStamp);
+    DateTimeStamp getDateTimeStamp();
+    ObjectProperty<DateTimeStamp> dateTimeStampProperty();
+    void setDateTimeStamp(DateTimeStamp dtStamp);
     
     /**
      * ORGANIZER: Organizer
@@ -70,21 +71,22 @@ public interface VComponentPersonal extends VComponentPrimary
      *  mailto:jsmith@example.com
      * 
      */
-    String getRequestStatus();
-    StringProperty requestStatusProperty();
-    void setRequestStatus(String uid);
+    RequestStatus getRequestStatus();
+    ObjectProperty<RequestStatus> requestStatusProperty();
+    void setRequestStatus(RequestStatus requestStatus);
     
     /**
      * UID, Unique identifier
      * RFC 5545, iCalendar 3.8.4.7 page 117
      * A globally unique identifier for the calendar component.
+     * required property
      * 
      * Example:
      * UID:19960401T080045Z-4000F192713-0052@example.com
      */
-    String getUniqueIdentifier();
-    StringProperty uniqueIdentifierProperty();
-    void setUniqueIdentifier(String s);
+    UniqueIdentifier getUniqueIdentifier();
+    ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty();
+    void setUniqueIdentifier(UniqueIdentifier uid);
     
     /**
      * URL: Uniform Resource Locator
@@ -95,7 +97,7 @@ public interface VComponentPersonal extends VComponentPrimary
      * Example:
      * URL:http://example.com/pub/calendars/jsmith/mytime.ics
      */
-    String getUniformResourceLocator();
-    StringProperty uniformResourceLocatorProperty();
-    void setUniformResourceLocator(String s);
+    UniformResourceLocator getUniformResourceLocator();
+    ObjectProperty<UniformResourceLocator> uniformResourceLocatorProperty();
+    void setUniformResourceLocator(UniformResourceLocator uri);
 }

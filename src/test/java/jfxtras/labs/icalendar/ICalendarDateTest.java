@@ -905,7 +905,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         }
         { // end dates
             List<Temporal> madeDates = v
-                    .stream(v.getDateTimeEnd())
+                    .stream(v.getDateTimeEnd().getValue())
                     .limit(6)
                     .collect(Collectors.toList());
             List<LocalDate> expectedDates = new ArrayList<>(Arrays.asList(
@@ -938,7 +938,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
             assertEquals(expectedDates, madeDates);
         }
         { // end date/time
-            long duration = ChronoUnit.NANOS.between(v.getDateTimeStart(), v.getDateTimeEnd());
+            long duration = ChronoUnit.NANOS.between(v.getDateTimeStart(), v.getDateTimeEnd().getValue());
             List<Temporal> madeDates = v
                     .stream(v.getDateTimeStart())
                     .limit(6)
@@ -1164,18 +1164,18 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         assertEquals(expectedStartDates, startDates);
         
         List<Temporal> endDates = new ArrayList<>();
-        Duration d0 = Duration.between(v0.getDateTimeStart(), v0.getDateTimeEnd());
+        Duration d0 = Duration.between(v0.getDateTimeStart(), v0.getDateTimeEnd().getValue());
         List<Temporal> endDatesV0 = v0
                 .stream(v0.getDateTimeStart())
                 .map(t -> t.plus(d0))
                 .collect(Collectors.toList());
-        Duration d1 = Duration.between(v1.getDateTimeStart(), v1.getDateTimeEnd());
+        Duration d1 = Duration.between(v1.getDateTimeStart(), v1.getDateTimeEnd().getValue());
         List<Temporal> endDatesV1 = v1
                 .stream(v1.getDateTimeStart())
                 .map(t -> t.plus(d1))
                 .limit(10)
                 .collect(Collectors.toList());
-        Duration d2 = Duration.between(v2.getDateTimeStart(), v2.getDateTimeEnd());
+        Duration d2 = Duration.between(v2.getDateTimeStart(), v2.getDateTimeEnd().getValue());
         List<Temporal> endDatesV2 = v2
                 .stream(v2.getDateTimeStart())
                 .map(t -> t.plus(d2))

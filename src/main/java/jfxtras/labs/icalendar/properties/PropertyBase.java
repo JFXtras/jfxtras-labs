@@ -63,9 +63,14 @@ public abstract class PropertyBase<T> implements Property
     }
     public T withValueType(ValueType value) { setValueType(value); return (T) this; } 
     
+    /**
+     * other-param, 3.2 RFC 5545 page 14
+     * the parameter name and value are combined into one object
+     */
     @Override
     public ObservableList<Object> otherParameters() { return otherParameters; }
     private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
+    public T withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (T) this; }
     
     /** The type of the property in the content line, such as DESCRIPTION */
     @Override
@@ -105,7 +110,10 @@ public abstract class PropertyBase<T> implements Property
                 if (p != null)
                 {
                     p.parseAndSet(this, e.getValue());
-                }                    
+                } else if ((e.getKey() != null) && (e.getValue() != null))
+                { // unknown parameter - store as other parameter
+                    otherParameters().add(e.getKey() + "=" + e.getValue());
+                } // if parameter doesn't contain both a key and a value it is ignored
             });
         // add property value
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);

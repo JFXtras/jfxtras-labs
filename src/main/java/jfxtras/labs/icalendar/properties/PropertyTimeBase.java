@@ -38,9 +38,8 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @see DateTimeStart
  * @see FreeBusyTime
  */
-public abstract class PropertyTimeBase<T> extends PropertyBase<T>
+public abstract class PropertyTimeBase<T,U extends Temporal> extends PropertyBase<T>
 {
-    @Override
     /**
      * The value of the date/time property.
      * FORM #1: DATE WITH LOCAL TIME e.g. 19980118T230000 (LocalDateTime)
@@ -54,10 +53,10 @@ public abstract class PropertyTimeBase<T> extends PropertyBase<T>
      * 
      * Based on ISO.8601.2004
      */
-    public Temporal getValue() { return value.get(); }
-    public ObjectProperty<Temporal> valueProperty() { return value; }
-    final private ObjectProperty<Temporal> value = new SimpleObjectProperty<Temporal>(this, propertyType().toString());
-    public void setValue(Temporal temporal)
+    @Override public U getValue() { return value.get(); }
+    public ObjectProperty<U> valueProperty() { return value; }
+    final private ObjectProperty<U> value = new SimpleObjectProperty<>(this, propertyType().toString());
+    public void setValue(U temporal)
     {
         if ((temporal instanceof LocalDate) || (temporal instanceof LocalDateTime) || (temporal instanceof ZonedDateTime))
         {
@@ -74,15 +73,8 @@ public abstract class PropertyTimeBase<T> extends PropertyBase<T>
         {
             throw new IllegalArgumentException("Unsupported Temporal class:" + temporal.getClass().getSimpleName());
         }
-//        if (temporal instanceof LocalDate)
-//        {
-//            setValueType(ValueType.DATE);
-//        } else if ((temporal instanceof LocalDateTime) || (temporal instanceof ZonedDateTime))
-//        {
-//            setValueType(ValueType.DATE_TIME);            
-//        }
     }
-    public T withValue(Temporal temporal) { setValue(temporal); return (T) this; }
+    public T withValue(U temporal) { setValue(temporal); return (T) this; }
     
     /**
      * TZID: Time Zone Identifier
@@ -162,7 +154,7 @@ public abstract class PropertyTimeBase<T> extends PropertyBase<T>
     /*
      * CONSTRUCTORS
      */
-    protected PropertyTimeBase(Temporal temporal)
+    protected PropertyTimeBase(U temporal)
     {
         setValue(temporal);
     }
@@ -171,11 +163,11 @@ public abstract class PropertyTimeBase<T> extends PropertyBase<T>
     {
         super(propertyString);
         ZoneId zone = getTimeZoneIdentifier();
-        setValue(DateTimeUtilities.parse(getPropertyValueString(), zone));
+        setValue((U) DateTimeUtilities.parse(getPropertyValueString(), zone));
     }
 
     // copy constructor
-    protected PropertyTimeBase(PropertyTimeBase<T> source)
+    protected PropertyTimeBase(PropertyTimeBase<T,U> source)
     {
         super(source);
         if (getValue() != null)

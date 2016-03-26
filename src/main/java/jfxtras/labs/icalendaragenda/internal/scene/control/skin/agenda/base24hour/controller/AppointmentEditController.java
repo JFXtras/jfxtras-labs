@@ -214,7 +214,7 @@ public class AppointmentEditController extends Pane
                 
                 LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
                 vEvent.setDateTimeStart(newDateTimeStart);
-                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).plus(1, ChronoUnit.DAYS);
+                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd().getValue()).plus(1, ChronoUnit.DAYS);
                 vEvent.setDateTimeEnd(newDateTimeEnd);
                 
                 LocalDateTime start = LocalDate.from(startTextField.getLocalDateTime()).atStartOfDay();

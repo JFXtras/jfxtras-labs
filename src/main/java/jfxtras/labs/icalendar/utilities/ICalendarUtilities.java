@@ -170,24 +170,34 @@ public final class ICalendarUtilities
            } else if (firstCharacter == ';')
            { // found parameter/value pair.
                int equalsPosition = propertyLine.indexOf('=', parameterStart);
-               name = propertyLine.substring(parameterStart, equalsPosition).toUpperCase();
-               char valueStart = propertyLine.charAt(equalsPosition+1);
-               if (valueStart == '\"')
-               { // DQUOTE delimited parameter value
-                   parameterEnd = Math.min(propertyLine.indexOf('\"', valueStart+1)+1, propertyLine.length());
-                   value = propertyLine.substring(equalsPosition+2, parameterEnd-1); // removes quotes
-//                   System.out.println("parameter:" + value);
+               int nextSemicolonPosition = propertyLine.indexOf(';', parameterStart);
+               if ((nextSemicolonPosition> 0) && (nextSemicolonPosition < equalsPosition))
+               { // parameter has no value
+                   value = null;
+                   name = propertyLine.substring(parameterStart, nextSemicolonPosition).toUpperCase();
+                   parameterEnd = nextSemicolonPosition;
+                   System.out.println("parameter no value:" + name);
                } else
-               { // regular parameter value
-                   for (parameterEnd = equalsPosition+2; parameterEnd < propertyLine.length(); parameterEnd++)
-                   {
-                       if ((propertyLine.charAt(parameterEnd) == ';') || (propertyLine.charAt(parameterEnd) == ':'))
+               {
+                   name = propertyLine.substring(parameterStart, equalsPosition).toUpperCase();
+                   char valueStart = propertyLine.charAt(equalsPosition+1);
+                   if (valueStart == '\"')
+                   { // DQUOTE delimited parameter value
+                       parameterEnd = Math.min(propertyLine.indexOf('\"', valueStart+1)+1, propertyLine.length());
+                       value = propertyLine.substring(equalsPosition+2, parameterEnd-1); // removes quotes
+                   System.out.println("parameter:" + value);
+                   } else
+                   { // regular parameter value
+                       for (parameterEnd = equalsPosition+2; parameterEnd < propertyLine.length(); parameterEnd++)
                        {
-                           break;
-                       }           
+                           if ((propertyLine.charAt(parameterEnd) == ';') || (propertyLine.charAt(parameterEnd) == ':'))
+                           {
+                               break;
+                           }           
+                       }
+                       value = propertyLine.substring(equalsPosition+1, parameterEnd);
                    }
-                   value = propertyLine.substring(equalsPosition+1, parameterEnd);
-//                  System.out.println("parameter:" + value);
+                  System.out.println("parameter:" + value);
                }
            } else
            {

@@ -63,7 +63,9 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     final private ObjectProperty<Categories> categoriesProperty = new SimpleObjectProperty<>(this, VComponentPropertyOld.CATEGORIES.toString());
     @Override public Categories getCategories() { return categoriesProperty.get(); }
     @Override public void setCategories(Categories value) { categoriesProperty.set(value); }
+    public void setCategories(String value) { categoriesProperty.set(new Categories(value)); }
     public T withCategories(Categories categories) { setCategories(categories); return (T) this; }
+    public T withCategories(String categories) { setCategories(categories); return (T) this; }
     
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -547,8 +549,9 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     public Summary getSummary() { return summary.get(); }
     @Override
     public void setSummary(Summary summary) { this.summary.set(summary); }
+    public void setSummary(String summary) { this.summary.set(new Summary(summary)); }
     public T withSummary(Summary summary) { setSummary(summary); return (T) this; }
-//    public T withSummary(String summaryText) { setSummary(new Summary(summaryText)); return (T) this; }
+    public T withSummary(String summary) { setSummary(summary); return (T) this; }
     
     /**
      * Unique identifier, UID as defined by RFC 5545, iCalendar 3.8.4.7 page 117

@@ -421,13 +421,13 @@ public enum ParameterEnum
         @Override
         public String toContentLine(Property property)
         {
-            return ";" + toString() + "=" + ((PropertyTimeBase<?>) property).getTimeZoneIdentifier().toString();
+            return ";" + toString() + "=" + ((PropertyTimeBase<?,?>) property).getTimeZoneIdentifier().toString();
         }
 
         @Override
         public void parseAndSet(Property property, String value)
         {
-            ((PropertyTimeBase<?>) property).setTimeZoneIdentifier(value);
+            ((PropertyTimeBase<?,?>) property).setTimeZoneIdentifier(value);
         }
 
         @Override

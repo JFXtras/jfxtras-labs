@@ -4,7 +4,7 @@ import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendar.properties.PropertyTimeBase;
 
-public class DateTimeStart extends PropertyTimeBase<DateTimeStart>
+public class DateTimeStart extends PropertyTimeBase<DateTimeStart, Temporal>
 {
     public DateTimeStart(Temporal temporal)
     {

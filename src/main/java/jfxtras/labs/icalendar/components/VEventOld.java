@@ -105,7 +105,9 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
     final private ObjectProperty<Description> description = new SimpleObjectProperty<>(this, PropertyEnum.DESCRIPTION.toString());
     public Description getDescription() { return description.getValue(); }
     public void setDescription(Description description) { this.description.set(description); }
+    public void setDescription(String description) { this.description.set(new Description(description)); }
     public T withDescription(Description description) { setDescription(description); return (T) this; }
+    public T withDescription(String description) { setDescription(description); return (T) this; }
     
     /** 
      * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
@@ -136,8 +138,10 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
      */
     final private ObjectProperty<DateTimeEnd> dateTimeEnd = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_END.toString());
     public ObjectProperty<DateTimeEnd> dateTimeEndProperty() { return dateTimeEnd; }
+    public void setDateTimeEnd(Temporal dtEnd) { new DateTimeEnd(dtEnd); }
     public void setDateTimeEnd(DateTimeEnd dtEnd)
     {
+        // TODO - I THINK BELOW LOGIC IS REDUNDANT - ALSO FOUND IN PropertyTimeBase - remove here if true
         if (dtEnd == null)
         {
             endPriority = null;

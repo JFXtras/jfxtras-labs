@@ -4,9 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
+import jfxtras.labs.icalendar.properties.component.change.DateTimeCreated;
+import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
+import jfxtras.labs.icalendar.properties.component.change.Sequence;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 
 public enum PropertyEnum
@@ -20,8 +24,10 @@ public enum PropertyEnum
     COMMENT ("COMMENT", null), // Descriptive
     CONTACT ("CONTACT", null), // Relationship
     DATE_TIME_COMPLETED ("COMPLETED", null), // Date and Time
+    DATE_TIME_CREATED ("CREATED", DateTimeCreated.class), // Change management
     DATE_TIME_DUE ("DUE", null), // Date and Time
     DATE_TIME_END ("DTEND", null), // Date and Time
+    DATE_TIME_STAMP ("DTSTAMP", DateTimeStamp.class), // Change management
     DATE_TIME_START ("DTSTART", DateTimeStart.class), // Date and Time
     DESCRIPTION ("DESCRIPTION", Description.class), // Descriptive
     DURATION ("DURATION", null), // Date and Time
@@ -39,7 +45,9 @@ public enum PropertyEnum
     RECURRENCE_RULE ("RRULE", null), // Recurrence
     RELATED_TO ("RELATED-TO", null), // Relationship
     REPEAT_COUNT ("REPEAT", null), // Alarm
+    REQUEST_STATUS ("REQUEST-STATUS", RequestStatus.class), // Miscellaneous
     RESOURCES ("RESOURCES", null), // Descriptive
+    SEQUENCE ("SEQUENCE", Sequence.class), // Change management
     STATUS ("STATUS", null), // Descriptive
     SUMMARY ("SUMMARY", Summary.class), // Descriptive
     TIME_TRANSPARENCY ("TRANSP", null), // Date and Time

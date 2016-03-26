@@ -10,6 +10,7 @@ import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendar.properties.calendar.Version;
+import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
 
 /**
  * Class for property with only a text value
@@ -17,6 +18,7 @@ import jfxtras.labs.icalendar.properties.calendar.Version;
  * @author David Bal
  *
  * @param <T>
+ * @see UniqueIdentifier
  * @see CalendarScale
  * @see Method
  * @see ProductIdentifier

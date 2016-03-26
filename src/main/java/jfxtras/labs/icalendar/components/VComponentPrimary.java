@@ -12,11 +12,11 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
  * A calendar component that can contain a child event, such as an Alarm
  * 
  * @author David Bal
- * @see VEventOld
- * @see VTodoOld
- * @see VJournalOld
+ * @see VEvent
+ * @see VTodo
+ * @see VJournal
  * @see VFreeBusy
- * @see VTimeZoneOld
+ * @see VTimeZone
  *  */
 public interface VComponentPrimary extends VComponent
 {
