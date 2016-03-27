@@ -90,7 +90,7 @@ public enum PropertyEnum
         }
         return map;
     }
-    /** get enum from ByRule */
+    /** get enum from map */
     public static PropertyEnum enumFromClass(Class<? extends Property> myClass)
     {
         PropertyEnum p = enumFromClassMap.get(myClass);

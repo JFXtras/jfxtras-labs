@@ -1,461 +1,69 @@
 package jfxtras.labs.icalendar.parameters;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.xml.stream.events.Comment;
-
-import jfxtras.labs.icalendar.properties.Property;
-import jfxtras.labs.icalendar.properties.PropertyBase;
-import jfxtras.labs.icalendar.properties.PropertyTextBase2;
-import jfxtras.labs.icalendar.properties.PropertyTextBase3;
-import jfxtras.labs.icalendar.properties.PropertyTimeBase;
-import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 
 public enum ParameterEnum
 {
-    ALTERNATE_TEXT_REPRESENTATION ("ALTREP", new Class[] { Comment.class }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            return ";" + toString() + "=\"" + ((PropertyTextBase3<?>) property).getAlternateTextRepresentation() + "\"";
-        }
+    ALTERNATE_TEXT_REPRESENTATION ("ALTREP", AlternateTextRepresentation.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            try
-            {
-                ((PropertyTextBase3<?>) property).setAlternateTextRepresentation(new URI(value));
-            } catch (URISyntaxException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    COMMON_NAME ("CN", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    COMMON_NAME ("CN", CommonName.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    CALENDAR_USER_TYPE ("CUTYPE", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    CALENDAR_USER_TYPE ("CUTYPE", CalendarUserType.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    DELEGATORS ("DELEGATED-FROM", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    DELEGATORS ("DELEGATED-FROM", Delegators.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    DELEGATEES ("DELEGATED-TO", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    DELEGATEES ("DELEGATED-TO", Delegatees.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    DIRECTORY_ENTRY_REFERENCE ("DIR", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    DIRECTORY_ENTRY_REFERENCE ("DIR", DirectoryEntryReference.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    INLINE_ENCODING ("ENCODING", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    INLINE_ENCODING ("ENCODING", Encoding.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    FORMAT_TYPE ("FMTTYPE", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    FORMAT_TYPE ("FMTTYPE", FormatType.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    FREE_BUSY_TIME_TYPE ("FBTYPE", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    FREE_BUSY_TIME_TYPE ("FBTYPE", FreeBusyTime.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    LANGUAGE ("LANGUAGE", new Class[] { Categories.class, Comment.class }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            return ";" + toString() + "=" + ((PropertyTextBase2<?>) property).getLanguage();
-        }
+    LANGUAGE ("LANGUAGE", Language.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            ((PropertyTextBase2<?>) property).setLanguage(value);
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            PropertyTextBase2<?> source2 = (PropertyTextBase2<?>) source;
-            PropertyTextBase2<?> destination2 = (PropertyTextBase2<?>) destination;
-//            destination2.setLanguage(new Language(source2.getLanguage()));
-        }
     },
-    GROUP_OR_LIST_MEMBERSHIP ("MEMBER", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    GROUP_OR_LIST_MEMBERSHIP ("MEMBER", GroupMembership.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    PARTICIPATION_STATUS ("PARTSTAT", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    PARTICIPATION_STATUS ("PARTSTAT", Participation.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    RECURRENCE_IDENTIFIER_RANGE ("RANGE", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    RECURRENCE_IDENTIFIER_RANGE ("RANGE", RecurrenceIdentifierRange.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    ALARM_TRIGGER_RELATIONSHIP ("RELATED", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    ALARM_TRIGGER_RELATIONSHIP ("RELATED", AlarmTrigger.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    RELATIONSHIP_TYPE ("RELTYPE", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    RELATIONSHIP_TYPE ("RELTYPE", Relationship.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    PARTICIPATION_ROLE ("ROLE", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    PARTICIPATION_ROLE ("ROLE", ParticipationRole.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    RSVP_EXPECTATION ("RSVP", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    RSVP_EXPECTATION ("RSVP", RSVP.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    SENT_BY ("SENT-BY", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+    SENT_BY ("SENT-BY", SentBy.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    TIME_ZONE_IDENTIFIER ("TZID", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            return ";" + toString() + "=" + ((PropertyTimeBase<?,?>) property).getTimeZoneIdentifier().toString();
-        }
+    TIME_ZONE_IDENTIFIER ("TZID", TimeZoneIdentifier.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            ((PropertyTimeBase<?,?>) property).setTimeZoneIdentifier(value);
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
-    VALUE_DATA_TYPES ("VALUE", new Class[] { }) {
-        @Override
-        public String toContentLine(Property property)
-        {
-            return ";" + toString() + "=" + ((PropertyBase<?>) property).getValueType().toString();
-        }
+    VALUE_DATA_TYPES ("VALUE", Value.class) {
 
-        @Override
-        public void parseAndSet(Property property, String value)
-        {
-            ((PropertyBase<?>) property).setValueType(ValueType.valueOf(value));
-        }
-
-        @Override
-        public void copyTo(Property source, Property destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     };
     
     // Map to match up name to enum
@@ -476,41 +84,64 @@ public enum ParameterEnum
     }
     
     private String name;
+    private Class<? extends Parameter> myClass;
     @Override  public String toString() { return name; }
-    private Class<? extends Property> propertyClasses[];
-    ParameterEnum(String name, Class<?>[] propertyClasses)
+//    private Class<? extends Property> propertyClasses[];
+    ParameterEnum(String name, Class<? extends Parameter> myClass)
     {
         this.name = name;
-        this.propertyClasses = (Class<? extends Property>[]) propertyClasses;
+        this.myClass = myClass;
+//        this.propertyClasses = (Class<? extends Property>[]) propertyClasses;
     }
     
-    @Deprecated
-    private static Map<Class<? extends Property>, List<ParameterEnum>> enumListFrompropertyClass = makeEnumListFrompropertyClass();
-    @Deprecated
-    private static Map<Class<? extends Property>, List<ParameterEnum>> makeEnumListFrompropertyClass()
+//    private static Map<Class<? extends Property>, List<ParameterEnum>> enumListFrompropertyClass = makeEnumListFrompropertyClass();
+//    private static Map<Class<? extends Property>, List<ParameterEnum>> makeEnumListFrompropertyClass()
+//    {
+//        Map<Class<? extends Property>, List<ParameterEnum>> map = new HashMap<>();
+//        ParameterEnum[] values = ParameterEnum.values();
+//        for (int i=0; i<values.length; i++)
+//        {
+//            ParameterEnum myParameter = values[i];
+//            for (int classIndex=0; classIndex<myParameter.propertyClasses.length; classIndex++)
+//            {
+//                Class<? extends Property> c = myParameter.propertyClasses[classIndex];
+////                System.out.println("c:" + c);
+//                List<ParameterEnum> parameterList = map.get(c);
+//                if (parameterList == null)
+//                {
+//                    parameterList = new ArrayList<>();
+//                    map.put(c, parameterList);
+//                }
+////                List<ICalendarParameter> parameterList = (map.get(c) == null) ? new ArrayList<>() : map.get(c);
+//                parameterList.add(myParameter);
+//            }
+//        }
+////        List<Class<? extends Property>> l = new ArrayList<Class<? extends Property>Arrays.asList(Categories.class);
+////        System.out.println("map:" + map.size());
+//        return map;
+//    }
+    
+    // Map to match up class to enum
+    private static Map<Class<? extends Parameter>, ParameterEnum> enumFromClassMap = makeEnumFromClassMap();
+    private static Map<Class<? extends Parameter>, ParameterEnum> makeEnumFromClassMap()
     {
-        Map<Class<? extends Property>, List<ParameterEnum>> map = new HashMap<>();
+        Map<Class<? extends Parameter>, ParameterEnum> map = new HashMap<>();
         ParameterEnum[] values = ParameterEnum.values();
         for (int i=0; i<values.length; i++)
         {
-            ParameterEnum myParameter = values[i];
-            for (int classIndex=0; classIndex<myParameter.propertyClasses.length; classIndex++)
-            {
-                Class<? extends Property> c = myParameter.propertyClasses[classIndex];
-//                System.out.println("c:" + c);
-                List<ParameterEnum> parameterList = map.get(c);
-                if (parameterList == null)
-                {
-                    parameterList = new ArrayList<>();
-                    map.put(c, parameterList);
-                }
-//                List<ICalendarParameter> parameterList = (map.get(c) == null) ? new ArrayList<>() : map.get(c);
-                parameterList.add(myParameter);
-            }
+            map.put(values[i].myClass, values[i]);
         }
-//        List<Class<? extends Property>> l = new ArrayList<Class<? extends Property>Arrays.asList(Categories.class);
-//        System.out.println("map:" + map.size());
         return map;
+    }
+    /** get enum from map */
+    public static ParameterEnum enumFromClass(Class<? extends Parameter> myClass)
+    {
+        ParameterEnum p = enumFromClassMap.get(myClass);
+        if (p == null)
+        {
+            throw new IllegalArgumentException(ParameterEnum.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
+        }
+        return p;
     }
     
 //    /**
@@ -529,39 +160,25 @@ public enum ParameterEnum
 //        
 //    }
     
-    /**
-     * Returns list of iCalendar parameters that are associated with propertyClass.
-     * 
-     * @param propertyClass - implementation of Property
-     * @return - list of associated parameters
-     */
-    @Deprecated
-    public static List<ParameterEnum> values(Class<? extends Property> propertyClass)
-    {
-        return enumListFrompropertyClass.get(propertyClass);
-    }
+//    /**
+//     * Returns list of iCalendar parameters that are associated with propertyClass.
+//     * 
+//     * @param propertyClass - implementation of Property
+//     * @return - list of associated parameters
+//     */
+//    @Deprecated
+//    public static List<ParameterEnum> values(Class<? extends Property> propertyClass)
+//    {
+//        return enumListFrompropertyClass.get(propertyClass);
+//    }
     
     /*
      * ABSTRACT METHODS
      */
-    /** makes content line (RFC 5545 3.1) from a vComponent property  */
-    public abstract String toContentLine(Property property);
+//    /** makes content line (RFC 5545 3.1) from a vComponent property  */
+//    public abstract String toContentLine(Property property);
     
-    /** parses value and sets property associated with enum */
-    public abstract void parseAndSet(Property property, String value);
-    
-    public abstract void copyTo(Property source, Property destination);
-    
-    public boolean isEqualTo(Property propertyBase, Property testObj)
-    {
-        // TODO Auto-generated method stub
-        return true;
-    }
-    
-    public Object getValue()
-    {
-        // TODO Auto-generated method stub
-        return "test";
-    }
+//    /** parses value and sets property associated with enum */
+//    public abstract void parseAndSet(Property property, String value);
 
 }

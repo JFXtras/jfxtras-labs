@@ -12,8 +12,8 @@ package jfxtras.labs.icalendar.parameters;
  *   agenda.doc
  * 
  */
-//public class Value implements Parameter
-//{
+public class Value extends ParameterBase
+{
     public enum ValueType
     {
         BINARY ("BINARY"), 
@@ -38,7 +38,7 @@ package jfxtras.labs.icalendar.parameters;
         {
             this.name = name;
         }
-//    }
+    }
 //
 //    public Value(String content)
 //    {

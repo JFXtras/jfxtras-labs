@@ -1,17 +1,17 @@
 package jfxtras.labs.icalendar.parameters;
 
-@Deprecated
+/**
+ * Every parameter requires the following methods:
+ * toContentLine - make iCalendar string
+ * getValue - return parameters value
+ * isEqualsTo - checks equality between two parameters
+ * parse - convert string into parameter - this method is in ParameterEnum
+ * 
+ * @author David Bal
+ *
+ */
 public interface Parameter
 {
-//    /**
-//     * Parse string representation of parameter value and set parameter's value
-//     * For example:
-//     * MEMBER="mailto:ietf-calsch@example.org"
-//     * sets the string ietf-calsch@example.org into the parameter's value field.
-//     * The mailto and double quotes are omitted, but return in the toContentLine method.
-//     */
-//    Object parseValue(String value);
-    
     /**
      * return parameter name-value pair string separated by an "="
      * for example:

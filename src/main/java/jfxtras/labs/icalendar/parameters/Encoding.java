@@ -1,14 +1,17 @@
 package jfxtras.labs.icalendar.parameters;
 
-public enum Encoding
+public class Encoding extends ParameterBase
 {
-    EIGHT_BIT ("8BIT"),
-    BASE64 ("BASE64");
-    
-    private String name;
-    @Override public String toString() { return name; }
-    Encoding(String name)
+    public enum EncodingEnum
     {
-        this.name = name;
+        EIGHT_BIT ("8BIT"),
+        BASE64 ("BASE64");
+        
+        private String name;
+        @Override public String toString() { return name; }
+        EncodingEnum(String name)
+        {
+            this.name = name;
+        }
     }
 }

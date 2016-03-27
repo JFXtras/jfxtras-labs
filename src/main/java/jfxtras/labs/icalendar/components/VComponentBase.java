@@ -1,10 +1,12 @@
 package jfxtras.labs.icalendar.components;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 
 /**
@@ -32,7 +34,10 @@ public class VComponentBase<T> implements VComponent
     public T withIANAProperties(String... ianaProperties) { getIANAProperties().addAll(ianaProperties); return (T) this; }
     
 //    Map<PropertyEnum, List<Property>> propertyMap() { return propertyMap; }
-    Map<PropertyEnum, Object> propertyMap() { return propertyMap; }
-    private final Map<PropertyEnum, Object> propertyMap = new HashMap<>();
+    Map<PropertyEnum, Property> propertyMap() { return propertyMap; } // properties that can only occur once
+    Map<PropertyEnum, List<? extends Property>> propertyListMap() { return propertyListMap; } // properties that can occur more than once
+//    Map<PropertyEnum, List<? extends Property>> propertyMap() { return propertyMap; }
+    private final Map<PropertyEnum, Property> propertyMap = new HashMap<>();
+    private final Map<PropertyEnum, List<? extends Property>> propertyListMap = new HashMap<>();
 //    private final Map<PropertyEnum, List<Property>> propertyMap = new HashMap<>();
 }

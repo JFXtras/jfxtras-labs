@@ -99,7 +99,9 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         {
             throw new DateTimeException("dateTimeStamp (DTSTAMP) must be specified in the UTC time format (Z)");
         }
-        this.dateTimeStamp.set(dtStamp);
+        dateTimeStamp.set(dtStamp);
+//        propertyMap().put(PropertyEnum.DATE_TIME_STAMP, new ArrayList<DateTimeStamp>(Arrays.asList(dtStamp)));
+        propertyMap().put(PropertyEnum.DATE_TIME_STAMP, dtStamp);
     }
     public T withDateTimeStamp(DateTimeStamp dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
 
@@ -130,6 +132,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         {
             this.organizer.set(organizer);            
         }
+        propertyMap().put(PropertyEnum.ORGANIZER, organizer);
     }
     public T withOrganizer(Organizer organizer) { setOrganizer(organizer); return (T) this; }
 
@@ -199,7 +202,11 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override public ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty() { return uniqueIdentifier; }
     private ObjectProperty<UniqueIdentifier> uniqueIdentifier;
     @Override public UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifier.get(); }
-    @Override public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { this.uniqueIdentifier.set(uniqueIdentifier); }
+    @Override public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier)
+    {
+        this.uniqueIdentifier.set(uniqueIdentifier);
+        propertyMap().put(PropertyEnum.UNIQUE_IDENTIFIER, uniqueIdentifier);
+    }
     public void withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); }
 
     /**
@@ -221,15 +228,16 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override public UniformResourceLocator getUniformResourceLocator() { return (uniformResourceLocator == null) ? _uniformResourceLocator : uniformResourceLocator.get(); }
     private UniformResourceLocator _uniformResourceLocator;
     @Override
-    public void setUniformResourceLocator(UniformResourceLocator uniformResourceLocator)
+    public void setUniformResourceLocator(UniformResourceLocator url)
     {
         if (this.uniformResourceLocator == null)
         {
-            _uniformResourceLocator = uniformResourceLocator;
+            _uniformResourceLocator = url;
         } else
         {
-            this.uniformResourceLocator.set(uniformResourceLocator);            
+            this.uniformResourceLocator.set(url);            
         }
+        propertyMap().put(PropertyEnum.UNIFORM_RESOURCE_LOCATOR, url);
     }
     public T withUniformResourceLocator(UniformResourceLocator uniformResourceLocator) { setUniformResourceLocator(uniformResourceLocator); return (T) this; }
 

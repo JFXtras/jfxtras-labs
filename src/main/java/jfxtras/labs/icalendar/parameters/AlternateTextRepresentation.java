@@ -1,27 +1,14 @@
 package jfxtras.labs.icalendar.parameters;
 
-@Deprecated
-
-public class AlternateTextRepresentation implements Parameter
+public class AlternateTextRepresentation extends ParameterTextBase<AlternateTextRepresentation>
 {
 
-    public AlternateTextRepresentation(String content)
+    public AlternateTextRepresentation(String name)
     {
+        super(name);
         // TODO Auto-generated constructor stub
     }
 
-    @Override
-    public String toContentLine()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
-    @Override
-    public Object getValue()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

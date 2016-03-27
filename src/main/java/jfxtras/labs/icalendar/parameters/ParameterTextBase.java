@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.parameters;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class ParameterTextBase implements Parameter
+public class ParameterTextBase<T> extends ParameterBase
 {
     @Deprecated // make class map in enum
     private final String parameterName;
@@ -13,12 +13,6 @@ public class ParameterTextBase implements Parameter
     public StringProperty valueProperty() { return value; }
     private StringProperty value;
     public void setValue(String value) { this.value.set(value); }
-    
-    @Override
-    public String toContentLine()
-    {
-        return ";" + parameterName + "=" + getValue();
-    }
     
     /*
      * CONSTRUCTORS

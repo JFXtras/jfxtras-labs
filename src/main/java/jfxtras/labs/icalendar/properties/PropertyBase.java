@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendar.properties;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -46,13 +44,14 @@ public abstract class PropertyBase<T> implements Property
     private ObjectProperty<ValueType> valueType;
     public void setValueType(ValueType value)
     {
-        if (value != null)
-        {
-            parameters().add(ParameterEnum.VALUE_DATA_TYPES);
-        } else
-        {
-            parameters().remove(ParameterEnum.VALUE_DATA_TYPES);            
-        }
+//        if (value != null)
+//        {
+//            parameters().add(ParameterEnum.VALUE_DATA_TYPES);
+//        } else
+//        {
+//            parameters().remove(ParameterEnum.VALUE_DATA_TYPES);            
+//        }
+//        parameterMap().put(ParameterEnum.VALUE_DATA_TYPES, value);
         if (this.valueType == null)
         {
             _valueType = value;
@@ -77,12 +76,12 @@ public abstract class PropertyBase<T> implements Property
     public PropertyEnum propertyType() { return propertyType; }
     private PropertyEnum propertyType;
 
-    /**
-     * List of all parameter enums in this property
-     */
-    @Override
-    public Collection<ParameterEnum> parameters() { return parameters; }
-    private Collection<ParameterEnum> parameters = new HashSet<>();
+//    /**
+//     * List of all parameter enums in this property
+//     */
+//    @Override
+//    public Collection<ParameterEnum> parameters() { return parameters; }
+//    private Collection<ParameterEnum> parameters = new HashSet<>();
     
     /*
      * CONSTRUCTORS
@@ -156,6 +155,14 @@ public abstract class PropertyBase<T> implements Property
     {
         StringBuilder builder = new StringBuilder(propertyType().toString());
         parameters().stream().forEach(p -> builder.append(p.toContentLine(this)));
+        otherParameters().stream().forEach(p -> builder.append(";" + p));
+        return builder.toString();
+    }
+    
+    @Override
+    public String toContentLine()
+    {
+        StringBuilder builder = new StringBuilder(propertyType().toString());
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         return builder.toString();
     }

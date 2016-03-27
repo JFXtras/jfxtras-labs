@@ -72,5 +72,11 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
     }
     
     public PropertyTextBase2() { super(); }
+    
+    @Override
+    public String toContentLine()
+    {        
+        return (getLanguage() == null) ? super.toContentLine() : super.toContentLine() + getLanguage().toContentLine();
+    }
 
 }

@@ -120,6 +120,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         lastDtStartDateTimeType = myDateTimeType;
         dateTimeStart.set(dtStart);
 //        dateTimeStart = dtStart;
+//        propertyMap().put(PropertyEnum.DATE_TIME_START, new ArrayList<DateTimeStart>(Arrays.asList(dtStart)));
         propertyMap().put(PropertyEnum.DATE_TIME_START, dtStart);
         
         // if type has changed then make all date-time properties the same
