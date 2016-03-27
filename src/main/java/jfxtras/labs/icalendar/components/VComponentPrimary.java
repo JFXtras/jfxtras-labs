@@ -2,10 +2,11 @@ package jfxtras.labs.icalendar.components;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -30,25 +31,25 @@ public interface VComponentPrimary extends VComponent
          As a matter of fact\, the venue for the meeting ought to be at
          their site. - - John
      * */
-    Comment getComment();
-    ObjectProperty<Comment> commentProperty();
-    void setComment(Comment comment);
-
+//    Comment getComment();
+//    ObjectProperty<Comment> commentProperty();
+//    void setComment(Comment comment);
+    ObservableList<Comment> comments();
     
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
-    Temporal getDateTimeStart();
-    ObjectProperty<Temporal> dateTimeStartProperty();
-    void setDateTimeStart(Temporal dtStart);
-    default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart()); };
+    DateTimeStart getDateTimeStart();
+    ObjectProperty<DateTimeStart> dateTimeStartProperty();
+    void setDateTimeStart(DateTimeStart dtStart);
+    default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };
     default ZoneId getZoneId()
     {
         if (getDateTimeType() == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
         {
-            return ((ZonedDateTime) getDateTimeStart()).getZone();
+            return ((ZonedDateTime) getDateTimeStart().getValue()).getZone();
         }
         return null;
     }

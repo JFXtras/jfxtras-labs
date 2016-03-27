@@ -37,4 +37,11 @@ public interface VComponent
     ObservableList<String> getIANAProperties();
     void setIANAProperties(ObservableList<String> iana);
     
+//    /**
+//     * 
+//     * @return
+//     */
+//    Map<PropertyEnum, List<Property>> propertyMap(); // Object can be a List or a single property
+//    List<Pair<PropertyEnum, Property>> properties();
+    
 }

@@ -1,12 +1,15 @@
 package jfxtras.labs.icalendar.components;
 
 import java.time.ZoneId;
-import java.time.temporal.Temporal;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -20,7 +23,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
  * @see VFreeBusy
  * @see VTimeZone
  */
-public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComponentPrimary
+public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComponentPrimary
 {
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -32,28 +35,54 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
          As a matter of fact\, the venue for the meeting ought to be at
          their site. - - John
      * */
-    @Override
-    public ObjectProperty<Comment> commentProperty()
-    {
-        if (comment == null) comment = new SimpleObjectProperty<Comment>(this, PropertyEnum.COMMENT.toString(), _comment);
-        return comment;
-    }
-    private ObjectProperty<Comment> comment;
-    @Override public Comment getComment() { return (comment == null) ? _comment : comment.get(); }
-    private Comment _comment;
-    @Override
-    public void setComment(Comment comment)
-    {
-        if (this.comment == null)
-        {
-            _comment = comment;
-        } else
-        {
-            this.comment.set(comment);            
-        }
-    }
-    public T withComment(Comment comment) { setComment(comment); return (T) this; }
+//    @Override
+//    public ObjectProperty<Comment> commentProperty()
+//    {
+//        if (comment == null) comment = new SimpleObjectProperty<Comment>(this, PropertyEnum.COMMENT.toString(), _comment);
+//        return comment;
+//    }
+//    private ObjectProperty<Comment> comment;
+//    @Override public Comment getComment() { return (comment == null) ? _comment : comment.get(); }
+//    private Comment _comment;
+//    @Override
+//    public void setComment(Comment comment)
+//    {
+//        if (comment != null)
+//        {
+//            
+//        }
+//        if (this.comment == null)
+//        {
+//            _comment = comment;
+//        } else
+//        {
+//            this.comment.set(comment);            
+//        }
+//    }
+//    public T withComment(Comment comment) { setComment(comment); return (T) this; }
 
+    @Override
+    public ObservableList<Comment> comments()
+    {
+        if (comments == null)
+        {
+            comments = FXCollections.observableArrayList();
+            comments.addListener((InvalidationListener) (obs) ->
+            {
+                int size = comments().size();
+                if (size > 0)
+                {
+                    propertyMap().put(PropertyEnum.COMMENT, comments());
+                } else if (size == 0)
+                {
+                    propertyMap().remove(PropertyEnum.COMMENT);
+                }
+            });
+        }
+        return comments;
+    }
+    private ObservableList<Comment> comments;
+    
     /* DTSTART temporal class and ZoneId
      * 
      * Used to ensure the following date-time properties use the same Temporal class
@@ -74,17 +103,24 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
      * @SEE VDateTime
      */
     @Override
-    public ObjectProperty<Temporal> dateTimeStartProperty() { return dateTimeStart; }
-    final private ObjectProperty<Temporal> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
-    @Override public Temporal getDateTimeStart() { return dateTimeStart.get(); }
+    public ObjectProperty<DateTimeStart> dateTimeStartProperty() { return dateTimeStart; }
+    final private ObjectProperty<DateTimeStart> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
+//    private DateTimeStart dateTimeStart;
+    @Override public DateTimeStart getDateTimeStart()
+    {
+//        return (DateTimeStart) propertyMap().get(PropertyEnum.DATE_TIME_START);
+        return dateTimeStart.get();
+    }
     @Override
-    public void setDateTimeStart(Temporal dtStart)
+    public void setDateTimeStart(DateTimeStart dtStart)
     {
         // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
-        DateTimeType myDateTimeType = DateTimeType.of(dtStart);
+        DateTimeType myDateTimeType = DateTimeType.of(dtStart.getValue());
         boolean changed = (lastDtStartDateTimeType != null) && (myDateTimeType != lastDtStartDateTimeType);
         lastDtStartDateTimeType = myDateTimeType;
         dateTimeStart.set(dtStart);
+//        dateTimeStart = dtStart;
+        propertyMap().put(PropertyEnum.DATE_TIME_START, dtStart);
         
         // if type has changed then make all date-time properties the same
         if (changed)
@@ -93,7 +129,7 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
             ensureDateTimeTypeConsistency(myDateTimeType, getZoneId());
         }
     }
-    public T withDateTimeStart(Temporal dtStart) { setDateTimeStart(dtStart); return (T) this; }
+    public T withDateTimeStart(DateTimeStart dtStart) { setDateTimeStart(dtStart); return (T) this; }
 
     /**
      * Changes Temporal type of some properties to match the input parameter.  The input
@@ -163,6 +199,5 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
 //            setEndRange(getEndRange());
 //        }
     }
-
 
 }

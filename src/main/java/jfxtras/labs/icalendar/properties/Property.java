@@ -1,8 +1,10 @@
 package jfxtras.labs.icalendar.properties;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendar.parameters.Parameter;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 
 /**
@@ -62,7 +64,17 @@ public interface Property
      * Names of all the parameters embedded inside the property
      * Each parameter MUST not appear more than once.
      */
+    @Deprecated
     Collection<ParameterEnum> parameters();
+    Map<ParameterEnum, Parameter> parameterMap();
+    /*
+     * need:
+     *  parse - in enum
+     *  copy - in class
+     *  toContentLine - in class
+     *  isEqualTo - in class
+     * 
+     */
     
 //    /**
 //     * List of all parameters in this property

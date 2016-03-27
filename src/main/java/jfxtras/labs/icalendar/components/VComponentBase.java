@@ -1,7 +1,11 @@
 package jfxtras.labs.icalendar.components;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendar.properties.PropertyEnum;
 
 /**
  * 
@@ -26,4 +30,9 @@ public class VComponentBase<T> implements VComponent
     private ObservableList<String> ianaProperties = FXCollections.observableArrayList();
     @Override public void setIANAProperties(ObservableList<String> iana) { ianaProperties = iana; }
     public T withIANAProperties(String... ianaProperties) { getIANAProperties().addAll(ianaProperties); return (T) this; }
+    
+//    Map<PropertyEnum, List<Property>> propertyMap() { return propertyMap; }
+    Map<PropertyEnum, Object> propertyMap() { return propertyMap; }
+    private final Map<PropertyEnum, Object> propertyMap = new HashMap<>();
+//    private final Map<PropertyEnum, List<Property>> propertyMap = new HashMap<>();
 }

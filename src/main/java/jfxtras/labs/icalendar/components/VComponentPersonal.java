@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendar.components;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
@@ -30,9 +31,10 @@ public interface VComponentPersonal extends VComponentPrimary
      * ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Jane Doe
      *  :mailto:jdoe@example.com
      */
-    Attendee getAttendee();
-    ObjectProperty<Attendee> attendeeProperty();
-    void setAttendee(Attendee attendee);
+    ObservableList<Attendee> attendees();
+//    Attendee getAttendee();
+//    ObjectProperty<Attendee> attendeeProperty();
+//    void setAttendee(Attendee attendee);
     
     /**
      * DTSTAMP: Date-Time Stamp
@@ -71,9 +73,10 @@ public interface VComponentPersonal extends VComponentPrimary
      *  mailto:jsmith@example.com
      * 
      */
-    RequestStatus getRequestStatus();
-    ObjectProperty<RequestStatus> requestStatusProperty();
-    void setRequestStatus(RequestStatus requestStatus);
+    ObservableList<RequestStatus> requestStatus();
+//    RequestStatus getRequestStatus();
+//    ObjectProperty<RequestStatus> requestStatusProperty();
+//    void setRequestStatus(RequestStatus requestStatus);
     
     /**
      * UID, Unique identifier

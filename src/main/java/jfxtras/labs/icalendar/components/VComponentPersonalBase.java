@@ -3,8 +3,11 @@ package jfxtras.labs.icalendar.components;
 import java.time.DateTimeException;
 import java.time.ZoneOffset;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
@@ -23,7 +26,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier
  * @see VJournal
  * @see VFreeBusy
  */
-public class VComponentPersonalBase<T> extends VComponentPrimaryBase<T> implements VComponentPersonal
+public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T> implements VComponentPersonal
 {
     /**
      * ATTENDEE: Attendee
@@ -36,28 +39,49 @@ public class VComponentPersonalBase<T> extends VComponentPrimaryBase<T> implemen
      * ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Jane Doe
      *  :mailto:jdoe@example.com
      */
+//    @Override
+//    public ObjectProperty<Attendee> attendeeProperty()
+//    {
+//        if (attendee == null) attendee = new SimpleObjectProperty<Attendee>(this, PropertyEnum.ATTENDEE.toString(), _attendee);
+//        return attendee;
+//    }
+//    private ObjectProperty<Attendee> attendee;
+//    @Override public Attendee getAttendee() { return (attendee == null) ? _attendee : attendee.get(); }
+//    private Attendee _attendee;
+//    @Override
+//    public void setAttendee(Attendee attendee)
+//    {
+//        if (this.attendee == null)
+//        {
+//            _attendee = attendee;
+//        } else
+//        {
+//            this.attendee.set(attendee);            
+//        }
+//    }
+//    public T withAttendee(Attendee attendee) { setAttendee(attendee); return (T) this; }
     @Override
-    public ObjectProperty<Attendee> attendeeProperty()
+    public ObservableList<Attendee> attendees()
     {
-        if (attendee == null) attendee = new SimpleObjectProperty<Attendee>(this, PropertyEnum.ATTENDEE.toString(), _attendee);
-        return attendee;
-    }
-    private ObjectProperty<Attendee> attendee;
-    @Override public Attendee getAttendee() { return (attendee == null) ? _attendee : attendee.get(); }
-    private Attendee _attendee;
-    @Override
-    public void setAttendee(Attendee attendee)
-    {
-        if (this.attendee == null)
+        if (attendees == null)
         {
-            _attendee = attendee;
-        } else
-        {
-            this.attendee.set(attendee);            
+            attendees = FXCollections.observableArrayList();
+            attendees.addListener((InvalidationListener) (obs) ->
+            {
+                int size = attendees().size();
+                if (size > 0)
+                {
+                    propertyMap().put(PropertyEnum.ATTENDEE, attendees());
+                } else if (size == 0)
+                {
+                    propertyMap().remove(PropertyEnum.ATTENDEE);
+                }
+            });
         }
+        return attendees;
     }
-    public T withAttendee(Attendee attendee) { setAttendee(attendee); return (T) this; }
-
+    private ObservableList<Attendee> attendees;
+    
     /**
      * DTSTAMP: Date-Time Stamp, from RFC 5545 iCalendar 3.8.7.2 page 137
      * This property specifies the date and time that the instance of the
@@ -120,28 +144,48 @@ public class VComponentPersonalBase<T> extends VComponentPrimaryBase<T> implemen
      *  mailto:jsmith@example.com
      * 
      */
+//    @Override
+//    public ObjectProperty<RequestStatus> requestStatusProperty()
+//    {
+//        if (requestStatus == null) requestStatus = new SimpleObjectProperty<RequestStatus>(this, PropertyEnum.ORGANIZER.toString(), _requestStatus);
+//        return requestStatus;
+//    }
+//    private ObjectProperty<RequestStatus> requestStatus;
+//    @Override public RequestStatus getRequestStatus() { return (requestStatus == null) ? _requestStatus : requestStatus.get(); }
+//    private RequestStatus _requestStatus;
+//    @Override
+//    public void setRequestStatus(RequestStatus requestStatus)
+//    {
+//        if (this.requestStatus == null)
+//        {
+//            _requestStatus = requestStatus;
+//        } else
+//        {
+//            this.requestStatus.set(requestStatus);            
+//        }
+//    }
+//    public T withRequestStatus(RequestStatus requestStatus) { setRequestStatus(requestStatus); return (T) this; }
     @Override
-    public ObjectProperty<RequestStatus> requestStatusProperty()
+    public ObservableList<RequestStatus> requestStatus()
     {
-        if (requestStatus == null) requestStatus = new SimpleObjectProperty<RequestStatus>(this, PropertyEnum.ORGANIZER.toString(), _requestStatus);
+        if (requestStatus == null)
+        {
+            requestStatus = FXCollections.observableArrayList();
+            requestStatus.addListener((InvalidationListener) (obs) ->
+            {
+                int size = requestStatus().size();
+                if (size > 0)
+                {
+                    propertyMap().put(PropertyEnum.REQUEST_STATUS, requestStatus());
+                } else if (size == 0)
+                {
+                    propertyMap().remove(PropertyEnum.REQUEST_STATUS);
+                }
+            });
+        }
         return requestStatus;
     }
-    private ObjectProperty<RequestStatus> requestStatus;
-    @Override public RequestStatus getRequestStatus() { return (requestStatus == null) ? _requestStatus : requestStatus.get(); }
-    private RequestStatus _requestStatus;
-    @Override
-    public void setRequestStatus(RequestStatus requestStatus)
-    {
-        if (this.requestStatus == null)
-        {
-            _requestStatus = requestStatus;
-        } else
-        {
-            this.requestStatus.set(requestStatus);            
-        }
-    }
-    public T withRequestStatus(RequestStatus requestStatus) { setRequestStatus(requestStatus); return (T) this; }
-
+    private ObservableList<RequestStatus> requestStatus;
 
     /**
      * UID, Unique identifier
