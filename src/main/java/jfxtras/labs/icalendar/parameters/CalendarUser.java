@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendar.parameters;
 
-public class CalendarUser extends ParameterBase<CalendarUser, String>
+import jfxtras.labs.icalendar.parameters.CalendarUser.CalendarUserType;
+
+public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
 {
     /*
      * CONSTRUCTORS
@@ -15,7 +17,6 @@ public class CalendarUser extends ParameterBase<CalendarUser, String>
         super(content);
     }
 
-    // copy constructor
     public CalendarUser(CalendarUser source)
     {
         super(source);

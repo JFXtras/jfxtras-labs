@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.parameters.CalendarUser.CalendarUserType;
+import jfxtras.labs.icalendar.parameters.Encoding.EncodingEnum;
 
 public enum ParameterEnum
 {
@@ -59,16 +60,14 @@ public enum ParameterEnum
         @Override
         public <U> U parse(String content)
         {
-            // TODO Auto-generated method stub
-            return null;
+            return (U) EncodingEnum.valueOf(parseString(content));
         }
     },
     FORMAT_TYPE ("FMTTYPE", FormatType.class) {
         @Override
         public <U> U parse(String content)
         {
-            // TODO Auto-generated method stub
-            return null;
+            return (U) parseString(content);
         }
     },
     FREE_BUSY_TIME_TYPE ("FBTYPE", FreeBusyTime.class) {
@@ -222,7 +221,7 @@ public enum ParameterEnum
     private static String parseString(String content)
     {
         int equalsIndex = content.indexOf('=');
-        String value = (equalsIndex > 0) ? content.substring(equalsIndex+2) : content;
+        String value = (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
         return Parameter.removeDoubleQuote(value);
     }
     

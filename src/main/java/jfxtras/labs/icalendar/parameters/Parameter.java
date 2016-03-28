@@ -51,6 +51,7 @@ public interface Parameter<U>
      * @param testObj
      * @return
      */
+    @Deprecated
     boolean isEqualTo(Parameter<U> parameter1, Parameter<U> parameter2);
     
     /**

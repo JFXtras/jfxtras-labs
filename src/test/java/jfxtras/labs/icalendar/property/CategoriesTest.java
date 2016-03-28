@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 
-public class CategoriesText
+public class CategoriesTest
 {
     @Test
     public void canParseCategories()

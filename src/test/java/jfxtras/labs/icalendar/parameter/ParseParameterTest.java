@@ -9,8 +9,9 @@ import jfxtras.labs.icalendar.parameters.CalendarUser;
 import jfxtras.labs.icalendar.parameters.CommonName;
 import jfxtras.labs.icalendar.parameters.Delegatees;
 import jfxtras.labs.icalendar.parameters.DirectoryEntryReference;
+import jfxtras.labs.icalendar.parameters.FormatType;
 
-public class ParameterTest
+public class ParseParameterTest
 {
     @Test // tests String as value
     public void canParseCommonName()
@@ -50,5 +51,15 @@ public class ParameterTest
         DirectoryEntryReference parameter = new DirectoryEntryReference(";DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
         String expectedContent = ";DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"";
         assertEquals(expectedContent, parameter.toContentLine());
+    }
+    
+    @Test // tests two-value parameter
+    public void canParseFormatType()
+    {
+        FormatType parameter = new FormatType(";FMTTYPE=application/msword");
+        String expectedContent = ";FMTTYPE=application/msword";
+        assertEquals(expectedContent, parameter.toContentLine());
+        assertEquals("application", parameter.getTypeName());
+        assertEquals("msword", parameter.getSubtypeName());
     }
 }

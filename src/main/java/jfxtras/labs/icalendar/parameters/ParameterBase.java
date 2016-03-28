@@ -43,6 +43,30 @@ public abstract class ParameterBase<T,U> implements Parameter<U>
         }
         return (getValue() != null) ? ";" + myParameterEnum.toString() + "=" + value : null;
     }
+
+    @Override
+    public String toString()
+    {
+        return super.toString() + "," + toContentLine();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        ParameterBase<T,U> testObj = (ParameterBase<T,U>) obj;
+
+        return getValue().equals(testObj.getValue());
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return getValue().hashCode();
+    }
     
     @Override
     public boolean isEqualTo(Parameter<U> parameter1, Parameter<U> parameter2)
@@ -74,7 +98,7 @@ public abstract class ParameterBase<T,U> implements Parameter<U>
     
     ParameterBase(ParameterBase<T,U> source)
     {
-        myParameterEnum = source.myParameterEnum;
+        this();
         setValue(source.getValue());
     }
 
