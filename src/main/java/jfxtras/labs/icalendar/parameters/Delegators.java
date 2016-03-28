@@ -1,12 +1,8 @@
 package jfxtras.labs.icalendar.parameters;
 
-public class Delegators extends ParameterTextBase<Delegators>
-{
+import java.util.List;
 
-    public Delegators(String name)
-    {
-        super(name);
-        // TODO Auto-generated constructor stub
-    }
+public class Delegators extends ParameterBase<Delegators, List<String>>
+{
 
 }

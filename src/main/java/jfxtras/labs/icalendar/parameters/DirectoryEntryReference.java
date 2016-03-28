@@ -1,12 +1,6 @@
 package jfxtras.labs.icalendar.parameters;
 
-public class DirectoryEntryReference extends ParameterTextBase<Delegators>
+public class DirectoryEntryReference extends ParameterBase<Delegators, String>
 {
-
-    public DirectoryEntryReference(String name)
-    {
-        super(name);
-        // TODO Auto-generated constructor stub
-    }
 
 }

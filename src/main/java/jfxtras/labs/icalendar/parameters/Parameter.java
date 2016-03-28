@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.parameters;
 
+import jfxtras.labs.icalendar.properties.Property;
+
 /**
  * Every parameter requires the following methods:
  * toContentLine - make iCalendar string
@@ -11,14 +13,7 @@ package jfxtras.labs.icalendar.parameters;
  *
  */
 public interface Parameter
-{
-    /**
-     * return parameter name-value pair string separated by an "="
-     * for example:
-     * LANGUAGE=en-US
-     */
-    String toContentLine();
-    
+{    
     /**
      * The value of the parameter.
      * 
@@ -30,7 +25,27 @@ public interface Parameter
      * with iCalendar content line output.
      */
     Object getValue();
+  
+    /**
+     * return parameter name-value pair string separated by an "="
+     * for example:
+     * LANGUAGE=en-US
+     */
+    String toContentLine();
     
+    /**
+     * Copy parameter from source property to destination property
+     * 
+     * @param source
+     * @param propertyBase
+     */
+    void copyTo(Property source, Property destination);
+    
+       
+    
+    boolean isEqualTo(Property property, Property testObj);
+
+
 //    /**
 //     * 
 //     * @param property - destination property
@@ -77,4 +92,6 @@ public interface Parameter
         return (nameIndex >= 0) ? input.substring(name.length()+2) : input;
             
     }
+
+
 }

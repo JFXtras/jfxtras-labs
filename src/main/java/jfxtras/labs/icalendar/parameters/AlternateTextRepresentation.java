@@ -1,14 +1,7 @@
 package jfxtras.labs.icalendar.parameters;
 
-public class AlternateTextRepresentation extends ParameterTextBase<AlternateTextRepresentation>
+import java.net.URI;
+
+public class AlternateTextRepresentation extends ParameterBase<AlternateTextRepresentation, URI>
 {
-
-    public AlternateTextRepresentation(String name)
-    {
-        super(name);
-        // TODO Auto-generated constructor stub
-    }
-
-
-
 }

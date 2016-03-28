@@ -2,13 +2,15 @@ package jfxtras.labs.icalendar.properties;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendar.parameters.Parameter;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.ValueType;
+import jfxtras.labs.icalendar.parameters.Value.ValueType;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**
@@ -108,7 +110,7 @@ public abstract class PropertyBase<T> implements Property
                 System.out.println("parameter:" + e.getKey() + " " + e.getValue() + " " + p);
                 if (p != null)
                 {
-                    p.parseAndSet(this, e.getValue());
+                    p.parse(this, e.getValue());
                 } else if ((e.getKey() != null) && (e.getValue() != null))
                 { // unknown parameter - store as other parameter
                     otherParameters().add(e.getKey() + "=" + e.getValue());
@@ -130,7 +132,7 @@ public abstract class PropertyBase<T> implements Property
     public PropertyBase(Property source)
     {
         this.propertyType = source.propertyType();
-        parameters().stream().forEach(p -> p.copyTo(source, this));
+        source.parameters().entrySet().stream().forEach(p -> p.getValue().copyTo(source, this));
 //        parameters().stream().forEach(p -> p.copyTo(this));
 //        ICalendarParameter.values(getClass())
 //                .stream()
@@ -154,28 +156,28 @@ public abstract class PropertyBase<T> implements Property
     public String toContentLine()
     {
         StringBuilder builder = new StringBuilder(propertyType().toString());
-        parameters().stream().forEach(p -> builder.append(p.toContentLine(this)));
+        parameters().entrySet().stream().forEach(p -> builder.append(p.getValue().toContentLine()));
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         return builder.toString();
     }
     
-    @Override
-    public String toContentLine()
-    {
-        StringBuilder builder = new StringBuilder(propertyType().toString());
-        otherParameters().stream().forEach(p -> builder.append(";" + p));
-        return builder.toString();
-    }
+//    @Override
+//    public String toContentLine()
+//    {
+//        StringBuilder builder = new StringBuilder(propertyType().toString());
+//        otherParameters().stream().forEach(p -> builder.append(";" + p));
+//        return builder.toString();
+//    }
 
     @Override
     public int hashCode()
     {
         int hash = 7;
         hash = (31 * hash) + getValue().hashCode();
-        Iterator<ParameterEnum> i = parameters().iterator();
+        Iterator<Entry<ParameterEnum, Parameter>> i = parameters().entrySet().iterator();
         while (i.hasNext())
         {
-            ParameterEnum parameter = i.next();
+            Parameter parameter = i.next().getValue();
             hash = (31 * hash) + parameter.getValue().hashCode();
         }
         return hash;
@@ -192,8 +194,9 @@ public abstract class PropertyBase<T> implements Property
         boolean valueEquals = getValue().equals(testObj.getValue());
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
         boolean parametersEquals = parameters()
+               .entrySet()
                .stream()
-               .map(p -> p.isEqualTo(this, testObj))
+               .map(p -> p.getValue().isEqualTo(this, testObj))
 //              .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
               .allMatch(b -> b == true);
         return valueEquals && otherParametersEquals && parametersEquals;

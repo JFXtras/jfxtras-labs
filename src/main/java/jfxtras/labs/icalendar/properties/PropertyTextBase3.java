@@ -83,7 +83,7 @@ public abstract class PropertyTextBase3<T> extends PropertyTextBase2<T>
     {
         if (alternateTextRepresentation != null)
         {
-            parameters().add(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION);
+            parameters().put(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, alternateTextRepresentation);
         } else
         {
             parameters().remove(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION);            

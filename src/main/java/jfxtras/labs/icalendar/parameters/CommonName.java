@@ -1,12 +1,23 @@
 package jfxtras.labs.icalendar.parameters;
 
-public class CommonName extends ParameterTextBase<CommonName>
+public class CommonName extends ParameterBase<CommonName, String>
 {
-
-    public CommonName(String name)
+    /*
+     * CONSTRUCTORS
+     */
+    public CommonName()
     {
-        super(name);
-        // TODO Auto-generated constructor stub
+        super();
+    }
+  
+    public CommonName(String content)
+    {
+        super(content);
     }
 
+    // copy constructor
+    public CommonName(CommonName source)
+    {
+        super(source);
+    }
 }

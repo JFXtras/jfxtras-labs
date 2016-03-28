@@ -1,5 +1,9 @@
 package jfxtras.labs.icalendar.parameters;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendar.properties.Property;
+
 /**
  * Value Date Types
  * VALUE
@@ -14,6 +18,20 @@ package jfxtras.labs.icalendar.parameters;
  */
 public class Value extends ParameterBase
 {
+    @Override
+    public ValueType getValue() { return value.get(); }
+    public ObjectProperty<ValueType> valueProperty() { return value; }
+    private ObjectProperty<ValueType> value = new SimpleObjectProperty<>(this, ParameterEnum.VALUE_DATA_TYPES.toString());
+    public void setValue(ValueType value) { this.value.set(value); }
+    
+    @Override
+    public void copyTo(Property source, Property destination)
+    {
+        Value castSource = (Value) source;
+        Value castDestinateion = (Value) destination;
+        castDestinateion.setValue(castSource.getValue());
+    }
+    
     public enum ValueType
     {
         BINARY ("BINARY"), 
@@ -39,23 +57,4 @@ public class Value extends ParameterBase
             this.name = name;
         }
     }
-//
-//    public Value(String content)
-//    {
-//        // TODO Auto-generated constructor stub
-//    }
-//
-//    @Override
-//    public String toContentLine()
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public Object getValue()
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
 }

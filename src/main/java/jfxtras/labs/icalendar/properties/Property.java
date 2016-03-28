@@ -1,6 +1,10 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.util.Map;
+
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendar.parameters.Parameter;
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
 
 /**
  * top-level interface for all iCalendar properties
@@ -56,12 +60,11 @@ public interface Property
     ObservableList<Object> otherParameters();
     
     /**
-     * Names of all the parameters embedded inside the property
-     * Each parameter MUST not appear more than once.
+     * Map of each represented parameter enum to its associated class
      */
+    Map<ParameterEnum, Parameter> parameters();
 //    @Deprecated
 //    Collection<ParameterEnum> parameters();
-//    Map<ParameterEnum, Parameter> parameterMap();
     /*
      * need:
      *  parse - in enum

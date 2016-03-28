@@ -5,7 +5,7 @@ import java.util.List;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import jfxtras.labs.icalendar.parameters.ValueType;
+import jfxtras.labs.icalendar.parameters.Value.ValueType;
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;

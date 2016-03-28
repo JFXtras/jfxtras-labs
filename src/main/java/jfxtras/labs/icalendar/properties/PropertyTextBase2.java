@@ -2,6 +2,7 @@ package jfxtras.labs.icalendar.properties;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendar.parameters.Language;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
@@ -23,8 +24,8 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
      * SUMMARY;LANGUAGE=en-US:Company Holiday Party
      * LOCATION;LANGUAGE=no:Tyskland
      */
-    public String getLanguage() { return (language == null) ? _language : language.get(); }
-    public ObjectProperty<String> languageProperty()
+    public Language getLanguage() { return (language == null) ? _language : language.get(); }
+    public ObjectProperty<Language> languageProperty()
     {
         if (language == null)
         {
@@ -32,13 +33,13 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
         }
         return language;
     }
-    private String _language;
-    private ObjectProperty<String> language;
-    public void setLanguage(String language)
+    private Language _language;
+    private ObjectProperty<Language> language;
+    public void setLanguage(Language language)
     {
         if (language != null)
         {
-            parameters().add(ParameterEnum.LANGUAGE);
+            parameters().put(ParameterEnum.LANGUAGE, language);
         } else
         {
             parameters().remove(ParameterEnum.LANGUAGE);            
@@ -51,7 +52,8 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
             this.language.set(language);
         }
     }
-    public T withLanguage(String content) { setLanguage(content); return (T) this; }    
+    public T withLanguage(Language language) { setLanguage(language); return (T) this; }    
+    public T withLanguage(String content) { setLanguage((Language) ParameterEnum.LANGUAGE.parse(this, content)); return (T) this; }    
     
     /*
      * CONSTRUCTORS

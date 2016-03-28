@@ -8,10 +8,9 @@ package jfxtras.labs.icalendar.parameters;
  * SUMMARY;LANGUAGE=en-US:Company Holiday Party
  * LOCATION;LANGUAGE=no:Tyskland
  */
-@Deprecated
-public class Language extends ParameterTextBase
+public class Language extends ParameterBase<Language, String>
 {
-    private final static String NAME = ParameterEnum.LANGUAGE.toString();
+//    private final static String NAME = ParameterEnum.LANGUAGE.toString();
     
 //    // SHOULD LOCALE BE USED?
 //    public String getLanguage() { return language.get(); }
@@ -24,20 +23,17 @@ public class Language extends ParameterTextBase
      */
     public Language()
     {
-        super(NAME);
+        super();
     }
   
     public Language(String content)
     {
-        super(NAME, content);
+        super(content);
     }
 
     // copy constructor
     public Language(Language source)
     {
-        super(NAME, source);
+        super(source);
     }
-   
-
-    
 }
