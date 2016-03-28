@@ -1,8 +1,10 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendar.properties.Property;
 
 /**
  * Base class of all iCalendar Parameters
@@ -10,38 +12,48 @@ import jfxtras.labs.icalendar.properties.Property;
  * 
  * @author David Bal
  *
- * @param <U> - value class of Parameter, such as String for text-based, or the enumerated type of the classes based on an enum
+ * @param <U> - type of value stored in the Parameter, such as String for text-based, or the enumerated type of the classes based on an enum
+ * @param <T> - implemented subclass
  */
-public abstract class ParameterBase<T,U> implements Parameter
+public abstract class ParameterBase<T,U> implements Parameter<U>
 {
     private final ParameterEnum myParameterEnum;
-    ParameterEnum myParameterEnum() { return myParameterEnum(); }
+    ParameterEnum myParameterEnum() { return myParameterEnum; }
     
     @Override
     public U getValue() { return value.get(); }
     public ObjectProperty<U> valueProperty() { return value; }
     private ObjectProperty<U> value;
+    @Override
     public void setValue(U value) { this.value.set(value); }
     public T withValue(U value) { setValue(value); return (T) this; }
 
     @Override
     public String toContentLine()
     {
-        return (getValue() != null) ? ";" + myParameterEnum.toString() + "=" + getValue() : null;
+        final String value;
+        if (getValue() instanceof Collection)
+        {
+            value = ((Collection<?>) getValue()).stream()
+                    .map(obj -> Parameter.addDoubleQuotesIfNecessary(obj.toString()))
+                    .collect(Collectors.joining(","));
+        } else
+        {
+            value = Parameter.addDoubleQuotesIfNecessary(getValue().toString());
+        }
+        return (getValue() != null) ? ";" + myParameterEnum.toString() + "=" + value : null;
     }
     
     @Override
-    public boolean isEqualTo(Property property1, Property property2)
+    public boolean isEqualTo(Parameter<U> parameter1, Parameter<U> parameter2)
     {
-        return property1.getValue().equals(property2.getValue());
+        return parameter1.getValue().equals(parameter2.getValue());
     }
     
     @Override
-    public void copyTo(Property source, Property destination)
+    public void copyTo(Parameter<U> source, Parameter<U> destination)
     {
-        ParameterBase<T,U> castSource = (ParameterBase<T,U>) source;
-        ParameterBase<T,U> castDestination = (ParameterBase<T,U>) destination;
-        castDestination.setValue(castSource.getValue());
+        destination.setValue(source.getValue());
     }
     
     /*

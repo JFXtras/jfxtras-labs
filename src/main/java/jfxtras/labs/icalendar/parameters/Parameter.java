@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendar.parameters;
 
-import jfxtras.labs.icalendar.properties.Property;
-
 /**
  * Every parameter requires the following methods:
  * toContentLine - make iCalendar string
@@ -10,22 +8,26 @@ import jfxtras.labs.icalendar.properties.Property;
  * parse - convert string into parameter - this method is in ParameterEnum
  * 
  * @author David Bal
+ * @param <U>
  *
  */
-public interface Parameter
+public interface Parameter<U>
 {    
     /**
      * The value of the parameter.
      * 
      * For example, in the below parameter:
-     * CN=David Bal
-     * The value is David Bal
+     * CN=John Doe
+     * The value is the String "John Doe"
      * 
      * Note: the value's object must have an overridden toString method that complies
      * with iCalendar content line output.
      */
-    Object getValue();
+    U getValue();
   
+    
+    void setValue(U value);
+    
     /**
      * return parameter name-value pair string separated by an "="
      * for example:
@@ -39,19 +41,17 @@ public interface Parameter
      * @param source
      * @param propertyBase
      */
-    void copyTo(Property source, Property destination);
+    void copyTo(Parameter<U> source, Parameter<U> destination);
     
        
-    
-    boolean isEqualTo(Property property, Property testObj);
-
-
-//    /**
-//     * 
-//     * @param property - destination property
-//     * @return
-//     */
-//    void copyTo(Property destination);
+    /**
+     * Tests equality between two Parameter objects
+     * 
+     * @param property
+     * @param testObj
+     * @return
+     */
+    boolean isEqualTo(Parameter<U> parameter1, Parameter<U> parameter2);
     
     /**
      * Remove leading and trailing double quotes
@@ -72,6 +72,26 @@ public interface Parameter
             builder.deleteCharAt(builder.length()-1);
         }
         return builder.toString();
+    }
+    
+    /**
+     * Add Double Quotes to front and end of string if text contains \ : ;
+     * 
+     * @param text
+     * @return
+     */
+    public static String addDoubleQuotesIfNecessary(String text)
+    {
+        boolean hasDQuote = text.contains("\"");
+        boolean hasColon = text.contains(":");
+        boolean hasSemiColon = text.contains(";");
+        if (hasDQuote || hasColon || hasSemiColon)
+        {
+            return "\"" + text + "\""; // add double quotes
+        } else
+        {
+            return text;
+        }
     }
     
     /**

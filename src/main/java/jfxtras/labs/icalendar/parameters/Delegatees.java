@@ -1,14 +1,24 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.net.URI;
 import java.util.List;
 
-public class Delegatees extends ParameterBase<Delegatees, List<String>>
+public class Delegatees extends ParameterBase<Delegatees, List<URI>>
 {
+    public Delegatees()
+    {
+        super();
+    }
+    
     public Delegatees(String content)
     {
         super();
-        List<String> value = myParameterEnum().parse(content);
+        List<URI> value = myParameterEnum().parse(content);
         setValue(value);
     }
-
+    
+    public Delegatees(Delegatees source)
+    {
+        super(source);
+    }
 }

@@ -473,20 +473,6 @@ public final class ICalendarUtilities
      * MAKE STRING METHODS
      */
     
-    public static String addDQuotesIfNecessary(String text)
-    {
-        boolean hasDQuote = text.contains("\"");
-        boolean hasColon = text.contains(":");
-        boolean hasSemiColon = text.contains(";");
-        if (hasDQuote || hasColon || hasSemiColon)
-        {
-            return "\"" + text + "\""; // add double quotes
-        } else
-        {
-            return text;
-        }
-    }
-    
     /**
      * Options available when editing or deleting a repeatable appointment.
      * Sometimes all options are not available.  For example, a one-part repeating

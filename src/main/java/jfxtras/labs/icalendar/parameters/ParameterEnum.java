@@ -2,10 +2,12 @@ package jfxtras.labs.icalendar.parameters;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendar.parameters.CalendarUser.CalendarUserType;
 
@@ -15,15 +17,7 @@ public enum ParameterEnum
         @Override
         public <U> U parse(String content)
         {
-            URI uri = null;
-            try
-            {
-                uri = new URI(Parameter.removeDoubleQuote(content));
-            } catch (URISyntaxException e)
-            {
-                e.printStackTrace();
-            }
-            return (U) uri;
+            return (U) makeURI(content);
         }
     },
     COMMON_NAME ("CN", CommonName.class) {
@@ -44,26 +38,21 @@ public enum ParameterEnum
         @Override
         public <U> U parse(String content)
         {
-            return (U) Arrays.stream(content.split(","))
-                .map(d -> Parameter.removeDoubleQuote(d))
-                .collect(Collectors.toList());
+            return (U) makeURIList(content);
         }
     },
     DELEGATEES ("DELEGATED-TO", Delegatees.class) {
         @Override
         public <U> U parse(String content)
         {
-            return (U) Arrays.stream(content.split(","))
-                    .map(d -> Parameter.removeDoubleQuote(d))
-                    .collect(Collectors.toList());
+            return (U) makeURIList(content);
         }
     },
     DIRECTORY_ENTRY_REFERENCE ("DIR", DirectoryEntryReference.class) {
         @Override
         public <U> U parse(String content)
         {
-            // TODO Auto-generated method stub
-            return null;
+            return (U) makeURI(content);
         }
     },
     INLINE_ENCODING ("ENCODING", Encoding.class) {
@@ -191,55 +180,9 @@ public enum ParameterEnum
         }
         return map;
     }
-
     public static ParameterEnum enumFromName(String propertyName)
     {
         return enumFromNameMap.get(propertyName.toUpperCase());
-    }
-    
-    private String name;
-    private Class<? extends Parameter> myClass;
-    @Override  public String toString() { return name; }
-//    private Class<? extends Property> propertyClasses[];
-    ParameterEnum(String name, Class<? extends Parameter> myClass)
-    {
-        this.name = name;
-        this.myClass = myClass;
-//        this.propertyClasses = (Class<? extends Property>[]) propertyClasses;
-    }
-    
-//    private static Map<Class<? extends Property>, List<ParameterEnum>> enumListFrompropertyClass = makeEnumListFrompropertyClass();
-//    private static Map<Class<? extends Property>, List<ParameterEnum>> makeEnumListFrompropertyClass()
-//    {
-//        Map<Class<? extends Property>, List<ParameterEnum>> map = new HashMap<>();
-//        ParameterEnum[] values = ParameterEnum.values();
-//        for (int i=0; i<values.length; i++)
-//        {
-//            ParameterEnum myParameter = values[i];
-//            for (int classIndex=0; classIndex<myParameter.propertyClasses.length; classIndex++)
-//            {
-//                Class<? extends Property> c = myParameter.propertyClasses[classIndex];
-////                System.out.println("c:" + c);
-//                List<ParameterEnum> parameterList = map.get(c);
-//                if (parameterList == null)
-//                {
-//                    parameterList = new ArrayList<>();
-//                    map.put(c, parameterList);
-//                }
-////                List<ICalendarParameter> parameterList = (map.get(c) == null) ? new ArrayList<>() : map.get(c);
-//                parameterList.add(myParameter);
-//            }
-//        }
-////        List<Class<? extends Property>> l = new ArrayList<Class<? extends Property>Arrays.asList(Categories.class);
-////        System.out.println("map:" + map.size());
-//        return map;
-//    }
-    
-    private static String parseString(String content)
-    {
-        int equalsIndex = content.indexOf('=');
-        String value = (equalsIndex > 0) ? content.substring(equalsIndex) : content;
-        return Parameter.removeDoubleQuote(value);
     }
     
     // Map to match up class to enum
@@ -264,44 +207,59 @@ public enum ParameterEnum
         }
         return p;
     }
-        
-    abstract public <U> U parse(String content);
     
-//    /**
-//     * The Parameter values for TextProperty1
-//     */
-//    public static ICalendarParameter[] textProperty1ParameterValues()
-//    {
-//        return new ICalendarParameter[] { LANGUAGE };
-//    }
+    private String name;
+    private Class<? extends Parameter> myClass;
+    @Override  public String toString() { return name; }
+//    private Class<? extends Property> propertyClasses[];
+    ParameterEnum(String name, Class<? extends Parameter> myClass)
+    {
+        this.name = name;
+        this.myClass = myClass;
+//        this.propertyClasses = (Class<? extends Property>[]) propertyClasses;
+    }
     
-//    public void setValue(VComponentProperty textProperty1, String content)
-//    {
-//        // TODO Auto-generated method stub
-//        // instead of sending property send callback containing how to set value?
-//        // how about a bunch of interfaces to define all the setters and getters?
-//        
-//    }
+    private static String parseString(String content)
+    {
+        int equalsIndex = content.indexOf('=');
+        String value = (equalsIndex > 0) ? content.substring(equalsIndex+2) : content;
+        return Parameter.removeDoubleQuote(value);
+    }
     
-//    /**
-//     * Returns list of iCalendar parameters that are associated with propertyClass.
-//     * 
-//     * @param propertyClass - implementation of Property
-//     * @return - list of associated parameters
-//     */
-//    @Deprecated
-//    public static List<ParameterEnum> values(Class<? extends Property> propertyClass)
-//    {
-//        return enumListFrompropertyClass.get(propertyClass);
-//    }
+    private static List<URI> makeURIList(String content)
+    {
+        List<URI> uriList = new ArrayList<>();
+        Iterator<String> i = Arrays.stream(parseString(content).split(",")).iterator();
+        while (i.hasNext())
+        {
+            String element = Parameter.removeDoubleQuote(i.next());
+            try
+            {
+                uriList.add(new URI(element));
+            } catch (URISyntaxException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return uriList;
+    }
     
+    private static URI makeURI(String content)
+    {
+        URI uri = null;
+        try
+        {
+            uri = new URI(Parameter.removeDoubleQuote(parseString(content)));
+        } catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+        }
+        return uri;
+    }
+
     /*
      * ABSTRACT METHODS
      */
-//    /** makes content line (RFC 5545 3.1) from a vComponent property  */
-//    public abstract String toContentLine(Property property);
-    
-//    /** parses value and sets property associated with enum */
-//    public abstract void parseAndSet(Property property, String content);
-
+    /** Parse content string into parameter value type U */
+    abstract public <U> U parse(String content);
 }

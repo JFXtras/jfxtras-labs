@@ -46,7 +46,7 @@ public interface Property
      * 
      * For example, in the below property:
      * LOCATION:Bob's house
-     * The value is Bob's house
+     * The value is the String "Bob's house"
      * 
      * Note: the value's object must have an overridden toString method that complies
      * with iCalendar content line output.
