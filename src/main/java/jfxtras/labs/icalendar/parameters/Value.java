@@ -10,26 +10,27 @@ import jfxtras.labs.icalendar.parameters.Value.ValueType;
  * To explicitly specify the value type format for a property value.
  * 
  *  Example:
- *  ATTACH;FMTTYPE=application/msword:ftp://example.com/pub/docs/
- *   agenda.doc
- * 
+ *  DTSTART;VALUE=DATE:20160307
+ *   
+ * @author David Bal
+ *
  */
 public class Value extends ParameterBase<Value, ValueType>
 {
-//    @Override
-//    public ValueType getValue() { return value.get(); }
-//    @Override
-//    public ObjectProperty<ValueType> valueProperty() { return value; }
-//    private ObjectProperty<ValueType> value = new SimpleObjectProperty<>(this, ParameterEnum.VALUE_DATA_TYPES.toString());
-//    public void setValue(ValueType value) { this.value.set(value); }
-//    
-//    @Override
-//    public void copyTo(Property source, Property destination)
-//    {
-//        Value castSource = (Value) source;
-//        Value castDestinateion = (Value) destination;
-//        castDestinateion.setValue(castSource.getValue());
-//    }
+    public Value()
+    {
+        super();
+    }
+    
+    public Value(String content)
+    {
+        super();
+    }
+    
+    public Value(Value source)
+    {
+        super(source);
+    }
     
     public enum ValueType
     {

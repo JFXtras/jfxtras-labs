@@ -1,11 +1,27 @@
 package jfxtras.labs.icalendar.parameters;
 
-public class Participation extends ParameterBase
+import jfxtras.labs.icalendar.parameters.Participation.ParticipationStatus;
+
+public class Participation extends ParameterBase<Participation, ParticipationStatus>
 {
-    // Default ParticipationStatus is NEEDS_ACTION
+    public Participation()
+    {
+        super();
+    }
+  
+    public Participation(String content)
+    {
+        super(content);
+    }
+
+    public Participation(Participation source)
+    {
+        super(source);
+    }
+
     public enum ParticipationStatus
     {
-        NEEDS_ACTION ("NEEDS-ACTION"),  // VEvent, VTodo, VJournal
+        NEEDS_ACTION ("NEEDS-ACTION"),  // VEvent, VTodo, VJournal - DEFAULT VALUE
         ACCEPTED ("ACCEPTED"),          // VEvent, VTodo, VJournal
         COMPLETED ("COMPLETED"),        // VTodo
         DECLINED ("DECLINED"),          // VEvent, VTodo, VJournal

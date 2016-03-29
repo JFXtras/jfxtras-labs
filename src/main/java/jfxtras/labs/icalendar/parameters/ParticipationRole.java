@@ -1,7 +1,24 @@
 package jfxtras.labs.icalendar.parameters;
 
-public class ParticipationRole extends ParameterBase
+import jfxtras.labs.icalendar.parameters.ParticipationRole.ParticipationRoleType;
+
+public class ParticipationRole extends ParameterBase<ParticipationRole, ParticipationRoleType>
 {
+    public ParticipationRole()
+    {
+        super();
+    }
+  
+    public ParticipationRole(String content)
+    {
+        super(content);
+    }
+
+    public ParticipationRole(ParticipationRole source)
+    {
+        super(source);
+    }
+    
     public enum ParticipationRoleType
     {
         CHAIR ("CHAIR"),

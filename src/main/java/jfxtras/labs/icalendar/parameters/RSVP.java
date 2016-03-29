@@ -1,6 +1,33 @@
 package jfxtras.labs.icalendar.parameters;
 
-public class RSVP extends ParameterBase
+/**
+ * RSVP
+ * RSVP Expectation
+ * RFC 5545, 3.2.17, page 25
+ * 
+ * To specify whether there is an expectation of a favor of a
+ *  reply from the calendar user specified by the property value.
+ * 
+ * Example:
+ * ATTENDEE;RSVP=TRUE:mailto:jsmith@example.com
+ * 
+ * @author David Bal
+ *
+ */
+public class RSVP extends ParameterBase<RSVP, Boolean>
 {
+    public RSVP()
+    {
+        super();
+    }
+  
+    public RSVP(String content)
+    {
+        super(content);
+    }
 
+    public RSVP(RSVP source)
+    {
+        super(source);
+    }
 }

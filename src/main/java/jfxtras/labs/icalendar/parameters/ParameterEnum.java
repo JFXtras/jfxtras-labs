@@ -102,7 +102,7 @@ public enum ParameterEnum
             return null;
         }
     },
-    RECURRENCE_IDENTIFIER_RANGE ("RANGE", RecurrenceIdentifierRange.class) {
+    RECURRENCE_IDENTIFIER_RANGE ("RANGE", Range.class) {
         @Override
         public <U> U parse(String content)
         {
