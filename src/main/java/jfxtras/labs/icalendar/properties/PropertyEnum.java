@@ -1,8 +1,12 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
@@ -16,51 +20,51 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 
 public enum PropertyEnum
 {
-    ACTION ("ACTION", null), // Alarm
-    ATTACHMENT ("ATTACH", Attachment.class), // Descriptive
-    ATTENDEE ("ATTENDEE", null), // Relationship
-    CALENDAR_SCALE ("CALSCALE", CalendarScale.class), // Calendar
-    CATEGORIES ("CATEGORIES", Categories.class), // Descriptive
-    CLASSIFICATION ("CLASS", null), // Descriptive
-    COMMENT ("COMMENT", null), // Descriptive
-    CONTACT ("CONTACT", null), // Relationship
-    DATE_TIME_COMPLETED ("COMPLETED", null), // Date and Time
-    DATE_TIME_CREATED ("CREATED", DateTimeCreated.class), // Change management
-    DATE_TIME_DUE ("DUE", null), // Date and Time
-    DATE_TIME_END ("DTEND", null), // Date and Time
-    DATE_TIME_STAMP ("DTSTAMP", DateTimeStamp.class), // Change management
-    DATE_TIME_START ("DTSTART", DateTimeStart.class), // Date and Time
-    DESCRIPTION ("DESCRIPTION", Description.class), // Descriptive
-    DURATION ("DURATION", null), // Date and Time
-    EXCEPTION_DATE_TIMES ("EXDATE", null), // Recurrence
-    FREE_BUSY_TIME ("FREEBUSY", null), // Date and Time
-    GEOGRAPHIC_POSITION ("GEO", null), // Descriptive
-    LOCATION ("LOCATION", null), // Descriptive
-    METHOD ("METHOD", null), // Calendar
-    ORGANIZER ("ORGANIZER", null),  // Relationship
-    PERCENT_COMPLETE ("PERCENT", null), // Descriptive
-    PRIORITY ("PRIORITY", null), // Descriptive
-    PRODUCT_IDENTIFIER ("PRODID", null), // Calendar
-    RECURRENCE_DATE_TIMES ("RDATE", null), // Recurrence
-    RECURRENCE_IDENTIFIER ("RECURRENCE-ID", null),  // Relationship
-    RECURRENCE_RULE ("RRULE", null), // Recurrence
-    RELATED_TO ("RELATED-TO", null), // Relationship
-    REPEAT_COUNT ("REPEAT", null), // Alarm
-    REQUEST_STATUS ("REQUEST-STATUS", RequestStatus.class), // Miscellaneous
-    RESOURCES ("RESOURCES", null), // Descriptive
-    SEQUENCE ("SEQUENCE", Sequence.class), // Change management
-    STATUS ("STATUS", null), // Descriptive
-    SUMMARY ("SUMMARY", Summary.class), // Descriptive
-    TIME_TRANSPARENCY ("TRANSP", null), // Date and Time
-    TIME_ZONE_IDENTIFIER ("TZID", null), // Time Zone
-    TIME_ZONE_NAME ("TZNAME", null), // Time Zone
-    TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", null), // Time Zone
-    TIME_ZONE_OFFSET_TO ("TZOFFSETTO", null), // Time Zone
-    TIME_ZONE_URL ("TZURL", null), // Time Zone
-    TRIGGER ("TRIGGER", null),  // Alarm
-    UNIQUE_IDENTIFIER ("UID", null), // Relationship
-    UNIFORM_RESOURCE_LOCATOR ("URL", null), // Relationship
-    VERSION ("VERSION", null); // Calendar
+    ACTION ("ACTION", null, null), // Alarm
+    ATTACHMENT ("ATTACH", null, Attachment.class), // Descriptive
+    ATTENDEE ("ATTENDEE", null, null), // Relationship
+    CALENDAR_SCALE ("CALSCALE", null, CalendarScale.class), // Calendar
+    CATEGORIES ("CATEGORIES", null, Categories.class), // Descriptive
+    CLASSIFICATION ("CLASS", null, null), // Descriptive
+    COMMENT ("COMMENT", null, null), // Descriptive
+    CONTACT ("CONTACT", null, null), // Relationship
+    DATE_TIME_COMPLETED ("COMPLETED", null, null), // Date and Time
+    DATE_TIME_CREATED ("CREATED", null, DateTimeCreated.class), // Change management
+    DATE_TIME_DUE ("DUE", null, null), // Date and Time
+    DATE_TIME_END ("DTEND", null, null), // Date and Time
+    DATE_TIME_STAMP ("DTSTAMP", null, DateTimeStamp.class), // Change management
+    DATE_TIME_START ("DTSTART", null, DateTimeStart.class), // Date and Time
+    DESCRIPTION ("DESCRIPTION", null, Description.class), // Descriptive
+    DURATION ("DURATION", null, null), // Date and Time
+    EXCEPTION_DATE_TIMES ("EXDATE", null, null), // Recurrence
+    FREE_BUSY_TIME ("FREEBUSY", null, null), // Date and Time
+    GEOGRAPHIC_POSITION ("GEO", null, null), // Descriptive
+    LOCATION ("LOCATION", Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), null), // Descriptive
+    METHOD ("METHOD", null, null), // Calendar
+    ORGANIZER ("ORGANIZER", null, null),  // Relationship
+    PERCENT_COMPLETE ("PERCENT", null, null), // Descriptive
+    PRIORITY ("PRIORITY", null, null), // Descriptive
+    PRODUCT_IDENTIFIER ("PRODID", null, null), // Calendar
+    RECURRENCE_DATE_TIMES ("RDATE", null, null), // Recurrence
+    RECURRENCE_IDENTIFIER ("RECURRENCE-ID", null, null),  // Relationship
+    RECURRENCE_RULE ("RRULE", null, null), // Recurrence
+    RELATED_TO ("RELATED-TO", null, null), // Relationship
+    REPEAT_COUNT ("REPEAT", null, null), // Alarm
+    REQUEST_STATUS ("REQUEST-STATUS", null, RequestStatus.class), // Miscellaneous
+    RESOURCES ("RESOURCES", null, null), // Descriptive
+    SEQUENCE ("SEQUENCE", null, Sequence.class), // Change management
+    STATUS ("STATUS", null, null), // Descriptive
+    SUMMARY ("SUMMARY", null, Summary.class), // Descriptive
+    TIME_TRANSPARENCY ("TRANSP", null, null), // Date and Time
+    TIME_ZONE_IDENTIFIER ("TZID", null, null), // Time Zone
+    TIME_ZONE_NAME ("TZNAME", null, null), // Time Zone
+    TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", null, null), // Time Zone
+    TIME_ZONE_OFFSET_TO ("TZOFFSETTO", null, null), // Time Zone
+    TIME_ZONE_URL ("TZURL", null, null), // Time Zone
+    TRIGGER ("TRIGGER", null, null),  // Alarm
+    UNIQUE_IDENTIFIER ("UID", null, null), // Relationship
+    UNIFORM_RESOURCE_LOCATOR ("URL", null, null), // Relationship
+    VERSION ("VERSION", null, null); // Calendar
     
     // Map to match up name to enum
     private static Map<String, PropertyEnum> enumFromNameMap = makeEnumFromNameMap();
@@ -104,12 +108,16 @@ public enum PropertyEnum
     
     private String name;
     private Class<? extends Property<?>> myClass;
+    private List<ParameterEnum> allowedParameters;
     @Override
     public String toString() { return name; }
     
-    PropertyEnum(String name, Class<? extends Property<?>> myClass)
+    PropertyEnum(String name, List<ParameterEnum> allowedParameters, Class<? extends Property<?>> myClass)
     {
+        this.allowedParameters = allowedParameters;
         this.name = name;
         this.myClass = myClass;
-    }
+    }   
+    public Collection<ParameterEnum> possibleParameters() { return allowedParameters; }
+
 }

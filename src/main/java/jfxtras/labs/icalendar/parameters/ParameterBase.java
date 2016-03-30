@@ -75,9 +75,9 @@ public class ParameterBase<T,U> implements Parameter<U>
     }
     
     @Override // MAY HAVE TO GO TO ENUM
-    public void copyTo(Parameter<U> source, Parameter<U> destination)
+    public void copyTo(Parameter<U> destination)
     {
-        destination.setValue(source.getValue());
+        destination.setValue(getValue());
     }
     
     @Override

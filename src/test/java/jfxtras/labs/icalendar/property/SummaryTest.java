@@ -47,4 +47,5 @@ public class SummaryTest
         String expectedSummary = "SUMMARY:TEST SUMMARY2";
         assertEquals(expectedSummary, madeSummary.toContentLine());
     }
+
 }

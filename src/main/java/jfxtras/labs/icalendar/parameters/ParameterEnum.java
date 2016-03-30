@@ -19,6 +19,28 @@ public enum ParameterEnum
             AlternateTextRepresentationBase<?,?> castProperty = (AlternateTextRepresentationBase<?, ?>) property;
             castProperty.setAlternateTextRepresentation(new AlternateTextRepresentation(content));
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+//        @Override
+//        public String toContentLine(Property<?> parent)
+//        {
+//            AlternateTextRepresentationBase<?,?> castProperty = (AlternateTextRepresentationBase<?,?>) parent;
+//            return castProperty.getAlternateTextRepresentation().toContentLine();
+////            castProperty.getLanguage()
+//        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            AlternateTextRepresentationBase<?,?> castProperty = (AlternateTextRepresentationBase<?,?>) parent;
+            return castProperty.getAlternateTextRepresentation();
+        }
     },
     COMMON_NAME ("CN", CommonName.class) {
         @Override
@@ -26,6 +48,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             
+        }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
         }
     },
     CALENDAR_USER_TYPE ("CUTYPE", CalendarUser.class) {
@@ -35,6 +64,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
     },
     DELEGATORS ("DELEGATED-FROM", Delegators.class) {
         @Override
@@ -42,6 +78,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             
+        }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
         }
     },
     DELEGATEES ("DELEGATED-TO", Delegatees.class) {
@@ -51,6 +94,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
     },
     DIRECTORY_ENTRY_REFERENCE ("DIR", DirectoryEntryReference.class) {
         @Override
@@ -58,6 +108,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             
+        }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
         }
     },
     INLINE_ENCODING ("ENCODING", Encoding.class) {
@@ -67,6 +124,13 @@ public enum ParameterEnum
             Attachment castProperty = (Attachment) property;
             castProperty.setEncoding(EncodingType.valueOf(content));
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
     },
     FORMAT_TYPE ("FMTTYPE", FormatType.class) {
         @Override
@@ -74,6 +138,13 @@ public enum ParameterEnum
         {
             Attachment castProperty = (Attachment) property;
             castProperty.setFormatType(new FormatType(content));
+        }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
         }
     },
     FREE_BUSY_TIME_TYPE ("FBTYPE", FreeBusyTime.class) {
@@ -83,14 +154,49 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
     },
-    LANGUAGE ("LANGUAGE", Language.class) {
+    LANGUAGE ("LANGUAGE", null) {
         @Override
         public void parse(Property<?> property, String content)
         {
             LanguageBase<?,?> castProperty = (LanguageBase<?, ?>) property;
-            castProperty.setLanguage(new Language(content));
+            castProperty.setLanguage(new Language(extractValue(content)));
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object testParameter)
+        {
+            LanguageBase<?,?> castProperty = (LanguageBase<?,?>) parentProperty;
+            return (testParameter == null) ? castProperty.getLanguage() == null : castProperty.getLanguage().equals(testParameter);
+        }
+
+        @Override
+        public void copyPropertyTo(Parameter<?> sourceParameter, Property<?> destimation)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            LanguageBase<?,?> castProperty = (LanguageBase<?,?>) parent;
+            return castProperty.getLanguage();
+        }
+
+//        @Override
+//        public String toContentLine(Property<?> parent)
+//        {
+//            LanguageBase<?,?> castProperty = (LanguageBase<?,?>) parent;
+//            castProperty.getLanguage().toContentLine();
+//        }
     },
     GROUP_OR_LIST_MEMBERSHIP ("MEMBER", GroupMembership.class) {
         @Override
@@ -98,6 +204,13 @@ public enum ParameterEnum
         {
             Attendee castProperty = (Attendee) property;
 //            castProperty.setGroupMembership(new GroupMembership(content));
+        }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
         }
     },
     PARTICIPATION_STATUS ("PARTSTAT", Participation.class) {
@@ -107,6 +220,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
     },
     RECURRENCE_IDENTIFIER_RANGE ("RANGE", Range.class) {
         @Override
@@ -114,6 +234,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             
+        }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
         }
     },
     ALARM_TRIGGER_RELATIONSHIP ("RELATED", AlarmTrigger.class) {
@@ -123,6 +250,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
     },
     RELATIONSHIP_TYPE ("RELTYPE", Relationship.class) {
         @Override
@@ -130,6 +264,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             
+        }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
         }
     },
     PARTICIPATION_ROLE ("ROLE", ParticipationRole.class) {
@@ -139,6 +280,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
     },
     RSVP_EXPECTATION ("RSVP", RSVP.class) {
         @Override
@@ -146,6 +294,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             
+        }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
         }
     },
     SENT_BY ("SENT-BY", SentBy.class) {
@@ -155,6 +310,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
     },
     TIME_ZONE_IDENTIFIER ("TZID", TimeZoneIdentifier.class) {
         @Override
@@ -163,6 +325,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             
         }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
     },
     VALUE_DATA_TYPES ("VALUE", Value.class) {
         @Override
@@ -170,6 +339,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             
+        }
+
+        @Override
+        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
+        {
+            // TODO Auto-generated method stub
+            return false;
         }
     };
     
@@ -223,34 +399,28 @@ public enum ParameterEnum
         this.myClass = myClass;
 //        this.propertyClasses = (Class<? extends Property>[]) propertyClasses;
     }
-    
-//    private static String parseString(String content)
-//    {
-//        int equalsIndex = content.indexOf('=');
-//        String value = (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
-//        return Parameter.removeDoubleQuote(value);
-//    }
-    
-//    @Deprecated
-//    private static List<URI> makeURIList(String content)
-//    {
-//        List<URI> uriList = new ArrayList<>();
-//        Iterator<String> i = Arrays.stream(parseString(content).split(",")).iterator();
-//        while (i.hasNext())
-//        {
-//            String element = Parameter.removeDoubleQuote(i.next());
-//            try
-//            {
-//                uriList.add(new URI(element));
-//            } catch (URISyntaxException e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
-//        return uriList;
-//    }
-    
 
+    /*
+     * STATIC METHODS
+     */
+
+    /**
+     * Remove parameter name and equals sign, if present, otherwise return input string
+     * 
+     * @param input - parameter content with or without name and equals sign
+     * @param name - name of parameter
+     * @return - nameless string
+     * 
+     * example input:
+     * ALTREP="CID:part3.msg.970415T083000@example.com"
+     * output:
+     * "CID:part3.msg.970415T083000@example.com"
+     */
+    static String extractValue(String content)
+    {
+        int equalsIndex = content.indexOf('=');
+        return (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
+    }
 
     /*
      * ABSTRACT METHODS
@@ -265,9 +435,23 @@ public enum ParameterEnum
         // TODO Auto-generated method stub
         return null;
     }
-    public Object toContentLine()
+//    public String toContentLine(Property<?> parent) { return null; }
+    @Deprecated
+    abstract public boolean isEqualTo(Property<?> parentProperty, Object parameter2);
+    
+    public Parameter<?> getParameter(Property<?> parent)
     {
-        // TODO Auto-generated method stub
         return null;
     }
+//    public void setParameter(Property<?> property, Parameter<?> parameter)
+//    {
+//        // TODO Auto-generated method stub
+//        
+//    }
+    public void copyPropertyTo(Parameter<?> sourceParameter, Property<?> destimation)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

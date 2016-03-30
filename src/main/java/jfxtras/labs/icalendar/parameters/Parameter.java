@@ -41,7 +41,7 @@ public interface Parameter<U> extends Comparable<Parameter<U>>
      * @param source
      * @param propertyBase
      */
-    void copyTo(Parameter<U> source, Parameter<U> destination);
+    void copyTo(Parameter<U> destination);
 
 //    /** implements Comparable */
 //    int compareTo(Parameter<?> test);

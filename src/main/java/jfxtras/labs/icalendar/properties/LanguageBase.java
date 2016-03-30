@@ -37,13 +37,13 @@ public abstract class LanguageBase<T,U> extends PropertyBase<T,U>
     private ObjectProperty<Language> language;
     public void setLanguage(Language language)
     {
-        if (language != null)
-        {
-            parameterMapModifiable().put(ParameterEnum.LANGUAGE, language);
-        } else
-        {
-            parameterMapModifiable().remove(ParameterEnum.LANGUAGE);            
-        }
+//        if (language != null)
+//        {
+//            parameterMapModifiable().put(ParameterEnum.LANGUAGE, language);
+//        } else
+//        {
+//            parameterMapModifiable().remove(ParameterEnum.LANGUAGE);            
+//        }
         if (this.language == null)
         {
             _language = language;
@@ -52,7 +52,7 @@ public abstract class LanguageBase<T,U> extends PropertyBase<T,U>
             this.language.set(language);
         }
     }
-    public T withLanguage(Language language) { setLanguage(language); return (T) this; }    
+    public T withLanguage(Language language) { setLanguage(language); return (T) this; }
     public T withLanguage(String content) { ParameterEnum.LANGUAGE.parse(this, content); return (T) this; }    
     
     /*

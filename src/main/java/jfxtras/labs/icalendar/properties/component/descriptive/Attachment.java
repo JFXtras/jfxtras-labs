@@ -61,16 +61,16 @@ public class Attachment extends PropertyBase<Description, URI>
             throw new IllegalArgumentException("Attachment property only allows ENCODING to be set to" + EncodingType.BASE64);
         }
         
-        if (encoding != null)
-        {
-            parametersModifiable().add(ParameterEnum.INLINE_ENCODING);
-//            parameterMapModifiable().put(ParameterEnum.INLINE_ENCODING, encoding);
-//            parameterMapInternal().add(ParameterEnum.INLINE_ENCODING);
-        } else
-        {
-            parametersModifiable().remove(ParameterEnum.INLINE_ENCODING);
-//            parameterMapModifiable().remove(ParameterEnum.INLINE_ENCODING);            
-        }
+//        if (encoding != null)
+//        {
+//            parametersModifiable().add(ParameterEnum.INLINE_ENCODING);
+////            parameterMapModifiable().put(ParameterEnum.INLINE_ENCODING, encoding);
+////            parameterMapInternal().add(ParameterEnum.INLINE_ENCODING);
+//        } else
+//        {
+//            parametersModifiable().remove(ParameterEnum.INLINE_ENCODING);
+////            parameterMapModifiable().remove(ParameterEnum.INLINE_ENCODING);            
+//        }
 
         if (this.encoding == null)
         {
@@ -101,16 +101,16 @@ public class Attachment extends PropertyBase<Description, URI>
     private ObjectProperty<FormatType> formatType;
     public void setFormatType(FormatType formatType)
     {
-        if (formatType != null)
-        {
-            parameterMapModifiable().put(ParameterEnum.FORMAT_TYPE, formatType);
-//            parametersModifiable().add(ParameterEnum.FORMAT_TYPE);
-        } else
-        {
-//            parametersModifiable().remove(ParameterEnum.FORMAT_TYPE);
-            parameterMapModifiable().remove(ParameterEnum.FORMAT_TYPE);
-        }
-        
+//        if (formatType != null)
+//        {
+//            parameterMapModifiable().put(ParameterEnum.FORMAT_TYPE, formatType);
+////            parametersModifiable().add(ParameterEnum.FORMAT_TYPE);
+//        } else
+//        {
+////            parametersModifiable().remove(ParameterEnum.FORMAT_TYPE);
+//            parameterMapModifiable().remove(ParameterEnum.FORMAT_TYPE);
+//        }
+//        
         if (this.formatType == null)
         {
             _formatType = formatType;

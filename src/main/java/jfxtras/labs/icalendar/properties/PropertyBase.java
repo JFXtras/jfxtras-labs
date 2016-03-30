@@ -71,15 +71,15 @@ public abstract class PropertyBase<T,U> implements Property<U>
     private ObjectProperty<ValueType> valueType;
     public void setValueType(ValueType value)
     {
-        if (value != null)
-        {
-            parametersModifiable().add(ParameterEnum.VALUE_DATA_TYPES);
-//            parameterMapModifiable().put(ParameterEnum.VALUE_DATA_TYPES, value);
-        } else
-        {
-            parametersModifiable().remove(ParameterEnum.VALUE_DATA_TYPES);            
-//            parameterMapModifiable().remove(ParameterEnum.VALUE_DATA_TYPES);
-        }
+//        if (value != null)
+//        {
+//            parametersModifiable().add(ParameterEnum.VALUE_DATA_TYPES);
+////            parameterMapModifiable().put(ParameterEnum.VALUE_DATA_TYPES, value);
+//        } else
+//        {
+//            parametersModifiable().remove(ParameterEnum.VALUE_DATA_TYPES);            
+////            parameterMapModifiable().remove(ParameterEnum.VALUE_DATA_TYPES);
+//        }
 //        parameterMap().put(ParameterEnum.VALUE_DATA_TYPES, value);
         if (this.valueType == null)
         {
@@ -107,18 +107,55 @@ public abstract class PropertyBase<T,U> implements Property<U>
 
     
     @Override
-    public List<ParameterEnum> parameters() { return Collections.unmodifiableList(parameters); }
-    final private List<ParameterEnum> parameters = new ArrayList<>();
-    protected List<ParameterEnum> parametersModifiable() { return parameters; }
+    public List<ParameterEnum> parameters()
+    {
+        List<ParameterEnum> populatedParameters = new ArrayList<>();
+        Iterator<ParameterEnum> i = propertyType().possibleParameters().stream().iterator();
+        while (i.hasNext())
+        {
+            ParameterEnum parameterType = i.next();
+            Parameter<?> parameter = parameterType.getParameter(this);
+            if (parameter != null)
+            {
+                populatedParameters.add(parameterType);
+            }
+        }
+        return Collections.unmodifiableList(populatedParameters);
+        
+//        List<ParameterEnum> populatedParameters = propertyType().possibleParameters().stream()
+//                .filter(p -> ! p.isEqualTo(this, null))
+//                .collect(Collectors.toList());
+//        return Collections.unmodifiableList(populatedParameters);
+    }
+    
+    @Override
+    @Deprecated
+    public Map<ParameterEnum, Parameter<?>> parameterMap()
+    {
+        Map<ParameterEnum, Parameter<?>> populatedParameterMap = new LinkedHashMap<>();
+        Iterator<ParameterEnum> i = propertyType().possibleParameters().stream().iterator();
+        while (i.hasNext())
+        {
+            ParameterEnum parameterType = i.next();
+            Parameter<?> parameter = parameterType.getParameter(this);
+            if (parameter != null)
+            {
+                populatedParameterMap.put(parameterType, parameter);
+            }
+        }
+        return Collections.unmodifiableMap(populatedParameterMap);
+    }
+//    final private List<ParameterEnum> parameters = new ArrayList<>();
+//    protected List<ParameterEnum> parametersModifiable() { return parameters; }
     
     /*
      * PARAMETER MAPS
      */
     
-    @Override
-    public Map<ParameterEnum, Parameter<?>> parameterMap() { return Collections.unmodifiableMap(parameterMap); }
-    protected Map<ParameterEnum, Parameter<?>> parameterMapModifiable() { return parameterMap; }
-    private Map<ParameterEnum, Parameter<?>> parameterMap = new LinkedHashMap<>();
+//    @Override
+//    public Map<ParameterEnum, Parameter<?>> parameterMap() { return Collections.unmodifiableMap(parameterMap); }
+//    protected Map<ParameterEnum, Parameter<?>> parameterMapModifiable() { return parameterMap; }
+//    private Map<ParameterEnum, Parameter<?>> parameterMap = new LinkedHashMap<>();
 
 //    Map<ParameterEnum, List<Parameter<?>>> parametersList()
 //    {
@@ -205,13 +242,32 @@ public abstract class PropertyBase<T,U> implements Property<U>
     // copy constructor
     public PropertyBase(Property<?> source)
     {
-        parameters().stream().forEach(p -> p.copyTo(source, this));
+//        parameterMap().entrySet().stream()
+        Iterator<ParameterEnum> i = source.parameters().stream().iterator();
+        while (i.hasNext())
+        {
+            ParameterEnum sourceParameterType = i.next();
+            Parameter<?> sourceParameter = sourceParameterType.getParameter(source);
+            sourceParameterType.copyPropertyTo(sourceParameter, this);
+//            setParameter(sourceParameterType, sourceParameter);
+//            sourceParameter.copyTo(destination);
+//            Parameter<?> destinationParameter = sourceParameter.getClass()
+//                    .getConstructor(sourceParameter.getClass())
+//                    .newInstance(sourceParameter);
+//            sourceParameterType.copyParameterTo(this, destinationParameter);
+        }
+
+//        parameters().stream().forEach(p -> p.getParameter(source).copyTo(p.getParameter(this)));
 //        parameterMap().entrySet().stream()
 //                .map(p -> p.getKey())
 //                .forEach(p -> p.copyTo(source, this));
         this.propertyType = source.propertyType();
     }
     
+//    private void setParameter(ParameterEnum sourceParameterType, Parameter<?> sourceParameter)
+//    {
+//        sourceParameterType.copyPropertyTo(sourceParameter, this);
+//    }
     public PropertyBase(U value)
     {
         this();
@@ -234,6 +290,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
         StringBuilder builder = new StringBuilder(propertyType().toString());
 //        Stream<Parameter<?>> streamIndividual = parametersIndividual().entrySet().stream().map(e -> e.getValue());
 //        Stream<Parameter<?>> streamList = parametersList().entrySet().stream().flatMap(e -> e.getValue().stream());
+//        parameters().stream().forEach(p -> builder.append(p.toContentLine()));
         parameterMap().entrySet().stream()
                 .map(p -> p.getValue())
                 .forEach(p -> builder.append(p.toContentLine()));

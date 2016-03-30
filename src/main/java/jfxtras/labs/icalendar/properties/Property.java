@@ -55,13 +55,13 @@ public interface Property<U>
      * Map of each represented parameter enum to its associated class
      * Each parameter can occur only once
      */
+    @Deprecated
     Map<ParameterEnum, Parameter<?>> parameterMap();
 //    
 //    /**
 //     * Map of each parameter that can occur more than once
 //     */
 //    Map<ParameterEnum, List<Parameter<?>>> parametersList();
-    
     
     List<ParameterEnum> parameters();
     

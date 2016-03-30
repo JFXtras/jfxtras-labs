@@ -70,13 +70,13 @@ public abstract class AlternateTextRepresentationBase<T,U> extends LanguageBase<
     private ObjectProperty<AlternateTextRepresentation> alternateTextRepresentation;
     public void setAlternateTextRepresentation(AlternateTextRepresentation alternateTextRepresentation)
     {
-        if (alternateTextRepresentation != null)
-        {
-            parameterMapModifiable().put(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, alternateTextRepresentation);
-        } else
-        {
-            parameterMapModifiable().remove(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION);            
-        }
+//        if (alternateTextRepresentation != null)
+//        {
+//            parameterMapModifiable().put(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, alternateTextRepresentation);
+//        } else
+//        {
+//            parameterMapModifiable().remove(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION);            
+//        }
         if (this.alternateTextRepresentation == null)
         {
             _alternateTextRepresentation = alternateTextRepresentation;
