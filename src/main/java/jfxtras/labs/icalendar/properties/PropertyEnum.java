@@ -7,6 +7,7 @@ import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendar.properties.component.change.Sequence;
+import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
@@ -16,7 +17,7 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 public enum PropertyEnum
 {
     ACTION ("ACTION", null), // Alarm
-    ATTACHMENT ("ATTACH", null), // Descriptive
+    ATTACHMENT ("ATTACH", Attachment.class), // Descriptive
     ATTENDEE ("ATTENDEE", null), // Relationship
     CALENDAR_SCALE ("CALSCALE", CalendarScale.class), // Calendar
     CATEGORIES ("CATEGORIES", Categories.class), // Descriptive

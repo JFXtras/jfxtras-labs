@@ -39,10 +39,10 @@ public abstract class LanguageBase<T,U> extends PropertyBase<T,U>
     {
         if (language != null)
         {
-            parameters().put(ParameterEnum.LANGUAGE, language);
+            parameterMapModifiable().put(ParameterEnum.LANGUAGE, language);
         } else
         {
-            parameters().remove(ParameterEnum.LANGUAGE);            
+            parameterMapModifiable().remove(ParameterEnum.LANGUAGE);            
         }
         if (this.language == null)
         {
@@ -75,10 +75,10 @@ public abstract class LanguageBase<T,U> extends PropertyBase<T,U>
     
     public LanguageBase() { super(); }
     
-    @Override
-    public String toContentLine()
-    {        
-        return (getLanguage() == null) ? super.toContentLine() : super.toContentLine() + getLanguage().toContentLine();
-    }
+//    @Override
+//    public String toContentLine()
+//    {        
+//        return (getLanguage() == null) ? super.toContentLine() : super.toContentLine() + getLanguage().toContentLine();
+//    }
 
 }

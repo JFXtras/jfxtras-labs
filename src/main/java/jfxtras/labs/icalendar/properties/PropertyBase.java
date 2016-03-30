@@ -1,8 +1,10 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -69,13 +71,15 @@ public abstract class PropertyBase<T,U> implements Property<U>
     private ObjectProperty<ValueType> valueType;
     public void setValueType(ValueType value)
     {
-//        if (value != null)
-//        {
-//            parameters().add(ParameterEnum.VALUE_DATA_TYPES);
-//        } else
-//        {
-//            parameters().remove(ParameterEnum.VALUE_DATA_TYPES);            
-//        }
+        if (value != null)
+        {
+            parametersModifiable().add(ParameterEnum.VALUE_DATA_TYPES);
+//            parameterMapModifiable().put(ParameterEnum.VALUE_DATA_TYPES, value);
+        } else
+        {
+            parametersModifiable().remove(ParameterEnum.VALUE_DATA_TYPES);            
+//            parameterMapModifiable().remove(ParameterEnum.VALUE_DATA_TYPES);
+        }
 //        parameterMap().put(ParameterEnum.VALUE_DATA_TYPES, value);
         if (this.valueType == null)
         {
@@ -101,13 +105,20 @@ public abstract class PropertyBase<T,U> implements Property<U>
     public PropertyEnum propertyType() { return propertyType; }
     private PropertyEnum propertyType;
 
+    
+    @Override
+    public List<ParameterEnum> parameters() { return Collections.unmodifiableList(parameters); }
+    final private List<ParameterEnum> parameters = new ArrayList<>();
+    protected List<ParameterEnum> parametersModifiable() { return parameters; }
+    
     /*
      * PARAMETER MAPS
      */
     
     @Override
     public Map<ParameterEnum, Parameter<?>> parameterMap() { return Collections.unmodifiableMap(parameterMap); }
-    private Map<ParameterEnum, Parameter<?>> parameterMap = new HashMap<>();
+    protected Map<ParameterEnum, Parameter<?>> parameterMapModifiable() { return parameterMap; }
+    private Map<ParameterEnum, Parameter<?>> parameterMap = new LinkedHashMap<>();
 
 //    Map<ParameterEnum, List<Parameter<?>>> parametersList()
 //    {
@@ -151,8 +162,18 @@ public abstract class PropertyBase<T,U> implements Property<U>
     public PropertyBase(String propertyString)
     {
         this();
-        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
         
+        // strip off property name if present
+        int endIndex = propertyType.toString().length();
+        if (propertyString.substring(0, endIndex).equals(propertyType.toString()))
+        {
+            propertyString = propertyString.substring(endIndex);
+        } else
+        {
+            propertyString = ":" + propertyString; // indicates propertyString is property value without any properties
+        }
+        
+        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
         // add parameters
         map.entrySet()
             .stream()
@@ -160,7 +181,6 @@ public abstract class PropertyBase<T,U> implements Property<U>
             .forEach(e ->
             {
                 ParameterEnum p = ParameterEnum.enumFromName(e.getKey());
-                System.out.println("parameter:" + e.getKey() + " " + e.getValue() + " " + p);
                 if (p != null)
                 {
                     p.parse(this, e.getValue());
@@ -179,14 +199,16 @@ public abstract class PropertyBase<T,U> implements Property<U>
     public PropertyBase()
     {
         propertyType = PropertyEnum.enumFromClass(getClass());
+        value = new SimpleObjectProperty<U>(this, propertyType.toString());
     }
     
     // copy constructor
     public PropertyBase(Property<?> source)
     {
-        parameterMap().entrySet().stream()
-                .map(p -> p.getKey())
-                .forEach(p -> p.copyTo(source, this));
+        parameters().stream().forEach(p -> p.copyTo(source, this));
+//        parameterMap().entrySet().stream()
+//                .map(p -> p.getKey())
+//                .forEach(p -> p.copyTo(source, this));
         this.propertyType = source.propertyType();
     }
     
@@ -216,6 +238,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
                 .map(p -> p.getValue())
                 .forEach(p -> builder.append(p.toContentLine()));
         otherParameters().stream().forEach(p -> builder.append(";" + p));
+        builder.append(":" + getValue().toString());
         return builder.toString();
     }
     

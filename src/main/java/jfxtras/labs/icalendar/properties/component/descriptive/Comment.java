@@ -12,7 +12,7 @@ import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
      As a matter of fact\, the venue for the meeting ought to be at
      their site. - - John
  */
-public class Comment extends AlternateTextRepresentationBase<Comment>
+public class Comment extends AlternateTextRepresentationBase<Description, String>
 {
     public Comment(String propertyString)
     {

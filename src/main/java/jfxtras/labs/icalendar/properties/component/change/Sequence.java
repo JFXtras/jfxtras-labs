@@ -1,48 +1,22 @@
 package jfxtras.labs.icalendar.properties.component.change;
 
-import java.util.Collection;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 
-import javafx.collections.ObservableList;
-import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.properties.Property;
-import jfxtras.labs.icalendar.properties.PropertyEnum;
-
-public class Sequence implements Property
+public class Sequence extends PropertyBase<Sequence, Integer>
 {
-
-    @Override
-    public String toContentLine()
+    public Sequence(String contentLine)
     {
-        // TODO Auto-generated method stub
-        return null;
+        super(contentLine);
     }
 
-    @Override
-    public PropertyEnum propertyType()
+    public Sequence(Sequence source)
     {
-        // TODO Auto-generated method stub
-        return null;
+        super(source);
     }
-
-    @Override
-    public Object getValue()
+    
+    public Sequence()
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObservableList<Object> otherParameters()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Collection<ParameterEnum> parameters()
-    {
-        // TODO Auto-generated method stub
-        return null;
+        super();
     }
 
 }

@@ -13,9 +13,8 @@ import javafx.beans.property.StringProperty;
  *  Example:
  *  ATTACH;FMTTYPE=application/msword:ftp://example.com/pub/docs/
  *   agenda.doc
- * 
  */
-public class Format extends ParameterBase<Format, String>
+public class FormatType extends ParameterBase<FormatType, String>
 {
     public String getTypeName() { return typeName.get(); }
     StringProperty typeNameProperty() { return typeName; }
@@ -55,17 +54,17 @@ public class Format extends ParameterBase<Format, String>
     /*
      * CONSTRUCTORS
      */
-    public Format()
+    public FormatType()
     {
         super();
     }
   
-    public Format(String content)
+    public FormatType(String content)
     {
         super(extractValue(content));
     }
 
-    public Format(Format source)
+    public FormatType(FormatType source)
     {
         super(source);
     }

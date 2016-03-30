@@ -1,12 +1,8 @@
 package jfxtras.labs.icalendar.properties.component.misc;
 
-import java.util.Map;
+import jfxtras.labs.icalendar.properties.LanguageBase;
 
-import jfxtras.labs.icalendar.parameters.Parameter;
-import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
-
-public class RequestStatus extends AlternateTextRepresentationBase<RequestStatus>
+public class RequestStatus extends LanguageBase<RequestStatus, String>
 {
     public RequestStatus(String contentLine)
     {
@@ -23,10 +19,4 @@ public class RequestStatus extends AlternateTextRepresentationBase<RequestStatus
         super();
     }
 
-    @Override
-    public Map<ParameterEnum, Parameter> parameterMap()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

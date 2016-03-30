@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.util.List;
 import java.util.Map;
 
 import javafx.collections.ObservableList;
@@ -62,7 +63,7 @@ public interface Property<U>
 //    Map<ParameterEnum, List<Parameter<?>>> parametersList();
     
     
-//    List<Parameter<?>> parameters();
+    List<ParameterEnum> parameters();
     
     /**
      * Converts the property's value to a string for the content line
@@ -72,6 +73,10 @@ public interface Property<U>
     String toContentLine();
     
     
+    /**
+     * tests if property's value and parameters are valid
+     */
+    boolean isValid();
     
     /*
      * need: with map

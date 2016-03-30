@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -128,8 +127,8 @@ public final class ICalendarUtilities
      */
     public static Map<String,String> propertyLineToParameterMap(String propertyLine)
     {
-       Map<String,String> parameterMap = new HashMap<>();
-
+       Map<String,String> parameterMap = new LinkedHashMap<>();
+System.out.println("propertyLine:" + propertyLine);
        // find start of parameters (go past property name)
        int parameterStart=0;
        for (parameterStart = 0; parameterStart < propertyLine.length(); parameterStart++)
@@ -176,7 +175,7 @@ public final class ICalendarUtilities
                    value = null;
                    name = propertyLine.substring(parameterStart, nextSemicolonPosition).toUpperCase();
                    parameterEnd = nextSemicolonPosition;
-                   System.out.println("parameter no value:" + name);
+//                   System.out.println("parameter no value:" + name);
                } else
                {
                    name = propertyLine.substring(parameterStart, equalsPosition).toUpperCase();
@@ -185,7 +184,7 @@ public final class ICalendarUtilities
                    { // DQUOTE delimited parameter value
                        parameterEnd = Math.min(propertyLine.indexOf('\"', valueStart+1)+1, propertyLine.length());
                        value = propertyLine.substring(equalsPosition+2, parameterEnd-1); // removes quotes
-                   System.out.println("parameter:" + value);
+//                   System.out.println("parameter:" + value);
                    } else
                    { // regular parameter value
                        for (parameterEnd = equalsPosition+2; parameterEnd < propertyLine.length(); parameterEnd++)
@@ -197,7 +196,7 @@ public final class ICalendarUtilities
                        }
                        value = propertyLine.substring(equalsPosition+1, parameterEnd);
                    }
-                  System.out.println("parameter:" + value);
+//                  System.out.println("parameter:" + value);
                }
            } else
            {

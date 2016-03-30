@@ -2,9 +2,9 @@ package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendar.properties.PropertyTimeBase;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class DateTimeStart extends PropertyTimeBase<DateTimeStart, Temporal>
+public class DateTimeStart extends PropertyBase<DateTimeStart, Temporal>
 {
     public DateTimeStart(Temporal temporal)
     {

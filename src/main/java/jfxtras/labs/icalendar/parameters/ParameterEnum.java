@@ -3,9 +3,11 @@ package jfxtras.labs.icalendar.parameters;
 import java.util.HashMap;
 import java.util.Map;
 
+import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
 import jfxtras.labs.icalendar.properties.LanguageBase;
 import jfxtras.labs.icalendar.properties.Property;
+import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 
 public enum ParameterEnum
@@ -62,16 +64,16 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
+            Attachment castProperty = (Attachment) property;
+            castProperty.setEncoding(EncodingType.valueOf(content));
         }
     },
-    FORMAT_TYPE ("FMTTYPE", Format.class) {
+    FORMAT_TYPE ("FMTTYPE", FormatType.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
+            Attachment castProperty = (Attachment) property;
+            castProperty.setFormatType(new FormatType(content));
         }
     },
     FREE_BUSY_TIME_TYPE ("FBTYPE", FreeBusyTime.class) {
@@ -259,6 +261,11 @@ public enum ParameterEnum
     
     abstract public void parse(Property<?> property, String content);
     public Object copyTo(Property<?> source, Property<?> destination)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public Object toContentLine()
     {
         // TODO Auto-generated method stub
         return null;

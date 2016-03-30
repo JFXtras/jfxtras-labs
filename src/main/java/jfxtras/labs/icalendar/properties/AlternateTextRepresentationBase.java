@@ -72,10 +72,10 @@ public abstract class AlternateTextRepresentationBase<T,U> extends LanguageBase<
     {
         if (alternateTextRepresentation != null)
         {
-            parameterMap().put(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, alternateTextRepresentation);
+            parameterMapModifiable().put(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, alternateTextRepresentation);
         } else
         {
-            parameterMap().remove(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION);            
+            parameterMapModifiable().remove(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION);            
         }
         if (this.alternateTextRepresentation == null)
         {
