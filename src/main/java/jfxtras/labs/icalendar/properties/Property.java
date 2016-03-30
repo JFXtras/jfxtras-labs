@@ -12,24 +12,12 @@ import jfxtras.labs.icalendar.parameters.ParameterEnum;
  * @author David Bal
  * @see PropertyEnum - enum of all supported Properties
  * @see PropertyBase
- * @see PropertyTextBase2
+ * @see LanguageBase
+ *
+ * @param <U> - type of value stored in Property
  */
-public interface Property
+public interface Property<U>
 {
-//    /**
-//     * Parse content line string into property's value and parameters
-//     * 
-//     * @param value - string value
-//     */
-//    void parseAndSetValue(String value);
-
-    /**
-     * Converts the property's value to a string for the content line
-     * 
-     * @return - string representation of property value consistent with iCalendar standards
-     */
-    String toContentLine();
-
     /**
      * Returns the name of the property as it would appear in the iCalendar content line
      * Examples:
@@ -51,7 +39,10 @@ public interface Property
      * Note: the value's object must have an overridden toString method that complies
      * with iCalendar content line output.
      */
-    Object getValue();
+    U getValue();
+    
+    /** Set the value of this property */
+    void setValue(U value);
     
     /**
      * other-param, 3.2 RFC 5545 page 14
@@ -61,17 +52,39 @@ public interface Property
     
     /**
      * Map of each represented parameter enum to its associated class
+     * Each parameter can occur only once
      */
-    Map<ParameterEnum, Parameter> parameters();
-//    @Deprecated
-//    Collection<ParameterEnum> parameters();
-    /*
-     * need:
-     *  parse - in enum
-     *  copy - in class
-     *  toContentLine - in class
-     *  isEqualTo - in class
+    Map<ParameterEnum, Parameter<?>> parameterMap();
+//    
+//    /**
+//     * Map of each parameter that can occur more than once
+//     */
+//    Map<ParameterEnum, List<Parameter<?>>> parametersList();
+    
+    
+//    List<Parameter<?>> parameters();
+    
+    /**
+     * Converts the property's value to a string for the content line
      * 
+     * @return - string representation of property value consistent with iCalendar standards
+     */
+    String toContentLine();
+    
+    
+    
+    /*
+     * need: with map
+     *  parse - in enum
+     *  copy - in enum
+     *  toContentLine - in class
+     *  isEqualTo - use equals in class
+     * 
+     */
+    
+    /*
+     * with collection
+     * all in enum
      */
     
 //    /**

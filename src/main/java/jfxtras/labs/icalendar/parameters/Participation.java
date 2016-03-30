@@ -2,6 +2,19 @@ package jfxtras.labs.icalendar.parameters;
 
 import jfxtras.labs.icalendar.parameters.Participation.ParticipationStatus;
 
+/**
+ * PARTSTAT
+ * Participation Status
+ * RFC 5545, 3.2.12, page 22
+ * 
+ * To specify the language for text values in a property or property parameter.
+ * 
+ * Example:
+ * SUMMARY;LANGUAGE=en-US:Company Holiday Party
+ * 
+ * @author David Bal
+ *
+ */
 public class Participation extends ParameterBase<Participation, ParticipationStatus>
 {
     public Participation()
@@ -11,7 +24,7 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
   
     public Participation(String content)
     {
-        super(content);
+        super(ParticipationStatus.valueOf(extractValue(content)));
     }
 
     public Participation(Participation source)

@@ -1,8 +1,10 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
-import jfxtras.labs.icalendar.properties.PropertyTextBase3;
+import java.net.URI;
 
-public class Description extends PropertyTextBase3<Description>
+import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
+
+public class Description extends AlternateTextRepresentationBase<Description, URI>
 {
     public Description(String contentLine)
     {

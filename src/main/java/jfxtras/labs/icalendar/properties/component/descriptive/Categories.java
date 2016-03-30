@@ -1,9 +1,11 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
+import java.util.List;
+
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyTextBase2;
+import jfxtras.labs.icalendar.properties.LanguageBase;
 
 /**
  * 
@@ -11,7 +13,7 @@ import jfxtras.labs.icalendar.properties.PropertyTextBase2;
  * @see VTodo
  * @see VJournal
  */
-public class Categories extends PropertyTextBase2<Categories>
+public class Categories extends LanguageBase<Categories, List<String>>
 {    
     public Categories(String propertyString)
     {

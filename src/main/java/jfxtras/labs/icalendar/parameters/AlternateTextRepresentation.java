@@ -27,7 +27,7 @@ public class AlternateTextRepresentation extends ParameterBase<AlternateTextRepr
   
     public AlternateTextRepresentation(String content)
     {
-        super(content);
+        super(makeURI(extractValue(content)));
     }
 
     public AlternateTextRepresentation(AlternateTextRepresentation source)

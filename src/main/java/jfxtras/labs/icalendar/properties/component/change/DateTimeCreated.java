@@ -4,9 +4,9 @@ import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import jfxtras.labs.icalendar.properties.PropertyTimeBase;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class DateTimeCreated extends PropertyTimeBase<DateTimeCreated, ZonedDateTime>
+public class DateTimeCreated extends PropertyBase<DateTimeCreated, ZonedDateTime>
 {
     
     @Override

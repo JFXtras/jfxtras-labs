@@ -1,8 +1,8 @@
 package jfxtras.labs.icalendar.properties.calendar;
 
-import jfxtras.labs.icalendar.properties.PropertyTextBase;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class CalendarScale extends PropertyTextBase<CalendarScale>
+public class CalendarScale extends PropertyBase<CalendarScale, String>
 {
     public CalendarScale(String propertyString)
     {

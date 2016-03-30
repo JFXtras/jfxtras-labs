@@ -24,7 +24,7 @@ public class Value extends ParameterBase<Value, ValueType>
     
     public Value(String content)
     {
-        super();
+        super(ValueType.valueOf(extractValue(content)));
     }
     
     public Value(Value source)

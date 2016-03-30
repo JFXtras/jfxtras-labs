@@ -9,7 +9,7 @@ import jfxtras.labs.icalendar.parameters.CalendarUser;
 import jfxtras.labs.icalendar.parameters.CommonName;
 import jfxtras.labs.icalendar.parameters.Delegatees;
 import jfxtras.labs.icalendar.parameters.DirectoryEntryReference;
-import jfxtras.labs.icalendar.parameters.FormatType;
+import jfxtras.labs.icalendar.parameters.Format;
 
 public class ParseParameterTest
 {
@@ -56,7 +56,7 @@ public class ParseParameterTest
     @Test // tests two-value parameter
     public void canParseFormatType()
     {
-        FormatType parameter = new FormatType(";FMTTYPE=application/msword");
+        Format parameter = new Format(";FMTTYPE=application/msword");
         String expectedContent = ";FMTTYPE=application/msword";
         assertEquals(expectedContent, parameter.toContentLine());
         assertEquals("application", parameter.getTypeName());

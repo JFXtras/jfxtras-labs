@@ -10,7 +10,7 @@ import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.parameters.Encoding;
-import jfxtras.labs.icalendar.parameters.FormatType;
+import jfxtras.labs.icalendar.parameters.Format;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
@@ -103,8 +103,8 @@ public class Attachment extends PropertyBase
      * specify the content type of a referenced object.
      */
     // Uses lazy initialization because its rarely used
-    public FormatType getFormatType() { return (formatType == null) ? _formatType : formatType.get(); }
-    public FormatType formatTypeProperty()
+    public Format getFormatType() { return (formatType == null) ? _formatType : formatType.get(); }
+    public Format formatTypeProperty()
     {
         if (formatType == null)
         {
@@ -112,9 +112,9 @@ public class Attachment extends PropertyBase
         }
         return formatType.get();
     }
-    private FormatType _formatType;
-    private ObjectProperty<FormatType> formatType;
-    public void setFormatType(FormatType formatType)
+    private Format _formatType;
+    private ObjectProperty<Format> formatType;
+    public void setFormatType(Format formatType)
     {
         if (this.formatType == null)
         {

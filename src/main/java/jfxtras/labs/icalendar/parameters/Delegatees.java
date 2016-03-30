@@ -27,9 +27,7 @@ public class Delegatees extends ParameterBase<Delegatees, List<URI>>
     
     public Delegatees(String content)
     {
-        super();
-        List<URI> value = myParameterEnum().parse(content);
-        setValue(value);
+        super(makeURIList(extractValue(content)));
     }
     
     public Delegatees(Delegatees source)

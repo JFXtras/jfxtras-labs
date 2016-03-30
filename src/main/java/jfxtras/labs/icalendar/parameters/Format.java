@@ -15,7 +15,7 @@ import javafx.beans.property.StringProperty;
  *   agenda.doc
  * 
  */
-public class FormatType extends ParameterBase<FormatType, String>
+public class Format extends ParameterBase<Format, String>
 {
     public String getTypeName() { return typeName.get(); }
     StringProperty typeNameProperty() { return typeName; }
@@ -55,17 +55,17 @@ public class FormatType extends ParameterBase<FormatType, String>
     /*
      * CONSTRUCTORS
      */
-    public FormatType()
+    public Format()
     {
         super();
     }
   
-    public FormatType(String content)
+    public Format(String content)
     {
-        super(content);
+        super(extractValue(content));
     }
 
-    public FormatType(FormatType source)
+    public Format(Format source)
     {
         super(source);
     }

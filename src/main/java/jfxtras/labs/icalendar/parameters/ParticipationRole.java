@@ -2,6 +2,19 @@ package jfxtras.labs.icalendar.parameters;
 
 import jfxtras.labs.icalendar.parameters.ParticipationRole.ParticipationRoleType;
 
+/**
+ * ROLE
+ * Participation Role
+ * RFC 5545, 3.2.16, page 25
+ * 
+ * To specify the language for text values in a property or property parameter.
+ * 
+ * Example:
+ * SUMMARY;LANGUAGE=en-US:Company Holiday Party
+ * 
+ * @author David Bal
+ *
+ */
 public class ParticipationRole extends ParameterBase<ParticipationRole, ParticipationRoleType>
 {
     public ParticipationRole()
@@ -11,7 +24,7 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
   
     public ParticipationRole(String content)
     {
-        super(content);
+        super(ParticipationRoleType.valueOf(extractValue(content)));
     }
 
     public ParticipationRole(ParticipationRole source)

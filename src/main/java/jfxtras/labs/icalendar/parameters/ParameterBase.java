@@ -1,6 +1,12 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
@@ -15,7 +21,7 @@ import javafx.beans.property.SimpleObjectProperty;
  * @param <U> - type of value stored in the Parameter, such as String for text-based, or the enumerated type of the classes based on an enum
  * @param <T> - implemented subclass
  */
-public abstract class ParameterBase<T,U> implements Parameter<U>
+public class ParameterBase<T,U> implements Parameter<U>
 {
     private final ParameterEnum myParameterEnum;
     ParameterEnum myParameterEnum() { return myParameterEnum; }
@@ -35,11 +41,11 @@ public abstract class ParameterBase<T,U> implements Parameter<U>
         if (getValue() instanceof Collection)
         {
             value = ((Collection<?>) getValue()).stream()
-                    .map(obj -> Parameter.addDoubleQuotesIfNecessary(obj.toString()))
+                    .map(obj -> addDoubleQuotesIfNecessary(obj.toString()))
                     .collect(Collectors.joining(","));
         } else
         {
-            value = Parameter.addDoubleQuotesIfNecessary(getValue().toString());
+            value = addDoubleQuotesIfNecessary(getValue().toString());
         }
         return (getValue() != null) ? ";" + myParameterEnum.toString() + "=" + value : null;
     }
@@ -68,16 +74,16 @@ public abstract class ParameterBase<T,U> implements Parameter<U>
         return getValue().hashCode();
     }
     
-    @Override
-    public boolean isEqualTo(Parameter<U> parameter1, Parameter<U> parameter2)
-    {
-        return parameter1.getValue().equals(parameter2.getValue());
-    }
-    
-    @Override
+    @Override // MAY HAVE TO GO TO ENUM
     public void copyTo(Parameter<U> source, Parameter<U> destination)
     {
         destination.setValue(source.getValue());
+    }
+    
+    @Override
+    public int compareTo(Parameter<U> test)
+    {
+        return toContentLine().compareTo(test.toContentLine());
     }
     
     /*
@@ -88,18 +94,117 @@ public abstract class ParameterBase<T,U> implements Parameter<U>
         myParameterEnum = ParameterEnum.enumFromClass(getClass());
         value = new SimpleObjectProperty<>(this, myParameterEnum.toString());
     }
-    
-    ParameterBase(String content)
+
+    ParameterBase(U value)
     {
         this();
-        U value = myParameterEnum.parse(content);
         setValue(value);
     }
+
     
     ParameterBase(ParameterBase<T,U> source)
     {
         this();
         setValue(source.getValue());
     }
+    
+    /*
+     * STATIC UTILITY METHODS
+     */
 
+    /**
+     * Remove leading and trailing double quotes
+     * 
+     * @param input - string with or without double quotes at front and end
+     * @return - string stripped of leading and trailing double quotes
+     */
+    static String removeDoubleQuote(String input)
+    {
+        final char quote = '\"';
+        StringBuilder builder = new StringBuilder(input);
+        if (builder.charAt(0) == quote)
+        {
+            builder.deleteCharAt(0);
+        }
+        if (builder.charAt(builder.length()-1) == quote)
+        {
+            builder.deleteCharAt(builder.length()-1);
+        }
+        return builder.toString();
+    }
+    
+    /**
+     * Add Double Quotes to front and end of string if text contains \ : ;
+     * 
+     * @param text
+     * @return
+     */
+    static String addDoubleQuotesIfNecessary(String text)
+    {
+        boolean hasDQuote = text.contains("\"");
+        boolean hasColon = text.contains(":");
+        boolean hasSemiColon = text.contains(";");
+        if (hasDQuote || hasColon || hasSemiColon)
+        {
+            return "\"" + text + "\""; // add double quotes
+        } else
+        {
+            return text;
+        }
+    }
+    
+    /**
+     * Remove parameter name and equals sign, if present, otherwise return input string
+     * 
+     * @param input - parameter content with or without name and equals sign
+     * @param name - name of parameter
+     * @return - nameless string
+     * 
+     * example input:
+     * ALTREP="CID:part3.msg.970415T083000@example.com"
+     * output:
+     * "CID:part3.msg.970415T083000@example.com"
+     */
+    static String extractValue(String content)
+    {
+        int equalsIndex = content.indexOf('=');
+        return (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
+    }
+    
+    /**
+     * Parse comma-separated list of URIs into a List<URI>
+     * 
+     */
+    static List<URI> makeURIList(String content)
+    {
+        List<URI> uriList = new ArrayList<>();
+        Iterator<String> i = Arrays.stream(parseString(content).split(",")).iterator();
+        while (i.hasNext())
+        {
+            uriList.add(makeURI(i.next()));
+        }
+        return uriList;
+    }
+    
+    // Make URI from content
+    static URI makeURI(String content)
+    {
+        URI uri = null;
+        try
+        {
+            uri = new URI(removeDoubleQuote(parseString(content)));
+        } catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+        }
+        return uri;
+    }
+    
+    
+    private static String parseString(String content)
+    {
+        int equalsIndex = content.indexOf('=');
+        return (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
+//        return Parameter.removeDoubleQuote(value);
+    }
 }

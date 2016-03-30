@@ -1,8 +1,8 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
-import jfxtras.labs.icalendar.properties.PropertyTextBase3;
+import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
 
-public class Resources extends PropertyTextBase3<Resources>
+public class Resources extends AlternateTextRepresentationBase<Resources>
 {
     public Resources(String contentLine)
     {

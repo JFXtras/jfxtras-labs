@@ -14,7 +14,7 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
  * @see Categories
  * @see TimeZoneName
  */
-public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
+public abstract class LanguageBase<T,U> extends PropertyBase<T,U>
 {
     /**
      * LANGUAGE
@@ -53,18 +53,18 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
         }
     }
     public T withLanguage(Language language) { setLanguage(language); return (T) this; }    
-    public T withLanguage(String content) { setLanguage((Language) ParameterEnum.LANGUAGE.parse(this, content)); return (T) this; }    
+    public T withLanguage(String content) { ParameterEnum.LANGUAGE.parse(this, content); return (T) this; }    
     
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyTextBase2(String propertyString)
+    protected LanguageBase(String propertyString)
     {
         super(propertyString);
     }
     
     // copy constructor
-    public PropertyTextBase2(PropertyTextBase2<T> property)
+    public LanguageBase(LanguageBase<T,U> property)
     {
         super(property);
         if (getLanguage() != null)
@@ -73,7 +73,7 @@ public abstract class PropertyTextBase2<T> extends PropertyTextBase<T>
         }
     }
     
-    public PropertyTextBase2() { super(); }
+    public LanguageBase() { super(); }
     
     @Override
     public String toContentLine()

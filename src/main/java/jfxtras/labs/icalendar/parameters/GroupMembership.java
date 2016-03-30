@@ -26,9 +26,7 @@ public class GroupMembership extends ParameterBase<GroupMembership, List<URI>>
     
     public GroupMembership(String content)
     {
-        super();
-        List<URI> value = myParameterEnum().parse(content);
-        setValue(value);
+        super(makeURIList(extractValue(content)));
     }
     
     public GroupMembership(GroupMembership source)

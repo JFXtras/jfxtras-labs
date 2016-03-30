@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendar.parameters;
 
-import jfxtras.labs.icalendar.parameters.Encoding.EncodingEnum;
+import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 
 /**
  * ENCODING
@@ -25,7 +25,7 @@ import jfxtras.labs.icalendar.parameters.Encoding.EncodingEnum;
  * @author David Bal
  *
  */
-public class Encoding extends ParameterBase<Encoding, EncodingEnum>
+public class Encoding extends ParameterBase<Encoding, EncodingType>
 {
     public Encoding()
     {
@@ -34,7 +34,7 @@ public class Encoding extends ParameterBase<Encoding, EncodingEnum>
   
     public Encoding(String content)
     {
-        super(content);
+        super(EncodingType.valueOf(extractValue(content)));
     }
 
     public Encoding(Encoding source)
@@ -42,14 +42,14 @@ public class Encoding extends ParameterBase<Encoding, EncodingEnum>
         super(source);
     }
     
-    public enum EncodingEnum
+    public enum EncodingType
     {
         EIGHT_BIT ("8BIT"),
         BASE64 ("BASE64");
         
         private String name;
         @Override public String toString() { return name; }
-        EncodingEnum(String name)
+        EncodingType(String name)
         {
             this.name = name;
         }

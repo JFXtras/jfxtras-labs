@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,18 +13,39 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.parameters.Parameter;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.Value.ValueType;
+import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
+import jfxtras.labs.icalendar.properties.calendar.Method;
+import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
+import jfxtras.labs.icalendar.properties.calendar.Version;
+import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**
  * Base iCalendar property class
  * Contains other-parameters
  * Also contains methods used by all properties
+ *  
+ * @see UniqueIdentifier
+ * @see CalendarScale
+ * @see Method
+ * @see ProductIdentifier
+ * @see Version
  * 
  * @author David Bal
  *
+ * @param <T> - type of implementing subclass
+ * @param <U> - type of property value
  */
-public abstract class PropertyBase<T> implements Property
+public abstract class PropertyBase<T,U> implements Property<U>
 {
+    @Override
+    public U getValue() { return value.get(); }
+    public ObjectProperty<U> valueProperty() { return value; }
+    private ObjectProperty<U> value;
+    @Override
+    public void setValue(U value) { this.value.set(value); }
+    public T withValue(U value) { setValue(value); return (T) this; }
+    
     /**
      * VALUE: Value Data Types
      * RFC 5545, 3.2.20, page 28
@@ -78,6 +101,36 @@ public abstract class PropertyBase<T> implements Property
     public PropertyEnum propertyType() { return propertyType; }
     private PropertyEnum propertyType;
 
+    /*
+     * PARAMETER MAPS
+     */
+    
+    @Override
+    public Map<ParameterEnum, Parameter<?>> parameterMap() { return Collections.unmodifiableMap(parameterMap); }
+    private Map<ParameterEnum, Parameter<?>> parameterMap = new HashMap<>();
+
+//    Map<ParameterEnum, List<Parameter<?>>> parametersList()
+//    {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+    
+//    @Override
+//    public List<Parameter<?>> parameters()
+//    {
+//        Stream<Parameter<?>> streamIndividual = parametersIndividual().entrySet().stream().map(e -> e.getValue());
+//        Stream<Parameter<?>> streamList = parametersList().entrySet().stream().flatMap(e -> e.getValue().stream());
+//        Comparator<? super Parameter<?>> comparator = (p1, p2) -> p1.toContentLine().compareTo(p2.toContentLine());
+//        return Collections.unmodifiableList(Stream.concat(streamIndividual, streamList).sorted(comparator).collect(Collectors.toList()));
+//    }
+//    
+//    private Collection<ParameterEnum> parameterEnums()
+//    {
+//        Stream<ParameterEnum> streamIndividual = parametersIndividual().entrySet().stream().map(e -> e.getKey());
+//        Stream<ParameterEnum> streamList = parametersList().entrySet().stream().map(e -> e.getKey());
+//        return Collections.unmodifiableList(Stream.concat(streamIndividual, streamList).collect(Collectors.toList()));
+//    }
+    
 //    /**
 //     * List of all parameter enums in this property
 //     */
@@ -129,17 +182,18 @@ public abstract class PropertyBase<T> implements Property
     }
     
     // copy constructor
-    public PropertyBase(Property source)
+    public PropertyBase(Property<?> source)
     {
+        parameterMap().entrySet().stream()
+                .map(p -> p.getKey())
+                .forEach(p -> p.copyTo(source, this));
         this.propertyType = source.propertyType();
-        source.parameters().entrySet().stream().forEach(p -> p.getValue().copyTo(source, this));
-//        parameters().stream().forEach(p -> p.copyTo(this));
-//        ICalendarParameter.values(getClass())
-//                .stream()
-//                .forEach(p -> p.copyTo(source, this));
-//        PropertyType.enumFromName(propertyName()).copyTo(source, this);
-//        setValue = source.getValue();
-//        source.copyValueTo(this);
+    }
+    
+    public PropertyBase(U value)
+    {
+        this();
+        setValue(value);
     }
     
     /**
@@ -156,7 +210,11 @@ public abstract class PropertyBase<T> implements Property
     public String toContentLine()
     {
         StringBuilder builder = new StringBuilder(propertyType().toString());
-        parameters().entrySet().stream().forEach(p -> builder.append(p.getValue().toContentLine()));
+//        Stream<Parameter<?>> streamIndividual = parametersIndividual().entrySet().stream().map(e -> e.getValue());
+//        Stream<Parameter<?>> streamList = parametersList().entrySet().stream().flatMap(e -> e.getValue().stream());
+        parameterMap().entrySet().stream()
+                .map(p -> p.getValue())
+                .forEach(p -> builder.append(p.toContentLine()));
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         return builder.toString();
     }
@@ -174,10 +232,10 @@ public abstract class PropertyBase<T> implements Property
     {
         int hash = 7;
         hash = (31 * hash) + getValue().hashCode();
-        Iterator<Entry<ParameterEnum, Parameter>> i = parameters().entrySet().iterator();
+        Iterator<Entry<ParameterEnum, Parameter<?>>> i = parameterMap().entrySet().iterator();
         while (i.hasNext())
         {
-            Parameter parameter = i.next().getValue();
+            Parameter<?> parameter = i.next().getValue();
             hash = (31 * hash) + parameter.getValue().hashCode();
         }
         return hash;
@@ -190,15 +248,32 @@ public abstract class PropertyBase<T> implements Property
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        PropertyBase<?> testObj = (PropertyBase<?>) obj;
+        PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
         boolean valueEquals = getValue().equals(testObj.getValue());
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
-        boolean parametersEquals = parameters()
-               .entrySet()
-               .stream()
-               .map(p -> p.getValue().isEqualTo(this, testObj))
-//              .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
-              .allMatch(b -> b == true);
+        
+        final boolean parametersEquals;
+        if (parameterMap().size() == testObj.parameterMap().size())
+        {
+            Iterator<Entry<ParameterEnum, Parameter<?>>> i1 = parameterMap().entrySet().iterator();
+            Iterator<Entry<ParameterEnum, Parameter<?>>> i2 = testObj.parameterMap().entrySet().iterator();
+            boolean isFailure = false;
+            while (i1.hasNext())
+            {
+                Parameter<?> p1 = i1.next().getValue();
+                Parameter<?> p2 = i2.next().getValue();
+                if (! p1.equals(p2))
+                {
+                    isFailure = true;
+                    break;
+                }
+            }
+            parametersEquals = (isFailure) ? false : true;
+        } else
+        {
+            parametersEquals = false;
+        }
+        
         return valueEquals && otherParametersEquals && parametersEquals;
     }
 

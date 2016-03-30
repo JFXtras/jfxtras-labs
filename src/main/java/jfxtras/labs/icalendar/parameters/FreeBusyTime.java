@@ -24,7 +24,7 @@ public class FreeBusyTime extends ParameterBase<FreeBusyTime, FreeBusyTimeType>
   
     public FreeBusyTime(String content)
     {
-        super(content);
+        super(FreeBusyTimeType.valueOf(extractValue(content)));
     }
 
     public FreeBusyTime(FreeBusyTime source)

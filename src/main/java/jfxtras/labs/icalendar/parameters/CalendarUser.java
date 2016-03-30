@@ -24,7 +24,7 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
   
     public CalendarUser(String content)
     {
-        super(content);
+        super(CalendarUserType.valueOf(extractValue(content)));
     }
 
     public CalendarUser(CalendarUser source)

@@ -26,7 +26,7 @@ public class Range extends ParameterBase<Range, RecurrenceIdentifier>
   
     public Range(String content)
     {
-        super(content);
+        super(RecurrenceIdentifier.valueOf(extractValue(content)));
     }
 
     public Range(Range source)

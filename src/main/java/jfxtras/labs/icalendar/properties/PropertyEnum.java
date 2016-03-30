@@ -102,11 +102,11 @@ public enum PropertyEnum
     }
     
     private String name;
-    private Class<? extends Property> myClass;
+    private Class<? extends Property<?>> myClass;
     @Override
     public String toString() { return name; }
     
-    PropertyEnum(String name, Class<? extends Property> myClass)
+    PropertyEnum(String name, Class<? extends Property<?>> myClass)
     {
         this.name = name;
         this.myClass = myClass;

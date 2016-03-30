@@ -2,7 +2,6 @@ package jfxtras.labs.icalendar.property;
 
 import static org.junit.Assert.assertEquals;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
@@ -25,10 +24,9 @@ public class DescriptionTest
     {
         String contentLine = "DESCRIPTION;ALTREP=\"CID:part3.msg.970415T083000@example.com\";LANGUAGE=en:Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management";
         Description madeDescription = new Description(contentLine);
-        Description expectedDescription = new Description()
-                .withAlternateTextRepresentation(new URI("CID:part3.msg.970415T083000@example.com"))
-                .withLanguage("en")
-                .withValue("Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management");
+        Description expectedDescription = new Description("Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management")
+                .withAlternateTextRepresentation("CID:part3.msg.970415T083000@example.com")
+                .withLanguage("en");
         assertEquals(expectedDescription, madeDescription);
         assertEquals(contentLine, expectedDescription.toContentLine());
     }

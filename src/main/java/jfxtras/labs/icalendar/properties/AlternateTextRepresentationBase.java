@@ -1,9 +1,8 @@
 package jfxtras.labs.icalendar.properties;
 
-import java.net.URI;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendar.parameters.AlternateTextRepresentation;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
@@ -23,7 +22,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
  * @see Resources
  * @see Summary
  */
-public abstract class PropertyTextBase3<T> extends PropertyTextBase2<T>
+public abstract class AlternateTextRepresentationBase<T,U> extends LanguageBase<T,U>
 {
     /**
      * ALTREP : Alternate Text Representation
@@ -58,35 +57,25 @@ public abstract class PropertyTextBase3<T> extends PropertyTextBase2<T>
      *   </body>
      * </html>
      */
-    public URI getAlternateTextRepresentation() { return (alternateTextRepresentation == null) ? _alternateTextRepresentation : alternateTextRepresentation.get(); }
-    public ObjectProperty<URI> alternateTextRepresentationProperty()
+    public AlternateTextRepresentation getAlternateTextRepresentation() { return (alternateTextRepresentation == null) ? _alternateTextRepresentation : alternateTextRepresentation.get(); }
+    public ObjectProperty<AlternateTextRepresentation> alternateTextRepresentationProperty()
     {
         if (alternateTextRepresentation == null)
         {
             alternateTextRepresentation = new SimpleObjectProperty<>(this, ParameterEnum.ALTERNATE_TEXT_REPRESENTATION.toString(), _alternateTextRepresentation);
-//            alternateTextRepresentation.addListener((observable, oldValue, newValue) ->
-//            {
-//                if (newValue == null)
-//                {
-//                    parameters().remove(oldValue);
-//                } else
-//                {
-//                    parameters().add(newValue);
-//                }
-//            });
         }
         return alternateTextRepresentation;
     }
-    private URI _alternateTextRepresentation;
-    private ObjectProperty<URI> alternateTextRepresentation;
-    public void setAlternateTextRepresentation(URI alternateTextRepresentation)
+    private AlternateTextRepresentation _alternateTextRepresentation;
+    private ObjectProperty<AlternateTextRepresentation> alternateTextRepresentation;
+    public void setAlternateTextRepresentation(AlternateTextRepresentation alternateTextRepresentation)
     {
         if (alternateTextRepresentation != null)
         {
-            parameters().put(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, alternateTextRepresentation);
+            parameterMap().put(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, alternateTextRepresentation);
         } else
         {
-            parameters().remove(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION);            
+            parameterMap().remove(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION);            
         }
         if (this.alternateTextRepresentation == null)
         {
@@ -96,18 +85,19 @@ public abstract class PropertyTextBase3<T> extends PropertyTextBase2<T>
             this.alternateTextRepresentation.set(alternateTextRepresentation);
         }
     }
-    public T withAlternateTextRepresentation(URI uri) { setAlternateTextRepresentation(uri); return (T) this; }
+    public T withAlternateTextRepresentation(AlternateTextRepresentation altrep) { setAlternateTextRepresentation(altrep); return (T) this; }
+    public T withAlternateTextRepresentation(String content) { ParameterEnum.ALTERNATE_TEXT_REPRESENTATION.parse(this, content); return (T) this; }
     
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyTextBase3(String propertyString)
+    protected AlternateTextRepresentationBase(String propertyString)
     {
         super(propertyString);
     }
 
     // copy constructor
-    public PropertyTextBase3(PropertyTextBase3<T> property)
+    public AlternateTextRepresentationBase(AlternateTextRepresentationBase<T,U> property)
     {
         super(property);
         if (getAlternateTextRepresentation() != null)
@@ -116,5 +106,5 @@ public abstract class PropertyTextBase3<T> extends PropertyTextBase2<T>
         }
     }
 
-    public PropertyTextBase3() { super(); }
+    public AlternateTextRepresentationBase() { super(); }
 }

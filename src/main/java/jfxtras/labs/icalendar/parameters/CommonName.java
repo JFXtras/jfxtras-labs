@@ -22,7 +22,7 @@ public class CommonName extends ParameterBase<CommonName, String>
   
     public CommonName(String content)
     {
-        super(content);
+        super(extractValue(content));
     }
 
     public CommonName(CommonName source)

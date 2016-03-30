@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.parameters;
 /**
  * RSVP
  * RSVP Expectation
- * RFC 5545, 3.2.17, page 25
+ * RFC 5545, 3.2.17, page 26
  * 
  * To specify whether there is an expectation of a favor of a
  *  reply from the calendar user specified by the property value.
@@ -23,7 +23,7 @@ public class RSVP extends ParameterBase<RSVP, Boolean>
   
     public RSVP(String content)
     {
-        super(content);
+        super(Boolean.parseBoolean(extractValue(content)));
     }
 
     public RSVP(RSVP source)
