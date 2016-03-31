@@ -2,13 +2,14 @@ package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendar.properties.PropertyTimeBase;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class DateTimeEnd extends PropertyTimeBase<DateTimeEnd, Temporal>
+public class DateTimeEnd extends PropertyBase<DateTimeEnd, Temporal>
 {
     public DateTimeEnd(Temporal temporal)
     {
-        super(temporal);
+        super();
+        setValue(temporal);
     }
 
     public DateTimeEnd(String propertyString)

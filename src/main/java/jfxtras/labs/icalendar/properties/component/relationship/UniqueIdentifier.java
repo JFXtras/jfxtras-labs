@@ -1,8 +1,8 @@
 package jfxtras.labs.icalendar.properties.component.relationship;
 
-import jfxtras.labs.icalendar.properties.PropertyTextBase;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class UniqueIdentifier extends PropertyTextBase<UniqueIdentifier>
+public class UniqueIdentifier extends PropertyBase<UniqueIdentifier, String>
 {
     public UniqueIdentifier(String contentLine)
     {

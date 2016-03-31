@@ -26,6 +26,7 @@ public class AttachmentText
         Attachment madeProperty = new Attachment(contentLine);
         Attachment expectedProperty = new Attachment("ftp://example.com/pub/reports/r-960812.ps")
                 .withFormatType("application/postscript");
+        System.out.println("fm:" + expectedProperty.getFormatType());
         System.out.println( madeProperty.toContentLine());
         System.out.println( expectedProperty.toContentLine());
         assertEquals(expectedProperty, madeProperty);

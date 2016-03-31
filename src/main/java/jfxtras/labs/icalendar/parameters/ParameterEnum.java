@@ -3,7 +3,6 @@ package jfxtras.labs.icalendar.parameters;
 import java.util.HashMap;
 import java.util.Map;
 
-import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
 import jfxtras.labs.icalendar.properties.LanguageBase;
 import jfxtras.labs.icalendar.properties.Property;
@@ -56,6 +55,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
     },
     CALENDAR_USER_TYPE ("CUTYPE", CalendarUser.class) {
         @Override
@@ -70,6 +76,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     },
     DELEGATORS ("DELEGATED-FROM", Delegators.class) {
@@ -86,6 +99,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
     },
     DELEGATEES ("DELEGATED-TO", Delegatees.class) {
         @Override
@@ -100,6 +120,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     },
     DIRECTORY_ENTRY_REFERENCE ("DIR", DirectoryEntryReference.class) {
@@ -116,13 +143,20 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
     },
     INLINE_ENCODING ("ENCODING", Encoding.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
             Attachment castProperty = (Attachment) property;
-            castProperty.setEncoding(EncodingType.valueOf(content));
+            castProperty.setEncoding(new Encoding(content));
         }
 
         @Override
@@ -130,6 +164,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     },
     FORMAT_TYPE ("FMTTYPE", FormatType.class) {
@@ -146,6 +187,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            Attachment castProperty = (Attachment) parent;
+            return castProperty.getFormatType();
+        }
     },
     FREE_BUSY_TIME_TYPE ("FBTYPE", FreeBusyTime.class) {
         @Override
@@ -161,8 +209,15 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
     },
-    LANGUAGE ("LANGUAGE", null) {
+    LANGUAGE ("LANGUAGE", Language.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
@@ -178,7 +233,7 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyPropertyTo(Parameter<?> sourceParameter, Property<?> destimation)
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destimation)
         {
             // TODO Auto-generated method stub
             
@@ -190,13 +245,6 @@ public enum ParameterEnum
             LanguageBase<?,?> castProperty = (LanguageBase<?,?>) parent;
             return castProperty.getLanguage();
         }
-
-//        @Override
-//        public String toContentLine(Property<?> parent)
-//        {
-//            LanguageBase<?,?> castProperty = (LanguageBase<?,?>) parent;
-//            castProperty.getLanguage().toContentLine();
-//        }
     },
     GROUP_OR_LIST_MEMBERSHIP ("MEMBER", GroupMembership.class) {
         @Override
@@ -211,6 +259,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     },
     PARTICIPATION_STATUS ("PARTSTAT", Participation.class) {
@@ -227,6 +282,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
     },
     RECURRENCE_IDENTIFIER_RANGE ("RANGE", Range.class) {
         @Override
@@ -241,6 +303,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     },
     ALARM_TRIGGER_RELATIONSHIP ("RELATED", AlarmTrigger.class) {
@@ -257,6 +326,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
     },
     RELATIONSHIP_TYPE ("RELTYPE", Relationship.class) {
         @Override
@@ -271,6 +347,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     },
     PARTICIPATION_ROLE ("ROLE", ParticipationRole.class) {
@@ -287,6 +370,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
     },
     RSVP_EXPECTATION ("RSVP", RSVP.class) {
         @Override
@@ -301,6 +391,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     },
     SENT_BY ("SENT-BY", SentBy.class) {
@@ -317,6 +414,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
     },
     TIME_ZONE_IDENTIFIER ("TZID", TimeZoneIdentifier.class) {
         @Override
@@ -332,6 +436,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
     },
     VALUE_DATA_TYPES ("VALUE", Value.class) {
         @Override
@@ -346,6 +457,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return false;
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     };
     
@@ -439,16 +557,13 @@ public enum ParameterEnum
     @Deprecated
     abstract public boolean isEqualTo(Property<?> parentProperty, Object parameter2);
     
-    public Parameter<?> getParameter(Property<?> parent)
-    {
-        return null;
-    }
+    abstract public Parameter<?> getParameter(Property<?> parent);
 //    public void setParameter(Property<?> property, Parameter<?> parameter)
 //    {
 //        // TODO Auto-generated method stub
 //        
 //    }
-    public void copyPropertyTo(Parameter<?> sourceParameter, Property<?> destimation)
+    public void copyTo(Parameter<?> sourceParameter, Property<?> destimation)
     {
         // TODO Auto-generated method stub
         

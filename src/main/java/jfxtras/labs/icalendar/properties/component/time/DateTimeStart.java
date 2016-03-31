@@ -8,7 +8,8 @@ public class DateTimeStart extends PropertyBase<DateTimeStart, Temporal>
 {
     public DateTimeStart(Temporal temporal)
     {
-        super(temporal);
+        super();
+        setValue(temporal);
     }
 
     public DateTimeStart(String propertyString)

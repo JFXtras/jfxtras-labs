@@ -1,8 +1,8 @@
 package jfxtras.labs.icalendar.properties.calendar;
 
-import jfxtras.labs.icalendar.properties.PropertyTextBase;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class Version extends PropertyTextBase<Version>
+public class Version extends PropertyBase<Version, String>
 {
     public Version(String propertyString)
     {

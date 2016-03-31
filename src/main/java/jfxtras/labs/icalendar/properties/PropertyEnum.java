@@ -14,6 +14,7 @@ import jfxtras.labs.icalendar.properties.component.change.Sequence;
 import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
+import jfxtras.labs.icalendar.properties.component.descriptive.Location;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
@@ -21,10 +22,10 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 public enum PropertyEnum
 {
     ACTION ("ACTION", null, null), // Alarm
-    ATTACHMENT ("ATTACH", null, Attachment.class), // Descriptive
+    ATTACHMENT ("ATTACH", Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING), Attachment.class), // Descriptive
     ATTENDEE ("ATTENDEE", null, null), // Relationship
     CALENDAR_SCALE ("CALSCALE", null, CalendarScale.class), // Calendar
-    CATEGORIES ("CATEGORIES", null, Categories.class), // Descriptive
+    CATEGORIES ("CATEGORIES", Arrays.asList(ParameterEnum.LANGUAGE), Categories.class), // Descriptive
     CLASSIFICATION ("CLASS", null, null), // Descriptive
     COMMENT ("COMMENT", null, null), // Descriptive
     CONTACT ("CONTACT", null, null), // Relationship
@@ -34,12 +35,12 @@ public enum PropertyEnum
     DATE_TIME_END ("DTEND", null, null), // Date and Time
     DATE_TIME_STAMP ("DTSTAMP", null, DateTimeStamp.class), // Change management
     DATE_TIME_START ("DTSTART", null, DateTimeStart.class), // Date and Time
-    DESCRIPTION ("DESCRIPTION", null, Description.class), // Descriptive
+    DESCRIPTION ("DESCRIPTION", Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Description.class), // Descriptive
     DURATION ("DURATION", null, null), // Date and Time
     EXCEPTION_DATE_TIMES ("EXDATE", null, null), // Recurrence
     FREE_BUSY_TIME ("FREEBUSY", null, null), // Date and Time
     GEOGRAPHIC_POSITION ("GEO", null, null), // Descriptive
-    LOCATION ("LOCATION", Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), null), // Descriptive
+    LOCATION ("LOCATION", Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Location.class), // Descriptive
     METHOD ("METHOD", null, null), // Calendar
     ORGANIZER ("ORGANIZER", null, null),  // Relationship
     PERCENT_COMPLETE ("PERCENT", null, null), // Descriptive
@@ -54,7 +55,7 @@ public enum PropertyEnum
     RESOURCES ("RESOURCES", null, null), // Descriptive
     SEQUENCE ("SEQUENCE", null, Sequence.class), // Change management
     STATUS ("STATUS", null, null), // Descriptive
-    SUMMARY ("SUMMARY", null, Summary.class), // Descriptive
+    SUMMARY ("SUMMARY", Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Summary.class), // Descriptive
     TIME_TRANSPARENCY ("TRANSP", null, null), // Date and Time
     TIME_ZONE_IDENTIFIER ("TZID", null, null), // Time Zone
     TIME_ZONE_NAME ("TZNAME", null, null), // Time Zone

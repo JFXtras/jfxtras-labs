@@ -9,6 +9,7 @@ import jfxtras.labs.icalendar.components.VAlarm;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
+import jfxtras.labs.icalendar.parameters.Encoding;
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendar.parameters.FormatType;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
@@ -43,8 +44,8 @@ public class Attachment extends PropertyBase<Description, URI>
      * If the value type parameter is ";VALUE=BINARY", then the inline
      * encoding parameter MUST be specified with the value" ;ENCODING=BASE64".
      */
-    public EncodingType getEncoding() { return (encoding == null) ? _encoding : encoding.get(); }
-    public EncodingType encodingProperty()
+    public Encoding getEncoding() { return (encoding == null) ? _encoding : encoding.get(); }
+    public Encoding encodingProperty()
     {
         if (encoding == null)
         {
@@ -52,25 +53,14 @@ public class Attachment extends PropertyBase<Description, URI>
         }
         return encoding.get();
     }
-    private EncodingType _encoding;
-    private ObjectProperty<EncodingType> encoding;
-    public void setEncoding(EncodingType encoding)
+    private Encoding _encoding;
+    private ObjectProperty<Encoding> encoding;
+    public void setEncoding(Encoding encoding)
     {
-        if (encoding != EncodingType.BASE64)
+        if (encoding.getValue() != EncodingType.BASE64)
         {
             throw new IllegalArgumentException("Attachment property only allows ENCODING to be set to" + EncodingType.BASE64);
         }
-        
-//        if (encoding != null)
-//        {
-//            parametersModifiable().add(ParameterEnum.INLINE_ENCODING);
-////            parameterMapModifiable().put(ParameterEnum.INLINE_ENCODING, encoding);
-////            parameterMapInternal().add(ParameterEnum.INLINE_ENCODING);
-//        } else
-//        {
-//            parametersModifiable().remove(ParameterEnum.INLINE_ENCODING);
-////            parameterMapModifiable().remove(ParameterEnum.INLINE_ENCODING);            
-//        }
 
         if (this.encoding == null)
         {
@@ -80,7 +70,7 @@ public class Attachment extends PropertyBase<Description, URI>
             this.encoding.set(encoding);
         }
     }
-    public Attachment withEncoding(EncodingType encoding) { setEncoding(encoding); return this; }
+    public Attachment withEncoding(Encoding encoding) { setEncoding(encoding); return this; }
 //    public Attachment withEncoding(String encoding) { setEncoding(new Encoding(encoding)); return this; }
 
     /**
@@ -101,16 +91,6 @@ public class Attachment extends PropertyBase<Description, URI>
     private ObjectProperty<FormatType> formatType;
     public void setFormatType(FormatType formatType)
     {
-//        if (formatType != null)
-//        {
-//            parameterMapModifiable().put(ParameterEnum.FORMAT_TYPE, formatType);
-////            parametersModifiable().add(ParameterEnum.FORMAT_TYPE);
-//        } else
-//        {
-////            parametersModifiable().remove(ParameterEnum.FORMAT_TYPE);
-//            parameterMapModifiable().remove(ParameterEnum.FORMAT_TYPE);
-//        }
-//        
         if (this.formatType == null)
         {
             _formatType = formatType;
@@ -159,7 +139,7 @@ public class Attachment extends PropertyBase<Description, URI>
         { // both ENCODING and VALUE must be set or not set, only one is not allowed
             return false;
         }
-        if (getEncoding() != EncodingType.BASE64)
+        if (getEncoding().getValue() != EncodingType.BASE64)
         { // invalid EncodingType
             return false;
         }
@@ -169,5 +149,4 @@ public class Attachment extends PropertyBase<Description, URI>
         }
         return true;
     }
-
 }

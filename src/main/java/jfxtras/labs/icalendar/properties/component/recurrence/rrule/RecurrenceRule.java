@@ -5,9 +5,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Spliterator;
@@ -42,7 +42,7 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * @author David Bal
  *
  */
-public class RecurrenceRule implements Property
+public class RecurrenceRule implements Property<RecurrenceRule>
 {            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
@@ -442,12 +442,17 @@ public class RecurrenceRule implements Property
     {
         return PropertyEnum.RECURRENCE_RULE;
     }
-    
     @Override
-    public Object getValue()
+    public RecurrenceRule getValue()
     {
         // TODO Auto-generated method stub
         return null;
+    }
+    @Override
+    public void setValue(RecurrenceRule value)
+    {
+        // TODO Auto-generated method stub
+        
     }
     @Override
     public ObservableList<Object> otherParameters()
@@ -456,11 +461,9 @@ public class RecurrenceRule implements Property
         return null;
     }
     @Override
-    // TODO - THESE DON'T EXIST HERE?  IS THIS A PROBLEM?
-    public Collection<ParameterEnum> parameters()
+    public List<ParameterEnum> parameters()
     {
         // TODO Auto-generated method stub
         return null;
     }
-
 }

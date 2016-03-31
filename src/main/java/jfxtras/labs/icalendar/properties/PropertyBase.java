@@ -3,13 +3,12 @@ package jfxtras.labs.icalendar.properties;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.parameters.Parameter;
@@ -71,16 +70,6 @@ public abstract class PropertyBase<T,U> implements Property<U>
     private ObjectProperty<ValueType> valueType;
     public void setValueType(ValueType value)
     {
-//        if (value != null)
-//        {
-//            parametersModifiable().add(ParameterEnum.VALUE_DATA_TYPES);
-////            parameterMapModifiable().put(ParameterEnum.VALUE_DATA_TYPES, value);
-//        } else
-//        {
-//            parametersModifiable().remove(ParameterEnum.VALUE_DATA_TYPES);            
-////            parameterMapModifiable().remove(ParameterEnum.VALUE_DATA_TYPES);
-//        }
-//        parameterMap().put(ParameterEnum.VALUE_DATA_TYPES, value);
         if (this.valueType == null)
         {
             _valueType = value;
@@ -106,8 +95,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
     private PropertyEnum propertyType;
 
     
+//    @Override
+    private List<ParameterEnum> parmeters2;
     @Override
-    public List<ParameterEnum> parameters()
+    public List<ParameterEnum> parameters() // CAN I SAVE LIST - UPDATE ONLY WHEN NEW PARAMETER CHANGE OCCURS?
     {
         List<ParameterEnum> populatedParameters = new ArrayList<>();
         Iterator<ParameterEnum> i = propertyType().possibleParameters().stream().iterator();
@@ -115,36 +106,32 @@ public abstract class PropertyBase<T,U> implements Property<U>
         {
             ParameterEnum parameterType = i.next();
             Parameter<?> parameter = parameterType.getParameter(this);
+//            System.out.println("pt:" + parameterType + " " + parameter);
             if (parameter != null)
             {
                 populatedParameters.add(parameterType);
             }
         }
         return Collections.unmodifiableList(populatedParameters);
-        
-//        List<ParameterEnum> populatedParameters = propertyType().possibleParameters().stream()
-//                .filter(p -> ! p.isEqualTo(this, null))
-//                .collect(Collectors.toList());
-//        return Collections.unmodifiableList(populatedParameters);
     }
     
-    @Override
-    @Deprecated
-    public Map<ParameterEnum, Parameter<?>> parameterMap()
-    {
-        Map<ParameterEnum, Parameter<?>> populatedParameterMap = new LinkedHashMap<>();
-        Iterator<ParameterEnum> i = propertyType().possibleParameters().stream().iterator();
-        while (i.hasNext())
-        {
-            ParameterEnum parameterType = i.next();
-            Parameter<?> parameter = parameterType.getParameter(this);
-            if (parameter != null)
-            {
-                populatedParameterMap.put(parameterType, parameter);
-            }
-        }
-        return Collections.unmodifiableMap(populatedParameterMap);
-    }
+//    @Override
+//    @Deprecated
+//    public Map<ParameterEnum, Parameter<?>> parameterMap()
+//    {
+//        Map<ParameterEnum, Parameter<?>> populatedParameterMap = new LinkedHashMap<>();
+//        Iterator<ParameterEnum> i = propertyType().possibleParameters().stream().iterator();
+//        while (i.hasNext())
+//        {
+//            ParameterEnum parameterType = i.next();
+//            Parameter<?> parameter = parameterType.getParameter(this);
+//            if (parameter != null)
+//            {
+//                populatedParameterMap.put(parameterType, parameter);
+//            }
+//        }
+//        return Collections.unmodifiableMap(populatedParameterMap);
+//    }
 //    final private List<ParameterEnum> parameters = new ArrayList<>();
 //    protected List<ParameterEnum> parametersModifiable() { return parameters; }
     
@@ -202,18 +189,21 @@ public abstract class PropertyBase<T,U> implements Property<U>
         
         // strip off property name if present
         int endIndex = propertyType.toString().length();
-        if (propertyString.substring(0, endIndex).equals(propertyType.toString()))
+        boolean isLongEnough = propertyString.length() > endIndex;
+        boolean hasPropertyName = (isLongEnough) ? propertyString.substring(0, endIndex).equals(propertyType.toString()) : false;
+        if (hasPropertyName)
         {
             propertyString = propertyString.substring(endIndex);
         } else
         {
             propertyString = ":" + propertyString; // indicates propertyString is property value without any properties
         }
-        
-        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
         // add parameters
+        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
+//        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()
             .stream()
+//            .peek(System.out::println)
             .filter(e -> ! (e.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
             .forEach(e ->
             {
@@ -226,7 +216,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
                     otherParameters().add(e.getKey() + "=" + e.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
-        // add property value
+        // save property value for parsing by subclass
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
     }
     private String propertyValueString;
@@ -237,6 +227,17 @@ public abstract class PropertyBase<T,U> implements Property<U>
     {
         propertyType = PropertyEnum.enumFromClass(getClass());
         value = new SimpleObjectProperty<U>(this, propertyType.toString());
+        ChangeListener<? super ValueType> listener = (observable, oldValue, newValue) -> 
+        {
+            boolean isOldNull = oldValue == null;
+            boolean isNewNull = newValue == null;            
+            if ((isOldNull && ! isNewNull) || (! isOldNull && isNewNull))
+            {
+                System.out.println("updated parameters");
+                parmeters2 = parameters();
+            }
+        };
+        valueParameterProperty().addListener(listener);
     }
     
     // copy constructor
@@ -248,13 +249,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
         {
             ParameterEnum sourceParameterType = i.next();
             Parameter<?> sourceParameter = sourceParameterType.getParameter(source);
-            sourceParameterType.copyPropertyTo(sourceParameter, this);
-//            setParameter(sourceParameterType, sourceParameter);
-//            sourceParameter.copyTo(destination);
-//            Parameter<?> destinationParameter = sourceParameter.getClass()
-//                    .getConstructor(sourceParameter.getClass())
-//                    .newInstance(sourceParameter);
-//            sourceParameterType.copyParameterTo(this, destinationParameter);
+            sourceParameterType.copyTo(sourceParameter, this);
         }
 
 //        parameters().stream().forEach(p -> p.getParameter(source).copyTo(p.getParameter(this)));
@@ -264,15 +259,11 @@ public abstract class PropertyBase<T,U> implements Property<U>
         this.propertyType = source.propertyType();
     }
     
-//    private void setParameter(ParameterEnum sourceParameterType, Parameter<?> sourceParameter)
+//    public PropertyBase(U value)
 //    {
-//        sourceParameterType.copyPropertyTo(sourceParameter, this);
+//        this();
+//        setValue(value);
 //    }
-    public PropertyBase(U value)
-    {
-        this();
-        setValue(value);
-    }
     
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.5
@@ -288,14 +279,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
     public String toContentLine()
     {
         StringBuilder builder = new StringBuilder(propertyType().toString());
-//        Stream<Parameter<?>> streamIndividual = parametersIndividual().entrySet().stream().map(e -> e.getValue());
-//        Stream<Parameter<?>> streamList = parametersList().entrySet().stream().flatMap(e -> e.getValue().stream());
-//        parameters().stream().forEach(p -> builder.append(p.toContentLine()));
-        parameterMap().entrySet().stream()
-                .map(p -> p.getValue())
-                .forEach(p -> builder.append(p.toContentLine()));
+        System.out.println("parameters:" + parameters().size());
+        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContentLine()));
         otherParameters().stream().forEach(p -> builder.append(";" + p));
-        builder.append(":" + getValue().toString());
+        builder.append(":" + getValueForContentLine());
         return builder.toString();
     }
     
@@ -312,10 +299,11 @@ public abstract class PropertyBase<T,U> implements Property<U>
     {
         int hash = 7;
         hash = (31 * hash) + getValue().hashCode();
-        Iterator<Entry<ParameterEnum, Parameter<?>>> i = parameterMap().entrySet().iterator();
+//        Iterator<Entry<ParameterEnum, Parameter<?>>> i = parameterMap().entrySet().iterator();
+        Iterator<ParameterEnum> i = parameters().iterator();
         while (i.hasNext())
         {
-            Parameter<?> parameter = i.next().getValue();
+            Parameter<?> parameter = i.next().getParameter(this);
             hash = (31 * hash) + parameter.getValue().hashCode();
         }
         return hash;
@@ -333,15 +321,15 @@ public abstract class PropertyBase<T,U> implements Property<U>
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
         
         final boolean parametersEquals;
-        if (parameterMap().size() == testObj.parameterMap().size())
+        if (parameters().size() == testObj.parameters().size())
         {
-            Iterator<Entry<ParameterEnum, Parameter<?>>> i1 = parameterMap().entrySet().iterator();
-            Iterator<Entry<ParameterEnum, Parameter<?>>> i2 = testObj.parameterMap().entrySet().iterator();
+            Iterator<ParameterEnum> i1 = parameters().iterator();
+            Iterator<ParameterEnum> i2 = testObj.parameters().iterator();
             boolean isFailure = false;
             while (i1.hasNext())
             {
-                Parameter<?> p1 = i1.next().getValue();
-                Parameter<?> p2 = i2.next().getValue();
+                Parameter<?> p1 = i1.next().getParameter(this);
+                Parameter<?> p2 = i2.next().getParameter(testObj);
                 if (! p1.equals(p2))
                 {
                     isFailure = true;

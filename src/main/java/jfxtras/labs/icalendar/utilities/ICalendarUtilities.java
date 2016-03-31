@@ -121,14 +121,18 @@ public final class ICalendarUtilities
     }
     
     /**
+     * parse property content line into a parameter name/value map
+     * content line must have the property name stripped off the front
+     * 
+     * For example, for the content line DTEND;TZID=Etc/GMT:20160306T103000Z
+     * the propertyLine must be ;TZID=Etc/GMT:20160306T103000Z
      * 
      * @param propertyLine - name-stripped property line
-     * @return
+     * @return - map where key=parameter names as, value=parameter value
      */
     public static Map<String,String> propertyLineToParameterMap(String propertyLine)
     {
        Map<String,String> parameterMap = new LinkedHashMap<>();
-System.out.println("propertyLine:" + propertyLine);
        // find start of parameters (go past property name)
        int parameterStart=0;
        for (parameterStart = 0; parameterStart < propertyLine.length(); parameterStart++)

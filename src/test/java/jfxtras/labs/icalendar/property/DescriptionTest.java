@@ -13,9 +13,6 @@ public class DescriptionTest
     @Test
     public void canParseDescriptionSimple() throws URISyntaxException
     {
-        Description d = new Description();
-        System.out.println("b:" + (d.getLanguage() == null));
-        System.exit(0);
         Description description = new Description("this is a simple description without parameters");
         String expectedContentLine = "DESCRIPTION:this is a simple description without parameters";
         String madeContentLine = description.toContentLine();

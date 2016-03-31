@@ -8,7 +8,6 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
 
 public class DateTimeCreated extends PropertyBase<DateTimeCreated, ZonedDateTime>
 {
-    
     @Override
     public void setValue(ZonedDateTime temporal)
     {
@@ -24,7 +23,8 @@ public class DateTimeCreated extends PropertyBase<DateTimeCreated, ZonedDateTime
     
     public DateTimeCreated(ZonedDateTime temporal)
     {
-        super(temporal);
+        super();
+        setValue(temporal);
     }
 
     public DateTimeCreated(String propertyString)

@@ -1,10 +1,8 @@
 package jfxtras.labs.icalendar.properties;
 
 import java.util.List;
-import java.util.Map;
 
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendar.parameters.Parameter;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 
 /**
@@ -34,11 +32,9 @@ public interface Property<U>
      * The value of the property.
      * 
      * For example, in the below property:
-     * LOCATION:Bob's house
+     * LOCATION;LANGUAGE=en:Bob's house
      * The value is the String "Bob's house"
      * 
-     * Note: the value's object must have an overridden toString method that complies
-     * with iCalendar content line output.
      */
     U getValue();
     
@@ -46,17 +42,29 @@ public interface Property<U>
     void setValue(U value);
     
     /**
+     * Property's value portion of content line.
+     * Default method is for a property that has a properly overridden toString method.
+     * If not, then the subclass must override this method.
+     * 
+     * @return property value as a String formatted for a iCalendar content line
+     */
+    default String getValueForContentLine()
+    {
+        return getValue().toString();
+    }
+    
+    /**
      * other-param, 3.2 RFC 5545 page 14
      * the parameter name and value are combined into one object
      */
     ObservableList<Object> otherParameters();
     
-    /**
-     * Map of each represented parameter enum to its associated class
-     * Each parameter can occur only once
-     */
-    @Deprecated
-    Map<ParameterEnum, Parameter<?>> parameterMap();
+//    /**
+//     * Map of each represented parameter enum to its associated class
+//     * Each parameter can occur only once
+//     */
+//    @Deprecated
+//    Map<ParameterEnum, Parameter<?>> parameterMap();
 //    
 //    /**
 //     * Map of each parameter that can occur more than once
@@ -76,7 +84,7 @@ public interface Property<U>
     /**
      * tests if property's value and parameters are valid
      */
-    boolean isValid();
+    default boolean isValid() { return true; }
     
     /*
      * need: with map

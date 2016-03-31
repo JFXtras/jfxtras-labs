@@ -7,6 +7,7 @@ public class Summary extends AlternateTextRepresentationBase<Summary, String>
     public Summary(String contentLine)
     {
         super(contentLine);
+        setValue(getPropertyValueString());
     }
 
     public Summary(Summary source)

@@ -10,11 +10,12 @@ import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
  * Example:
  * CONTACT:Jim Dolittle\, ABC Industries\, +1-919-555-1234
  */
-public class Contact extends AlternateTextRepresentationBase<Contact>
+public class Contact extends AlternateTextRepresentationBase<Contact, String>
 {   
     public Contact(String contentLine)
     {
         super(contentLine);
+        setValue(getPropertyValueString());
     }
     
     public Contact(Contact source)

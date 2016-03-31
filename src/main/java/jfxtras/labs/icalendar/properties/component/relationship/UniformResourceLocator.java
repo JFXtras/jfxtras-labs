@@ -1,17 +1,25 @@
 package jfxtras.labs.icalendar.properties.component.relationship;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class UniformResourceLocator extends PropertyBase<UniformResourceLocator>
+public class UniformResourceLocator extends PropertyBase<UniformResourceLocator, URI>
 {
-
-    @Override
-    public URI getValue()
+    public UniformResourceLocator(String contentLine) throws URISyntaxException
     {
-        // TODO Auto-generated method stub
-        return null;
+        super(contentLine);
+        setValue(new URI(getPropertyValueString()));
     }
-
+    
+    public UniformResourceLocator(UniformResourceLocator source)
+    {
+        super(source);
+    }
+    
+    public UniformResourceLocator()
+    {
+        super();
+    }
 }
