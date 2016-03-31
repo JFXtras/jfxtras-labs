@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
+import jfxtras.labs.icalendar.properties.CalendarUserAddressBase;
 import jfxtras.labs.icalendar.properties.LanguageBase;
 import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
@@ -11,6 +12,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 
 public enum ParameterEnum
 {
+    // in properties COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES
     ALTERNATE_TEXT_REPRESENTATION ("ALTREP", AlternateTextRepresentation.class) {
         @Override
         public void parse(Property<?> property, String content)
@@ -20,113 +22,74 @@ public enum ParameterEnum
         }
 
         @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-//        @Override
-//        public String toContentLine(Property<?> parent)
-//        {
-//            AlternateTextRepresentationBase<?,?> castProperty = (AlternateTextRepresentationBase<?,?>) parent;
-//            return castProperty.getAlternateTextRepresentation().toContentLine();
-////            castProperty.getLanguage()
-//        }
-
-        @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
             AlternateTextRepresentationBase<?,?> castProperty = (AlternateTextRepresentationBase<?,?>) parent;
             return castProperty.getAlternateTextRepresentation();
         }
     },
+    // in properties ATTENDEE, ORGANIZER
     COMMON_NAME ("CN", CommonName.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            CalendarUserAddressBase<?,?> castProperty = (CalendarUserAddressBase<?, ?>) property;
+            castProperty.setCommonName(new CommonName(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            CalendarUserAddressBase<?,?> castProperty = (CalendarUserAddressBase<?,?>) parent;
+            return castProperty.getCommonName();
         }
     },
+    // in property ATTENDEE
     CALENDAR_USER_TYPE ("CUTYPE", CalendarUser.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            Attendee castProperty = (Attendee) property;
+            castProperty.setCalendarUser(new CalendarUser(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            Attendee castProperty = (Attendee) parent;
+            return castProperty.getCalendarUser();
         }
     },
+    // in property ATTENDEE
     DELEGATORS ("DELEGATED-FROM", Delegators.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            Attendee castProperty = (Attendee) property;
+            castProperty.setDelegators(new Delegators(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            Attendee castProperty = (Attendee) parent;
+            return castProperty.getDelegators();
         }
     },
+    // in property ATTENDEE
     DELEGATEES ("DELEGATED-TO", Delegatees.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            Attendee castProperty = (Attendee) property;
+            castProperty.setDelegatees(new Delegatees(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            Attendee castProperty = (Attendee) parent;
+            return castProperty.getDelegatees();
         }
     },
     DIRECTORY_ENTRY_REFERENCE ("DIR", DirectoryEntryReference.class) {
@@ -553,9 +516,6 @@ public enum ParameterEnum
         // TODO Auto-generated method stub
         return null;
     }
-//    public String toContentLine(Property<?> parent) { return null; }
-    @Deprecated
-    abstract public boolean isEqualTo(Property<?> parentProperty, Object parameter2);
     
     abstract public Parameter<?> getParameter(Property<?> parent);
 //    public void setParameter(Property<?> property, Parameter<?> parameter)

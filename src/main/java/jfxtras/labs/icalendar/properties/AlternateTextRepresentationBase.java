@@ -94,7 +94,7 @@ public abstract class AlternateTextRepresentationBase<T,U> extends LanguageBase<
     protected AlternateTextRepresentationBase(String propertyString)
     {
         super(propertyString);
-        setValue((U) getPropertyValueString());
+//        setValue((U) getPropertyValueString());
     }
 
     // copy constructor

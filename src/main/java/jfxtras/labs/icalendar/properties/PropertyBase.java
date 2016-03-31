@@ -96,7 +96,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
 
     
 //    @Override
-    private List<ParameterEnum> parmeters2;
+    protected List<ParameterEnum> parmeters2;
     @Override
     public List<ParameterEnum> parameters() // CAN I SAVE LIST - UPDATE ONLY WHEN NEW PARAMETER CHANGE OCCURS?
     {
@@ -227,7 +227,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
     {
         propertyType = PropertyEnum.enumFromClass(getClass());
         value = new SimpleObjectProperty<U>(this, propertyType.toString());
-        ChangeListener<? super ValueType> listener = (observable, oldValue, newValue) -> 
+        valueParameterProperty().addListener((ChangeListener<? super ValueType>) (observable, oldValue, newValue) -> 
         {
             boolean isOldNull = oldValue == null;
             boolean isNewNull = newValue == null;            
@@ -236,8 +236,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
                 System.out.println("updated parameters");
                 parmeters2 = parameters();
             }
-        };
-        valueParameterProperty().addListener(listener);
+        });
     }
     
     // copy constructor

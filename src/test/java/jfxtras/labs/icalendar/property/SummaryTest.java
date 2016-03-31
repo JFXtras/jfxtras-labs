@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendar.parameters.Language;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
@@ -38,6 +39,11 @@ public class SummaryTest
         Summary madeSummary = new Summary("SUMMARY:TEST SUMMARY");
         String expectedSummary = "SUMMARY:TEST SUMMARY";
         assertEquals(expectedSummary, madeSummary.toContentLine());
+//        madeSummary.setValueType(ValueType.TEXT);
+//        madeSummary.setValueType(ValueType.BOOLEAN);
+//        madeSummary.setValueType(null);
+        madeSummary.setLanguage((Language)null);
+        madeSummary.setLanguage("en");
     }
     
     @Test

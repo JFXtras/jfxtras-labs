@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendar.parameters;
 
 import jfxtras.labs.icalendar.parameters.CalendarUser.CalendarUserType;
+import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 
 /**
  * CUTYPE
@@ -13,7 +14,7 @@ import jfxtras.labs.icalendar.parameters.CalendarUser.CalendarUserType;
  * ATTENDEE;CUTYPE=GROUP:mailto:ietf-calsch@example.org
  * 
  * @author David Bal
- *
+ * @see Attendee
  */
 public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
 {

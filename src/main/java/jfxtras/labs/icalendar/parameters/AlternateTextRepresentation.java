@@ -2,6 +2,13 @@ package jfxtras.labs.icalendar.parameters;
 
 import java.net.URI;
 
+import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.descriptive.Description;
+import jfxtras.labs.icalendar.properties.component.descriptive.Location;
+import jfxtras.labs.icalendar.properties.component.descriptive.Resources;
+import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.relationship.Contact;
+
 /**
  * ALTREP
  * Alternate Text Representation
@@ -16,7 +23,12 @@ import java.net.URI;
  *  agement
  * 
  * @author David Bal
- *
+ * @see Comment
+ * @see Contact
+ * @see Description
+ * @see Location
+ * @see Resources
+ * @see Summary
  */
 public class AlternateTextRepresentation extends ParameterBase<AlternateTextRepresentation, URI>
 {

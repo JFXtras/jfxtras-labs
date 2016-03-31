@@ -1,5 +1,8 @@
 package jfxtras.labs.icalendar.parameters;
 
+import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
+
 /**
  * CN
  * Common Name
@@ -11,7 +14,8 @@ package jfxtras.labs.icalendar.parameters;
  * ORGANIZER;CN="John Smith":mailto:jsmith@example.com
  * 
  * @author David Bal
- *
+ * @see Attendee
+ * @see Organizer
  */
 public class CommonName extends ParameterBase<CommonName, String>
 {
