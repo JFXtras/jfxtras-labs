@@ -8,12 +8,12 @@ import java.util.Map;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.parameters.Parameter;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.Value.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType.ValueEnum;
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
@@ -57,28 +57,23 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * VALUE=DATE-TIME  (Date-Time is default value, so it isn't necessary to specify)
      * VALUE=DATE
      */
-    public ValueType getValueType() { return (valueType == null) ? _valueType : valueType.get(); }
+    public ValueType getValueType() { return (valueType == null) ? null : valueType.get(); }
     public ObjectProperty<ValueType> valueParameterProperty()
     {
         if (valueType == null)
         {
-            valueType = new SimpleObjectProperty<>(this, ParameterEnum.VALUE_DATA_TYPES.toString(), _valueType);
+            valueType = new SimpleObjectProperty<>(this, ParameterEnum.VALUE_DATA_TYPES.toString());
         }
         return valueType;
     }
-    private ValueType _valueType;
     private ObjectProperty<ValueType> valueType;
     public void setValueType(ValueType value)
     {
-        if (this.valueType == null)
-        {
-            _valueType = value;
-        } else
-        {
-            this.valueType.set(value);
-        }
+        // TODO - CHECK TYPE FOR CLASS-MATCH
+        valueParameterProperty().set(value);
     }
-    public T withValueType(ValueType value) { setValueType(value); return (T) this; } 
+    public T withValueType(ValueEnum value) { setValueType(new ValueType(value)); return (T) this; } 
+    public T withValueType(String content) { setValueType(new ValueType(content)); return (T) this; } 
     
     /**
      * other-param, 3.2 RFC 5545 page 14
@@ -95,12 +90,25 @@ public abstract class PropertyBase<T,U> implements Property<U>
     private PropertyEnum propertyType;
 
     
+    /**
+     * Property's value portion of content line.
+     * Default method is for a property that has a properly overridden toString method.
+     * If not, then the subclass must override this method.
+     * 
+     * @return property value as a String formatted for a iCalendar content line
+     */
+    protected String getValueForContentLine()
+    {
+        return getValue().toString();
+    }
+    
 //    @Override
-    protected List<ParameterEnum> parmeters2;
-    @Override
+//    protected List<ParameterEnum> parmeters2;
+    @Override // TODO - MAYBE THIS CAN BE IMPROVED - USE LISTENERS TO POPULATE LIST?
     public List<ParameterEnum> parameters() // CAN I SAVE LIST - UPDATE ONLY WHEN NEW PARAMETER CHANGE OCCURS?
     {
         List<ParameterEnum> populatedParameters = new ArrayList<>();
+//        System.out.println("parameters:" + propertyType().possibleParameters().size());
         Iterator<ParameterEnum> i = propertyType().possibleParameters().stream().iterator();
         while (i.hasNext())
         {
@@ -203,7 +211,6 @@ public abstract class PropertyBase<T,U> implements Property<U>
 //        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()
             .stream()
-//            .peek(System.out::println)
             .filter(e -> ! (e.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
             .forEach(e ->
             {
@@ -227,16 +234,16 @@ public abstract class PropertyBase<T,U> implements Property<U>
     {
         propertyType = PropertyEnum.enumFromClass(getClass());
         value = new SimpleObjectProperty<U>(this, propertyType.toString());
-        valueParameterProperty().addListener((ChangeListener<? super ValueType>) (observable, oldValue, newValue) -> 
-        {
-            boolean isOldNull = oldValue == null;
-            boolean isNewNull = newValue == null;            
-            if ((isOldNull && ! isNewNull) || (! isOldNull && isNewNull))
-            {
-                System.out.println("updated parameters");
-                parmeters2 = parameters();
-            }
-        });
+//        valueParameterProperty().addListener((ChangeListener<? super ValueEnum>) (observable, oldValue, newValue) -> 
+//        {
+//            boolean isOldNull = oldValue == null;
+//            boolean isNewNull = newValue == null;            
+//            if ((isOldNull && ! isNewNull) || (! isOldNull && isNewNull))
+//            {
+//                System.out.println("updated parameters");
+//                parmeters2 = parameters();
+//            }
+//        });
     }
     
     // copy constructor
@@ -278,7 +285,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
     public String toContentLine()
     {
         StringBuilder builder = new StringBuilder(propertyType().toString());
-        System.out.println("parameters:" + parameters().size());
+//        System.out.println("parameters:" + parameters().size());
         parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContentLine()));
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         builder.append(":" + getValueForContentLine());
@@ -329,6 +336,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
             {
                 Parameter<?> p1 = i1.next().getParameter(this);
                 Parameter<?> p2 = i2.next().getParameter(testObj);
+//                System.out.println("p1,p2:" + p1 + " " + p2);
                 if (! p1.equals(p2))
                 {
                     isFailure = true;
@@ -340,7 +348,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
         {
             parametersEquals = false;
         }
-        
+//        System.out.println("equals:" + valueEquals + " " + otherParametersEquals + " " + parametersEquals);
         return valueEquals && otherParametersEquals && parametersEquals;
     }
 

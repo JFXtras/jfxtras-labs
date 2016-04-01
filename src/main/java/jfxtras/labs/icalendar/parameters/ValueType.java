@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendar.parameters;
 
-import jfxtras.labs.icalendar.parameters.Value.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType.ValueEnum;
 
 /**
  * Value Date Types
@@ -15,26 +15,31 @@ import jfxtras.labs.icalendar.parameters.Value.ValueType;
  * @author David Bal
  *
  */
-public class Value extends ParameterBase<Value, ValueType>
+public class ValueType extends ParameterBase<ValueType, ValueEnum>
 {
-    public Value()
+    public ValueType()
     {
         super();
     }
     
-    public Value(String content)
-    {
-        super(ValueType.valueOf(extractValue(content)));
-    }
-    
-    public Value(Value source)
+    public ValueType(ValueType source)
     {
         super(source);
     }
     
-    public enum ValueType
+    public ValueType(ValueEnum value)
     {
-        BINARY ("BINARY"), 
+        super(value);
+    }
+    
+    public ValueType(String content)
+    {
+        super(ValueEnum.valueOf(extractValue(content)));
+    }
+    
+    public enum ValueEnum
+    {
+        BINARY ("BINARY"),
         BOOLEAN ("BOOLEAN"), 
         CALENDAR_USER_ADDRESS ("CAL-ADDRESS"),
         DATE ("DATE"),
@@ -52,7 +57,7 @@ public class Value extends ParameterBase<Value, ValueType>
         
         private String name;
         @Override public String toString() { return name; }
-        ValueType(String name)
+        ValueEnum(String name)
         {
             this.name = name;
         }

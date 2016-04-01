@@ -22,7 +22,12 @@ public class AlarmTrigger extends ParameterBase<AlarmTrigger, AlarmTriggerRelati
     {
         super();
     }
-  
+
+    public AlarmTrigger(AlarmTriggerRelationship value)
+    {
+        super(value);
+    }
+
     public AlarmTrigger(String content)
     {
         super(AlarmTriggerRelationship.valueOf(extractValue(content)));

@@ -24,11 +24,16 @@ public class Range extends ParameterBase<Range, RecurrenceIdentifier>
         super();
     }
   
+    public Range(RecurrenceIdentifier value)
+    {
+        super(value);
+    }
+
     public Range(String content)
     {
         super(RecurrenceIdentifier.valueOf(extractValue(content)));
     }
-
+    
     public Range(Range source)
     {
         super(source);

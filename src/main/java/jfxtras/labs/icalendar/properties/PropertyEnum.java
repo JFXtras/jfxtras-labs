@@ -22,7 +22,7 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 public enum PropertyEnum
 {
     ACTION ("ACTION", null, null), // Alarm
-    ATTACHMENT ("ATTACH", Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING), Attachment.class), // Descriptive
+    ATTACHMENT ("ATTACH", Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES), Attachment.class), // Descriptive
     ATTENDEE ("ATTENDEE", null, null), // Relationship
     CALENDAR_SCALE ("CALSCALE", null, CalendarScale.class), // Calendar
     CATEGORIES ("CATEGORIES", Arrays.asList(ParameterEnum.LANGUAGE), Categories.class), // Descriptive

@@ -23,7 +23,7 @@ import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
  *  BkZXNlcnVudCBtb2xsaXQgYW5pbSBpZCBlc3QgbGFib3J1bS4=
  * 
  * @author David Bal
- *
+ * @see Attachment
  */
 public class Encoding extends ParameterBase<Encoding, EncodingType>
 {
@@ -32,6 +32,11 @@ public class Encoding extends ParameterBase<Encoding, EncodingType>
         super();
     }
   
+    public Encoding(EncodingType value)
+    {
+        super(value);
+    }
+    
     public Encoding(String content)
     {
         super(EncodingType.valueOf(extractValue(content)));

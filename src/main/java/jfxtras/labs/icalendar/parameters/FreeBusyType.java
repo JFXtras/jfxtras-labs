@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendar.parameters;
 
-import jfxtras.labs.icalendar.parameters.FreeBusyTime.FreeBusyTimeType;
+import jfxtras.labs.icalendar.parameters.FreeBusyType.FreeBusyTypeEnum;
+import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
 
 /**
  * FBTYPE
@@ -13,26 +14,31 @@ import jfxtras.labs.icalendar.parameters.FreeBusyTime.FreeBusyTimeType;
  * FREEBUSY;FBTYPE=BUSY:19980415T133000Z/19980415T170000Z
  * 
  * @author David Bal
- *
+ * @see FreeBusyTime
  */
-public class FreeBusyTime extends ParameterBase<FreeBusyTime, FreeBusyTimeType>
+public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
 {
-    public FreeBusyTime()
+    public FreeBusyType()
     {
         super();
     }
   
-    public FreeBusyTime(String content)
+    public FreeBusyType(FreeBusyTypeEnum value)
     {
-        super(FreeBusyTimeType.valueOf(extractValue(content)));
+        super(value);
     }
 
-    public FreeBusyTime(FreeBusyTime source)
+    public FreeBusyType(String content)
+    {
+        super(FreeBusyTypeEnum.valueOf(extractValue(content)));
+    }
+    
+    public FreeBusyType(FreeBusyType source)
     {
         super(source);
     }
     
-    public enum FreeBusyTimeType
+    public enum FreeBusyTypeEnum
     {
         FREE ("FREE"), // the time interval is free for scheduling
         BUSY ("BUSY"), // the time interval is busy because one or more events have been scheduled for that interval - THE DEFAULT
@@ -41,7 +47,7 @@ public class FreeBusyTime extends ParameterBase<FreeBusyTime, FreeBusyTimeType>
         
         private String name;
         @Override public String toString() { return name; }
-        FreeBusyTimeType(String name)
+        FreeBusyTypeEnum(String name)
         {
             this.name = name;
         }

@@ -7,8 +7,10 @@ import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
 import jfxtras.labs.icalendar.properties.CalendarUserAddressBase;
 import jfxtras.labs.icalendar.properties.LanguageBase;
 import jfxtras.labs.icalendar.properties.Property;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
 
 public enum ParameterEnum
 {
@@ -92,28 +94,23 @@ public enum ParameterEnum
             return castProperty.getDelegatees();
         }
     },
+    // in properties ATTENDEE, ORGANIZER
     DIRECTORY_ENTRY_REFERENCE ("DIR", DirectoryEntryReference.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            CalendarUserAddressBase<?,?> castProperty = (CalendarUserAddressBase<?, ?>) property;
+            castProperty.setDirectoryEntryReference(new DirectoryEntryReference(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            CalendarUserAddressBase<?,?> castProperty = (CalendarUserAddressBase<?,?>) parent;
+            return castProperty.getDirectoryEntryReference();
         }
     },
+    // in property ATTACHMENT
     INLINE_ENCODING ("ENCODING", Encoding.class) {
         @Override
         public void parse(Property<?> property, String content)
@@ -123,19 +120,13 @@ public enum ParameterEnum
         }
 
         @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            Attachment castProperty = (Attachment) parent;
+            return castProperty.getEncoding();
         }
     },
+    // in property ATTACHMENT
     FORMAT_TYPE ("FMTTYPE", FormatType.class) {
         @Override
         public void parse(Property<?> property, String content)
@@ -145,61 +136,35 @@ public enum ParameterEnum
         }
 
         @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
             Attachment castProperty = (Attachment) parent;
             return castProperty.getFormatType();
         }
     },
-    FREE_BUSY_TIME_TYPE ("FBTYPE", FreeBusyTime.class) {
+    // in property FREEBUSY
+    FREE_BUSY_TIME_TYPE ("FBTYPE", FreeBusyType.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            FreeBusyTime castProperty = (FreeBusyTime) property;
+            castProperty.setFreeBusyType(new FreeBusyType(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            FreeBusyTime castProperty = (FreeBusyTime) parent;
+            return castProperty.getFreeBusyType();
         }
     },
+    // in properties CATEGORIES, COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES, TZNAME
     LANGUAGE ("LANGUAGE", Language.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
             LanguageBase<?,?> castProperty = (LanguageBase<?, ?>) property;
             castProperty.setLanguage(new Language(extractValue(content)));
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object testParameter)
-        {
-            LanguageBase<?,?> castProperty = (LanguageBase<?,?>) parentProperty;
-            return (testParameter == null) ? castProperty.getLanguage() == null : castProperty.getLanguage().equals(testParameter);
-        }
-
-        @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destimation)
-        {
-            // TODO Auto-generated method stub
-            
         }
 
         @Override
@@ -407,26 +372,19 @@ public enum ParameterEnum
             return null;
         }
     },
-    VALUE_DATA_TYPES ("VALUE", Value.class) {
+    VALUE_DATA_TYPES ("VALUE", ValueType.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            PropertyBase<?,?> castProperty = (PropertyBase<?,?>) property;
+            castProperty.setValueType(new ValueType(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            PropertyBase<?,?> castProperty = (PropertyBase<?,?>) parent;
+            return castProperty.getValueType();
         }
     };
     

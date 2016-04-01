@@ -105,7 +105,7 @@ public class Attendee extends CalendarUserAddressBase<Organizer,URI>
      *  @example.com":mailto:jsmith@example.com
      * 
      */
-    public Delegatees getDelegatees() { return (delegatees != null) ? delegatees.get() : null; }
+    public Delegatees getDelegatees() { return (delegatees == null) ? null : delegatees.get(); }
     public ObjectProperty<Delegatees> delegateesProperty()
     {
         if (delegatees == null)

@@ -57,32 +57,21 @@ public abstract class AlternateTextRepresentationBase<T,U> extends LanguageBase<
      *   </body>
      * </html>
      */
-    public AlternateTextRepresentation getAlternateTextRepresentation() { return (alternateTextRepresentation == null) ? _alternateTextRepresentation : alternateTextRepresentation.get(); }
+    public AlternateTextRepresentation getAlternateTextRepresentation() { return (alternateTextRepresentation == null) ? null : alternateTextRepresentation.get(); }
     public ObjectProperty<AlternateTextRepresentation> alternateTextRepresentationProperty()
     {
         if (alternateTextRepresentation == null)
         {
-            alternateTextRepresentation = new SimpleObjectProperty<>(this, ParameterEnum.ALTERNATE_TEXT_REPRESENTATION.toString(), _alternateTextRepresentation);
+            alternateTextRepresentation = new SimpleObjectProperty<>(this, ParameterEnum.ALTERNATE_TEXT_REPRESENTATION.toString());
         }
         return alternateTextRepresentation;
     }
-    private AlternateTextRepresentation _alternateTextRepresentation;
     private ObjectProperty<AlternateTextRepresentation> alternateTextRepresentation;
     public void setAlternateTextRepresentation(AlternateTextRepresentation alternateTextRepresentation)
     {
-//        if (alternateTextRepresentation != null)
-//        {
-//            parameterMapModifiable().put(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, alternateTextRepresentation);
-//        } else
-//        {
-//            parameterMapModifiable().remove(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION);            
-//        }
-        if (this.alternateTextRepresentation == null)
+        if (alternateTextRepresentation != null)
         {
-            _alternateTextRepresentation = alternateTextRepresentation;
-        } else
-        {
-            this.alternateTextRepresentation.set(alternateTextRepresentation);
+            alternateTextRepresentationProperty().set(alternateTextRepresentation);
         }
     }
     public T withAlternateTextRepresentation(AlternateTextRepresentation altrep) { setAlternateTextRepresentation(altrep); return (T) this; }

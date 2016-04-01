@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.parameters.Value.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType.ValueEnum;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 
 public class DateTimeStartTest
@@ -49,7 +49,7 @@ public class DateTimeStartTest
     {
         DateTimeStart dateTimeStart = new DateTimeStart()
                 .withValue(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
-                .withValueType(ValueType.DATE_TIME);
+                .withValueType(ValueEnum.DATE_TIME);
         System.out.println(dateTimeStart);
     }
     

@@ -22,11 +22,16 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
         super();
     }
   
+    public ParticipationRole(ParticipationRoleType value)
+    {
+        super(value);
+    }
+
     public ParticipationRole(String content)
     {
         super(ParticipationRoleType.valueOf(extractValue(content)));
     }
-
+    
     public ParticipationRole(ParticipationRole source)
     {
         super(source);

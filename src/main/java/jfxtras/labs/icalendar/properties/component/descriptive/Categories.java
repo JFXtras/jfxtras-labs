@@ -8,7 +8,6 @@ import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.LanguageBase;
-import jfxtras.labs.icalendar.properties.PropertyListString;
 
 /**
  * 
@@ -16,7 +15,7 @@ import jfxtras.labs.icalendar.properties.PropertyListString;
  * @see VTodo
  * @see VJournal
  */
-public class Categories extends LanguageBase<Categories, List<String>> implements PropertyListString
+public class Categories extends LanguageBase<Categories, List<String>>
 {    
     public Categories(String propertyString)
     {
@@ -41,5 +40,11 @@ public class Categories extends LanguageBase<Categories, List<String>> implement
     public void setValue(String category)
     {
         setValue(Arrays.asList(category));
+    }
+    
+    @Override
+    protected String getValueForContentLine()
+    {
+        return getValue().stream().collect(Collectors.joining(","));
     }
 }

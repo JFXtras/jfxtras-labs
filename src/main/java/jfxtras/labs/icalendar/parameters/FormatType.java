@@ -13,6 +13,8 @@ import javafx.beans.property.StringProperty;
  *  Example:
  *  ATTACH;FMTTYPE=application/msword:ftp://example.com/pub/docs/
  *   agenda.doc
+ *   
+ *   @see Attachment
  */
 public class FormatType extends ParameterBase<FormatType, String>
 {

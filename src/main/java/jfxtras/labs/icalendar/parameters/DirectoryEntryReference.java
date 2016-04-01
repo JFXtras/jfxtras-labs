@@ -2,6 +2,9 @@ package jfxtras.labs.icalendar.parameters;
 
 import java.net.URI;
 
+import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
+
 /**
  * DIR
  * Directory Entry Reference
@@ -15,6 +18,8 @@ import java.net.URI;
  *  c=US???(cn=Jim%20Dolittle)":mailto:jimdo@example.com
  * 
  * @author David Bal
+ * @see Attendee
+ * @see Organizer
  *
  */
 public class DirectoryEntryReference extends ParameterBase<DirectoryEntryReference, URI>

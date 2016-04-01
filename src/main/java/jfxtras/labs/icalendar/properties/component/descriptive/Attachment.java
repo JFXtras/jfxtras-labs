@@ -13,7 +13,7 @@ import jfxtras.labs.icalendar.parameters.Encoding;
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendar.parameters.FormatType;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.Value.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType.ValueEnum;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
 /**
@@ -31,7 +31,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  *  @see VJournal
  *  @see VAlarm
  */
-public class Attachment extends PropertyBase<Description, URI>
+public class Attachment extends PropertyBase<Attachment, URI>
 {    
     /**
      * ENCODING: Incline Encoding
@@ -44,16 +44,15 @@ public class Attachment extends PropertyBase<Description, URI>
      * If the value type parameter is ";VALUE=BINARY", then the inline
      * encoding parameter MUST be specified with the value" ;ENCODING=BASE64".
      */
-    public Encoding getEncoding() { return (encoding == null) ? _encoding : encoding.get(); }
-    public Encoding encodingProperty()
+    public Encoding getEncoding() { return (encoding == null) ? null : encoding.get(); }
+    public ObjectProperty<Encoding> encodingProperty()
     {
         if (encoding == null)
         {
-            encoding = new SimpleObjectProperty<>(this, ParameterEnum.INLINE_ENCODING.toString(), _encoding);
+            encoding = new SimpleObjectProperty<>(this, ParameterEnum.INLINE_ENCODING.toString());
         }
-        return encoding.get();
+        return encoding;
     }
-    private Encoding _encoding;
     private ObjectProperty<Encoding> encoding;
     public void setEncoding(Encoding encoding)
     {
@@ -62,41 +61,34 @@ public class Attachment extends PropertyBase<Description, URI>
             throw new IllegalArgumentException("Attachment property only allows ENCODING to be set to" + EncodingType.BASE64);
         }
 
-        if (this.encoding == null)
+        if (encoding != null)
         {
-            _encoding = encoding;
-        } else
-        {
-            this.encoding.set(encoding);
+            encodingProperty().set(encoding);
         }
     }
     public Attachment withEncoding(Encoding encoding) { setEncoding(encoding); return this; }
-//    public Attachment withEncoding(String encoding) { setEncoding(new Encoding(encoding)); return this; }
+    public Attachment withEncoding(EncodingType encoding) { setEncoding(new Encoding(encoding)); return this; }
 
     /**
      * FMTTYPE: Format type parameter
      * RFC 5545, 3.2.8, page 19
      * specify the content type of a referenced object.
      */
-    public FormatType getFormatType() { return (formatType == null) ? _formatType : formatType.get(); }
-    public FormatType formatTypeProperty()
+    public FormatType getFormatType() { return (formatType == null) ? null : formatType.get(); }
+    public ObjectProperty<FormatType> formatTypeProperty()
     {
         if (formatType == null)
         {
-            formatType = new SimpleObjectProperty<>(this, ParameterEnum.FORMAT_TYPE.toString(), _formatType);
+            formatType = new SimpleObjectProperty<>(this, ParameterEnum.FORMAT_TYPE.toString());
         }
-        return formatType.get();
+        return formatType;
     }
-    private FormatType _formatType;
     private ObjectProperty<FormatType> formatType;
     public void setFormatType(FormatType formatType)
     {
-        if (this.formatType == null)
+        if (formatType != null)
         {
-            _formatType = formatType;
-        } else
-        {
-            this.formatType.set(formatType);
+            formatTypeProperty().set(formatType);
         }
     }
     public Attachment withFormatType(FormatType format) { setFormatType(format); return this; }
@@ -119,6 +111,8 @@ public class Attachment extends PropertyBase<Description, URI>
     public Attachment(Attachment source)
     {
         super(source);
+        setEncoding(source.getEncoding());
+        setFormatType(source.getFormatType());
     }
     
     public Attachment()
@@ -131,6 +125,7 @@ public class Attachment extends PropertyBase<Description, URI>
     {
         boolean isEncodingNull = getEncoding() == null;
         boolean isValueTypeNull = getValueType() == null;
+//        System.out.println("null? encoding, value: " + isEncodingNull + " " + isValueTypeNull);
         if (isEncodingNull && isValueTypeNull)
         {
             return true;
@@ -143,7 +138,7 @@ public class Attachment extends PropertyBase<Description, URI>
         { // invalid EncodingType
             return false;
         }
-        if (getValueType() != ValueType.BINARY)
+        if (getValueType().getValue() != ValueEnum.BINARY)
         { // invalid ValueType
             return false;
         }

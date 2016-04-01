@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
-import jfxtras.labs.icalendar.properties.PropertyListString;
 
-public class Resources extends AlternateTextRepresentationBase<Resources, List<String>> implements PropertyListString
+public class Resources extends AlternateTextRepresentationBase<Resources, List<String>>
 {
     public Resources(String contentLine)
     {
@@ -26,5 +25,11 @@ public class Resources extends AlternateTextRepresentationBase<Resources, List<S
     public Resources()
     {
         super();
+    }
+    
+    @Override
+    protected String getValueForContentLine()
+    {
+        return getValue().stream().collect(Collectors.joining(","));
     }
 }

@@ -40,19 +40,7 @@ public interface Property<U>
     
     /** Set the value of this property */
     void setValue(U value);
-    
-    /**
-     * Property's value portion of content line.
-     * Default method is for a property that has a properly overridden toString method.
-     * If not, then the subclass must override this method.
-     * 
-     * @return property value as a String formatted for a iCalendar content line
-     */
-    default String getValueForContentLine()
-    {
-        return getValue().toString();
-    }
-    
+        
     /**
      * other-param, 3.2 RFC 5545 page 14
      * the parameter name and value are combined into one object
@@ -84,7 +72,7 @@ public interface Property<U>
     /**
      * tests if property's value and parameters are valid
      */
-    default boolean isValid() { return true; }
+    default boolean isValid() { return getValue() != null; }
     
     /*
      * need: with map

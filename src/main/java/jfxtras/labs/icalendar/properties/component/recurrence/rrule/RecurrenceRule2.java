@@ -7,7 +7,6 @@ import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Spliterator;
@@ -22,11 +21,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
-import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.properties.Property;
-import jfxtras.labs.icalendar.properties.PropertyEnum;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Frequency;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
@@ -42,7 +37,7 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * @author David Bal
  *
  */
-public class RecurrenceRule implements Property<RecurrenceRule>
+public class RecurrenceRule2
 {            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
@@ -51,7 +46,7 @@ public class RecurrenceRule implements Property<RecurrenceRule>
     private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, "FREQ");
     public Frequency getFrequency() { return frequency.get(); }
     public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
-    public RecurrenceRule withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
+    public RecurrenceRule2 withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
     
     /**
      * COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends
@@ -84,7 +79,7 @@ public class RecurrenceRule implements Property<RecurrenceRule>
         }
         else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
     }
-    public RecurrenceRule withCount(int count) { setCount(count); return this; }
+    public RecurrenceRule2 withCount(int count) { setCount(count); return this; }
 
     /**
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
@@ -118,7 +113,7 @@ public class RecurrenceRule implements Property<RecurrenceRule>
             }
         } else throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
     }
-    public RecurrenceRule withUntil(Temporal until) { setUntil(until); return this; }
+    public RecurrenceRule2 withUntil(Temporal until) { setUntil(until); return this; }
     
     /**
      * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
@@ -130,16 +125,16 @@ public class RecurrenceRule implements Property<RecurrenceRule>
     public Set<VComponentDisplayableOld<?>> recurrences() { return recurrences; }
     private Set<VComponentDisplayableOld<?>> recurrences = new HashSet<>();
 //    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
-    public RecurrenceRule withRecurrences(VComponentDisplayableOld<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
+    public RecurrenceRule2 withRecurrences(VComponentDisplayableOld<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
     /*
      * CONSTRUCTORS
      */
     
-    public RecurrenceRule() { }
+    public RecurrenceRule2() { }
 
     // construct new object by parsing property line
-    public RecurrenceRule(String propertyString)
+    public RecurrenceRule2(String propertyString)
     {
         String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
         ICalendarUtilities.propertyLineToParameterMap(rruleString)
@@ -167,7 +162,7 @@ public class RecurrenceRule implements Property<RecurrenceRule>
     }
 
     // Copy constructor
-    public RecurrenceRule(RecurrenceRule source)
+    public RecurrenceRule2(RecurrenceRule2 source)
     {
         Arrays.stream(RRuleEnum.values())
                 .forEach(p -> p.copyProperty(source, this));
@@ -232,7 +227,7 @@ public class RecurrenceRule implements Property<RecurrenceRule>
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        RecurrenceRule testObj = (RecurrenceRule) obj;
+        RecurrenceRule2 testObj = (RecurrenceRule2) obj;
 
         boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
 //                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
@@ -423,7 +418,7 @@ public class RecurrenceRule implements Property<RecurrenceRule>
     static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
-    @Override
+
     public String toContentLine()
     {
         Stream<String> rruleParameterStream = Arrays.stream(RRuleEnum.values())
@@ -437,33 +432,5 @@ public class RecurrenceRule implements Property<RecurrenceRule>
         return Stream.concat(rruleParameterStream, byRuleParameterStream)
                 .collect(Collectors.joining(";"));
     }
-    @Override
-    public PropertyEnum propertyType()
-    {
-        return PropertyEnum.RECURRENCE_RULE;
-    }
-    @Override
-    public RecurrenceRule getValue()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public void setValue(RecurrenceRule value)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-    @Override
-    public ObservableList<Object> otherParameters()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    @Override
-    public List<ParameterEnum> parameters()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
 }

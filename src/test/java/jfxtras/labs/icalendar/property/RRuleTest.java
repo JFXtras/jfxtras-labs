@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByMonthDay;
@@ -48,8 +48,8 @@ public class RRuleTest
     public void canParseRRule1()
     {
         String s = "RRULE:FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU";
-        RecurrenceRule rRule = new RecurrenceRule(s);
-        RecurrenceRule expectedRRule = new RecurrenceRule()
+        RecurrenceRule2 rRule = new RecurrenceRule2(s);
+        RecurrenceRule2 expectedRRule = new RecurrenceRule2()
                 .withFrequency(new Yearly()
                         .withInterval(2)
                         .withByRules(new ByMonth(Month.JANUARY), new ByDay(DayOfWeek.SUNDAY)));
@@ -60,8 +60,8 @@ public class RRuleTest
     public void canParseRRule2()
     {
         String s = "RRULE:FREQ=MONTHLY;BYMONTHDAY=7,8,9,10,11,12,13;BYDAY=SA";
-        RecurrenceRule rRule = new RecurrenceRule(s);
-        RecurrenceRule expectedRRule = new RecurrenceRule()
+        RecurrenceRule2 rRule = new RecurrenceRule2(s);
+        RecurrenceRule2 expectedRRule = new RecurrenceRule2()
                 .withFrequency(new Monthly()
                         .withByRules(new ByDay(DayOfWeek.SATURDAY), new ByMonthDay(7,8,9,10,11,12,13)));
 
@@ -72,8 +72,8 @@ public class RRuleTest
     public void canParseRRule3()
     {
         String s = "RRULE:FREQ=YEARLY;BYWEEKNO=20;BYDAY=2MO,3MO";
-        RecurrenceRule rRule = new RecurrenceRule(s);
-        RecurrenceRule expectedRRule = new RecurrenceRule()
+        RecurrenceRule2 rRule = new RecurrenceRule2(s);
+        RecurrenceRule2 expectedRRule = new RecurrenceRule2()
                 .withFrequency(new Yearly()
                         .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2), new ByDayPair(DayOfWeek.MONDAY, 3)), new ByWeekNumber(20)));
         assertEquals(expectedRRule, rRule);
@@ -83,8 +83,8 @@ public class RRuleTest
     public void canParseRRule4()
     {
         String s = "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z";
-        RecurrenceRule rRule = new RecurrenceRule(s);
-        RecurrenceRule expectedRRule = new RecurrenceRule()
+        RecurrenceRule2 rRule = new RecurrenceRule2(s);
+        RecurrenceRule2 expectedRRule = new RecurrenceRule2()
                 .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0),ZoneId.of("Z")))
                 .withFrequency(new Daily()
                         .withInterval(2));

@@ -22,6 +22,11 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
         super();
     }
   
+    public Participation(ParticipationStatus value)
+    {
+        super(value);
+    }
+    
     public Participation(String content)
     {
         super(ParticipationStatus.valueOf(extractValue(content)));

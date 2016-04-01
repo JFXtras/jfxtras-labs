@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.parameters;
 
+import javafx.beans.property.ObjectProperty;
+
 /**
  * Every parameter requires the following methods:
  * toContentLine - make iCalendar string
@@ -24,6 +26,9 @@ public interface Parameter<U> extends Comparable<Parameter<U>>
      * with iCalendar content line output.
      */
     U getValue();
+    
+    /** object property of parameter's value */
+    ObjectProperty<U> valueProperty();
   
     /** Set the value of this parameter */  
     void setValue(U value);

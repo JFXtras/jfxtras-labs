@@ -24,11 +24,16 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
         super();
     }
   
+    public Relationship(RelationshipType value)
+    {
+        super(value);
+    }
+
     public Relationship(String content)
     {
         super(RelationshipType.valueOf(extractValue(content)));
     }
-
+    
     public Relationship(Relationship source)
     {
         super(source);

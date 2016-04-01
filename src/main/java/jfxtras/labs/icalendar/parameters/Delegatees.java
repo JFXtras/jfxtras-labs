@@ -3,6 +3,8 @@ package jfxtras.labs.icalendar.parameters;
 import java.net.URI;
 import java.util.List;
 
+import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
+
 /**
  * DELEGATED-TO
  * Delegatees
@@ -16,7 +18,7 @@ import java.util.List;
  *  @example.com":mailto:jsmith@example.com
  * 
  * @author David Bal
- *
+ * @see Attendee
  */
 public class Delegatees extends ParameterBase<Delegatees, List<URI>>
 {
