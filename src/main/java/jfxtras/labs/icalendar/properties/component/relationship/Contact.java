@@ -15,7 +15,7 @@ public class Contact extends AlternateTextRepresentationBase<Contact, String>
     public Contact(String contentLine)
     {
         super(contentLine);
-        setValue(getPropertyValueString());
+//        setValue(getPropertyValueString());
     }
     
     public Contact(Contact source)

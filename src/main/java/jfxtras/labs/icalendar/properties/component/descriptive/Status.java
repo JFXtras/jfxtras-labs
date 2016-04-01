@@ -8,7 +8,7 @@ public class Status extends PropertyBase<Status, StatusType>
     public Status(String contentLine)
     {
         super(contentLine);
-        setValue(StatusType.valueOf(getPropertyValueString()));
+//        setValue(StatusType.valueOf(getPropertyValueString()));
     }
     
     public Status(Status source)

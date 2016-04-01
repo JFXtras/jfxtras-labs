@@ -10,7 +10,7 @@ public class UniformResourceLocator extends PropertyBase<UniformResourceLocator,
     public UniformResourceLocator(String contentLine) throws URISyntaxException
     {
         super(contentLine);
-        setValue(new URI(getPropertyValueString()));
+//        setValue(new URI(getPropertyValueString()));
     }
     
     public UniformResourceLocator(UniformResourceLocator source)

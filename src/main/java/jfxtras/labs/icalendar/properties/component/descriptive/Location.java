@@ -7,7 +7,7 @@ public class Location extends AlternateTextRepresentationBase<Location, String>
     public Location(String contentLine)
     {
         super(contentLine);
-        setValue(getPropertyValueString());
+//        setValue(getPropertyValueString());
     }
     
     public Location(Location source)

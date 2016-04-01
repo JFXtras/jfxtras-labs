@@ -17,7 +17,7 @@ public class Comment extends AlternateTextRepresentationBase<Description, String
     public Comment(String propertyString)
     {
         super(propertyString);
-        setValue(getPropertyValueString());
+//        setValue(getPropertyValueString());
     }
     
     public Comment(Comment source)

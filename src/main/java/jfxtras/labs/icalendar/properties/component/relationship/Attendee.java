@@ -134,7 +134,7 @@ public class Attendee extends CalendarUserAddressBase<Organizer,URI>
     public Attendee(String propertyString) throws URISyntaxException
     {
         super(propertyString);
-        setValue(new URI(getPropertyValueString()));
+//        setValue(new URI(getPropertyValueString()));
     }
     
     public Attendee(Attendee source)

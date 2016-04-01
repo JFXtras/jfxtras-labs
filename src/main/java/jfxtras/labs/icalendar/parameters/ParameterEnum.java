@@ -9,6 +9,7 @@ import jfxtras.labs.icalendar.properties.LanguageBase;
 import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
+import jfxtras.labs.icalendar.properties.component.descriptive.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
 
@@ -29,6 +30,13 @@ public enum ParameterEnum
             AlternateTextRepresentationBase<?,?> castProperty = (AlternateTextRepresentationBase<?,?>) parent;
             return castProperty.getAlternateTextRepresentation();
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // in properties ATTENDEE, ORGANIZER
     COMMON_NAME ("CN", CommonName.class) {
@@ -44,6 +52,13 @@ public enum ParameterEnum
         {
             CalendarUserAddressBase<?,?> castProperty = (CalendarUserAddressBase<?,?>) parent;
             return castProperty.getCommonName();
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // in property ATTENDEE
@@ -61,6 +76,13 @@ public enum ParameterEnum
             Attendee castProperty = (Attendee) parent;
             return castProperty.getCalendarUser();
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // in property ATTENDEE
     DELEGATORS ("DELEGATED-FROM", Delegators.class) {
@@ -76,6 +98,13 @@ public enum ParameterEnum
         {
             Attendee castProperty = (Attendee) parent;
             return castProperty.getDelegators();
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // in property ATTENDEE
@@ -93,6 +122,13 @@ public enum ParameterEnum
             Attendee castProperty = (Attendee) parent;
             return castProperty.getDelegatees();
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // in properties ATTENDEE, ORGANIZER
     DIRECTORY_ENTRY_REFERENCE ("DIR", DirectoryEntryReference.class) {
@@ -109,21 +145,35 @@ public enum ParameterEnum
             CalendarUserAddressBase<?,?> castProperty = (CalendarUserAddressBase<?,?>) parent;
             return castProperty.getDirectoryEntryReference();
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // in property ATTACHMENT
     INLINE_ENCODING ("ENCODING", Encoding.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attachment castProperty = (Attachment) property;
+            AttachmentBase64 castProperty = (AttachmentBase64) property;
             castProperty.setEncoding(new Encoding(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attachment castProperty = (Attachment) parent;
+            AttachmentBase64 castProperty = (AttachmentBase64) parent;
             return castProperty.getEncoding();
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            AttachmentBase64 castProperty = (AttachmentBase64) destination;
+            castProperty.setEncoding(new Encoding((Encoding) sourceParameter)); 
         }
     },
     // in property ATTACHMENT
@@ -131,15 +181,22 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attachment castProperty = (Attachment) property;
+            Attachment<?,?> castProperty = (Attachment<?,?>) property;
             castProperty.setFormatType(new FormatType(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attachment castProperty = (Attachment) parent;
+            Attachment<?,?> castProperty = (Attachment<?,?>) parent;
             return castProperty.getFormatType();
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            Attachment<?,?> castProperty = (Attachment<?,?>) destination;
+            castProperty.setFormatType(new FormatType((FormatType) sourceParameter)); 
         }
     },
     // in property FREEBUSY
@@ -157,6 +214,13 @@ public enum ParameterEnum
             FreeBusyTime castProperty = (FreeBusyTime) parent;
             return castProperty.getFreeBusyType();
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // in properties CATEGORIES, COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES, TZNAME
     LANGUAGE ("LANGUAGE", Language.class) {
@@ -172,6 +236,13 @@ public enum ParameterEnum
         {
             LanguageBase<?,?> castProperty = (LanguageBase<?,?>) parent;
             return castProperty.getLanguage();
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     GROUP_OR_LIST_MEMBERSHIP ("MEMBER", GroupMembership.class) {
@@ -195,6 +266,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     PARTICIPATION_STATUS ("PARTSTAT", Participation.class) {
         @Override
@@ -216,6 +294,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     RECURRENCE_IDENTIFIER_RANGE ("RANGE", Range.class) {
@@ -239,6 +324,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     ALARM_TRIGGER_RELATIONSHIP ("RELATED", AlarmTrigger.class) {
         @Override
@@ -260,6 +352,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     RELATIONSHIP_TYPE ("RELTYPE", Relationship.class) {
@@ -283,6 +382,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     PARTICIPATION_ROLE ("ROLE", ParticipationRole.class) {
         @Override
@@ -304,6 +410,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     RSVP_EXPECTATION ("RSVP", RSVP.class) {
@@ -327,6 +440,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     SENT_BY ("SENT-BY", SentBy.class) {
         @Override
@@ -348,6 +468,13 @@ public enum ParameterEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     TIME_ZONE_IDENTIFIER ("TZID", TimeZoneIdentifier.class) {
@@ -371,6 +498,13 @@ public enum ParameterEnum
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     VALUE_DATA_TYPES ("VALUE", ValueType.class) {
         @Override
@@ -385,6 +519,13 @@ public enum ParameterEnum
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) parent;
             return castProperty.getValueType();
+        }
+
+        @Override
+        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        {
+            PropertyBase<?,?> castProperty = (PropertyBase<?,?>) destination;
+            castProperty.setValueType(new ValueType((ValueType) sourceParameter)); 
         }
     };
     
@@ -481,10 +622,10 @@ public enum ParameterEnum
 //        // TODO Auto-generated method stub
 //        
 //    }
-    public void copyTo(Parameter<?> sourceParameter, Property<?> destimation)
-    {
-        // TODO Auto-generated method stub
-        
-    }
+    abstract public void copyTo(Parameter<?> sourceParameter, Property<?> destination);
+//    {
+//        // TODO Auto-generated method stub
+//        
+//    }
 
 }

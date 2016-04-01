@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -217,11 +218,13 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * 
      * @param propertyString
      */
+    @SuppressWarnings("unchecked")
     public PropertyBase(String propertyString)
     {
         this();
         
         // strip off property name if present
+        // TODO - MAKE SURE PROPERTY NAME MATCHES PROPERTY
         int endIndex = propertyType.toString().length();
         boolean isLongEnough = propertyString.length() > endIndex;
         boolean hasPropertyName = (isLongEnough) ? propertyString.substring(0, endIndex).equals(propertyType.toString()) : false;
@@ -237,6 +240,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
 //        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()
             .stream()
+//            .peek(System.out::println)
             .filter(e -> ! (e.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
             .forEach(e ->
             {
@@ -249,11 +253,35 @@ public abstract class PropertyBase<T,U> implements Property<U>
                     otherParameters().add(e.getKey() + "=" + e.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
-        // save property value for parsing by subclass
-        propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+        
+        // save property value
+        String propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+        final U value;
+        if (getValue() instanceof List)
+        {
+            value = (U) Arrays.asList(propertyValueString.split(","))
+                    .stream()
+                    .map(e -> PropertyEnum.enumFromClass(getClass())
+                            .getValueType()
+                            .parse(e))
+                    .collect(Collectors.toList());
+        } else
+        {
+            value = PropertyEnum.enumFromClass(getClass())
+                        .getValueType()
+                        .parse(propertyValueString);    
+        }        
+        setValue(value);
+        
+        if (! isValid())
+        {
+            throw new IllegalArgumentException("Error in parsing " + propertyType().toString() + " content line");
+        }
     }
-    private String propertyValueString;
-    protected String getPropertyValueString() { return propertyValueString; }
+//    @Deprecated
+//    private String propertyValueString;
+//    @Deprecated
+//    protected String getPropertyValueString() { return propertyValueString; }
     
     // construct empty property
     public PropertyBase()
@@ -273,9 +301,9 @@ public abstract class PropertyBase<T,U> implements Property<U>
     }
     
     // copy constructor
-    public PropertyBase(Property<?> source)
+    public PropertyBase(Property<U> source)
     {
-//        parameterMap().entrySet().stream()
+        this();
         Iterator<ParameterEnum> i = source.parameters().stream().iterator();
         while (i.hasNext())
         {
@@ -283,19 +311,9 @@ public abstract class PropertyBase<T,U> implements Property<U>
             Parameter<?> sourceParameter = sourceParameterType.getParameter(source);
             sourceParameterType.copyTo(sourceParameter, this);
         }
-
-//        parameters().stream().forEach(p -> p.getParameter(source).copyTo(p.getParameter(this)));
-//        parameterMap().entrySet().stream()
-//                .map(p -> p.getKey())
-//                .forEach(p -> p.copyTo(source, this));
+        setValue(source.getValue());
         this.propertyType = source.propertyType();
-    }
-    
-//    public PropertyBase(U value)
-//    {
-//        this();
-//        setValue(value);
-//    }
+    }    
     
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.5
@@ -350,6 +368,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
         }
         PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
         boolean valueEquals = getValue().equals(testObj.getValue());
+//        System.out.println("VALUES:" + getValue() + " " + testObj.getValue());
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
         
         final boolean parametersEquals;

@@ -14,7 +14,7 @@ public class Description extends AlternateTextRepresentationBase<Description, St
     public Description(String contentLine)
     {
         super(contentLine);
-        setValue(getPropertyValueString());
+//        setValue(getPropertyValueString());
     }
     
     public Description(Description source)

@@ -20,10 +20,10 @@ public class Categories extends LanguageBase<Categories, List<String>>
     public Categories(String propertyString)
     {
         super(propertyString);
-        List<String> values = Arrays.asList(getPropertyValueString().split(","))
-                .stream()
-                .collect(Collectors.toList());
-        setValue(values);
+//        List<String> values = Arrays.asList(getPropertyValueString().split(","))
+//                .stream()
+//                .collect(Collectors.toList());
+//        setValue(values);
     }
     
     public Categories(Categories source)
