@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendar.properties;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -49,7 +50,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
     
     /**
      * VALUE: Value Data Types
-     * RFC 5545, 3.2.20, page 28
+     * RFC 5545, 3.2.20, page 29
      * To specify the value for text values in a property or property parameter.
      * This parameter is optional for properties when the default value type is used.
      * 
@@ -69,8 +70,13 @@ public abstract class PropertyBase<T,U> implements Property<U>
     private ObjectProperty<ValueType> valueType;
     public void setValueType(ValueType value)
     {
-        // TODO - CHECK TYPE FOR CLASS-MATCH
-        valueParameterProperty().set(value);
+        if (allowedValueTypes().contains(value.getValue()))
+        {
+            valueParameterProperty().set(value);
+        } else
+        {
+            throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + allowedValueTypes());
+        }
     }
     public T withValueType(ValueEnum value) { setValueType(new ValueType(value)); return (T) this; } 
     public T withValueType(String content) { setValueType(new ValueType(content)); return (T) this; } 
@@ -90,6 +96,26 @@ public abstract class PropertyBase<T,U> implements Property<U>
     private PropertyEnum propertyType;
 
     
+    @Override
+    public boolean isValid()
+    {
+        if (getValueType() == null)
+        {
+            return Property.super.isValid();
+        } else
+        {
+            return (Property.super.isValid()) && (allowedValueTypes().contains(getValueType().getValue()));
+        }
+    }
+    
+    /** Allowed value types for this property.  These are the values than can be an
+     * argument to {@link #setValueType(ValueType)}
+     * RFC 5545, 3.2.20, page 29
+     */
+    protected List<ValueEnum> allowedValueTypes()
+    {
+        return Arrays.asList(ValueEnum.TEXT); // default is TEXT, override if otherwise
+    }
     /**
      * Property's value portion of content line.
      * Default method is for a property that has a properly overridden toString method.
