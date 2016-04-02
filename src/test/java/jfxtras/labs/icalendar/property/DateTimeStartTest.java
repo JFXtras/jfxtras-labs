@@ -17,7 +17,7 @@ public class DateTimeStartTest
     @Test
     public void canParseDateTimeStartSimple()
     {
-        DateTimeStart dateTimeStart = new DateTimeStart("20160322T174422");
+        DateTimeStart<LocalDateTime> dateTimeStart = new DateTimeStart<LocalDateTime>("20160322T174422");
         String expectedContentLine = "DTSTART:20160322T174422";
         String madeContentLine = dateTimeStart.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
@@ -27,7 +27,7 @@ public class DateTimeStartTest
     @Test
     public void canParseDateTimeStartDate()
     {
-        DateTimeStart dateTimeStart = new DateTimeStart("DTSTART;VALUE=DATE:20160322");
+        DateTimeStart<LocalDate> dateTimeStart = new DateTimeStart<LocalDate>("DTSTART;VALUE=DATE:20160322");
         String expectedContentLine = "DTSTART;VALUE=DATE:20160322";
         String madeContentLine = dateTimeStart.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
@@ -37,7 +37,7 @@ public class DateTimeStartTest
     @Test
     public void canParseDateTimeStartZoned()
     {
-        DateTimeStart dateTimeStart = new DateTimeStart("DTSTART;TZID=America/Los_Angeles:20160306T043000");
+        DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<ZonedDateTime>("DTSTART;TZID=America/Los_Angeles:20160306T043000");
         String expectedContentLine = "DTSTART;TZID=America/Los_Angeles:20160306T043000";
         String madeContentLine = dateTimeStart.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
@@ -47,7 +47,7 @@ public class DateTimeStartTest
     @Test
     public void canBuildDateTimeStartZoned()
     {
-        DateTimeStart dateTimeStart = new DateTimeStart()
+        DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<ZonedDateTime>()
                 .withValue(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
                 .withValueType(ValueEnum.DATE_TIME);
         System.out.println(dateTimeStart);
@@ -56,7 +56,7 @@ public class DateTimeStartTest
     @Test
     public void canBuildDateTimeStartZoned2()
     {
-        DateTimeStart dateTimeStart = new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
+        DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
         System.out.println(dateTimeStart);
     }
 }

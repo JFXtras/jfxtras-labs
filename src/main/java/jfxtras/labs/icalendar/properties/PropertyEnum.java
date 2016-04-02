@@ -39,7 +39,8 @@ public enum PropertyEnum
     DATE_TIME_DUE ("DUE", null, null, null), // Date and Time
     DATE_TIME_END ("DTEND", null, null, null), // Date and Time
     DATE_TIME_STAMP ("DTSTAMP", null, null, DateTimeStamp.class), // Change management
-    DATE_TIME_START ("DTSTART", null, null, DateTimeStart.class), // Date and Time
+    DATE_TIME_START_DATE ("DTSTART", ValueEnum.DATE, Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), DateTimeStart.class), // Date and Time
+    DATE_TIME_START_DATE_TIME ("DTSTART", ValueEnum.DATE_TIME, Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), DateTimeStart.class), // Date and Time
     DESCRIPTION ("DESCRIPTION", ValueEnum.TEXT, Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Description.class), // Descriptive
     DURATION ("DURATION", null, null, null), // Date and Time
     EXCEPTION_DATE_TIMES ("EXDATE", null, null, null), // Recurrence

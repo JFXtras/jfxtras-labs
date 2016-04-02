@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.LanguageBase;
+import jfxtras.labs.icalendar.properties.LanguageProperty;
 
 /**
  * 
@@ -15,15 +15,11 @@ import jfxtras.labs.icalendar.properties.LanguageBase;
  * @see VTodo
  * @see VJournal
  */
-public class Categories extends LanguageBase<Categories, List<String>>
+public class Categories extends LanguageProperty<Categories, List<String>>
 {    
     public Categories(String propertyString)
     {
         super(propertyString);
-//        List<String> values = Arrays.asList(getPropertyValueString().split(","))
-//                .stream()
-//                .collect(Collectors.toList());
-//        setValue(values);
     }
     
     public Categories(Categories source)

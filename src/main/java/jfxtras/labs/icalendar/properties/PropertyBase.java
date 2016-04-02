@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.lang.reflect.ParameterizedType;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -213,8 +215,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
      */
     
     /**
+     * Parse iCalendar content line constructor
+     * 
      * construct new property by parsing content line
-     * sets parameters by running parseAndSet for each parameter enum
+     * sets parameters by running parse for each parameter enum
      * 
      * @param propertyString
      */
@@ -249,7 +253,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
                 {
                     p.parse(this, e.getValue());
                 } else if ((e.getKey() != null) && (e.getValue() != null))
-                { // unknown parameter - store as other parameter
+                { // unknown parameter - store as String in other parameter
                     otherParameters().add(e.getKey() + "=" + e.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
@@ -257,7 +261,15 @@ public abstract class PropertyBase<T,U> implements Property<U>
         // save property value
         String propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
         final U value;
-        if (getValue() instanceof List)
+        ParameterizedType pt = (ParameterizedType)this.getClass().getGenericSuperclass();
+        String classU = pt.getActualTypeArguments()[1].getTypeName();
+        boolean isList = classU.contains(List.class.getTypeName());
+        boolean isTemporal = classU.contains(Temporal.class.getTypeName());
+        if (isTemporal)
+        { // add zone id to front of value
+            propertyValueString = map.get(ParameterEnum.TIME_ZONE_IDENTIFIER.toString()) + ":" + propertyValueString;
+        }
+        if (isList)
         {
             value = (U) Arrays.asList(propertyValueString.split(","))
                     .stream()
@@ -265,8 +277,11 @@ public abstract class PropertyBase<T,U> implements Property<U>
                             .getValueType()
                             .parse(e))
                     .collect(Collectors.toList());
+//            System.out.println("value:" + value.getClass().getSimpleName() + " " + value);
         } else
         {
+            System.out.println("type:" + PropertyEnum.enumFromClass(getClass())
+                        .getValueType());
             value = PropertyEnum.enumFromClass(getClass())
                         .getValueType()
                         .parse(propertyValueString);    
@@ -278,10 +293,6 @@ public abstract class PropertyBase<T,U> implements Property<U>
             throw new IllegalArgumentException("Error in parsing " + propertyType().toString() + " content line");
         }
     }
-//    @Deprecated
-//    private String propertyValueString;
-//    @Deprecated
-//    protected String getPropertyValueString() { return propertyValueString; }
     
     // construct empty property
     public PropertyBase()
@@ -335,21 +346,12 @@ public abstract class PropertyBase<T,U> implements Property<U>
         builder.append(":" + getValueForContentLine());
         return builder.toString();
     }
-    
-//    @Override
-//    public String toContentLine()
-//    {
-//        StringBuilder builder = new StringBuilder(propertyType().toString());
-//        otherParameters().stream().forEach(p -> builder.append(";" + p));
-//        return builder.toString();
-//    }
 
     @Override
     public int hashCode()
     {
         int hash = 7;
         hash = (31 * hash) + getValue().hashCode();
-//        Iterator<Entry<ParameterEnum, Parameter<?>>> i = parameterMap().entrySet().iterator();
         Iterator<ParameterEnum> i = parameters().iterator();
         while (i.hasNext())
         {

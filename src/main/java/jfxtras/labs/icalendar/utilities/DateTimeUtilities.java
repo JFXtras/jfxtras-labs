@@ -50,7 +50,7 @@ public final class DateTimeUtilities
      */
     public static final DateTimeType DEFAULT_DATE_TIME_TYPE = DateTimeType.DATE_WITH_UTC_TIME;
 
-    final static DateTimeFormatter LOCAL_DATE_FORMATTER = new DateTimeFormatterBuilder()
+    public final static DateTimeFormatter LOCAL_DATE_FORMATTER = new DateTimeFormatterBuilder()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendValue(MONTH_OF_YEAR, 2)
             .appendValue(DAY_OF_MONTH, 2)
@@ -70,19 +70,19 @@ public final class DateTimeUtilities
             .append(LOCAL_DATE_TIME_FORMATTER)
             .appendOffsetId()
             .toFormatter();
-    @Deprecated
-//    public final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-//            .optionalStart()
-//            .parseCaseInsensitive()
+//    @Deprecated
+    public final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .optionalStart()
+            .parseCaseInsensitive()
 //            .appendLiteral("TZID=")
-//            .appendZoneRegionId()
-//            .appendLiteral(':')
-//            .optionalEnd()
-//            .append(LOCAL_DATE_TIME_FORMATTER)
-//            .optionalStart()
-//            .appendOffsetId()            
-//            .optionalEnd()
-//            .toFormatter();
+            .appendZoneRegionId()
+            .appendLiteral(':')
+            .optionalEnd()
+            .append(LOCAL_DATE_TIME_FORMATTER)
+            .optionalStart()
+            .appendOffsetId()            
+            .optionalEnd()
+            .toFormatter();
     final static DateTimeFormatter ZONE_FORMATTER = new DateTimeFormatterBuilder()
             .optionalStart()
             .parseCaseInsensitive()

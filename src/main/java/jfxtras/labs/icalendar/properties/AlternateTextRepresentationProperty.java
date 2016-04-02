@@ -22,7 +22,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
  * @see Resources
  * @see Summary
  */
-public abstract class AlternateTextRepresentationBase<T,U> extends LanguageBase<T,U>
+public abstract class AlternateTextRepresentationProperty<T,U> extends LanguageProperty<T,U>
 {
     /**
      * ALTREP : Alternate Text Representation
@@ -80,14 +80,14 @@ public abstract class AlternateTextRepresentationBase<T,U> extends LanguageBase<
     /*
      * CONSTRUCTORS
      */    
-    protected AlternateTextRepresentationBase(String propertyString)
+    protected AlternateTextRepresentationProperty(String propertyString)
     {
         super(propertyString);
 //        setValue((U) getPropertyValueString());
     }
 
     // copy constructor
-    public AlternateTextRepresentationBase(AlternateTextRepresentationBase<T,U> property)
+    public AlternateTextRepresentationProperty(AlternateTextRepresentationProperty<T,U> property)
     {
         super(property);
         if (getAlternateTextRepresentation() != null)
@@ -96,5 +96,5 @@ public abstract class AlternateTextRepresentationBase<T,U> extends LanguageBase<
         }
     }
 
-    public AlternateTextRepresentationBase() { super(); }
+    public AlternateTextRepresentationProperty() { super(); }
 }

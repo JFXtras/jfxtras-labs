@@ -6,7 +6,7 @@ import jfxtras.labs.icalendar.parameters.CommonName;
 import jfxtras.labs.icalendar.parameters.DirectoryEntryReference;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 
-public abstract class CalendarUserAddressBase<T,U> extends LanguageBase<T,U>
+public abstract class CalendarUserAddressProperty<T,U> extends LanguageProperty<T,U>
 {
     /**
      * CN
@@ -76,14 +76,14 @@ public abstract class CalendarUserAddressBase<T,U> extends LanguageBase<T,U>
     /*
      * CONSTRUCTORS
      */    
-    protected CalendarUserAddressBase(String propertyString)
+    protected CalendarUserAddressProperty(String propertyString)
     {
         super(propertyString);
 //        setValue((U) getPropertyValueString());
     }
 
     // copy constructor
-    public CalendarUserAddressBase(CalendarUserAddressBase<T,U> property)
+    public CalendarUserAddressProperty(CalendarUserAddressProperty<T,U> property)
     {
         super(property);
         if (getCommonName() != null)
@@ -96,5 +96,5 @@ public abstract class CalendarUserAddressBase<T,U> extends LanguageBase<T,U>
         }
     }
 
-    public CalendarUserAddressBase() { super(); }
+    public CalendarUserAddressProperty() { super(); }
 }

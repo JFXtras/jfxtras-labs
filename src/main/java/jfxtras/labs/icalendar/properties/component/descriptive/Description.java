@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
-import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
+import jfxtras.labs.icalendar.properties.AlternateTextRepresentationProperty;
 
 /**
  * 
@@ -9,7 +9,7 @@ import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
  * @author David Bal
  *
  */
-public class Description extends AlternateTextRepresentationBase<Description, String>
+public class Description extends AlternateTextRepresentationProperty<Description, String>
 {
     public Description(String contentLine)
     {

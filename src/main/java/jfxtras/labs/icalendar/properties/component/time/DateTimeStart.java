@@ -2,11 +2,11 @@ package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendar.properties.PropertyBase;
+import jfxtras.labs.icalendar.properties.TimeZoneProperty;
 
-public class DateTimeStart extends PropertyBase<DateTimeStart, Temporal>
+public abstract class DateTimeStart<T, U extends Temporal> extends TimeZoneProperty<T, U>
 {
-    public DateTimeStart(Temporal temporal)
+    public DateTimeStart(U temporal)
     {
         super();
         setValue(temporal);
@@ -17,7 +17,7 @@ public class DateTimeStart extends PropertyBase<DateTimeStart, Temporal>
         super(propertyString);
     }
     
-    public DateTimeStart(DateTimeStart source)
+    public DateTimeStart(DateTimeStart<T,U> source)
     {
         super(source);
     }

@@ -3,9 +3,9 @@ package jfxtras.labs.icalendar.properties.component.descriptive;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
+import jfxtras.labs.icalendar.properties.AlternateTextRepresentationProperty;
 
-public class Resources extends AlternateTextRepresentationBase<Resources, List<String>>
+public class Resources extends AlternateTextRepresentationProperty<Resources, List<String>>
 {
     public Resources(String contentLine)
     {

@@ -1,8 +1,8 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
-import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
+import jfxtras.labs.icalendar.properties.AlternateTextRepresentationProperty;
 
-public class Location extends AlternateTextRepresentationBase<Location, String>
+public class Location extends AlternateTextRepresentationProperty<Location, String>
 {    
     public Location(String contentLine)
     {

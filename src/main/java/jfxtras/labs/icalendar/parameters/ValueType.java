@@ -3,6 +3,8 @@ package jfxtras.labs.icalendar.parameters;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import javafx.util.Pair;
@@ -71,14 +73,27 @@ public class ValueType extends ParameterBase<ValueType, ValueEnum>
             @Override
             public <U> U parse(String value)
             {
-                return (U) value;
+                return (U) LocalDate.parse(value, DateTimeUtilities.LOCAL_DATE_FORMATTER);
             }
         },
         DATE_TIME ("DATE-TIME") {
             @Override
             public <U> U parse(String value)
             {
-                return (U) value;
+                boolean hasZoneId = value.contains(":");
+                if (hasZoneId)
+                {
+                    if (value.charAt(value.length()) == 'Z')
+                    {
+                        return (U) LocalDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                                                
+                    } else
+                    {
+                        return (U) LocalDateTime.parse(value, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                        
+                    }
+                } else
+                {
+                    return (U) ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
+                }
             }
         },
         DURATION ("DURATION") {

@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
-import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
+import jfxtras.labs.icalendar.properties.AlternateTextRepresentationProperty;
 
 /**
  * COMMENT: RFC 5545 iCalendar 3.8.1.4. page 83
@@ -12,7 +12,7 @@ import jfxtras.labs.icalendar.properties.AlternateTextRepresentationBase;
      As a matter of fact\, the venue for the meeting ought to be at
      their site. - - John
  */
-public class Comment extends AlternateTextRepresentationBase<Description, String>
+public class Comment extends AlternateTextRepresentationProperty<Description, String>
 {
     public Comment(String propertyString)
     {

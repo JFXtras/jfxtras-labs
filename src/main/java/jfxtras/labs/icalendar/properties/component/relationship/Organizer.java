@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.properties.component.relationship;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import jfxtras.labs.icalendar.properties.CalendarUserAddressBase;
+import jfxtras.labs.icalendar.properties.CalendarUserAddressProperty;
 
 /**
  * ORGANIZER
@@ -17,7 +17,7 @@ import jfxtras.labs.icalendar.properties.CalendarUserAddressBase;
  * @author David Bal
  *
  */
-public class Organizer extends CalendarUserAddressBase<Organizer,URI>
+public class Organizer extends CalendarUserAddressProperty<Organizer,URI>
 {
     public Organizer(String propertyString) throws URISyntaxException
     {

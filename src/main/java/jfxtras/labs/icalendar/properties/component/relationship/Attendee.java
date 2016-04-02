@@ -9,7 +9,7 @@ import jfxtras.labs.icalendar.parameters.CalendarUser;
 import jfxtras.labs.icalendar.parameters.Delegatees;
 import jfxtras.labs.icalendar.parameters.Delegators;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.properties.CalendarUserAddressBase;
+import jfxtras.labs.icalendar.properties.CalendarUserAddressProperty;
 
 /**
  * ATTENDEE
@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.CalendarUserAddressBase;
  * @author David Bal
  *
  */
-public class Attendee extends CalendarUserAddressBase<Organizer,URI>
+public class Attendee extends CalendarUserAddressProperty<Organizer,URI>
 {
     /**
      * CUTYPE
