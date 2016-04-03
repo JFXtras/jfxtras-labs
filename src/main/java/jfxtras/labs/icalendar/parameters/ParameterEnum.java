@@ -505,7 +505,10 @@ public enum ParameterEnum
         public void parse(Property<?> property, String content)
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) property;
-            castProperty.setValueType(new ValueParameter(content));
+//            System.out.println("value type:" + castProperty.propertyType().valueType().name() + " " + content);
+            // TODO - NEED WAY TO LOOK UP VALUE 
+            castProperty.setValueType(new ValueParameter(castProperty.propertyType().valueType()));
+//            castProperty.setValueType(new ValueParameter(content));
         }
 
         @Override

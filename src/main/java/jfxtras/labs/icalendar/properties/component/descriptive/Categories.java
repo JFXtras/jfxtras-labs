@@ -18,7 +18,7 @@ public class Categories extends LanguageProperty<Categories, List<String>>
 {    
     public Categories(String propertyString)
     {
-        super(propertyString, null);
+        super(propertyString);
     }
     
     public Categories(Categories source)

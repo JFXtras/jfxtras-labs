@@ -8,12 +8,12 @@ public abstract class DateTimeStart<T, U extends Temporal> extends PropertyBase<
 {
     public DateTimeStart(U temporal)
     {
-        super();
+        super(temporal);
     }
 
     public DateTimeStart(String propertyString)
     {
-        super(propertyString, null);
+        super(propertyString);
     }
     
     public DateTimeStart(DateTimeStart<T,U> source)

@@ -17,7 +17,7 @@ public class AttachmentURI extends Attachment<AttachmentURI, URI>
 {
     public AttachmentURI(String content) throws URISyntaxException
     {
-        super(content, null);
+        super(content);
 //        setValue(new URI(getPropertyValueString()));
     }
     

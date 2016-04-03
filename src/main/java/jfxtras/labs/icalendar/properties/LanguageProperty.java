@@ -48,9 +48,9 @@ public abstract class LanguageProperty<T,U> extends PropertyBase<T,U>
     /*
      * CONSTRUCTORS
      */    
-    protected LanguageProperty(String propertyString, Boolean makeMeUnique)
+    protected LanguageProperty(CharSequence propertyString)
     {
-        super(propertyString, null);
+        super(propertyString);
     }
     
     // copy constructor

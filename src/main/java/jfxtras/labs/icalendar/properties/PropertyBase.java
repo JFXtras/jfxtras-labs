@@ -227,7 +227,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * @param propertyString
      */
     @SuppressWarnings("unchecked")
-    public PropertyBase(String propertyString, Boolean makeMeUnique)
+    public PropertyBase(CharSequence propertyString)
     {
         this();
         
@@ -235,16 +235,18 @@ public abstract class PropertyBase<T,U> implements Property<U>
         // TODO - MAKE SURE PROPERTY NAME MATCHES PROPERTY
         int endIndex = propertyType.toString().length();
         boolean isLongEnough = propertyString.length() > endIndex;
-        boolean hasPropertyName = (isLongEnough) ? propertyString.substring(0, endIndex).equals(propertyType.toString()) : false;
+//        boolean hasPropertyName = (isLongEnough) ? propertyString.substring(0, endIndex).equals(propertyType.toString()) : false;
+        boolean hasPropertyName = (isLongEnough) ? propertyString.subSequence(0, endIndex).equals(propertyType.toString()) : false;
         if (hasPropertyName)
         {
-            propertyString = propertyString.substring(endIndex);
+//            propertyString = propertyString.substring(endIndex);
+            propertyString = propertyString.subSequence(endIndex, propertyString.length());
         } else
         {
             propertyString = ":" + propertyString; // indicates propertyString is property value without any properties
         }
         // add parameters
-        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString);
+        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString.toString());
 //        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()
             .stream()
@@ -326,8 +328,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
         this.propertyType = source.propertyType();
     }    
     
+    // constructor with only value parameter
     public PropertyBase(U value)
     {
+        this();
         setValue(value);
     }
     /**

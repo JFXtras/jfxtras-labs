@@ -69,9 +69,9 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
     public AttachmentBase64 withEncoding(EncodingType encoding) { setEncoding(new Encoding(encoding)); return this; }
 
     
-    public AttachmentBase64(String content) throws URISyntaxException
+    public AttachmentBase64(CharSequence content) throws URISyntaxException
     {
-        super(content, null);
+        super(content);
 //        setValue(getPropertyValueString());
     }
     

@@ -60,9 +60,9 @@ public abstract class Attachment<T,U> extends PropertyBase<T,U>
      * CONSTRUCTORS
      */
     
-    Attachment(String content, Boolean makeMeUnique)
+    Attachment(CharSequence content)
     {
-        super(content, null);
+        super(content);
     }
     
     Attachment(Attachment<T,U> source)

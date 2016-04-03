@@ -13,7 +13,7 @@ public class DateTimeEnd extends PropertyBase<DateTimeEnd, Temporal>
 
     public DateTimeEnd(String propertyString)
     {
-        super(propertyString, null);
+        super(propertyString);
     }
     
     public DateTimeEnd(DateTimeEnd source)

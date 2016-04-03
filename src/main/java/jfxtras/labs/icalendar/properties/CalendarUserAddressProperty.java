@@ -76,9 +76,9 @@ public abstract class CalendarUserAddressProperty<T,U> extends LanguageProperty<
     /*
      * CONSTRUCTORS
      */    
-    protected CalendarUserAddressProperty(String propertyString, Boolean makeMeUnique)
+    protected CalendarUserAddressProperty(String propertyString)
     {
-        super(propertyString, null);
+        super(propertyString);
 //        setValue((U) getPropertyValueString());
     }
 

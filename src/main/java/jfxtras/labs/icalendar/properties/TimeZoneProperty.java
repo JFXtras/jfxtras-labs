@@ -60,7 +60,7 @@ public abstract class TimeZoneProperty<T> extends PropertyBase<T, ZonedDateTime>
 
     public TimeZoneProperty(String propertyString)
     {
-        super(propertyString, null);
+        super(propertyString);
     }
     
     public TimeZoneProperty(TimeZoneProperty<T> source)

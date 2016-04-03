@@ -13,7 +13,7 @@ public class Description extends AlternateTextRepresentationProperty<Description
 {
     public Description(String contentLine)
     {
-        super(contentLine, null);
+        super((CharSequence) contentLine);
     }
 
     public Description(Description source)

@@ -48,7 +48,7 @@ public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDate
 
     public FreeBusyTime(String contentLine)
     {
-        super(contentLine, null);
+        super(contentLine);
 
 //        // convert time periods can be specified as either a start
 //        // and end DATE-TIME or a start DATE-TIME and DURATION.
