@@ -16,8 +16,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.parameters.Parameter;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.ValueType;
-import jfxtras.labs.icalendar.parameters.ValueType.ValueEnum;
+import jfxtras.labs.icalendar.parameters.ValueParameter;
+import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
@@ -61,8 +61,8 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * VALUE=DATE-TIME  (Date-Time is default value, so it isn't necessary to specify)
      * VALUE=DATE
      */
-    public ValueType getValueType() { return (valueType == null) ? null : valueType.get(); }
-    public ObjectProperty<ValueType> valueParameterProperty()
+    public ValueParameter getValueParameter() { return (valueType == null) ? null : valueType.get(); }
+    public ObjectProperty<ValueParameter> valueParameterProperty()
     {
         if (valueType == null)
         {
@@ -70,19 +70,19 @@ public abstract class PropertyBase<T,U> implements Property<U>
         }
         return valueType;
     }
-    private ObjectProperty<ValueType> valueType;
-    public void setValueType(ValueType value)
+    private ObjectProperty<ValueParameter> valueType;
+    public void setValueType(ValueParameter value)
     {
-        if (allowedValueTypes().contains(value.getValue()))
+        if (value.getValue().equals(propertyType().getValueType()))
         {
             valueParameterProperty().set(value);
         } else
         {
-            throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + allowedValueTypes());
+            throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + propertyType().getValueType());
         }
     }
-    public T withValueType(ValueEnum value) { setValueType(new ValueType(value)); return (T) this; } 
-    public T withValueType(String content) { setValueType(new ValueType(content)); return (T) this; } 
+    public T withValueParameter(ValueType value) { setValueType(new ValueParameter(value)); return (T) this; } 
+    public T withValueParameter(String content) { setValueType(new ValueParameter(content)); return (T) this; } 
     
     /**
      * other-param, 3.2 RFC 5545 page 14
@@ -102,23 +102,24 @@ public abstract class PropertyBase<T,U> implements Property<U>
     @Override
     public boolean isValid()
     {
-        if (getValueType() == null)
+        if (getValueParameter() == null)
         {
             return Property.super.isValid();
         } else
         {
-            return (Property.super.isValid()) && (allowedValueTypes().contains(getValueType().getValue()));
+            return (Property.super.isValid()) && (getValueParameter().getValue().equals(propertyType().getValueType()));
         }
     }
     
-    /** Allowed value types for this property.  These are the values than can be an
-     * argument to {@link #setValueType(ValueType)}
-     * RFC 5545, 3.2.20, page 29
-     */
-    protected List<ValueEnum> allowedValueTypes()
-    {
-        return Arrays.asList(ValueEnum.TEXT); // default is TEXT, override if otherwise
-    }
+//    /** Allowed value types for this property.  These are the values than can be an
+//     * argument to {@link #setValueType(ValueParameter)}
+//     * RFC 5545, 3.2.20, page 29
+//     */
+//    protected List<ValueType> allowedValueTypes()
+//    {
+//        PropertyEnum.enumFromClass(myClass)
+//        return Arrays.asList(ValueType.TEXT); // default is TEXT, override if otherwise
+//    }
     /**
      * Property's value portion of content line.
      * Default method is for a property that has a properly overridden toString method.

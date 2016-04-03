@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties.component.descriptive;
+package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.Encoding;
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.ValueType.ValueEnum;
+import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 
 /**
  * ATTACH: Attachment
@@ -92,7 +92,7 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
     {
         super.isValid();
         boolean isEncodingNull = getEncoding() == null;
-        boolean isValueTypeNull = getValueType() == null;
+        boolean isValueTypeNull = getValueParameter() == null;
         if (isEncodingNull && isValueTypeNull)
         {
             return true;
@@ -105,7 +105,7 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
         { // invalid EncodingType
             return false;
         }
-        if (getValueType().getValue() != ValueEnum.BINARY)
+        if (getValueParameter().getValue() != ValueType.BINARY)
         { // invalid ValueType
             return false;
         }
@@ -113,8 +113,8 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
     }
     
     @Override
-    protected List<ValueEnum> allowedValueTypes()
+    protected List<ValueType> allowedValueTypes()
     {
-        return Arrays.asList(ValueEnum.BINARY);
+        return Arrays.asList(ValueType.BINARY);
     }
 }

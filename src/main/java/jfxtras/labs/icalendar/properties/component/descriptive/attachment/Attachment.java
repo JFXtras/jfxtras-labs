@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties.component.descriptive;
+package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,7 @@ import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.parameters.FormatType;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.ValueType.ValueEnum;
+import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
 /**
@@ -82,9 +82,9 @@ public abstract class Attachment<T,U> extends PropertyBase<T,U>
     }
     
     @Override
-    protected List<ValueEnum> allowedValueTypes()
+    protected List<ValueType> allowedValueTypes()
     {
-        return Arrays.asList(ValueEnum.UNIFORM_RESOURCE_IDENTIFIER, ValueEnum.BINARY);
+        return Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER, ValueType.BINARY);
     }
     
 //    public static Attachment<?> parseContentLine(String content)

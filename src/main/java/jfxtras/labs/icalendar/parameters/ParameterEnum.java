@@ -8,8 +8,8 @@ import jfxtras.labs.icalendar.properties.CalendarUserAddressProperty;
 import jfxtras.labs.icalendar.properties.LanguageProperty;
 import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyBase;
-import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
-import jfxtras.labs.icalendar.properties.component.descriptive.AttachmentBase64;
+import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
+import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
 
@@ -506,26 +506,26 @@ public enum ParameterEnum
             
         }
     },
-    VALUE_DATA_TYPES ("VALUE", ValueType.class) {
+    VALUE_DATA_TYPES ("VALUE", ValueParameter.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) property;
-            castProperty.setValueType(new ValueType(content));
+            castProperty.setValueType(new ValueParameter(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) parent;
-            return castProperty.getValueType();
+            return castProperty.getValueParameter();
         }
 
         @Override
         public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) destination;
-            castProperty.setValueType(new ValueType((ValueType) sourceParameter)); 
+            castProperty.setValueType(new ValueParameter((ValueParameter) sourceParameter)); 
         }
     };
     

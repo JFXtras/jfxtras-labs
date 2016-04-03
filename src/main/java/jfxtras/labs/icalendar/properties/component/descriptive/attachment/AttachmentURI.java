@@ -1,11 +1,11 @@
-package jfxtras.labs.icalendar.properties.component.descriptive;
+package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
-import jfxtras.labs.icalendar.parameters.ValueType.ValueEnum;
+import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 
 /**
  * ATTACH: Attachment
@@ -36,8 +36,8 @@ public class AttachmentURI extends Attachment<AttachmentURI, URI>
     }
     
     @Override
-    protected List<ValueEnum> allowedValueTypes()
+    protected List<ValueType> allowedValueTypes()
     {
-        return Arrays.asList(ValueEnum.UNIFORM_RESOURCE_IDENTIFIER);
+        return Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER);
     }
 }

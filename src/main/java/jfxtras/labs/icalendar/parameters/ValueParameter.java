@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import javafx.util.Pair;
-import jfxtras.labs.icalendar.parameters.ValueType.ValueEnum;
+import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /**
@@ -24,29 +24,29 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
-public class ValueType extends ParameterBase<ValueType, ValueEnum>
+public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
 {
-    public ValueType()
+    public ValueParameter()
     {
         super();
     }
     
-    public ValueType(ValueType source)
+    public ValueParameter(ValueParameter source)
     {
         super(source);
     }
     
-    public ValueType(ValueEnum value)
+    public ValueParameter(ValueType value)
     {
         super(value);
     }
     
-    public ValueType(String content)
+    public ValueParameter(String content)
     {
-        super(ValueEnum.valueOf(extractValue(content)));
+        super(ValueType.valueOf(extractValue(content)));
     }
     
-    public enum ValueEnum
+    public enum ValueType
     {
         BINARY ("BINARY") {
             @Override
@@ -76,24 +76,18 @@ public class ValueType extends ParameterBase<ValueType, ValueEnum>
                 return (U) LocalDate.parse(value, DateTimeUtilities.LOCAL_DATE_FORMATTER);
             }
         },
-        DATE_TIME ("DATE-TIME") {
+        DATE_LOCAL_DATE_TIME ("DATE-TIME") {
             @Override
             public <U> U parse(String value)
             {
-                boolean hasZoneId = value.contains(":");
-                if (hasZoneId)
-                {
-                    if (value.charAt(value.length()) == 'Z')
-                    {
-                        return (U) LocalDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                                                
-                    } else
-                    {
-                        return (U) LocalDateTime.parse(value, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                        
-                    }
-                } else
-                {
-                    return (U) ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
-                }
+                return (U) LocalDateTime.parse(value, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                        
+            }
+        },
+        DATE_ZONED_DATE_TIME ("DATE-TIME") {
+            @Override
+            public <U> U parse(String value)
+            {
+                return (U) ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
             }
         },
         DURATION ("DURATION") {
@@ -181,7 +175,7 @@ public class ValueType extends ParameterBase<ValueType, ValueEnum>
         
         private String name;
         @Override public String toString() { return name; }
-        ValueEnum(String name)
+        ValueType(String name)
         {
             this.name = name;
         }

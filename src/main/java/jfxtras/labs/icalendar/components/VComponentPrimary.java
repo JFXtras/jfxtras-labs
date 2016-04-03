@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
-import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
+import jfxtras.labs.icalendar.properties.component.time.start.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**

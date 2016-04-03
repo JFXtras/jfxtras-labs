@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties.component.time;
+package jfxtras.labs.icalendar.properties.component.time.start;
 
 import java.time.temporal.Temporal;
 
