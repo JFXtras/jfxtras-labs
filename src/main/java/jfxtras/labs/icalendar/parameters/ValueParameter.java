@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAccessor;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
@@ -54,12 +55,24 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             {
                 return (U) value;
             }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
+            }
         },
         BOOLEAN ("BOOLEAN") {
             @Override
             public <U> U parse(String value)
             {
                 return (U) value;
+            }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
             }
         }, 
         CALENDAR_USER_ADDRESS ("CAL-ADDRESS") {
@@ -68,12 +81,24 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             {
                 return (U) value;
             }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
+            }
         },
         DATE ("DATE") {
             @Override
             public <U> U parse(String value)
             {
                 return (U) LocalDate.parse(value, DateTimeUtilities.LOCAL_DATE_FORMATTER);
+            }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return DateTimeUtilities.LOCAL_DATE_FORMATTER.format((TemporalAccessor) value);
             }
         },
         DATE_LOCAL_DATE_TIME ("DATE-TIME") {
@@ -82,12 +107,25 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             {
                 return (U) LocalDateTime.parse(value, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                        
             }
+            
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format((TemporalAccessor) value);
+            }
         },
         DATE_ZONED_DATE_TIME ("DATE-TIME") {
             @Override
             public <U> U parse(String value)
             {
+//                System.out.println("value parse:" + value + " " + ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER));
                 return (U) ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
+            }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format((TemporalAccessor) value); // Time zone is added through TimeZoneIdentifier parameter
             }
         },
         DURATION ("DURATION") {
@@ -96,6 +134,12 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             {
                 return (U) value;
             }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
+            }
         },
         FLOAT ("FLOAT") {
             @Override
@@ -103,12 +147,24 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             {
                 return (U) value;
             }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
+            }
         },
         INTEGER ("INTEGER") {
             @Override
             public <U> U parse(String value)
             {
                 return (U) value;
+            }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
             }
         },
         PERIOD ("PERIOD") {
@@ -128,12 +184,24 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
                 }
                 return (U) new Pair<ZonedDateTime, Duration>(startInclusive, duration);
             }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
+            }
         },
         RECURRENCE_RULE ("RECUR") {
             @Override
             public <U> U parse(String value)
             {
                 return (U) value;
+            }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
             }
         },
         TEXT ("TEXT") {
@@ -142,12 +210,24 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             {
                 return (U) value;
             }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
+            }
         },
         TIME ("TIME") {
             @Override
             public <U> U parse(String value)
             {
                 return (U) value;
+            }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
             }
         },
         UNIFORM_RESOURCE_IDENTIFIER ("URI") {
@@ -163,12 +243,24 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
                 }
                 return null;
             }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
+            }
         },
         UTC_OFFSET ("UTC-OFFSET") {
             @Override
             public <U> U parse(String value)
             {
                 return (U) value;
+            }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                return value.toString();
             }
         };
         // x-name or IANA-token values must be added manually
@@ -180,6 +272,12 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             this.name = name;
         }
         abstract public <U> U parse(String value);
+        
+        abstract public <U> String makeContent(U value);
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
 
     }
 }

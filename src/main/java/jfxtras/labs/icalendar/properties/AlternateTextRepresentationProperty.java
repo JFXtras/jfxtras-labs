@@ -80,9 +80,9 @@ public abstract class AlternateTextRepresentationProperty<T,U> extends LanguageP
     /*
      * CONSTRUCTORS
      */    
-    protected AlternateTextRepresentationProperty(String propertyString)
+    protected AlternateTextRepresentationProperty(String propertyString, Boolean makeMeUnique)
     {
-        super(propertyString);
+        super(propertyString, null);
 //        setValue((U) getPropertyValueString());
     }
 
@@ -96,5 +96,10 @@ public abstract class AlternateTextRepresentationProperty<T,U> extends LanguageP
         }
     }
 
+    public AlternateTextRepresentationProperty(U value)
+    {
+        setValue(value);
+    }
+    
     public AlternateTextRepresentationProperty() { super(); }
 }

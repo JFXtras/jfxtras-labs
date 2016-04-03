@@ -1,8 +1,6 @@
 package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
 
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -73,7 +71,7 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
     
     public AttachmentBase64(String content) throws URISyntaxException
     {
-        super(content);
+        super(content, null);
 //        setValue(getPropertyValueString());
     }
     
@@ -112,9 +110,9 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
         return true;
     }
     
-    @Override
-    protected List<ValueType> allowedValueTypes()
-    {
-        return Arrays.asList(ValueType.BINARY);
-    }
+//    @Override
+//    protected List<ValueType> allowedValueTypes()
+//    {
+//        return Arrays.asList(ValueType.BINARY);
+//    }
 }

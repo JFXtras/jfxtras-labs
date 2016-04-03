@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendar.properties;
 
 import java.lang.reflect.ParameterizedType;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,12 +72,12 @@ public abstract class PropertyBase<T,U> implements Property<U>
     private ObjectProperty<ValueParameter> valueType;
     public void setValueType(ValueParameter value)
     {
-        if (value.getValue().equals(propertyType().getValueType()))
+        if (value.getValue().equals(propertyType().valueType()))
         {
             valueParameterProperty().set(value);
         } else
         {
-            throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + propertyType().getValueType());
+            throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + propertyType().valueType());
         }
     }
     public T withValueParameter(ValueType value) { setValueType(new ValueParameter(value)); return (T) this; } 
@@ -107,7 +106,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
             return Property.super.isValid();
         } else
         {
-            return (Property.super.isValid()) && (getValueParameter().getValue().equals(propertyType().getValueType()));
+            return (Property.super.isValid()) && (getValueParameter().getValue().equals(propertyType().valueType()));
         }
     }
     
@@ -120,17 +119,18 @@ public abstract class PropertyBase<T,U> implements Property<U>
 //        PropertyEnum.enumFromClass(myClass)
 //        return Arrays.asList(ValueType.TEXT); // default is TEXT, override if otherwise
 //    }
-    /**
-     * Property's value portion of content line.
-     * Default method is for a property that has a properly overridden toString method.
-     * If not, then the subclass must override this method.
-     * 
-     * @return property value as a String formatted for a iCalendar content line
-     */
-    protected String getValueForContentLine()
-    {
-        return getValue().toString();
-    }
+//    /**
+//     * Property's value portion of content line.
+//     * Default method is for a property that has a properly overridden toString method.
+//     * If not, then the subclass must override this method.
+//     * 
+//     * @return property value as a String formatted for a iCalendar content line
+//     */
+//    protected String getValueForContentLine()
+//    {
+//        return propertyType().valueType().makeContent(getValue());
+////        return getValue().toString();
+//    }
     
 //    @Override
 //    protected List<ParameterEnum> parmeters2;
@@ -215,6 +215,9 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * CONSTRUCTORS
      */
     
+    private String propertyValueString;
+    protected String getPropertyValueString() { return propertyValueString; }
+    
     /**
      * Parse iCalendar content line constructor
      * 
@@ -224,7 +227,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * @param propertyString
      */
     @SuppressWarnings("unchecked")
-    public PropertyBase(String propertyString)
+    public PropertyBase(String propertyString, Boolean makeMeUnique)
     {
         this();
         
@@ -258,34 +261,30 @@ public abstract class PropertyBase<T,U> implements Property<U>
                     otherParameters().add(e.getKey() + "=" + e.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
-        
+
         // save property value
-        String propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+        propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
         final U value;
         ParameterizedType pt = (ParameterizedType)this.getClass().getGenericSuperclass();
-        String classU = pt.getActualTypeArguments()[1].getTypeName();
+        int lastIndex = pt.getActualTypeArguments().length-1; // last parameterized type must be value's type
+        String classU = pt.getActualTypeArguments()[lastIndex].getTypeName();
         boolean isList = classU.contains(List.class.getTypeName());
-        boolean isTemporal = classU.contains(Temporal.class.getTypeName());
-        if (isTemporal)
-        { // add zone id to front of value
-            propertyValueString = map.get(ParameterEnum.TIME_ZONE_IDENTIFIER.toString()) + ":" + propertyValueString;
-        }
         if (isList)
         {
-            value = (U) Arrays.asList(propertyValueString.split(","))
+            value = (U) Arrays.asList(getPropertyValueString().split(","))
                     .stream()
                     .map(e -> PropertyEnum.enumFromClass(getClass())
-                            .getValueType()
+                            .valueType()
                             .parse(e))
                     .collect(Collectors.toList());
 //            System.out.println("value:" + value.getClass().getSimpleName() + " " + value);
         } else
         {
-            System.out.println("type:" + PropertyEnum.enumFromClass(getClass())
-                        .getValueType());
+//            System.out.println("type:" + PropertyEnum.enumFromClass(getClass())
+//                        .valueType());
             value = PropertyEnum.enumFromClass(getClass())
-                        .getValueType()
-                        .parse(propertyValueString);    
+                        .valueType()
+                        .parse(getPropertyValueString());    
         }        
         setValue(value);
         
@@ -327,6 +326,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
         this.propertyType = source.propertyType();
     }    
     
+    public PropertyBase(U value)
+    {
+        setValue(value);
+    }
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.5
      * Contains component property with its value and any populated parameters.
@@ -344,7 +347,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
 //        System.out.println("parameters:" + parameters().size());
         parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContentLine()));
         otherParameters().stream().forEach(p -> builder.append(";" + p));
-        builder.append(":" + getValueForContentLine());
+        builder.append(":" + propertyType().valueType().makeContent(getValue()));
         return builder.toString();
     }
 

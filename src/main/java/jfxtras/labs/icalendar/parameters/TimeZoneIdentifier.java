@@ -25,7 +25,7 @@ public class TimeZoneIdentifier extends ParameterBase<TimeZoneIdentifier, ZoneId
     
     public TimeZoneIdentifier(String content)
     {
-        super();
+        super(ZoneId.of(extractValue(content)));
     }
     
     public TimeZoneIdentifier(TimeZoneIdentifier source)

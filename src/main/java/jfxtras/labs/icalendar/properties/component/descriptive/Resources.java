@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendar.properties.AlternateTextRepresentationProperty;
 
@@ -9,7 +8,7 @@ public class Resources extends AlternateTextRepresentationProperty<Resources, Li
 {
     public Resources(String contentLine)
     {
-        super(contentLine);
+        super(contentLine, null);
 //        List<String> values = Arrays.asList(getPropertyValueString().split(","))
 //                .stream()
 //                .collect(Collectors.toList());
@@ -26,9 +25,9 @@ public class Resources extends AlternateTextRepresentationProperty<Resources, Li
         super();
     }
     
-    @Override
-    protected String getValueForContentLine()
-    {
-        return getValue().stream().collect(Collectors.joining(","));
-    }
+//    @Override
+//    protected String getValueForContentLine()
+//    {
+//        return getValue().stream().collect(Collectors.joining(","));
+//    }
 }

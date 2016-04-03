@@ -6,7 +6,7 @@ public class TimeZoneName extends LanguageProperty<TimeZoneName, String>
 {
     public TimeZoneName(String contentLine)
     {
-        super(contentLine);
+        super(contentLine, null);
 //        setValue(getPropertyValueString());
     }
     

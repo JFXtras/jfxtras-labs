@@ -51,14 +51,18 @@ public class DateTimeStartTest
     {
         DTStartZonedDateTime dateTimeStart = new DTStartZonedDateTime()
                 .withValue(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
+                .withTimeZoneIdentifier("America/Los_Angeles")
                 .withValueParameter(ValueType.DATE_ZONED_DATE_TIME);
-        System.out.println(dateTimeStart);
+        DTStartZonedDateTime expectedDateTimeStart = new DTStartZonedDateTime("DTSTART;TZID=America/Los_Angeles;VALUE=DATE-TIME:20160306T043000");
+        assertEquals(expectedDateTimeStart, dateTimeStart);
     }
     
     @Test
     public void canBuildDateTimeStartZoned2()
     {
         DTStartZonedDateTime dateTimeStart = new DTStartZonedDateTime(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
-        System.out.println(dateTimeStart);
+        DTStartZonedDateTime expectedDateTimeStart = new DTStartZonedDateTime("DTSTART;TZID=America/Los_Angeles:20160306T043000");
+        assertEquals(expectedDateTimeStart, dateTimeStart);
+//        System.out.println(dateTimeStart.getValue() + " " + dateTimeStart.getTimeZoneIdentifier());
     }
 }

@@ -48,9 +48,9 @@ public abstract class LanguageProperty<T,U> extends PropertyBase<T,U>
     /*
      * CONSTRUCTORS
      */    
-    protected LanguageProperty(String propertyString)
+    protected LanguageProperty(String propertyString, Boolean makeMeUnique)
     {
-        super(propertyString);
+        super(propertyString, null);
     }
     
     // copy constructor
@@ -61,6 +61,11 @@ public abstract class LanguageProperty<T,U> extends PropertyBase<T,U>
         {
             setLanguage(property.getLanguage());
         }
+    }
+    
+    public LanguageProperty(U value)
+    {
+        setValue(value);
     }
     
     public LanguageProperty()

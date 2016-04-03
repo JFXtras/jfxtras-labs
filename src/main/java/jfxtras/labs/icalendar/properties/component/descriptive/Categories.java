@@ -2,7 +2,6 @@ package jfxtras.labs.icalendar.properties.component.descriptive;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
@@ -19,7 +18,7 @@ public class Categories extends LanguageProperty<Categories, List<String>>
 {    
     public Categories(String propertyString)
     {
-        super(propertyString);
+        super(propertyString, null);
     }
     
     public Categories(Categories source)
@@ -38,9 +37,9 @@ public class Categories extends LanguageProperty<Categories, List<String>>
         setValue(Arrays.asList(category));
     }
     
-    @Override
-    protected String getValueForContentLine()
-    {
-        return getValue().stream().collect(Collectors.joining(","));
-    }
+//    @Override
+//    protected String getValueForContentLine()
+//    {
+//        return getValue().stream().collect(Collectors.joining(","));
+//    }
 }

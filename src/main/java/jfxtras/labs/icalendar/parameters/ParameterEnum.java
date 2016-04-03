@@ -8,6 +8,7 @@ import jfxtras.labs.icalendar.properties.CalendarUserAddressProperty;
 import jfxtras.labs.icalendar.properties.LanguageProperty;
 import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyBase;
+import jfxtras.labs.icalendar.properties.TimeZoneProperty;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
@@ -481,22 +482,15 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            TimeZoneProperty<?> castProperty = (TimeZoneProperty<?>) property;
+            castProperty.setTimeZoneIdentifier(new TimeZoneIdentifier(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            TimeZoneProperty<?> castProperty = (TimeZoneProperty<?>) parent;
+            return castProperty.getTimeZoneIdentifier();
         }
 
         @Override

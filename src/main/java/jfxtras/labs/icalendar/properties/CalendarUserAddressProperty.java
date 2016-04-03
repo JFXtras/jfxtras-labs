@@ -76,9 +76,9 @@ public abstract class CalendarUserAddressProperty<T,U> extends LanguageProperty<
     /*
      * CONSTRUCTORS
      */    
-    protected CalendarUserAddressProperty(String propertyString)
+    protected CalendarUserAddressProperty(String propertyString, Boolean makeMeUnique)
     {
-        super(propertyString);
+        super(propertyString, null);
 //        setValue((U) getPropertyValueString());
     }
 
@@ -95,6 +95,11 @@ public abstract class CalendarUserAddressProperty<T,U> extends LanguageProperty<
             setDirectoryEntryReference(property.getDirectoryEntryReference());
         }
     }
-
+    
+    public CalendarUserAddressProperty(U value)
+    {
+        setValue(value);
+    }
+    
     public CalendarUserAddressProperty() { super(); }
 }

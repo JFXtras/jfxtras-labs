@@ -2,11 +2,13 @@ package jfxtras.labs.icalendar.properties.component.time.start;
 
 import java.time.ZonedDateTime;
 
-public class DTStartZonedDateTime extends DateTimeStart<DTStartZonedDateTime, ZonedDateTime>
+import jfxtras.labs.icalendar.properties.TimeZoneProperty;
+
+public class DTStartZonedDateTime extends TimeZoneProperty<DTStartZonedDateTime>
 {
     public DTStartZonedDateTime(ZonedDateTime temporal)
     {
-        super();
+        super(temporal);
     }
 
     public DTStartZonedDateTime(String propertyString)
@@ -22,5 +24,6 @@ public class DTStartZonedDateTime extends DateTimeStart<DTStartZonedDateTime, Zo
     public DTStartZonedDateTime()
     {
         super();
-    }    
+    }
 }
+

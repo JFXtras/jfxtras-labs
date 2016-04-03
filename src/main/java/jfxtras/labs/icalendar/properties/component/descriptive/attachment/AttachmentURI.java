@@ -2,10 +2,6 @@ package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-
-import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 
 /**
  * ATTACH: Attachment
@@ -21,7 +17,7 @@ public class AttachmentURI extends Attachment<AttachmentURI, URI>
 {
     public AttachmentURI(String content) throws URISyntaxException
     {
-        super(content);
+        super(content, null);
 //        setValue(new URI(getPropertyValueString()));
     }
     
@@ -35,9 +31,9 @@ public class AttachmentURI extends Attachment<AttachmentURI, URI>
         super();
     }
     
-    @Override
-    protected List<ValueType> allowedValueTypes()
-    {
-        return Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER);
-    }
+//    @Override
+//    protected List<ValueType> allowedValueTypes()
+//    {
+//        return Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER);
+//    }
 }

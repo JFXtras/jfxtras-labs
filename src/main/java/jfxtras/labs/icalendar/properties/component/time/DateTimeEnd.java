@@ -9,12 +9,11 @@ public class DateTimeEnd extends PropertyBase<DateTimeEnd, Temporal>
     public DateTimeEnd(Temporal temporal)
     {
         super();
-        setValue(temporal);
     }
 
     public DateTimeEnd(String propertyString)
     {
-        super(propertyString);
+        super(propertyString, null);
     }
     
     public DateTimeEnd(DateTimeEnd source)

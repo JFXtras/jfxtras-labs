@@ -1,8 +1,5 @@
 package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.components.VAlarm;
@@ -11,7 +8,6 @@ import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.parameters.FormatType;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
 /**
@@ -64,9 +60,9 @@ public abstract class Attachment<T,U> extends PropertyBase<T,U>
      * CONSTRUCTORS
      */
     
-    Attachment(String content)
+    Attachment(String content, Boolean makeMeUnique)
     {
-        super(content);
+        super(content, null);
     }
     
     Attachment(Attachment<T,U> source)
@@ -76,16 +72,21 @@ public abstract class Attachment<T,U> extends PropertyBase<T,U>
 //        setFormatType(source.getFormatType());
     }
     
+    Attachment(U value)
+    {
+        super(value);
+    }
+    
     Attachment()
     {
         super();
     }
     
-    @Override
-    protected List<ValueType> allowedValueTypes()
-    {
-        return Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER, ValueType.BINARY);
-    }
+//    @Override
+//    protected List<ValueType> allowedValueTypes()
+//    {
+//        return Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER, ValueType.BINARY);
+//    }
     
 //    public static Attachment<?> parseContentLine(String content)
 //    {

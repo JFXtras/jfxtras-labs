@@ -1,11 +1,21 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.time.ZonedDateTime;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifier;
+import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
 
-public class TimeZoneProperty<T,U> extends PropertyBase<T, U>
+/**
+ * 
+ * @author David Bal
+ *
+ * @param <T> - implementation class
+ * @see DTStartZonedDateTime
+ */
+public abstract class TimeZoneProperty<T> extends PropertyBase<T, ZonedDateTime>
 {
     /**
      * TZID
@@ -37,22 +47,23 @@ public class TimeZoneProperty<T,U> extends PropertyBase<T, U>
     public T withTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (T) this; }
     public T withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (T) this; }    
 
+    
+    
     /*
      * CONSTRUCTORS
      */
     
-    public TimeZoneProperty(U temporal)
+    public TimeZoneProperty(ZonedDateTime temporal)
     {
-        super();
-        setValue(temporal);
+        super(temporal);
     }
 
     public TimeZoneProperty(String propertyString)
     {
-        super(propertyString);
+        super(propertyString, null);
     }
     
-    public TimeZoneProperty(TimeZoneProperty<T,U> source)
+    public TimeZoneProperty(TimeZoneProperty<T> source)
     {
         super(source);
     }
@@ -60,5 +71,18 @@ public class TimeZoneProperty<T,U> extends PropertyBase<T, U>
     public TimeZoneProperty()
     {
         super();
-    }   
+    }
+    
+    @Override
+    protected String getPropertyValueString()
+    {
+        return getTimeZoneIdentifier().getValue().toString() + ":" + super.getPropertyValueString();
+    }
+
+    @Override
+    public void setValue(ZonedDateTime value)
+    {
+        super.setValue(value);
+        setTimeZoneIdentifier(new TimeZoneIdentifier().withValue(value.getZone()));
+    }
 }
