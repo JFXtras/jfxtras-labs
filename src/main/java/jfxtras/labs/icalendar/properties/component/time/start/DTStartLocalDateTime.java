@@ -6,7 +6,7 @@ public class DTStartLocalDateTime extends DateTimeStart<DTStartLocalDateTime, Lo
 {
     public DTStartLocalDateTime(LocalDateTime temporal)
     {
-        super();
+        super(temporal);
     }
 
     public DTStartLocalDateTime(String propertyString)

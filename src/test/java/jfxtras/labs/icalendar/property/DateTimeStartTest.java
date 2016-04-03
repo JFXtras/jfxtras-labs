@@ -36,7 +36,7 @@ public class DateTimeStartTest
         assertEquals(LocalDate.of(2016, 3, 22), dateTimeStart.getValue());
     }
     
-    @Test
+    @Test // uses parse-content string constructor
     public void canParseDateTimeStartZoned()
     {
         DTStartZonedDateTime dateTimeStart = new DTStartZonedDateTime("DTSTART;TZID=America/Los_Angeles:20160306T043000");
@@ -46,7 +46,7 @@ public class DateTimeStartTest
         assertEquals(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")), dateTimeStart.getValue());
     }
     
-    @Test
+    @Test // uses no-arg constructor and chaining
     public void canBuildDateTimeStartZoned()
     {
         DTStartZonedDateTime dateTimeStart = new DTStartZonedDateTime()
@@ -57,12 +57,31 @@ public class DateTimeStartTest
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
     
-    @Test
+    @Test // uses Temporal as parameter in constructor
     public void canBuildDateTimeStartZoned2()
     {
         DTStartZonedDateTime dateTimeStart = new DTStartZonedDateTime(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
         DTStartZonedDateTime expectedDateTimeStart = new DTStartZonedDateTime("DTSTART;TZID=America/Los_Angeles:20160306T043000");
         assertEquals(expectedDateTimeStart, dateTimeStart);
-//        System.out.println(dateTimeStart.getValue() + " " + dateTimeStart.getTimeZoneIdentifier());
+    }
+
+    @Test
+    public void canBuildDateTimeStartZonedUTC()
+    {
+        DTStartZonedDateTime dateTimeStart = new DTStartZonedDateTime(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z")));
+        String expectedContentLine = "DTSTART:20160306T043000Z";
+        DTStartZonedDateTime expectedDateTimeStart = new DTStartZonedDateTime(expectedContentLine);
+        assertEquals(expectedContentLine, dateTimeStart.toContentLine());
+        assertEquals(expectedDateTimeStart, dateTimeStart);
+    }
+
+    @Test
+    public void canBuildDateTimeStartLocal()
+    {
+        DTStartLocalDateTime dateTimeStart = new DTStartLocalDateTime(LocalDateTime.of(2016, 3, 6, 4, 30));
+        String expectedContentLine = "DTSTART:20160306T043000";
+        DTStartLocalDateTime expectedDateTimeStart = new DTStartLocalDateTime(expectedContentLine);
+        assertEquals(expectedContentLine, dateTimeStart.toContentLine());
+        assertEquals(expectedDateTimeStart, dateTimeStart);
     }
 }

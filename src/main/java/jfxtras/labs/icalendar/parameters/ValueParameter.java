@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 
@@ -118,16 +119,36 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             @Override
             public <U> U parse(String value)
             {
-//                System.out.println("value parse:" + value + " " + ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER));
+                System.out.println("value:" + value);
                 return (U) ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
             }
 
             @Override
             public <U> String makeContent(U value)
             {
-                return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format((TemporalAccessor) value); // Time zone is added through TimeZoneIdentifier parameter
+                ZoneId z = ((ZonedDateTime) value).getZone();
+                if (z.equals(ZoneId.of("Z")))
+                {
+                    return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format((TemporalAccessor) value);
+                } else
+                {
+                    return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format((TemporalAccessor) value); // Time zone is added through TimeZoneIdentifier parameter
+                }
             }
         },
+//        DATE_UTC_DATE_TIME ("DATE-TIME") {
+//            @Override
+//            public <U> U parse(String value)
+//            {
+//                return (U) ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
+//            }
+//
+//            @Override
+//            public <U> String makeContent(U value)
+//            {
+//                return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format((TemporalAccessor) value);
+//            }
+//        },
         DURATION ("DURATION") {
             @Override
             public <U> U parse(String value)

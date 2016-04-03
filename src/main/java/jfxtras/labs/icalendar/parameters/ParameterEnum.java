@@ -1,8 +1,10 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
+import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.AlternateTextRepresentationProperty;
 import jfxtras.labs.icalendar.properties.CalendarUserAddressProperty;
 import jfxtras.labs.icalendar.properties.LanguageProperty;
@@ -490,7 +492,8 @@ public enum ParameterEnum
         public Parameter<?> getParameter(Property<?> parent)
         {
             TimeZoneProperty<?> castProperty = (TimeZoneProperty<?>) parent;
-            return castProperty.getTimeZoneIdentifier();
+            TimeZoneIdentifier parameter = castProperty.getTimeZoneIdentifier();
+            return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
         }
 
         @Override
@@ -505,10 +508,14 @@ public enum ParameterEnum
         public void parse(Property<?> property, String content)
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) property;
-//            System.out.println("value type:" + castProperty.propertyType().valueType().name() + " " + content);
-            // TODO - NEED WAY TO LOOK UP VALUE 
-            castProperty.setValueType(new ValueParameter(castProperty.propertyType().valueType()));
-//            castProperty.setValueType(new ValueParameter(content));
+            ValueType valueType = castProperty.propertyType().valueType();
+            if (valueType.toString().equals(content))
+            {
+                castProperty.setValueType(new ValueParameter(valueType));
+            } else
+            {
+                throw new IllegalArgumentException("Value type: " + content + " is not valid");
+            }
         }
 
         @Override

@@ -43,6 +43,7 @@ public enum PropertyEnum
     DATE_TIME_STAMP ("DTSTAMP", null, null, DateTimeStamp.class), // Change management
     DATE_TIME_START_DATE ("DTSTART", ValueType.DATE, Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), DTStartLocalDate.class), // Date and Time
     DATE_TIME_START_LOCAL_DATE_TIME ("DTSTART", ValueType.DATE_LOCAL_DATE_TIME, Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), DTStartLocalDateTime.class), // Date and Time
+//    DATE_TIME_START_UTC_DATE_TIME ("DTSTART", ValueType.DATE_ZONED_DATE_TIME, Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), DTStartZonedDateTime.class), // Date and Time
     DATE_TIME_START_ZONED_DATE_TIME ("DTSTART", ValueType.DATE_ZONED_DATE_TIME, Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), DTStartZonedDateTime.class), // Date and Time
     DESCRIPTION ("DESCRIPTION", ValueType.TEXT, Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Description.class), // Descriptive
     DURATION ("DURATION", null, null, null), // Date and Time
