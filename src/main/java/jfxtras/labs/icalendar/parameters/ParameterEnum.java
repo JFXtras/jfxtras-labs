@@ -46,14 +46,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            CalendarUserAddressProperty<?,?> castProperty = (CalendarUserAddressProperty<?, ?>) property;
+            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) property;
             castProperty.setCommonName(new CommonName(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            CalendarUserAddressProperty<?,?> castProperty = (CalendarUserAddressProperty<?,?>) parent;
+            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) parent;
             return castProperty.getCommonName();
         }
 
@@ -138,14 +138,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            CalendarUserAddressProperty<?,?> castProperty = (CalendarUserAddressProperty<?, ?>) property;
+            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) property;
             castProperty.setDirectoryEntryReference(new DirectoryEntryReference(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            CalendarUserAddressProperty<?,?> castProperty = (CalendarUserAddressProperty<?,?>) parent;
+            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) parent;
             return castProperty.getDirectoryEntryReference();
         }
 
@@ -253,21 +253,14 @@ public enum ParameterEnum
         public void parse(Property<?> property, String content)
         {
             Attendee castProperty = (Attendee) property;
-//            castProperty.setGroupMembership(new GroupMembership(content));
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            castProperty.setGroupMembership(new GroupMembership(extractValue(content)));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            Attendee castProperty = (Attendee) parent;
+            return castProperty.getGroupMembership();
         }
 
         @Override
@@ -281,22 +274,15 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            Attendee castProperty = (Attendee) property;
+            castProperty.setParticipation(new Participation(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            Attendee castProperty = (Attendee) parent;
+            return castProperty.getParticipation();
         }
 
         @Override
@@ -397,22 +383,15 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            Attendee castProperty = (Attendee) property;
+            castProperty.setParticipationRole(new ParticipationRole(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            Attendee castProperty = (Attendee) parent;
+            return castProperty.getParticipationRole();
         }
 
         @Override
@@ -426,22 +405,15 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            Attendee castProperty = (Attendee) property;
+            castProperty.setRSVP(content);
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            Attendee castProperty = (Attendee) parent;
+            return castProperty.getRSVP();
         }
 
         @Override
@@ -589,7 +561,7 @@ public enum ParameterEnum
      */
 
     /**
-     * Remove parameter name and equals sign, if present, otherwise return input string
+     * Remove parameter name and equals sign, if present, otherwise returns input string
      * 
      * @param input - parameter content with or without name and equals sign
      * @param name - name of parameter

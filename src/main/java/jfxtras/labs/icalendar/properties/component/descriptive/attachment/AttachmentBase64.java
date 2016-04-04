@@ -72,7 +72,6 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
     public AttachmentBase64(CharSequence content) throws URISyntaxException
     {
         super(content);
-//        setValue(getPropertyValueString());
     }
     
     public AttachmentBase64(AttachmentBase64 source)
@@ -109,10 +108,5 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
         }
         return true;
     }
-    
-//    @Override
-//    protected List<ValueType> allowedValueTypes()
-//    {
-//        return Arrays.asList(ValueType.BINARY);
-//    }
+
 }

@@ -18,6 +18,7 @@ import jfxtras.labs.icalendar.properties.component.recurrence.Recurrence;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /** tests parsing ISO.8601.2004 date string properties */
+@Deprecated // done in ValueType now
 public class TemporalPropertyTest
 {
     @Test

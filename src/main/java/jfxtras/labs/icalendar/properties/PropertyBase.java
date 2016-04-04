@@ -26,9 +26,16 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**
  * Base iCalendar property class
- * Contains other-parameters
- * Also contains methods used by all properties
- *  
+ * Contains property value, value parameter (ValueType) and other-parameters
+ * Also contains several support methods used by other properties
+ * 
+ * abstract subclasses
+ * @see AlternateTextRepresentationProperty
+ * @see CalendarUserAddressProperty
+ * @see LanguageProperty
+ * @see TimeZoneProperty
+ * 
+ * concrete subclasses
  * @see UniqueIdentifier
  * @see CalendarScale
  * @see Method
@@ -349,7 +356,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
     {
         StringBuilder builder = new StringBuilder(propertyType().toString());
 //        System.out.println("parameters:" + parameters().size());
-        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContentLine()));
+        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         builder.append(":" + propertyType().valueType().makeContent(getValue()));
         return builder.toString();

@@ -17,7 +17,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
  * @see Attendee
  * @see Organizer
  */
-public class CommonName extends ParameterBase<CommonName, String>
+public class CommonName extends ParameterText<CommonName>
 {
     public CommonName()
     {
@@ -26,7 +26,7 @@ public class CommonName extends ParameterBase<CommonName, String>
   
     public CommonName(String content)
     {
-        super(extractValue(content));
+        super(content);
     }
 
     public CommonName(CommonName source)

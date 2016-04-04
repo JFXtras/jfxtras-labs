@@ -11,6 +11,8 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
  * Property with language and a text-based value
  *  
  * @param <T>
+ * 
+ * concrete subclasses
  * @see Categories
  * @see TimeZoneName
  */

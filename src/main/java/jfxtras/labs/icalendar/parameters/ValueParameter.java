@@ -119,7 +119,6 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             @Override
             public <U> U parse(String value)
             {
-                System.out.println("value:" + value);
                 return (U) ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
             }
 

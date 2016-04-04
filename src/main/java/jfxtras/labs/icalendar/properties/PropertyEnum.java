@@ -21,6 +21,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentURI;
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
+import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
@@ -28,11 +29,26 @@ import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTi
 public enum PropertyEnum
 {
     ACTION ("ACTION", null, null, null), // Alarm
-    ATTACHMENT_URI ("ATTACH", ValueType.UNIFORM_RESOURCE_IDENTIFIER, Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.VALUE_DATA_TYPES), AttachmentURI.class), // Descriptive
-    ATTACHMENT_BASE64 ("ATTACH", ValueType.BINARY, Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES), AttachmentBase64.class), // Descriptive
-    ATTENDEE ("ATTENDEE", null, null, null), // Relationship
+    ATTACHMENT_URI ("ATTACH"
+            , ValueType.UNIFORM_RESOURCE_IDENTIFIER
+            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.VALUE_DATA_TYPES)
+            , AttachmentURI.class), // Descriptive
+    ATTACHMENT_BASE64 ("ATTACH"
+            , ValueType.BINARY
+            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES)
+            , AttachmentBase64.class), // Descriptive
+    ATTENDEE ("ATTENDEE"    // name
+            , ValueType.CALENDAR_USER_ADDRESS   // value type
+            , Arrays.asList(ParameterEnum.CALENDAR_USER_TYPE, ParameterEnum.COMMON_NAME, ParameterEnum.DELEGATEES, // allowed parameters
+                    ParameterEnum.DELEGATORS, ParameterEnum.DIRECTORY_ENTRY_REFERENCE,
+                    ParameterEnum.GROUP_OR_LIST_MEMBERSHIP, ParameterEnum.LANGUAGE, ParameterEnum.PARTICIPATION_ROLE,
+                    ParameterEnum.PARTICIPATION_STATUS, ParameterEnum.RSVP_EXPECTATION, ParameterEnum.SENT_BY)
+            , Attendee.class), // property class
     CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class), // Calendar
-    CATEGORIES ("CATEGORIES", ValueType.TEXT, Arrays.asList(ParameterEnum.LANGUAGE), Categories.class), // Descriptive
+    CATEGORIES ("CATEGORIES"
+            , ValueType.TEXT
+            , Arrays.asList(ParameterEnum.LANGUAGE)
+            , Categories.class), // Descriptive
     CLASSIFICATION ("CLASS", null, null, null), // Descriptive
     COMMENT ("COMMENT", ValueType.TEXT, null, null), // Descriptive
     CONTACT ("CONTACT", null, null, null), // Relationship

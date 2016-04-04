@@ -20,16 +20,21 @@ import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
  * @author David Bal
  * @see Attendee
  */
-public class Delegatees extends ParameterBase<Delegatees, List<URI>>
+public class Delegatees extends ParameterURIList<GroupMembership>
 {
     public Delegatees()
     {
         super();
     }
     
+    public Delegatees(List<URI> list)
+    {
+        super(list);
+    }
+    
     public Delegatees(String content)
     {
-        super(makeURIList(extractValue(content)));
+        super(content);
     }
     
     public Delegatees(Delegatees source)

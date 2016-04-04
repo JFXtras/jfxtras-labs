@@ -35,19 +35,19 @@ public class SummaryTest
     @Test
     public void canParseSummary()
     {
-        Summary madeSummary = new Summary("SUMMARY:TEST SUMMARY");
-        String expectedSummary = "SUMMARY:TEST SUMMARY";
-        assertEquals(expectedSummary, madeSummary.toContentLine());
-//        madeSummary.setLanguage((Language)null); - for testing change listeners - TODO 
-//        madeSummary.setLanguage("en");
+        Summary madeProperty = new Summary("SUMMARY:TEST SUMMARY");
+        String expectedContent = "SUMMARY:TEST SUMMARY";
+        assertEquals(expectedContent, madeProperty.toContentLine());
+//        madeProperty.setLanguage((Language)null); - for testing change listeners - TODO 
+//        madeProperty.setLanguage("en");
     }
     
     @Test
     public void canParseSummary2()
     {
-        Summary madeSummary = new Summary("TEST SUMMARY2");
-        String expectedSummary = "SUMMARY:TEST SUMMARY2";
-        assertEquals(expectedSummary, madeSummary.toContentLine());
+        Summary madeProperty = new Summary("TEST SUMMARY2");
+        String expectedContent = "SUMMARY:TEST SUMMARY2";
+        assertEquals(expectedContent, madeProperty.toContentLine());
     }
 
 }

@@ -2,7 +2,22 @@ package jfxtras.labs.icalendar.properties.component.time.start;
 
 import java.time.LocalDate;
 
-public class DTStartLocalDate extends DateTimeStart<DTStartLocalDate, LocalDate>
+import jfxtras.labs.icalendar.properties.PropertyBase;
+
+/**
+ * DTSTART
+ * Date-Time Start (for local date only)
+ * RFC 5545, 3.8.2.4, page 97
+ * 
+ * This property specifies when the calendar component begins.
+ * 
+ * Example:
+ * DTSTART;VALUE=DATE:20160307
+ * 
+ * @author David Bal
+ *
+ */
+public class DTStartLocalDate extends PropertyBase<DTStartLocalDate, LocalDate>
 {
     public DTStartLocalDate(LocalDate temporal)
     {

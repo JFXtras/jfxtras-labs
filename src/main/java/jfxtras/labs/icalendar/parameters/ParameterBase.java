@@ -28,6 +28,7 @@ public class ParameterBase<T,U> implements Parameter<U>
     
     @Override
     public U getValue() { return value.get(); }
+    @Override
     public ObjectProperty<U> valueProperty() { return value; }
     private ObjectProperty<U> value;
     @Override
@@ -35,7 +36,7 @@ public class ParameterBase<T,U> implements Parameter<U>
     public T withValue(U value) { setValue(value); return (T) this; }
 
     @Override
-    public String toContentLine()
+    public String toContent()
     {
         final String value;
         if (getValue() instanceof Collection)
@@ -43,6 +44,9 @@ public class ParameterBase<T,U> implements Parameter<U>
             value = ((Collection<?>) getValue()).stream()
                     .map(obj -> addDoubleQuotesIfNecessary(obj.toString()))
                     .collect(Collectors.joining(","));
+        } else if (getValue() instanceof Boolean)
+        {
+            value = getValue().toString().toUpperCase();
         } else
         {
             value = addDoubleQuotesIfNecessary(getValue().toString());
@@ -53,7 +57,7 @@ public class ParameterBase<T,U> implements Parameter<U>
     @Override
     public String toString()
     {
-        return super.toString() + "," + toContentLine();
+        return super.toString() + "," + toContent();
     }
 
     @Override
@@ -83,7 +87,7 @@ public class ParameterBase<T,U> implements Parameter<U>
     @Override
     public int compareTo(Parameter<U> test)
     {
-        return toContentLine().compareTo(test.toContentLine());
+        return toContent().compareTo(test.toContent());
     }
     
     /*

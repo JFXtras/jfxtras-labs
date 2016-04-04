@@ -8,11 +8,7 @@ public class Resources extends AlternateTextRepresentationProperty<Resources, Li
 {
     public Resources(String contentLine)
     {
-        super(contentLine, null);
-//        List<String> values = Arrays.asList(getPropertyValueString().split(","))
-//                .stream()
-//                .collect(Collectors.toList());
-//        setValue(values);
+        super(contentLine);
     }
     
     public Resources(Resources source)
@@ -24,10 +20,4 @@ public class Resources extends AlternateTextRepresentationProperty<Resources, Li
     {
         super();
     }
-    
-//    @Override
-//    protected String getValueForContentLine()
-//    {
-//        return getValue().stream().collect(Collectors.joining(","));
-//    }
 }

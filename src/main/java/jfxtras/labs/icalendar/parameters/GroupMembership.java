@@ -17,16 +17,21 @@ import java.util.List;
  * @author David Bal
  *
  */
-public class GroupMembership extends ParameterBase<GroupMembership, List<URI>>
+public class GroupMembership extends ParameterURIList<GroupMembership>
 {
     public GroupMembership()
     {
         super();
     }
+
+    public GroupMembership(List<URI> values)
+    {
+        super(values);
+    }
     
     public GroupMembership(String content)
     {
-        super(makeURIList(extractValue(content)));
+        super(content);
     }
     
     public GroupMembership(GroupMembership source)

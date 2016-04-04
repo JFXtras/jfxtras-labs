@@ -38,7 +38,7 @@ public interface Parameter<U> extends Comparable<Parameter<U>>
      * for example:
      * LANGUAGE=en-US
      */
-    String toContentLine();
+    String toContent();
     
     /**
      * Copy parameter from source property to destination property

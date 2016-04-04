@@ -1,12 +1,38 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.net.URI;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.CommonName;
 import jfxtras.labs.icalendar.parameters.DirectoryEntryReference;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
+import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
 
-public abstract class CalendarUserAddressProperty<T,U> extends LanguageProperty<T,U>
+/**
+ * Abstract class for properties with a CAL-ADDRESS value.
+ * The value is stored as a URI object
+ * 
+ * CAL-ADDRESS
+ * Calendar User Address
+ * RFC 5545, 3.3.3, page 31
+ *  
+ * This value type is used to identify properties that contain a calendar user address.
+ * The email address of a calendar user.
+ * 
+ * Example: mailto:jane_doe@example.com
+ * 
+ * @author David Bal
+ *
+ * @param <T>
+ * @param <U>
+ * 
+ * concrete subclasses
+ * @see Organizer
+ * @see Attendee
+ */
+public abstract class CalendarUserAddressProperty<T> extends LanguageProperty<T, URI>
 {
     /**
      * CN
@@ -79,24 +105,15 @@ public abstract class CalendarUserAddressProperty<T,U> extends LanguageProperty<
     protected CalendarUserAddressProperty(String propertyString)
     {
         super(propertyString);
-//        setValue((U) getPropertyValueString());
     }
 
     // copy constructor
-    public CalendarUserAddressProperty(CalendarUserAddressProperty<T,U> property)
+    public CalendarUserAddressProperty(CalendarUserAddressProperty<T> property)
     {
         super(property);
-        if (getCommonName() != null)
-        {
-            setCommonName(property.getCommonName());
-        }
-        if (getDirectoryEntryReference() != null)
-        {
-            setDirectoryEntryReference(property.getDirectoryEntryReference());
-        }
     }
     
-    public CalendarUserAddressProperty(U value)
+    public CalendarUserAddressProperty(URI value)
     {
         setValue(value);
     }

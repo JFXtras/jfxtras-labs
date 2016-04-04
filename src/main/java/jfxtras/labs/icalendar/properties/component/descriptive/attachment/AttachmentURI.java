@@ -18,7 +18,6 @@ public class AttachmentURI extends Attachment<AttachmentURI, URI>
     public AttachmentURI(String content) throws URISyntaxException
     {
         super(content);
-//        setValue(new URI(getPropertyValueString()));
     }
     
     public AttachmentURI(AttachmentURI source)
@@ -31,9 +30,4 @@ public class AttachmentURI extends Attachment<AttachmentURI, URI>
         super();
     }
     
-//    @Override
-//    protected List<ValueType> allowedValueTypes()
-//    {
-//        return Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER);
-//    }
 }

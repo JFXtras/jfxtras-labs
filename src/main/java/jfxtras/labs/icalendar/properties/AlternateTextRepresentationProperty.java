@@ -15,6 +15,8 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
  * Property with language, alternate text display, and a text-based value
  *  
  * @param <T>
+ * 
+ * concrete subclasses
  * @see Comment
  * @see Contact
  * @see Description

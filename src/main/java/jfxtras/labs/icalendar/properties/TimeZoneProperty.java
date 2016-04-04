@@ -10,6 +10,8 @@ import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
 
 /**
+ * Abstract class for all UTC and zoned-date-time classes
+ * Contains the time zone identifier parameter
  * 
  * @author David Bal
  *
@@ -46,9 +48,7 @@ public abstract class TimeZoneProperty<T> extends PropertyBase<T, ZonedDateTime>
     }
     public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifier(value)); }
     public T withTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (T) this; }
-    public T withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (T) this; }    
-
-    
+    public T withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (T) this; }        
     
     /*
      * CONSTRUCTORS

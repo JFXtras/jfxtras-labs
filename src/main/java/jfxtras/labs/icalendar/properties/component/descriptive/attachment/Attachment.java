@@ -21,11 +21,13 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  *  reports/r-960812.p
  * @param <T> - URI or String (String is for BASE64 binary encoding
  *  
+ *  // components using properties of this type
  *  @see VEvent
  *  @see VTodo
  *  @see VJournal
  *  @see VAlarm
  *  
+ *  // concrete classes
  *  @see AttachmentURI
  *  @see AttachmentBase64
  */
@@ -68,8 +70,6 @@ public abstract class Attachment<T,U> extends PropertyBase<T,U>
     Attachment(Attachment<T,U> source)
     {
         super(source);
-//        setEncoding(source.getEncoding());
-//        setFormatType(source.getFormatType());
     }
     
     Attachment(U value)
@@ -81,15 +81,4 @@ public abstract class Attachment<T,U> extends PropertyBase<T,U>
     {
         super();
     }
-    
-//    @Override
-//    protected List<ValueType> allowedValueTypes()
-//    {
-//        return Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER, ValueType.BINARY);
-//    }
-    
-//    public static Attachment<?> parseContentLine(String content)
-//    {
-//        
-//    }
 }

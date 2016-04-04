@@ -160,6 +160,7 @@ public final class ICalendarUtilities
        
        // find parameters
        int parameterEnd = parameterStart;
+       boolean quoteOn = false;
        while (parameterEnd < propertyLine.length())
        {
            final String name;
@@ -183,23 +184,47 @@ public final class ICalendarUtilities
                } else
                {
                    name = propertyLine.substring(parameterStart, equalsPosition).toUpperCase();
-                   char valueStart = propertyLine.charAt(equalsPosition+1);
-                   if (valueStart == '\"')
-                   { // DQUOTE delimited parameter value
-                       parameterEnd = Math.min(propertyLine.indexOf('\"', valueStart+1)+1, propertyLine.length());
-                       value = propertyLine.substring(equalsPosition+2, parameterEnd-1); // removes quotes
-//                   System.out.println("parameter:" + value);
-                   } else
-                   { // regular parameter value
-                       for (parameterEnd = equalsPosition+2; parameterEnd < propertyLine.length(); parameterEnd++)
+
+//                   { // DQUOTE delimited parameter value
+//                       // TODO - NEED TO ACCOMODATE LIST OF URI
+//                       quoteFound = true;
+//                       parameterEnd = Math.min(propertyLine.indexOf('\"', valueStart+1)+1, propertyLine.length());
+//                       value = propertyLine.substring(equalsPosition+2, parameterEnd-1); // removes quotes
+//                   } else
+ //                  { // regular parameter value
+                       for (int testIndex = equalsPosition+1; testIndex < propertyLine.length(); testIndex++)
                        {
-                           if ((propertyLine.charAt(parameterEnd) == ';') || (propertyLine.charAt(parameterEnd) == ':'))
+                           if (propertyLine.charAt(testIndex) == '\"')
                            {
-                               break;
-                           }           
+                               quoteOn = ! quoteOn;
+                           }
+                           if (! quoteOn) // can't end while quote is on
+                           {
+                               if ((propertyLine.charAt(testIndex) == ';') || (propertyLine.charAt(testIndex) == ':'))
+                               {
+                                   parameterEnd = testIndex;
+                                   break;
+                               }
+                           }
                        }
-                       value = propertyLine.substring(equalsPosition+1, parameterEnd);
-                   }
+//                       char valueStart = propertyLine.charAt(equalsPosition+1);
+//                       boolean quoteFound = valueStart == '\"';
+//                       if (quoteFound)
+//                       {
+//                           StringBuilder builder = new StringBuilder(propertyLine.substring(equalsPosition+1, parameterEnd));
+//                           for (int i=0; i<builder.length(); i++)
+//                           {
+//                               if (builder.charAt(i) == '\"')
+//                               {
+//                                   builder.deleteCharAt(i);
+//                               }
+//                           }
+//                           value = builder.toString();
+//                       } else
+//                       {
+                           value = propertyLine.substring(equalsPosition+1, parameterEnd);
+//                       }
+//                   }
 //                  System.out.println("parameter:" + value);
                }
            } else
