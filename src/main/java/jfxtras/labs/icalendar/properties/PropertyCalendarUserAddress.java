@@ -33,7 +33,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
  * @see Organizer
  * @see Attendee
  */
-public abstract class CalendarUserAddressProperty<T> extends LanguageProperty<T, URI>
+public abstract class PropertyCalendarUserAddress<T> extends PropertyLanguage<T, URI>
 {
     /**
      * CN
@@ -137,21 +137,21 @@ public abstract class CalendarUserAddressProperty<T> extends LanguageProperty<T,
     /*
      * CONSTRUCTORS
      */    
-    protected CalendarUserAddressProperty(String propertyString)
+    protected PropertyCalendarUserAddress(String propertyString)
     {
         super(propertyString);
     }
 
     // copy constructor
-    public CalendarUserAddressProperty(CalendarUserAddressProperty<T> property)
+    public PropertyCalendarUserAddress(PropertyCalendarUserAddress<T> property)
     {
         super(property);
     }
     
-    public CalendarUserAddressProperty(URI value)
+    public PropertyCalendarUserAddress(URI value)
     {
         setValue(value);
     }
     
-    public CalendarUserAddressProperty() { super(); }
+    public PropertyCalendarUserAddress() { super(); }
 }

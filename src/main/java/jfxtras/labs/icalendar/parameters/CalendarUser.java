@@ -18,9 +18,11 @@ import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
  */
 public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
 {
+    private String unknownValue;
+
     public CalendarUser()
     {
-        super(CalendarUserType.INDIVIDUAL);
+        super(CalendarUserType.INDIVIDUAL); // default value
     }
 
     public CalendarUser(CalendarUserType type)
@@ -31,11 +33,23 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
     public CalendarUser(String content)
     {
         super(CalendarUserType.valueOf2(content));
+        if (getValue() == CalendarUserType.UNKNOWN)
+        {
+            unknownValue = content;
+        }
     }
 
     public CalendarUser(CalendarUser source)
     {
         super(source);
+    }
+    
+    @Override
+    public String toContent()
+    {
+        String value = (getValue() == CalendarUserType.UNKNOWN) ? unknownValue : getValue().toString();
+        String parameterName = myParameterEnum().toString();
+        return ";" + parameterName + "=" + value;
     }
     
     public enum CalendarUserType

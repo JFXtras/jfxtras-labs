@@ -1,43 +1,57 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
-import javafx.util.StringConverter;
+import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VJournal;
+import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.descriptive.Classification.ClassificationType;
 
+/**
+ * CLASS
+ * Classification
+ * RFC 5545, 3.8.1.3, page 82
+ * 
+ * This property defines the access classification for a calendar component.
+ * 
+ * Example:
+ * CLASS:PUBLIC
+ * 
+ * @author David Bal
+ * 
+ * The property can be specified in following components:
+ * @see VEvent
+ * @see VTodo
+ * @see VJournal
+ */
 public class Classification extends PropertyBase<Classification, ClassificationType>
 {
-    @Deprecated // probably won't use
-    private StringConverter<ClassificationType> converter = new StringConverter<ClassificationType>()
-    {
-        @Override public String toString(ClassificationType type)
-        {
-            if (getValue() == ClassificationType.UNKNOWN)
-            {
-                return unknownValue;
-            }
-            return type.toString();
-        }
-        @Override public ClassificationType fromString(String string)
-        {
-            ClassificationType type = ClassificationType.valueOf2(string);
-            if (type == ClassificationType.UNKNOWN)
-            {
-                unknownValue = string;
-            }
-            return ClassificationType.valueOf2(string);
-        }
-    };
+//    @Deprecated // probably won't use
+//    private StringConverter<ClassificationType> converter = new StringConverter<ClassificationType>()
+//    {
+//        @Override public String toString(ClassificationType type)
+//        {
+//            if (getValue() == ClassificationType.UNKNOWN)
+//            {
+//                return unknownValue;
+//            }
+//            return type.toString();
+//        }
+//        @Override public ClassificationType fromString(String string)
+//        {
+//            ClassificationType type = ClassificationType.valueOf2(string);
+//            if (type == ClassificationType.UNKNOWN)
+//            {
+//                unknownValue = string;
+//            }
+//            return ClassificationType.valueOf2(string);
+//        }
+//    };
     
-    private String unknownValue;
+    private String unknownValue; // contains exact string for unknown property value
 
     public Classification(String content)
     {
         super(content);
-//        super(ClassificationType.valueOf2(content));
-//        if (getValue() == ClassificationType.UNKNOWN)
-//        {
-//            unknownValue = content;
-//        }
     }
     
     public Classification(ClassificationType type)
@@ -54,25 +68,6 @@ public class Classification extends PropertyBase<Classification, ClassificationT
     {
         super(ClassificationType.PUBLIC); // default value
     }
-    
-//    @Override
-//    public String toContentLine()
-//    {
-//        StringBuilder builder = contentLinePart1();
-//        System.out.println("value:" + getValue() + " " + propertyType().defaultValueType());
-//        String value;
-//        if (getValue() == ClassificationType.UNKNOWN)
-//            value = unknownValue;
-//        else
-//        {
-//            System.out.println("here:" + getValue());
-//            ValueType defaultValueType = propertyType().defaultValueType();
-//            ClassificationType value2 = getValue();
-//            value = defaultValueType.makeContent(value2);
-//        }
-//        builder.append(":" + value);
-//        return builder.toString();
-//    }
     
     @Override
     protected ClassificationType valueFromString(String propertyValueString)

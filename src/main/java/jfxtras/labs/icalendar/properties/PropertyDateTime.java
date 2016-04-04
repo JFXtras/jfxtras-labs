@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
-public class PropertyDateTime<T> extends PropertyBase<T, LocalDateTime>
+public abstract class PropertyDateTime<T> extends PropertyBase<T, LocalDateTime>
 {
     public PropertyDateTime(LocalDateTime temporal)
     {

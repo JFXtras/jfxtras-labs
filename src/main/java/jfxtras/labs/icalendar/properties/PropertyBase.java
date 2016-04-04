@@ -27,9 +27,9 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * Also contains several support methods used by other properties
  * 
  * abstract subclasses
- * @see AlternateTextRepresentationProperty
- * @see CalendarUserAddressProperty
- * @see LanguageProperty
+ * @see PropertyAlternateTextRepresentation
+ * @see PropertyCalendarUserAddress
+ * @see PropertyLanguage
  * @see PropertyTimeZone
  * 
  * concrete subclasses

@@ -22,4 +22,24 @@ public class GeneralPropertyTest
         expectedMap.put("LANGUAGE", "en");
         assertEquals(expectedMap, valueMap);
     }
+    
+    @Test
+    public void canParseSummaryProperty()
+    {
+        String expectedContent = "SUMMARY:Department Party";
+        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(expectedContent));
+        SortedMap<String, String> expectedMap = new TreeMap<>();
+        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party");
+        assertEquals(expectedMap, valueMap);
+    }
+    
+    @Test
+    public void canParseSummaryProperty2()
+    {
+        String s = "Department Party";
+        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
+        SortedMap<String, String> expectedMap = new TreeMap<>();
+        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party");
+        assertEquals(expectedMap, valueMap);
+    }
 }

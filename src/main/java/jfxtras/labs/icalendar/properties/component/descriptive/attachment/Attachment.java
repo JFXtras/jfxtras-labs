@@ -21,13 +21,13 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  *  reports/r-960812.p
  * @param <T> - URI or String (String is for BASE64 binary encoding
  *  
- *  // components using properties of this type
+ *  The property can be specified in following components:
  *  @see VEvent
  *  @see VTodo
  *  @see VJournal
  *  @see VAlarm
  *  
- *  // concrete classes
+ *  concrete classes
  *  @see AttachmentURI
  *  @see AttachmentBase64
  */

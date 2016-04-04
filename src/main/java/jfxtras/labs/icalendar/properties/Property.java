@@ -11,7 +11,7 @@ import jfxtras.labs.icalendar.parameters.ParameterEnum;
  * @author David Bal
  * @see PropertyEnum - enum of all supported Properties
  * @see PropertyBase
- * @see LanguageProperty
+ * @see PropertyLanguage
  *
  * @param <U> - type of value stored in Property
  */

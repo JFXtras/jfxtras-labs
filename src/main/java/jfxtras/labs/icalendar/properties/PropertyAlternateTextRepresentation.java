@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.net.URI;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.AlternateTextRepresentation;
@@ -24,7 +26,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
  * @see Resources
  * @see Summary
  */
-public abstract class AlternateTextRepresentationProperty<T,U> extends LanguageProperty<T,U>
+public abstract class PropertyAlternateTextRepresentation<T,U> extends PropertyLanguage<T,U>
 {
     /**
      * ALTREP : Alternate Text Representation
@@ -76,20 +78,21 @@ public abstract class AlternateTextRepresentationProperty<T,U> extends LanguageP
             alternateTextRepresentationProperty().set(alternateTextRepresentation);
         }
     }
+    public void setAlternateTextRepresentation(String value) { setAlternateTextRepresentation(new AlternateTextRepresentation(value)); }
     public T withAlternateTextRepresentation(AlternateTextRepresentation altrep) { setAlternateTextRepresentation(altrep); return (T) this; }
-    public T withAlternateTextRepresentation(String content) { ParameterEnum.ALTERNATE_TEXT_REPRESENTATION.parse(this, content); return (T) this; }
+    public T withAlternateTextRepresentation(URI value) { setAlternateTextRepresentation(new AlternateTextRepresentation(value)); return (T) this; }
+    public T withAlternateTextRepresentation(String content) { setAlternateTextRepresentation(content); return (T) this; }
     
     /*
      * CONSTRUCTORS
      */    
-    protected AlternateTextRepresentationProperty(CharSequence propertyString)
+    protected PropertyAlternateTextRepresentation(CharSequence propertyString)
     {
         super(propertyString);
-//        setValue((U) getPropertyValueString());
     }
 
     // copy constructor
-    public AlternateTextRepresentationProperty(AlternateTextRepresentationProperty<T,U> property)
+    public PropertyAlternateTextRepresentation(PropertyAlternateTextRepresentation<T,U> property)
     {
         super(property);
         if (getAlternateTextRepresentation() != null)
@@ -98,10 +101,10 @@ public abstract class AlternateTextRepresentationProperty<T,U> extends LanguageP
         }
     }
 
-    public AlternateTextRepresentationProperty(U value)
+    public PropertyAlternateTextRepresentation(U value)
     {
         setValue(value);
     }
     
-    public AlternateTextRepresentationProperty() { super(); }
+    public PropertyAlternateTextRepresentation() { super(); }
 }

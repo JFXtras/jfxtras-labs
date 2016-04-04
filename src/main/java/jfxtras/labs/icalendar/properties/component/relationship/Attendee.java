@@ -17,7 +17,7 @@ import jfxtras.labs.icalendar.parameters.Participation.ParticipationStatus;
 import jfxtras.labs.icalendar.parameters.ParticipationRole;
 import jfxtras.labs.icalendar.parameters.ParticipationRole.ParticipationRoleType;
 import jfxtras.labs.icalendar.parameters.RSVP;
-import jfxtras.labs.icalendar.properties.CalendarUserAddressProperty;
+import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
 
 /**
  * ATTENDEE
@@ -34,7 +34,7 @@ import jfxtras.labs.icalendar.properties.CalendarUserAddressProperty;
  * @author David Bal
  *
  */
-public class Attendee extends CalendarUserAddressProperty<Attendee>
+public class Attendee extends PropertyCalendarUserAddress<Attendee>
 {
     /**
      * CUTYPE

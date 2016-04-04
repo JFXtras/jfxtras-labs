@@ -1,8 +1,8 @@
 package jfxtras.labs.icalendar.properties.component.timezone;
 
-import jfxtras.labs.icalendar.properties.LanguageProperty;
+import jfxtras.labs.icalendar.properties.PropertyLanguage;
 
-public class TimeZoneName extends LanguageProperty<TimeZoneName, String>
+public class TimeZoneName extends PropertyLanguage<TimeZoneName, String>
 {
     public TimeZoneName(String contentLine)
     {

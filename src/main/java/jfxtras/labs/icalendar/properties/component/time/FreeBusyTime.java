@@ -71,6 +71,29 @@ public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDate
 //        setValue(periods);
     }
     
+//  @Override
+//  public <U> U parse(String value)
+//  {
+//      String[] time = value.split("/");
+//      ZonedDateTime startInclusive = ZonedDateTime.parse(time[0], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
+//      final Duration duration;
+//      if (time[1].charAt(time[1].length()-1) == 'Z')
+//      {
+//          ZonedDateTime endExclusive = ZonedDateTime.parse(time[1], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                
+//          duration = Duration.between(startInclusive, endExclusive);
+//      } else
+//      {
+//          duration = Duration.parse(time[1]);
+//      }
+//      return (U) new Pair<ZonedDateTime, Duration>(startInclusive, duration);
+//  }
+//
+//  @Override
+//  public <U> String makeContent(U value)
+//  {
+//      return value.toString();
+//  }
+    
     public FreeBusyTime(FreeBusyTime source)
     {
         super(source);

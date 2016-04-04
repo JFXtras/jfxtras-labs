@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
-import jfxtras.labs.icalendar.properties.AlternateTextRepresentationProperty;
-import jfxtras.labs.icalendar.properties.CalendarUserAddressProperty;
-import jfxtras.labs.icalendar.properties.LanguageProperty;
+import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
+import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
+import jfxtras.labs.icalendar.properties.PropertyLanguage;
 import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyTimeZone;
@@ -23,14 +23,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            AlternateTextRepresentationProperty<?,?> castProperty = (AlternateTextRepresentationProperty<?, ?>) property;
+            PropertyAlternateTextRepresentation<?,?> castProperty = (PropertyAlternateTextRepresentation<?, ?>) property;
             castProperty.setAlternateTextRepresentation(new AlternateTextRepresentation(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            AlternateTextRepresentationProperty<?,?> castProperty = (AlternateTextRepresentationProperty<?,?>) parent;
+            PropertyAlternateTextRepresentation<?,?> castProperty = (PropertyAlternateTextRepresentation<?,?>) parent;
             return castProperty.getAlternateTextRepresentation();
         }
 
@@ -46,14 +46,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) property;
+            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) property;
             castProperty.setCommonName(new CommonName(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) parent;
+            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) parent;
             return castProperty.getCommonName();
         }
 
@@ -138,14 +138,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) property;
+            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) property;
             castProperty.setDirectoryEntryReference(new DirectoryEntryReference(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) parent;
+            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) parent;
             return castProperty.getDirectoryEntryReference();
         }
 
@@ -230,14 +230,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            LanguageProperty<?,?> castProperty = (LanguageProperty<?, ?>) property;
+            PropertyLanguage<?,?> castProperty = (PropertyLanguage<?, ?>) property;
             castProperty.setLanguage(new Language(extractValue(content)));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            LanguageProperty<?,?> castProperty = (LanguageProperty<?,?>) parent;
+            PropertyLanguage<?,?> castProperty = (PropertyLanguage<?,?>) parent;
             return castProperty.getLanguage();
         }
 
@@ -408,14 +408,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) property;
+            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) property;
             castProperty.setSentBy(new SentBy(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) parent;
+            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) parent;
             return castProperty.getSentBy();
         }
 

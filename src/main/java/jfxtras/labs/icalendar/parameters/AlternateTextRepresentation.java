@@ -36,6 +36,11 @@ public class AlternateTextRepresentation extends ParameterBase<AlternateTextRepr
     {
         super();
     }
+    
+    public AlternateTextRepresentation(URI value)
+    {
+        super(value);
+    }
   
     public AlternateTextRepresentation(String content)
     {
