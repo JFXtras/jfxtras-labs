@@ -28,7 +28,12 @@ public class DirectoryEntryReference extends ParameterBase<DirectoryEntryReferen
     {
         super();
     }
-  
+
+    public DirectoryEntryReference(URI uri)
+    {
+        super(uri);
+    }
+    
     public DirectoryEntryReference(String content)
     {
         super(makeURI(extractValue(content)));

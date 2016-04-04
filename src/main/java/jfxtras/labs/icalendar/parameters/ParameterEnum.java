@@ -427,22 +427,15 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
+            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) property;
+            castProperty.setSentBy(new SentBy(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            CalendarUserAddressProperty<?> castProperty = (CalendarUserAddressProperty<?>) parent;
+            return castProperty.getSentBy();
         }
 
         @Override

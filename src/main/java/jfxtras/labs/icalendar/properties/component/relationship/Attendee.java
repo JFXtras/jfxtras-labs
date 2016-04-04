@@ -97,10 +97,10 @@ public class Attendee extends CalendarUserAddressProperty<Attendee>
             delegatorsProperty().set(delegators);
         }
     }
-    public void setDelegators(String value) { setDelegators(new Delegators(value)); }
+    public void setDelegators(String content) { setDelegators(new Delegators(content)); }
     public Attendee withDelegators(Delegators delegators) { setDelegators(delegators); return this; }
     public Attendee withDelegators(List<URI> delegators) { setDelegators(new Delegators(delegators)); return this; }
-    public Attendee withDelegators(String content) { ParameterEnum.DELEGATORS.parse(this, content); return this; }    
+    public Attendee withDelegators(String content) { setDelegators(content); return this; }    
 
     /**
      * DELEGATED-TO
@@ -132,9 +132,10 @@ public class Attendee extends CalendarUserAddressProperty<Attendee>
             delegateesProperty().set(delegatees);
         }
     }
-//    public void setDelegatees(String value) { setDelegatees(new Delegatees(value)); }
+    public void setDelegatees(String content) { setDelegatees(new Delegatees(content)); }
     public Attendee withDelegatees(Delegatees delegatees) { setDelegatees(delegatees); return this; }
-    public Attendee withDelegatees(String content) { ParameterEnum.DELEGATEES.parse(this, content); return this; }    
+    public Attendee withDelegatees(List<URI> values) { setDelegatees(new Delegatees(values)); return this; }
+    public Attendee withDelegatees(String content) { setDelegatees(content); return this; }    
 
     /**
      * MEMBER
@@ -165,9 +166,10 @@ public class Attendee extends CalendarUserAddressProperty<Attendee>
             groupMembershipProperty().set(groupMembership);
         }
     }
-//    public void setGroupMembership(String value) { setGroupMembership(new GroupMembership(value)); }
+    public void setGroupMembership(String content) { setGroupMembership(new GroupMembership(content)); }
     public Attendee withGroupMembership(GroupMembership groupMembership) { setGroupMembership(groupMembership); return this; }
-    public Attendee withGroupMembership(String content) { ParameterEnum.GROUP_OR_LIST_MEMBERSHIP.parse(this, content); return this; }    
+    public Attendee withGroupMembership(List<URI> values) { setGroupMembership(new GroupMembership(values)); return this; }
+    public Attendee withGroupMembership(String content) { setGroupMembership(content); return this; }    
 
     /**
      * RSVP
@@ -184,7 +186,7 @@ public class Attendee extends CalendarUserAddressProperty<Attendee>
     {
         if (rsvp == null)
         {
-            rsvp = new SimpleObjectProperty<>(this, ParameterEnum.CALENDAR_USER_TYPE.toString());
+            rsvp = new SimpleObjectProperty<>(this, ParameterEnum.RSVP_EXPECTATION.toString());
         }
         return rsvp;
     }
@@ -196,7 +198,7 @@ public class Attendee extends CalendarUserAddressProperty<Attendee>
             rsvpProperty().set(rsvp);
         }
     }
-    public void setRSVP(String value) { setRSVP(new RSVP(value)); }
+    public void setRSVP(String content) { setRSVP(new RSVP(content)); }
     public Attendee withRSVP(RSVP type) { setRSVP(type); return this; }
     public Attendee withRSVP(Boolean type) { setRSVP(new RSVP(type)); return this; }
     public Attendee withRSVP(String content) { setRSVP(content); return this; }   
@@ -216,7 +218,7 @@ public class Attendee extends CalendarUserAddressProperty<Attendee>
     {
         if (participation == null)
         {
-            participation = new SimpleObjectProperty<>(this, ParameterEnum.CALENDAR_USER_TYPE.toString());
+            participation = new SimpleObjectProperty<>(this, ParameterEnum.PARTICIPATION_STATUS.toString());
         }
         return participation;
     }
@@ -228,7 +230,7 @@ public class Attendee extends CalendarUserAddressProperty<Attendee>
             participationProperty().set(participation);
         }
     }
-    public void setParticipation(String value) { setParticipation(new Participation(value)); }
+    public void setParticipation(String content) { setParticipation(new Participation(content)); }
     public Attendee withParticipation(Participation type) { setParticipation(type); return this; }
     public Attendee withParticipation(ParticipationStatus type) { setParticipation(new Participation(type)); return this; }
     public Attendee withParticipation(String content) { setParticipation(content); return this; }  
@@ -248,7 +250,7 @@ public class Attendee extends CalendarUserAddressProperty<Attendee>
     {
         if (participationRole == null)
         {
-            participationRole = new SimpleObjectProperty<>(this, ParameterEnum.CALENDAR_USER_TYPE.toString());
+            participationRole = new SimpleObjectProperty<>(this, ParameterEnum.PARTICIPATION_ROLE.toString());
         }
         return participationRole;
     }
@@ -260,7 +262,7 @@ public class Attendee extends CalendarUserAddressProperty<Attendee>
             participationRoleProperty().set(participationRole);
         }
     }
-    public void setParticipationRole(String value) { setParticipationRole(new ParticipationRole(value)); }
+    public void setParticipationRole(String content) { setParticipationRole(new ParticipationRole(content)); }
     public Attendee withParticipationRole(ParticipationRole type) { setParticipationRole(type); return this; }
     public Attendee withParticipationRole(ParticipationRoleType type) { setParticipationRole(new ParticipationRole(type)); return this; }
     public Attendee withParticipationRole(String content) { setParticipationRole(content); return this; }  

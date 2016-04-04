@@ -39,7 +39,7 @@ public enum PropertyEnum
             , AttachmentBase64.class), // Descriptive
     ATTENDEE ("ATTENDEE"    // name
             , ValueType.CALENDAR_USER_ADDRESS   // value type
-            , Arrays.asList(ParameterEnum.CALENDAR_USER_TYPE, ParameterEnum.COMMON_NAME, ParameterEnum.DELEGATEES, // allowed parameters
+            , Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.CALENDAR_USER_TYPE, ParameterEnum.DELEGATEES, // allowed parameters
                     ParameterEnum.DELEGATORS, ParameterEnum.DIRECTORY_ENTRY_REFERENCE,
                     ParameterEnum.GROUP_OR_LIST_MEMBERSHIP, ParameterEnum.LANGUAGE, ParameterEnum.PARTICIPATION_ROLE,
                     ParameterEnum.PARTICIPATION_STATUS, ParameterEnum.RSVP_EXPECTATION, ParameterEnum.SENT_BY)

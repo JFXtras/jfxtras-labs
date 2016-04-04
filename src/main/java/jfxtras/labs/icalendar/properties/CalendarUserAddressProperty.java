@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.CommonName;
 import jfxtras.labs.icalendar.parameters.DirectoryEntryReference;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
+import jfxtras.labs.icalendar.parameters.SentBy;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
 
@@ -61,9 +62,9 @@ public abstract class CalendarUserAddressProperty<T> extends LanguageProperty<T,
             commonNameProperty().set(commonName);
         }
     }
-    public void setCommonName(String value) { setCommonName(new CommonName(value)); }
+    public void setCommonName(String content) { setCommonName(new CommonName(content)); }
     public T withCommonName(CommonName commonName) { setCommonName(commonName); return (T) this; }
-    public T withCommonName(String content) { ParameterEnum.COMMON_NAME.parse(this, content); return (T) this; }    
+    public T withCommonName(String content) { setCommonName(content); return (T) this; }    
 
     /**
      * DIR
@@ -94,9 +95,43 @@ public abstract class CalendarUserAddressProperty<T> extends LanguageProperty<T,
             directoryEntryReferenceProperty().set(directoryEntryReference);
         }
     }
-    public void setDirectoryEntryReference(String value) { setDirectoryEntryReference(new DirectoryEntryReference(value)); }
+    public void setDirectoryEntryReference(String content) { setDirectoryEntryReference(new DirectoryEntryReference(content)); }
     public T withDirectoryEntryReference(DirectoryEntryReference directoryEntryReference) { setDirectoryEntryReference(directoryEntryReference); return (T) this; }
-    public T withDirectoryEntryReference(String content) { ParameterEnum.COMMON_NAME.parse(this, content); return (T) this; }    
+    public T withDirectoryEntryReference(URI uri) { setDirectoryEntryReference(new DirectoryEntryReference(uri)); return (T) this; }
+    public T withDirectoryEntryReference(String content) { setDirectoryEntryReference(content); return (T) this; }
+
+    /**
+     * SENT-BY
+     * RFC 5545, 3.2.18, page 27
+     * 
+     * To specify the calendar user that is acting on behalf of
+     * the calendar user specified by the property.
+     * 
+     * Example:
+     * ORGANIZER;SENT-BY="mailto:sray@example.com":mailto:
+     *  jsmith@example.com
+     */
+    public SentBy getSentBy() { return (sentBy == null) ? null : sentBy.get(); }
+    public ObjectProperty<SentBy> sentByProperty()
+    {
+        if (sentBy == null)
+        {
+            sentBy = new SimpleObjectProperty<>(this, ParameterEnum.SENT_BY.toString());
+        }
+        return sentBy;
+    }
+    private ObjectProperty<SentBy> sentBy;
+    public void setSentBy(SentBy sentBy)
+    {
+        if (sentBy != null)
+        {
+            sentByProperty().set(sentBy);
+        }
+    }
+    public void setSentBy(String content) { setSentBy(new SentBy(content)); }
+    public T withSentBy(SentBy sentBy) { setSentBy(sentBy); return (T) this; }
+    public T withSentBy(URI uri) { setSentBy(new SentBy(uri)); return (T) this; }
+    public T withSentBy(String content) { setSentBy(content); return (T) this; }    
 
     
     /*

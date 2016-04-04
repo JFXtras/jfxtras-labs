@@ -112,8 +112,36 @@ public class AttendeeTest
         Attendee madeProperty = new Attendee(content);
         Attendee expectedProperty = new Attendee("mailto:jsmith@example.com")
                 .withParticipation(ParticipationStatus.DECLINED);
-        System.out.println(expectedProperty.toContentLine());
-        System.out.println(madeProperty.toContentLine());
+        assertEquals(expectedProperty, madeProperty);
+        assertEquals(content, expectedProperty.toContentLine());
+    }
+    
+    @Test
+    public void canParseAttendee10() throws URISyntaxException
+    {
+        String content = "ATTENDEE;SENT-BY=\"mailto:sray@example.com\":mailto:jsmith@example.com";
+        Attendee madeProperty = new Attendee(content);
+        Attendee expectedProperty = new Attendee("mailto:jsmith@example.com")
+                .withSentBy("mailto:sray@example.com");
+        assertEquals(expectedProperty, madeProperty);
+        assertEquals(content, expectedProperty.toContentLine());
+    }
+    
+    @Test
+    public void canParseAttendee11() throws URISyntaxException
+    {
+        String content = "ATTENDEE;CN=John Smith;CUTYPE=GROUP;DELEGATED-TO=\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\";DELEGATED-FROM=\"mailto:jsmith@example.com\";MEMBER=\"mailto:projectA@example.com\",\"mailto:projectB@example.com\";ROLE=CHAIR;PARTSTAT=DECLINED;RSVP=TRUE;SENT-BY=\"mailto:sray@example.com\":mailto:jsmith@example.com";
+        Attendee madeProperty = new Attendee(content);
+        Attendee expectedProperty = new Attendee("mailto:jsmith@example.com")
+                .withGroupMembership(Arrays.asList(new URI("mailto:projectA@example.com"), new URI("mailto:projectB@example.com")))
+                .withCommonName("John Smith")
+                .withCalendarUser(CalendarUserType.GROUP)
+                .withDelegators("mailto:jsmith@example.com")
+                .withDelegatees("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"")
+                .withRSVP(true)
+                .withParticipationRole(ParticipationRoleType.CHAIR)
+                .withParticipation(ParticipationStatus.DECLINED)
+                .withSentBy("mailto:sray@example.com");
         assertEquals(expectedProperty, madeProperty);
         assertEquals(content, expectedProperty.toContentLine());
     }

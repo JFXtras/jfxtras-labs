@@ -87,7 +87,6 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
     @Override
     public boolean isValid()
     {
-        super.isValid();
         boolean isEncodingNull = getEncoding() == null;
         boolean isValueTypeNull = getValueParameter() == null;
         if (isEncodingNull && isValueTypeNull)
@@ -106,7 +105,7 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
         { // invalid ValueType
             return false;
         }
-        return true;
+        return true && super.isValid();
     }
 
 }

@@ -23,10 +23,15 @@ public class SentBy extends ParameterBase<SentBy, URI>
     {
         super();
     }
-    
+
+    public SentBy(URI uri)
+    {
+        super(uri);
+    }
+
     public SentBy(String content)
     {
-        super();
+        super(makeURI(extractValue(content)));
     }
     
     public SentBy(SentBy source)
