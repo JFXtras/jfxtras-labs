@@ -77,9 +77,9 @@ public abstract class PropertyBase<T,U> implements Property<U>
         return valueType;
     }
     private ObjectProperty<ValueParameter> valueType;
-    public void setValueType(ValueParameter value)
+    public void setValueParameter(ValueParameter value)
     {
-        if (value.getValue().equals(propertyType().valueType()))
+        if (value.getValue().equals(propertyType().valueType()) || value.getValue().equals(ValueType.UNKNOWN))
         {
             valueParameterProperty().set(value);
         } else
@@ -87,8 +87,9 @@ public abstract class PropertyBase<T,U> implements Property<U>
             throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + propertyType().valueType());
         }
     }
-    public T withValueParameter(ValueType value) { setValueType(new ValueParameter(value)); return (T) this; } 
-    public T withValueParameter(String content) { setValueType(new ValueParameter(content)); return (T) this; } 
+    public void setValueParameter(String value) { setValueParameter(new ValueParameter(value)); }
+    public T withValueParameter(ValueType value) { setValueParameter(new ValueParameter(value)); return (T) this; } 
+    public T withValueParameter(String value) { setValueParameter(value); return (T) this; } 
     
     /**
      * other-param, 3.2 RFC 5545 page 14
@@ -113,7 +114,8 @@ public abstract class PropertyBase<T,U> implements Property<U>
             return Property.super.isValid();
         } else
         {
-            return (Property.super.isValid()) && (getValueParameter().getValue().equals(propertyType().valueType()));
+            boolean isValueTypeOK = getValueParameter().getValue().equals(propertyType().valueType()) || getValueParameter().getValue().equals(ValueType.UNKNOWN);
+            return (Property.super.isValid()) && isValueTypeOK;
         }
     }
     

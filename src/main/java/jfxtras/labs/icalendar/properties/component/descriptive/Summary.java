@@ -6,7 +6,7 @@ public class Summary extends AlternateTextRepresentationProperty<Summary, String
 {
     public Summary(String contentLine)
     {
-        super(contentLine);
+        super((CharSequence) contentLine);
     }
 
     public Summary(Summary source)

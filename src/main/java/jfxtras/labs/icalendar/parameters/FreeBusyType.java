@@ -20,7 +20,7 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
 {
     public FreeBusyType()
     {
-        super();
+        super(FreeBusyTypeEnum.BUSY); // default value
     }
   
     public FreeBusyType(FreeBusyTypeEnum value)

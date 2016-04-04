@@ -457,10 +457,11 @@ public enum ParameterEnum
             ValueType valueType = castProperty.propertyType().valueType();
             if (valueType.toString().equals(content))
             {
-                castProperty.setValueType(new ValueParameter(valueType));
+                castProperty.setValueParameter(new ValueParameter(valueType));
             } else
             {
-                throw new IllegalArgumentException("Value type: " + content + " is not valid");
+                castProperty.setValueParameter(new ValueParameter(content)); // unknown value type
+//                throw new IllegalArgumentException("Value type: " + content + " is not valid");
             }
         }
 
@@ -475,7 +476,7 @@ public enum ParameterEnum
         public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) destination;
-            castProperty.setValueType(new ValueParameter((ValueParameter) sourceParameter)); 
+            castProperty.setValueParameter(new ValueParameter((ValueParameter) sourceParameter)); 
         }
     };
     

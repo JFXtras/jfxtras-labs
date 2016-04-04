@@ -18,7 +18,7 @@ public class RSVP extends ParameterBase<RSVP, Boolean>
 {
     public RSVP()
     {
-        super();
+        super(false); // default value
     }
 
     public RSVP(Boolean value)

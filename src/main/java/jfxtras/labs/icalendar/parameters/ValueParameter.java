@@ -28,10 +28,12 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  */
 public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
 {
-    public ValueParameter()
-    {
-        super();
-    }
+    private String unknownValue;
+    
+//    public ValueParameter()
+//    {
+//        super();
+//    }
     
     public ValueParameter(ValueParameter source)
     {
@@ -45,8 +47,20 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
     
     public ValueParameter(String content)
     {
-        super(ValueType.valueOf(content));
+        super(ValueType.valueOf2(content));
+        if (getValue() == ValueType.UNKNOWN)
+        {
+            unknownValue = content;
+        }
     }
+    
+    @Override
+    public String toContent()
+    {
+        String value = (getValue() == ValueType.UNKNOWN) ? unknownValue : getValue().toString();
+        return ";" + myParameterEnum().toString() + "=" + value;
+    }
+
     
     public enum ValueType
     {
@@ -282,6 +296,20 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             {
                 return value.toString();
             }
+        },
+        UNKNOWN ("UNKNOWN") {
+            @Override
+            public <U> U parse(String value)
+            {
+                return (U) value;
+            }
+
+            @Override
+            public <U> String makeContent(U value)
+            {
+                System.out.println("here:" + value);
+                return (String) value;
+            }
         };
         // x-name or IANA-token values must be added manually
         
@@ -294,10 +322,17 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         abstract public <U> U parse(String value);
         
         abstract public <U> String makeContent(U value);
-//        {
-//            // TODO Auto-generated method stub
-//            return null;
-//        }
+
+        static ValueType valueOf2(String value)
+        {
+            try
+            {
+                return valueOf(value);
+            } catch (IllegalArgumentException e)
+            {
+                return UNKNOWN;
+            }
+        }
 
     }
 }

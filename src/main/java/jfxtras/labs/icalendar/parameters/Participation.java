@@ -19,7 +19,7 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
 {
     public Participation()
     {
-        super();
+        super(ParticipationStatus.NEEDS_ACTION); // default value
     }
   
     public Participation(ParticipationStatus value)

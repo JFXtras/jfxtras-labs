@@ -49,5 +49,13 @@ public class SummaryTest
         String expectedContent = "SUMMARY:TEST SUMMARY2";
         assertEquals(expectedContent, madeProperty.toContentLine());
     }
+    
+    @Test // Tests unknown value type
+    public void canParseSummary3()
+    {
+        Summary madeProperty = new Summary("SUMMARY;VALUE=HOT:TEST SUMMARY");
+        String expectedContent = "SUMMARY;VALUE=HOT:TEST SUMMARY";
+        assertEquals(expectedContent, madeProperty.toContentLine());
+    }
 
 }

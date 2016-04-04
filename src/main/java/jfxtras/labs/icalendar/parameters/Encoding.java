@@ -29,7 +29,7 @@ public class Encoding extends ParameterBase<Encoding, EncodingType>
 {
     public Encoding()
     {
-        super();
+        super(EncodingType.EIGHT_BIT);
     }
   
     public Encoding(EncodingType value)

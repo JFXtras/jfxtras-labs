@@ -20,7 +20,7 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
 {
     public CalendarUser()
     {
-        super();
+        super(CalendarUserType.INDIVIDUAL);
     }
 
     public CalendarUser(CalendarUserType type)
@@ -30,7 +30,7 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
     
     public CalendarUser(String content)
     {
-        super(CalendarUserType.valueOf(content));
+        super(CalendarUserType.valueOf2(content));
     }
 
     public CalendarUser(CalendarUser source)
@@ -45,6 +45,19 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
         RESOURCE,
         ROOM,
         UNKNOWN;
+        
+        static CalendarUserType valueOf2(String value)
+        {
+            CalendarUserType match;
+            try
+            {
+                match = valueOf(value);
+            } catch (Exception e)
+            {
+                match = UNKNOWN;
+            }
+            return match;
+        }
 
     }
 }

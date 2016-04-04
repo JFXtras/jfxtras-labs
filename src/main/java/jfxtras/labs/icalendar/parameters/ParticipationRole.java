@@ -19,7 +19,7 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
 {
     public ParticipationRole()
     {
-        super();
+        super(ParticipationRoleType.REQUIRED_PARTICIPANT); // default value
     }
   
     public ParticipationRole(ParticipationRoleType value)

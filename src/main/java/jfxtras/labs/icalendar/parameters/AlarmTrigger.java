@@ -20,7 +20,7 @@ public class AlarmTrigger extends ParameterBase<AlarmTrigger, AlarmTriggerRelati
 {
     public AlarmTrigger()
     {
-        super();
+        super(AlarmTriggerRelationship.START);
     }
 
     public AlarmTrigger(AlarmTriggerRelationship value)

@@ -15,6 +15,7 @@ import jfxtras.labs.icalendar.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendar.properties.component.change.Sequence;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendar.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.properties.component.descriptive.Location;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
@@ -31,26 +32,30 @@ public enum PropertyEnum
 {
     ACTION ("ACTION", null, null, null), // Alarm
     ATTACHMENT_URI ("ATTACH" // property name
-            , ValueType.UNIFORM_RESOURCE_IDENTIFIER // property value type
+            , ValueType.UNIFORM_RESOURCE_IDENTIFIER // default property value type
             , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
             , AttachmentURI.class), // property class
     ATTACHMENT_BASE64 ("ATTACH" // property name
-            , ValueType.BINARY // property value type
+            , ValueType.BINARY // default property value type
             , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
             , AttachmentBase64.class), // property class
     ATTENDEE ("ATTENDEE"    // property name
-            , ValueType.CALENDAR_USER_ADDRESS   // property value type
+            , ValueType.CALENDAR_USER_ADDRESS   // default property value type
             , Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.CALENDAR_USER_TYPE, ParameterEnum.DELEGATEES,
                     ParameterEnum.DELEGATORS, ParameterEnum.DIRECTORY_ENTRY_REFERENCE,
                     ParameterEnum.GROUP_OR_LIST_MEMBERSHIP, ParameterEnum.LANGUAGE, ParameterEnum.PARTICIPATION_ROLE,
-                    ParameterEnum.PARTICIPATION_STATUS, ParameterEnum.RSVP_EXPECTATION, ParameterEnum.SENT_BY) // allowed parameters
+                    ParameterEnum.PARTICIPATION_STATUS, ParameterEnum.RSVP_EXPECTATION, ParameterEnum.SENT_BY,
+                    ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
             , Attendee.class), // property class
     CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class), // Calendar
     CATEGORIES ("CATEGORIES" // property name
-            , ValueType.TEXT // property value type
-            , Arrays.asList(ParameterEnum.LANGUAGE) // allowed parameters
+            , ValueType.TEXT // default property value type
+            , Arrays.asList(ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
             , Categories.class), // property class
-    CLASSIFICATION ("CLASS", null, null, null), // Descriptive
+    CLASSIFICATION ("CLASS", // property name
+            ValueType.TEXT, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Classification.class),
     COMMENT ("COMMENT", ValueType.TEXT, null, null), // Descriptive
     CONTACT ("CONTACT", null, null, null), // Relationship
     DATE_TIME_COMPLETED ("COMPLETED", null, null, null), // Date and Time
@@ -70,7 +75,7 @@ public enum PropertyEnum
     LOCATION ("LOCATION", ValueType.TEXT, Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Location.class), // Descriptive
     METHOD ("METHOD", null, null, null), // Calendar
     ORGANIZER ("ORGANIZER", // name
-            ValueType.CALENDAR_USER_ADDRESS, // property value type
+            ValueType.CALENDAR_USER_ADDRESS, // default property value type
             Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.DIRECTORY_ENTRY_REFERENCE, ParameterEnum.LANGUAGE,
                     ParameterEnum.SENT_BY), // allowed parameters
             Organizer.class), // property class
@@ -86,7 +91,10 @@ public enum PropertyEnum
     RESOURCES ("RESOURCES", null, null, null), // Descriptive
     SEQUENCE ("SEQUENCE", null, null, Sequence.class), // Change management
     STATUS ("STATUS", null, null, null), // Descriptive
-    SUMMARY ("SUMMARY", ValueType.TEXT, Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Summary.class), // Descriptive
+    SUMMARY ("SUMMARY", // property name
+            ValueType.TEXT, // default property value type
+            Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Summary.class), // Descriptive
     TIME_TRANSPARENCY ("TRANSP", null, null, null), // Date and Time
     TIME_ZONE_IDENTIFIER ("TZID", null, null, null), // Time Zone
     TIME_ZONE_NAME ("TZNAME", null, null, null), // Time Zone

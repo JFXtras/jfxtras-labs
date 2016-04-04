@@ -21,7 +21,7 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
 {
     public Relationship()
     {
-        super();
+        super(RelationshipType.PARENT); // default value
     }
   
     public Relationship(RelationshipType value)

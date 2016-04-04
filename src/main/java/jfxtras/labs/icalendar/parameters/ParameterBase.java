@@ -51,7 +51,7 @@ public class ParameterBase<T,U> implements Parameter<U>
         {
             value = addDoubleQuotesIfNecessary(getValue().toString());
         }
-        return (getValue() != null) ? ";" + myParameterEnum.toString() + "=" + value : null;
+        return (getValue() != null) ? ";" + myParameterEnum().toString() + "=" + value : null;
     }
 
     @Override
