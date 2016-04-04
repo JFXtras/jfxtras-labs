@@ -319,8 +319,10 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         {
             this.name = name;
         }
+        @Deprecated
         abstract public <U> U parse(String value);
-        
+
+        @Deprecated        
         abstract public <U> String makeContent(U value);
 
         static ValueType valueOf2(String value)

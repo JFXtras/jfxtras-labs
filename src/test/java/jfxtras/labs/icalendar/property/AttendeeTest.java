@@ -53,7 +53,7 @@ public class AttendeeTest
     @Test
     public void canParseAttendee4() throws URISyntaxException
     {
-        String content = "ATTENDEE;CUTYPE=GROUP2:mailto:ietf-calsch@example.org";
+        String content = "ATTENDEE;CUTYPE=GROUP:mailto:ietf-calsch@example.org";
         Attendee madeProperty = new Attendee(content);
         Attendee expectedProperty = new Attendee("mailto:ietf-calsch@example.org")
                 .withCalendarUser(CalendarUserType.GROUP);

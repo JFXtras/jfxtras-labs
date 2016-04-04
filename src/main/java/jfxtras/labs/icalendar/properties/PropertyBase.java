@@ -1,13 +1,10 @@
 package jfxtras.labs.icalendar.properties;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -33,7 +30,7 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * @see AlternateTextRepresentationProperty
  * @see CalendarUserAddressProperty
  * @see LanguageProperty
- * @see TimeZoneProperty
+ * @see PropertyTimeZone
  * 
  * concrete subclasses
  * @see UniqueIdentifier
@@ -275,37 +272,45 @@ public abstract class PropertyBase<T,U> implements Property<U>
 
         // save property value
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-        final U value;
-        ParameterizedType pt = (ParameterizedType)this.getClass().getGenericSuperclass();
-        int lastIndex = pt.getActualTypeArguments().length-1; // last parameterized type must be value's type
-        String classU = pt.getActualTypeArguments()[lastIndex].getTypeName();
-        System.out.println("classU:" + classU);
-        boolean isList = classU.contains(List.class.getTypeName());
-        if (isList)
-        {
-            value = (U) Arrays.asList(getPropertyValueString().split(","))
-                    .stream()
-                    .map(e -> PropertyEnum.enumFromClass(getClass())
-                            .defaultValueType()
-                            .parse(e))
-                    .collect(Collectors.toList());
-//            System.out.println("value:" + value.getClass().getSimpleName() + " " + value);
-        } else
-        {
-//            System.out.println("type:" + PropertyEnum.enumFromClass(getClass())
-//                        .valueType());
-            value = PropertyEnum.enumFromClass(getClass())
-                        .defaultValueType()
-                        .parse(getPropertyValueString());
-            // MAYBE STRING PARSING SHOULD BE DONE BY PROPERTY NOT BY VALUE TYPE
-            // USE STRING CONVERTER?
-        }        
-        setValue(value);
+//        final U value;
+//        ParameterizedType pt = (ParameterizedType)this.getClass().getGenericSuperclass();
+//        int lastIndex = pt.getActualTypeArguments().length-1; // last parameterized type must be value's type
+//        String classU = pt.getActualTypeArguments()[lastIndex].getTypeName();
+//        System.out.println("classU:" + classU);
+//        boolean isList = classU.contains(List.class.getTypeName());
+//        if (isList)
+//        {
+//            value = (U) Arrays.asList(getPropertyValueString().split(","))
+//                    .stream()
+//                    .map(e -> PropertyEnum.enumFromClass(getClass())
+//                            .defaultValueType()
+//                            .parse(e))
+//                    .collect(Collectors.toList());
+////            System.out.println("value:" + value.getClass().getSimpleName() + " " + value);
+//        } else
+//        {
+////            System.out.println("type:" + PropertyEnum.enumFromClass(getClass())
+////                        .valueType());
+//            value = PropertyEnum.enumFromClass(getClass())
+//                        .defaultValueType()
+//                        .parse(getPropertyValueString());
+//            // MAYBE STRING PARSING SHOULD BE DONE BY PROPERTY NOT BY VALUE TYPE
+//            // USE STRING CONVERTER?
+//        }
+//        value = valueFromString(getPropertyValueString());
+
+        setValue(valueFromString(getPropertyValueString()));
         
         if (! isValid())
         {
             throw new IllegalArgumentException("Error in parsing " + propertyType().toString() + " content line");
         }
+    }
+    
+    /* parse property value, override in subclasses if necessary */
+    protected U valueFromString(String propertyValueString)
+    {
+        return (U) propertyValueString;
     }
     
     // construct empty property
@@ -359,22 +364,33 @@ public abstract class PropertyBase<T,U> implements Property<U>
     @Override
     public String toContentLine()
     {
-        StringBuilder builder = contentLinePart1();
-        // add property value
-        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
-        return builder.toString();
-    }
-    
-    protected StringBuilder contentLinePart1()
-    {
         StringBuilder builder = new StringBuilder(propertyType().toString());
-//      System.out.println("parameters:" + parameters().size());
         // add parameters
         parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
         // add non-standard parameters
         otherParameters().stream().forEach(p -> builder.append(";" + p));
-        return builder;
+        // add property value
+//        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
+        builder.append(":" + valueToString(getValue()));
+        return builder.toString();
     }
+    
+    /* Convert property value to string.  Override in subclass if necessary */
+    protected String valueToString(U value)
+    {
+        return value.toString();
+    }
+    
+//    protected StringBuilder contentLinePart1()
+//    {
+//        StringBuilder builder = new StringBuilder(propertyType().toString());
+////      System.out.println("parameters:" + parameters().size());
+//        // add parameters
+//        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
+//        // add non-standard parameters
+//        otherParameters().stream().forEach(p -> builder.append(";" + p));
+//        return builder;
+//    }
 
     @Override
     public int hashCode()

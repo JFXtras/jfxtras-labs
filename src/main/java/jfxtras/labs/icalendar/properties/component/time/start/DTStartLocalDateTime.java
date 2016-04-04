@@ -2,7 +2,7 @@ package jfxtras.labs.icalendar.properties.component.time.start;
 
 import java.time.LocalDateTime;
 
-import jfxtras.labs.icalendar.properties.PropertyBase;
+import jfxtras.labs.icalendar.properties.PropertyDateTime;
 
 /**
  * DTSTART
@@ -17,7 +17,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  * @author David Bal
  *
  */
-public class DTStartLocalDateTime extends PropertyBase<DTStartLocalDateTime, LocalDateTime>
+public class DTStartLocalDateTime extends PropertyDateTime<DTStartLocalDateTime>
 {
     public DTStartLocalDateTime(LocalDateTime temporal)
     {
@@ -37,5 +37,5 @@ public class DTStartLocalDateTime extends PropertyBase<DTStartLocalDateTime, Loc
     public DTStartLocalDateTime()
     {
         super();
-    }    
+    }
 }

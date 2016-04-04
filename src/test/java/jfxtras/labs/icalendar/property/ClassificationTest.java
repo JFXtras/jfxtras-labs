@@ -13,7 +13,14 @@ public class ClassificationTest
     {
         Classification madeProperty = new Classification("CLASS:PUBLIC");
         String expectedContent = "CLASS:PUBLIC";
-        System.out.println(madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLine());
+    }
+    
+    @Test
+    public void canParseClassification2()
+    {
+        Classification madeProperty = new Classification("CLASS:CUSTOM");
+        String expectedContent = "CLASS:CUSTOM";
         assertEquals(expectedContent, madeProperty.toContentLine());
     }
 }
