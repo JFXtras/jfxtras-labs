@@ -22,7 +22,7 @@ public class Language extends ParameterBase<Language, String>
   
     public Language(String content)
     {
-        super(extractValue(content));
+        super(content);
     }
 
     public Language(Language source)

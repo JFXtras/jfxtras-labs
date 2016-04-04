@@ -30,7 +30,7 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
 
     public FreeBusyType(String content)
     {
-        super(FreeBusyTypeEnum.valueOf(extractValue(content)));
+        super(FreeBusyTypeEnum.valueOf(content));
     }
     
     public FreeBusyType(FreeBusyType source)

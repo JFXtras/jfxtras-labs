@@ -301,13 +301,6 @@ public enum ParameterEnum
         }
 
         @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
             // TODO Auto-generated method stub
@@ -329,12 +322,6 @@ public enum ParameterEnum
             
         }
 
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
-        }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
@@ -358,12 +345,6 @@ public enum ParameterEnum
             
         }
 
-        @Override
-        public boolean isEqualTo(Property<?> parentProperty, Object parameter2)
-        {
-            // TODO Auto-generated method stub
-            return false;
-        }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)

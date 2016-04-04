@@ -45,7 +45,7 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
     
     public ValueParameter(String content)
     {
-        super(ValueType.valueOf(extractValue(content)));
+        super(ValueType.valueOf(content));
     }
     
     public enum ValueType

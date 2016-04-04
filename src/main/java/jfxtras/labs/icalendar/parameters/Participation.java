@@ -29,7 +29,7 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
     
     public Participation(String content)
     {
-        super(ParticipationStatus.valueOf(extractValue(content)));
+        super(ParticipationStatus.valueOf(content));
     }
 
     public Participation(Participation source)

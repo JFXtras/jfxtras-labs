@@ -169,10 +169,20 @@ public class ParameterBase<T,U> implements Parameter<U>
      * output:
      * "CID:part3.msg.970415T083000@example.com"
      */
-    static String extractValue(String content)
+    static String extractValue(String content, String name)
     {
-        int equalsIndex = content.indexOf('=');
-        return (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
+        if (content.substring(0, name.length()).equals(name))
+        {
+            return content.substring(name.length()+1);
+        }
+        return content;
+//        if (content.charAt(0) != '\"') // don't modify if first character is "
+//        {
+//            int equalsIndex = content.indexOf('=');
+//            return (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
+//        }
+//        return content;
+            
     }
     
     /**
@@ -182,7 +192,7 @@ public class ParameterBase<T,U> implements Parameter<U>
     static List<URI> makeURIList(String content)
     {
         List<URI> uriList = new ArrayList<>();
-        Iterator<String> i = Arrays.stream(parseString(content).split(",")).iterator();
+        Iterator<String> i = Arrays.stream(content.split(",")).iterator();
         while (i.hasNext())
         {
             uriList.add(makeURI(i.next()));
@@ -196,7 +206,7 @@ public class ParameterBase<T,U> implements Parameter<U>
         URI uri = null;
         try
         {
-            uri = new URI(removeDoubleQuote(parseString(content)));
+            uri = new URI(removeDoubleQuote(content));
         } catch (URISyntaxException e)
         {
             e.printStackTrace();
@@ -205,10 +215,10 @@ public class ParameterBase<T,U> implements Parameter<U>
     }
     
     
-    private static String parseString(String content)
-    {
-        int equalsIndex = content.indexOf('=');
-        return (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
-//        return Parameter.removeDoubleQuote(value);
-    }
+//    private static String parseString(String content)
+//    {
+//        int equalsIndex = content.indexOf('=');
+//        return (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
+////        return Parameter.removeDoubleQuote(value);
+//    }
 }

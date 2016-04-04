@@ -39,7 +39,7 @@ public class AlternateTextRepresentation extends ParameterBase<AlternateTextRepr
   
     public AlternateTextRepresentation(String content)
     {
-        super(makeURI(extractValue(content)));
+        super(makeURI(content));
     }
 
     public AlternateTextRepresentation(AlternateTextRepresentation source)

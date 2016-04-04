@@ -31,7 +31,7 @@ public class SentBy extends ParameterBase<SentBy, URI>
 
     public SentBy(String content)
     {
-        super(makeURI(extractValue(content)));
+        super(makeURI(content));
     }
     
     public SentBy(SentBy source)

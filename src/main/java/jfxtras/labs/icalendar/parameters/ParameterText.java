@@ -17,7 +17,7 @@ public abstract class ParameterText<T> extends ParameterBase<T,String>
   
     public ParameterText(String content)
     {
-        super(removeDoubleQuote(extractValue(content)));
+        super(removeDoubleQuote(content));
     }
 
     public ParameterText(ParameterText<T> source)

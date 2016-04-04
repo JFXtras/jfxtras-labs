@@ -39,7 +39,7 @@ public class Encoding extends ParameterBase<Encoding, EncodingType>
     
     public Encoding(String content)
     {
-        super(EncodingType.valueOf(extractValue(content)));
+        super(EncodingType.valueOf(content));
     }
 
     public Encoding(Encoding source)

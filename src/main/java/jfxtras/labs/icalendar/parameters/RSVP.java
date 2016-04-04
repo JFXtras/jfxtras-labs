@@ -28,7 +28,7 @@ public class RSVP extends ParameterBase<RSVP, Boolean>
     
     public RSVP(String content)
     {
-        super(Boolean.parseBoolean(extractValue(content)));
+        super(Boolean.parseBoolean(content));
     }
 
     public RSVP(RSVP source)

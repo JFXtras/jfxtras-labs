@@ -27,7 +27,7 @@ public abstract class ParameterURIList<T> extends ParameterBase<T, List<URI>>
     
     public ParameterURIList(String content)
     {
-        super(makeURIList(extractValue(content)));
+        super(makeURIList(content));
     }
     
     public ParameterURIList(ParameterURIList<T> source)

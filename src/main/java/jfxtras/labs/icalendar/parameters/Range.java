@@ -31,7 +31,7 @@ public class Range extends ParameterBase<Range, RecurrenceIdentifier>
 
     public Range(String content)
     {
-        super(RecurrenceIdentifier.valueOf(extractValue(content)));
+        super(RecurrenceIdentifier.valueOf(content));
     }
     
     public Range(Range source)

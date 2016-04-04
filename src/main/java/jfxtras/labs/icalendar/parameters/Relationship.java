@@ -31,7 +31,7 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
 
     public Relationship(String content)
     {
-        super(RelationshipType.valueOf(extractValue(content)));
+        super(RelationshipType.valueOf(content));
     }
     
     public Relationship(Relationship source)

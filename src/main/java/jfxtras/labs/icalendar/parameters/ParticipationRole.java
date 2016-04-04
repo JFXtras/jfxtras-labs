@@ -29,7 +29,7 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
 
     public ParticipationRole(String content)
     {
-        super(ParticipationRoleType.valueOf(extractValue(content)));
+        super(ParticipationRoleType.valueOf(content));
     }
     
     public ParticipationRole(ParticipationRole source)

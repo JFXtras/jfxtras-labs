@@ -63,7 +63,7 @@ public class FormatType extends ParameterBase<FormatType, String>
   
     public FormatType(String content)
     {
-        super(extractValue(content));
+        super(content);
     }
 
     public FormatType(FormatType source)

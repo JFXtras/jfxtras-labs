@@ -22,6 +22,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attach
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentURI;
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
@@ -29,26 +30,26 @@ import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTi
 public enum PropertyEnum
 {
     ACTION ("ACTION", null, null, null), // Alarm
-    ATTACHMENT_URI ("ATTACH"
-            , ValueType.UNIFORM_RESOURCE_IDENTIFIER
-            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.VALUE_DATA_TYPES)
-            , AttachmentURI.class), // Descriptive
-    ATTACHMENT_BASE64 ("ATTACH"
-            , ValueType.BINARY
-            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES)
-            , AttachmentBase64.class), // Descriptive
-    ATTENDEE ("ATTENDEE"    // name
-            , ValueType.CALENDAR_USER_ADDRESS   // value type
-            , Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.CALENDAR_USER_TYPE, ParameterEnum.DELEGATEES, // allowed parameters
+    ATTACHMENT_URI ("ATTACH" // property name
+            , ValueType.UNIFORM_RESOURCE_IDENTIFIER // property value type
+            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
+            , AttachmentURI.class), // property class
+    ATTACHMENT_BASE64 ("ATTACH" // property name
+            , ValueType.BINARY // property value type
+            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
+            , AttachmentBase64.class), // property class
+    ATTENDEE ("ATTENDEE"    // property name
+            , ValueType.CALENDAR_USER_ADDRESS   // property value type
+            , Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.CALENDAR_USER_TYPE, ParameterEnum.DELEGATEES,
                     ParameterEnum.DELEGATORS, ParameterEnum.DIRECTORY_ENTRY_REFERENCE,
                     ParameterEnum.GROUP_OR_LIST_MEMBERSHIP, ParameterEnum.LANGUAGE, ParameterEnum.PARTICIPATION_ROLE,
-                    ParameterEnum.PARTICIPATION_STATUS, ParameterEnum.RSVP_EXPECTATION, ParameterEnum.SENT_BY)
+                    ParameterEnum.PARTICIPATION_STATUS, ParameterEnum.RSVP_EXPECTATION, ParameterEnum.SENT_BY) // allowed parameters
             , Attendee.class), // property class
     CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class), // Calendar
-    CATEGORIES ("CATEGORIES"
-            , ValueType.TEXT
-            , Arrays.asList(ParameterEnum.LANGUAGE)
-            , Categories.class), // Descriptive
+    CATEGORIES ("CATEGORIES" // property name
+            , ValueType.TEXT // property value type
+            , Arrays.asList(ParameterEnum.LANGUAGE) // allowed parameters
+            , Categories.class), // property class
     CLASSIFICATION ("CLASS", null, null, null), // Descriptive
     COMMENT ("COMMENT", ValueType.TEXT, null, null), // Descriptive
     CONTACT ("CONTACT", null, null, null), // Relationship
@@ -68,7 +69,11 @@ public enum PropertyEnum
     GEOGRAPHIC_POSITION ("GEO", null, null, null), // Descriptive
     LOCATION ("LOCATION", ValueType.TEXT, Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Location.class), // Descriptive
     METHOD ("METHOD", null, null, null), // Calendar
-    ORGANIZER ("ORGANIZER", null, null, null),  // Relationship
+    ORGANIZER ("ORGANIZER", // name
+            ValueType.CALENDAR_USER_ADDRESS, // property value type
+            Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.DIRECTORY_ENTRY_REFERENCE, ParameterEnum.LANGUAGE,
+                    ParameterEnum.SENT_BY), // allowed parameters
+            Organizer.class), // property class
     PERCENT_COMPLETE ("PERCENT", null, null, null), // Descriptive
     PRIORITY ("PRIORITY", null, null, null), // Descriptive
     PRODUCT_IDENTIFIER ("PRODID", null, null, null), // Calendar

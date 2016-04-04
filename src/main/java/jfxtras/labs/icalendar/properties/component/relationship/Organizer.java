@@ -21,7 +21,6 @@ public class Organizer extends CalendarUserAddressProperty<Organizer>
     public Organizer(String propertyString) throws URISyntaxException
     {
         super(propertyString);
-//        setValue(new URI(getPropertyValueString()));
     }
     
     public Organizer(Organizer source)

@@ -30,7 +30,7 @@ public class AlarmTrigger extends ParameterBase<AlarmTrigger, AlarmTriggerRelati
 
     public AlarmTrigger(String content)
     {
-        super(AlarmTriggerRelationship.valueOf(extractValue(content)));
+        super(AlarmTriggerRelationship.valueOf(content));
     }
 
     public AlarmTrigger(AlarmTrigger source)
