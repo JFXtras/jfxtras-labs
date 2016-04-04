@@ -137,7 +137,7 @@ public enum PropertyEnum
         PropertyEnum[] values = PropertyEnum.values();
         for (int i=0; i<values.length; i++)
         {
-            map.put(new Pair<String, ValueType>(values[i].toString(), values[i].valueType()), values[i]);
+            map.put(new Pair<String, ValueType>(values[i].toString(), values[i].defaultValueType()), values[i]);
         }
         return map;
     }
@@ -176,7 +176,7 @@ public enum PropertyEnum
     private List<ParameterEnum> allowedParameters;
     @Override
     public String toString() { return name; }
-    public ValueType valueType() { return valueType; }
+    public ValueType defaultValueType() { return valueType; }
     
     PropertyEnum(String name, ValueType valueType, List<ParameterEnum> allowedParameters, Class<? extends Property> myClass)
     {

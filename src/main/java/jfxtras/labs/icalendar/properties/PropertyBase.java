@@ -79,12 +79,12 @@ public abstract class PropertyBase<T,U> implements Property<U>
     private ObjectProperty<ValueParameter> valueType;
     public void setValueParameter(ValueParameter value)
     {
-        if (value.getValue().equals(propertyType().valueType()) || value.getValue().equals(ValueType.UNKNOWN))
+        if (value.getValue().equals(propertyType().defaultValueType()) || value.getValue().equals(ValueType.UNKNOWN))
         {
             valueParameterProperty().set(value);
         } else
         {
-            throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + propertyType().valueType());
+            throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + propertyType().defaultValueType());
         }
     }
     public void setValueParameter(String value) { setValueParameter(new ValueParameter(value)); }
@@ -114,7 +114,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
             return Property.super.isValid();
         } else
         {
-            boolean isValueTypeOK = getValueParameter().getValue().equals(propertyType().valueType()) || getValueParameter().getValue().equals(ValueType.UNKNOWN);
+            boolean isValueTypeOK = getValueParameter().getValue().equals(propertyType().defaultValueType()) || getValueParameter().getValue().equals(ValueType.UNKNOWN);
             return (Property.super.isValid()) && isValueTypeOK;
         }
     }
@@ -279,13 +279,14 @@ public abstract class PropertyBase<T,U> implements Property<U>
         ParameterizedType pt = (ParameterizedType)this.getClass().getGenericSuperclass();
         int lastIndex = pt.getActualTypeArguments().length-1; // last parameterized type must be value's type
         String classU = pt.getActualTypeArguments()[lastIndex].getTypeName();
+        System.out.println("classU:" + classU);
         boolean isList = classU.contains(List.class.getTypeName());
         if (isList)
         {
             value = (U) Arrays.asList(getPropertyValueString().split(","))
                     .stream()
                     .map(e -> PropertyEnum.enumFromClass(getClass())
-                            .valueType()
+                            .defaultValueType()
                             .parse(e))
                     .collect(Collectors.toList());
 //            System.out.println("value:" + value.getClass().getSimpleName() + " " + value);
@@ -294,8 +295,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
 //            System.out.println("type:" + PropertyEnum.enumFromClass(getClass())
 //                        .valueType());
             value = PropertyEnum.enumFromClass(getClass())
-                        .valueType()
-                        .parse(getPropertyValueString());    
+                        .defaultValueType()
+                        .parse(getPropertyValueString());
+            // MAYBE STRING PARSING SHOULD BE DONE BY PROPERTY NOT BY VALUE TYPE
+            // USE STRING CONVERTER?
         }        
         setValue(value);
         
@@ -356,12 +359,21 @@ public abstract class PropertyBase<T,U> implements Property<U>
     @Override
     public String toContentLine()
     {
-        StringBuilder builder = new StringBuilder(propertyType().toString());
-//        System.out.println("parameters:" + parameters().size());
-        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
-        otherParameters().stream().forEach(p -> builder.append(";" + p));
-        builder.append(":" + propertyType().valueType().makeContent(getValue()));
+        StringBuilder builder = contentLinePart1();
+        // add property value
+        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
         return builder.toString();
+    }
+    
+    protected StringBuilder contentLinePart1()
+    {
+        StringBuilder builder = new StringBuilder(propertyType().toString());
+//      System.out.println("parameters:" + parameters().size());
+        // add parameters
+        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
+        // add non-standard parameters
+        otherParameters().stream().forEach(p -> builder.append(";" + p));
+        return builder;
     }
 
     @Override

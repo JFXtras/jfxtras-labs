@@ -454,7 +454,7 @@ public enum ParameterEnum
         public void parse(Property<?> property, String content)
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) property;
-            ValueType valueType = castProperty.propertyType().valueType();
+            ValueType valueType = castProperty.propertyType().defaultValueType();
             if (valueType.toString().equals(content))
             {
                 castProperty.setValueParameter(new ValueParameter(valueType));

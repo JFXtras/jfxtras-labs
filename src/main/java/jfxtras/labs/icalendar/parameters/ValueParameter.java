@@ -248,6 +248,7 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             @Override
             public <U> String makeContent(U value)
             {
+                System.out.println("value2:" + value);
                 return value.toString();
             }
         },
@@ -307,7 +308,6 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
             @Override
             public <U> String makeContent(U value)
             {
-                System.out.println("here:" + value);
                 return (String) value;
             }
         };

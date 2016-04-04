@@ -15,8 +15,8 @@ public class SummaryTest
     @Test
     public void canParseSummaryProperty()
     {
-        String s = "SUMMARY:Department Party";
-        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
+        String expectedContent = "SUMMARY:Department Party";
+        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(expectedContent));
         SortedMap<String, String> expectedMap = new TreeMap<>();
         expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party");
         assertEquals(expectedMap, valueMap);
@@ -38,8 +38,6 @@ public class SummaryTest
         Summary madeProperty = new Summary("SUMMARY:TEST SUMMARY");
         String expectedContent = "SUMMARY:TEST SUMMARY";
         assertEquals(expectedContent, madeProperty.toContentLine());
-//        madeProperty.setLanguage((Language)null); - for testing change listeners - TODO 
-//        madeProperty.setLanguage("en");
     }
     
     @Test
