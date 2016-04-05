@@ -8,19 +8,22 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifier;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
+import jfxtras.labs.icalendar.properties.component.time.start.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /**
- * Abstract class for all UTC and zoned-date-time classes
+ * Abstract class for all zoned-date-time classes
  * Contains the time zone identifier parameter
  * 
  * @author David Bal
  *
  * @param <T> - implementation class
  * @see DTStartZonedDateTime
+ * @see DTEndZonedDateTime
  */
-public abstract class PropertyTimeZone<T> extends PropertyBase<T, ZonedDateTime>
+public abstract class PropertyTimeZone<T> extends PropertyBase<T, ZonedDateTime> implements DateTimeStart<ZonedDateTime>
 {
     /**
      * TZID
@@ -31,7 +34,9 @@ public abstract class PropertyTimeZone<T> extends PropertyBase<T, ZonedDateTime>
      * Examples:
      * DTSTART;TZID=America/New_York:19980119T020000
      */
+    @Override
     public TimeZoneIdentifier getTimeZoneIdentifier() { return (timeZoneIdentifier == null) ? null : timeZoneIdentifier.get(); }
+    @Override
     public ObjectProperty<TimeZoneIdentifier> timeZoneIdentifierProperty()
     {
         if (timeZoneIdentifier == null)
@@ -41,6 +46,7 @@ public abstract class PropertyTimeZone<T> extends PropertyBase<T, ZonedDateTime>
         return timeZoneIdentifier;
     }
     private ObjectProperty<TimeZoneIdentifier> timeZoneIdentifier;
+    @Override
     public void setTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier)
     {
         if (timeZoneIdentifier != null)

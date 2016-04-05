@@ -2,9 +2,21 @@ package jfxtras.labs.icalendar.properties;
 
 import java.time.LocalDateTime;
 
+import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDateTime;
+import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
+import jfxtras.labs.icalendar.properties.component.time.start.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
-public abstract class PropertyDateTime<T> extends PropertyBase<T, LocalDateTime>
+/**
+ * Abstract class for all local-date-time classes
+ * 
+ * @author David Bal
+ *
+ * @param <T> - implementation class
+ * @see DTStartLocalDateTime
+ * @see DTEndLocalDateTime
+ */
+public abstract class PropertyDateTime<T> extends PropertyBase<T, LocalDateTime> implements DateTimeStart<LocalDateTime>
 {
     public PropertyDateTime(LocalDateTime temporal)
     {

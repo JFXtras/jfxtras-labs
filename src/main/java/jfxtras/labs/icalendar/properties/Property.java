@@ -2,8 +2,10 @@ package jfxtras.labs.icalendar.properties;
 
 import java.util.List;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
+import jfxtras.labs.icalendar.parameters.ValueParameter;
 
 /**
  * top-level interface for all iCalendar properties
@@ -37,10 +39,25 @@ public interface Property<U>
      * 
      */
     U getValue();
+
+    /** property value object property */
+    ObjectProperty<U> valueProperty();
     
     /** Set the value of this property */
     void setValue(U value);
         
+    /**
+     * Property value type.  Optional in most cases.
+     * Example:
+     * VALUE=DATE
+     */
+    ValueParameter getValueParameter();
+    ObjectProperty<ValueParameter> valueParameterProperty();
+    void setValueParameter(ValueParameter value);
+    
+    
+    
+    
     /**
      * other-param, 3.2 RFC 5545 page 14
      * the parameter name and value are combined into one object

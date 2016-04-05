@@ -31,6 +31,9 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * @see PropertyCalendarUserAddress
  * @see PropertyLanguage
  * @see PropertyTimeZone
+ * @see PropertyUTCTime
+ * @see PropertyDate
+ * @see PropertyDateTime
  * 
  * concrete subclasses
  * @see UniqueIdentifier

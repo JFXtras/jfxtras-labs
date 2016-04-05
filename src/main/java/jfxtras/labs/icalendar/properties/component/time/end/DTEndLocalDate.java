@@ -41,9 +41,4 @@ public class DTEndLocalDate extends PropertyDate<DTEndLocalDate>
     {
         super(source);
     }
-    
-//    public DTEndLocalDate()
-//    {
-//        super();
-//    }
 }

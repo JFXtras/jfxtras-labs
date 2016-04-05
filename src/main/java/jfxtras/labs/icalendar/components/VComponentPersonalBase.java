@@ -3,7 +3,6 @@ package jfxtras.labs.icalendar.components;
 import java.time.DateTimeException;
 import java.time.ZoneOffset;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -66,17 +65,17 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (attendees == null)
         {
             attendees = FXCollections.observableArrayList();
-            attendees.addListener((InvalidationListener) (obs) ->
-            {
-                int size = attendees().size();
-                if (size > 0)
-                {
-                    propertyMap().put(PropertyEnum.ATTENDEE, attendees());
-                } else if (size == 0)
-                {
-                    propertyMap().remove(PropertyEnum.ATTENDEE);
-                }
-            });
+//            attendees.addListener((InvalidationListener) (obs) ->
+//            {
+//                int size = attendees().size();
+//                if (size > 0)
+//                {
+//                    propertyMap().put(PropertyEnum.ATTENDEE, attendees());
+//                } else if (size == 0)
+//                {
+//                    propertyMap().remove(PropertyEnum.ATTENDEE);
+//                }
+//            });
         }
         return attendees;
     }
@@ -101,7 +100,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         }
         dateTimeStamp.set(dtStamp);
 //        propertyMap().put(PropertyEnum.DATE_TIME_STAMP, new ArrayList<DateTimeStamp>(Arrays.asList(dtStamp)));
-        propertyMap().put(PropertyEnum.DATE_TIME_STAMP, dtStamp);
+//        propertyMap().put(PropertyEnum.DATE_TIME_STAMP, dtStamp);
     }
     public T withDateTimeStamp(DateTimeStamp dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
 
@@ -132,7 +131,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         {
             this.organizer.set(organizer);            
         }
-        propertyMap().put(PropertyEnum.ORGANIZER, organizer);
+//        propertyMap().put(PropertyEnum.ORGANIZER, organizer);
     }
     public T withOrganizer(Organizer organizer) { setOrganizer(organizer); return (T) this; }
 
@@ -174,17 +173,17 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (requestStatus == null)
         {
             requestStatus = FXCollections.observableArrayList();
-            requestStatus.addListener((InvalidationListener) (obs) ->
-            {
-                int size = requestStatus().size();
-                if (size > 0)
-                {
-                    propertyMap().put(PropertyEnum.REQUEST_STATUS, requestStatus());
-                } else if (size == 0)
-                {
-                    propertyMap().remove(PropertyEnum.REQUEST_STATUS);
-                }
-            });
+//            requestStatus.addListener((InvalidationListener) (obs) ->
+//            {
+//                int size = requestStatus().size();
+//                if (size > 0)
+//                {
+//                    propertyMap().put(PropertyEnum.REQUEST_STATUS, requestStatus());
+//                } else if (size == 0)
+//                {
+//                    propertyMap().remove(PropertyEnum.REQUEST_STATUS);
+//                }
+//            });
         }
         return requestStatus;
     }
@@ -205,7 +204,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier)
     {
         this.uniqueIdentifier.set(uniqueIdentifier);
-        propertyMap().put(PropertyEnum.UNIQUE_IDENTIFIER, uniqueIdentifier);
+//        propertyMap().put(PropertyEnum.UNIQUE_IDENTIFIER, uniqueIdentifier);
     }
     public void withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); }
 
@@ -237,7 +236,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         {
             this.uniformResourceLocator.set(url);            
         }
-        propertyMap().put(PropertyEnum.UNIFORM_RESOURCE_LOCATOR, url);
+//        propertyMap().put(PropertyEnum.UNIFORM_RESOURCE_LOCATOR, url);
     }
     public T withUniformResourceLocator(UniformResourceLocator uniformResourceLocator) { setUniformResourceLocator(uniformResourceLocator); return (T) this; }
 

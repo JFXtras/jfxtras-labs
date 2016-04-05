@@ -27,6 +27,9 @@ import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
+import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDate;
+import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDateTime;
+import jfxtras.labs.icalendar.properties.component.time.due.DueZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
@@ -72,7 +75,18 @@ public enum PropertyEnum
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             DateTimeCompleted.class), // property class
     DATE_TIME_CREATED ("CREATED", null, null, DateTimeCreated.class), // Change management
-    DATE_TIME_DUE ("DUE", null, null, null), // Date and Time
+    DATE_TIME_DUE_LOCAL_DATE ("DUE", // property name
+            ValueType.DATE, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DueLocalDate.class), // property class
+    DATE_TIME_DUE_LOCAL_DATE_TIME ("DUE", // property name
+            ValueType.DATE_TIME, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DueLocalDateTime.class), // property class
+    DATE_TIME_DUE_ZONED_DATE_TIME ("DUE", // property name
+            ValueType.DATE_TIME, // default property value type
+            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DueZonedDateTime.class), // property class
     DATE_TIME_END_LOCAL_DATE ("DTEND", // property name
             ValueType.DATE, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters

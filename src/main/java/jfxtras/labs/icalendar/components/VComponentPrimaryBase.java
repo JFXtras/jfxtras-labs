@@ -1,8 +1,8 @@
 package jfxtras.labs.icalendar.components;
 
 import java.time.ZoneId;
+import java.time.temporal.Temporal;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
  * @see VFreeBusy
  * @see VTimeZone
  */
-public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComponentPrimary
+public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComponentPrimary
 {
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -67,17 +67,17 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         if (comments == null)
         {
             comments = FXCollections.observableArrayList();
-            comments.addListener((InvalidationListener) (obs) ->
-            {
-                int size = comments().size();
-                if (size > 0)
-                {
-                    propertyMap().put(PropertyEnum.COMMENT, comments());
-                } else if (size == 0)
-                {
-                    propertyMap().remove(PropertyEnum.COMMENT);
-                }
-            });
+//            comments.addListener((InvalidationListener) (obs) ->
+//            {
+//                int size = comments().size();
+//                if (size > 0)
+//                {
+//                    propertyMap().put(PropertyEnum.COMMENT, comments());
+//                } else if (size == 0)
+//                {
+//                    propertyMap().remove(PropertyEnum.COMMENT);
+//                }
+//            });
         }
         return comments;
     }
@@ -103,16 +103,16 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
      * @SEE VDateTime
      */
     @Override
-    public ObjectProperty<DateTimeStart> dateTimeStartProperty() { return dateTimeStart; }
-    final private ObjectProperty<DateTimeStart> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
+    public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty() { return dateTimeStart; }
+    final private ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START_LOCAL_DATE_TIME.toString());
 //    private DateTimeStart dateTimeStart;
-    @Override public DateTimeStart getDateTimeStart()
+    @Override public DateTimeStart<? extends Temporal> getDateTimeStart()
     {
 //        return (DateTimeStart) propertyMap().get(PropertyEnum.DATE_TIME_START);
         return dateTimeStart.get();
     }
     @Override
-    public void setDateTimeStart(DateTimeStart dtStart)
+    public void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart)
     {
         // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
         DateTimeType myDateTimeType = DateTimeType.of(dtStart.getValue());
@@ -121,7 +121,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         dateTimeStart.set(dtStart);
 //        dateTimeStart = dtStart;
 //        propertyMap().put(PropertyEnum.DATE_TIME_START, new ArrayList<DateTimeStart>(Arrays.asList(dtStart)));
-        propertyMap().put(PropertyEnum.DATE_TIME_START, dtStart);
+//        propertyMap().put(PropertyEnum.DATE_TIME_START, dtStart);
         
         // if type has changed then make all date-time properties the same
         if (changed)

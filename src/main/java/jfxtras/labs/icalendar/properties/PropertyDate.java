@@ -3,9 +3,21 @@ package jfxtras.labs.icalendar.properties;
 import java.time.LocalDate;
 
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDate;
+import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
+import jfxtras.labs.icalendar.properties.component.time.start.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
-public abstract class PropertyDate<T> extends PropertyBase<T, LocalDate>
+/**
+ * Abstract class for all local-date classes
+ * 
+ * @author David Bal
+ *
+ * @param <T> - implementation class
+ * @see DTStartLocalDate
+ * @see DTEndLocalDate
+ */
+public abstract class PropertyDate<T> extends PropertyBase<T, LocalDate> implements DateTimeStart<LocalDate>
 {
     public PropertyDate(LocalDate temporal)
     {
