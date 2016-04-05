@@ -1,5 +1,8 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jfxtras.labs.icalendar.parameters.ParticipationRole.ParticipationRoleType;
 
 /**
@@ -29,7 +32,7 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
 
     public ParticipationRole(String content)
     {
-        super(ParticipationRoleType.valueOf(content));
+        super(ParticipationRoleType.enumFromName(content));
     }
     
     public ParticipationRole(ParticipationRole source)
@@ -43,6 +46,23 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
         REQUIRED_PARTICIPANT ("REQ-PARTICIPANT"),
         OPTIONAL_PARTICIPANT ("OPT-PARTICIPANT"),
         NON_PARTICIPANT ("NON-PARTICIPANT");
+        
+        private static Map<String, ParticipationRoleType> enumFromNameMap = makeEnumFromNameMap();
+        private static Map<String, ParticipationRoleType> makeEnumFromNameMap()
+        {
+            Map<String, ParticipationRoleType> map = new HashMap<>();
+            ParticipationRoleType[] values = ParticipationRoleType.values();
+            for (int i=0; i<values.length; i++)
+            {
+                map.put(values[i].toString(), values[i]);
+            }
+            return map;
+        }
+        /** get enum from name */
+        public static ParticipationRoleType enumFromName(String propertyName)
+        {
+            return enumFromNameMap.get(propertyName.toUpperCase());
+        }
         
         private String name;
         @Override public String toString() { return name; }

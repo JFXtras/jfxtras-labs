@@ -1,5 +1,8 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 
 /**
@@ -50,7 +53,6 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         String parameterName = myParameterEnum().toString();
         return ";" + parameterName + "=" + value;
     }
-
     
     public enum ValueType
     {
@@ -71,6 +73,23 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         UNKNOWN ("UNKNOWN");
         // x-name or IANA-token values must be added manually
         
+        private static Map<String, ValueType> enumFromNameMap = makeEnumFromNameMap();
+        private static Map<String, ValueType> makeEnumFromNameMap()
+        {
+            Map<String, ValueType> map = new HashMap<>();
+            ValueType[] values = ValueType.values();
+            for (int i=0; i<values.length; i++)
+            {
+                map.put(values[i].toString(), values[i]);
+            }
+            return map;
+        }
+        /** get enum from name */
+        public static ValueType enumFromName(String propertyName)
+        {
+            return enumFromNameMap.get(propertyName.toUpperCase());
+        }
+        
         private String name;
         @Override public String toString() { return name; }
         ValueType(String name)
@@ -85,13 +104,7 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
 
         static ValueType valueOf2(String value)
         {
-            try
-            {
-                return valueOf(value);
-            } catch (IllegalArgumentException e)
-            {
-                return UNKNOWN;
-            }
+            return (enumFromName(value) == null) ? UNKNOWN : enumFromName(value);
         }
 
     }

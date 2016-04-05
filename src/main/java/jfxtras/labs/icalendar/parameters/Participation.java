@@ -1,5 +1,8 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jfxtras.labs.icalendar.parameters.Participation.ParticipationStatus;
 
 /**
@@ -29,7 +32,7 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
     
     public Participation(String content)
     {
-        super(ParticipationStatus.valueOf(content));
+        super(ParticipationStatus.enumFromName(content));
     }
 
     public Participation(Participation source)
@@ -47,6 +50,23 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
         TENTATIVE ("TENTATIVE"),        // VEvent, VTodo
         DELEGATED ("DELEGATED");        // VEvent, VTodo
         //  x-name or iana-token must be added to enum list
+        
+        private static Map<String, ParticipationStatus> enumFromNameMap = makeEnumFromNameMap();
+        private static Map<String, ParticipationStatus> makeEnumFromNameMap()
+        {
+            Map<String, ParticipationStatus> map = new HashMap<>();
+            ParticipationStatus[] values = ParticipationStatus.values();
+            for (int i=0; i<values.length; i++)
+            {
+                map.put(values[i].toString(), values[i]);
+            }
+            return map;
+        }
+        /** get enum from name */
+        public static ParticipationStatus enumFromName(String propertyName)
+        {
+            return enumFromNameMap.get(propertyName.toUpperCase());
+        }
         
         private String name;
         @Override public String toString() { return name; }

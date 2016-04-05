@@ -1,5 +1,8 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 
 /**
@@ -39,7 +42,7 @@ public class Encoding extends ParameterBase<Encoding, EncodingType>
     
     public Encoding(String content)
     {
-        super(EncodingType.valueOf(content));
+        super(EncodingType.enumFromName(content));
     }
 
     public Encoding(Encoding source)
@@ -51,6 +54,23 @@ public class Encoding extends ParameterBase<Encoding, EncodingType>
     {
         EIGHT_BIT ("8BIT"),
         BASE64 ("BASE64");
+        
+        private static Map<String, EncodingType> enumFromNameMap = makeEnumFromNameMap();
+        private static Map<String, EncodingType> makeEnumFromNameMap()
+        {
+            Map<String, EncodingType> map = new HashMap<>();
+            EncodingType[] values = EncodingType.values();
+            for (int i=0; i<values.length; i++)
+            {
+                map.put(values[i].toString(), values[i]);
+            }
+            return map;
+        }
+        /** get enum from name */
+        public static EncodingType enumFromName(String propertyName)
+        {
+            return enumFromNameMap.get(propertyName.toUpperCase());
+        }
         
         private String name;
         @Override public String toString() { return name; }

@@ -309,6 +309,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
         // add non-standard parameters
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         // add property value
+//        System.out.println("value:" + valueToString(getValue()));
 //        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
         builder.append(":" + valueToString(getValue()));
         return builder.toString();

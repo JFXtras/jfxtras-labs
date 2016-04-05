@@ -30,6 +30,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
 import jfxtras.labs.icalendar.properties.component.time.DurationProp;
+import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
 import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.due.DueZonedDateTime;
@@ -440,7 +441,8 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Date and Time
+    },
+    // Recurrence
     EXCEPTION_DATE_TIMES ("EXDATE", null, null, null) {
         @Override
         public Property<?> getProperty(VComponent vComponent)
@@ -455,8 +457,12 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Recurrence
-    FREE_BUSY_TIME ("FREEBUSY", null, null, null) {
+    },
+    // Date and Time
+    FREE_BUSY_TIME ("FREEBUSY", // property name
+            ValueType.PERIOD, // default property value type
+            Arrays.asList(ParameterEnum.FREE_BUSY_TIME_TYPE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            FreeBusyTime.class) {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {
@@ -915,7 +921,6 @@ public enum PropertyEnum
     {
         return enumListFromNameMap.get(propertyName.toUpperCase());
     }
-    
     
     private static Map<Pair<String, ValueType>, PropertyEnum> enumFromNameMap = makeEnumFromNameMap();
     private static Map<Pair<String, ValueType>, PropertyEnum> makeEnumFromNameMap()
