@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.util.Pair;
+import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VComponentPrimary;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
@@ -39,15 +41,57 @@ import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTi
 
 public enum PropertyEnum
 {
-    ACTION ("ACTION", null, null, null), // Alarm
+    ACTION ("ACTION", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Alarm
     ATTACHMENT_URI ("ATTACH" // property name
             , ValueType.UNIFORM_RESOURCE_IDENTIFIER // default property value type
             , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
-            , AttachmentURI.class), // property class
+            , AttachmentURI.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     ATTACHMENT_BASE64 ("ATTACH" // property name
             , ValueType.BINARY // default property value type
             , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
-            , AttachmentBase64.class), // property class
+            , AttachmentBase64.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     ATTENDEE ("ATTENDEE"    // property name
             , ValueType.CALENDAR_USER_ADDRESS   // default property value type
             , Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.CALENDAR_USER_TYPE, ParameterEnum.DELEGATEES,
@@ -55,110 +99,795 @@ public enum PropertyEnum
                     ParameterEnum.GROUP_OR_LIST_MEMBERSHIP, ParameterEnum.LANGUAGE, ParameterEnum.PARTICIPATION_ROLE,
                     ParameterEnum.PARTICIPATION_STATUS, ParameterEnum.RSVP_EXPECTATION, ParameterEnum.SENT_BY,
                     ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
-            , Attendee.class), // property class
-    CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class), // Calendar
+            , Attendee.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
+    CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Calendar
     CATEGORIES ("CATEGORIES" // property name
             , ValueType.TEXT // default property value type
             , Arrays.asList(ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
-            , Categories.class), // property class
+            , Categories.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     CLASSIFICATION ("CLASS", // property name
             ValueType.TEXT, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Classification.class),
+            Classification.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            },
     COMMENT ("COMMENT", // property name
             ValueType.TEXT, // default property value type
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Comment.class),
-    CONTACT ("CONTACT", null, null, null), // Relationship
+            Comment.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    return null; // handled in getPropertyList
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    VComponentPrimary castProperty = (VComponentPrimary) parent;
+                    return castProperty.comments();
+                }
+            },
+    CONTACT ("CONTACT", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Relationship
     DATE_TIME_COMPLETED ("COMPLETED", // property name
             ValueType.DATE_TIME, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DateTimeCompleted.class), // property class
-    DATE_TIME_CREATED ("CREATED", null, null, DateTimeCreated.class), // Change management
+            DateTimeCompleted.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
+    DATE_TIME_CREATED ("CREATED", null, null, DateTimeCreated.class) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Change management
     DATE_TIME_DUE_LOCAL_DATE ("DUE", // property name
             ValueType.DATE, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DueLocalDate.class), // property class
+            DueLocalDate.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     DATE_TIME_DUE_LOCAL_DATE_TIME ("DUE", // property name
             ValueType.DATE_TIME, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DueLocalDateTime.class), // property class
+            DueLocalDateTime.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     DATE_TIME_DUE_ZONED_DATE_TIME ("DUE", // property name
             ValueType.DATE_TIME, // default property value type
             Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DueZonedDateTime.class), // property class
+            DueZonedDateTime.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     DATE_TIME_END_LOCAL_DATE ("DTEND", // property name
             ValueType.DATE, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTEndLocalDate.class), // property class
+            DTEndLocalDate.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     DATE_TIME_END_LOCAL_DATE_TIME ("DTEND", // property name
             ValueType.DATE_TIME, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTEndLocalDateTime.class), // property class
+            DTEndLocalDateTime.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     DATE_TIME_END_ZONED_DATE_TIME ("DTEND", // property name
             ValueType.DATE_TIME, // default property value type
             Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTEndZonedDateTime.class), // property class
-    DATE_TIME_STAMP ("DTSTAMP", null, null, DateTimeStamp.class), // Change management
+            DTEndZonedDateTime.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
+    DATE_TIME_STAMP ("DTSTAMP", null, null, DateTimeStamp.class) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Change management
     DATE_TIME_START_LOCAL_DATE ("DTSTART", // property name
             ValueType.DATE, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTStartLocalDate.class), // property class
+            DTStartLocalDate.class) {
+                @Override
+                public Property<?> getProperty(VComponent parent)
+                {
+                    VComponentPrimary castProperty = (VComponentPrimary) parent;
+                    return castProperty.getDateTimeStart();
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     DATE_TIME_START_LOCAL_DATE_TIME ("DTSTART", // property name
             ValueType.DATE_TIME, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTStartLocalDateTime.class), // property class
+            DTStartLocalDateTime.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     DATE_TIME_START_ZONED_DATE_TIME ("DTSTART", // property name
             ValueType.DATE_TIME, // default property value type
             Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTStartZonedDateTime.class), // property class
-    DESCRIPTION ("DESCRIPTION", ValueType.TEXT, Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Description.class), // Descriptive
-    DURATION ("DURATION", null, null, null), // Date and Time
-    EXCEPTION_DATE_TIMES ("EXDATE", null, null, null), // Recurrence
-    FREE_BUSY_TIME ("FREEBUSY", null, null, null), // Date and Time
-    GEOGRAPHIC_POSITION ("GEO", null, null, null), // Descriptive
+            DTStartZonedDateTime.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
+    DESCRIPTION ("DESCRIPTION", ValueType.TEXT, Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Description.class) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Descriptive
+    DURATION ("DURATION", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Date and Time
+    EXCEPTION_DATE_TIMES ("EXDATE", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Recurrence
+    FREE_BUSY_TIME ("FREEBUSY", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Date and Time
+    GEOGRAPHIC_POSITION ("GEO", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Descriptive
     LOCATION ("LOCATION", // property name
             ValueType.TEXT, // default property value type
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Location.class), // property class
-    METHOD ("METHOD", null, null, null), // Calendar
+            Location.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
+    METHOD ("METHOD", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Calendar
     ORGANIZER ("ORGANIZER", // name
             ValueType.CALENDAR_USER_ADDRESS, // default property value type
             Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.DIRECTORY_ENTRY_REFERENCE, ParameterEnum.LANGUAGE,
                     ParameterEnum.SENT_BY), // allowed parameters
-            Organizer.class), // property class
-    PERCENT_COMPLETE ("PERCENT", null, null, null), // Descriptive
-    PRIORITY ("PRIORITY", null, null, null), // Descriptive
-    PRODUCT_IDENTIFIER ("PRODID", null, null, null), // Calendar
-    RECURRENCE_DATE_TIMES ("RDATE", null, null, null), // Recurrence
-    RECURRENCE_IDENTIFIER ("RECURRENCE-ID", null, null, null),  // Relationship
-    RECURRENCE_RULE ("RRULE", null, null, null), // Recurrence
-    RELATED_TO ("RELATED-TO", null, null, null), // Relationship
-    REPEAT_COUNT ("REPEAT", null, null, null), // Alarm
-    REQUEST_STATUS ("REQUEST-STATUS", null, null, RequestStatus.class), // Miscellaneous
+            Organizer.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
+    PERCENT_COMPLETE ("PERCENT", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Descriptive
+    PRIORITY ("PRIORITY", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Descriptive
+    PRODUCT_IDENTIFIER ("PRODID", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Calendar
+    RECURRENCE_DATE_TIMES ("RDATE", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Recurrence
+    RECURRENCE_IDENTIFIER ("RECURRENCE-ID", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },  // Relationship
+    RECURRENCE_RULE ("RRULE", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Recurrence
+    RELATED_TO ("RELATED-TO", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Relationship
+    REPEAT_COUNT ("REPEAT", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Alarm
+    REQUEST_STATUS ("REQUEST-STATUS", null, null, RequestStatus.class) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Miscellaneous
     RESOURCES ("RESOURCES", // property name
             ValueType.TEXT, // default property value type
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Resources.class), // property class
-    SEQUENCE ("SEQUENCE", null, null, Sequence.class), // Change management
+            Resources.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
+    SEQUENCE ("SEQUENCE", null, null, Sequence.class) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Change management
     STATUS ("STATUS", // property name
             ValueType.TEXT, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Status.class), // property class
+            Status.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
     SUMMARY ("SUMMARY", // property name
             ValueType.TEXT, // default property value type
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Summary.class), // property class
-    TIME_TRANSPARENCY ("TRANSP", null, null, null), // Date and Time
-    TIME_ZONE_IDENTIFIER ("TZID", null, null, null), // Time Zone
-    TIME_ZONE_NAME ("TZNAME", null, null, null), // Time Zone
-    TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", null, null, null), // Time Zone
-    TIME_ZONE_OFFSET_TO ("TZOFFSETTO", null, null, null), // Time Zone
-    TIME_ZONE_URL ("TZURL", null, null, null), // Time Zone
-    TRIGGER ("TRIGGER", null, null, null),  // Alarm
-    UNIQUE_IDENTIFIER ("UID", ValueType.TEXT, null, null), // Relationship
-    UNIFORM_RESOURCE_LOCATOR ("URL", null, null, null), // Relationship
-    VERSION ("VERSION", ValueType.TEXT, null, null); // Calendar
+            Summary.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            }, // property class
+    TIME_TRANSPARENCY ("TRANSP", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Date and Time
+    TIME_ZONE_IDENTIFIER ("TZID", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Time Zone
+    TIME_ZONE_NAME ("TZNAME", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Time Zone
+    TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Time Zone
+    TIME_ZONE_OFFSET_TO ("TZOFFSETTO", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Time Zone
+    TIME_ZONE_URL ("TZURL", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Time Zone
+    TRIGGER ("TRIGGER", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },  // Alarm
+    UNIQUE_IDENTIFIER ("UID", ValueType.TEXT, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Relationship
+    UNIFORM_RESOURCE_LOCATOR ("URL", null, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // Relationship
+    VERSION ("VERSION", ValueType.TEXT, null, null) {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }; // Calendar
     
     // Map to match up name to enum List
     private static Map<String, List<PropertyEnum>> enumListFromNameMap = makeEnumListFromNameMap();
@@ -242,5 +971,10 @@ public enum PropertyEnum
         this.name = name;
         this.valueType = valueType;
         this.myClass = myClass;
-    }   
+    }
+    /*
+     * ABSTRACT METHODS
+     */
+    abstract public Property<?> getProperty(VComponent vComponent);
+    abstract public List<? extends Property<?>> getPropertyList(VComponent parent);
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyDateTime;
+import jfxtras.labs.icalendar.properties.component.time.PropertyDateTime;
 
 /**
  * DTSTART

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
-import jfxtras.labs.icalendar.properties.PropertyDate;
+import jfxtras.labs.icalendar.properties.component.time.PropertyDate;
 
 /**
  * DTEND

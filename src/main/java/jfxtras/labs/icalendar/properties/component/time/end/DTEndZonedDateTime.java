@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
-import jfxtras.labs.icalendar.properties.PropertyTimeZone;
+import jfxtras.labs.icalendar.properties.component.time.PropertyTimeZone;
 
 /**
  * DTEND

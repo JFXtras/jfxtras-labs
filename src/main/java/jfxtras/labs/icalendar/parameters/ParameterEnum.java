@@ -10,11 +10,11 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
 import jfxtras.labs.icalendar.properties.PropertyLanguage;
-import jfxtras.labs.icalendar.properties.PropertyTimeZone;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
+import jfxtras.labs.icalendar.properties.component.time.PropertyTimeZone;
 
 public enum ParameterEnum
 {

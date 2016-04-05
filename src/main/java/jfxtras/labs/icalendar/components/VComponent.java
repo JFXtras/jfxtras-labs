@@ -19,6 +19,26 @@ import jfxtras.labs.icalendar.properties.PropertyEnum;
 public interface VComponent
 {
     /**
+     * Returns the enum for the component as it would appear in the iCalendar content line
+     * Examples:
+     * VEVENT
+     * VJOURNAL
+     * 
+     * @return - the component enum
+     */
+    VComponentEnum componentType();
+    
+    default String firstContentLine()
+    {
+        return "BEGIN:" + componentType().toString();
+    }
+    
+    default String lastContentLine()
+    {
+        return "END:" + componentType().toString();
+    }
+    
+    /**
      * 3.8.8.2.  Non-Standard Properties
      * Any property name with a "X-" prefix
      * 
@@ -41,15 +61,15 @@ public interface VComponent
 //    void setIANAProperties(ObservableList<String> iana);
     
     
-    ObservableList<Object> otherParameters();
+    ObservableList<Object> otherProperties();
     
     
     List<PropertyEnum> properties();
-//    /**
+    //    /**
 //     * 
 //     * @return
 //     */
 //    Map<PropertyEnum, List<Property>> propertyMap(); // Object can be a List or a single property
 //    List<Pair<PropertyEnum, Property>> properties();
-    
+    CharSequence toContentLines();
 }

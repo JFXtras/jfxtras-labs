@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.properties.component.time.due;
 import java.time.ZonedDateTime;
 
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyTimeZone;
+import jfxtras.labs.icalendar.properties.component.time.PropertyTimeZone;
 
 /**
  * DUE

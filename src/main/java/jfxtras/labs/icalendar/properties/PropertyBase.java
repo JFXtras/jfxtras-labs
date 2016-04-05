@@ -19,6 +19,10 @@ import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendar.properties.calendar.Version;
 import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
+import jfxtras.labs.icalendar.properties.component.time.PropertyDate;
+import jfxtras.labs.icalendar.properties.component.time.PropertyDateTime;
+import jfxtras.labs.icalendar.properties.component.time.PropertyTimeZone;
+import jfxtras.labs.icalendar.properties.component.time.PropertyUTCTime;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**

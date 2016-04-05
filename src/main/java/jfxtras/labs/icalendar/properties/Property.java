@@ -20,13 +20,13 @@ import jfxtras.labs.icalendar.parameters.ValueParameter;
 public interface Property<U>
 {
     /**
-     * Returns the name of the property as it would appear in the iCalendar content line
+     * Returns the enum for the property as it would appear in the iCalendar content line
      * Examples:
      * DESCRIPTION
      * UID
      * PRODID
      * 
-     * @return - the property name
+     * @return - the property enum
      */
     PropertyEnum propertyType();
     
@@ -39,11 +39,9 @@ public interface Property<U>
      * 
      */
     U getValue();
-
     /** property value object property */
-    ObjectProperty<U> valueProperty();
-    
-    /** Set the value of this property */
+    ObjectProperty<U> valueProperty();    
+    /** Set the value of the property */
     void setValue(U value);
         
     /**
@@ -52,11 +50,10 @@ public interface Property<U>
      * VALUE=DATE
      */
     ValueParameter getValueParameter();
+    /** property for value type */
     ObjectProperty<ValueParameter> valueParameterProperty();
+    /** Set the value type */
     void setValueParameter(ValueParameter value);
-    
-    
-    
     
     /**
      * other-param, 3.2 RFC 5545 page 14
@@ -64,18 +61,9 @@ public interface Property<U>
      */
     ObservableList<Object> otherParameters();
     
-//    /**
-//     * Map of each represented parameter enum to its associated class
-//     * Each parameter can occur only once
-//     */
-//    @Deprecated
-//    Map<ParameterEnum, Parameter<?>> parameterMap();
-//    
-//    /**
-//     * Map of each parameter that can occur more than once
-//     */
-//    Map<ParameterEnum, List<Parameter<?>>> parametersList();
-    
+    /**
+     * List of parameters contained in the property
+     */
     List<ParameterEnum> parameters();
     
     /**
@@ -100,13 +88,4 @@ public interface Property<U>
      * 
      */
     
-    /*
-     * with collection
-     * all in enum
-     */
-    
-//    /**
-//     * List of all parameters in this property
-//     */
-//    List<Parameter> parameters();
 }

@@ -7,7 +7,7 @@ import java.time.temporal.Temporal;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
-import jfxtras.labs.icalendar.properties.component.time.start.DateTimeStart;
+import jfxtras.labs.icalendar.properties.component.time.DateTime;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -42,9 +42,9 @@ public interface VComponentPrimary extends VComponent
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
-    DateTimeStart<? extends Temporal> getDateTimeStart();
-    ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty();
-    void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart);
+    DateTime<? extends Temporal> getDateTimeStart();
+    ObjectProperty<DateTime<? extends Temporal>> dateTimeStartProperty();
+    void setDateTimeStart(DateTime<? extends Temporal> dtStart);
     default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };
     default ZoneId getZoneId()
     {

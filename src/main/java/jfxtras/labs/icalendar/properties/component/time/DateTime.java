@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties.component.time.start;
+package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.temporal.Temporal;
 
@@ -6,7 +6,14 @@ import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifier;
 import jfxtras.labs.icalendar.properties.Property;
 
-public interface DateTimeStart<U extends Temporal> extends Property<U>
+/**
+ * Interface for all Date and Date-Time properties
+ * 
+ * @author David Bal
+ *
+ * @param <U> - property Temporal value type (LocalDate, LocalDateTime or ZonedDateTime)
+ */
+public interface DateTime<U extends Temporal> extends Property<U>
 {
     /*
      * default Time Zone methods are overridden by classes that require them
@@ -14,16 +21,13 @@ public interface DateTimeStart<U extends Temporal> extends Property<U>
     default TimeZoneIdentifier getTimeZoneIdentifier()
     {
         return null;
-//        throw new RuntimeException("Not implemented for class:" + getClass().getSimpleName());
     }
     default ObjectProperty<TimeZoneIdentifier> timeZoneIdentifierProperty()
     {
         return null;
-//        throw new RuntimeException("Not implemented for class:" + getClass().getSimpleName());
     }
     default void setTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier)
     {
         // do nothing - not implemented
-//        throw new RuntimeException("Not implemented for class:" + getClass().getSimpleName());
     }
 }

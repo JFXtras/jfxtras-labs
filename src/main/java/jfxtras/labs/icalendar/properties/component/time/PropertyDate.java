@@ -1,11 +1,11 @@
-package jfxtras.labs.icalendar.properties;
+package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.LocalDate;
 
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
-import jfxtras.labs.icalendar.properties.component.time.start.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /**
@@ -17,7 +17,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @see DTStartLocalDate
  * @see DTEndLocalDate
  */
-public abstract class PropertyDate<T> extends PropertyBase<T, LocalDate> implements DateTimeStart<LocalDate>
+public abstract class PropertyDate<T> extends PropertyBase<T, LocalDate> implements DateTime<LocalDate>
 {
     public PropertyDate(LocalDate temporal)
     {

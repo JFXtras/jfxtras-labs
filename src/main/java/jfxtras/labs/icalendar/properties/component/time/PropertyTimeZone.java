@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties;
+package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -8,9 +8,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifier;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
-import jfxtras.labs.icalendar.properties.component.time.start.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /**
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @see DTStartZonedDateTime
  * @see DTEndZonedDateTime
  */
-public abstract class PropertyTimeZone<T> extends PropertyBase<T, ZonedDateTime> implements DateTimeStart<ZonedDateTime>
+public abstract class PropertyTimeZone<T> extends PropertyBase<T, ZonedDateTime> implements DateTime<ZonedDateTime>
 {
     /**
      * TZID
