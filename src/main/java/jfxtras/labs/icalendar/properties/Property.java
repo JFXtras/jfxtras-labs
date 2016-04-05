@@ -71,7 +71,7 @@ public interface Property<U>
      * 
      * @return - string representation of property value consistent with iCalendar standards
      */
-    String toContentLine();
+    CharSequence toContentLine();
     
     
     /**

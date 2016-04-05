@@ -14,7 +14,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attach
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
-import jfxtras.labs.icalendar.properties.component.time.PropertyTimeZone;
+import jfxtras.labs.icalendar.properties.component.time.TimeZoneAbstract;
 
 public enum ParameterEnum
 {
@@ -430,14 +430,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyTimeZone<?> castProperty = (PropertyTimeZone<?>) property;
+            TimeZoneAbstract<?> castProperty = (TimeZoneAbstract<?>) property;
             castProperty.setTimeZoneIdentifier(new TimeZoneIdentifier(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyTimeZone<?> castProperty = (PropertyTimeZone<?>) parent;
+            TimeZoneAbstract<?> castProperty = (TimeZoneAbstract<?>) parent;
             TimeZoneIdentifier parameter = castProperty.getTimeZoneIdentifier();
             return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
         }

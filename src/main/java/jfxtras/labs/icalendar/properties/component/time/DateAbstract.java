@@ -17,19 +17,19 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @see DTStartLocalDate
  * @see DTEndLocalDate
  */
-public abstract class PropertyDate<T> extends PropertyBase<T, LocalDate> implements DateTime<LocalDate>
+public abstract class DateAbstract<T> extends PropertyBase<T, LocalDate> implements DateTime<LocalDate>
 {
-    public PropertyDate(LocalDate temporal)
+    public DateAbstract(LocalDate temporal)
     {
         super(temporal);
     }
 
-    public PropertyDate(String propertyString)
+    public DateAbstract(String propertyString)
     {
         super(propertyString);
     }
     
-    public PropertyDate(PropertyDate<T> source)
+    public DateAbstract(DateAbstract<T> source)
     {
         super(source);
     }

@@ -90,6 +90,7 @@ public final class VComponentUtilities
      * @author David Bal
      *
      */
+    @Deprecated
     public enum VComponentPropertyOld
     {
         /**
@@ -116,7 +117,7 @@ public final class VComponentUtilities
             @Override
             public String toPropertyString(VComponentDisplayableOld<?> vComponent)
             {
-                return ((vComponent.getCategories() == null) || (vComponent.getCategories().getValue().isEmpty())) ? null : vComponent.getCategories().toContentLine();
+                return ((vComponent.getCategories() == null) || (vComponent.getCategories().getValue().isEmpty())) ? null : vComponent.getCategories().toContentLine().toString();
             }
 
             @Override
@@ -779,7 +780,7 @@ public final class VComponentUtilities
             @Override
             public String toPropertyString(VComponentDisplayableOld<?> vComponent)
             {
-                return ((vComponent.getSummary() == null) || (vComponent.getSummary().getValue().isEmpty())) ? null : vComponent.getSummary().toContentLine();
+                return ((vComponent.getSummary() == null) || (vComponent.getSummary().getValue().isEmpty())) ? null : vComponent.getSummary().toContentLine().toString();
             }
 
             @Override

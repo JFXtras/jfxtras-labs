@@ -59,7 +59,7 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         CALENDAR_USER_ADDRESS ("CAL-ADDRESS"),
         DATE ("DATE"),
         DATE_TIME ("DATE-TIME"),
-        DURATION ("DURATION"),
+        DURATION ("DURATION"), // Based on ISO.8601.2004 (but Y and M for years and months is not supported by iCalendar)
         FLOAT ("FLOAT"),
         INTEGER ("INTEGER"),
         PERIOD ("PERIOD"),

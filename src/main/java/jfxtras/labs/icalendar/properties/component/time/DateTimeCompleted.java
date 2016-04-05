@@ -21,7 +21,7 @@ import jfxtras.labs.icalendar.components.VTodo;
  * The property can be specified in following components:
  * @see VTodo
  */
-public class DateTimeCompleted extends PropertyUTCTime<DateTimeCompleted>
+public class DateTimeCompleted extends UTCTimeAbstract<DateTimeCompleted>
 {
     public DateTimeCompleted(ZonedDateTime temporal)
     {

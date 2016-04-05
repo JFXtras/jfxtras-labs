@@ -29,6 +29,7 @@ import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
+import jfxtras.labs.icalendar.properties.component.time.DurationProp;
 import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.due.DueZonedDateTime;
@@ -422,7 +423,10 @@ public enum PropertyEnum
             return null;
         }
     }, // Descriptive
-    DURATION ("DURATION", null, null, null) {
+    DURATION ("DURATION", // property name
+            ValueType.DURATION, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DurationProp.class) {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {

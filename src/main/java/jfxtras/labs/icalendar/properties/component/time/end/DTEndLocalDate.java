@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
-import jfxtras.labs.icalendar.properties.component.time.PropertyDate;
+import jfxtras.labs.icalendar.properties.component.time.DateAbstract;
 
 /**
  * DTEND
@@ -25,7 +25,7 @@ import jfxtras.labs.icalendar.properties.component.time.PropertyDate;
  * @see VEvent
  * @see VFreeBusy
  */
-public class DTEndLocalDate extends PropertyDate<DTEndLocalDate>
+public class DTEndLocalDate extends DateAbstract<DTEndLocalDate>
 {
     public DTEndLocalDate(LocalDate temporal)
     {

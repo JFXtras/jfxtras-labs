@@ -19,10 +19,10 @@ import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendar.properties.calendar.Version;
 import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
-import jfxtras.labs.icalendar.properties.component.time.PropertyDate;
-import jfxtras.labs.icalendar.properties.component.time.PropertyDateTime;
-import jfxtras.labs.icalendar.properties.component.time.PropertyTimeZone;
-import jfxtras.labs.icalendar.properties.component.time.PropertyUTCTime;
+import jfxtras.labs.icalendar.properties.component.time.DateAbstract;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeAbstract;
+import jfxtras.labs.icalendar.properties.component.time.TimeZoneAbstract;
+import jfxtras.labs.icalendar.properties.component.time.UTCTimeAbstract;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**
@@ -34,10 +34,10 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * @see PropertyAlternateTextRepresentation
  * @see PropertyCalendarUserAddress
  * @see PropertyLanguage
- * @see PropertyTimeZone
- * @see PropertyUTCTime
- * @see PropertyDate
- * @see PropertyDateTime
+ * @see TimeZoneAbstract
+ * @see UTCTimeAbstract
+ * @see DateAbstract
+ * @see DateTimeAbstract
  * 
  * concrete subclasses
  * @see UniqueIdentifier
@@ -55,6 +55,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
 {
     @Override
     public U getValue() { return value.get(); }
+    @Override
     public ObjectProperty<U> valueProperty() { return value; }
     private ObjectProperty<U> value;
     @Override
@@ -71,7 +72,9 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * VALUE=DATE-TIME  (Date-Time is default value, so it isn't necessary to specify)
      * VALUE=DATE
      */
+    @Override
     public ValueParameter getValueParameter() { return (valueType == null) ? null : valueType.get(); }
+    @Override
     public ObjectProperty<ValueParameter> valueParameterProperty()
     {
         if (valueType == null)
@@ -81,6 +84,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
         return valueType;
     }
     private ObjectProperty<ValueParameter> valueType;
+    @Override
     public void setValueParameter(ValueParameter value)
     {
         if (value.getValue().equals(propertyType().defaultValueType()) || value.getValue().equals(ValueType.UNKNOWN))
@@ -165,72 +169,14 @@ public abstract class PropertyBase<T,U> implements Property<U>
             }
         }
         return Collections.unmodifiableList(populatedParameters);
-    }
-    
-//    @Override
-//    @Deprecated
-//    public Map<ParameterEnum, Parameter<?>> parameterMap()
-//    {
-//        Map<ParameterEnum, Parameter<?>> populatedParameterMap = new LinkedHashMap<>();
-//        Iterator<ParameterEnum> i = propertyType().possibleParameters().stream().iterator();
-//        while (i.hasNext())
-//        {
-//            ParameterEnum parameterType = i.next();
-//            Parameter<?> parameter = parameterType.getParameter(this);
-//            if (parameter != null)
-//            {
-//                populatedParameterMap.put(parameterType, parameter);
-//            }
-//        }
-//        return Collections.unmodifiableMap(populatedParameterMap);
-//    }
-//    final private List<ParameterEnum> parameters = new ArrayList<>();
-//    protected List<ParameterEnum> parametersModifiable() { return parameters; }
-    
-    /*
-     * PARAMETER MAPS
-     */
-    
-//    @Override
-//    public Map<ParameterEnum, Parameter<?>> parameterMap() { return Collections.unmodifiableMap(parameterMap); }
-//    protected Map<ParameterEnum, Parameter<?>> parameterMapModifiable() { return parameterMap; }
-//    private Map<ParameterEnum, Parameter<?>> parameterMap = new LinkedHashMap<>();
-
-//    Map<ParameterEnum, List<Parameter<?>>> parametersList()
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-    
-//    @Override
-//    public List<Parameter<?>> parameters()
-//    {
-//        Stream<Parameter<?>> streamIndividual = parametersIndividual().entrySet().stream().map(e -> e.getValue());
-//        Stream<Parameter<?>> streamList = parametersList().entrySet().stream().flatMap(e -> e.getValue().stream());
-//        Comparator<? super Parameter<?>> comparator = (p1, p2) -> p1.toContentLine().compareTo(p2.toContentLine());
-//        return Collections.unmodifiableList(Stream.concat(streamIndividual, streamList).sorted(comparator).collect(Collectors.toList()));
-//    }
-//    
-//    private Collection<ParameterEnum> parameterEnums()
-//    {
-//        Stream<ParameterEnum> streamIndividual = parametersIndividual().entrySet().stream().map(e -> e.getKey());
-//        Stream<ParameterEnum> streamList = parametersList().entrySet().stream().map(e -> e.getKey());
-//        return Collections.unmodifiableList(Stream.concat(streamIndividual, streamList).collect(Collectors.toList()));
-//    }
-    
-//    /**
-//     * List of all parameter enums in this property
-//     */
-//    @Override
-//    public Collection<ParameterEnum> parameters() { return parameters; }
-//    private Collection<ParameterEnum> parameters = new HashSet<>();
+    }    
     
     /*
      * CONSTRUCTORS
      */
     
     private String propertyValueString;
-    protected String getPropertyValueString() { return propertyValueString; }
+    protected String getPropertyValueString() { return propertyValueString; } // in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes)
     
     /**
      * Parse iCalendar content line constructor
@@ -240,7 +186,6 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * 
      * @param propertyString
      */
-    @SuppressWarnings("unchecked")
     public PropertyBase(CharSequence propertyString)
     {
         this();
@@ -357,7 +302,8 @@ public abstract class PropertyBase<T,U> implements Property<U>
     @Override
     public String toContentLine()
     {
-        StringBuilder builder = new StringBuilder(propertyType().toString());
+        StringBuilder builder = new StringBuilder(50);
+        builder.append(propertyType().toString());
         // add parameters
         parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
         // add non-standard parameters
@@ -412,10 +358,12 @@ public abstract class PropertyBase<T,U> implements Property<U>
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
         
         final boolean parametersEquals;
-        if (parameters().size() == testObj.parameters().size())
+        List<ParameterEnum> parameters = parameters(); // make parameters local to avoid creating list multiple times
+        List<ParameterEnum> testParameters = testObj.parameters(); // make parameters local to avoid creating list multiple times
+        if (parameters.size() == testParameters.size())
         {
-            Iterator<ParameterEnum> i1 = parameters().iterator();
-            Iterator<ParameterEnum> i2 = testObj.parameters().iterator();
+            Iterator<ParameterEnum> i1 = parameters.iterator();
+            Iterator<ParameterEnum> i2 = testParameters.iterator();
             boolean isFailure = false;
             while (i1.hasNext())
             {

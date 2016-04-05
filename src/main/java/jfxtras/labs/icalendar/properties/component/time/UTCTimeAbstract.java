@@ -13,24 +13,24 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @param <T> - implementation class
  * @see DateTimeCompleted
  */
-public abstract class PropertyUTCTime<T> extends PropertyBase<T, ZonedDateTime> implements DateTime<ZonedDateTime>
+public abstract class UTCTimeAbstract<T> extends PropertyBase<T, ZonedDateTime> implements DateTime<ZonedDateTime>
 {
-    public PropertyUTCTime(ZonedDateTime temporal)
+    public UTCTimeAbstract(ZonedDateTime temporal)
     {
         super(temporal);
     }
 
-    public PropertyUTCTime(String propertyString)
+    public UTCTimeAbstract(String propertyString)
     {
         super(propertyString);
     }
     
-    public PropertyUTCTime(PropertyUTCTime<T> source)
+    public UTCTimeAbstract(UTCTimeAbstract<T> source)
     {
         super(source);
     }
     
-    public PropertyUTCTime()
+    public UTCTimeAbstract()
     {
         super();
     }

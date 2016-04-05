@@ -74,17 +74,19 @@ public class VComponentBase<T> implements VComponent
     @Override
     public CharSequence toContentLines()
     {
-        StringBuilder builder = new StringBuilder(firstContentLine() + System.lineSeparator());
+        StringBuilder builder = new StringBuilder(400);
+        builder.append(firstContentLine() + System.lineSeparator());
+        List<PropertyEnum> properties = properties(); // make properties local to avoid creating list multiple times
         // add parameters
-        properties().stream()
+        properties.stream()
                 .map(p -> p.getProperty(this))
                 .filter(p -> p != null)
                 .forEach(p -> builder.append(p.toContentLine() + System.lineSeparator()));
-        properties().stream()
+        properties.stream()
                 .flatMap(prop -> 
                 {
                     List<? extends Property<?>> plist = prop.getPropertyList(this);
-                    System.out.println("prop:" + prop + " " + plist);
+//                    System.out.println("prop:" + prop + " " + plist);
                     return (plist != null) ? plist.stream() : null;
                 })
                 .filter(p -> p != null)
@@ -97,7 +99,7 @@ public class VComponentBase<T> implements VComponent
         // add property value
 //        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
 //        builder.append(":" + valueToString(getValue()));
-        return builder.toString();
+        return builder;
     }
 
     @Override

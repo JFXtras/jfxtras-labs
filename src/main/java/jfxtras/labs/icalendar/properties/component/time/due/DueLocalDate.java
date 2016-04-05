@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.properties.component.time.due;
 import java.time.LocalDate;
 
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.component.time.PropertyDate;
+import jfxtras.labs.icalendar.properties.component.time.DateAbstract;
 
 /**
  * DUE
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendar.properties.component.time.PropertyDate;
  * The property can be specified in following components:
  * @see VTodo
  */
-public class DueLocalDate extends PropertyDate<DueLocalDate>
+public class DueLocalDate extends DateAbstract<DueLocalDate>
 {
     public DueLocalDate(LocalDate temporal)
     {

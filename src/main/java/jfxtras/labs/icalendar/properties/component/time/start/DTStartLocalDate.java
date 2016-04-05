@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.component.time.PropertyDate;
+import jfxtras.labs.icalendar.properties.component.time.DateAbstract;
 
 /**
  * DTSTART
@@ -24,7 +24,7 @@ import jfxtras.labs.icalendar.properties.component.time.PropertyDate;
  * @see VTodo
  * @see VFreeBusy
  */
-public class DTStartLocalDate extends PropertyDate<DTStartLocalDate>
+public class DTStartLocalDate extends DateAbstract<DTStartLocalDate>
 {
     public DTStartLocalDate(LocalDate temporal)
     {
