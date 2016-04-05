@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
+import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
 import jfxtras.labs.icalendar.properties.PropertyLanguage;
-import jfxtras.labs.icalendar.properties.Property;
-import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyTimeZone;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
@@ -231,7 +231,7 @@ public enum ParameterEnum
         public void parse(Property<?> property, String content)
         {
             PropertyLanguage<?,?> castProperty = (PropertyLanguage<?, ?>) property;
-            castProperty.setLanguage(new Language(extractValue(content)));
+            castProperty.setLanguage(new Language(content));
         }
 
         @Override
@@ -253,7 +253,7 @@ public enum ParameterEnum
         public void parse(Property<?> property, String content)
         {
             Attendee castProperty = (Attendee) property;
-            castProperty.setGroupMembership(new GroupMembership(extractValue(content)));
+            castProperty.setGroupMembership(new GroupMembership(content));
         }
 
         @Override

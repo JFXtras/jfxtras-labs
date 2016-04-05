@@ -2,7 +2,6 @@ package jfxtras.labs.icalendar.properties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,10 @@ import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attach
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
+import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDate;
+import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDateTime;
+import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
@@ -64,15 +67,37 @@ public enum PropertyEnum
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             Comment.class),
     CONTACT ("CONTACT", null, null, null), // Relationship
-    DATE_TIME_COMPLETED ("COMPLETED", null, null, null), // Date and Time
+    DATE_TIME_COMPLETED ("COMPLETED", // property name
+            ValueType.DATE_TIME, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DateTimeCompleted.class), // property class
     DATE_TIME_CREATED ("CREATED", null, null, DateTimeCreated.class), // Change management
     DATE_TIME_DUE ("DUE", null, null, null), // Date and Time
-    DATE_TIME_END ("DTEND", null, null, null), // Date and Time
+    DATE_TIME_END_LOCAL_DATE ("DTEND", // property name
+            ValueType.DATE, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DTEndLocalDate.class), // property class
+    DATE_TIME_END_LOCAL_DATE_TIME ("DTEND", // property name
+            ValueType.DATE_TIME, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DTEndLocalDateTime.class), // property class
+    DATE_TIME_END_ZONED_DATE_TIME ("DTEND", // property name
+            ValueType.DATE_TIME, // default property value type
+            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DTEndZonedDateTime.class), // property class
     DATE_TIME_STAMP ("DTSTAMP", null, null, DateTimeStamp.class), // Change management
-    DATE_TIME_START_DATE ("DTSTART", ValueType.DATE, Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), DTStartLocalDate.class), // Date and Time
-    DATE_TIME_START_LOCAL_DATE_TIME ("DTSTART", ValueType.DATE_TIME, Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), DTStartLocalDateTime.class), // Date and Time
-//    DATE_TIME_START_UTC_DATE_TIME ("DTSTART", ValueType.DATE_ZONED_DATE_TIME, Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), DTStartZonedDateTime.class), // Date and Time
-    DATE_TIME_START_ZONED_DATE_TIME ("DTSTART", ValueType.DATE_TIME, Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), DTStartZonedDateTime.class), // Date and Time
+    DATE_TIME_START_LOCAL_DATE ("DTSTART", // property name
+            ValueType.DATE, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DTStartLocalDate.class), // property class
+    DATE_TIME_START_LOCAL_DATE_TIME ("DTSTART", // property name
+            ValueType.DATE_TIME, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DTStartLocalDateTime.class), // property class
+    DATE_TIME_START_ZONED_DATE_TIME ("DTSTART", // property name
+            ValueType.DATE_TIME, // default property value type
+            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DTStartZonedDateTime.class), // property class
     DESCRIPTION ("DESCRIPTION", ValueType.TEXT, Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE), Description.class), // Descriptive
     DURATION ("DURATION", null, null, null), // Date and Time
     EXCEPTION_DATE_TIMES ("EXDATE", null, null, null), // Recurrence
@@ -185,13 +210,17 @@ public enum PropertyEnum
         return p;
     }
     
-    private String name;
-    private ValueType valueType;
     private Class<? extends Property> myClass;
-    private List<ParameterEnum> allowedParameters;
+
     @Override
     public String toString() { return name; }
+    private String name;
+    
+    private ValueType valueType;
     public ValueType defaultValueType() { return valueType; }
+
+    private List<ParameterEnum> allowedParameters;
+    public List<ParameterEnum> allowedParameters() { return allowedParameters; }
     
     PropertyEnum(String name, ValueType valueType, List<ParameterEnum> allowedParameters, Class<? extends Property> myClass)
     {
@@ -200,6 +229,4 @@ public enum PropertyEnum
         this.valueType = valueType;
         this.myClass = myClass;
     }   
-    public Collection<ParameterEnum> possibleParameters() { return allowedParameters; }
-
 }

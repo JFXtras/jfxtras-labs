@@ -2,6 +2,7 @@ package jfxtras.labs.icalendar.properties;
 
 import java.time.LocalDate;
 
+import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 public abstract class PropertyDate<T> extends PropertyBase<T, LocalDate>
@@ -21,9 +22,16 @@ public abstract class PropertyDate<T> extends PropertyBase<T, LocalDate>
         super(source);
     }
     
-    public PropertyDate()
+//    public PropertyDate()
+//    {
+//        super();
+//    }
+    
+    @Override
+    public void setValue(LocalDate value)
     {
-        super();
+        super.setValue(value);
+        setValueParameter(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
     }
     
     @Override

@@ -71,10 +71,10 @@ public abstract class PropertyTimeZone<T> extends PropertyBase<T, ZonedDateTime>
         super(source);
     }
     
-    public PropertyTimeZone()
-    {
-        super();
-    }
+//    public PropertyTimeZone()
+//    {
+//        super();
+//    }
     
     /**
      * append time zone to front of time for parsing in DATE_ZONED_DATE_TIME parse method

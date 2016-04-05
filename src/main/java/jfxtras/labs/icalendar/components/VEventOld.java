@@ -22,7 +22,7 @@ import javafx.beans.property.StringProperty;
 import jfxtras.labs.icalendar.components.VEventUtilities.VEventProperty;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
-import jfxtras.labs.icalendar.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
@@ -136,10 +136,10 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
      * Can't be used if DURATION is used.  Must be one or the other.
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
-    final private ObjectProperty<DateTimeEnd> dateTimeEnd = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_END.toString());
-    public ObjectProperty<DateTimeEnd> dateTimeEndProperty() { return dateTimeEnd; }
-    public void setDateTimeEnd(Temporal dtEnd) { new DateTimeEnd(dtEnd); }
-    public void setDateTimeEnd(DateTimeEnd dtEnd)
+    final private ObjectProperty<DTEndZonedDateTime> dateTimeEnd = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_END.toString());
+    public ObjectProperty<DTEndZonedDateTime> dateTimeEndProperty() { return dateTimeEnd; }
+    public void setDateTimeEnd(Temporal dtEnd) { new DTEndZonedDateTime(dtEnd); }
+    public void setDateTimeEnd(DTEndZonedDateTime dtEnd)
     {
         // TODO - I THINK BELOW LOGIC IS REDUNDANT - ALSO FOUND IN PropertyTimeBase - remove here if true
         if (dtEnd == null)
@@ -156,9 +156,9 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
          }
         dateTimeEnd.set(dtEnd);
     }
-    public DateTimeEnd getDateTimeEnd() { return dateTimeEnd.get(); }
-    public T withDateTimeEnd(DateTimeEnd dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
-    public T withDateTimeEnd(Temporal dtEnd) { setDateTimeEnd(new DateTimeEnd().withValue(dtEnd)); return (T) this; }
+    public DTEndZonedDateTime getDateTimeEnd() { return dateTimeEnd.get(); }
+    public T withDateTimeEnd(DTEndZonedDateTime dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
+    public T withDateTimeEnd(Temporal dtEnd) { setDateTimeEnd(new DTEndZonedDateTime().withValue(dtEnd)); return (T) this; }
 
     /** Indicates end option, DURATION or DTEND. 
      * Getter and setter methods in EndPriority enum */

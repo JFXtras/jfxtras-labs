@@ -2,6 +2,9 @@ package jfxtras.labs.icalendar.properties.component.time.start;
 
 import java.time.LocalDateTime;
 
+import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VFreeBusy;
+import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
 
 /**
@@ -16,6 +19,10 @@ import jfxtras.labs.icalendar.properties.PropertyDateTime;
  * 
  * @author David Bal
  *
+ * The property can be specified in following components:
+ * @see VEvent
+ * @see VTodo
+ * @see VFreeBusy
  */
 public class DTStartLocalDateTime extends PropertyDateTime<DTStartLocalDateTime>
 {

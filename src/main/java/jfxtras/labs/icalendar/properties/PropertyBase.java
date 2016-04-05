@@ -84,8 +84,9 @@ public abstract class PropertyBase<T,U> implements Property<U>
             throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + propertyType().defaultValueType());
         }
     }
+    public void setValueParameter(ValueType value) { setValueParameter(new ValueParameter(value)); }
     public void setValueParameter(String value) { setValueParameter(new ValueParameter(value)); }
-    public T withValueParameter(ValueType value) { setValueParameter(new ValueParameter(value)); return (T) this; } 
+    public T withValueParameter(ValueType value) { setValueParameter(value); return (T) this; } 
     public T withValueParameter(String value) { setValueParameter(value); return (T) this; } 
     
     /**
@@ -145,7 +146,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
     {
         List<ParameterEnum> populatedParameters = new ArrayList<>();
 //        System.out.println("parameters:" + propertyType().possibleParameters().size());
-        Iterator<ParameterEnum> i = propertyType().possibleParameters().stream().iterator();
+        Iterator<ParameterEnum> i = propertyType().allowedParameters().stream().iterator();
         while (i.hasNext())
         {
             ParameterEnum parameterType = i.next();
@@ -241,11 +242,17 @@ public abstract class PropertyBase<T,U> implements Property<U>
         // TODO - MAKE SURE PROPERTY NAME MATCHES PROPERTY
         int endIndex = propertyType.toString().length();
         boolean isLongEnough = propertyString.length() > endIndex;
-//        boolean hasPropertyName = (isLongEnough) ? propertyString.substring(0, endIndex).equals(propertyType.toString()) : false;
-        boolean hasPropertyName = (isLongEnough) ? propertyString.subSequence(0, endIndex).equals(propertyType.toString()) : false;
+        final boolean hasPropertyName;
+        if (isLongEnough)
+        {
+            String front = propertyString.subSequence(0, endIndex).toString().toUpperCase();
+            hasPropertyName = front.equals(propertyType.toString());
+        } else
+        {
+            hasPropertyName = false;
+        }
         if (hasPropertyName)
         {
-//            propertyString = propertyString.substring(endIndex);
             propertyString = propertyString.subSequence(endIndex, propertyString.length());
         } else
         {
@@ -263,7 +270,13 @@ public abstract class PropertyBase<T,U> implements Property<U>
                 ParameterEnum p = ParameterEnum.enumFromName(e.getKey());
                 if (p != null)
                 {
-                    p.parse(this, e.getValue());
+                    if (propertyType().allowedParameters().contains(p))
+                    {
+                        p.parse(this, e.getValue());
+                    } else
+                    {
+                        throw new IllegalArgumentException("Parameter " + p + " not allowed for property " + propertyType());
+                    }
                 } else if ((e.getKey() != null) && (e.getValue() != null))
                 { // unknown parameter - store as String in other parameter
                     otherParameters().add(e.getKey() + "=" + e.getValue());
@@ -272,33 +285,6 @@ public abstract class PropertyBase<T,U> implements Property<U>
 
         // save property value
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-//        final U value;
-//        ParameterizedType pt = (ParameterizedType)this.getClass().getGenericSuperclass();
-//        int lastIndex = pt.getActualTypeArguments().length-1; // last parameterized type must be value's type
-//        String classU = pt.getActualTypeArguments()[lastIndex].getTypeName();
-//        System.out.println("classU:" + classU);
-//        boolean isList = classU.contains(List.class.getTypeName());
-//        if (isList)
-//        {
-//            value = (U) Arrays.asList(getPropertyValueString().split(","))
-//                    .stream()
-//                    .map(e -> PropertyEnum.enumFromClass(getClass())
-//                            .defaultValueType()
-//                            .parse(e))
-//                    .collect(Collectors.toList());
-////            System.out.println("value:" + value.getClass().getSimpleName() + " " + value);
-//        } else
-//        {
-////            System.out.println("type:" + PropertyEnum.enumFromClass(getClass())
-////                        .valueType());
-//            value = PropertyEnum.enumFromClass(getClass())
-//                        .defaultValueType()
-//                        .parse(getPropertyValueString());
-//            // MAYBE STRING PARSING SHOULD BE DONE BY PROPERTY NOT BY VALUE TYPE
-//            // USE STRING CONVERTER?
-//        }
-//        value = valueFromString(getPropertyValueString());
-
         setValue(valueFromString(getPropertyValueString()));
         
         if (! isValid())

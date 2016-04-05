@@ -2,6 +2,9 @@ package jfxtras.labs.icalendar.properties.component.time.start;
 
 import java.time.ZonedDateTime;
 
+import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VFreeBusy;
+import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyTimeZone;
 
 /**
@@ -17,6 +20,10 @@ import jfxtras.labs.icalendar.properties.PropertyTimeZone;
  * 
  * @author David Bal
  *
+ * The property can be specified in following components:
+ * @see VEvent
+ * @see VTodo
+ * @see VFreeBusy
  */
 public class DTStartZonedDateTime extends PropertyTimeZone<DTStartZonedDateTime>
 {
@@ -35,10 +42,9 @@ public class DTStartZonedDateTime extends PropertyTimeZone<DTStartZonedDateTime>
         super(source);
     }
     
-    public DTStartZonedDateTime()
-    {
-        super();
-    }
-    
+//    public DTStartZonedDateTime()
+//    {
+//        super();
+//    }    
 }
 

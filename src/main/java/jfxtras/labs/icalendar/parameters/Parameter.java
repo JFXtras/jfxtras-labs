@@ -40,29 +40,12 @@ public interface Parameter<U> extends Comparable<Parameter<U>>
      */
     String toContent();
     
-    /**
-     * Copy parameter from source property to destination property
-     * 
-     * @param source
-     * @param propertyBase
-     */
-    void copyTo(Parameter<U> destination);
-
-//    /** implements Comparable */
-//    int compareTo(Parameter<?> test);
-    
-       
 //    /**
-//     * Tests equality between two Parameter objects
+//     * Copy parameter from source property to destination property
 //     * 
-//     * @param property
-//     * @param testObj
-//     * @return
+//     * @param source
+//     * @param propertyBase
 //     */
-//    @Deprecated
-//    boolean isEqualTo(Parameter<U> parameter1, Parameter<U> parameter2);
-    
-
-
+//    void copyTo(Parameter<U> destination);
 
 }

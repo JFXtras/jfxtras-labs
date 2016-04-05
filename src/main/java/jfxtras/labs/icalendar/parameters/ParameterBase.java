@@ -78,11 +78,11 @@ public class ParameterBase<T,U> implements Parameter<U>
         return getValue().hashCode();
     }
     
-    @Override // MAY HAVE TO GO TO ENUM
-    public void copyTo(Parameter<U> destination)
-    {
-        destination.setValue(getValue());
-    }
+//    @Override // MAY HAVE TO GO TO ENUM
+//    public void copyTo(Parameter<U> destination)
+//    {
+//        destination.setValue(getValue());
+//    }
     
     @Override
     public int compareTo(Parameter<U> test)
@@ -169,6 +169,7 @@ public class ParameterBase<T,U> implements Parameter<U>
      * output:
      * "CID:part3.msg.970415T083000@example.com"
      */
+    @Deprecated // may find a use with component line parsing
     static String extractValue(String content, String name)
     {
         if (content.substring(0, name.length()).equals(name))
@@ -176,13 +177,6 @@ public class ParameterBase<T,U> implements Parameter<U>
             return content.substring(name.length()+1);
         }
         return content;
-//        if (content.charAt(0) != '\"') // don't modify if first character is "
-//        {
-//            int equalsIndex = content.indexOf('=');
-//            return (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
-//        }
-//        return content;
-            
     }
     
     /**
@@ -213,12 +207,4 @@ public class ParameterBase<T,U> implements Parameter<U>
         }
         return uri;
     }
-    
-    
-//    private static String parseString(String content)
-//    {
-//        int equalsIndex = content.indexOf('=');
-//        return (equalsIndex > 0) ? content.substring(equalsIndex+1) : content;
-////        return Parameter.removeDoubleQuote(value);
-//    }
 }
