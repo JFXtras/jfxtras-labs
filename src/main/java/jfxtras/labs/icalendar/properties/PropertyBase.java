@@ -263,20 +263,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
     }
     
     // construct empty property
-    public PropertyBase()
+    private PropertyBase()
     {
         propertyType = PropertyEnum.enumFromClass(getClass());
         value = new SimpleObjectProperty<U>(this, propertyType.toString());
-//        valueParameterProperty().addListener((ChangeListener<? super ValueEnum>) (observable, oldValue, newValue) -> 
-//        {
-//            boolean isOldNull = oldValue == null;
-//            boolean isNewNull = newValue == null;            
-//            if ((isOldNull && ! isNewNull) || (! isOldNull && isNewNull))
-//            {
-//                System.out.println("updated parameters");
-//                parmeters2 = parameters();
-//            }
-//        });
     }
     
     // copy constructor

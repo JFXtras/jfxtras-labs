@@ -1,17 +1,26 @@
 package jfxtras.labs.icalendar.properties.component.timezone;
 
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 
-import jfxtras.labs.icalendar.properties.PropertyBase;
+import jfxtras.labs.icalendar.components.StandardTime;
 
-public class TimeZoneOffsetFrom  extends PropertyBase<TimeZoneOffsetFrom, ZoneOffset>
-{   
-    private final static DateTimeFormatter ZONE_OFFSET_FORMATTER = new DateTimeFormatterBuilder()
-            .appendOffset("+HHMM", "+0000")
-            .toFormatter();
-    
+/**
+ * TZOFFSETFROM
+ * Time Zone Offset From
+ * RFC 5545, 3.8.3.3, page 104
+ * 
+ * This property specifies the offset that is in use prior to this time zone observance.
+ * 
+ * EXAMPLES:
+ * TZOFFSETFROM:-0500
+ * TZOFFSETFROM:+1345
+ * 
+ * @author David Bal
+ * @see DaylightSavingsTime
+ * @see StandardTime
+ */
+public class TimeZoneOffsetFrom extends ZoneOffsetAbstract<TimeZoneOffsetFrom>
+{    
     public TimeZoneOffsetFrom(String contentLine)
     {
         super(contentLine);
@@ -26,16 +35,4 @@ public class TimeZoneOffsetFrom  extends PropertyBase<TimeZoneOffsetFrom, ZoneOf
     {
         super(value);
     }
-    
-    @Override
-    protected ZoneOffset valueFromString(String propertyValueString)
-    {
-        return ZoneOffset.of(propertyValueString);
-    }
-    
-    @Override
-    protected String valueToString(ZoneOffset value)
-    {
-        return ZONE_OFFSET_FORMATTER.format(value);
-    }    
 }

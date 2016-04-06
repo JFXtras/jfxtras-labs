@@ -79,11 +79,6 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
         super(source);
     }
     
-    public AttachmentBase64()
-    {
-        super();
-    }
-    
     @Override
     public boolean isValid()
     {

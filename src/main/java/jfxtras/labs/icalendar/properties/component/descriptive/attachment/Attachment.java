@@ -76,9 +76,4 @@ public abstract class Attachment<T,U> extends PropertyBase<T,U>
     {
         super(value);
     }
-    
-    Attachment()
-    {
-        super();
-    }
 }

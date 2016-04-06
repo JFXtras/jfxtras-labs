@@ -24,10 +24,4 @@ public class AttachmentURI extends Attachment<AttachmentURI, URI>
     {
         super(source);
     }
-    
-    public AttachmentURI()
-    {
-        super();
-    }
-    
 }
