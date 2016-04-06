@@ -3,6 +3,7 @@ package jfxtras.labs.icalendar.properties.component.timezone;
 import java.time.DateTimeException;
 import java.time.ZoneId;
 
+import jfxtras.labs.icalendar.components.VTimeZone;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.descriptive.Status;
@@ -23,7 +24,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Status;
  * TZID:America/Los_Angeles
  * 
  * @author David Bal
- *
+ * @see VTimeZone
  */
 public class TimeZoneIdentifier extends PropertyBase<Status, ZoneId>
 {

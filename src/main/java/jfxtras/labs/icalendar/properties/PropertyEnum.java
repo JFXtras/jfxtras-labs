@@ -42,6 +42,7 @@ import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneIdentifier;
+import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 
 public enum PropertyEnum
 {
@@ -793,7 +794,11 @@ public enum PropertyEnum
             return null;
         }
     },
-    TIME_ZONE_NAME ("TZNAME", null, null, null) {
+    TIME_ZONE_NAME ("TZNAME", // property name
+            ValueType.TEXT, // default property value type
+            Arrays.asList(ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            TimeZoneName.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {
