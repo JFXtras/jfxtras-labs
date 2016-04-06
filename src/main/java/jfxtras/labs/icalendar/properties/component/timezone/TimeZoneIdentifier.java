@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import jfxtras.labs.icalendar.components.VTimeZone;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
-import jfxtras.labs.icalendar.properties.component.descriptive.Status;
 
 /**
  * TZID
@@ -26,7 +25,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Status;
  * @author David Bal
  * @see VTimeZone
  */
-public class TimeZoneIdentifier extends PropertyBase<Status, ZoneId>
+public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
 {
     private String unknownValue; // contains exact string for unknown property value
 

@@ -43,6 +43,7 @@ import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTi
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneIdentifier;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
+import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneOffsetFrom;
 
 public enum PropertyEnum
 {
@@ -813,7 +814,11 @@ public enum PropertyEnum
             return null;
         }
     }, // Time Zone
-    TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", null, null, null) {
+    TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", // property name
+            ValueType.UTC_OFFSET, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            TimeZoneOffsetFrom.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {

@@ -25,28 +25,6 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Classification.Cl
  */
 public class Classification extends PropertyBase<Classification, ClassificationType>
 {
-//    @Deprecated // probably won't use
-//    private StringConverter<ClassificationType> converter = new StringConverter<ClassificationType>()
-//    {
-//        @Override public String toString(ClassificationType type)
-//        {
-//            if (getValue() == ClassificationType.UNKNOWN)
-//            {
-//                return unknownValue;
-//            }
-//            return type.toString();
-//        }
-//        @Override public ClassificationType fromString(String string)
-//        {
-//            ClassificationType type = ClassificationType.valueOf2(string);
-//            if (type == ClassificationType.UNKNOWN)
-//            {
-//                unknownValue = string;
-//            }
-//            return ClassificationType.valueOf2(string);
-//        }
-//    };
-    
     private String unknownValue; // contains exact string for unknown property value
 
     public Classification(String content)

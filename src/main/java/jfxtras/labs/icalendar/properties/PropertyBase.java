@@ -193,10 +193,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
         this();
         
         // strip off property name if present
-        // TODO - MAKE SURE PROPERTY NAME MATCHES PROPERTY
         int endIndex = propertyType.toString().length();
         boolean isLongEnough = propertyString.length() > endIndex;
         final boolean hasPropertyName;
+        final CharSequence propertyValue;
         if (isLongEnough)
         {
             String front = propertyString.subSequence(0, endIndex).toString().toUpperCase();
@@ -207,13 +207,30 @@ public abstract class PropertyBase<T,U> implements Property<U>
         }
         if (hasPropertyName)
         {
-            propertyString = propertyString.subSequence(endIndex, propertyString.length());
+            int colonIndex;
+            for (colonIndex=endIndex; colonIndex<propertyString.length(); colonIndex++)
+            {
+                if (propertyString.charAt(colonIndex) == ':')
+                {
+                    break;
+                }
+            }
+            String propertyName = propertyString.subSequence(0, colonIndex).toString();
+            if (! propertyName.equals(propertyType.toString()))
+            {
+                throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
+                        getClass().getSimpleName() + ".  Property name associated with class " + 
+                        getClass().getSimpleName() + " is " +  propertyType.toString());
+            }
+            propertyValue = propertyString.subSequence(endIndex, propertyString.length());
         } else
         {
-            propertyString = ":" + propertyString; // indicates propertyString is property value without any properties
+            propertyValue = ":" + propertyString; // indicates propertyString is property value without any properties
         }
+        
+        
         // add parameters
-        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyString.toString());
+        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue.toString());
 //        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()
             .stream()
