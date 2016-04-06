@@ -186,51 +186,34 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * construct new property by parsing content line
      * sets parameters by running parse for each parameter enum
      * 
+     * parameter is CharSequence to avoid ambiguous constructors for parameters that have
+     * the value of String
+     * 
      * @param propertyString
      */
-    public PropertyBase(CharSequence propertyString)
+    public PropertyBase(CharSequence propertySequence)
     {
         this();
+        String propertyString = propertySequence.toString();
         
-        // strip off property name if present
-        int endIndex = propertyType.toString().length();
-        boolean isLongEnough = propertyString.length() > endIndex;
-        final boolean hasPropertyName;
-        final CharSequence propertyValue;
-        if (isLongEnough)
+        final String propertyValue;
+        int colonIndex = propertyString.indexOf(':');
+        String propertyName = (colonIndex > 0) ? propertyString.subSequence(0, colonIndex).toString().toUpperCase() : null;
+        if (propertyName == null)
         {
-            String front = propertyString.subSequence(0, endIndex).toString().toUpperCase();
-            hasPropertyName = front.equals(propertyType.toString());
+            propertyValue = ":" + propertyString; // indicates propertySequence doesn't contain a property name - only parameters and value
+        } else if (propertyName.equals(propertyType.toString()))
+        {
+            propertyValue = propertyString.substring(colonIndex, propertyString.length()); // strip off property name
         } else
         {
-            hasPropertyName = false;
+            throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
+                    getClass().getSimpleName() + ".  Property name associated with class " + 
+                    getClass().getSimpleName() + " is " +  propertyType.toString());
         }
-        if (hasPropertyName)
-        {
-            int colonIndex;
-            for (colonIndex=endIndex; colonIndex<propertyString.length(); colonIndex++)
-            {
-                if (propertyString.charAt(colonIndex) == ':')
-                {
-                    break;
-                }
-            }
-            String propertyName = propertyString.subSequence(0, colonIndex).toString();
-            if (! propertyName.equals(propertyType.toString()))
-            {
-                throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
-                        getClass().getSimpleName() + ".  Property name associated with class " + 
-                        getClass().getSimpleName() + " is " +  propertyType.toString());
-            }
-            propertyValue = propertyString.subSequence(endIndex, propertyString.length());
-        } else
-        {
-            propertyValue = ":" + propertyString; // indicates propertyString is property value without any properties
-        }
-        
         
         // add parameters
-        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue.toString());
+        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
 //        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()
             .stream()
