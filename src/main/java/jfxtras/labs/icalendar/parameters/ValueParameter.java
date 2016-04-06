@@ -22,11 +22,6 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
 {
     private String unknownValue;
     
-//    public ValueParameter()
-//    {
-//        super();
-//    }
-    
     public ValueParameter(ValueParameter source)
     {
         super(source);
@@ -39,7 +34,7 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
     
     public ValueParameter(String content)
     {
-        super(ValueType.valueOf2(content));
+        super(ValueType.enumFromName(content));
         if (getValue() == ValueType.UNKNOWN)
         {
             unknownValue = content;
@@ -71,7 +66,6 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         UNIFORM_RESOURCE_IDENTIFIER ("URI"),
         UTC_OFFSET ("UTC-OFFSET"),
         UNKNOWN ("UNKNOWN");
-        // x-name or IANA-token values must be added manually
         
         private static Map<String, ValueType> enumFromNameMap = makeEnumFromNameMap();
         private static Map<String, ValueType> makeEnumFromNameMap()
@@ -96,16 +90,5 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         {
             this.name = name;
         }
-//        @Deprecated
-//        abstract public <U> U parse(String value);
-//
-//        @Deprecated        
-//        abstract public <U> String makeContent(U value);
-
-        static ValueType valueOf2(String value)
-        {
-            return (enumFromName(value) == null) ? UNKNOWN : enumFromName(value);
-        }
-
     }
 }

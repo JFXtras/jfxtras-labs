@@ -18,14 +18,19 @@ import java.time.ZoneId;
  */
 public class TimeZoneIdentifier extends ParameterBase<TimeZoneIdentifier, ZoneId>
 {
-    public TimeZoneIdentifier()
-    {
-        super();
-    }
+//    public TimeZoneIdentifier()
+//    {
+//        super();
+//    }
     
     public TimeZoneIdentifier(String content)
     {
         super(ZoneId.of(content));
+    }
+    
+    public TimeZoneIdentifier(ZoneId value)
+    {
+        super(value);
     }
     
     public TimeZoneIdentifier(TimeZoneIdentifier source)

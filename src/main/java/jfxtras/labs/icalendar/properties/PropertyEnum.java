@@ -31,6 +31,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
 import jfxtras.labs.icalendar.properties.component.time.DurationProp;
 import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
+import jfxtras.labs.icalendar.properties.component.time.TimeTransparency;
 import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.due.DueZonedDateTime;
@@ -715,7 +716,8 @@ public enum PropertyEnum
     STATUS ("STATUS", // property name
             ValueType.TEXT, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Status.class) {
+            Status.class) // property class
+    {
                 @Override
                 public Property<?> getProperty(VComponent vComponent)
                 {
@@ -729,11 +731,13 @@ public enum PropertyEnum
                     // TODO Auto-generated method stub
                     return null;
                 }
-            }, // property class
+            },
     SUMMARY ("SUMMARY", // property name
             ValueType.TEXT, // default property value type
-            Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Summary.class) {
+            Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE,
+                    ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Summary.class) // property class
+    {
                 @Override
                 public Property<?> getProperty(VComponent vComponent)
                 {
@@ -748,7 +752,10 @@ public enum PropertyEnum
                     return null;
                 }
             }, // property class
-    TIME_TRANSPARENCY ("TRANSP", null, null, null) {
+    TIME_TRANSPARENCY ("TRANSP", // property name
+            ValueType.TEXT, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            TimeTransparency.class) {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {

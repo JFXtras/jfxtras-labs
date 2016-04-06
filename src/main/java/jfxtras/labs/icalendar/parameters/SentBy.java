@@ -19,10 +19,10 @@ import java.net.URI;
  */
 public class SentBy extends ParameterBase<SentBy, URI>
 {
-    public SentBy()
-    {
-        super();
-    }
+//    public SentBy()
+//    {
+//        super();
+//    }
 
     public SentBy(URI uri)
     {

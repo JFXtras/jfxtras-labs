@@ -20,6 +20,8 @@ import jfxtras.labs.icalendar.parameters.ParticipationRole.ParticipationRoleType
  */
 public class ParticipationRole extends ParameterBase<ParticipationRole, ParticipationRoleType>
 {
+    private String unknownValue; // contains exact string for unknown value
+
     public ParticipationRole()
     {
         super(ParticipationRoleType.REQUIRED_PARTICIPANT); // default value
@@ -33,6 +35,10 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
     public ParticipationRole(String content)
     {
         super(ParticipationRoleType.enumFromName(content));
+        if (getValue() == ParticipationRoleType.UNKNOWN)
+        {
+            unknownValue = content;
+        }
     }
     
     public ParticipationRole(ParticipationRole source)
@@ -40,12 +46,21 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
         super(source);
     }
     
+    @Override
+    public String toContent()
+    {
+        String value = (getValue() == ParticipationRoleType.UNKNOWN) ? unknownValue : getValue().toString();
+        String parameterName = myParameterEnum().toString();
+        return ";" + parameterName + "=" + value;
+    }
+    
     public enum ParticipationRoleType
     {
         CHAIR ("CHAIR"),
         REQUIRED_PARTICIPANT ("REQ-PARTICIPANT"),
         OPTIONAL_PARTICIPANT ("OPT-PARTICIPANT"),
-        NON_PARTICIPANT ("NON-PARTICIPANT");
+        NON_PARTICIPANT ("NON-PARTICIPANT"),
+        UNKNOWN ("UNKNOWN");
         
         private static Map<String, ParticipationRoleType> enumFromNameMap = makeEnumFromNameMap();
         private static Map<String, ParticipationRoleType> makeEnumFromNameMap()
@@ -61,7 +76,8 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
         /** get enum from name */
         public static ParticipationRoleType enumFromName(String propertyName)
         {
-            return enumFromNameMap.get(propertyName.toUpperCase());
+            ParticipationRoleType type = enumFromNameMap.get(propertyName.toUpperCase());
+            return (type == null) ? UNKNOWN : type;
         }
         
         private String name;

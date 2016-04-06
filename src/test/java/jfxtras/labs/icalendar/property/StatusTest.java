@@ -12,12 +12,12 @@ public class StatusTest
     @Test
     public void canParseStatus()
     {
-        String content = "STATUS:NEEDS-ACTION2";
+        String content = "STATUS:NEEDS-ACTION";
         Status madeProperty = new Status(content);
         assertEquals(content, madeProperty.toContentLine());
         Status expectedProperty = new Status("NEEDS-ACTION");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(madeProperty.getValue().name(), StatusType.NEEDS_ACTION.name());
+        assertEquals(madeProperty.getValue(), StatusType.NEEDS_ACTION);
     }
     
     @Test

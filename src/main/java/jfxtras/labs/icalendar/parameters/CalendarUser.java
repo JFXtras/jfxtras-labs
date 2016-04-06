@@ -32,7 +32,7 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
     
     public CalendarUser(String content)
     {
-        super(CalendarUserType.valueOf2(content));
+        super(CalendarUserType.valueOfWithUnknown(content));
         if (getValue() == CalendarUserType.UNKNOWN)
         {
             unknownValue = content;
@@ -60,7 +60,7 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
         ROOM,
         UNKNOWN;
         
-        static CalendarUserType valueOf2(String value)
+        static CalendarUserType valueOfWithUnknown(String value)
         {
             CalendarUserType match;
             try

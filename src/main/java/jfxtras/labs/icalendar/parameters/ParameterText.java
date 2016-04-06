@@ -10,17 +10,17 @@ package jfxtras.labs.icalendar.parameters;
  */
 public abstract class ParameterText<T> extends ParameterBase<T,String>
 {
-    public ParameterText()
+    ParameterText()
     {
         super();
     }
   
-    public ParameterText(String content)
+    ParameterText(String content)
     {
         super(removeDoubleQuote(content));
     }
 
-    public ParameterText(ParameterText<T> source)
+    ParameterText(ParameterText<T> source)
     {
         super(source);
     }

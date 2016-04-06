@@ -20,6 +20,9 @@ import jfxtras.labs.icalendar.parameters.Participation.ParticipationStatus;
  */
 public class Participation extends ParameterBase<Participation, ParticipationStatus>
 {
+    private String unknownValue; // contains exact string for unknown value
+
+    /** Set NEEDS-ACTION as default value */
     public Participation()
     {
         super(ParticipationStatus.NEEDS_ACTION); // default value
@@ -33,11 +36,23 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
     public Participation(String content)
     {
         super(ParticipationStatus.enumFromName(content));
+        if (getValue() == ParticipationStatus.UNKNOWN)
+        {
+            unknownValue = content;
+        }
     }
 
     public Participation(Participation source)
     {
         super(source);
+    }
+    
+    @Override
+    public String toContent()
+    {
+        String value = (getValue() == ParticipationStatus.UNKNOWN) ? unknownValue : getValue().toString();
+        String parameterName = myParameterEnum().toString();
+        return ";" + parameterName + "=" + value;
     }
 
     public enum ParticipationStatus
@@ -48,8 +63,8 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
         DECLINED ("DECLINED"),          // VEvent, VTodo, VJournal
         IN_PROCESS ("IN-PROCESS"),      // VTodo
         TENTATIVE ("TENTATIVE"),        // VEvent, VTodo
-        DELEGATED ("DELEGATED");        // VEvent, VTodo
-        //  x-name or iana-token must be added to enum list
+        DELEGATED ("DELEGATED"),        // VEvent, VTodo
+        UNKNOWN ("UNKNOWN");
         
         private static Map<String, ParticipationStatus> enumFromNameMap = makeEnumFromNameMap();
         private static Map<String, ParticipationStatus> makeEnumFromNameMap()
@@ -65,7 +80,8 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
         /** get enum from name */
         public static ParticipationStatus enumFromName(String propertyName)
         {
-            return enumFromNameMap.get(propertyName.toUpperCase());
+            ParticipationStatus type = enumFromNameMap.get(propertyName.toUpperCase());
+            return (type == null) ? UNKNOWN : type;
         }
         
         private String name;

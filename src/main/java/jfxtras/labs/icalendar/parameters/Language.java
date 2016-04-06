@@ -15,11 +15,11 @@ package jfxtras.labs.icalendar.parameters;
  */
 public class Language extends ParameterBase<Language, String>
 {
-    public Language()
-    {
-        super();
-    }
-  
+//    public Language()
+//    {
+//        super();
+//    }
+//  
     public Language(String content)
     {
         super(content);

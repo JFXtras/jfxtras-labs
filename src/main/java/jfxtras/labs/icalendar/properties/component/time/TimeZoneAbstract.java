@@ -97,7 +97,7 @@ public abstract class TimeZoneAbstract<T> extends PropertyBase<T, ZonedDateTime>
     public void setValue(ZonedDateTime value)
     {
         super.setValue(value);
-        setTimeZoneIdentifier(new TimeZoneIdentifier().withValue(value.getZone()));
+        setTimeZoneIdentifier(new TimeZoneIdentifier(value.getZone()));
     }
     
     @Override

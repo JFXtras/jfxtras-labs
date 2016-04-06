@@ -18,6 +18,7 @@ import jfxtras.labs.icalendar.parameters.AlarmTrigger.AlarmTriggerRelationship;
  */
 public class AlarmTrigger extends ParameterBase<AlarmTrigger, AlarmTriggerRelationship>
 {
+    /** Set START as default value */
     public AlarmTrigger()
     {
         super(AlarmTriggerRelationship.START);

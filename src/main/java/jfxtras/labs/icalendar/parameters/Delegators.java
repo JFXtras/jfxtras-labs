@@ -22,10 +22,10 @@ import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
  */
 public class Delegators extends ParameterURIList<GroupMembership>
 {
-    public Delegators()
-    {
-        super();
-    }
+//    public Delegators()
+//    {
+//        super();
+//    }
 
     public Delegators(List<URI> list)
     {

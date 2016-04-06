@@ -145,4 +145,16 @@ public class AttendeeTest
         assertEquals(expectedProperty, madeProperty);
         assertEquals(content, expectedProperty.toContentLine());
     }
+    
+    @Test // test non-standard ROLE
+    public void canParseAttendee12() throws URISyntaxException
+    {
+        String content = "ATTENDEE;ROLE=GRAND POOBAH:mailto:mrbig@example.com";
+        Attendee madeProperty = new Attendee(content);
+        Attendee expectedProperty = new Attendee("mailto:mrbig@example.com")
+                .withParticipationRole("GRAND POOBAH");
+        assertEquals(expectedProperty, madeProperty);
+        assertEquals(content, expectedProperty.toContentLine());
+        assertEquals(madeProperty.getParticipationRole().getValue(), ParticipationRoleType.UNKNOWN);
+    }
 }

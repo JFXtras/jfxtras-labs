@@ -15,22 +15,22 @@ import java.util.List;
  */
 public abstract class ParameterURIList<T> extends ParameterBase<T, List<URI>>
 {
-    public ParameterURIList()
+    ParameterURIList()
     {
         super();
     }
 
-    public ParameterURIList(List<URI> values)
+    ParameterURIList(List<URI> values)
     {
         super(values);
     }
     
-    public ParameterURIList(String content)
+    ParameterURIList(String content)
     {
         super(makeURIList(content));
     }
     
-    public ParameterURIList(ParameterURIList<T> source)
+    ParameterURIList(ParameterURIList<T> source)
     {
         super(source);
     }

@@ -1,5 +1,8 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
@@ -41,15 +44,15 @@ public class Status extends PropertyBase<Status, StatusType>
         super(source);
     }
     
-    public Status()
-    {
-        super();
-    }
+//    public Status()
+//    {
+//        super();
+//    }
     
     @Override
     protected StatusType valueFromString(String propertyValueString)
     {
-        StatusType type = StatusType.valueOf2(propertyValueString);
+        StatusType type = StatusType.enumFromName(propertyValueString);
         if (type == StatusType.UNKNOWN)
         {
             unknownValue = propertyValueString;
@@ -79,23 +82,29 @@ public class Status extends PropertyBase<Status, StatusType>
         FINAL ("FINAL"),
         UNKNOWN ("UNKNOWN");
         
+        private static Map<String, StatusType> enumFromNameMap = makeEnumFromNameMap();
+        private static Map<String, StatusType> makeEnumFromNameMap()
+        {
+            Map<String, StatusType> map = new HashMap<>();
+            StatusType[] values = StatusType.values();
+            for (int i=0; i<values.length; i++)
+            {
+                map.put(values[i].toString(), values[i]);
+            }
+            return map;
+        }
+        /** get enum from name */
+        public static StatusType enumFromName(String propertyName)
+        {
+            StatusType type = enumFromNameMap.get(propertyName.toUpperCase());
+            return (type == null) ? UNKNOWN : type;
+        }
+        
         private String name;
         @Override public String toString() { return name; }
         StatusType(String name)
         {
             this.name = name;
         }
-        
-        static StatusType valueOf2(String value)
-        {
-            try
-            {
-                return valueOf(value);
-            } catch (IllegalArgumentException e)
-            {
-                return UNKNOWN;
-            }
-        }
     }
-
 }

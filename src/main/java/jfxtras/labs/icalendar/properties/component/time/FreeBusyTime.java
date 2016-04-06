@@ -54,53 +54,24 @@ public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDate
     public FreeBusyTime withFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(type); return this; }
     public FreeBusyTime withFreeBusyType(String freeBusyType) { setFreeBusyType(new FreeBusyType(freeBusyType)); return this; }
 
+    /*
+     * CONSTRUCTORS
+     */
+    
+    public FreeBusyTime(FreeBusyTime source)
+    {
+        super(source);
+    }
+    
+    public FreeBusyTime()
+    {
+        super();
+    }
+    
     public FreeBusyTime(String contentLine)
     {
         super(contentLine);
-
-//        // convert time periods can be specified as either a start
-//        // and end DATE-TIME or a start DATE-TIME and DURATION.
-//        Map<ZonedDateTime, TemporalAmount> periods = new HashMap<>();
-//        Arrays.asList(getPropertyValueString().split(",")).forEach(pair ->
-//        {
-//            String[] time = pair.split("/");
-//            ZonedDateTime startInclusive = ZonedDateTime.parse(time[0], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
-//            final TemporalAmount duration;
-//            if (time[1].charAt(time[1].length()-1) == 'Z')
-//            {
-//                ZonedDateTime endExclusive = ZonedDateTime.parse(time[1], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                
-//                duration = Duration.between(startInclusive, endExclusive);
-//            } else
-//            {
-//                duration = Duration.parse(time[1]);
-//            }
-//            periods.put(startInclusive, duration);
-//        });
-//        setValue(periods);
     }
-    
-//  @Override
-//  public <U> U parse(String value)
-//  {
-//      String[] time = value.split("/");
-//      ZonedDateTime startInclusive = ZonedDateTime.parse(time[0], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
-//      final Duration duration;
-//      if (time[1].charAt(time[1].length()-1) == 'Z')
-//      {
-//          ZonedDateTime endExclusive = ZonedDateTime.parse(time[1], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                
-//          duration = Duration.between(startInclusive, endExclusive);
-//      } else
-//      {
-//          duration = Duration.parse(time[1]);
-//      }
-//      return (U) new Pair<ZonedDateTime, Duration>(startInclusive, duration);
-//  }
-//
-//  @Override
-//  public <U> String makeContent(U value)
-//  {
-//      return value.toString();
-//  }
     
     @Override
     protected String valueToString(List<Pair<ZonedDateTime, TemporalAmount>> value)
@@ -114,8 +85,7 @@ public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDate
             return builder.toString();
         })
         .collect(Collectors.joining(","));
-    }
-    
+    }    
     
     @Override
     protected List<Pair<ZonedDateTime, TemporalAmount>> valueFromString(String propertyValueString)
@@ -137,15 +107,5 @@ public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDate
             periodList.add(new Pair<ZonedDateTime, TemporalAmount>(startInclusive, duration));
         });
         return periodList;
-    }
-    
-    public FreeBusyTime(FreeBusyTime source)
-    {
-        super(source);
-    }
-    
-    public FreeBusyTime()
-    {
-        super();
     }
 }

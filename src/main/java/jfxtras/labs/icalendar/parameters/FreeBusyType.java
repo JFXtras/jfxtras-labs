@@ -21,6 +21,9 @@ import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
  */
 public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
 {
+    private String unknownValue; // contains exact string for unknown value
+
+    /** set BUSY as default FreeBusy type value */
     public FreeBusyType()
     {
         super(FreeBusyTypeEnum.BUSY); // default value
@@ -34,6 +37,10 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
     public FreeBusyType(String content)
     {
         super(FreeBusyTypeEnum.enumFromName(content));
+        if (getValue() == FreeBusyTypeEnum.UNKNOWN)
+        {
+            unknownValue = content;
+        }
     }
     
     public FreeBusyType(FreeBusyType source)
@@ -41,12 +48,21 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
         super(source);
     }
     
+    @Override
+    public String toContent()
+    {
+        String value = (getValue() == FreeBusyTypeEnum.UNKNOWN) ? unknownValue : getValue().toString();
+        String parameterName = myParameterEnum().toString();
+        return ";" + parameterName + "=" + value;
+    }
+    
     public enum FreeBusyTypeEnum
     {
         FREE ("FREE"), // the time interval is free for scheduling
         BUSY ("BUSY"), // the time interval is busy because one or more events have been scheduled for that interval - THE DEFAULT
         BUSY_UNAVAILABLE ("BUSY-UNAVAILABLE"), // the time interval is busy and that the interval can not be scheduled
-        BUSY_TENTATIVE ("BUSY-TENTATIVE"); // the time interval is busy because one or more events have been tentatively scheduled for that interval
+        BUSY_TENTATIVE ("BUSY-TENTATIVE"), // the time interval is busy because one or more events have been tentatively scheduled for that interval
+        UNKNOWN ("UNKNOWN");
 
         private static Map<String, FreeBusyTypeEnum> enumFromNameMap = makeEnumFromNameMap();
         private static Map<String, FreeBusyTypeEnum> makeEnumFromNameMap()
@@ -62,7 +78,8 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
         /** get enum from name */
         public static FreeBusyTypeEnum enumFromName(String propertyName)
         {
-            return enumFromNameMap.get(propertyName.toUpperCase());
+            FreeBusyTypeEnum type = enumFromNameMap.get(propertyName.toUpperCase());
+            return (type == null) ? UNKNOWN : type;
         }
         
         private String name;
