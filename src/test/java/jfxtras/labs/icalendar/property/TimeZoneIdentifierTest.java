@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendar.property;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.time.ZoneId;
 
@@ -23,10 +24,11 @@ public class TimeZoneIdentifierTest
     @Test
     public void canParseTimeZoneIdentifier2()
     {
-        String content = "TZID:/example.org/America/New_York";
+        String content = "TZID:/US-New_York-New_York";
         TimeZoneIdentifier madeProperty = new TimeZoneIdentifier(content);
         assertEquals(content, madeProperty.toContentLine());
-        TimeZoneIdentifier expectedProperty = new TimeZoneIdentifier(ZoneId.of("/example.org/America/New_York"));
+        TimeZoneIdentifier expectedProperty = new TimeZoneIdentifier("/US-New_York-New_York");
         assertEquals(expectedProperty, madeProperty);
+        assertNull(expectedProperty.getValue());
     }
 }

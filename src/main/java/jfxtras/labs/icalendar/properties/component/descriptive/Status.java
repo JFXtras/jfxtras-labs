@@ -43,12 +43,7 @@ public class Status extends PropertyBase<Status, StatusType>
     {
         super(source);
     }
-    
-//    public Status()
-//    {
-//        super();
-//    }
-    
+
     @Override
     protected StatusType valueFromString(String propertyValueString)
     {
