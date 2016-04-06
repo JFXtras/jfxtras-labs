@@ -31,9 +31,9 @@ public class DueZonedDateTime extends TimeZoneAbstract<DueZonedDateTime>
         super(temporal);
     }
 
-    public DueZonedDateTime(String propertyString)
+    public DueZonedDateTime(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DueZonedDateTime(DueZonedDateTime source)

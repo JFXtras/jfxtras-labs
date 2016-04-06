@@ -86,9 +86,9 @@ public abstract class PropertyAlternateTextRepresentation<T,U> extends PropertyL
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyAlternateTextRepresentation(CharSequence propertyString)
+    protected PropertyAlternateTextRepresentation(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
 
     // copy constructor
@@ -103,8 +103,8 @@ public abstract class PropertyAlternateTextRepresentation<T,U> extends PropertyL
 
     public PropertyAlternateTextRepresentation(U value)
     {
-        setValue(value);
+        super(value);
     }
     
-    public PropertyAlternateTextRepresentation() { super(); }
+//    public PropertyAlternateTextRepresentation() { super(); }
 }

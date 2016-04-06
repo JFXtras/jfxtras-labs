@@ -25,9 +25,9 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
  */
 public class Summary extends PropertyAlternateTextRepresentation<Summary, String>
 {
-    public Summary(String contentLine)
+    public Summary(CharSequence contentLine)
     {
-        super((CharSequence) contentLine);
+        super(contentLine);
     }
 
     public Summary(Summary source)
@@ -35,8 +35,8 @@ public class Summary extends PropertyAlternateTextRepresentation<Summary, String
         super(source);
     }
     
-    public Summary()
-    {
-        super();
-    }
+//    public Summary()
+//    {
+//        super();
+//    }
 }

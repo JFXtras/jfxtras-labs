@@ -8,21 +8,16 @@ public class DateTimeStamp extends PropertyBase<DateTimeStamp, ZonedDateTime>
 {    
     public DateTimeStamp(ZonedDateTime temporal)
     {
-        setValue(temporal);
+        super(temporal);
     }
 
-    public DateTimeStamp(String propertyString)
+    public DateTimeStamp(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DateTimeStamp(DateTimeStamp source)
     {
         super(source);
     }
-    
-    public DateTimeStamp()
-    {
-        super();
-    }   
 }

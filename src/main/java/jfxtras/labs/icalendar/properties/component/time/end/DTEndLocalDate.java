@@ -32,9 +32,9 @@ public class DTEndLocalDate extends DateAbstract<DTEndLocalDate>
         super(temporal);
     }
 
-    public DTEndLocalDate(String propertyString)
+    public DTEndLocalDate(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DTEndLocalDate(DTEndLocalDate source)

@@ -4,7 +4,7 @@ import jfxtras.labs.icalendar.properties.PropertyLanguage;
 
 public class RequestStatus extends PropertyLanguage<RequestStatus, String>
 {
-    public RequestStatus(String contentLine)
+    public RequestStatus(CharSequence contentLine)
     {
         super(contentLine);
     }
@@ -13,10 +13,4 @@ public class RequestStatus extends PropertyLanguage<RequestStatus, String>
     {
         super(source);
     }
-    
-    public RequestStatus()
-    {
-        super();
-    }
-
 }

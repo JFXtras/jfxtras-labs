@@ -20,19 +20,14 @@ public abstract class UTCTimeAbstract<T> extends PropertyBase<T, ZonedDateTime> 
         super(temporal);
     }
 
-    public UTCTimeAbstract(String propertyString)
+    public UTCTimeAbstract(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public UTCTimeAbstract(UTCTimeAbstract<T> source)
     {
         super(source);
-    }
-    
-    public UTCTimeAbstract()
-    {
-        super();
     }
     
     @Override

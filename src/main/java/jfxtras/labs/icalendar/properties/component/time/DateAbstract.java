@@ -24,20 +24,15 @@ public abstract class DateAbstract<T> extends PropertyBase<T, LocalDate> impleme
         super(temporal);
     }
 
-    public DateAbstract(String propertyString)
+    public DateAbstract(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DateAbstract(DateAbstract<T> source)
     {
         super(source);
     }
-    
-//    public PropertyDate()
-//    {
-//        super();
-//    }
     
     @Override
     public void setValue(LocalDate value)

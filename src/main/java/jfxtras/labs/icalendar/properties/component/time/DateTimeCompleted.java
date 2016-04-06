@@ -28,19 +28,14 @@ public class DateTimeCompleted extends UTCTimeAbstract<DateTimeCompleted>
         super(temporal);
     }
 
-    public DateTimeCompleted(String propertyString)
+    public DateTimeCompleted(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DateTimeCompleted(DateTimeCompleted source)
     {
         super(source);
-    }
-    
-    public DateTimeCompleted()
-    {
-        super();
     }
 
     @Override

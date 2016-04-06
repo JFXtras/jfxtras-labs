@@ -278,18 +278,13 @@ public class Attendee extends PropertyCalendarUserAddress<Attendee>
      * CONSTRUCTORS
      */
     
-    public Attendee(String propertyString) throws URISyntaxException
+    public Attendee(String contentLine) throws URISyntaxException
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public Attendee(Attendee source)
     {
         super(source);
-    }
-    
-    public Attendee()
-    {
-        super();
     }
 }

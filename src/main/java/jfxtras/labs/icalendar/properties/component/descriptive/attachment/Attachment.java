@@ -62,9 +62,9 @@ public abstract class Attachment<T,U> extends PropertyBase<T,U>
      * CONSTRUCTORS
      */
     
-    Attachment(CharSequence content)
+    Attachment(CharSequence contentLine)
     {
-        super(content);
+        super(contentLine);
     }
     
     Attachment(Attachment<T,U> source)

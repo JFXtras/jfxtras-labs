@@ -31,18 +31,13 @@ public class DTStartLocalDate extends DateAbstract<DTStartLocalDate>
         super(temporal);
     }
 
-    public DTStartLocalDate(String propertyString)
+    public DTStartLocalDate(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DTStartLocalDate(DTStartLocalDate source)
     {
         super(source);
     }
-    
-//    public DTStartLocalDate()
-//    {
-//        super();
-//    }
 }

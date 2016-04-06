@@ -27,9 +27,9 @@ public class Classification extends PropertyBase<Classification, ClassificationT
 {
     private String unknownValue; // contains exact string for unknown property value
 
-    public Classification(String content)
+    public Classification(CharSequence contentLine)
     {
-        super(content);
+        super(contentLine);
     }
     
     public Classification(ClassificationType type)

@@ -15,13 +15,31 @@ import java.net.URISyntaxException;
  */ 
 public class AttachmentURI extends Attachment<AttachmentURI, URI>
 {
-    public AttachmentURI(String content) throws URISyntaxException
+    public AttachmentURI(CharSequence contentLine)
     {
-        super(content);
+        super(contentLine);
     }
     
     public AttachmentURI(AttachmentURI source)
     {
         super(source);
+    }
+    
+    public AttachmentURI(URI value)
+    {
+        super(value);
+    }
+    
+    @Override
+    protected URI valueFromString(String propertyValueString)
+    {
+        try
+        {
+            return new URI(propertyValueString);
+        } catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

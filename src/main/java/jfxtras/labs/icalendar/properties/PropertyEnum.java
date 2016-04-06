@@ -45,6 +45,7 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneIdentifier;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneOffsetFrom;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneOffsetTo;
+import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneURL;
 
 public enum PropertyEnum
 {
@@ -853,7 +854,11 @@ public enum PropertyEnum
             return null;
         }
     }, // Time Zone
-    TIME_ZONE_URL ("TZURL", null, null, null) {
+    TIME_ZONE_URL ("TZURL", // property name
+            ValueType.UNIFORM_RESOURCE_IDENTIFIER, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            TimeZoneURL.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {

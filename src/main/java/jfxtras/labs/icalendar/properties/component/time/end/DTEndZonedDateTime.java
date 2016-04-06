@@ -33,9 +33,9 @@ public class DTEndZonedDateTime extends TimeZoneAbstract<DTEndZonedDateTime>
         super(temporal);
     }
 
-    public DTEndZonedDateTime(String propertyString)
+    public DTEndZonedDateTime(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DTEndZonedDateTime(DTEndZonedDateTime source)

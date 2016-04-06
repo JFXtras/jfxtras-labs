@@ -30,18 +30,18 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
  */
 public class Description extends PropertyAlternateTextRepresentation<Description, String>
 {
-    public Description(String contentLine)
+    public Description(CharSequence contentLine)
     {
-        super((CharSequence) contentLine);
+        super(contentLine);
     }
 
     public Description(Description source)
     {
         super(source);
     }
-    
-    public Description()
-    {
-        super();
-    }
+//    
+//    public Description()
+//    {
+//        super();
+//    }
 }

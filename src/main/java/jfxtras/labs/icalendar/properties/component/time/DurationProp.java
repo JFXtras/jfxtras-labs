@@ -35,7 +35,7 @@ import jfxtras.labs.icalendar.properties.PropertyLanguage;
  */
 public class DurationProp extends PropertyLanguage<DurationProp, TemporalAmount>
 {
-    public DurationProp(String contentLine)
+    public DurationProp(CharSequence contentLine)
     {
         super(contentLine);
     }

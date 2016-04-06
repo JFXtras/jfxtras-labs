@@ -4,7 +4,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
 
 public class UniqueIdentifier extends PropertyBase<UniqueIdentifier, String>
 {
-    public UniqueIdentifier(String contentLine)
+    public UniqueIdentifier(CharSequence contentLine)
     {
         super(contentLine);
     }
@@ -12,10 +12,5 @@ public class UniqueIdentifier extends PropertyBase<UniqueIdentifier, String>
     public UniqueIdentifier(UniqueIdentifier source)
     {
         super(source);
-    }
-    
-    public UniqueIdentifier()
-    {
-        super();
     }
 }

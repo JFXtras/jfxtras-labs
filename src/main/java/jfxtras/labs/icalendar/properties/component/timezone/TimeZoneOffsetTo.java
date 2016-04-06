@@ -21,7 +21,7 @@ import jfxtras.labs.icalendar.components.StandardTime;
  */
 public class TimeZoneOffsetTo extends ZoneOffsetAbstract<TimeZoneOffsetTo>
 {    
-    public TimeZoneOffsetTo(String contentLine)
+    public TimeZoneOffsetTo(CharSequence contentLine)
     {
         super(contentLine);
     }

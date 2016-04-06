@@ -33,9 +33,9 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
  */
 public class Comment extends PropertyAlternateTextRepresentation<Comment, String>
 {
-    public Comment(String propertyString)
+    public Comment(CharSequence contentLine)
     {
-        super((CharSequence) propertyString);
+        super(contentLine);
     }
     
     public Comment(Comment source)
@@ -43,8 +43,8 @@ public class Comment extends PropertyAlternateTextRepresentation<Comment, String
         super(source);
     }
     
-    public Comment()
-    {
-        super();
-    }
+//    public Comment()
+//    {
+//        super();
+//    }
 }

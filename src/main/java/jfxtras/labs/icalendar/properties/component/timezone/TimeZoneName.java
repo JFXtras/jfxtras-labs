@@ -20,18 +20,13 @@ import jfxtras.labs.icalendar.properties.PropertyLanguage;
  */
 public class TimeZoneName extends PropertyLanguage<TimeZoneName, String>
 {
-    public TimeZoneName(String contentLine)
+    public TimeZoneName(CharSequence contentLine)
     {
-        super((CharSequence) contentLine);
+        super(contentLine);
     }
     
     public TimeZoneName(TimeZoneName source)
     {
         super(source);
-    }
-    
-    public TimeZoneName()
-    {
-        super();
     }
 }

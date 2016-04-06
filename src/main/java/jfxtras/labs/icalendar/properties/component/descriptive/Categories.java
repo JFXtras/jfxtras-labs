@@ -28,9 +28,9 @@ import jfxtras.labs.icalendar.properties.PropertyLanguage;
  */
 public class Categories extends PropertyLanguage<Categories, List<String>>
 {    
-    public Categories(String propertyString)
+    public Categories(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public Categories(List<String> values)
@@ -41,11 +41,6 @@ public class Categories extends PropertyLanguage<Categories, List<String>>
     public Categories(Categories source)
     {
         super(source);
-    }
-    
-    public Categories()
-    {
-        super();
     }
     
     // set one category

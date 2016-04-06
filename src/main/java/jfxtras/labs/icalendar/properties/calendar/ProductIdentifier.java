@@ -22,7 +22,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  */
 public class ProductIdentifier extends PropertyBase<ProductIdentifier, String>
 {
-    public ProductIdentifier(String propertyString)
+    public ProductIdentifier(CharSequence propertyString)
     {
         super(propertyString);
     }

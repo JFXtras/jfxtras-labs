@@ -32,19 +32,14 @@ public class DTStartZonedDateTime extends TimeZoneAbstract<DTStartZonedDateTime>
         super(temporal);
     }
 
-    public DTStartZonedDateTime(String propertyString)
+    public DTStartZonedDateTime(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DTStartZonedDateTime(DTStartZonedDateTime source)
     {
         super(source);
-    }
-    
-//    public DTStartZonedDateTime()
-//    {
-//        super();
-//    }    
+    }   
 }
 

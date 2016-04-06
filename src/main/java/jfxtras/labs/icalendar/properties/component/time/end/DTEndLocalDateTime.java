@@ -32,18 +32,13 @@ public class DTEndLocalDateTime extends DateTimeAbstract<DTEndLocalDateTime>
         super(temporal);
     }
 
-    public DTEndLocalDateTime(String propertyString)
+    public DTEndLocalDateTime(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DTEndLocalDateTime(DTEndLocalDateTime source)
     {
         super(source);
-    }
-    
-    public DTEndLocalDateTime()
-    {
-        super();
     }
 }

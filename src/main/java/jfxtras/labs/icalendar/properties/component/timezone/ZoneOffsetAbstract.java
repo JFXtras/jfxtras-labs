@@ -12,7 +12,7 @@ public abstract class ZoneOffsetAbstract<T> extends PropertyBase<T, ZoneOffset>
             .appendOffset("+HHMM", "+0000")
             .toFormatter();
 
-    public ZoneOffsetAbstract(String contentLine)
+    public ZoneOffsetAbstract(CharSequence contentLine)
     {
         super(contentLine);
     }

@@ -63,12 +63,7 @@ public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDate
         super(source);
     }
     
-    public FreeBusyTime()
-    {
-        super();
-    }
-    
-    public FreeBusyTime(String contentLine)
+    public FreeBusyTime(CharSequence contentLine)
     {
         super(contentLine);
     }

@@ -28,7 +28,7 @@ public class TimeTransparency extends PropertyBase<TimeTransparency, Transparenc
 {
     private String unknownValue; // contains exact string for unknown property value
 
-    public TimeTransparency(String contentLine)
+    public TimeTransparency(CharSequence contentLine)
     {
         super(contentLine);
         

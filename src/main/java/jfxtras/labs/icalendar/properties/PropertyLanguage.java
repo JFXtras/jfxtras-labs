@@ -50,9 +50,9 @@ public abstract class PropertyLanguage<T,U> extends PropertyBase<T,U>
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyLanguage(CharSequence propertyString)
+    protected PropertyLanguage(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     // copy constructor
@@ -67,29 +67,6 @@ public abstract class PropertyLanguage<T,U> extends PropertyBase<T,U>
     
     public PropertyLanguage(U value)
     {
-        setValue(value);
+        super(value);
     }
-    
-    public PropertyLanguage()
-    {
-        super();
-//        ChangeListener<? super Parameter<?>> listener = (observable, oldValue, newValue) -> 
-//        {
-//            boolean isOldNull = oldValue == null;
-//            boolean isNewNull = newValue == null;            
-//            if ((isOldNull && ! isNewNull) || (! isOldNull && isNewNull))
-//            {
-//                System.out.println("updated parameters");
-//                parmeters2 = parameters();
-//            }
-//        };
-//        languageProperty().addListener(listener);
-    }
-    
-//    @Override
-//    public String toContentLine()
-//    {        
-//        return (getLanguage() == null) ? super.toContentLine() : super.toContentLine() + getLanguage().toContentLine();
-//    }
-
 }

@@ -137,9 +137,9 @@ public abstract class PropertyCalendarUserAddress<T> extends PropertyLanguage<T,
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyCalendarUserAddress(String propertyString)
+    protected PropertyCalendarUserAddress(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
 
     // copy constructor
@@ -150,8 +150,8 @@ public abstract class PropertyCalendarUserAddress<T> extends PropertyLanguage<T,
     
     public PropertyCalendarUserAddress(URI value)
     {
-        setValue(value);
+        super(value);
     }
     
-    public PropertyCalendarUserAddress() { super(); }
+//    public PropertyCalendarUserAddress() { super(); }
 }

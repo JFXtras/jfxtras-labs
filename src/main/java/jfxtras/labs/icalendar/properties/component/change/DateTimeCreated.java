@@ -23,22 +23,16 @@ public class DateTimeCreated extends PropertyBase<DateTimeCreated, ZonedDateTime
     
     public DateTimeCreated(ZonedDateTime temporal)
     {
-        super();
-        setValue(temporal);
+        super(temporal);
     }
 
-    public DateTimeCreated(String propertyString)
+    public DateTimeCreated(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DateTimeCreated(DateTimeCreated source)
     {
         super(source);
     }
-    
-    public DateTimeCreated()
-    {
-        super();
-    }   
 }

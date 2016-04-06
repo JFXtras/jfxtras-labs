@@ -23,19 +23,14 @@ public abstract class DateTimeAbstract<T> extends PropertyBase<T, LocalDateTime>
         super(temporal);
     }
 
-    public DateTimeAbstract(String propertyString)
+    public DateTimeAbstract(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DateTimeAbstract(DateTimeAbstract<T> source)
     {
         super(source);
-    }
-    
-    public DateTimeAbstract()
-    {
-        super();
     }
     
     @Override

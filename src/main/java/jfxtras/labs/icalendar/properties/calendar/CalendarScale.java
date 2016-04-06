@@ -24,16 +24,22 @@ import jfxtras.labs.icalendar.properties.calendar.CalendarScale.CalendarScaleTyp
  */
 public class CalendarScale extends PropertyBase<CalendarScale, CalendarScaleType>
 {
-    public CalendarScale(String propertyString)
+    public CalendarScale(CharSequence content)
     {
-        super(CalendarScaleType.valueOf(propertyString.toUpperCase()));
+        super(content);
     }
     
     public CalendarScale(CalendarScale source)
     {
         super(source);
     }
-    
+
+    @Override
+    protected CalendarScaleType valueFromString(String propertyValueString)
+    {
+        return CalendarScaleType.valueOf(propertyValueString.toUpperCase());
+    }
+
     /** sets default value of GREGORIAN */
     public CalendarScale()
     {
@@ -43,5 +49,5 @@ public class CalendarScale extends PropertyBase<CalendarScale, CalendarScaleType
     public enum CalendarScaleType
     {
         GREGORIAN;
-    }
+    }    
 }

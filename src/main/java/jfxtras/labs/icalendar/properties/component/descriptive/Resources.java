@@ -27,7 +27,7 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
  */
 public class Resources extends PropertyAlternateTextRepresentation<Resources, List<String>>
 {
-    public Resources(String contentLine)
+    public Resources(CharSequence contentLine)
     {
         super(contentLine);
     }
@@ -42,10 +42,10 @@ public class Resources extends PropertyAlternateTextRepresentation<Resources, Li
         super(source);
     }
     
-    public Resources()
-    {
-        super();
-    }
+//    public Resources()
+//    {
+//        super();
+//    }
     
     // set one category
     public void setValue(String category)

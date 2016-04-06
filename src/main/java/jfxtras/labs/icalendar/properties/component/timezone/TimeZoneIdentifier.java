@@ -29,7 +29,7 @@ public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
 {
     private String unknownValue; // contains exact string for unknown property value
 
-    public TimeZoneIdentifier(String contentLine)
+    public TimeZoneIdentifier(CharSequence contentLine)
     {
         super(contentLine);
     }

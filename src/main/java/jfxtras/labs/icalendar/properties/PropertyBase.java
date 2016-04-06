@@ -191,20 +191,22 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * 
      * @param propertyString
      */
-    public PropertyBase(CharSequence propertySequence)
+    public PropertyBase(CharSequence contentLine)
     {
         this();
-        String propertyString = propertySequence.toString();
+        String propertyString = contentLine.toString();
         
         final String propertyValue;
         int colonIndex = propertyString.indexOf(':');
-        String propertyName = (colonIndex > 0) ? propertyString.subSequence(0, colonIndex).toString().toUpperCase() : null;
+        int semiColonIndex = propertyString.indexOf(';');
+        int endNameIndex = (semiColonIndex > 0) ? semiColonIndex : colonIndex;
+        String propertyName = (endNameIndex > 0) ? propertyString.subSequence(0, endNameIndex).toString().toUpperCase() : null;
         if (propertyName == null)
         {
             propertyValue = ":" + propertyString; // indicates propertySequence doesn't contain a property name - only parameters and value
         } else if (propertyName.equals(propertyType.toString()))
         {
-            propertyValue = propertyString.substring(colonIndex, propertyString.length()); // strip off property name
+            propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
         } else
         {
             throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
@@ -247,21 +249,6 @@ public abstract class PropertyBase<T,U> implements Property<U>
         }
     }
     
-    /* parse property value, override in subclasses if necessary */
-    @SuppressWarnings("unchecked")
-    protected U valueFromString(String propertyValueString)
-    {
-        Type[] types = ((ParameterizedType)getClass().getGenericSuperclass())
-                   .getActualTypeArguments();
-        Class<U> myClass = (Class<U>) types[types.length-1]; // get last parameterized type
-        if (myClass.equals(String.class))
-        {
-            return (U) propertyValueString;            
-        }
-        throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
-                ". You need to override valueFromString in subclass " + getClass().getSimpleName());
-    }
-    
     // construct empty property
     private PropertyBase()
     {
@@ -289,7 +276,8 @@ public abstract class PropertyBase<T,U> implements Property<U>
     {
         this();
         setValue(value);
-    }
+    }    
+        
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.5
      * Contains component property with its value and any populated parameters.
@@ -316,22 +304,30 @@ public abstract class PropertyBase<T,U> implements Property<U>
         return builder.toString();
     }
     
+    /*
+     * DEFAULT STRING CONVERTERS
+     * override in subclasses if necessary
+     */
+    
     /* Convert property value to string.  Override in subclass if necessary */
     protected String valueToString(U value)
     {
         return value.toString();
+    }    
+    /* parse property value, override in subclasses if necessary */
+    @SuppressWarnings("unchecked")
+    protected U valueFromString(String propertyValueString)
+    {
+        Type[] types = ((ParameterizedType)getClass().getGenericSuperclass())
+                   .getActualTypeArguments();
+        Class<U> myClass = (Class<U>) types[types.length-1]; // get last parameterized type
+        if (myClass.equals(String.class))
+        {
+            return (U) propertyValueString;            
+        }
+        throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
+                ". You need to override valueFromString in subclass " + getClass().getSimpleName());
     }
-    
-//    protected StringBuilder contentLinePart1()
-//    {
-//        StringBuilder builder = new StringBuilder(propertyType().toString());
-////      System.out.println("parameters:" + parameters().size());
-//        // add parameters
-//        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
-//        // add non-standard parameters
-//        otherParameters().stream().forEach(p -> builder.append(";" + p));
-//        return builder;
-//    }
 
     @Override
     public int hashCode()

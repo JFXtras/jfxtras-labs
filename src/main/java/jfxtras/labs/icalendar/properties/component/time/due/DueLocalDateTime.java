@@ -30,9 +30,9 @@ public class DueLocalDateTime extends DateTimeAbstract<DueLocalDateTime>
         super(temporal);
     }
 
-    public DueLocalDateTime(String propertyString)
+    public DueLocalDateTime(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public DueLocalDateTime(DueLocalDateTime source)

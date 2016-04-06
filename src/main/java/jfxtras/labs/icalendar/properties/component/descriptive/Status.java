@@ -29,7 +29,7 @@ public class Status extends PropertyBase<Status, StatusType>
 {
     private String unknownValue; // contains exact string for unknown property value
 
-    public Status(String contentLine)
+    public Status(CharSequence contentLine)
     {
         super(contentLine);
     }

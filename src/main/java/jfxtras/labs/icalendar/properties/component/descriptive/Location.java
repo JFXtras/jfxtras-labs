@@ -22,9 +22,9 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
  */
 public class Location extends PropertyAlternateTextRepresentation<Location, String>
 {    
-    public Location(String contentLine)
+    public Location(CharSequence contentLine)
     {
-        super((CharSequence) contentLine);
+        super(contentLine);
     }
     
     public Location(Location source)
@@ -32,8 +32,8 @@ public class Location extends PropertyAlternateTextRepresentation<Location, Stri
         super(source);
     }
     
-    public Location()
-    {
-        super();
-    }
+//    public Location()
+//    {
+//        super();
+//    }
 }

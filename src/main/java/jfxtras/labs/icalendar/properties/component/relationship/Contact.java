@@ -25,7 +25,7 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
  */
 public class Contact extends PropertyAlternateTextRepresentation<Contact, String>
 {   
-    public Contact(String contentLine)
+    public Contact(CharSequence contentLine)
     {
         super(contentLine);
     }

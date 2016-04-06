@@ -6,4 +6,10 @@ import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRu
 public class RecurrenceRule extends PropertyBase<RecurrenceRule, RecurrenceRule2>
 {
 
+    public RecurrenceRule(RecurrenceRule2 value)
+    {
+        super(value);
+        // TODO Auto-generated constructor stub
+    }
+
 }

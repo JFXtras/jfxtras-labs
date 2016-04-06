@@ -22,7 +22,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  */
 public class Version extends PropertyBase<Version, String>
 {
-    public Version(String propertyString)
+    public Version(CharSequence propertyString)
     {
         super(propertyString);
     }

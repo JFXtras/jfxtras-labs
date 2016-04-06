@@ -67,9 +67,9 @@ public abstract class TimeZoneAbstract<T> extends PropertyBase<T, ZonedDateTime>
         super(temporal);
     }
 
-    public TimeZoneAbstract(String propertyString)
+    public TimeZoneAbstract(CharSequence contentLine)
     {
-        super(propertyString);
+        super(contentLine);
     }
     
     public TimeZoneAbstract(TimeZoneAbstract<T> source)

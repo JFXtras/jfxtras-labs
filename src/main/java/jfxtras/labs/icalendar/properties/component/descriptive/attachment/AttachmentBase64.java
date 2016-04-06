@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
 
-import java.net.URISyntaxException;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.Encoding;
@@ -69,9 +67,9 @@ public class AttachmentBase64 extends Attachment<AttachmentBase64, String>
     public AttachmentBase64 withEncoding(EncodingType encoding) { setEncoding(new Encoding(encoding)); return this; }
 
     
-    public AttachmentBase64(CharSequence content) throws URISyntaxException
+    public AttachmentBase64(CharSequence contentLine)
     {
-        super(content);
+        super(contentLine);
     }
     
     public AttachmentBase64(AttachmentBase64 source)

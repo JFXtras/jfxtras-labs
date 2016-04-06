@@ -4,19 +4,18 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
 
 public class Sequence extends PropertyBase<Sequence, Integer>
 {
-    public Sequence(String contentLine)
+    public Sequence(CharSequence contentLine)
     {
         super(contentLine);
     }
 
+    public Sequence(Integer value)
+    {
+        super(value);
+    }
+    
     public Sequence(Sequence source)
     {
         super(source);
     }
-    
-    public Sequence()
-    {
-        super();
-    }
-
 }
