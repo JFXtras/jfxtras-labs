@@ -6,6 +6,10 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendar.components.VAlarm;
+import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VJournal;
+import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.parameters.CalendarUser;
 import jfxtras.labs.icalendar.parameters.CalendarUser.CalendarUserType;
 import jfxtras.labs.icalendar.parameters.Delegatees;
@@ -32,7 +36,10 @@ import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
  *  example.com
  * 
  * @author David Bal
- *
+ * @see VEvent
+ * @see VTodo
+ * @see VJournal
+ * @see VAlarm
  */
 public class Attendee extends PropertyCalendarUserAddress<Attendee>
 {

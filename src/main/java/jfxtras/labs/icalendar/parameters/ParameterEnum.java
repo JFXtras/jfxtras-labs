@@ -426,19 +426,19 @@ public enum ParameterEnum
             
         }
     },
-    TIME_ZONE_IDENTIFIER ("TZID", TimeZoneIdentifier.class) {
+    TIME_ZONE_IDENTIFIER ("TZID", TimeZoneIdentifierParameter.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
             TimeZoneAbstract<?> castProperty = (TimeZoneAbstract<?>) property;
-            castProperty.setTimeZoneIdentifier(new TimeZoneIdentifier(content));
+            castProperty.setTimeZoneIdentifier(new TimeZoneIdentifierParameter(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
             TimeZoneAbstract<?> castProperty = (TimeZoneAbstract<?>) parent;
-            TimeZoneIdentifier parameter = castProperty.getTimeZoneIdentifier();
+            TimeZoneIdentifierParameter parameter = castProperty.getTimeZoneIdentifier();
             return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
         }
 

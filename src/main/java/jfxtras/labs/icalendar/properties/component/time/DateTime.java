@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.properties.component.time;
 import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendar.parameters.TimeZoneIdentifier;
+import jfxtras.labs.icalendar.parameters.TimeZoneIdentifierParameter;
 import jfxtras.labs.icalendar.properties.Property;
 
 /**
@@ -18,15 +18,15 @@ public interface DateTime<U extends Temporal> extends Property<U>
     /*
      * default Time Zone methods are overridden by classes that require them
      */
-    default TimeZoneIdentifier getTimeZoneIdentifier()
+    default TimeZoneIdentifierParameter getTimeZoneIdentifier()
     {
         return null;
     }
-    default ObjectProperty<TimeZoneIdentifier> timeZoneIdentifierProperty()
+    default ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifierProperty()
     {
         return null;
     }
-    default void setTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier)
+    default void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier)
     {
         // do nothing - not implemented
     }

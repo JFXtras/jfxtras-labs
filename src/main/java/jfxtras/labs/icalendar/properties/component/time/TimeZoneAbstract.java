@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.parameters.TimeZoneIdentifier;
+import jfxtras.labs.icalendar.parameters.TimeZoneIdentifierParameter;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
@@ -35,9 +35,9 @@ public abstract class TimeZoneAbstract<T> extends PropertyBase<T, ZonedDateTime>
      * DTSTART;TZID=America/New_York:19980119T020000
      */
     @Override
-    public TimeZoneIdentifier getTimeZoneIdentifier() { return (timeZoneIdentifier == null) ? null : timeZoneIdentifier.get(); }
+    public TimeZoneIdentifierParameter getTimeZoneIdentifier() { return (timeZoneIdentifier == null) ? null : timeZoneIdentifier.get(); }
     @Override
-    public ObjectProperty<TimeZoneIdentifier> timeZoneIdentifierProperty()
+    public ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifierProperty()
     {
         if (timeZoneIdentifier == null)
         {
@@ -45,17 +45,17 @@ public abstract class TimeZoneAbstract<T> extends PropertyBase<T, ZonedDateTime>
         }
         return timeZoneIdentifier;
     }
-    private ObjectProperty<TimeZoneIdentifier> timeZoneIdentifier;
+    private ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifier;
     @Override
-    public void setTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier)
+    public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier)
     {
         if (timeZoneIdentifier != null)
         {
             timeZoneIdentifierProperty().set(timeZoneIdentifier);
         }
     }
-    public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifier(value)); }
-    public T withTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (T) this; }
+    public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value)); }
+    public T withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (T) this; }
     public T withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (T) this; }        
     
     /*
@@ -97,7 +97,7 @@ public abstract class TimeZoneAbstract<T> extends PropertyBase<T, ZonedDateTime>
     public void setValue(ZonedDateTime value)
     {
         super.setValue(value);
-        setTimeZoneIdentifier(new TimeZoneIdentifier(value.getZone()));
+        setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value.getZone()));
     }
     
     @Override

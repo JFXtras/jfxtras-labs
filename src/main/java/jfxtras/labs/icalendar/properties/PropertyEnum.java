@@ -41,6 +41,7 @@ import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
+import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneIdentifier;
 
 public enum PropertyEnum
 {
@@ -738,24 +739,26 @@ public enum PropertyEnum
                     ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             Summary.class) // property class
     {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            @Override
+            public Property<?> getProperty(VComponent vComponent)
+            {
+                // TODO Auto-generated method stub
+                return null;
+            }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
+            @Override
+            public List<? extends Property<?>> getPropertyList(VComponent parent)
+            {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        },
+    // Date and Time
     TIME_TRANSPARENCY ("TRANSP", // property name
             ValueType.TEXT, // default property value type
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            TimeTransparency.class) {
+            TimeTransparency.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {
@@ -769,8 +772,13 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Date and Time
-    TIME_ZONE_IDENTIFIER ("TZID", null, null, null) {
+    },
+    // Time Zone
+    TIME_ZONE_IDENTIFIER ("TZID", // property name
+            ValueType.TEXT, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            TimeZoneIdentifier.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {
@@ -784,7 +792,7 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Time Zone
+    },
     TIME_ZONE_NAME ("TZNAME", null, null, null) {
         @Override
         public Property<?> getProperty(VComponent vComponent)

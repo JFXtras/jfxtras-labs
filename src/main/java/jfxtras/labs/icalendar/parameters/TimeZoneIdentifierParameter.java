@@ -16,24 +16,19 @@ import java.time.ZoneId;
  * @author David Bal
  *
  */
-public class TimeZoneIdentifier extends ParameterBase<TimeZoneIdentifier, ZoneId>
-{
-//    public TimeZoneIdentifier()
-//    {
-//        super();
-//    }
-    
-    public TimeZoneIdentifier(String content)
+public class TimeZoneIdentifierParameter extends ParameterBase<TimeZoneIdentifierParameter, ZoneId>
+{    
+    public TimeZoneIdentifierParameter(String content)
     {
         super(ZoneId.of(content));
     }
     
-    public TimeZoneIdentifier(ZoneId value)
+    public TimeZoneIdentifierParameter(ZoneId value)
     {
         super(value);
     }
     
-    public TimeZoneIdentifier(TimeZoneIdentifier source)
+    public TimeZoneIdentifierParameter(TimeZoneIdentifierParameter source)
     {
         super(source);
     }

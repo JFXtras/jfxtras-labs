@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -246,9 +248,18 @@ public abstract class PropertyBase<T,U> implements Property<U>
     }
     
     /* parse property value, override in subclasses if necessary */
+    @SuppressWarnings("unchecked")
     protected U valueFromString(String propertyValueString)
     {
-        return (U) propertyValueString;
+        Type[] types = ((ParameterizedType)getClass().getGenericSuperclass())
+                   .getActualTypeArguments();
+        Class<U> myClass = (Class<U>) types[types.length-1]; // get last parameterized type
+        if (myClass.equals(String.class))
+        {
+            return (U) propertyValueString;            
+        }
+        throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
+                ". You need to override valueFromString in subclass " + getClass().getSimpleName());
     }
     
     // construct empty property
