@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.properties.component.relationship;
 
+import java.net.URI;
+
 import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
 
 /**
@@ -14,7 +16,7 @@ import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
  * @author David Bal
  *
  */
-public class Organizer extends PropertyCalendarUserAddress<Organizer>
+public class Organizer extends PropertyCalendarUserAddress<Organizer, URI>
 {
     public Organizer(String contentLine)
     {

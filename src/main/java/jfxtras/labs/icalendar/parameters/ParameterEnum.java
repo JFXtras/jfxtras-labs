@@ -47,14 +47,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) property;
+            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) property;
             castProperty.setCommonName(new CommonName(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) parent;
+            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) parent;
             return castProperty.getCommonName();
         }
 
@@ -139,14 +139,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) property;
+            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) property;
             castProperty.setDirectoryEntryReference(new DirectoryEntryReference(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) parent;
+            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) parent;
             return castProperty.getDirectoryEntryReference();
         }
 
@@ -409,14 +409,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) property;
+            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) property;
             castProperty.setSentBy(new SentBy(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyCalendarUserAddress<?> castProperty = (PropertyCalendarUserAddress<?>) parent;
+            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) parent;
             return castProperty.getSentBy();
         }
 

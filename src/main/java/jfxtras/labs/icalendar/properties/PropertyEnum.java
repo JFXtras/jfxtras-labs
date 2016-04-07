@@ -25,6 +25,8 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Status;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentURI;
+import jfxtras.labs.icalendar.properties.component.misc.IANAProperty;
+import jfxtras.labs.icalendar.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Contact;
@@ -500,7 +502,8 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Date and Time
+    },
+    // Descriptive
     GEOGRAPHIC_POSITION ("GEO", null, null, null) {
         @Override
         public Property<?> getProperty(VComponent vComponent)
@@ -515,25 +518,48 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Descriptive
+    },
+    // Miscellaneous
+    IANA_PROPERTY ("UNKNOWN", // property name
+            ValueType.TEXT, // default property value type (any value allowed)
+            Arrays.asList(ParameterEnum.values()), // all parameters allowed
+            IANAProperty.class) // property class
+    {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },
+    // Descriptive
     LOCATION ("LOCATION", // property name
             ValueType.TEXT, // default property value type
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Location.class) {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            Location.class) // property class
+    {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },
+    // Calendar
     METHOD ("METHOD", null, null, null) {
         @Override
         public Property<?> getProperty(VComponent vComponent)
@@ -548,7 +574,27 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Calendar
+    },
+    // Miscellaneous
+    NON_STANDARD ("X-", // property name (begins with X- prefix)
+            ValueType.TEXT, // default property value type (any value allowed)
+            Arrays.asList(ParameterEnum.values()), // all parameters allowed
+            NonStandardProperty.class) // property class
+    {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },
     ORGANIZER ("ORGANIZER", // name
             ValueType.CALENDAR_USER_ADDRESS, // default property value type
             Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.DIRECTORY_ENTRY_REFERENCE, ParameterEnum.LANGUAGE,
