@@ -13,8 +13,9 @@ import jfxtras.labs.icalendar.properties.PropertyLanguage;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceID;
 import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
-import jfxtras.labs.icalendar.properties.component.time.TimeZoneAbstract;
+import jfxtras.labs.icalendar.properties.component.time.ZonedTimeAbstract;
 
 public enum ParameterEnum
 {
@@ -296,15 +297,15 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
+            RecurrenceID castProperty = (RecurrenceID) property;
+            castProperty.setRange(new Range(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            RecurrenceID castProperty = (RecurrenceID) parent;
+            return castProperty.getRange();
         }
 
         @Override
@@ -430,14 +431,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            TimeZoneAbstract<?> castProperty = (TimeZoneAbstract<?>) property;
+            ZonedTimeAbstract<?> castProperty = (ZonedTimeAbstract<?>) property;
             castProperty.setTimeZoneIdentifier(new TimeZoneIdentifierParameter(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            TimeZoneAbstract<?> castProperty = (TimeZoneAbstract<?>) parent;
+            ZonedTimeAbstract<?> castProperty = (ZonedTimeAbstract<?>) parent;
             TimeZoneIdentifierParameter parameter = castProperty.getTimeZoneIdentifier();
             return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
         }

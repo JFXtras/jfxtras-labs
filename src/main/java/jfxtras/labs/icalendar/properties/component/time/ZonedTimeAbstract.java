@@ -23,7 +23,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @see DTStartZonedDateTime
  * @see DTEndZonedDateTime
  */
-public abstract class TimeZoneAbstract<T> extends PropertyBase<T, ZonedDateTime> implements DateTime<ZonedDateTime>
+public abstract class ZonedTimeAbstract<T> extends PropertyBase<T, ZonedDateTime> implements DateTime<ZonedDateTime>
 {
     /**
      * TZID
@@ -62,17 +62,17 @@ public abstract class TimeZoneAbstract<T> extends PropertyBase<T, ZonedDateTime>
      * CONSTRUCTORS
      */
     
-    public TimeZoneAbstract(ZonedDateTime temporal)
+    public ZonedTimeAbstract(ZonedDateTime temporal)
     {
         super(temporal);
     }
 
-    public TimeZoneAbstract(CharSequence contentLine)
+    public ZonedTimeAbstract(CharSequence contentLine)
     {
         super(contentLine);
     }
     
-    public TimeZoneAbstract(TimeZoneAbstract<T> source)
+    public ZonedTimeAbstract(ZonedTimeAbstract<T> source)
     {
         super(source);
     }

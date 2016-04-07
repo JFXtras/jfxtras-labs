@@ -23,7 +23,7 @@ import jfxtras.labs.icalendar.properties.calendar.Version;
 import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
 import jfxtras.labs.icalendar.properties.component.time.DateAbstract;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeAbstract;
-import jfxtras.labs.icalendar.properties.component.time.TimeZoneAbstract;
+import jfxtras.labs.icalendar.properties.component.time.ZonedTimeAbstract;
 import jfxtras.labs.icalendar.properties.component.time.UTCTimeAbstract;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
@@ -36,7 +36,7 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * @see PropertyAlternateTextRepresentation
  * @see PropertyCalendarUserAddress
  * @see PropertyLanguage
- * @see TimeZoneAbstract
+ * @see ZonedTimeAbstract
  * @see UTCTimeAbstract
  * @see DateAbstract
  * @see DateTimeAbstract

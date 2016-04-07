@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
-import jfxtras.labs.icalendar.properties.component.time.TimeZoneAbstract;
+import jfxtras.labs.icalendar.properties.component.time.ZonedTimeAbstract;
 
 /**
  * DTEND
@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.component.time.TimeZoneAbstract;
  * @see VEvent
  * @see VFreeBusy
  */
-public class DTEndZonedDateTime extends TimeZoneAbstract<DTEndZonedDateTime>
+public class DTEndZonedDateTime extends ZonedTimeAbstract<DTEndZonedDateTime>
 {
     public DTEndZonedDateTime(ZonedDateTime temporal)
     {
@@ -42,10 +42,4 @@ public class DTEndZonedDateTime extends TimeZoneAbstract<DTEndZonedDateTime>
     {
         super(source);
     }
-    
-//    public DTEndZonedDateTime()
-//    {
-//        super();
-//    }
-
 }

@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.properties.component.time.due;
 import java.time.ZonedDateTime;
 
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.component.time.TimeZoneAbstract;
+import jfxtras.labs.icalendar.properties.component.time.ZonedTimeAbstract;
 
 /**
  * DUE
@@ -24,7 +24,7 @@ import jfxtras.labs.icalendar.properties.component.time.TimeZoneAbstract;
  * The property can be specified in following components:
  * @see VTodo
  */
-public class DueZonedDateTime extends TimeZoneAbstract<DueZonedDateTime>
+public class DueZonedDateTime extends ZonedTimeAbstract<DueZonedDateTime>
 {
     public DueZonedDateTime(ZonedDateTime temporal)
     {
