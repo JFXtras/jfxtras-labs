@@ -16,7 +16,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
 /**
  * Property with language, alternate text display, and a text-based value
  *  
- * @param <T>
+ * @param <U>
  * 
  * concrete subclasses
  * @see Comment
@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
  * @see Resources
  * @see Summary
  */
-public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U> implements PropertyAltText<U>
+public abstract class PropertyBaseAltText<U,T> extends PropertyBaseLanguage<U,T> implements PropertyAltText<T>
 {
     /**
      * ALTREP : Alternate Text Representation
@@ -82,9 +82,9 @@ public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U>
         }
     }
     public void setAlternateText(String value) { setAlternateText(new AlternateText(value)); }
-    public T withAlternateText(AlternateText altrep) { setAlternateText(altrep); return (T) this; }
-    public T withAlternateText(URI value) { setAlternateText(new AlternateText(value)); return (T) this; }
-    public T withAlternateText(String content) { setAlternateText(content); return (T) this; }
+    public U withAlternateText(AlternateText altrep) { setAlternateText(altrep); return (U) this; }
+    public U withAlternateText(URI value) { setAlternateText(new AlternateText(value)); return (U) this; }
+    public U withAlternateText(String content) { setAlternateText(content); return (U) this; }
     
     /*
      * CONSTRUCTORS
@@ -95,7 +95,7 @@ public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U>
     }
 
     // copy constructor
-    public PropertyBaseAltText(PropertyBaseAltText<T,U> property)
+    public PropertyBaseAltText(PropertyBaseAltText<U,T> property)
     {
         super(property);
         if (getAlternateText() != null)
@@ -104,7 +104,7 @@ public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U>
         }
     }
 
-    public PropertyBaseAltText(U value)
+    public PropertyBaseAltText(T value)
     {
         super(value);
     }

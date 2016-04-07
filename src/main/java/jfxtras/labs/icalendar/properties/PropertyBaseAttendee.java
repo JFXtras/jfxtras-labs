@@ -23,10 +23,10 @@ import jfxtras.labs.icalendar.parameters.RSVP;
  * 
  * @author David Bal
  *
- * @param <T> - subclass
- * @param <U> - property value type
+ * @param <U> - subclass
+ * @param <T> - property value type
  */
-public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUser<T, U> implements PropertyAttendee<U>
+public abstract class PropertyBaseAttendee<U, T> extends PropertyBaseCalendarUser<U, T> implements PropertyAttendee<T>
 {
     /**
      * CUTYPE
@@ -59,9 +59,9 @@ public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUse
         }
     }
     public void setCalendarUser(String value) { setCalendarUser(new CalendarUser(value)); }
-    public T withCalendarUser(CalendarUser type) { setCalendarUser(type); return (T) this; }
-    public T withCalendarUser(CalendarUserType type) { setCalendarUser(new CalendarUser(type)); return (T) this; }
-    public T withCalendarUser(String content) { setCalendarUser(content); return (T) this; }    
+    public U withCalendarUser(CalendarUser type) { setCalendarUser(type); return (U) this; }
+    public U withCalendarUser(CalendarUserType type) { setCalendarUser(new CalendarUser(type)); return (U) this; }
+    public U withCalendarUser(String content) { setCalendarUser(content); return (U) this; }    
 
     /**
      * DELEGATED-FROM
@@ -96,9 +96,9 @@ public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUse
         }
     }
     public void setDelegators(String content) { setDelegators(new Delegators(content)); }
-    public T withDelegators(Delegators delegators) { setDelegators(delegators); return (T) this; }
-    public T withDelegators(List<URI> delegators) { setDelegators(new Delegators(delegators)); return (T) this; }
-    public T withDelegators(String content) { setDelegators(content); return (T) this; }    
+    public U withDelegators(Delegators delegators) { setDelegators(delegators); return (U) this; }
+    public U withDelegators(List<URI> delegators) { setDelegators(new Delegators(delegators)); return (U) this; }
+    public U withDelegators(String content) { setDelegators(content); return (U) this; }    
 
     /**
      * DELEGATED-TO
@@ -134,9 +134,9 @@ public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUse
         }
     }
     public void setDelegatees(String content) { setDelegatees(new Delegatees(content)); }
-    public T withDelegatees(Delegatees delegatees) { setDelegatees(delegatees); return (T) this; }
-    public T withDelegatees(List<URI> values) { setDelegatees(new Delegatees(values)); return (T) this; }
-    public T withDelegatees(String content) { setDelegatees(content); return (T) this; }    
+    public U withDelegatees(Delegatees delegatees) { setDelegatees(delegatees); return (U) this; }
+    public U withDelegatees(List<URI> values) { setDelegatees(new Delegatees(values)); return (U) this; }
+    public U withDelegatees(String content) { setDelegatees(content); return (U) this; }    
 
     /**
      * MEMBER
@@ -171,9 +171,9 @@ public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUse
         }
     }
     public void setGroupMembership(String content) { setGroupMembership(new GroupMembership(content)); }
-    public T withGroupMembership(GroupMembership groupMembership) { setGroupMembership(groupMembership); return (T) this; }
-    public T withGroupMembership(List<URI> values) { setGroupMembership(new GroupMembership(values)); return (T) this; }
-    public T withGroupMembership(String content) { setGroupMembership(content); return (T) this; }    
+    public U withGroupMembership(GroupMembership groupMembership) { setGroupMembership(groupMembership); return (U) this; }
+    public U withGroupMembership(List<URI> values) { setGroupMembership(new GroupMembership(values)); return (U) this; }
+    public U withGroupMembership(String content) { setGroupMembership(content); return (U) this; }    
 
     /**
      * RSVP
@@ -206,9 +206,9 @@ public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUse
         }
     }
     public void setRSVP(String content) { setRSVP(new RSVP(content)); }
-    public T withRSVP(RSVP type) { setRSVP(type); return (T) this; }
-    public T withRSVP(Boolean type) { setRSVP(new RSVP(type)); return (T) this; }
-    public T withRSVP(String content) { setRSVP(content); return (T) this; }   
+    public U withRSVP(RSVP type) { setRSVP(type); return (U) this; }
+    public U withRSVP(Boolean type) { setRSVP(new RSVP(type)); return (U) this; }
+    public U withRSVP(String content) { setRSVP(content); return (U) this; }   
     
     /**
      * PARTSTAT
@@ -241,9 +241,9 @@ public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUse
         }
     }
     public void setParticipation(String content) { setParticipation(new Participation(content)); }
-    public T withParticipation(Participation type) { setParticipation(type); return (T) this; }
-    public T withParticipation(ParticipationStatus type) { setParticipation(new Participation(type)); return (T) this; }
-    public T withParticipation(String content) { setParticipation(content); return (T) this; }  
+    public U withParticipation(Participation type) { setParticipation(type); return (U) this; }
+    public U withParticipation(ParticipationStatus type) { setParticipation(new Participation(type)); return (U) this; }
+    public U withParticipation(String content) { setParticipation(content); return (U) this; }  
 
     /**
      * ROLE
@@ -276,9 +276,9 @@ public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUse
         }
     }
     public void setParticipationRole(String content) { setParticipationRole(new ParticipationRole(content)); }
-    public T withParticipationRole(ParticipationRole type) { setParticipationRole(type); return (T) this; }
-    public T withParticipationRole(ParticipationRoleType type) { setParticipationRole(new ParticipationRole(type)); return (T) this; }
-    public T withParticipationRole(String content) { setParticipationRole(content); return (T) this; }  
+    public U withParticipationRole(ParticipationRole type) { setParticipationRole(type); return (U) this; }
+    public U withParticipationRole(ParticipationRoleType type) { setParticipationRole(new ParticipationRole(type)); return (U) this; }
+    public U withParticipationRole(String content) { setParticipationRole(content); return (U) this; }  
 
     /*
      * CONSTRUCTORS
@@ -289,12 +289,12 @@ public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUse
         super(contentLine);
     }
     
-    public PropertyBaseAttendee(U value)
+    public PropertyBaseAttendee(T value)
     {
         super(value);
     }
     
-    public PropertyBaseAttendee(PropertyBaseAttendee<T, U> source)
+    public PropertyBaseAttendee(PropertyBaseAttendee<U, T> source)
     {
         super(source);
     }

@@ -15,12 +15,12 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * 
  * @author David Bal
  *
- * @param <T> - implementation class
+ * @param <U> - implementation class
  * @see DTStartLocalDate
  * @see DTEndLocalDate
  * @see RecurrenceIDLocalDate
  */
-public abstract class PropertyBaseDate<T> extends PropertyBase<T, LocalDate> implements PropertyDateTime<LocalDate>
+public abstract class PropertyBaseDate<U> extends PropertyBase<U, LocalDate> implements PropertyDateTime<LocalDate>
 {
     public PropertyBaseDate(LocalDate temporal)
     {
@@ -32,7 +32,7 @@ public abstract class PropertyBaseDate<T> extends PropertyBase<T, LocalDate> imp
         super(contentLine);
     }
     
-    public PropertyBaseDate(PropertyBaseDate<T> source)
+    public PropertyBaseDate(PropertyBaseDate<U> source)
     {
         super(source);
     }

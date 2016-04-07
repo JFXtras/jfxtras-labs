@@ -1,9 +1,13 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.properties.PropValueStringConverter;
+import jfxtras.labs.icalendar.properties.Property;
 
 /**
  * VALUE
@@ -89,6 +93,33 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         ValueType(String name)
         {
             this.name = name;
+        }
+        public <T> PropValueStringConverter<T> stringConverter(Property<T> property)
+        {
+            return new PropValueStringConverter<T>(property)
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return object.toString();
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                    Type[] types = ((ParameterizedType)getProperty().getClass().getGenericSuperclass())
+                            .getActualTypeArguments();
+                    System.out.println("class2:" + getProperty().getClass());
+                     Class<T> myClass = (Class<T>) types[types.length-1]; // get last parameterized type
+                     if (myClass.equals(String.class))
+                     {
+                         return (T) string;            
+                     }
+                     throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
+                             ". You need to override string converter for class " + getProperty().getClass().getSimpleName());
+                }
+            };
+
         }
     }
 }

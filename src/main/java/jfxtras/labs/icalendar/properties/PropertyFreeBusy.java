@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.properties;
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendar.parameters.FreeBusyType;
 
-public interface PropertyFreeBusy<U> extends Property<U>
+public interface PropertyFreeBusy<T> extends Property<T>
 {
     /**
      * FBTYPE: Incline Free/Busy Time Type

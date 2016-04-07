@@ -11,10 +11,10 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * 
  * @author David Bal
  *
- * @param <T> - implementation class
+ * @param <U> - implementation class
  * @see DateTimeCompleted
  */
-public abstract class PropertyBaseUTCTime<T> extends PropertyBase<T, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
+public abstract class PropertyBaseUTCTime<U> extends PropertyBase<U, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
 {
     public PropertyBaseUTCTime(ZonedDateTime temporal)
     {
@@ -26,7 +26,7 @@ public abstract class PropertyBaseUTCTime<T> extends PropertyBase<T, ZonedDateTi
         super(contentLine);
     }
     
-    public PropertyBaseUTCTime(PropertyBaseUTCTime<T> source)
+    public PropertyBaseUTCTime(PropertyBaseUTCTime<U> source)
     {
         super(source);
     }

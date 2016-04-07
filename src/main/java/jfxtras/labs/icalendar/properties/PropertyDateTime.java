@@ -12,13 +12,13 @@ import jfxtras.labs.icalendar.properties.component.time.PropertyBaseZonedTime;
  * 
  * @author David Bal
  *
- * @param <U> - property Temporal value type (LocalDate, LocalDateTime or ZonedDateTime)
+ * @param <T> - property Temporal value type (LocalDate, LocalDateTime or ZonedDateTime)
  * @see PropertyBaseDate
  * @see PropertyBaseDateTime
  * @see PropertyBaseUTCTime
  * @see PropertyBaseZonedTime
  */
-public interface PropertyDateTime<U> extends Property<U>
+public interface PropertyDateTime<T> extends Property<T>
 {
     /*
      * default Time Zone methods are overridden by classes that require them

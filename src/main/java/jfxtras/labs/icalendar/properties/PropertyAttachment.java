@@ -4,7 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendar.parameters.Encoding;
 import jfxtras.labs.icalendar.parameters.FormatType;
 
-public interface PropertyAttachment<U> extends Property<U>
+public interface PropertyAttachment<T> extends Property<T>
 {
     /**
      * FMTTYPE: Format type parameter

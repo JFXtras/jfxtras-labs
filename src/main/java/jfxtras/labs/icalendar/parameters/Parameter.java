@@ -10,10 +10,10 @@ import javafx.beans.property.ObjectProperty;
  * parse - convert string into parameter - this method is in ParameterEnum
  * 
  * @author David Bal
- * @param <U>
+ * @param <T> - parameter value
  *
  */
-public interface Parameter<U> extends Comparable<Parameter<U>>
+public interface Parameter<T> extends Comparable<Parameter<T>>
 {    
     /**
      * The value of the parameter.
@@ -25,13 +25,13 @@ public interface Parameter<U> extends Comparable<Parameter<U>>
      * Note: the value's object must have an overridden toString method that complies
      * with iCalendar content line output.
      */
-    U getValue();
+    T getValue();
     
     /** object property of parameter's value */
-    ObjectProperty<U> valueProperty();
+    ObjectProperty<T> valueProperty();
   
     /** Set the value of this parameter */  
-    void setValue(U value);
+    void setValue(T value);
     
     /**
      * return parameter name-value pair string separated by an "="

@@ -16,7 +16,7 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
  * @see Categories
  * @see TimeZoneName
  */
-public interface PropertyLanguage<U> extends Property<U>
+public interface PropertyLanguage<T> extends Property<T>
 {
     /**
      * LANGUAGE

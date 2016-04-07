@@ -14,9 +14,9 @@ import jfxtras.labs.icalendar.parameters.ValueParameter;
  * @see PropertyEnum - enum of all supported Properties
  * @see PropertyBase
  *
- * @param <U> - type of value stored in Property
+ * @param <T> - type of value stored in Property
  */
-public interface Property<U>
+public interface Property<T>
 {    
     /**
      * The value of the property.
@@ -26,11 +26,11 @@ public interface Property<U>
      * The value is the String "Bob's house"
      * 
      */
-    U getValue();
+    T getValue();
     /** property value object property */
-    ObjectProperty<U> valueProperty();    
+    ObjectProperty<T> valueProperty();    
     /** Set the value of the property */
-    void setValue(U value);
+    void setValue(T value);
         
     /**
      * VALUE

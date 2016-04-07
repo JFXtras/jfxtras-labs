@@ -21,12 +21,12 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * 
  * @author David Bal
  *
- * @param <T> - implementation class
+ * @param <U> - implementation class
  * @see DTStartZonedDateTime
  * @see DTEndZonedDateTime
  * @see RecurrenceIDZonedDateTime
  */
-public abstract class PropertyBaseZonedTime<T> extends PropertyBase<T, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
+public abstract class PropertyBaseZonedTime<U> extends PropertyBase<U, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
 {
     /**
      * TZID
@@ -58,8 +58,8 @@ public abstract class PropertyBaseZonedTime<T> extends PropertyBase<T, ZonedDate
         }
     }
     public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value)); }
-    public T withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (T) this; }
-    public T withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (T) this; }        
+    public U withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (U) this; }
+    public U withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
     
     /*
      * CONSTRUCTORS
@@ -75,7 +75,7 @@ public abstract class PropertyBaseZonedTime<T> extends PropertyBase<T, ZonedDate
         super(contentLine);
     }
     
-    public PropertyBaseZonedTime(PropertyBaseZonedTime<T> source)
+    public PropertyBaseZonedTime(PropertyBaseZonedTime<U> source)
     {
         super(source);
     }

@@ -45,19 +45,26 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * 
  * @author David Bal
  *
- * @param <T> - type of implementing subclass
- * @param <U> - type of property value
+ * @param <U> - type of implementing subclass
+ * @param <T> - type of property value
  */
-public abstract class PropertyBase<T,U> implements Property<U>
+public abstract class PropertyBase<U,T> implements Property<T>
 {
     @Override
-    public U getValue() { return value.get(); }
+    public T getValue() { return value.get(); }
     @Override
-    public ObjectProperty<U> valueProperty() { return value; }
-    private ObjectProperty<U> value;
+    public ObjectProperty<T> valueProperty() { return value; }
+    private ObjectProperty<T> value;
     @Override
-    public void setValue(U value) { this.value.set(value); }
-    public T withValue(U value) { setValue(value); return (T) this; }
+    public void setValue(T value) { this.value.set(value); }
+//    public void setValue(String valueString)
+//    {
+//        System.out.println("here1:");
+//        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
+//        T value = valueType.stringConverter(this).fromString(valueString);
+//        setValue(value);
+//    }
+    public U withValue(T value) { setValue(value); return (U) this; }
     
     /**
      * VALUE: Value Data Types
@@ -84,7 +91,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
     @Override
     public void setValueParameter(ValueParameter value)
     {
-        if (value.getValue().equals(propertyType().defaultValueType()) || value.getValue().equals(ValueType.UNKNOWN))
+        if (isValueParameterValid(value))
         {
             valueParameterProperty().set(value);
         } else
@@ -94,8 +101,8 @@ public abstract class PropertyBase<T,U> implements Property<U>
     }
     public void setValueParameter(ValueType value) { setValueParameter(new ValueParameter(value)); }
     public void setValueParameter(String value) { setValueParameter(new ValueParameter(value)); }
-    public T withValueParameter(ValueType value) { setValueParameter(value); return (T) this; } 
-    public T withValueParameter(String value) { setValueParameter(value); return (T) this; } 
+    public U withValueParameter(ValueType value) { setValueParameter(value); return (U) this; } 
+    public U withValueParameter(String value) { setValueParameter(value); return (U) this; } 
     
     /**
      * other-param, 3.2 RFC 5545 page 14
@@ -104,13 +111,14 @@ public abstract class PropertyBase<T,U> implements Property<U>
     @Override
     public ObservableList<Object> otherParameters() { return otherParameters; }
     private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
-    public T withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (T) this; }
+    public U withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (U) this; }
     
     /** The type of the property in the content line, such as DESCRIPTION */
     @Override
     public PropertyEnum propertyType() { return propertyType; }
     private PropertyEnum propertyType;
-
+    
+    private String nonstandardPropertyName;
     
     @Override
     public boolean isValid()
@@ -120,37 +128,22 @@ public abstract class PropertyBase<T,U> implements Property<U>
             return Property.super.isValid();
         } else
         {
-            boolean isValueTypeOK = getValueParameter().getValue().equals(propertyType().defaultValueType()) || getValueParameter().getValue().equals(ValueType.UNKNOWN);
+            boolean isValueTypeOK = (getValueParameter() == null) ? true: isValueParameterValid(getValueParameter());
             return (Property.super.isValid()) && isValueTypeOK;
         }
     }
-    
-//    /** Allowed value types for this property.  These are the values than can be an
-//     * argument to {@link #setValueType(ValueParameter)}
-//     * RFC 5545, 3.2.20, page 29
-//     */
-//    protected List<ValueType> allowedValueTypes()
-//    {
-//        PropertyEnum.enumFromClass(myClass)
-//        return Arrays.asList(ValueType.TEXT); // default is TEXT, override if otherwise
-//    }
-//    /**
-//     * Property's value portion of content line.
-//     * Default method is for a property that has a properly overridden toString method.
-//     * If not, then the subclass must override this method.
-//     * 
-//     * @return property value as a String formatted for a iCalendar content line
-//     */
-//    protected String getValueForContentLine()
-//    {
-//        return propertyType().valueType().makeContent(getValue());
-////        return getValue().toString();
-//    }
-    
-//    @Override
-//    protected List<ParameterEnum> parmeters2;
-    @Override // TODO - MAYBE THIS CAN BE IMPROVED - USE LISTENERS TO POPULATE LIST?
-    public List<ParameterEnum> parameters() // CAN I SAVE LIST - UPDATE ONLY WHEN NEW PARAMETER CHANGE OCCURS?
+    /* test if value type is valid */
+    private boolean isValueParameterValid(ValueParameter value)
+    {
+        boolean isMatchingType = value.getValue().equals(propertyType().defaultValueType());
+        boolean isUnknownType = value.getValue().equals(ValueType.UNKNOWN);
+        boolean isNonStandardProperty = propertyType().equals(PropertyEnum.NON_STANDARD) || propertyType().equals(PropertyEnum.IANA_PROPERTY);
+        return (isMatchingType || isUnknownType || isNonStandardProperty);
+    }
+
+    // TODO CAN I CACHE THE LIST? - UPDATE ONLY WHEN NEW PARAMETER CHANGE OCCURS?
+    @Override
+    public List<ParameterEnum> parameters()
     {
         List<ParameterEnum> populatedParameters = new ArrayList<>();
 //        System.out.println("parameters:" + propertyType().possibleParameters().size());
@@ -168,12 +161,22 @@ public abstract class PropertyBase<T,U> implements Property<U>
         return Collections.unmodifiableList(populatedParameters);
     }    
     
+    // property value
+    private String propertyValueString;
+    // Note: in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes)
+    @Deprecated // may be obsolete with string converter
+    protected String getPropertyValueString() { return propertyValueString; }
+    
     /*
      * CONSTRUCTORS
      */
     
-    private String propertyValueString;
-    protected String getPropertyValueString() { return propertyValueString; } // in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes)
+    // construct empty property
+    private PropertyBase()
+    {
+        propertyType = PropertyEnum.enumFromClass(getClass());
+        value = new SimpleObjectProperty<T>(this, propertyType.toString());
+    }
     
     /**
      * Parse iCalendar content line constructor
@@ -205,6 +208,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
             boolean isMatch = propertyName.equals(propertyType.toString());
             if (isMatch || isNonStandard)
             {
+                if (isNonStandard)
+                {
+                    nonstandardPropertyName = propertyString.substring(0,endNameIndex);
+                }
                 propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
             } else
             {
@@ -241,7 +248,10 @@ public abstract class PropertyBase<T,U> implements Property<U>
 
         // save property value
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-        setValue(valueFromString(getPropertyValueString()));
+        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
+        T value = valueType.stringConverter(this).fromString(propertyValueString);
+        setValue(value);
+//        setValue(valueFromString(getPropertyValueString()));
         
         if (! isValid())
         {
@@ -249,15 +259,8 @@ public abstract class PropertyBase<T,U> implements Property<U>
         }
     }
     
-    // construct empty property
-    private PropertyBase()
-    {
-        propertyType = PropertyEnum.enumFromClass(getClass());
-        value = new SimpleObjectProperty<U>(this, propertyType.toString());
-    }
-    
     // copy constructor
-    public PropertyBase(Property<U> source)
+    public PropertyBase(Property<T> source)
     {
         this();
         Iterator<ParameterEnum> i = source.parameters().stream().iterator();
@@ -272,7 +275,7 @@ public abstract class PropertyBase<T,U> implements Property<U>
     }    
     
     // constructor with only value parameter
-    public PropertyBase(U value)
+    public PropertyBase(T value)
     {
         this();
         setValue(value);
@@ -292,7 +295,13 @@ public abstract class PropertyBase<T,U> implements Property<U>
     public String toContentLine()
     {
         StringBuilder builder = new StringBuilder(50);
-        builder.append(propertyType().toString());
+        if (nonstandardPropertyName == null)
+        {
+            builder.append(propertyType().toString());
+        } else
+        {
+            builder.append(nonstandardPropertyName);
+        }
         // add parameters
         parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
         // add non-standard parameters
@@ -309,24 +318,56 @@ public abstract class PropertyBase<T,U> implements Property<U>
      * override in subclasses if necessary
      */
     
-    /* Convert property value to string.  Override in subclass if necessary */
-    protected String valueToString(U value)
+    public PropValueStringConverter<T> getConverter() { return converter; }
+    private PropValueStringConverter<T> converter = new PropValueStringConverter<T>(this)
     {
-        return value.toString();
+        @Override
+        public String toString(T object)
+        {
+            return object.toString();
+        }
+
+        @Override
+        public T fromString(String string)
+        {
+            Type[] types = ((ParameterizedType)getProperty().getClass().getGenericSuperclass())
+                    .getActualTypeArguments();
+            System.out.println("class2:" + getProperty().getClass());
+             Class<T> myClass = (Class<T>) types[types.length-1]; // get last parameterized type
+             if (myClass.equals(String.class))
+             {
+                 return (T) propertyValueString;            
+             }
+             throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
+                     ". You need to override string converter for class " + getProperty().getClass().getSimpleName());
+        }
+    };
+    public void setConverter(PropValueStringConverter<T> converter) { this.converter = converter; }
+    
+    
+    /* Convert property value to string.  Override in subclass if necessary */
+    @Deprecated
+    protected String valueToString(T value)
+    {
+        return converter.toString(value);
+//        return value.toString();
     }    
     /* parse property value, override in subclasses if necessary */
-    @SuppressWarnings("unchecked")
-    protected U valueFromString(String propertyValueString)
+//    @SuppressWarnings("unchecked")
+    @Deprecated
+    protected T valueFromString(String propertyValueString)
     {
-        Type[] types = ((ParameterizedType)getClass().getGenericSuperclass())
-                   .getActualTypeArguments();
-        Class<U> myClass = (Class<U>) types[types.length-1]; // get last parameterized type
-        if (myClass.equals(String.class))
-        {
-            return (U) propertyValueString;            
-        }
-        throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
-                ". You need to override valueFromString in subclass " + getClass().getSimpleName());
+        System.out.println("class1:" + getClass());
+        return converter.fromString(propertyValueString);
+//        Type[] types = ((ParameterizedType)getClass().getGenericSuperclass())
+//                   .getActualTypeArguments();
+//        Class<T> myClass = (Class<T>) types[types.length-1]; // get last parameterized type
+//        if (myClass.equals(String.class))
+//        {
+//            return (T) propertyValueString;            
+//        }
+//        throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
+//                ". You need to override valueFromString in subclass " + getClass().getSimpleName());
     }
 
     @Override

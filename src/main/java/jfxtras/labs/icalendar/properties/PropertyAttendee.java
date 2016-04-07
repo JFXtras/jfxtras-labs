@@ -15,11 +15,11 @@ import jfxtras.labs.icalendar.parameters.RSVP;
  * @author David Bal
  *
  * @param <T> - subclass
- * @param <U> - property value type
+ * @param <T> - property value type
  * 
  * @see PropertyBaseAttendee
  */
-public interface PropertyAttendee<U> extends PropertyCalendarUser<U>
+public interface PropertyAttendee<T> extends PropertyCalendarUser<T>
 {
     /**
      * CUTYPE

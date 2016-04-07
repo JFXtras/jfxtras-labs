@@ -24,7 +24,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseCale
  * @author David Bal
  *
  * @param <T>
- * @param <U>
+ * @param <T>
  *
  * Base class
  * @see PropertyBaseCalendarUser
@@ -33,7 +33,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseCale
  * @see Organizer
  * @see Attendee
  */
-public interface PropertyCalendarUser<U> extends PropertyLanguage<U>
+public interface PropertyCalendarUser<T> extends PropertyLanguage<T>
 {
     /**
      * CN

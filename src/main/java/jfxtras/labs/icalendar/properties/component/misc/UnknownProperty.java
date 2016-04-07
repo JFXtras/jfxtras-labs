@@ -30,7 +30,7 @@ import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
  *
  */
 // TODO - DO I WANT TO MAKE INTERFACES FOR PARAMETERS?
-public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> implements PropertyAttendee<U>, PropertyAltText<U>, PropertyAttachment<U>, PropertyFreeBusy<U>, PropertyRecurrenceID<U>, PropertyDateTime<U>
+public abstract class UnknownProperty<U,T> extends PropertyBaseAttendee<U,T> implements PropertyAttendee<T>, PropertyAltText<T>, PropertyAttachment<T>, PropertyFreeBusy<T>, PropertyRecurrenceID<T>, PropertyDateTime<T>
 {
     /**
      * ALTREP : Alternate Text Representation
@@ -86,9 +86,9 @@ public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> i
         }
     }
     public void setAlternateText(String value) { setAlternateText(new AlternateText(value)); }
-    public T withAlternateText(AlternateText altrep) { setAlternateText(altrep); return (T) this; }
-    public T withAlternateText(URI value) { setAlternateText(new AlternateText(value)); return (T) this; }
-    public T withAlternateText(String content) { setAlternateText(content); return (T) this; }
+    public U withAlternateText(AlternateText altrep) { setAlternateText(altrep); return (U) this; }
+    public U withAlternateText(URI value) { setAlternateText(new AlternateText(value)); return (U) this; }
+    public U withAlternateText(String content) { setAlternateText(content); return (U) this; }
     
     /**
      * ENCODING: Incline Encoding
@@ -126,8 +126,8 @@ public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> i
             encodingProperty().set(encoding);
         }
     }
-    public T withEncoding(Encoding encoding) { setEncoding(encoding); return (T) this; }
-    public T withEncoding(EncodingType encoding) { setEncoding(new Encoding(encoding)); return (T) this; }
+    public U withEncoding(Encoding encoding) { setEncoding(encoding); return (U) this; }
+    public U withEncoding(EncodingType encoding) { setEncoding(new Encoding(encoding)); return (U) this; }
 
     /**
      * FBTYPE: Incline Free/Busy Time Type
@@ -158,9 +158,9 @@ public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> i
         }
     }
     public void setFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(new FreeBusyType(type)); }
-    public T withFreeBusyType(FreeBusyType freeBusyType) { setFreeBusyType(freeBusyType); return (T)this; }
-    public T withFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(type); return (T) this; }
-    public T withFreeBusyType(String freeBusyType) { setFreeBusyType(new FreeBusyType(freeBusyType)); return (T) this; }
+    public U withFreeBusyType(FreeBusyType freeBusyType) { setFreeBusyType(freeBusyType); return (U)this; }
+    public U withFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(type); return (U) this; }
+    public U withFreeBusyType(String freeBusyType) { setFreeBusyType(new FreeBusyType(freeBusyType)); return (U) this; }
 
     /**
      * FMTTYPE: Format type parameter
@@ -187,8 +187,8 @@ public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> i
             formatTypeProperty().set(formatType);
         }
     }
-    public T withFormatType(FormatType format) { setFormatType(format); return (T) this; }
-    public T withFormatType(String format) { setFormatType(new FormatType(format)); return (T) this; }
+    public U withFormatType(FormatType format) { setFormatType(format); return (U) this; }
+    public U withFormatType(String format) { setFormatType(new FormatType(format)); return (U) this; }
 
     /**
      * RANGE
@@ -226,9 +226,9 @@ public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> i
         }
     }
     public void setRange(String value) { setRange(new Range(value)); }
-    public T withRange(Range altrep) { setRange(altrep); return (T) this; }
-    public T withRange(RangeType value) { setRange(new Range(value)); return (T) this; }
-    public T withRange(String content) { setRange(content); return (T) this; }
+    public U withRange(Range altrep) { setRange(altrep); return (U) this; }
+    public U withRange(RangeType value) { setRange(new Range(value)); return (U) this; }
+    public U withRange(String content) { setRange(content); return (U) this; }
 
     /**
      * TZID
@@ -239,7 +239,9 @@ public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> i
      * Examples:
      * DTSTART;TZID=America/New_York:19980119T020000
      */
+    @Override
     public TimeZoneIdentifierParameter getTimeZoneIdentifier() { return (timeZoneIdentifier == null) ? null : timeZoneIdentifier.get(); }
+    @Override
     public ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifierProperty()
     {
         if (timeZoneIdentifier == null)
@@ -249,6 +251,7 @@ public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> i
         return timeZoneIdentifier;
     }
     private ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifier;
+    @Override
     public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier)
     {
         if (timeZoneIdentifier != null)
@@ -257,8 +260,8 @@ public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> i
         }
     }
     public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value)); }
-    public T withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (T) this; }
-    public T withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (T) this; }        
+    public U withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (U) this; }
+    public U withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
 
     /*
      * CONSTRUCTORS
@@ -269,19 +272,19 @@ public abstract class UnknownProperty<T, U> extends PropertyBaseAttendee<T, U> i
         super(contentLine);
     }
     
-    public UnknownProperty(U value)
+    public UnknownProperty(T value)
     {
         super(value);
     }
     
-    public UnknownProperty(UnknownProperty<T, U> source)
+    public UnknownProperty(UnknownProperty<U, T> source)
     {
         super(source);
     }
     
     @Override
-    protected U valueFromString(String propertyValueString)
+    protected T valueFromString(String propertyValueString)
     {
-        return (U) propertyValueString;
+        return (T) propertyValueString;
     }
 }

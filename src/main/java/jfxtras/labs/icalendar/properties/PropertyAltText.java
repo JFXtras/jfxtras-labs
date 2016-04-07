@@ -24,7 +24,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
  * @see Resources
  * @see Summary
  */
-public interface PropertyAltText<U> extends PropertyLanguage<U>
+public interface PropertyAltText<T> extends PropertyLanguage<T>
 {
     /**
      * ALTREP : Alternate Text Representation

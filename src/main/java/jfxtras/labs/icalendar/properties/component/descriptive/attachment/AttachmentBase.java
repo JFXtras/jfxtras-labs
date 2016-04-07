@@ -23,7 +23,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  * Example:
  * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
  *  reports/r-960812.p
- * @param <T> - URI or String (String is for BASE64 binary encoding
+ * @param <U> - URI or String (String is for BASE64 binary encoding
  *  
  *  The property can be specified in following components:
  *  @see VEvent
@@ -35,7 +35,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  *  @see AttachmentURI
  *  @see AttachmentBase64
  */
-public abstract class AttachmentBase<T,U> extends PropertyBase<T,U> implements PropertyAttachment<U>
+public abstract class AttachmentBase<U,T> extends PropertyBase<U,T> implements PropertyAttachment<T>
 {
      /**
      * FMTTYPE: Format type parameter
@@ -62,8 +62,8 @@ public abstract class AttachmentBase<T,U> extends PropertyBase<T,U> implements P
             formatTypeProperty().set(formatType);
         }
     }
-    public T withFormatType(FormatType format) { setFormatType(format); return (T) this; }
-    public T withFormatType(String format) { setFormatType(new FormatType(format)); return (T) this; }
+    public U withFormatType(FormatType format) { setFormatType(format); return (U) this; }
+    public U withFormatType(String format) { setFormatType(new FormatType(format)); return (U) this; }
     
     /**
      * ENCODING: Incline Encoding
@@ -101,8 +101,8 @@ public abstract class AttachmentBase<T,U> extends PropertyBase<T,U> implements P
             encodingProperty().set(encoding);
         }
     }
-    public T withEncoding(Encoding encoding) { setEncoding(encoding); return (T) this; }
-    public T withEncoding(EncodingType encoding) { setEncoding(new Encoding(encoding)); return (T) this; }
+    public U withEncoding(Encoding encoding) { setEncoding(encoding); return (U) this; }
+    public U withEncoding(EncodingType encoding) { setEncoding(new Encoding(encoding)); return (U) this; }
 
     
     /*
@@ -114,12 +114,12 @@ public abstract class AttachmentBase<T,U> extends PropertyBase<T,U> implements P
         super(contentLine);
     }
     
-    AttachmentBase(AttachmentBase<T,U> source)
+    AttachmentBase(AttachmentBase<U,T> source)
     {
         super(source);
     }
     
-    AttachmentBase(U value)
+    AttachmentBase(T value)
     {
         super(value);
     }

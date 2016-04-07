@@ -10,13 +10,13 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 /**
  * Property with language and a text-based value
  *  
- * @param <T>
+ * @param <U>
  * 
  * concrete subclasses
  * @see Categories
  * @see TimeZoneName
  */
-public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implements PropertyLanguage<U>
+public abstract class PropertyBaseLanguage<U,T> extends PropertyBase<U,T> implements PropertyLanguage<T>
 {
     /**
      * LANGUAGE
@@ -47,8 +47,8 @@ public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implem
         }
     }
     public void setLanguage(String value) { setLanguage(new Language(value)); }
-    public T withLanguage(Language language) { setLanguage(language); return (T) this; }
-    public T withLanguage(String content) { ParameterEnum.LANGUAGE.parse(this, content); return (T) this; }    
+    public U withLanguage(Language language) { setLanguage(language); return (U) this; }
+    public U withLanguage(String content) { ParameterEnum.LANGUAGE.parse(this, content); return (U) this; }    
     
     /*
      * CONSTRUCTORS
@@ -59,7 +59,7 @@ public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implem
     }
     
     // copy constructor
-    public PropertyBaseLanguage(PropertyBaseLanguage<T,U> property)
+    public PropertyBaseLanguage(PropertyBaseLanguage<U,T> property)
     {
         super(property);
         if (getLanguage() != null)
@@ -68,7 +68,7 @@ public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implem
         }
     }
     
-    public PropertyBaseLanguage(U value)
+    public PropertyBaseLanguage(T value)
     {
         super(value);
     }

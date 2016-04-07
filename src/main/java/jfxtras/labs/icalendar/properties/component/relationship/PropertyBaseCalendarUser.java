@@ -26,14 +26,14 @@ import jfxtras.labs.icalendar.properties.PropertyCalendarUser;
  * 
  * @author David Bal
  *
- * @param <T>
- * @param <U>
+ * @param <U> - subclass
+ * @param <T> - property value type
  * 
  * concrete subclasses
  * @see Organizer
  * @see Attendee
  */
-public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguage<T, U> implements PropertyCalendarUser<U>
+public abstract class PropertyBaseCalendarUser<U, T> extends PropertyBaseLanguage<U, T> implements PropertyCalendarUser<T>
 {
     /**
      * CN
@@ -45,7 +45,9 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
      * Example:
      * ORGANIZER;CN="John Smith":mailto:jsmith@example.com
      */
+    @Override
     public CommonName getCommonName() { return (commonName == null) ? null : commonName.get(); }
+    @Override
     public ObjectProperty<CommonName> commonNameProperty()
     {
         if (commonName == null)
@@ -55,6 +57,7 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
         return commonName;
     }
     private ObjectProperty<CommonName> commonName;
+    @Override
     public void setCommonName(CommonName commonName)
     {
         if (commonName != null)
@@ -63,8 +66,8 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
         }
     }
     public void setCommonName(String content) { setCommonName(new CommonName(content)); }
-    public T withCommonName(CommonName commonName) { setCommonName(commonName); return (T) this; }
-    public T withCommonName(String content) { setCommonName(content); return (T) this; }    
+    public U withCommonName(CommonName commonName) { setCommonName(commonName); return (U) this; }
+    public U withCommonName(String content) { setCommonName(content); return (U) this; }    
 
     /**
      * DIR
@@ -78,7 +81,9 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
      * ORGANIZER;DIR="ldap://example.com:6666/o=ABC%20Industries,
      *  c=US???(cn=Jim%20Dolittle)":mailto:jimdo@example.com
      */
+    @Override
     public DirectoryEntryReference getDirectoryEntryReference() { return (directoryEntryReference == null) ? null : directoryEntryReference.get(); }
+    @Override
     public ObjectProperty<DirectoryEntryReference> directoryEntryReferenceProperty()
     {
         if (directoryEntryReference == null)
@@ -88,6 +93,7 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
         return directoryEntryReference;
     }
     private ObjectProperty<DirectoryEntryReference> directoryEntryReference;
+    @Override
     public void setDirectoryEntryReference(DirectoryEntryReference directoryEntryReference)
     {
         if (directoryEntryReference != null)
@@ -96,9 +102,9 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
         }
     }
     public void setDirectoryEntryReference(String content) { setDirectoryEntryReference(new DirectoryEntryReference(content)); }
-    public T withDirectoryEntryReference(DirectoryEntryReference directoryEntryReference) { setDirectoryEntryReference(directoryEntryReference); return (T) this; }
-    public T withDirectoryEntryReference(URI uri) { setDirectoryEntryReference(new DirectoryEntryReference(uri)); return (T) this; }
-    public T withDirectoryEntryReference(String content) { setDirectoryEntryReference(content); return (T) this; }
+    public U withDirectoryEntryReference(DirectoryEntryReference directoryEntryReference) { setDirectoryEntryReference(directoryEntryReference); return (U) this; }
+    public U withDirectoryEntryReference(URI uri) { setDirectoryEntryReference(new DirectoryEntryReference(uri)); return (U) this; }
+    public U withDirectoryEntryReference(String content) { setDirectoryEntryReference(content); return (U) this; }
 
     /**
      * SENT-BY
@@ -111,7 +117,9 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
      * ORGANIZER;SENT-BY="mailto:sray@example.com":mailto:
      *  jsmith@example.com
      */
+    @Override
     public SentBy getSentBy() { return (sentBy == null) ? null : sentBy.get(); }
+    @Override
     public ObjectProperty<SentBy> sentByProperty()
     {
         if (sentBy == null)
@@ -121,6 +129,7 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
         return sentBy;
     }
     private ObjectProperty<SentBy> sentBy;
+    @Override
     public void setSentBy(SentBy sentBy)
     {
         if (sentBy != null)
@@ -129,9 +138,9 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
         }
     }
     public void setSentBy(String content) { setSentBy(new SentBy(content)); }
-    public T withSentBy(SentBy sentBy) { setSentBy(sentBy); return (T) this; }
-    public T withSentBy(URI uri) { setSentBy(new SentBy(uri)); return (T) this; }
-    public T withSentBy(String content) { setSentBy(content); return (T) this; }    
+    public U withSentBy(SentBy sentBy) { setSentBy(sentBy); return (U) this; }
+    public U withSentBy(URI uri) { setSentBy(new SentBy(uri)); return (U) this; }
+    public U withSentBy(String content) { setSentBy(content); return (U) this; }    
 
     
     /*
@@ -143,12 +152,12 @@ public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguag
     }
 
     // copy constructor
-    public PropertyBaseCalendarUser(PropertyBaseCalendarUser<T, U> property)
+    public PropertyBaseCalendarUser(PropertyBaseCalendarUser<U, T> property)
     {
         super(property);
     }
     
-    public PropertyBaseCalendarUser(U value)
+    public PropertyBaseCalendarUser(T value)
     {
         super(value);
     }

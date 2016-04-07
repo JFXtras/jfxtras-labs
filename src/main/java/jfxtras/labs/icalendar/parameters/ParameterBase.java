@@ -18,22 +18,22 @@ import javafx.beans.property.SimpleObjectProperty;
  * 
  * @author David Bal
  *
- * @param <U> - type of value stored in the Parameter, such as String for text-based, or the enumerated type of the classes based on an enum
- * @param <T> - implemented subclass
+ * @param <T> - type of value stored in the Parameter, such as String for text-based, or the enumerated type of the classes based on an enum
+ * @param <U> - implemented subclass
  */
-public class ParameterBase<T,U> implements Parameter<U>
+public class ParameterBase<U,T> implements Parameter<T>
 {
     private final ParameterEnum myParameterEnum;
     ParameterEnum myParameterEnum() { return myParameterEnum; }
     
     @Override
-    public U getValue() { return value.get(); }
+    public T getValue() { return value.get(); }
     @Override
-    public ObjectProperty<U> valueProperty() { return value; }
-    private ObjectProperty<U> value;
+    public ObjectProperty<T> valueProperty() { return value; }
+    private ObjectProperty<T> value;
     @Override
-    public void setValue(U value) { this.value.set(value); }
-    public T withValue(U value) { setValue(value); return (T) this; }
+    public void setValue(T value) { this.value.set(value); }
+    public U withValue(T value) { setValue(value); return (U) this; }
 
     @Override
     public String toContent()
@@ -67,7 +67,7 @@ public class ParameterBase<T,U> implements Parameter<U>
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        ParameterBase<T,U> testObj = (ParameterBase<T,U>) obj;
+        ParameterBase<U,T> testObj = (ParameterBase<U,T>) obj;
 
         return getValue().equals(testObj.getValue());
     }
@@ -85,7 +85,7 @@ public class ParameterBase<T,U> implements Parameter<U>
 //    }
     
     @Override
-    public int compareTo(Parameter<U> test)
+    public int compareTo(Parameter<T> test)
     {
         return toContent().compareTo(test.toContent());
     }
@@ -99,14 +99,14 @@ public class ParameterBase<T,U> implements Parameter<U>
         value = new SimpleObjectProperty<>(this, myParameterEnum.toString());
     }
 
-    ParameterBase(U value)
+    ParameterBase(T value)
     {
         this();
         setValue(value);
     }
 
     
-    ParameterBase(ParameterBase<T,U> source)
+    ParameterBase(ParameterBase<U,T> source)
     {
         this();
         setValue(source.getValue());
