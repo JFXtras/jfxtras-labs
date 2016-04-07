@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
+import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentURI;
 
@@ -18,7 +18,7 @@ public class AttachmentTest
     @Test
     public void canParseAttachementSimple() throws URISyntaxException
     {
-        Attachment<?,?> property = new AttachmentURI("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com");
+        AttachmentBase<?,?> property = new AttachmentURI("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com");
         String expectedContentLine = "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com";
         String madeContentLine = property.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
@@ -28,8 +28,8 @@ public class AttachmentTest
     public void canParseAttachementComplex() throws URISyntaxException
     {
         String contentLine = "ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/reports/r-960812.ps";
-        Attachment<?,?> madeProperty = new AttachmentURI(contentLine);
-        Attachment<?,?> expectedProperty = new AttachmentURI("ftp://example.com/pub/reports/r-960812.ps")
+        AttachmentBase<?,?> madeProperty = new AttachmentURI(contentLine);
+        AttachmentBase<?,?> expectedProperty = new AttachmentURI("ftp://example.com/pub/reports/r-960812.ps")
                 .withFormatType("application/postscript");
         assertEquals(expectedProperty, madeProperty);
         assertEquals(contentLine, expectedProperty.toContentLine());

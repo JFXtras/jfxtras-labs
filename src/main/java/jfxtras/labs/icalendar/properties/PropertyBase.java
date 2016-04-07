@@ -21,10 +21,6 @@ import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendar.properties.calendar.Version;
 import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
-import jfxtras.labs.icalendar.properties.component.time.DateAbstract;
-import jfxtras.labs.icalendar.properties.component.time.DateTimeAbstract;
-import jfxtras.labs.icalendar.properties.component.time.ZonedTimeAbstract;
-import jfxtras.labs.icalendar.properties.component.time.UTCTimeAbstract;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**
@@ -32,14 +28,13 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * Contains property value, value parameter (ValueType) and other-parameters
  * Also contains several support methods used by other properties
  * 
- * abstract subclasses
- * @see PropertyAlternateTextRepresentation
- * @see PropertyCalendarUserAddress
+ * extended interfaces
+ * @see PropertyAltText
+ * @see PropertyAttendee
+ * @see PropertyCalendarUser
+ * @see PropertyDateTime
+ * @see PropertyFreeBusy
  * @see PropertyLanguage
- * @see ZonedTimeAbstract
- * @see UTCTimeAbstract
- * @see DateAbstract
- * @see DateTimeAbstract
  * 
  * concrete subclasses
  * @see UniqueIdentifier
@@ -204,14 +199,19 @@ public abstract class PropertyBase<T,U> implements Property<U>
         if (propertyName == null)
         {
             propertyValue = ":" + propertyString; // indicates propertySequence doesn't contain a property name - only parameters and value
-        } else if (propertyName.equals(propertyType.toString()))
-        {
-            propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
         } else
         {
-            throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
-                    getClass().getSimpleName() + ".  Property name associated with class " + 
-                    getClass().getSimpleName() + " is " +  propertyType.toString());
+            boolean isNonStandard = propertyName.substring(0, 2).equals(PropertyEnum.NON_STANDARD.toString());
+            boolean isMatch = propertyName.equals(propertyType.toString());
+            if (isMatch || isNonStandard)
+            {
+                propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
+            } else
+            {
+                throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
+                        getClass().getSimpleName() + ".  Property name associated with class " + 
+                        getClass().getSimpleName() + " is " +  propertyType.toString());
+            }
         }
         
         // add parameters

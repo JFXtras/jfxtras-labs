@@ -2,7 +2,7 @@ package jfxtras.labs.icalendar.properties.component.descriptive;
 
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
+import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
 
 /**
  * LOCATION
@@ -20,7 +20,7 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
  * @see VEvent
  * @see VTodo
  */
-public class Location extends PropertyAlternateTextRepresentation<Location, String>
+public class Location extends PropertyBaseAltText<Location, String>
 {    
     public Location(CharSequence contentLine)
     {

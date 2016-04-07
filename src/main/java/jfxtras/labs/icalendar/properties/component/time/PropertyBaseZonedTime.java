@@ -9,6 +9,8 @@ import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifierParameter;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
+import jfxtras.labs.icalendar.properties.PropertyDateTime;
+import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
@@ -22,8 +24,9 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @param <T> - implementation class
  * @see DTStartZonedDateTime
  * @see DTEndZonedDateTime
+ * @see RecurrenceIDZonedDateTime
  */
-public abstract class ZonedTimeAbstract<T> extends PropertyBase<T, ZonedDateTime> implements DateTime<ZonedDateTime>
+public abstract class PropertyBaseZonedTime<T> extends PropertyBase<T, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
 {
     /**
      * TZID
@@ -62,17 +65,17 @@ public abstract class ZonedTimeAbstract<T> extends PropertyBase<T, ZonedDateTime
      * CONSTRUCTORS
      */
     
-    public ZonedTimeAbstract(ZonedDateTime temporal)
+    public PropertyBaseZonedTime(ZonedDateTime temporal)
     {
         super(temporal);
     }
 
-    public ZonedTimeAbstract(CharSequence contentLine)
+    public PropertyBaseZonedTime(CharSequence contentLine)
     {
         super(contentLine);
     }
     
-    public ZonedTimeAbstract(ZonedTimeAbstract<T> source)
+    public PropertyBaseZonedTime(PropertyBaseZonedTime<T> source)
     {
         super(source);
     }

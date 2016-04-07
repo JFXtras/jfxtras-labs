@@ -14,6 +14,7 @@ import javafx.util.Pair;
 import jfxtras.labs.icalendar.parameters.FreeBusyType;
 import jfxtras.labs.icalendar.parameters.FreeBusyType.FreeBusyTypeEnum;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
+import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
@@ -22,7 +23,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
-public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDateTime, TemporalAmount>>>
+public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDateTime, TemporalAmount>>> implements PropertyFreeBusy<List<Pair<ZonedDateTime, TemporalAmount>>>
 {
     /**
      * FBTYPE: Incline Free/Busy Time Type

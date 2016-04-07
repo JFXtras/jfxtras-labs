@@ -2,6 +2,7 @@ package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.ZonedDateTime;
 
+import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
@@ -13,19 +14,19 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @param <T> - implementation class
  * @see DateTimeCompleted
  */
-public abstract class UTCTimeAbstract<T> extends PropertyBase<T, ZonedDateTime> implements DateTime<ZonedDateTime>
+public abstract class PropertyBaseUTCTime<T> extends PropertyBase<T, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
 {
-    public UTCTimeAbstract(ZonedDateTime temporal)
+    public PropertyBaseUTCTime(ZonedDateTime temporal)
     {
         super(temporal);
     }
 
-    public UTCTimeAbstract(CharSequence contentLine)
+    public PropertyBaseUTCTime(CharSequence contentLine)
     {
         super(contentLine);
     }
     
-    public UTCTimeAbstract(UTCTimeAbstract<T> source)
+    public PropertyBaseUTCTime(PropertyBaseUTCTime<T> source)
     {
         super(source);
     }

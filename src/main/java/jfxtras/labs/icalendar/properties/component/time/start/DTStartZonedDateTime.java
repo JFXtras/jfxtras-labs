@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.component.time.ZonedTimeAbstract;
+import jfxtras.labs.icalendar.properties.component.time.PropertyBaseZonedTime;
 
 /**
  * DTSTART
@@ -25,7 +25,7 @@ import jfxtras.labs.icalendar.properties.component.time.ZonedTimeAbstract;
  * @see VTodo
  * @see VFreeBusy
  */
-public class DTStartZonedDateTime extends ZonedTimeAbstract<DTStartZonedDateTime>
+public class DTStartZonedDateTime extends PropertyBaseZonedTime<DTStartZonedDateTime>
 {
     public DTStartZonedDateTime(ZonedDateTime temporal)
     {

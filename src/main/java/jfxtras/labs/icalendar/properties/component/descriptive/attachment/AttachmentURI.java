@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
  * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
  *  reports/r-960812.p
  */ 
-public class AttachmentURI extends Attachment<AttachmentURI, URI>
+public class AttachmentURI extends AttachmentBase<AttachmentURI, URI>
 {
     public AttachmentURI(CharSequence contentLine)
     {

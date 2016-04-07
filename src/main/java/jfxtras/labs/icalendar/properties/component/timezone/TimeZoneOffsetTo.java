@@ -19,7 +19,7 @@ import jfxtras.labs.icalendar.components.StandardTime;
  * @see DaylightSavingsTime
  * @see StandardTime
  */
-public class TimeZoneOffsetTo extends ZoneOffsetAbstract<TimeZoneOffsetTo>
+public class TimeZoneOffsetTo extends PropertyBaseZoneOffset<TimeZoneOffsetTo>
 {    
     public TimeZoneOffsetTo(CharSequence contentLine)
     {

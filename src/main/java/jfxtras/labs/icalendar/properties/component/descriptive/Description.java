@@ -4,7 +4,7 @@ import jfxtras.labs.icalendar.components.VAlarm;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
+import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
 
 /**
  * DESCRIPTION
@@ -28,7 +28,7 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
  * @see VJournal
  * @see VAlarm
  */
-public class Description extends PropertyAlternateTextRepresentation<Description, String>
+public class Description extends PropertyBaseAltText<Description, String>
 {
     public Description(CharSequence contentLine)
     {

@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.components;
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
+import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase;
 
 /**
  * Describable VComponents
@@ -26,9 +26,9 @@ public interface VComponentDescribable
      * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
      *  reports/r-960812.p
      */
-    public ObjectProperty<Attachment> attachmentProperty();
-    public Attachment getAttachment();
-    public void setAttachment(Attachment attachment);
+    public ObjectProperty<AttachmentBase> attachmentProperty();
+    public AttachmentBase getAttachment();
+    public void setAttachment(AttachmentBase attachment);
     
     /**
      * DESCRIPTION:

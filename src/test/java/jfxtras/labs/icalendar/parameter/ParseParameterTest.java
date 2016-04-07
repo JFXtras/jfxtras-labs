@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.parameters.AlternateTextRepresentation;
+import jfxtras.labs.icalendar.parameters.AlternateText;
 import jfxtras.labs.icalendar.parameters.CalendarUser;
 import jfxtras.labs.icalendar.parameters.CommonName;
 import jfxtras.labs.icalendar.parameters.Delegatees;
@@ -40,7 +40,7 @@ public class ParseParameterTest
     @Test // tests single URI as value
     public void canParseAlternateText()
     {
-        AlternateTextRepresentation parameter = new AlternateTextRepresentation(";ALTREP=\"CID:part3.msg.970415T083000@example.com\"");
+        AlternateText parameter = new AlternateText(";ALTREP=\"CID:part3.msg.970415T083000@example.com\"");
         String expectedContent = ";ALTREP=\"CID:part3.msg.970415T083000@example.com\"";
         assertEquals(expectedContent, parameter.toContent());
     }

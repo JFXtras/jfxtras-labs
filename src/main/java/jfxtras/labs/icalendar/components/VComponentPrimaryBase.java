@@ -7,9 +7,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
-import jfxtras.labs.icalendar.properties.component.time.DateTime;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -66,16 +66,16 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
      * @SEE VDateTime
      */
     @Override
-    public ObjectProperty<DateTime<? extends Temporal>> dateTimeStartProperty() { return dateTimeStart; }
-    final private ObjectProperty<DateTime<? extends Temporal>> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START_LOCAL_DATE_TIME.toString());
+    public ObjectProperty<PropertyDateTime<? extends Temporal>> dateTimeStartProperty() { return dateTimeStart; }
+    final private ObjectProperty<PropertyDateTime<? extends Temporal>> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START_LOCAL_DATE_TIME.toString());
 //    private DateTimeStart dateTimeStart;
-    @Override public DateTime<? extends Temporal> getDateTimeStart()
+    @Override public PropertyDateTime<? extends Temporal> getDateTimeStart()
     {
 //        return (DateTimeStart) propertyMap().get(PropertyEnum.DATE_TIME_START);
         return dateTimeStart.get();
     }
     @Override
-    public void setDateTimeStart(DateTime<? extends Temporal> dtStart)
+    public void setDateTimeStart(PropertyDateTime<? extends Temporal> dtStart)
     {
         // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
         DateTimeType myDateTimeType = DateTimeType.of(dtStart.getValue());
@@ -93,7 +93,7 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
             ensureDateTimeTypeConsistency(myDateTimeType, getZoneId());
         }
     }
-    public T withDateTimeStart(DateTime<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
+    public T withDateTimeStart(PropertyDateTime<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
 
     /**
      * Changes Temporal type of some properties to match the input parameter.  The input

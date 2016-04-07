@@ -15,9 +15,18 @@ import jfxtras.labs.icalendar.parameters.Participation;
 import jfxtras.labs.icalendar.parameters.Participation.ParticipationStatus;
 import jfxtras.labs.icalendar.parameters.ParticipationRole;
 import jfxtras.labs.icalendar.parameters.ParticipationRole.ParticipationRoleType;
+import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseCalendarUser;
 import jfxtras.labs.icalendar.parameters.RSVP;
 
-public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUserAddress<T, U>
+/**
+ * Abstract class for Attendee and unknown properties
+ * 
+ * @author David Bal
+ *
+ * @param <T> - subclass
+ * @param <U> - property value type
+ */
+public abstract class PropertyBaseAttendee<T, U> extends PropertyBaseCalendarUser<T, U> implements PropertyAttendee<U>
 {
     /**
      * CUTYPE
@@ -29,7 +38,9 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
      * Example:
      * ATTENDEE;CUTYPE=GROUP:mailto:ietf-calsch@example.org
      */
+    @Override
     public CalendarUser getCalendarUser() { return (calendarUser != null) ? calendarUser.get() : null; }
+    @Override
     public ObjectProperty<CalendarUser> calendarUserProperty()
     {
         if (calendarUser == null)
@@ -39,6 +50,7 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
         return calendarUser;
     }
     private ObjectProperty<CalendarUser> calendarUser;
+    @Override
     public void setCalendarUser(CalendarUser calendarUser)
     {
         if (calendarUser != null)
@@ -63,7 +75,9 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
      * ATTENDEE;DELEGATED-FROM="mailto:jsmith@example.com":mailto:
      *  jdoe@example.com
      */
+    @Override
     public Delegators getDelegators() { return (delegators != null) ? delegators.get() : null; }
+    @Override
     public ObjectProperty<Delegators> delegatorsProperty()
     {
         if (delegators == null)
@@ -73,6 +87,7 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
         return delegators;
     }
     private ObjectProperty<Delegators> delegators;
+    @Override
     public void setDelegators(Delegators delegators)
     {
         if (delegators != null)
@@ -98,7 +113,9 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
      *  @example.com":mailto:jsmith@example.com
      * 
      */
+    @Override
     public Delegatees getDelegatees() { return (delegatees == null) ? null : delegatees.get(); }
+    @Override
     public ObjectProperty<Delegatees> delegateesProperty()
     {
         if (delegatees == null)
@@ -108,6 +125,7 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
         return delegatees;
     }
     private ObjectProperty<Delegatees> delegatees;
+    @Override
     public void setDelegatees(Delegatees delegatees)
     {
         if (delegatees != null)
@@ -132,7 +150,9 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
      *  ojectB@example.com":mailto:janedoe@example.com
      * 
      */
+    @Override
     public GroupMembership getGroupMembership() { return (groupMembership == null) ? null : groupMembership.get(); }
+    @Override
     public ObjectProperty<GroupMembership> groupMembershipProperty()
     {
         if (groupMembership == null)
@@ -142,6 +162,7 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
         return groupMembership;
     }
     private ObjectProperty<GroupMembership> groupMembership;
+    @Override
     public void setGroupMembership(GroupMembership groupMembership)
     {
         if (groupMembership != null)
@@ -164,7 +185,9 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
      * Example:
      * ATTENDEE;RSVP=TRUE:mailto:jsmith@example.com
      */
+    @Override
     public RSVP getRSVP() { return (rsvp != null) ? rsvp.get() : null; }
+    @Override
     public ObjectProperty<RSVP> rsvpProperty()
     {
         if (rsvp == null)
@@ -174,6 +197,7 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
         return rsvp;
     }
     private ObjectProperty<RSVP> rsvp;
+    @Override
     public void setRSVP(RSVP rsvp)
     {
         if (rsvp != null)
@@ -196,7 +220,9 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
      * Example:
      * ATTENDEE;PARTSTAT=DECLINED:mailto:jsmith@example.com
      */
+    @Override
     public Participation getParticipation() { return (participation != null) ? participation.get() : null; }
+    @Override
     public ObjectProperty<Participation> participationProperty()
     {
         if (participation == null)
@@ -206,6 +232,7 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
         return participation;
     }
     private ObjectProperty<Participation> participation;
+    @Override
     public void setParticipation(Participation participation)
     {
         if (participation != null)
@@ -228,7 +255,9 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
      * Example:
      * ATTENDEE;ROLE=CHAIR:mailto:mrbig@example.com
      */
+    @Override
     public ParticipationRole getParticipationRole() { return (participationRole != null) ? participationRole.get() : null; }
+    @Override
     public ObjectProperty<ParticipationRole> participationRoleProperty()
     {
         if (participationRole == null)
@@ -238,6 +267,7 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
         return participationRole;
     }
     private ObjectProperty<ParticipationRole> participationRole;
+    @Override
     public void setParticipationRole(ParticipationRole participationRole)
     {
         if (participationRole != null)
@@ -254,17 +284,17 @@ public abstract class PropertyAttendeeAbstract<T, U> extends PropertyCalendarUse
      * CONSTRUCTORS
      */
     
-    public PropertyAttendeeAbstract(CharSequence contentLine)
+    public PropertyBaseAttendee(CharSequence contentLine)
     {
         super(contentLine);
     }
     
-    public PropertyAttendeeAbstract(U value)
+    public PropertyBaseAttendee(U value)
     {
         super(value);
     }
     
-    public PropertyAttendeeAbstract(PropertyAttendeeAbstract<T, U> source)
+    public PropertyBaseAttendee(PropertyBaseAttendee<T, U> source)
     {
         super(source);
     }

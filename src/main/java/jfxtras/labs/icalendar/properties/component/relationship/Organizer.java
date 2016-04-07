@@ -2,8 +2,6 @@ package jfxtras.labs.icalendar.properties.component.relationship;
 
 import java.net.URI;
 
-import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
-
 /**
  * ORGANIZER
  * RFC 5545, 3.8.4.3
@@ -16,7 +14,7 @@ import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
  * @author David Bal
  *
  */
-public class Organizer extends PropertyCalendarUserAddress<Organizer, URI>
+public class Organizer extends PropertyBaseCalendarUser<Organizer, URI>
 {
     public Organizer(String contentLine)
     {

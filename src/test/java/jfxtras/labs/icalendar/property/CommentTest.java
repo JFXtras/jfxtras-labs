@@ -25,7 +25,7 @@ public class CommentTest
         Comment madeProperty = new Comment(content);
         assertEquals(content, madeProperty.toContentLine());
         Comment expectedProperty = new Comment("The meeting needs to be canceled")
-                .withAlternateTextRepresentation("CID:part3.msg.970415T083000@example.com")
+                .withAlternateText("CID:part3.msg.970415T083000@example.com")
                 .withLanguage("en");
         assertEquals(expectedProperty, madeProperty);
     }

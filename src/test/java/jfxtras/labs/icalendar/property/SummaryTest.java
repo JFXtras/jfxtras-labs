@@ -26,7 +26,7 @@ public class SummaryTest
         Summary madeProperty = new Summary(content);
         assertEquals(content, madeProperty.toContentLine());
         Summary expectedProperty = new Summary("Department Party")
-                .withAlternateTextRepresentation("cid:part1.0001@example.org")
+                .withAlternateText("cid:part1.0001@example.org")
                 .withLanguage("en");
         assertEquals(expectedProperty, madeProperty);
     }

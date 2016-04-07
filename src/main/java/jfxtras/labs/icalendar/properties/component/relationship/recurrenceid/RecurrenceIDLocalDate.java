@@ -7,9 +7,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.Range;
 import jfxtras.labs.icalendar.parameters.Range.RangeType;
-import jfxtras.labs.icalendar.properties.component.time.DateAbstract;
+import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
+import jfxtras.labs.icalendar.properties.component.time.PropertyBaseDate;
 
-public class RecurrenceIDLocalDate extends DateAbstract<RecurrenceIDLocalDate> implements RecurrenceID
+public class RecurrenceIDLocalDate extends PropertyBaseDate<RecurrenceIDLocalDate> implements PropertyRecurrenceID<LocalDate>
 {
     /**
      * RANGE
@@ -50,7 +51,6 @@ public class RecurrenceIDLocalDate extends DateAbstract<RecurrenceIDLocalDate> i
     public RecurrenceIDLocalDate withRange(Range altrep) { setRange(altrep); return this; }
     public RecurrenceIDLocalDate withRange(RangeType value) { setRange(new Range(value)); return this; }
     public RecurrenceIDLocalDate withRange(String content) { setRange(content); return this; }
-
     
     public RecurrenceIDLocalDate(LocalDate temporal)
     {

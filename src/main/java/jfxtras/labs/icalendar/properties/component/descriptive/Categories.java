@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyLanguage;
+import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
 
 /**
  * CATEGORIES
@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.PropertyLanguage;
  * @see VTodo
  * @see VJournal
  */
-public class Categories extends PropertyLanguage<Categories, List<String>>
+public class Categories extends PropertyBaseLanguage<Categories, List<String>>
 {    
     public Categories(CharSequence contentLine)
     {

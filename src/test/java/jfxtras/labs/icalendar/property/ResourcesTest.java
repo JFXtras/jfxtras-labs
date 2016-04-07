@@ -26,7 +26,7 @@ public class ResourcesTest
         Resources madeProperty = new Resources(content);
         assertEquals(content, madeProperty.toContentLine());
         Resources expectedProperty = new Resources("Nettoyeur haute pression")
-                .withAlternateTextRepresentation("http://xyzcorp.com/conf-rooms/f123.vcf")
+                .withAlternateText("http://xyzcorp.com/conf-rooms/f123.vcf")
                 .withLanguage("fr");
         assertEquals(expectedProperty, madeProperty);
     }

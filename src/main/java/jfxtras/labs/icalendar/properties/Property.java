@@ -13,23 +13,11 @@ import jfxtras.labs.icalendar.parameters.ValueParameter;
  * @author David Bal
  * @see PropertyEnum - enum of all supported Properties
  * @see PropertyBase
- * @see PropertyLanguage
  *
  * @param <U> - type of value stored in Property
  */
 public interface Property<U>
-{
-    /**
-     * Returns the enum for the property as it would appear in the iCalendar content line
-     * Examples:
-     * DESCRIPTION
-     * UID
-     * PRODID
-     * 
-     * @return - the property enum
-     */
-    PropertyEnum propertyType();
-    
+{    
     /**
      * The value of the property.
      * 
@@ -45,6 +33,12 @@ public interface Property<U>
     void setValue(U value);
         
     /**
+     * VALUE
+     * Value Date Types
+     * RFC 5545 iCalendar 3.2.10 page 29
+     * 
+     * To explicitly specify the value type format for a property value.
+     * 
      * Property value type.  Optional in most cases.
      * Example:
      * VALUE=DATE
@@ -54,13 +48,26 @@ public interface Property<U>
     ObjectProperty<ValueParameter> valueParameterProperty();
     /** Set the value type */
     void setValueParameter(ValueParameter value);
-    
+
     /**
+     * Non-standard parameters
+     * 
      * other-param, 3.2 RFC 5545 page 14
      * the parameter name and value are combined into one object
      */
     ObservableList<Object> otherParameters();
     
+    /**
+     * Returns the enum for the property as it would appear in the iCalendar content line
+     * Examples:
+     * DESCRIPTION
+     * UID
+     * PRODID
+     * 
+     * @return - the property enum
+     */
+    PropertyEnum propertyType();
+
     /**
      * List of parameters contained in the property
      */

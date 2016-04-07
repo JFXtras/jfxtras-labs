@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
+import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
 
 /**
  * RESOURCES
@@ -25,7 +25,7 @@ import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
  * @see VEvent
  * @see VTodo
  */
-public class Resources extends PropertyAlternateTextRepresentation<Resources, List<String>>
+public class Resources extends PropertyBaseAltText<Resources, List<String>>
 {
     public Resources(CharSequence contentLine)
     {

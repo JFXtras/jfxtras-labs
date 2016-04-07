@@ -1,38 +1,40 @@
 package jfxtras.labs.icalendar.parameters;
 
 import java.time.ZoneId;
+import java.time.temporal.Temporal;
 import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.Property;
-import jfxtras.labs.icalendar.properties.PropertyAlternateTextRepresentation;
+import jfxtras.labs.icalendar.properties.PropertyAltText;
+import jfxtras.labs.icalendar.properties.PropertyAttachment;
+import jfxtras.labs.icalendar.properties.PropertyAttendee;
 import jfxtras.labs.icalendar.properties.PropertyBase;
-import jfxtras.labs.icalendar.properties.PropertyCalendarUserAddress;
-import jfxtras.labs.icalendar.properties.PropertyLanguage;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
+import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
+import jfxtras.labs.icalendar.properties.PropertyDateTime;
+import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
+import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
-import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
-import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceID;
-import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
-import jfxtras.labs.icalendar.properties.component.time.ZonedTimeAbstract;
+import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseCalendarUser;
 
 public enum ParameterEnum
 {
     // in properties COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES
-    ALTERNATE_TEXT_REPRESENTATION ("ALTREP", AlternateTextRepresentation.class) {
+    ALTERNATE_TEXT_REPRESENTATION ("ALTREP", AlternateText.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAlternateTextRepresentation<?,?> castProperty = (PropertyAlternateTextRepresentation<?, ?>) property;
-            castProperty.setAlternateTextRepresentation(new AlternateTextRepresentation(content));
+            PropertyBaseAltText<?,?> castProperty = (PropertyBaseAltText<?, ?>) property;
+            castProperty.setAlternateText(new AlternateText(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAlternateTextRepresentation<?,?> castProperty = (PropertyAlternateTextRepresentation<?,?>) parent;
-            return castProperty.getAlternateTextRepresentation();
+            PropertyAltText<?> castProperty = (PropertyAltText<?>) parent;
+            return castProperty.getAlternateText();
         }
 
         @Override
@@ -47,14 +49,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) property;
+            PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) property;
             castProperty.setCommonName(new CommonName(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) parent;
+            PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) parent;
             return castProperty.getCommonName();
         }
 
@@ -70,14 +72,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attendee castProperty = (Attendee) property;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
             castProperty.setCalendarUser(new CalendarUser(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attendee castProperty = (Attendee) parent;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getCalendarUser();
         }
 
@@ -93,14 +95,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attendee castProperty = (Attendee) property;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
             castProperty.setDelegators(new Delegators(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attendee castProperty = (Attendee) parent;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getDelegators();
         }
 
@@ -116,14 +118,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attendee castProperty = (Attendee) property;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
             castProperty.setDelegatees(new Delegatees(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attendee castProperty = (Attendee) parent;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getDelegatees();
         }
 
@@ -139,14 +141,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) property;
+            PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) property;
             castProperty.setDirectoryEntryReference(new DirectoryEntryReference(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) parent;
+            PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) parent;
             return castProperty.getDirectoryEntryReference();
         }
 
@@ -162,14 +164,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            AttachmentBase64 castProperty = (AttachmentBase64) property;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
             castProperty.setEncoding(new Encoding(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            AttachmentBase64 castProperty = (AttachmentBase64) parent;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
             return castProperty.getEncoding();
         }
 
@@ -185,21 +187,21 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attachment<?,?> castProperty = (Attachment<?,?>) property;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
             castProperty.setFormatType(new FormatType(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attachment<?,?> castProperty = (Attachment<?,?>) parent;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
             return castProperty.getFormatType();
         }
 
         @Override
         public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
         {
-            Attachment<?,?> castProperty = (Attachment<?,?>) destination;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) destination;
             castProperty.setFormatType(new FormatType((FormatType) sourceParameter)); 
         }
     },
@@ -208,14 +210,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            FreeBusyTime castProperty = (FreeBusyTime) property;
+            PropertyFreeBusy<?> castProperty = (PropertyFreeBusy<?>) property;
             castProperty.setFreeBusyType(new FreeBusyType(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            FreeBusyTime castProperty = (FreeBusyTime) parent;
+            PropertyFreeBusy<?> castProperty = (PropertyFreeBusy<?>) parent;
             return castProperty.getFreeBusyType();
         }
 
@@ -231,14 +233,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyLanguage<?,?> castProperty = (PropertyLanguage<?, ?>) property;
+            PropertyBaseLanguage<?,?> castProperty = (PropertyBaseLanguage<?, ?>) property;
             castProperty.setLanguage(new Language(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyLanguage<?,?> castProperty = (PropertyLanguage<?,?>) parent;
+            PropertyBaseLanguage<?,?> castProperty = (PropertyBaseLanguage<?,?>) parent;
             return castProperty.getLanguage();
         }
 
@@ -253,14 +255,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attendee castProperty = (Attendee) property;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
             castProperty.setGroupMembership(new GroupMembership(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attendee castProperty = (Attendee) parent;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getGroupMembership();
         }
 
@@ -275,14 +277,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attendee castProperty = (Attendee) property;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
             castProperty.setParticipation(new Participation(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attendee castProperty = (Attendee) parent;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getParticipation();
         }
 
@@ -297,14 +299,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            RecurrenceID castProperty = (RecurrenceID) property;
+            PropertyRecurrenceID<?> castProperty = (PropertyRecurrenceID<?>) property;
             castProperty.setRange(new Range(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            RecurrenceID castProperty = (RecurrenceID) parent;
+            PropertyRecurrenceID<?> castProperty = (PropertyRecurrenceID<?>) parent;
             return castProperty.getRange();
         }
 
@@ -365,14 +367,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attendee castProperty = (Attendee) property;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
             castProperty.setParticipationRole(new ParticipationRole(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attendee castProperty = (Attendee) parent;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getParticipationRole();
         }
 
@@ -387,14 +389,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            Attendee castProperty = (Attendee) property;
-            castProperty.setRSVP(content);
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
+            castProperty.setRSVP(new RSVP(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            Attendee castProperty = (Attendee) parent;
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
             return castProperty.getRSVP();
         }
 
@@ -409,14 +411,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) property;
+            PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) property;
             castProperty.setSentBy(new SentBy(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyCalendarUserAddress<?,?> castProperty = (PropertyCalendarUserAddress<?,?>) parent;
+            PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) parent;
             return castProperty.getSentBy();
         }
 
@@ -431,14 +433,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            ZonedTimeAbstract<?> castProperty = (ZonedTimeAbstract<?>) property;
+            PropertyDateTime<? extends Temporal> castProperty = (PropertyDateTime<? extends Temporal>) property;
             castProperty.setTimeZoneIdentifier(new TimeZoneIdentifierParameter(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            ZonedTimeAbstract<?> castProperty = (ZonedTimeAbstract<?>) parent;
+            PropertyDateTime<? extends Temporal> castProperty = (PropertyDateTime<? extends Temporal>) parent;
             TimeZoneIdentifierParameter parameter = castProperty.getTimeZoneIdentifier();
             return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
         }

@@ -4,7 +4,7 @@ import java.net.URI;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendar.parameters.AlternateTextRepresentation;
+import jfxtras.labs.icalendar.parameters.AlternateText;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
  * @see Resources
  * @see Summary
  */
-public abstract class PropertyAlternateTextRepresentation<T,U> extends PropertyLanguage<T,U>
+public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U> implements PropertyAltText<U>
 {
     /**
      * ALTREP : Alternate Text Representation
@@ -61,47 +61,50 @@ public abstract class PropertyAlternateTextRepresentation<T,U> extends PropertyL
      *   </body>
      * </html>
      */
-    public AlternateTextRepresentation getAlternateTextRepresentation() { return (alternateTextRepresentation == null) ? null : alternateTextRepresentation.get(); }
-    public ObjectProperty<AlternateTextRepresentation> alternateTextRepresentationProperty()
+    @Override
+    public AlternateText getAlternateText() { return (alternateText == null) ? null : alternateText.get(); }
+    @Override
+    public ObjectProperty<AlternateText> alternateTextProperty()
     {
-        if (alternateTextRepresentation == null)
+        if (alternateText == null)
         {
-            alternateTextRepresentation = new SimpleObjectProperty<>(this, ParameterEnum.ALTERNATE_TEXT_REPRESENTATION.toString());
+            alternateText = new SimpleObjectProperty<>(this, ParameterEnum.ALTERNATE_TEXT_REPRESENTATION.toString());
         }
-        return alternateTextRepresentation;
+        return alternateText;
     }
-    private ObjectProperty<AlternateTextRepresentation> alternateTextRepresentation;
-    public void setAlternateTextRepresentation(AlternateTextRepresentation alternateTextRepresentation)
+    private ObjectProperty<AlternateText> alternateText;
+    @Override
+    public void setAlternateText(AlternateText alternateText)
     {
-        if (alternateTextRepresentation != null)
+        if (alternateText != null)
         {
-            alternateTextRepresentationProperty().set(alternateTextRepresentation);
+            alternateTextProperty().set(alternateText);
         }
     }
-    public void setAlternateTextRepresentation(String value) { setAlternateTextRepresentation(new AlternateTextRepresentation(value)); }
-    public T withAlternateTextRepresentation(AlternateTextRepresentation altrep) { setAlternateTextRepresentation(altrep); return (T) this; }
-    public T withAlternateTextRepresentation(URI value) { setAlternateTextRepresentation(new AlternateTextRepresentation(value)); return (T) this; }
-    public T withAlternateTextRepresentation(String content) { setAlternateTextRepresentation(content); return (T) this; }
+    public void setAlternateText(String value) { setAlternateText(new AlternateText(value)); }
+    public T withAlternateText(AlternateText altrep) { setAlternateText(altrep); return (T) this; }
+    public T withAlternateText(URI value) { setAlternateText(new AlternateText(value)); return (T) this; }
+    public T withAlternateText(String content) { setAlternateText(content); return (T) this; }
     
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyAlternateTextRepresentation(CharSequence contentLine)
+    protected PropertyBaseAltText(CharSequence contentLine)
     {
         super(contentLine);
     }
 
     // copy constructor
-    public PropertyAlternateTextRepresentation(PropertyAlternateTextRepresentation<T,U> property)
+    public PropertyBaseAltText(PropertyBaseAltText<T,U> property)
     {
         super(property);
-        if (getAlternateTextRepresentation() != null)
+        if (getAlternateText() != null)
         {
-            setAlternateTextRepresentation(property.getAlternateTextRepresentation());
+            setAlternateText(property.getAlternateText());
         }
     }
 
-    public PropertyAlternateTextRepresentation(U value)
+    public PropertyBaseAltText(U value)
     {
         super(value);
     }

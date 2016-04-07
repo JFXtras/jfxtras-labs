@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
+import jfxtras.labs.icalendar.properties.PropertyDateTime;
+import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
@@ -16,20 +18,21 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @param <T> - implementation class
  * @see DTStartLocalDate
  * @see DTEndLocalDate
+ * @see RecurrenceIDLocalDate
  */
-public abstract class DateAbstract<T> extends PropertyBase<T, LocalDate> implements DateTime<LocalDate>
+public abstract class PropertyBaseDate<T> extends PropertyBase<T, LocalDate> implements PropertyDateTime<LocalDate>
 {
-    public DateAbstract(LocalDate temporal)
+    public PropertyBaseDate(LocalDate temporal)
     {
         super(temporal);
     }
 
-    public DateAbstract(CharSequence contentLine)
+    public PropertyBaseDate(CharSequence contentLine)
     {
         super(contentLine);
     }
     
-    public DateAbstract(DateAbstract<T> source)
+    public PropertyBaseDate(PropertyBaseDate<T> source)
     {
         super(source);
     }

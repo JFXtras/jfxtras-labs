@@ -18,7 +18,7 @@ public class ContactTest
         Contact madeProperty = new Contact(content);
         assertEquals(content, madeProperty.toContentLine());
         Contact expectedProperty = new Contact("Jim Dolittle\\, ABC Industries\\, +1-919-555-1234")
-                .withAlternateTextRepresentation(new URI("CID:part3.msg970930T083000SILVER@example.com"))
+                .withAlternateText(new URI("CID:part3.msg970930T083000SILVER@example.com"))
                 .withLanguage("en-US");
         assertEquals(expectedProperty, madeProperty);
     }

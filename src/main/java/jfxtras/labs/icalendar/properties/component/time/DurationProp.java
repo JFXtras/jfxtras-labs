@@ -7,7 +7,7 @@ import java.time.temporal.TemporalAmount;
 import jfxtras.labs.icalendar.components.VAlarm;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyLanguage;
+import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
 
 /**
  * DURATION
@@ -33,7 +33,7 @@ import jfxtras.labs.icalendar.properties.PropertyLanguage;
  * @see VTodo
  * @see VAlarm
  */
-public class DurationProp extends PropertyLanguage<DurationProp, TemporalAmount>
+public class DurationProp extends PropertyBaseLanguage<DurationProp, TemporalAmount>
 {
     public DurationProp(CharSequence contentLine)
     {

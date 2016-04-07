@@ -28,7 +28,7 @@ public class LocationTest
         Location madeProperty = new Location(content);
         assertEquals(content, madeProperty.toContentLine());
         Location expectedProperty = new Location("Conference Room - F123, Bldg. 00")
-                .withAlternateTextRepresentation(new URI("http://xyzcorp.com/conf-rooms/f123.vcf"))
+                .withAlternateText(new URI("http://xyzcorp.com/conf-rooms/f123.vcf"))
                 .withLanguage("en-US");
         assertEquals(expectedProperty, madeProperty);
     }

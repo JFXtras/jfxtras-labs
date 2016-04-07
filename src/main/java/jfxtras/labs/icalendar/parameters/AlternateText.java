@@ -30,24 +30,24 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
  * @see Resources
  * @see Summary
  */
-public class AlternateTextRepresentation extends ParameterBase<AlternateTextRepresentation, URI>
+public class AlternateText extends ParameterBase<AlternateText, URI>
 {
 //    public AlternateTextRepresentation()
 //    {
 //        super();
 //    }
     
-    public AlternateTextRepresentation(URI value)
+    public AlternateText(URI value)
     {
         super(value);
     }
   
-    public AlternateTextRepresentation(String content)
+    public AlternateText(String content)
     {
         super(makeURI(content));
     }
 
-    public AlternateTextRepresentation(AlternateTextRepresentation source)
+    public AlternateText(AlternateText source)
     {
         super(source);
     }

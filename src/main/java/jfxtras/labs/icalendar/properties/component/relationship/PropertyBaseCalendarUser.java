@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties;
+package jfxtras.labs.icalendar.properties.component.relationship;
 
 import java.net.URI;
 
@@ -8,8 +8,8 @@ import jfxtras.labs.icalendar.parameters.CommonName;
 import jfxtras.labs.icalendar.parameters.DirectoryEntryReference;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.SentBy;
-import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
-import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
+import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
+import jfxtras.labs.icalendar.properties.PropertyCalendarUser;
 
 /**
  * Abstract class for properties with a CAL-ADDRESS value.
@@ -33,7 +33,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
  * @see Organizer
  * @see Attendee
  */
-public abstract class PropertyCalendarUserAddress<T, U> extends PropertyLanguage<T, U>
+public abstract class PropertyBaseCalendarUser<T, U> extends PropertyBaseLanguage<T, U> implements PropertyCalendarUser<U>
 {
     /**
      * CN
@@ -137,18 +137,18 @@ public abstract class PropertyCalendarUserAddress<T, U> extends PropertyLanguage
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyCalendarUserAddress(CharSequence contentLine)
+    protected PropertyBaseCalendarUser(CharSequence contentLine)
     {
         super(contentLine);
     }
 
     // copy constructor
-    public PropertyCalendarUserAddress(PropertyCalendarUserAddress<T, U> property)
+    public PropertyBaseCalendarUser(PropertyBaseCalendarUser<T, U> property)
     {
         super(property);
     }
     
-    public PropertyCalendarUserAddress(U value)
+    public PropertyBaseCalendarUser(U value)
     {
         super(value);
     }

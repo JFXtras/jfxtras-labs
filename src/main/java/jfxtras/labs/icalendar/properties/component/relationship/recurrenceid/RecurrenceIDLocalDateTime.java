@@ -7,9 +7,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.Range;
 import jfxtras.labs.icalendar.parameters.Range.RangeType;
-import jfxtras.labs.icalendar.properties.component.time.DateTimeAbstract;
+import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
+import jfxtras.labs.icalendar.properties.component.time.PropertyBaseDateTime;
 
-public class RecurrenceIDLocalDateTime extends DateTimeAbstract<RecurrenceIDLocalDateTime> implements RecurrenceID
+public class RecurrenceIDLocalDateTime extends PropertyBaseDateTime<RecurrenceIDLocalDateTime> implements PropertyRecurrenceID<LocalDateTime>
 {
     /**
      * RANGE

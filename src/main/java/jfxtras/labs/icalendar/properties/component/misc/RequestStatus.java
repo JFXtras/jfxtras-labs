@@ -1,8 +1,8 @@
 package jfxtras.labs.icalendar.properties.component.misc;
 
-import jfxtras.labs.icalendar.properties.PropertyLanguage;
+import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
 
-public class RequestStatus extends PropertyLanguage<RequestStatus, String>
+public class RequestStatus extends PropertyBaseLanguage<RequestStatus, String>
 {
     public RequestStatus(CharSequence contentLine)
     {

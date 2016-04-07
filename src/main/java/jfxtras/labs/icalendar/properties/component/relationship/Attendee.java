@@ -6,7 +6,7 @@ import jfxtras.labs.icalendar.components.VAlarm;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyAttendeeAbstract;
+import jfxtras.labs.icalendar.properties.PropertyBaseAttendee;
 
 /**
  * ATTENDEE
@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.PropertyAttendeeAbstract;
  * @see VJournal
  * @see VAlarm
  */
-public class Attendee extends PropertyAttendeeAbstract<Attendee, URI>
+public class Attendee extends PropertyBaseAttendee<Attendee, URI>
 {    
     public Attendee(CharSequence contentLine)
     {

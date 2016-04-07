@@ -6,8 +6,8 @@ import java.util.Map;
 import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 
 /**
- * Value Date Types
  * VALUE
+ * Value Date Types
  * RFC 5545 iCalendar 3.2.10 page 29
  * 
  * To explicitly specify the value type format for a property value.
