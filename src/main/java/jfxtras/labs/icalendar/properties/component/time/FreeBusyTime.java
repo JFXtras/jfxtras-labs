@@ -11,20 +11,83 @@ import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Pair;
+import javafx.util.StringConverter;
+import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.parameters.FreeBusyType;
 import jfxtras.labs.icalendar.parameters.FreeBusyType.FreeBusyTypeEnum;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
-import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.properties.PropertyBase;
+import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /**
+ * FREEBUSY
+ * Free/Busy Time
+ * RFC 5545, 3.8.2.6, page 100
+ * 
+ * This property defines one or more free or busy time intervals.
+ * 
+ * These time periods can be specified as either a start
+ * and end DATE-TIME or a start DATE-TIME and DURATION.  The date and
+ * time MUST be a UTC time format.  Internally, the values are stored only as 
+ * start DATE-TIME and DURATION.  Any values entered as start and end as both
+ * DATE-TIME are converted to the start DATE-TIME and DURATION.
+ * 
+ * Examples:
+ * FREEBUSY;FBTYPE=BUSY-UNAVAILABLE:19970308T160000Z/PT8H30M
+ * FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H
+ *  ,19970308T230000Z/19970309T000000Z
+ * 
+ * Note: The above example is converted and outputed as the following:
+ * FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H
+ *  ,19970308T230000Z/PT1H
  * 
  * @author David Bal
- *
+ * 
+ * The property can be specified in following components:
+ * @see VFreeBusy
  */
 public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDateTime, TemporalAmount>>> implements PropertyFreeBusy<List<Pair<ZonedDateTime, TemporalAmount>>>
 {
+    private final static StringConverter<List<Pair<ZonedDateTime, TemporalAmount>>> CONVERTER = new StringConverter<List<Pair<ZonedDateTime, TemporalAmount>>>()
+    {
+        @Override
+        public String toString(List<Pair<ZonedDateTime, TemporalAmount>> object)
+        {
+            return object.stream().map(p ->
+            {
+                StringBuilder builder = new StringBuilder(30);
+                builder.append(DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(p.getKey()));
+                builder.append("/");
+                builder.append(p.getValue().toString());
+                return builder.toString();
+            })
+            .collect(Collectors.joining(","));
+        }
+
+        @Override
+        public List<Pair<ZonedDateTime, TemporalAmount>> fromString(String string)
+        {
+            List<Pair<ZonedDateTime, TemporalAmount>> periodList = new ArrayList<>();
+            Arrays.asList(string.split(",")).forEach(pair ->
+            {
+                String[] time = pair.split("/");
+                ZonedDateTime startInclusive = ZonedDateTime.parse(time[0], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
+                final TemporalAmount duration;
+                if (time[1].charAt(time[1].length()-1) == 'Z')
+                {
+                    ZonedDateTime endExclusive = ZonedDateTime.parse(time[1], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                
+                    duration = Duration.between(startInclusive, endExclusive);
+                } else
+                {
+                    duration = Duration.parse(time[1]);
+                }
+                periodList.add(new Pair<ZonedDateTime, TemporalAmount>(startInclusive, duration));
+            });
+            return periodList;
+        }
+    };
+    
     /**
      * FBTYPE: Incline Free/Busy Time Type
      * RFC 5545, 3.2.9, page 20
@@ -33,7 +96,9 @@ public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDate
      * 
      * Values can be = "FBTYPE" "=" ("FREE" / "BUSY" / "BUSY-UNAVAILABLE" / "BUSY-TENTATIVE"
      */
+    @Override
     public FreeBusyType getFreeBusyType() { return (freeBusyType == null) ? null : freeBusyType.get(); }
+    @Override
     public ObjectProperty<FreeBusyType> freeBusyTypeProperty()
     {
         if (freeBusyType == null)
@@ -43,6 +108,7 @@ public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDate
         return freeBusyType;
     }
     private ObjectProperty<FreeBusyType> freeBusyType;
+    @Override
     public void setFreeBusyType(FreeBusyType freeBusyType)
     {
         if (freeBusyType != null)
@@ -66,42 +132,11 @@ public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDate
     
     public FreeBusyTime(CharSequence contentLine)
     {
-        super(contentLine);
+        super(contentLine, CONVERTER);
     }
-    
-    @Override
-    protected String valueToString(List<Pair<ZonedDateTime, TemporalAmount>> value)
+
+    public FreeBusyTime(List<Pair<ZonedDateTime, TemporalAmount>> values)
     {
-        return value.stream().map(p ->
-        {
-            StringBuilder builder = new StringBuilder(30);
-            builder.append(DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(p.getKey()));
-            builder.append("/");
-            builder.append(p.getValue().toString());
-            return builder.toString();
-        })
-        .collect(Collectors.joining(","));
-    }    
-    
-    @Override
-    protected List<Pair<ZonedDateTime, TemporalAmount>> valueFromString(String propertyValueString)
-    {
-        List<Pair<ZonedDateTime, TemporalAmount>> periodList = new ArrayList<>();
-        Arrays.asList(getPropertyValueString().split(",")).forEach(pair ->
-        {
-            String[] time = pair.split("/");
-            ZonedDateTime startInclusive = ZonedDateTime.parse(time[0], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
-            final TemporalAmount duration;
-            if (time[1].charAt(time[1].length()-1) == 'Z')
-            {
-                ZonedDateTime endExclusive = ZonedDateTime.parse(time[1], DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                
-                duration = Duration.between(startInclusive, endExclusive);
-            } else
-            {
-                duration = Duration.parse(time[1]);
-            }
-            periodList.add(new Pair<ZonedDateTime, TemporalAmount>(startInclusive, duration));
-        });
-        return periodList;
+        super(values, CONVERTER);
     }
 }

@@ -3,6 +3,7 @@ package jfxtras.labs.icalendar.properties.component.descriptive;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
@@ -27,42 +28,34 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Status.StatusType
  */
 public class Status extends PropertyBase<Status, StatusType>
 {
-    private String unknownValue; // contains exact string for unknown property value
+    private final static StringConverter<StatusType> CONVERTER = new StringConverter<StatusType>()
+    {
+        @Override
+        public String toString(StatusType object)
+        {
+            return object.toString();
+        }
 
+        @Override
+        public StatusType fromString(String string)
+        {
+            return StatusType.enumFromName(string);
+        }
+    };
+    
     public Status(CharSequence contentLine)
     {
-        super(contentLine);
+        super(contentLine, CONVERTER);
     }
     
     public Status(StatusType value)
     {
-        super(value);
+        super(value, CONVERTER);
     }
     
     public Status(Status source)
     {
         super(source);
-    }
-
-    @Override
-    protected StatusType valueFromString(String propertyValueString)
-    {
-        StatusType type = StatusType.enumFromName(propertyValueString);
-        if (type == StatusType.UNKNOWN)
-        {
-            unknownValue = propertyValueString;
-        }
-        return type;
-    }
-    
-    @Override
-    protected String valueToString(StatusType value)
-    {
-        if (value == StatusType.UNKNOWN)
-        {
-            return unknownValue;
-        }
-        return getValue().toString();
     }
     
     public enum StatusType
@@ -74,8 +67,7 @@ public class Status extends PropertyBase<Status, StatusType>
         COMPLETED ("COMPLETED"),
         IN_PROCESS ("IN-PROCESS"),
         DRAFT ("DRAFT"),
-        FINAL ("FINAL"),
-        UNKNOWN ("UNKNOWN");
+        FINAL ("FINAL");
         
         private static Map<String, StatusType> enumFromNameMap = makeEnumFromNameMap();
         private static Map<String, StatusType> makeEnumFromNameMap()
@@ -92,7 +84,11 @@ public class Status extends PropertyBase<Status, StatusType>
         public static StatusType enumFromName(String propertyName)
         {
             StatusType type = enumFromNameMap.get(propertyName.toUpperCase());
-            return (type == null) ? UNKNOWN : type;
+            if (type == null)
+            {
+                throw new IllegalArgumentException(propertyName + " is not a vaild StatusType");
+            }
+            return type;
         }
         
         private String name;

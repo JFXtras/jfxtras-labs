@@ -19,15 +19,4 @@ public class StatusTest
         assertEquals(expectedProperty, madeProperty);
         assertEquals(madeProperty.getValue(), StatusType.NEEDS_ACTION);
     }
-    
-    @Test
-    public void canParseStatus2()
-    {
-        String content = "STATUS:NON-STANDARD STATUS";
-        Status madeProperty = new Status(content);
-        assertEquals(content, madeProperty.toContentLine());
-        Status expectedProperty = new Status("NON-STANDARD STATUS");
-        assertEquals(expectedProperty, madeProperty);
-        assertEquals(madeProperty.getValue(), StatusType.UNKNOWN);
-    }
 }

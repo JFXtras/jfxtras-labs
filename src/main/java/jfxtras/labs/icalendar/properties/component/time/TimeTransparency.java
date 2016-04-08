@@ -3,6 +3,7 @@ package jfxtras.labs.icalendar.properties.component.time;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.time.TimeTransparency.TransparencyType;
@@ -24,19 +25,39 @@ import jfxtras.labs.icalendar.properties.component.time.TimeTransparency.Transpa
  * The property can be specified in following components:
  * @see VEvent
  */
+    // TODO - REMOVE UNKNOWN AS VALUE - MAKE PROPER WITH REAL UNKNOWN WORK BEFORE DELETING CODE
 public class TimeTransparency extends PropertyBase<TimeTransparency, TransparencyType>
 {
-    private String unknownValue; // contains exact string for unknown property value
+    private final static StringConverter<TransparencyType> CONVERTER = new StringConverter<TransparencyType>()
+    {
+        @Override
+        public String toString(TransparencyType object)
+        {
+            if (object == TransparencyType.UNKNOWN)
+            {
+                // null means value is unknown and non-converted string in PropertyBase unknownValue should be used instead
+                return null;
+            }
+            return object.toString();
+        }
+
+        @Override
+        public TransparencyType fromString(String string)
+        {
+            return TransparencyType.enumFromName(string);
+        }
+    };
+//    private String unknownValue; // contains exact string for unknown property value
 
     public TimeTransparency(CharSequence contentLine)
     {
-        super(contentLine);
+        super(contentLine, CONVERTER);
         
     }
     
     public TimeTransparency(TransparencyType value)
     {
-        super(value);
+        super(value, CONVERTER);
     }
     
     public TimeTransparency(TimeTransparency source)
@@ -46,29 +67,29 @@ public class TimeTransparency extends PropertyBase<TimeTransparency, Transparenc
     
     public TimeTransparency()
     {
-        super(TransparencyType.OPAQUE); // default value
+        super(TransparencyType.OPAQUE, CONVERTER); // default value
     }
     
-    @Override
-    protected TransparencyType valueFromString(String propertyValueString)
-    {
-        TransparencyType type = TransparencyType.enumFromName(propertyValueString);
-        if (type == TransparencyType.UNKNOWN)
-        {
-            unknownValue = propertyValueString;
-        }
-        return type;
-    }
-    
-    @Override
-    protected String valueToString(TransparencyType value)
-    {
-        if (value == TransparencyType.UNKNOWN)
-        {
-            return unknownValue;
-        }
-        return getValue().toString();
-    }
+//    @Override
+//    protected TransparencyType valueFromString(String propertyValueString)
+//    {
+//        TransparencyType type = TransparencyType.enumFromName(propertyValueString);
+//        if (type == TransparencyType.UNKNOWN)
+//        {
+//            unknownValue = propertyValueString;
+//        }
+//        return type;
+//    }
+//    
+//    @Override
+//    protected String valueToString(TransparencyType value)
+//    {
+//        if (value == TransparencyType.UNKNOWN)
+//        {
+//            return unknownValue;
+//        }
+//        return getValue().toString();
+//    }
     
     public enum TransparencyType
     {

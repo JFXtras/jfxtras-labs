@@ -24,16 +24,12 @@ public class Location extends PropertyBaseAltText<Location, String>
 {    
     public Location(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public Location(Location source)
     {
         super(source);
     }
-    
-//    public Location()
-//    {
-//        super();
-//    }
 }

@@ -23,12 +23,14 @@ public class DateTimeCreated extends PropertyBase<DateTimeCreated, ZonedDateTime
     
     public DateTimeCreated(ZonedDateTime temporal)
     {
-        super(temporal);
+        // null as string converter argument causes default converter from ValueType to be used
+        super(temporal, null);
     }
 
     public DateTimeCreated(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public DateTimeCreated(DateTimeCreated source)

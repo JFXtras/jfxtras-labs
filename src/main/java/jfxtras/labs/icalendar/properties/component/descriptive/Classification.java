@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
@@ -25,16 +26,30 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Classification.Cl
  */
 public class Classification extends PropertyBase<Classification, ClassificationType>
 {
-    private String unknownValue; // contains exact string for unknown property value
+    private final static StringConverter<ClassificationType> CONVERTER = new StringConverter<ClassificationType>()
+    {
+        @Override
+        public String toString(ClassificationType object)
+        {
+            // null means value is unknown and non-converted string in PropertyBase unknownValue should be used instead
+            return (object == ClassificationType.UNKNOWN) ? null: object.toString();
+        }
 
+        @Override
+        public ClassificationType fromString(String string)
+        {
+            return ClassificationType.valueOf2(string);
+        }
+    };
+    
     public Classification(CharSequence contentLine)
     {
-        super(contentLine);
+        super(contentLine, CONVERTER);
     }
     
     public Classification(ClassificationType type)
     {
-        super(type);
+        super(type, CONVERTER);
     }
     
     public Classification(Classification source)
@@ -44,28 +59,7 @@ public class Classification extends PropertyBase<Classification, ClassificationT
     
     public Classification()
     {
-        super(ClassificationType.PUBLIC); // default value
-    }
-    
-    @Override
-    protected ClassificationType valueFromString(String propertyValueString)
-    {
-        ClassificationType type = ClassificationType.valueOf2(propertyValueString);
-        if (type == ClassificationType.UNKNOWN)
-        {
-            unknownValue = propertyValueString;
-        }
-        return type;
-    }
-    
-    @Override
-    protected String valueToString(ClassificationType value)
-    {
-        if (value == ClassificationType.UNKNOWN)
-        {
-            return unknownValue;
-        }
-        return getValue().toString();
+        super(ClassificationType.PUBLIC, CONVERTER); // default value
     }
     
     public enum ClassificationType

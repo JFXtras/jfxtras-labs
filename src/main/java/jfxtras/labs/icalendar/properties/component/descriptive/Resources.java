@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
@@ -27,14 +28,29 @@ import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
  */
 public class Resources extends PropertyBaseAltText<Resources, List<String>>
 {
+    private final static StringConverter<List<String>> CONVERTER = new StringConverter<List<String>>()
+    {
+        @Override
+        public String toString(List<String> object)
+        {
+            return object.stream().collect(Collectors.joining(","));
+        }
+
+        @Override
+        public List<String> fromString(String string)
+        {
+            return Arrays.stream(string.split(",")).collect(Collectors.toList());
+        }
+    };
+    
     public Resources(CharSequence contentLine)
     {
-        super(contentLine);
+        super(contentLine, CONVERTER);
     }
 
     public Resources(List<String> values)
     {
-        super(values);
+        super(values, CONVERTER);
     }
     
     public Resources(Resources source)
@@ -42,26 +58,9 @@ public class Resources extends PropertyBaseAltText<Resources, List<String>>
         super(source);
     }
     
-//    public Resources()
-//    {
-//        super();
-//    }
-    
     // set one category
     public void setValue(String category)
     {
         setValue(Arrays.asList(category));
-    }
-    
-    @Override
-    protected List<String> valueFromString(String propertyValueString)
-    {
-        return Arrays.stream(propertyValueString.split(",")).collect(Collectors.toList());
-    }
-    
-    @Override
-    protected String valueToString(List<String> value)
-    {
-        return value.stream().collect(Collectors.joining(","));
     }
 }

@@ -8,7 +8,7 @@ import jfxtras.labs.icalendar.components.VTodo;
 /**
  * COMPLETED
  * Date-Time Completed
- * RFC 5545, 3.8.2.1, page 97
+ * RFC 5545, 3.8.2.1, page 94
  * 
  * This property defines the date and time that a to-do was actually completed.
  * The value MUST be specified as a date with UTC time.

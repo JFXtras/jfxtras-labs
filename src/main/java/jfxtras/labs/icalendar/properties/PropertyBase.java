@@ -311,7 +311,11 @@ public abstract class PropertyBase<U,T> implements Property<T>
             setUnknownValue(propertyValueString);
         } else
         {
-            setValue(value);            
+            setValue(value);
+            if (value.toString() == "UNKNOWN") // enum name indicating unknown value
+            {
+                setUnknownValue(propertyValueString);
+            }
         }
         
         if (! isValid())
@@ -391,10 +395,7 @@ public abstract class PropertyBase<U,T> implements Property<T>
         // add non-standard parameters
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         // add property value
-//        System.out.println("value:" + valueToString(getValue()));
-//        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
-//        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
-        String stringValue = (getValue() == null) ? getUnknownValue() : getConverter().toString(getValue());
+        String stringValue = (getConverter().toString(getValue()) == null) ? getUnknownValue() : getConverter().toString(getValue());
         builder.append(":" + stringValue);
 //        builder.append(":" + valueToString(getValue()));
         return builder.toString();

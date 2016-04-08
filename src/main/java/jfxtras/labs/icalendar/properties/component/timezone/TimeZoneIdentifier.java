@@ -32,6 +32,7 @@ public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
         @Override
         public String toString(ZoneId object)
         {
+            // null means value is unknown and non-converted string in PropertyBase unknownValue should be used instead
             return (object == null) ? null: object.toString();
         }
 
@@ -43,13 +44,11 @@ public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
             return ZoneId.of(string);
             } catch (DateTimeException e)
             {
-                // null means value is unknown value and should be stored as non-converted string
+                // null means value is unknown and should be stored as non-converted string by PropertyBase
                 return null;
             }           
         }
     };
-    
-//    private String unknownValue; // contains exact string for unknown property value
 
     public TimeZoneIdentifier(CharSequence contentLine)
     {

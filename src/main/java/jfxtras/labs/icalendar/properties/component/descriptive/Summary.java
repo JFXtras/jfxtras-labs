@@ -27,16 +27,12 @@ public class Summary extends PropertyBaseAltText<Summary, String>
 {
     public Summary(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
 
     public Summary(Summary source)
     {
         super(source);
     }
-    
-//    public Summary()
-//    {
-//        super();
-//    }
 }

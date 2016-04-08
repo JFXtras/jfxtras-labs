@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.properties.component.descriptive.Classification;
+import jfxtras.labs.icalendar.properties.component.descriptive.Classification.ClassificationType;
 
 public class ClassificationTest
 {
@@ -22,5 +23,6 @@ public class ClassificationTest
         Classification madeProperty = new Classification("CLASS:CUSTOM");
         String expectedContent = "CLASS:CUSTOM";
         assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(ClassificationType.UNKNOWN, madeProperty.getValue());
     }
 }

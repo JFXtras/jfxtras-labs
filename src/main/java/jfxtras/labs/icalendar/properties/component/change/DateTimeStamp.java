@@ -8,12 +8,14 @@ public class DateTimeStamp extends PropertyBase<DateTimeStamp, ZonedDateTime>
 {    
     public DateTimeStamp(ZonedDateTime temporal)
     {
-        super(temporal);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(temporal, null);
     }
 
     public DateTimeStamp(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public DateTimeStamp(DateTimeStamp source)

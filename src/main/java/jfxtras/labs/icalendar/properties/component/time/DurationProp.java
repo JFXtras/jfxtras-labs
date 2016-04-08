@@ -9,7 +9,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
 
 /**
  * DURATION
- * RFC 5545, 3.8.1.2, page 81
+ * RFC 5545, 3.8.2.5, page 99
  * 
  * This property specifies a positive duration of time.
  * 
@@ -47,16 +47,4 @@ public class DurationProp extends PropertyBaseLanguage<DurationProp, TemporalAmo
     {
         super(source);
     }
-    
-//    @Override
-//    protected TemporalAmount valueFromString(String propertyValueString)
-//    {
-//        if (propertyValueString.contains("T"))
-//        {
-//            return Duration.parse(propertyValueString);
-//        } else
-//        {
-//            return Period.parse(propertyValueString);            
-//        }
-//    }
 }

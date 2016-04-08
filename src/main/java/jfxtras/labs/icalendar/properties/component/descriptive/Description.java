@@ -32,16 +32,12 @@ public class Description extends PropertyBaseAltText<Description, String>
 {
     public Description(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
 
     public Description(Description source)
     {
         super(source);
     }
-//    
-//    public Description()
-//    {
-//        super();
-//    }
 }
