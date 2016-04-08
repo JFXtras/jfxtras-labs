@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.parameters.AlternateText;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
@@ -89,9 +90,9 @@ public abstract class PropertyBaseAltText<U,T> extends PropertyBaseLanguage<U,T>
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyBaseAltText(CharSequence contentLine)
+    protected PropertyBaseAltText(CharSequence contentLine, StringConverter<T> converter)
     {
-        super(contentLine);
+        super(contentLine, converter);
     }
 
     // copy constructor
@@ -104,9 +105,9 @@ public abstract class PropertyBaseAltText<U,T> extends PropertyBaseLanguage<U,T>
         }
     }
 
-    public PropertyBaseAltText(T value)
+    public PropertyBaseAltText(T value, StringConverter<T> converter)
     {
-        super(value);
+        super(value, converter);
     }
     
 //    public PropertyAlternateTextRepresentation() { super(); }

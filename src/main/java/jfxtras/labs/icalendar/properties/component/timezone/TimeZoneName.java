@@ -22,7 +22,8 @@ public class TimeZoneName extends PropertyBaseLanguage<TimeZoneName, String>
 {
     public TimeZoneName(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public TimeZoneName(TimeZoneName source)

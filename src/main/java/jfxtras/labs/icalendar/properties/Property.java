@@ -4,6 +4,7 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueParameter;
 
@@ -68,6 +69,27 @@ public interface Property<T>
      */
     PropertyEnum propertyType();
 
+    /**
+     * Get the property's value string converter.  There is a default converter in ValueType associated
+     * with the default value type of the property.  For most value types that converter is
+     * acceptable.  However, for the TEXT value type it often needs to be replaced.
+     * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
+     * ZoneId.  A different converter is required to make the conversion to ZoneId.
+     * 
+     * @return the string converter for this property
+     */
+    StringConverter<T> getConverter();
+    /**
+     * Set the property's value string converter.  There is a default converter in ValueType associated
+     * with the default value type of the property.  For most value types that converter is
+     * acceptable.  However, for the TEXT value type it often needs to be replaced.
+     * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
+     * ZoneId.  A different converter is required to make the conversion to ZoneId.
+     * This method can replace the default converter. 
+     */
+    
+    void setConverter(StringConverter<T> converter);
+    
     /**
      * List of parameters contained in the property
      */

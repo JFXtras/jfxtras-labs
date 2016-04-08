@@ -8,6 +8,7 @@ import jfxtras.labs.icalendar.parameters.GroupMembership;
 import jfxtras.labs.icalendar.parameters.Participation;
 import jfxtras.labs.icalendar.parameters.ParticipationRole;
 import jfxtras.labs.icalendar.parameters.RSVP;
+import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseAttendee;
 
 /**
  * Abstract class for Attendee and unknown properties

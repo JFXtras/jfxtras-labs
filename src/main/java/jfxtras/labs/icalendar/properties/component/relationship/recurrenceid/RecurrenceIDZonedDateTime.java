@@ -54,12 +54,14 @@ public class RecurrenceIDZonedDateTime extends PropertyBaseZonedTime<RecurrenceI
     
     public RecurrenceIDZonedDateTime(ZonedDateTime temporal)
     {
-        super(temporal);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(temporal, null);
     }
 
     public RecurrenceIDZonedDateTime(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public RecurrenceIDZonedDateTime(RecurrenceIDZonedDateTime source)

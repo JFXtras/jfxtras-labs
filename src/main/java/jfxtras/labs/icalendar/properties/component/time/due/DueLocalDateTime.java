@@ -27,12 +27,14 @@ public class DueLocalDateTime extends PropertyBaseDateTime<DueLocalDateTime>
 {
     public DueLocalDateTime(LocalDateTime temporal)
     {
-        super(temporal);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(temporal, null);
     }
 
     public DueLocalDateTime(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public DueLocalDateTime(DueLocalDateTime source)

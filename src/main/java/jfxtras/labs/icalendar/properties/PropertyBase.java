@@ -137,7 +137,7 @@ public abstract class PropertyBase<U,T> implements Property<T>
             valueParameterProperty().set(valueType);
             if (getConverter() == null)
             {
-                setConverter(valueType.getValue().stringConverter());
+                setConverter(valueType.getValue().getConverter());
             }
             // If value previously set as string (as done with non-standard properties) convert to type T
             if ((getValue() != null) && (getValue() instanceof String))
@@ -210,22 +210,10 @@ public abstract class PropertyBase<U,T> implements Property<T>
     // Note: in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes)
     protected String getPropertyValueString() { return propertyValueString; }
     
+    @Override
     public StringConverter<T> getConverter() { return converter; }
     private StringConverter<T> converter;
-//    private StringConverter<T> converter = new StringConverter<T>()
-//    {
-//        @Override
-//        public String toString(T object)
-//        {
-//            return object.toString();
-//        }
-//
-//        @Override
-//        public T fromString(String string)
-//        {
-//             return (T) string;            
-//        }
-//    };
+    @Override
     public void setConverter(StringConverter<T> converter) { this.converter = converter; }
     
     /*
@@ -236,7 +224,8 @@ public abstract class PropertyBase<U,T> implements Property<T>
     private PropertyBase(StringConverter<T> converter)
     {
         propertyType = PropertyEnum.enumFromClass(getClass());
-        setConverter(converter);
+        StringConverter<T> myConverter = (converter == null) ? propertyType.defaultValueType().getConverter() : converter;
+        setConverter(myConverter);
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
     }
     
@@ -249,7 +238,8 @@ public abstract class PropertyBase<U,T> implements Property<T>
      * parameter is CharSequence to avoid ambiguous constructors for parameters that have
      * the value of String
      * 
-     * @param propertyString
+     * @param contentLine - property text string
+     * @param converter - string converter, if null use converter for default value type
      */
     public PropertyBase(CharSequence contentLine, StringConverter<T> converter)
     {
@@ -329,9 +319,9 @@ public abstract class PropertyBase<U,T> implements Property<T>
     }
     
     // copy constructor
-    public PropertyBase(Property<T> source, StringConverter<T> converter)
+    public PropertyBase(Property<T> source)
     {
-        this(converter);
+        this(source.getConverter());
         Iterator<ParameterEnum> i = source.parameters().stream().iterator();
         while (i.hasNext())
         {
@@ -378,8 +368,8 @@ public abstract class PropertyBase<U,T> implements Property<T>
         // add property value
 //        System.out.println("value:" + valueToString(getValue()));
 //        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
-        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
-        String stringValue = (getValue() == null) ? getUnknownValue() : valueType.stringConverter().toString(getValue());
+//        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
+        String stringValue = (getValue() == null) ? getUnknownValue() : getConverter().toString(getValue());
         builder.append(":" + stringValue);
 //        builder.append(":" + valueToString(getValue()));
         return builder.toString();

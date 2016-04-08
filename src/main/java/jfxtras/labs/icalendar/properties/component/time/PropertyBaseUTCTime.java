@@ -2,9 +2,9 @@ package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.ZonedDateTime;
 
-import jfxtras.labs.icalendar.properties.PropertyDateTime;
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.properties.PropertyBase;
-import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendar.properties.PropertyDateTime;
 
 /**
  * Abstract class for all UTC zoned-date-time classes
@@ -16,14 +16,14 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  */
 public abstract class PropertyBaseUTCTime<U> extends PropertyBase<U, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
 {
-    public PropertyBaseUTCTime(ZonedDateTime temporal)
+    public PropertyBaseUTCTime(ZonedDateTime temporal, StringConverter<ZonedDateTime> converter)
     {
-        super(temporal);
+        super(temporal, converter);
     }
 
-    public PropertyBaseUTCTime(CharSequence contentLine)
+    public PropertyBaseUTCTime(CharSequence contentLine, StringConverter<ZonedDateTime> converter)
     {
-        super(contentLine);
+        super(contentLine, converter);
     }
     
     public PropertyBaseUTCTime(PropertyBaseUTCTime<U> source)
@@ -35,17 +35,5 @@ public abstract class PropertyBaseUTCTime<U> extends PropertyBase<U, ZonedDateTi
     public void setValue(ZonedDateTime value)
     {
         super.setValue(value);
-    }
-    
-    @Override
-    protected ZonedDateTime valueFromString(String propertyValueString)
-    {
-        return ZonedDateTime.parse(propertyValueString, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
-    }
-    
-    @Override
-    protected String valueToString(ZonedDateTime value)
-    {
-        return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(value);
     }
 }

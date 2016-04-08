@@ -28,12 +28,14 @@ public class DTStartLocalDateTime extends PropertyBaseDateTime<DTStartLocalDateT
 {
     public DTStartLocalDateTime(LocalDateTime temporal)
     {
-        super(temporal);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(temporal, null);
     }
 
     public DTStartLocalDateTime(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public DTStartLocalDateTime(DTStartLocalDateTime source)

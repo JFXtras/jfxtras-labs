@@ -18,7 +18,7 @@ public enum ValueType
 {
     BINARY ("BINARY") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
@@ -26,7 +26,7 @@ public enum ValueType
     },
     BOOLEAN ("BOOLEAN") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             return new StringConverter<T>()
             {
@@ -47,7 +47,7 @@ public enum ValueType
     }, 
     CALENDAR_USER_ADDRESS ("CAL-ADDRESS") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
@@ -55,7 +55,7 @@ public enum ValueType
     },
     DATE ("DATE") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             return new StringConverter<T>()
             {
@@ -75,7 +75,7 @@ public enum ValueType
     },
     DATE_TIME ("DATE-TIME") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             return new StringConverter<T>()
             {
@@ -128,7 +128,7 @@ public enum ValueType
     },
     DURATION ("DURATION") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             return new StringConverter<T>()
             {
@@ -154,7 +154,7 @@ public enum ValueType
     }, // Based on ISO.8601.2004 (but Y and M for years and months is not supported by iCalendar)
     FLOAT ("FLOAT") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
@@ -162,7 +162,7 @@ public enum ValueType
     },
     INTEGER ("INTEGER") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
@@ -170,7 +170,7 @@ public enum ValueType
     },
     PERIOD ("PERIOD") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
@@ -178,15 +178,22 @@ public enum ValueType
     },
     RECURRENCE_RULE ("RECUR") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
         }
     },
+    /* Note: This string converter is only acceptable for values converted to Stings
+     * without any additional processing.  For properties with TEXT value that is stored
+     * as any time other than String, this converter MUST be replaced by setConverter for
+     * Properties.
+     * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
+     * ZoneId.  A different converter is required to make the conversion to ZoneId.
+    */
     TEXT ("TEXT") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             return new StringConverter<T>()
             {
@@ -206,7 +213,7 @@ public enum ValueType
     },
     TIME ("TIME") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
@@ -214,15 +221,19 @@ public enum ValueType
     },
     UNIFORM_RESOURCE_IDENTIFIER ("URI") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
         }
     },
     UTC_OFFSET ("UTC-OFFSET") {
+        
+//        private final static DateTimeFormatter ZONE_OFFSET_FORMATTER = new DateTimeFormatterBuilder()
+//                .appendOffset("+HHMM", "+0000")
+//                .toFormatter();
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
@@ -230,7 +241,7 @@ public enum ValueType
     },
     UNKNOWN ("UNKNOWN") {
         @Override
-        public <T> StringConverter<T> stringConverter()
+        public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
             return null;
@@ -278,6 +289,6 @@ public enum ValueType
         };
     }
 
-    abstract public <T> StringConverter<T> stringConverter();
+    abstract public <T> StringConverter<T> getConverter();
 
 }

@@ -17,10 +17,10 @@ import jfxtras.labs.icalendar.parameters.TimeZoneIdentifierParameter;
 import jfxtras.labs.icalendar.properties.PropertyAltText;
 import jfxtras.labs.icalendar.properties.PropertyAttachment;
 import jfxtras.labs.icalendar.properties.PropertyAttendee;
-import jfxtras.labs.icalendar.properties.PropertyBaseAttendee;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
+import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseAttendee;
 
 /**
  * 

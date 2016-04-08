@@ -44,6 +44,7 @@ public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
             return ZoneId.of(string);
             } catch (DateTimeException e)
             {
+                // null means value is unknown value and should be stored as non-converted string
                 return null;
             }           
         }
@@ -58,36 +59,13 @@ public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
     
     public TimeZoneIdentifier(TimeZoneIdentifier source)
     {
-        super(source, CONVERTER);
+        super(source);
     }
     
     public TimeZoneIdentifier(ZoneId value)
     {
         super(value, CONVERTER);
     }
-    
-//    @Override
-//    protected ZoneId valueFromString(String propertyValueString)
-//    {
-//        try
-//        {
-//            return ZoneId.of(propertyValueString);
-//        } catch (DateTimeException e)
-//        {
-//            unknownValue = propertyValueString;
-//        }
-//        return null;
-//    }
-//    
-//    @Override
-//    protected String valueToString(ZoneId value)
-//    {
-//        if (value == null)
-//        {
-//            return unknownValue;
-//        }
-//        return getValue().toString();
-//    }
     
     @Override
     public boolean isValid()

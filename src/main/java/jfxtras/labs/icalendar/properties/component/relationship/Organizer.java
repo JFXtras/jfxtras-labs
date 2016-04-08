@@ -18,7 +18,8 @@ public class Organizer extends PropertyBaseCalendarUser<Organizer, URI>
 {
     public Organizer(String contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public Organizer(Organizer source)

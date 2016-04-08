@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendar.properties.component.time;
 
-import java.time.Duration;
-import java.time.Period;
 import java.time.temporal.TemporalAmount;
 
 import jfxtras.labs.icalendar.components.VAlarm;
@@ -37,12 +35,12 @@ public class DurationProp extends PropertyBaseLanguage<DurationProp, TemporalAmo
 {
     public DurationProp(CharSequence contentLine)
     {
-        super(contentLine);
+        super(contentLine, null);
     }
 
     public DurationProp(TemporalAmount value)
     {
-        super(value);
+        super(value, null);
     }
 
     public DurationProp(DurationProp source)
@@ -50,15 +48,15 @@ public class DurationProp extends PropertyBaseLanguage<DurationProp, TemporalAmo
         super(source);
     }
     
-    @Override
-    protected TemporalAmount valueFromString(String propertyValueString)
-    {
-        if (propertyValueString.contains("T"))
-        {
-            return Duration.parse(propertyValueString);
-        } else
-        {
-            return Period.parse(propertyValueString);            
-        }
-    }
+//    @Override
+//    protected TemporalAmount valueFromString(String propertyValueString)
+//    {
+//        if (propertyValueString.contains("T"))
+//        {
+//            return Duration.parse(propertyValueString);
+//        } else
+//        {
+//            return Period.parse(propertyValueString);            
+//        }
+//    }
 }

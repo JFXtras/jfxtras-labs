@@ -6,7 +6,6 @@ import jfxtras.labs.icalendar.components.VAlarm;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.PropertyBaseAttendee;
 
 /**
  * ATTENDEE
@@ -30,12 +29,14 @@ public class Attendee extends PropertyBaseAttendee<Attendee, URI>
 {    
     public Attendee(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public Attendee(URI value)
     {
-        super(value);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(value, null);
     }
     
     public Attendee(Attendee source)

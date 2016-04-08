@@ -2,12 +2,12 @@ package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.LocalDateTime;
 
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
-import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /**
  * Abstract class for all local-date-time classes
@@ -21,30 +21,18 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  */
 public abstract class PropertyBaseDateTime<U> extends PropertyBase<U, LocalDateTime> implements PropertyDateTime<LocalDateTime>
 {
-    public PropertyBaseDateTime(LocalDateTime temporal)
+    public PropertyBaseDateTime(LocalDateTime temporal, StringConverter<LocalDateTime> converter)
     {
-        super(temporal);
+        super(temporal, converter);
     }
 
-    public PropertyBaseDateTime(CharSequence contentLine)
+    public PropertyBaseDateTime(CharSequence contentLine, StringConverter<LocalDateTime> converter)
     {
-        super(contentLine);
+        super(contentLine, converter);
     }
     
     public PropertyBaseDateTime(PropertyBaseDateTime<U> source)
     {
         super(source);
-    }
-    
-    @Override
-    protected LocalDateTime valueFromString(String propertyValueString)
-    {
-        return LocalDateTime.parse(propertyValueString, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);
-    }
-    
-    @Override
-    protected String valueToString(LocalDateTime value)
-    {
-        return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value);  
     }
 }

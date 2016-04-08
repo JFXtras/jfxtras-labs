@@ -6,7 +6,8 @@ public class UniqueIdentifier extends PropertyBase<UniqueIdentifier, String>
 {
     public UniqueIdentifier(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
 
     public UniqueIdentifier(UniqueIdentifier source)

@@ -8,7 +8,14 @@ public class UniformResourceLocator extends PropertyBase<UniformResourceLocator,
 {
     public UniformResourceLocator(String contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
+    }
+    
+    public UniformResourceLocator(URI value)
+    {
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(value, null);
     }
     
     public UniformResourceLocator(UniformResourceLocator source)

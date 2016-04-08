@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifierParameter;
 import jfxtras.labs.icalendar.parameters.ValueType;
@@ -63,25 +64,20 @@ public abstract class PropertyBaseZonedTime<U> extends PropertyBase<U, ZonedDate
      * CONSTRUCTORS
      */
     
-    public PropertyBaseZonedTime(ZonedDateTime temporal)
+    public PropertyBaseZonedTime(ZonedDateTime temporal, StringConverter<ZonedDateTime> converter)
     {
-        super(temporal, null);
+        super(temporal, converter);
     }
 
-    public PropertyBaseZonedTime(CharSequence contentLine)
+    public PropertyBaseZonedTime(CharSequence contentLine, StringConverter<ZonedDateTime> converter)
     {
-        super(contentLine, null);
+        super(contentLine, converter);
     }
     
     public PropertyBaseZonedTime(PropertyBaseZonedTime<U> source)
     {
-        super(source, null);
+        super(source);
     }
-    
-//    public PropertyTimeZone()
-//    {
-//        super();
-//    }
     
     /**
      * append time zone to front of time for parsing in DATE_ZONED_DATE_TIME parse method
@@ -100,23 +96,4 @@ public abstract class PropertyBaseZonedTime<U> extends PropertyBase<U, ZonedDate
         super.setValue(value);
         setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value.getZone()));
     }
-    
-//    @Override
-//    protected ZonedDateTime valueFromString(String propertyValueString)
-//    {
-//        return ZonedDateTime.parse(propertyValueString, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
-//    }
-//    
-//    @Override
-//    protected String valueToString(ZonedDateTime value)
-//    {
-//        ZoneId z = value.getZone();
-//        if (z.equals(ZoneId.of("Z")))
-//        {
-//            return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(value);
-//        } else
-//        {
-//            return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value); // Time zone is added through TimeZoneIdentifier parameter
-//        }
-//    }
 }

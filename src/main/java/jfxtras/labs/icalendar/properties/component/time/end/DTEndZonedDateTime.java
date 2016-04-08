@@ -30,12 +30,14 @@ public class DTEndZonedDateTime extends PropertyBaseZonedTime<DTEndZonedDateTime
 {
     public DTEndZonedDateTime(ZonedDateTime temporal)
     {
-        super(temporal);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(temporal, null);
     }
 
     public DTEndZonedDateTime(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public DTEndZonedDateTime(DTEndZonedDateTime source)

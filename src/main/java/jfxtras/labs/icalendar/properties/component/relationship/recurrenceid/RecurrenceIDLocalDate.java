@@ -54,12 +54,14 @@ public class RecurrenceIDLocalDate extends PropertyBaseDate<RecurrenceIDLocalDat
     
     public RecurrenceIDLocalDate(LocalDate temporal)
     {
-        super(temporal);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(temporal, null);
     }
 
     public RecurrenceIDLocalDate(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public RecurrenceIDLocalDate(RecurrenceIDLocalDate source)

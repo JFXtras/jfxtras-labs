@@ -27,7 +27,8 @@ public class Contact extends PropertyBaseAltText<Contact, String>
 {   
     public Contact(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public Contact(Contact source)

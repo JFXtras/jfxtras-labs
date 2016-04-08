@@ -29,12 +29,14 @@ public class DTEndLocalDate extends PropertyBaseDate<DTEndLocalDate>
 {
     public DTEndLocalDate(LocalDate temporal)
     {
-        super(temporal);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(temporal, null);
     }
 
     public DTEndLocalDate(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+       super(contentLine, null);
     }
     
     public DTEndLocalDate(DTEndLocalDate source)
