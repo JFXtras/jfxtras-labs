@@ -1,19 +1,17 @@
 package jfxtras.labs.icalendar.properties.component.time;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifierParameter;
-import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
-import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 /**
  * Abstract class for all zoned-date-time classes
@@ -67,17 +65,17 @@ public abstract class PropertyBaseZonedTime<U> extends PropertyBase<U, ZonedDate
     
     public PropertyBaseZonedTime(ZonedDateTime temporal)
     {
-        super(temporal);
+        super(temporal, null);
     }
 
     public PropertyBaseZonedTime(CharSequence contentLine)
     {
-        super(contentLine);
+        super(contentLine, null);
     }
     
     public PropertyBaseZonedTime(PropertyBaseZonedTime<U> source)
     {
-        super(source);
+        super(source, null);
     }
     
 //    public PropertyTimeZone()
@@ -103,22 +101,22 @@ public abstract class PropertyBaseZonedTime<U> extends PropertyBase<U, ZonedDate
         setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value.getZone()));
     }
     
-    @Override
-    protected ZonedDateTime valueFromString(String propertyValueString)
-    {
-        return ZonedDateTime.parse(propertyValueString, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
-    }
-    
-    @Override
-    protected String valueToString(ZonedDateTime value)
-    {
-        ZoneId z = value.getZone();
-        if (z.equals(ZoneId.of("Z")))
-        {
-            return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(value);
-        } else
-        {
-            return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value); // Time zone is added through TimeZoneIdentifier parameter
-        }
-    }
+//    @Override
+//    protected ZonedDateTime valueFromString(String propertyValueString)
+//    {
+//        return ZonedDateTime.parse(propertyValueString, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);
+//    }
+//    
+//    @Override
+//    protected String valueToString(ZonedDateTime value)
+//    {
+//        ZoneId z = value.getZone();
+//        if (z.equals(ZoneId.of("Z")))
+//        {
+//            return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(value);
+//        } else
+//        {
+//            return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value); // Time zone is added through TimeZoneIdentifier parameter
+//        }
+//    }
 }

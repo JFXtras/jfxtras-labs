@@ -74,7 +74,6 @@ public final class DateTimeUtilities
     public final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .optionalStart()
             .parseCaseInsensitive()
-//            .appendLiteral("TZID=")
             .appendZoneRegionId()
             .appendLiteral(':')
             .optionalEnd()

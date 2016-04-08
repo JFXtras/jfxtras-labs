@@ -5,7 +5,6 @@ import java.time.temporal.Temporal;
 import java.util.HashMap;
 import java.util.Map;
 
-import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
 import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyAltText;
 import jfxtras.labs.icalendar.properties.PropertyAttachment;

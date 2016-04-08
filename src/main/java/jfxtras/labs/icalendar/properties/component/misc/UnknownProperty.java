@@ -281,10 +281,4 @@ public abstract class UnknownProperty<U,T> extends PropertyBaseAttendee<U,T> imp
     {
         super(source);
     }
-    
-    @Override
-    protected T valueFromString(String propertyValueString)
-    {
-        return (T) propertyValueString;
-    }
 }

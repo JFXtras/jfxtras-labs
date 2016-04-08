@@ -18,4 +18,14 @@ public class NonStandardProperty extends UnknownProperty<NonStandardProperty, Ob
     {
         super(source);
     }
+    
+    @Override
+    public boolean isValid()
+    {
+        if (! getPropertyName().substring(0, 2).equals("X-"))
+        {
+            return false;
+        }
+        return super.isValid();
+    }
 }

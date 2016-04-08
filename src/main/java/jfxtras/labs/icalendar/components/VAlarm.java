@@ -5,8 +5,8 @@ import java.time.temporal.TemporalAmount;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
+import jfxtras.labs.icalendar.properties.component.alarm.Trigger;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
-import jfxtras.labs.icalendar.properties.component.timezone.Trigger;
 
 public interface VAlarm extends VComponentDescribable
 {

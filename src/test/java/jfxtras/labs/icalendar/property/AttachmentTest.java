@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
-import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentURI;

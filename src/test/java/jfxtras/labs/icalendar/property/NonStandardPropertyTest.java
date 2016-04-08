@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.component.misc.NonStandardProperty;
 
 public class NonStandardPropertyTest
@@ -16,6 +16,7 @@ public class NonStandardPropertyTest
         NonStandardProperty madeProperty = new NonStandardProperty(content);
         assertEquals(content, madeProperty.toContentLine());
         NonStandardProperty expectedProperty = new NonStandardProperty("FALSE")
+                .withPropertyName("X-MICROSOFT-CDO-ALLDAYEVENT")
                 .withValueParameter(ValueType.BOOLEAN);
         assertEquals(expectedProperty, madeProperty);
         assertEquals(Boolean.FALSE, madeProperty.getValue());

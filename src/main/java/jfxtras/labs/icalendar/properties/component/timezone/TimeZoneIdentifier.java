@@ -3,8 +3,9 @@ package jfxtras.labs.icalendar.properties.component.timezone;
 import java.time.DateTimeException;
 import java.time.ZoneId;
 
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.components.VTimeZone;
-import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
 /**
@@ -27,51 +28,72 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  */
 public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
 {
-    private String unknownValue; // contains exact string for unknown property value
+    private final static StringConverter<ZoneId> CONVERTER = new StringConverter<ZoneId>()
+    {
+        @Override
+        public String toString(ZoneId object)
+        {
+            return (object == null) ? null: object.toString();
+        }
+
+        @Override
+        public ZoneId fromString(String string)
+        {
+            try
+            {
+            return ZoneId.of(string);
+            } catch (DateTimeException e)
+            {
+                return null;
+            }           
+        }
+    };
+    
+//    private String unknownValue; // contains exact string for unknown property value
 
     public TimeZoneIdentifier(CharSequence contentLine)
     {
-        super(contentLine);
+        super(contentLine, CONVERTER);
     }
     
     public TimeZoneIdentifier(TimeZoneIdentifier source)
     {
-        super(source);
+        super(source, CONVERTER);
     }
     
     public TimeZoneIdentifier(ZoneId value)
     {
-        super(value);
+        super(value, CONVERTER);
     }
     
-    @Override
-    protected ZoneId valueFromString(String propertyValueString)
-    {
-        try
-        {
-            return ZoneId.of(propertyValueString);
-        } catch (DateTimeException e)
-        {
-            unknownValue = propertyValueString;
-        }
-        return null;
-    }
-    
-    @Override
-    protected String valueToString(ZoneId value)
-    {
-        if (value == null)
-        {
-            return unknownValue;
-        }
-        return getValue().toString();
-    }
+//    @Override
+//    protected ZoneId valueFromString(String propertyValueString)
+//    {
+//        try
+//        {
+//            return ZoneId.of(propertyValueString);
+//        } catch (DateTimeException e)
+//        {
+//            unknownValue = propertyValueString;
+//        }
+//        return null;
+//    }
+//    
+//    @Override
+//    protected String valueToString(ZoneId value)
+//    {
+//        if (value == null)
+//        {
+//            return unknownValue;
+//        }
+//        return getValue().toString();
+//    }
     
     @Override
     public boolean isValid()
     {
         boolean nonGlobalOK = (getValue() != null);
-        boolean globallyUniqueOK = ((unknownValue != null) && (unknownValue.charAt(0) == '/'));
+        boolean globallyUniqueOK = ((getUnknownValue() != null) && (getUnknownValue().charAt(0) == '/'));
         boolean valueTypeOK = ((getValueParameter() == null) || (getValueParameter().equals(ValueType.TEXT)));
         return (nonGlobalOK || globallyUniqueOK) && valueTypeOK;
     }
@@ -85,7 +107,7 @@ public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
             return false;
         }
         TimeZoneIdentifier testObj = (TimeZoneIdentifier) obj;
-        boolean unknownEquals = (unknownValue == null) ? testObj.unknownValue == null : unknownValue.equals(testObj.unknownValue);
+        boolean unknownEquals = (getUnknownValue() == null) ? testObj.getUnknownValue() == null : getUnknownValue().equals(testObj.getUnknownValue());
         return unknownEquals;
     }
 }

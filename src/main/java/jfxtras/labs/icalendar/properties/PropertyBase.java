@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendar.properties;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -12,10 +10,11 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.parameters.Parameter;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueParameter;
-import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
@@ -50,6 +49,47 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  */
 public abstract class PropertyBase<U,T> implements Property<T>
 {
+    /** The name of the property, such as DESCRIPTION
+     * Remains the default value unless set by a non-standard property*/
+    public String getPropertyName()
+    {
+        if (propertyName == null)
+        {
+            return propertyType().toString();
+        }
+        return propertyName;
+    }
+    private String propertyName;
+    /** Set the name of the property.  Only allowed for non-standard and IANA properties */
+    public void setPropertyName(String name)
+    {
+        if (propertyType().equals(PropertyEnum.NON_STANDARD))
+        {
+            if (name.substring(0, 2).toUpperCase().equals("X-"))
+            {
+                propertyName = name;
+            } else
+            {
+                throw new RuntimeException("Non-standard properties must begin with X-");                
+            }
+        } else if (propertyType().equals(PropertyEnum.IANA_PROPERTY))
+        {
+            propertyName = name;            
+        } else
+        {
+            throw new RuntimeException("Only non-standard properties can be renamed.  This property must be named " + propertyType().toString());
+        }
+    }
+    public U withPropertyName(String name) { setPropertyName(name); return (U) this; }
+    
+    /** The type of the property from the enum of all properties. */
+    @Override
+    public PropertyEnum propertyType() { return propertyType; }
+    private PropertyEnum propertyType;
+
+    /**
+     * The property's value
+     */
     @Override
     public T getValue() { return value.get(); }
     @Override
@@ -57,14 +97,15 @@ public abstract class PropertyBase<U,T> implements Property<T>
     private ObjectProperty<T> value;
     @Override
     public void setValue(T value) { this.value.set(value); }
-//    public void setValue(String valueString)
-//    {
-//        System.out.println("here1:");
-//        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
-//        T value = valueType.stringConverter(this).fromString(valueString);
-//        setValue(value);
-//    }
     public U withValue(T value) { setValue(value); return (U) this; }
+    
+    /*
+     * Unknown values
+     * contains exact string for unknown property value
+     */
+    private String unknownValue;
+    protected String getUnknownValue() { return unknownValue; }
+    private void setUnknownValue(String value) { unknownValue = value; }
     
     /**
      * VALUE: Value Data Types
@@ -89,14 +130,24 @@ public abstract class PropertyBase<U,T> implements Property<T>
     }
     private ObjectProperty<ValueParameter> valueType;
     @Override
-    public void setValueParameter(ValueParameter value)
+    public void setValueParameter(ValueParameter valueType)
     {
-        if (isValueParameterValid(value))
+        if (isValueParameterValid(valueType))
         {
-            valueParameterProperty().set(value);
+            valueParameterProperty().set(valueType);
+            if (getConverter() == null)
+            {
+                setConverter(valueType.getValue().stringConverter());
+            }
+            // If value previously set as string (as done with non-standard properties) convert to type T
+            if ((getValue() != null) && (getValue() instanceof String))
+            {
+                T newPropValue= getConverter().fromString(getPropertyValueString());
+                setValue(newPropValue);
+            }
         } else
         {
-            throw new IllegalArgumentException("Invalid Value Date Type:" + value.getValue() + ", allowed = " + propertyType().defaultValueType());
+            throw new IllegalArgumentException("Invalid Value Date Type:" + valueType.getValue() + ", allowed = " + propertyType().defaultValueType());
         }
     }
     public void setValueParameter(ValueType value) { setValueParameter(new ValueParameter(value)); }
@@ -112,14 +163,7 @@ public abstract class PropertyBase<U,T> implements Property<T>
     public ObservableList<Object> otherParameters() { return otherParameters; }
     private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
     public U withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (U) this; }
-    
-    /** The type of the property in the content line, such as DESCRIPTION */
-    @Override
-    public PropertyEnum propertyType() { return propertyType; }
-    private PropertyEnum propertyType;
-    
-    private String nonstandardPropertyName;
-    
+        
     @Override
     public boolean isValid()
     {
@@ -164,17 +208,35 @@ public abstract class PropertyBase<U,T> implements Property<T>
     // property value
     private String propertyValueString;
     // Note: in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes)
-    @Deprecated // may be obsolete with string converter
     protected String getPropertyValueString() { return propertyValueString; }
+    
+    public StringConverter<T> getConverter() { return converter; }
+    private StringConverter<T> converter;
+//    private StringConverter<T> converter = new StringConverter<T>()
+//    {
+//        @Override
+//        public String toString(T object)
+//        {
+//            return object.toString();
+//        }
+//
+//        @Override
+//        public T fromString(String string)
+//        {
+//             return (T) string;            
+//        }
+//    };
+    public void setConverter(StringConverter<T> converter) { this.converter = converter; }
     
     /*
      * CONSTRUCTORS
      */
     
     // construct empty property
-    private PropertyBase()
+    private PropertyBase(StringConverter<T> converter)
     {
         propertyType = PropertyEnum.enumFromClass(getClass());
+        setConverter(converter);
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
     }
     
@@ -189,9 +251,9 @@ public abstract class PropertyBase<U,T> implements Property<T>
      * 
      * @param propertyString
      */
-    public PropertyBase(CharSequence contentLine)
+    public PropertyBase(CharSequence contentLine, StringConverter<T> converter)
     {
-        this();
+        this(converter);
         String propertyString = contentLine.toString();
         
         final String propertyValue;
@@ -210,7 +272,7 @@ public abstract class PropertyBase<U,T> implements Property<T>
             {
                 if (isNonStandard)
                 {
-                    nonstandardPropertyName = propertyString.substring(0,endNameIndex);
+                    setPropertyName(propertyString.substring(0,endNameIndex));
                 }
                 propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
             } else
@@ -246,11 +308,18 @@ public abstract class PropertyBase<U,T> implements Property<T>
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
 
-        // save property value
+        // save property value        
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
-        T value = valueType.stringConverter(this).fromString(propertyValueString);
-        setValue(value);
+        T value = getConverter().fromString(getPropertyValueString());
+        if (value == null)
+        {
+            setUnknownValue(propertyValueString);
+        } else
+        {
+            setValue(value);            
+        }
+//        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
+//        T value = (T) valueType.stringConverter().fromString(getPropertyValueString());
 //        setValue(valueFromString(getPropertyValueString()));
         
         if (! isValid())
@@ -260,9 +329,9 @@ public abstract class PropertyBase<U,T> implements Property<T>
     }
     
     // copy constructor
-    public PropertyBase(Property<T> source)
+    public PropertyBase(Property<T> source, StringConverter<T> converter)
     {
-        this();
+        this(converter);
         Iterator<ParameterEnum> i = source.parameters().stream().iterator();
         while (i.hasNext())
         {
@@ -275,9 +344,9 @@ public abstract class PropertyBase<U,T> implements Property<T>
     }    
     
     // constructor with only value parameter
-    public PropertyBase(T value)
+    public PropertyBase(T value, StringConverter<T> converter)
     {
-        this();
+        this(converter);
         setValue(value);
     }    
         
@@ -295,12 +364,12 @@ public abstract class PropertyBase<U,T> implements Property<T>
     public String toContentLine()
     {
         StringBuilder builder = new StringBuilder(50);
-        if (nonstandardPropertyName == null)
+        if (propertyName == null)
         {
             builder.append(propertyType().toString());
         } else
         {
-            builder.append(nonstandardPropertyName);
+            builder.append(propertyName);
         }
         // add parameters
         parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
@@ -309,66 +378,69 @@ public abstract class PropertyBase<U,T> implements Property<T>
         // add property value
 //        System.out.println("value:" + valueToString(getValue()));
 //        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
-        builder.append(":" + valueToString(getValue()));
+        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
+        String stringValue = (getValue() == null) ? getUnknownValue() : valueType.stringConverter().toString(getValue());
+        builder.append(":" + stringValue);
+//        builder.append(":" + valueToString(getValue()));
         return builder.toString();
     }
     
-    /*
-     * DEFAULT STRING CONVERTERS
-     * override in subclasses if necessary
-     */
-    
-    public PropValueStringConverter<T> getConverter() { return converter; }
-    private PropValueStringConverter<T> converter = new PropValueStringConverter<T>(this)
-    {
-        @Override
-        public String toString(T object)
-        {
-            return object.toString();
-        }
-
-        @Override
-        public T fromString(String string)
-        {
-            Type[] types = ((ParameterizedType)getProperty().getClass().getGenericSuperclass())
-                    .getActualTypeArguments();
-            System.out.println("class2:" + getProperty().getClass());
-             Class<T> myClass = (Class<T>) types[types.length-1]; // get last parameterized type
-             if (myClass.equals(String.class))
-             {
-                 return (T) propertyValueString;            
-             }
-             throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
-                     ". You need to override string converter for class " + getProperty().getClass().getSimpleName());
-        }
-    };
-    public void setConverter(PropValueStringConverter<T> converter) { this.converter = converter; }
-    
-    
-    /* Convert property value to string.  Override in subclass if necessary */
-    @Deprecated
-    protected String valueToString(T value)
-    {
-        return converter.toString(value);
-//        return value.toString();
-    }    
-    /* parse property value, override in subclasses if necessary */
-//    @SuppressWarnings("unchecked")
-    @Deprecated
-    protected T valueFromString(String propertyValueString)
-    {
-        System.out.println("class1:" + getClass());
-        return converter.fromString(propertyValueString);
-//        Type[] types = ((ParameterizedType)getClass().getGenericSuperclass())
-//                   .getActualTypeArguments();
-//        Class<T> myClass = (Class<T>) types[types.length-1]; // get last parameterized type
-//        if (myClass.equals(String.class))
+//    /*
+//     * DEFAULT STRING CONVERTERS
+//     * override in subclasses if necessary
+//     */
+//    
+//    public PropValueStringConverter<T> getConverter() { return converter; }
+//    private PropValueStringConverter<T> converter = new PropValueStringConverter<T>(this)
+//    {
+//        @Override
+//        public String toString(T object)
 //        {
-//            return (T) propertyValueString;            
+//            return object.toString();
 //        }
-//        throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
-//                ". You need to override valueFromString in subclass " + getClass().getSimpleName());
-    }
+//
+//        @Override
+//        public T fromString(String string)
+//        {
+//            Type[] types = ((ParameterizedType)getProperty().getClass().getGenericSuperclass())
+//                    .getActualTypeArguments();
+//            System.out.println("class2:" + getProperty().getClass());
+//             Class<T> myClass = (Class<T>) types[types.length-1]; // get last parameterized type
+//             if (myClass.equals(String.class))
+//             {
+//                 return (T) propertyValueString;            
+//             }
+//             throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
+//                     ". You need to override string converter for class " + getProperty().getClass().getSimpleName());
+//        }
+//    };
+//    public void setConverter(PropValueStringConverter<T> converter) { this.converter = converter; }
+//    
+//    
+//    /* Convert property value to string.  Override in subclass if necessary */
+//    @Deprecated
+//    protected String valueToString(T value)
+//    {
+//        return converter.toString(value);
+////        return value.toString();
+//    }    
+//    /* parse property value, override in subclasses if necessary */
+////    @SuppressWarnings("unchecked")
+//    @Deprecated
+//    protected T valueFromString(String propertyValueString)
+//    {
+//        System.out.println("class1:" + getClass());
+//        return converter.fromString(propertyValueString);
+////        Type[] types = ((ParameterizedType)getClass().getGenericSuperclass())
+////                   .getActualTypeArguments();
+////        Class<T> myClass = (Class<T>) types[types.length-1]; // get last parameterized type
+////        if (myClass.equals(String.class))
+////        {
+////            return (T) propertyValueString;            
+////        }
+////        throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
+////                ". You need to override valueFromString in subclass " + getClass().getSimpleName());
+//    }
 
     @Override
     public int hashCode()

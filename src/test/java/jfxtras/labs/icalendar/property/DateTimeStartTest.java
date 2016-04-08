@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.parameters.ValueParameter.ValueType;
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
