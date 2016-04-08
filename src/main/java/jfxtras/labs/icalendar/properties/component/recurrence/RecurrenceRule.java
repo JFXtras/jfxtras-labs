@@ -8,7 +8,7 @@ public class RecurrenceRule extends PropertyBase<RecurrenceRule, RecurrenceRule2
 
     public RecurrenceRule(RecurrenceRule2 value)
     {
-        super(value);
+        super(value, null);
         // TODO Auto-generated constructor stub
     }
 

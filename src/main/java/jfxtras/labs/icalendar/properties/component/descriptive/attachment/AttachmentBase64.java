@@ -25,7 +25,8 @@ public class AttachmentBase64 extends AttachmentBase<AttachmentBase64, String>
 {    
     public AttachmentBase64(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public AttachmentBase64(AttachmentBase64 source)

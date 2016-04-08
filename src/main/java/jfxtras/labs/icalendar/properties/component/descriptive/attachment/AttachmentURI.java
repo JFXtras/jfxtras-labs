@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * ATTACH: Attachment
@@ -17,7 +16,8 @@ public class AttachmentURI extends AttachmentBase<AttachmentURI, URI>
 {
     public AttachmentURI(CharSequence contentLine)
     {
-        super(contentLine);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public AttachmentURI(AttachmentURI source)
@@ -27,19 +27,20 @@ public class AttachmentURI extends AttachmentBase<AttachmentURI, URI>
     
     public AttachmentURI(URI value)
     {
-        super(value);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(value, null);
     }
     
-    @Override
-    protected URI valueFromString(String propertyValueString)
-    {
-        try
-        {
-            return new URI(propertyValueString);
-        } catch (URISyntaxException e)
-        {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    @Override
+//    protected URI valueFromString(String propertyValueString)
+//    {
+//        try
+//        {
+//            return new URI(propertyValueString);
+//        } catch (URISyntaxException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 }

@@ -33,7 +33,6 @@ public enum ValueType
                 @Override
                 public String toString(T object)
                 {
-                    System.out.println("b:" + object.toString().toUpperCase());
                     return object.toString().toUpperCase();
                 }
 
@@ -186,8 +185,8 @@ public enum ValueType
     },
     /* Note: This string converter is only acceptable for values converted to Stings
      * without any additional processing.  For properties with TEXT value that is stored
-     * as any time other than String, this converter MUST be replaced by setConverter for
-     * Properties.
+     * as any type other than String, this converter MUST be replaced. (Use setConverter in
+     * Property).
      * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
      * ZoneId.  A different converter is required to make the conversion to ZoneId.
     */
@@ -270,25 +269,8 @@ public enum ValueType
     {
         this.name = name;
     }
-    
-    public <T> StringConverter<T> stringConverter2()
-    {
-        return new StringConverter<T>()
-        {
-            @Override
-            public String toString(T object)
-            {
-                return object.toString();
-            }
 
-            @Override
-            public T fromString(String string)
-            {
-                     return (T) string;            
-            }
-        };
-    }
-
+    /** return default String converter associated with property value type */
     abstract public <T> StringConverter<T> getConverter();
 
 }

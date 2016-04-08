@@ -7,12 +7,13 @@ import java.time.ZoneId;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneIdentifier;
 
 public class TimeZoneIdentifierTest
 {
     @Test
-    public void canParseTimeZoneIdentifier()
+    public void canParseTimeZoneIdentifier1()
     {
         String content = "TZID:America/Los_Angeles";
         TimeZoneIdentifier madeProperty = new TimeZoneIdentifier(content);
@@ -20,9 +21,20 @@ public class TimeZoneIdentifierTest
         TimeZoneIdentifier expectedProperty = new TimeZoneIdentifier(ZoneId.of("America/Los_Angeles"));
         assertEquals(expectedProperty, madeProperty);
     }
-
+    
     @Test
     public void canParseTimeZoneIdentifier2()
+    {
+        String content = "TZID;VALUE=TEXT:America/Los_Angeles";
+        TimeZoneIdentifier madeProperty = new TimeZoneIdentifier(content);
+        assertEquals(content, madeProperty.toContentLine());
+        TimeZoneIdentifier expectedProperty = new TimeZoneIdentifier(ZoneId.of("America/Los_Angeles"))
+                .withValueParameter(ValueType.TEXT);
+        assertEquals(expectedProperty, madeProperty);
+    }
+
+    @Test
+    public void canParseTimeZoneIdentifier3()
     {
         String content = "TZID:/US-New_York-New_York";
         TimeZoneIdentifier madeProperty = new TimeZoneIdentifier(content);

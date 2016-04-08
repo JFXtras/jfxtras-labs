@@ -82,7 +82,11 @@ public abstract class PropertyBase<U,T> implements Property<T>
     }
     public U withPropertyName(String name) { setPropertyName(name); return (U) this; }
     
-    /** The type of the property from the enum of all properties. */
+    /**
+     * PROPERTY TYPE
+     * 
+     *  The type of the property from the enum of all properties.
+     */
     @Override
     public PropertyEnum propertyType() { return propertyType; }
     private PropertyEnum propertyType;
@@ -135,7 +139,8 @@ public abstract class PropertyBase<U,T> implements Property<T>
         if (isValueParameterValid(valueType))
         {
             valueParameterProperty().set(valueType);
-            if (getConverter() == null)
+            // replace converter if it is equal to default converter
+            if (! isCustomConverter)
             {
                 setConverter(valueType.getValue().getConverter());
             }
@@ -163,27 +168,6 @@ public abstract class PropertyBase<U,T> implements Property<T>
     public ObservableList<Object> otherParameters() { return otherParameters; }
     private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
     public U withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (U) this; }
-        
-    @Override
-    public boolean isValid()
-    {
-        if (getValueParameter() == null)
-        {
-            return Property.super.isValid();
-        } else
-        {
-            boolean isValueTypeOK = (getValueParameter() == null) ? true: isValueParameterValid(getValueParameter());
-            return (Property.super.isValid()) && isValueTypeOK;
-        }
-    }
-    /* test if value type is valid */
-    private boolean isValueParameterValid(ValueParameter value)
-    {
-        boolean isMatchingType = value.getValue().equals(propertyType().defaultValueType());
-        boolean isUnknownType = value.getValue().equals(ValueType.UNKNOWN);
-        boolean isNonStandardProperty = propertyType().equals(PropertyEnum.NON_STANDARD) || propertyType().equals(PropertyEnum.IANA_PROPERTY);
-        return (isMatchingType || isUnknownType || isNonStandardProperty);
-    }
 
     // TODO CAN I CACHE THE LIST? - UPDATE ONLY WHEN NEW PARAMETER CHANGE OCCURS?
     @Override
@@ -207,14 +191,25 @@ public abstract class PropertyBase<U,T> implements Property<T>
     
     // property value
     private String propertyValueString;
-    // Note: in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes)
+    // Note: in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes add time zone as prefix)
     protected String getPropertyValueString() { return propertyValueString; }
     
+    
+    /**
+     * STRING CONVERTER
+     * 
+     * Get the property's value string converter.  There is a default converter in ValueType associated
+     * with the default value type of the property.  For most value types that converter is
+     * acceptable.  However, for the TEXT value type it often needs to be replaced.
+     * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
+     * ZoneId.  A different converter is required to make the conversion to ZoneId.
+     */ 
     @Override
     public StringConverter<T> getConverter() { return converter; }
     private StringConverter<T> converter;
     @Override
     public void setConverter(StringConverter<T> converter) { this.converter = converter; }
+    final boolean isCustomConverter;
     
     /*
      * CONSTRUCTORS
@@ -224,7 +219,17 @@ public abstract class PropertyBase<U,T> implements Property<T>
     private PropertyBase(StringConverter<T> converter)
     {
         propertyType = PropertyEnum.enumFromClass(getClass());
-        StringConverter<T> myConverter = (converter == null) ? propertyType.defaultValueType().getConverter() : converter;
+        StringConverter<T> myConverter;
+        if (converter == null)
+        {
+            myConverter = propertyType.defaultValueType().getConverter();
+            isCustomConverter = false;
+        }
+        else
+        {
+            myConverter = converter;
+            isCustomConverter = true;
+        }
         setConverter(myConverter);
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
     }
@@ -308,9 +313,6 @@ public abstract class PropertyBase<U,T> implements Property<T>
         {
             setValue(value);            
         }
-//        ValueType valueType = (getValueParameter() == null) ? propertyType().defaultValueType() : getValueParameter().getValue();
-//        T value = (T) valueType.stringConverter().fromString(getPropertyValueString());
-//        setValue(valueFromString(getPropertyValueString()));
         
         if (! isValid())
         {
@@ -338,8 +340,31 @@ public abstract class PropertyBase<U,T> implements Property<T>
     {
         this(converter);
         setValue(value);
-    }    
-        
+    }
+    
+    @Override
+    public boolean isValid()
+    {
+        if (getValueParameter() == null)
+        {
+            return Property.super.isValid();
+        } else
+        {
+            boolean isValueTypeOK = isValueParameterValid(getValueParameter());
+//            System.out.println("PropertyBase isValid:" + Property.super.isValid() + " " + isValueTypeOK);
+            return (Property.super.isValid()) && isValueTypeOK;
+        }
+    }
+    /* test if value type is valid */
+    private boolean isValueParameterValid(ValueParameter value)
+    {
+        boolean isMatchingType = value.getValue().equals(propertyType().defaultValueType());
+        boolean isUnknownType = value.getValue().equals(ValueType.UNKNOWN);
+        boolean isNonStandardProperty = propertyType().equals(PropertyEnum.NON_STANDARD) || propertyType().equals(PropertyEnum.IANA_PROPERTY);
+        System.out.println("e2:" + isMatchingType + " " + isUnknownType + " " + isNonStandardProperty);
+        return (isMatchingType || isUnknownType || isNonStandardProperty);
+    }
+    
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.5
      * Contains component property with its value and any populated parameters.

@@ -5,7 +5,6 @@ import java.time.ZoneId;
 
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.components.VTimeZone;
-import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
 /**
@@ -72,7 +71,8 @@ public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
     {
         boolean nonGlobalOK = (getValue() != null);
         boolean globallyUniqueOK = ((getUnknownValue() != null) && (getUnknownValue().charAt(0) == '/'));
-        boolean valueTypeOK = ((getValueParameter() == null) || (getValueParameter().equals(ValueType.TEXT)));
+        boolean valueTypeOK = ((getValueParameter() == null) || (getValueParameter().getValue().equals(propertyType().defaultValueType())));
+//        System.out.println("TimeZoneIdentifier isValid:" + nonGlobalOK + " " + globallyUniqueOK + " " + valueTypeOK);
         return (nonGlobalOK || globallyUniqueOK) && valueTypeOK;
     }
 

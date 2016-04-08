@@ -87,7 +87,6 @@ public interface Property<T>
      * ZoneId.  A different converter is required to make the conversion to ZoneId.
      * This method can replace the default converter. 
      */
-    
     void setConverter(StringConverter<T> converter);
     
     /**
