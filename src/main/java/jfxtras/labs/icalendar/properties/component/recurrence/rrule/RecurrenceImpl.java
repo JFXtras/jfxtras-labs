@@ -22,6 +22,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.properties.component.recurrence.Recurrence;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Frequency;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
@@ -29,7 +30,10 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 /**
- * Recurrence Rule, RRULE, as defined in RFC 5545 iCalendar 3.8.5.3, page 122.
+ * RRULE
+ * Recurrence Rule
+ * RFC 5545 iCalendar 3.8.5.3, page 122.
+ * 
  * Used as a part of a VEVENT as defined by 3.6.1, page 52.
  * 
  * Produces a stream of start date/times after applying all modification rules.
@@ -37,7 +41,7 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * @author David Bal
  *
  */
-public class RecurrenceRule2
+public class RecurrenceImpl implements Recurrence
 {            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
@@ -46,7 +50,7 @@ public class RecurrenceRule2
     private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, "FREQ");
     public Frequency getFrequency() { return frequency.get(); }
     public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
-    public RecurrenceRule2 withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
+    public RecurrenceImpl withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
     
     /**
      * COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends
@@ -79,7 +83,7 @@ public class RecurrenceRule2
         }
         else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
     }
-    public RecurrenceRule2 withCount(int count) { setCount(count); return this; }
+    public RecurrenceImpl withCount(int count) { setCount(count); return this; }
 
     /**
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
@@ -113,7 +117,7 @@ public class RecurrenceRule2
             }
         } else throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
     }
-    public RecurrenceRule2 withUntil(Temporal until) { setUntil(until); return this; }
+    public RecurrenceImpl withUntil(Temporal until) { setUntil(until); return this; }
     
     /**
      * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
@@ -125,19 +129,20 @@ public class RecurrenceRule2
     public Set<VComponentDisplayableOld<?>> recurrences() { return recurrences; }
     private Set<VComponentDisplayableOld<?>> recurrences = new HashSet<>();
 //    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
-    public RecurrenceRule2 withRecurrences(VComponentDisplayableOld<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
+    public RecurrenceImpl withRecurrences(VComponentDisplayableOld<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
     /*
      * CONSTRUCTORS
      */
     
-    public RecurrenceRule2() { }
+    public RecurrenceImpl() { }
 
     // construct new object by parsing property line
-    public RecurrenceRule2(String propertyString)
+    public RecurrenceImpl(String propertyString)
     {
-        String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-        ICalendarUtilities.propertyLineToParameterMap(rruleString)
+        System.out.println("recur:" + propertyString);
+//        String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+        ICalendarUtilities.propertyLineToParameterMap(propertyString)
                 .entrySet()
                 .stream()
                 .sorted((Comparator<? super Entry<String, String>>) (p1, p2) ->
@@ -162,7 +167,7 @@ public class RecurrenceRule2
     }
 
     // Copy constructor
-    public RecurrenceRule2(RecurrenceRule2 source)
+    public RecurrenceImpl(RecurrenceImpl source)
     {
         Arrays.stream(RRuleEnum.values())
                 .forEach(p -> p.copyProperty(source, this));
@@ -179,11 +184,11 @@ public class RecurrenceRule2
 //        });
 //    }
     
-    @Override
-    public String toString()
-    {
-        return super.toString() + "," + toContentLine();
-    }
+//    @Override
+//    public String toString()
+//    {
+//        return super.toString() + "," + toContent();
+//    }
     
     /** Deep copy all fields from source to destination */
 //    @Deprecated // revise with looping through enum
@@ -227,7 +232,7 @@ public class RecurrenceRule2
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        RecurrenceRule2 testObj = (RecurrenceRule2) obj;
+        RecurrenceImpl testObj = (RecurrenceImpl) obj;
 
         boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
 //                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
@@ -365,6 +370,7 @@ public class RecurrenceRule2
      * is met.
      * Starts on startDateTime, which MUST be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
+    @Override
     public Stream<Temporal> stream(Temporal start)
     {
         // filter out recurrences
@@ -419,7 +425,9 @@ public class RecurrenceRule2
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
 
-    public String toContentLine()
+    
+    @Override
+    public String toString()
     {
         Stream<String> rruleParameterStream = Arrays.stream(RRuleEnum.values())
                 .map(p -> p.toParameterString(this))

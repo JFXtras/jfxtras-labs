@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 public enum ValueType
@@ -179,8 +180,20 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
-            return null;
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return object.toString();
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) new RecurrenceImpl(string);
+                }
+            };
         }
     },
     /* Note: This string converter is only acceptable for values converted to Stings

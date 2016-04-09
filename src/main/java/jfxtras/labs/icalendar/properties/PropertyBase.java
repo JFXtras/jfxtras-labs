@@ -2,6 +2,7 @@ package jfxtras.labs.icalendar.properties;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -252,9 +253,14 @@ public abstract class PropertyBase<U,T> implements Property<T>
         String propertyString = contentLine.toString();
         
         final String propertyValue;
-        int colonIndex = propertyString.indexOf(':');
-        int semiColonIndex = propertyString.indexOf(';');
-        int endNameIndex = (semiColonIndex > 0) ? semiColonIndex : colonIndex;
+        List<Integer> indices = new ArrayList<>();
+        indices.add(propertyString.indexOf(':'));
+        indices.add(propertyString.indexOf(';'));
+        int endNameIndex = indices
+                .stream()
+                .filter(v -> v > 0)
+                .min(Comparator.naturalOrder())
+                .get();
         String propertyName = (endNameIndex > 0) ? propertyString.subSequence(0, endNameIndex).toString().toUpperCase() : null;
         if (propertyName == null)
         {

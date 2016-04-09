@@ -184,47 +184,21 @@ public final class ICalendarUtilities
                } else
                {
                    name = propertyLine.substring(parameterStart, equalsPosition).toUpperCase();
-
-//                   { // DQUOTE delimited parameter value
-//                       // TODO - NEED TO ACCOMODATE LIST OF URI
-//                       quoteFound = true;
-//                       parameterEnd = Math.min(propertyLine.indexOf('\"', valueStart+1)+1, propertyLine.length());
-//                       value = propertyLine.substring(equalsPosition+2, parameterEnd-1); // removes quotes
-//                   } else
- //                  { // regular parameter value
-                       for (int testIndex = equalsPosition+1; testIndex < propertyLine.length(); testIndex++)
+                   for (parameterEnd = equalsPosition+1; parameterEnd < propertyLine.length(); parameterEnd++)
+                   {
+                       if (propertyLine.charAt(parameterEnd) == '\"')
                        {
-                           if (propertyLine.charAt(testIndex) == '\"')
+                           quoteOn = ! quoteOn;
+                       }
+                       if (! quoteOn) // can't end while quote is on
+                       {
+                           if ((propertyLine.charAt(parameterEnd) == ';') || (propertyLine.charAt(parameterEnd) == ':'))
                            {
-                               quoteOn = ! quoteOn;
-                           }
-                           if (! quoteOn) // can't end while quote is on
-                           {
-                               if ((propertyLine.charAt(testIndex) == ';') || (propertyLine.charAt(testIndex) == ':'))
-                               {
-                                   parameterEnd = testIndex;
-                                   break;
-                               }
+                               break;
                            }
                        }
-//                       char valueStart = propertyLine.charAt(equalsPosition+1);
-//                       boolean quoteFound = valueStart == '\"';
-//                       if (quoteFound)
-//                       {
-//                           StringBuilder builder = new StringBuilder(propertyLine.substring(equalsPosition+1, parameterEnd));
-//                           for (int i=0; i<builder.length(); i++)
-//                           {
-//                               if (builder.charAt(i) == '\"')
-//                               {
-//                                   builder.deleteCharAt(i);
-//                               }
-//                           }
-//                           value = builder.toString();
-//                       } else
-//                       {
-                           value = propertyLine.substring(equalsPosition+1, parameterEnd);
-//                       }
-//                   }
+                   }
+                   value = propertyLine.substring(equalsPosition+1, parameterEnd);
 //                  System.out.println("parameter:" + value);
                }
            } else

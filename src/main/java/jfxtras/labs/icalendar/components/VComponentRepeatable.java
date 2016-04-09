@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
 
 /**
  * Calendar components that can repeat
@@ -55,9 +55,9 @@ public interface VComponentRepeatable
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    RecurrenceRule2 getRecurrenceRule();
-    ObjectProperty<RecurrenceRule2> recurrenceRuleProperty();
-    void setRecurrenceRule(RecurrenceRule2 rRule);
+    RecurrenceImpl getRecurrenceRule();
+    ObjectProperty<RecurrenceImpl> recurrenceRuleProperty();
+    void setRecurrenceRule(RecurrenceImpl rRule);
     
     /** Stream of dates or date-times that indicate the series of start date-times of the event(s).
      * iCalendar calls this series the recurrence set.

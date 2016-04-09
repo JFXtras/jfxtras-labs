@@ -28,6 +28,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attach
 import jfxtras.labs.icalendar.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendar.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
+import jfxtras.labs.icalendar.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Contact;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
@@ -735,7 +736,11 @@ public enum PropertyEnum
             return null;
         }
     },
-    RECURRENCE_RULE ("RRULE", null, null, null) {
+    RECURRENCE_RULE ("RRULE", // property name
+            ValueType.RECURRENCE_RULE, // default property value type
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            RecurrenceRule.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {

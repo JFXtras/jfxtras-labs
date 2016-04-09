@@ -22,9 +22,10 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  */
 public class ProductIdentifier extends PropertyBase<ProductIdentifier, String>
 {
-    public ProductIdentifier(CharSequence propertyString)
+    public ProductIdentifier(CharSequence contentLine)
     {
-        super(propertyString);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public ProductIdentifier(ProductIdentifier source)

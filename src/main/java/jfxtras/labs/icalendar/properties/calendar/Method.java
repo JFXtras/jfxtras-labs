@@ -21,9 +21,10 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  */
 public class Method extends PropertyBase<Method, String>
 {
-    public Method(CharSequence propertyString)
+    public Method(CharSequence contentLine)
     {
-        super(propertyString);
+        // null as argument for string converter causes default converter from ValueType to be used
+        super(contentLine, null);
     }
     
     public Method(Method source)

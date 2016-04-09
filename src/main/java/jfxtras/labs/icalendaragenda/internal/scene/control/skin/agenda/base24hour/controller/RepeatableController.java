@@ -58,7 +58,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
@@ -430,7 +430,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             if (vComponent.getRRule() == null)
             {
                 // setup new default RRule
-                RecurrenceRule2 rRule = new RecurrenceRule2()
+                RecurrenceImpl rRule = new RecurrenceImpl()
                         .withFrequency(new Weekly()
                         .withByRules(new ByDay(DayOfWeek.from(dateTimeStartInstanceNew)))); // default RRule
                 vComponent.setRRule(rRule);
@@ -834,7 +834,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 
      * This method is called only during setup */
-    private void setDayOfWeek(RecurrenceRule2 rRule)
+    private void setDayOfWeek(RecurrenceImpl rRule)
     {
         // Set day of week properties
         if (rRule.getFrequency().frequencyType() == FrequencyEnum.WEEKLY)
@@ -1010,7 +1010,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
      * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
      * @return Easy to read summary of repeat rule
      */
-    public static String makeSummary(RecurrenceRule2 rRule, Temporal startTemporal)
+    public static String makeSummary(RecurrenceImpl rRule, Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();
         if (rRule.getCount() == 1) return (Settings.resources == null) ? "Once" : Settings.resources.getString("rrule.summary.once");
@@ -1093,7 +1093,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     
     private boolean isSupported(VComponentDisplayableOld<?> vComponent)
     {
-        RecurrenceRule2 rRule = vComponent.getRRule();
+        RecurrenceImpl rRule = vComponent.getRRule();
         if (rRule == null)
         {
             return true;
