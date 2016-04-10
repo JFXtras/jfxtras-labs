@@ -260,9 +260,55 @@ public final class DateTimeUtilities
      * @param temporal
      * @return
      */
-    public static String format(Temporal temporal)
+    public static String temporalToString(Temporal temporal)
     {
-        return DateTimeType.of(temporal).formatDateTimeType(temporal);
+        if (temporal instanceof ZonedDateTime)
+        {
+            ZonedDateTime value = (ZonedDateTime) temporal;
+            ZoneId z = value.getZone();
+            if (z.equals(ZoneId.of("Z")))
+            {
+                return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(value);
+            } else
+            {
+                return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value); // Time zone is added through TimeZoneIdentifier parameter
+            }
+        } else if (temporal instanceof LocalDateTime)
+        {
+            LocalDateTime value = (LocalDateTime) temporal;
+            return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value);
+        } else if (temporal instanceof LocalDate)
+        {
+            return DateTimeUtilities.LOCAL_DATE_FORMATTER.format(temporal);
+        }
+        {
+            throw new DateTimeException("Unsuported Date-Time class:" + temporal.getClass().getSimpleName());
+        }
+//        return DateTimeType.of(temporal).formatDateTimeType(temporal);
+    }
+    
+    public static Temporal temporalFromString(String string)
+    {
+        final String form0 = "^[0-9]{8}";
+        final String form1 = "^[0-9]{8}T([0-9]{6})";
+        final String form2 = "^[0-9]{8}T([0-9]{6})Z";
+        final String form3 = "^(.*/.*:)[0-9]{8}T([0-9]{6})";
+        if (string.matches(form0))
+        {
+            return LocalDate.parse(string, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                                                
+        } else if (string.matches(form1))
+        {
+            return LocalDateTime.parse(string, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                                                
+        } else if (string.matches(form2))
+        {
+            return ZonedDateTime.parse(string, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                                                
+        } else if (string.matches(form3))
+        {
+            return ZonedDateTime.parse(string, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);                                                
+        } else
+        {
+            throw new DateTimeException("Can't parse date-time string:" + string);                        
+        }
     }
     
     /**

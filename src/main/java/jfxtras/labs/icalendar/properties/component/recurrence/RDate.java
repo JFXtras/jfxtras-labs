@@ -39,7 +39,7 @@ public class RDate extends RecurrenceAbstract<RDate>
                    , DateTimeUtilities.TEMPORAL_COMPARATOR);
     }
 
-    public Stream<Temporal> stream(Temporal startTemporal)
+    public Stream<Temporal> streamRecurrence(Temporal startTemporal)
     {
         return getTemporalStream()
                 .filter(d -> ! DateTimeUtilities.isBefore(d, startTemporal));

@@ -1,18 +1,18 @@
 package jfxtras.labs.icalendar.parameters;
 
-import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.TemporalAccessor;
+import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import javafx.collections.FXCollections;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 public enum ValueType
@@ -62,7 +62,8 @@ public enum ValueType
                 @Override
                 public String toString(T object)
                 {
-                    return DateTimeUtilities.LOCAL_DATE_FORMATTER.format((TemporalAccessor) object);
+                    return DateTimeUtilities.temporalToString((LocalDate) object);
+//                    return DateTimeUtilities.LOCAL_DATE_FORMATTER.format((TemporalAccessor) object);
                 }
 
                 @Override
@@ -82,46 +83,66 @@ public enum ValueType
                 @Override
                 public String toString(T object)
                 {
-                    if (object instanceof ZonedDateTime)
+                    if (object instanceof Collection)
                     {
-                        ZonedDateTime value = (ZonedDateTime) object;
-                        ZoneId z = value.getZone();
-                        if (z.equals(ZoneId.of("Z")))
-                        {
-                            return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(value);
-                        } else
-                        {
-                            return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value); // Time zone is added through TimeZoneIdentifier parameter
-                        }
-                    } else if (object instanceof LocalDateTime)
-                    {
-                        LocalDateTime value = (LocalDateTime) object;
-                        return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value);
+                        Collection<Temporal> collection = (Collection<Temporal>) object;
+                        return collection.stream()
+                            .sorted()
+                            .map(t -> DateTimeUtilities.temporalToString(t))
+                            .collect(Collectors.joining(","));                        
                     } else
                     {
-                        throw new DateTimeException("Unsuported Date-Time class:" + object.getClass().getSimpleName());
+                        return DateTimeUtilities.temporalToString((Temporal) object);
                     }
+//                    if (object instanceof ZonedDateTime)
+//                    {
+//                        ZonedDateTime value = (ZonedDateTime) object;
+//                        ZoneId z = value.getZone();
+//                        if (z.equals(ZoneId.of("Z")))
+//                        {
+//                            return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(value);
+//                        } else
+//                        {
+//                            return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value); // Time zone is added through TimeZoneIdentifier parameter
+//                        }
+//                    } else if (object instanceof LocalDateTime)
+//                    {
+//                        LocalDateTime value = (LocalDateTime) object;
+//                        return DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(value);
+//                    } else
+//                    {
+//                        throw new DateTimeException("Unsuported Date-Time class:" + object.getClass().getSimpleName());
+//                    }
                 }
 
                 @Override
                 public T fromString(String string)
                 {
-                    final String form1 = "^[0-9]{8}T([0-9]{6})";
-                    final String form2 = "^[0-9]{8}T([0-9]{6})Z";
-                    final String form3 = "^(.*/.*:)[0-9]{8}T([0-9]{6})";
-                    if (string.matches(form1))
+                    if (string.contains(","))
                     {
-                        return (T) LocalDateTime.parse(string, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                                                
-                    } else if (string.matches(form2))
-                    {
-                        return (T) ZonedDateTime.parse(string, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                                                
-                    } else if (string.matches(form3))
-                    {
-                        return (T) ZonedDateTime.parse(string, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);                                                
+                        return (T) FXCollections.observableSet(Arrays.stream(string.split(","))
+                                .map(s -> DateTimeUtilities.temporalFromString(s))
+                                .collect(Collectors.toSet()));
                     } else
                     {
-                        throw new DateTimeException("Can't parse date-time string:" + string);                        
+                        return (T) DateTimeUtilities.temporalFromString(string);
                     }
+//                    final String form1 = "^[0-9]{8}T([0-9]{6})";
+//                    final String form2 = "^[0-9]{8}T([0-9]{6})Z";
+//                    final String form3 = "^(.*/.*:)[0-9]{8}T([0-9]{6})";
+//                    if (string.matches(form1))
+//                    {
+//                        return (T) LocalDateTime.parse(string, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                                                
+//                    } else if (string.matches(form2))
+//                    {
+//                        return (T) ZonedDateTime.parse(string, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                                                
+//                    } else if (string.matches(form3))
+//                    {
+//                        return (T) ZonedDateTime.parse(string, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);                                                
+//                    } else
+//                    {
+//                        throw new DateTimeException("Can't parse date-time string:" + string);                        
+//                    }
                 }
             };
         }
@@ -191,7 +212,7 @@ public enum ValueType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) new RecurrenceImpl(string);
+                    return (T) new RecurrenceRule(string);
                 }
             };
         }

@@ -4,7 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-public class VTodoOld<I,T> extends VComponentDisplayableBase<I,T>
+public class VTodoOld<I,T> extends VComponentDisplayableOldBase<I,T>
 {
     public VTodoOld() { throw new RuntimeException("not supported"); }
 

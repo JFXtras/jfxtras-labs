@@ -90,7 +90,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
  * @author David Bal
  * @see VEventImpl
  */
-public abstract class VEventOld<I, T> extends VComponentDisplayableBase<I, T>
+public abstract class VEventOld<I, T> extends VComponentDisplayableOldBase<I, T>
 {
     /**
      * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84

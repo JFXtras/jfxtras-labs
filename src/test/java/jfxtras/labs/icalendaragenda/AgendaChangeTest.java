@@ -21,7 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 import jfxtras.test.TestUtil;
@@ -58,7 +58,7 @@ public class AgendaChangeTest extends AgendaTestAbstract
         Collections.sort(agenda.vComponents(), VComponentDisplayableOld.VCOMPONENT_COMPARATOR);
         VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
         VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
-        RecurrenceImpl r = ICalendarStaticVEvents.getDaily1().getRRule().withRecurrences(v1);
+        RecurrenceRule r = ICalendarStaticVEvents.getDaily1().getRRule().withRecurrences(v1);
         VEventImpl expectedV0 = ICalendarStaticVEvents.getDaily1()
                 .withRRule(r);
         assertTrue(VEventImpl.isEqualTo(expectedV0, v0));
@@ -128,7 +128,7 @@ public class AgendaChangeTest extends AgendaTestAbstract
         Collections.sort(agenda.vComponents(), VComponentDisplayableOld.VCOMPONENT_COMPARATOR);
         VEventImpl v0 = (VEventImpl) agenda.vComponents().get(0);
         VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
-        RecurrenceImpl r = ICalendarStaticVEvents.getWeeklyZoned().getRRule().withRecurrences(v1);
+        RecurrenceRule r = ICalendarStaticVEvents.getWeeklyZoned().getRRule().withRecurrences(v1);
         VEventImpl expectedV0 = ICalendarStaticVEvents.getWeeklyZoned()
                 .withRRule(r);
         assertTrue(VEventImpl.isEqualTo(expectedV0, v0));

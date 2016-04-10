@@ -16,7 +16,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.Recurrence;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
@@ -307,7 +307,7 @@ public final class VComponentUtilities
                 } else
                 {
 //                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), vComponent.getDateTimeStart());
-                    return toString() + ":" + DateTimeUtilities.format(vComponent.getDateTimeStart());
+                    return toString() + ":" + DateTimeUtilities.temporalToString(vComponent.getDateTimeStart());
                 }
             }
 
@@ -366,7 +366,7 @@ public final class VComponentUtilities
                         return vComponent.getExDate()
                                 .getTemporals()
                                 .stream()
-                                .map(t -> toString() + ":" + DateTimeUtilities.format(t) + System.lineSeparator())
+                                .map(t -> toString() + ":" + DateTimeUtilities.temporalToString(t) + System.lineSeparator())
                                 .collect(Collectors.joining())
                                 .trim();
                     }
@@ -583,7 +583,7 @@ public final class VComponentUtilities
                 } else
                 {
 //                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), vComponent.getDateTimeRecurrence());
-                    return toString() + ":" + DateTimeUtilities.format(vComponent.getDateTimeRecurrence());
+                    return toString() + ":" + DateTimeUtilities.temporalToString(vComponent.getDateTimeRecurrence());
                 }
             }
 
@@ -615,7 +615,7 @@ public final class VComponentUtilities
             {
                 if (vComponent.getRRule() == null)
                 {
-                    vComponent.setRRule(new RecurrenceImpl(propertyLine));
+                    vComponent.setRRule(new RecurrenceRule(propertyLine));
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -644,7 +644,7 @@ public final class VComponentUtilities
             @Override
             public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
             {
-                destination.setRRule(new RecurrenceImpl(source.getRRule()));
+                destination.setRRule(new RecurrenceRule(source.getRRule()));
 //                if (source.getRRule() != null)
 //                {
 //                    if (destination.getRRule() == null)

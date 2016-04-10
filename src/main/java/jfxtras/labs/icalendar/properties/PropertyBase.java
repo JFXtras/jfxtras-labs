@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -90,7 +91,7 @@ public abstract class PropertyBase<U,T> implements Property<T>
      */
     @Override
     public PropertyEnum propertyType() { return propertyType; }
-    private PropertyEnum propertyType;
+    final private PropertyEnum propertyType;
 
     /**
      * The property's value
@@ -216,10 +217,19 @@ public abstract class PropertyBase<U,T> implements Property<T>
      * CONSTRUCTORS
      */
     
+//    protected PropertyBase()
+//    {
+////        isCustomConverter = true;
+//        propertyType = PropertyEnum.enumFromClass(getClass());
+//        value = new SimpleObjectProperty<T>(this, propertyType.toString());
+//    }
+    
     // construct empty property
     private PropertyBase(StringConverter<T> converter)
     {
+//        this();
         propertyType = PropertyEnum.enumFromClass(getClass());
+        value = new SimpleObjectProperty<T>(this, propertyType.toString());
         StringConverter<T> myConverter;
         if (converter == null)
         {
@@ -232,7 +242,6 @@ public abstract class PropertyBase<U,T> implements Property<T>
             isCustomConverter = true;
         }
         setConverter(myConverter);
-        value = new SimpleObjectProperty<T>(this, propertyType.toString());
     }
     
     /**
@@ -256,17 +265,14 @@ public abstract class PropertyBase<U,T> implements Property<T>
         List<Integer> indices = new ArrayList<>();
         indices.add(propertyString.indexOf(':'));
         indices.add(propertyString.indexOf(';'));
-        int endNameIndex = indices
+        Optional<Integer> hasPropertyName = indices
                 .stream()
                 .filter(v -> v > 0)
-                .min(Comparator.naturalOrder())
-                .get();
-        String propertyName = (endNameIndex > 0) ? propertyString.subSequence(0, endNameIndex).toString().toUpperCase() : null;
-        if (propertyName == null)
+                .min(Comparator.naturalOrder());
+        if (hasPropertyName.isPresent())
         {
-            propertyValue = ":" + propertyString; // indicates propertySequence doesn't contain a property name - only parameters and value
-        } else
-        {
+            int endNameIndex = hasPropertyName.get();
+            String propertyName = (endNameIndex > 0) ? propertyString.subSequence(0, endNameIndex).toString().toUpperCase() : null;
             boolean isNonStandard = propertyName.substring(0, 2).equals(PropertyEnum.NON_STANDARD.toString());
             boolean isMatch = propertyName.equals(propertyType.toString());
             if (isMatch || isNonStandard)
@@ -282,6 +288,9 @@ public abstract class PropertyBase<U,T> implements Property<T>
                         getClass().getSimpleName() + ".  Property name associated with class " + 
                         getClass().getSimpleName() + " is " +  propertyType.toString());
             }
+        } else
+        {
+            propertyValue = ":" + propertyString;
         }
         
         // add parameters
@@ -342,7 +351,7 @@ public abstract class PropertyBase<U,T> implements Property<T>
             sourceParameterType.copyTo(sourceParameter, this);
         }
         setValue(source.getValue());
-        this.propertyType = source.propertyType();
+//        this.propertyType = source.propertyType();
     }    
     
     // constructor with only value parameter
@@ -351,6 +360,91 @@ public abstract class PropertyBase<U,T> implements Property<T>
         this(converter);
         setValue(value);
     }
+    
+//    protected void construct(CharSequence contentLine, StringConverter<T> converter)
+//    {
+//        isCustomConverter = true;
+//        setConverter(converter);
+//        String propertyString = contentLine.toString();
+//        
+//        final String propertyValue;
+//        List<Integer> indices = new ArrayList<>();
+//        indices.add(propertyString.indexOf(':'));
+//        indices.add(propertyString.indexOf(';'));
+//        int endNameIndex = indices
+//                .stream()
+//                .filter(v -> v > 0)
+//                .min(Comparator.naturalOrder())
+//                .get();
+//        String propertyName = (endNameIndex > 0) ? propertyString.subSequence(0, endNameIndex).toString().toUpperCase() : null;
+//        if (propertyName == null)
+//        {
+//            propertyValue = ":" + propertyString; // indicates propertySequence doesn't contain a property name - only parameters and value
+//        } else
+//        {
+//            boolean isNonStandard = propertyName.substring(0, 2).equals(PropertyEnum.NON_STANDARD.toString());
+//            boolean isMatch = propertyName.equals(propertyType.toString());
+//            if (isMatch || isNonStandard)
+//            {
+//                if (isNonStandard)
+//                {
+//                    setPropertyName(propertyString.substring(0,endNameIndex));
+//                }
+//                propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
+//            } else
+//            {
+//                throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
+//                        getClass().getSimpleName() + ".  Property name associated with class " + 
+//                        getClass().getSimpleName() + " is " +  propertyType.toString());
+//            }
+//        }
+//        
+//        // add parameters
+//        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
+////        System.out.println("propertyString:" + propertyString + " " + map.size());
+//        map.entrySet()
+//            .stream()
+////            .peek(System.out::println)
+//            .filter(e -> ! (e.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
+//            .forEach(e ->
+//            {
+//                ParameterEnum p = ParameterEnum.enumFromName(e.getKey());
+//                if (p != null)
+//                {
+//                    if (propertyType().allowedParameters().contains(p))
+//                    {
+//                        p.parse(this, e.getValue());
+//                    } else
+//                    {
+//                        throw new IllegalArgumentException("Parameter " + p + " not allowed for property " + propertyType());
+//                    }
+//                } else if ((e.getKey() != null) && (e.getValue() != null))
+//                { // unknown parameter - store as String in other parameter
+//                    otherParameters().add(e.getKey() + "=" + e.getValue());
+//                } // if parameter doesn't contain both a key and a value it is ignored
+//            });
+//
+//        // save property value        
+//        propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+//        T value = getConverter().fromString(getPropertyValueString());
+//        if (value == null)
+//        {
+//            setUnknownValue(propertyValueString);
+//        } else
+//        {
+//            setValue(value);
+//            if (value.toString() == "UNKNOWN") // enum name indicating unknown value
+//            {
+//                setUnknownValue(propertyValueString);
+//            }
+//        }
+//        
+//        if (! isValid())
+//        {
+//            throw new IllegalArgumentException("Error in parsing " + propertyType().toString() + " content line");
+//        }
+//    }
+    
     
     @Override
     public boolean isValid()

@@ -22,7 +22,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
-import jfxtras.labs.icalendar.properties.component.recurrence.Recurrence;
+import jfxtras.labs.icalendar.properties.component.recurrence.RecurrenceRuleProp;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Frequency;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
@@ -32,16 +32,33 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 /**
  * RRULE
  * Recurrence Rule
- * RFC 5545 iCalendar 3.8.5.3, page 122.
+ * RFC 5545 iCalendar 3.3.10 page 38
  * 
- * Used as a part of a VEVENT as defined by 3.6.1, page 52.
+ * The value part of the recurrence rule property.  It supports the following parameters: <br>
+ * ( "FREQ" "=" freq ) <br>
+ * ( "UNTIL" "=" enddate ) <br>
+ * ( "COUNT" "=" 1*DIGIT ) <br>
+ * ( "INTERVAL" "=" 1*DIGIT ) <br>
+ * ( "BYSECOND" "=" byseclist ) <br>
+ * ( "BYMINUTE" "=" byminlist ) <br>
+ * ( "BYHOUR" "=" byhrlist ) <br>
+ * ( "BYDAY" "=" bywdaylist ) <br>
+ * ( "BYMONTHDAY" "=" bymodaylist ) <br>
+ * ( "BYYEARDAY" "=" byyrdaylist ) <br>
+ * ( "BYWEEKNO" "=" bywknolist ) <br>
+ * ( "BYMONTH" "=" bymolist ) <br>
+ * ( "BYSETPOS" "=" bysplist ) <br>
+ * ( "WKST" "=" weekday ) <br>
  * 
- * Produces a stream of start date/times after applying all modification rules.
+ * In addition to methods to support iCalendar recurrence rule parts, there is a method
+ * {@link #streamRecurrence(Temporal)}  that produces a stream of start date/times for the recurrences
+ * defined by the rule.
  * 
  * @author David Bal
+ * @see RecurrenceRuleProp
  *
  */
-public class RecurrenceImpl implements Recurrence
+public class RecurrenceRule
 {            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
@@ -50,7 +67,7 @@ public class RecurrenceImpl implements Recurrence
     private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, "FREQ");
     public Frequency getFrequency() { return frequency.get(); }
     public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
-    public RecurrenceImpl withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
+    public RecurrenceRule withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
     
     /**
      * COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends
@@ -83,7 +100,7 @@ public class RecurrenceImpl implements Recurrence
         }
         else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
     }
-    public RecurrenceImpl withCount(int count) { setCount(count); return this; }
+    public RecurrenceRule withCount(int count) { setCount(count); return this; }
 
     /**
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
@@ -117,7 +134,7 @@ public class RecurrenceImpl implements Recurrence
             }
         } else throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
     }
-    public RecurrenceImpl withUntil(Temporal until) { setUntil(until); return this; }
+    public RecurrenceRule withUntil(Temporal until) { setUntil(until); return this; }
     
     /**
      * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
@@ -129,16 +146,16 @@ public class RecurrenceImpl implements Recurrence
     public Set<VComponentDisplayableOld<?>> recurrences() { return recurrences; }
     private Set<VComponentDisplayableOld<?>> recurrences = new HashSet<>();
 //    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
-    public RecurrenceImpl withRecurrences(VComponentDisplayableOld<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
+    public RecurrenceRule withRecurrences(VComponentDisplayableOld<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
     /*
      * CONSTRUCTORS
      */
     
-    public RecurrenceImpl() { }
+    public RecurrenceRule() { }
 
     // construct new object by parsing property line
-    public RecurrenceImpl(String propertyString)
+    public RecurrenceRule(String propertyString)
     {
         System.out.println("recur:" + propertyString);
 //        String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
@@ -167,7 +184,7 @@ public class RecurrenceImpl implements Recurrence
     }
 
     // Copy constructor
-    public RecurrenceImpl(RecurrenceImpl source)
+    public RecurrenceRule(RecurrenceRule source)
     {
         Arrays.stream(RRuleEnum.values())
                 .forEach(p -> p.copyProperty(source, this));
@@ -232,7 +249,7 @@ public class RecurrenceImpl implements Recurrence
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        RecurrenceImpl testObj = (RecurrenceImpl) obj;
+        RecurrenceRule testObj = (RecurrenceRule) obj;
 
         boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
 //                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
@@ -370,8 +387,7 @@ public class RecurrenceImpl implements Recurrence
      * is met.
      * Starts on startDateTime, which MUST be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
-    @Override
-    public Stream<Temporal> stream(Temporal start)
+    public Stream<Temporal> streamRecurrence(Temporal start)
     {
         // filter out recurrences
         Stream<Temporal> filteredStream = (recurrences().size() == 0) ?

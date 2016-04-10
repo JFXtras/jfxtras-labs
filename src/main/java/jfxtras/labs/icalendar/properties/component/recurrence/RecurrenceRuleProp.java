@@ -5,6 +5,7 @@ import jfxtras.labs.icalendar.components.StandardTime;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBase;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 
 /**
  * RRULE
@@ -23,33 +24,16 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public class RecurrenceRule extends PropertyBase<RecurrenceRule, Recurrence>
+public class RecurrenceRuleProp extends PropertyBase<RecurrenceRuleProp, RecurrenceRule>
 {
-//    // TODO - move to ValueType 
-//    private final static StringConverter<Recurrence> CONVERTER = new StringConverter<Recurrence>()
-//    {
-//        @Override
-//        public String toString(Recurrence object)
-//        {
-//            return object.toString();
-//        }
-//
-//        @Override
-//        public Recurrence fromString(String string)
-//        {
-//            return new RecurrenceImpl(string);
-//        }
-//    };
-    
-    public RecurrenceRule(CharSequence contentLine)
+    public RecurrenceRuleProp(CharSequence contentLine)
     {
         // null as argument for string converter causes default converter from ValueType to be used
         super(contentLine, null);
     }
 
-    public RecurrenceRule(Recurrence value)
+    public RecurrenceRuleProp(RecurrenceRule value)
     {
         super(value, null);
     }
-
 }

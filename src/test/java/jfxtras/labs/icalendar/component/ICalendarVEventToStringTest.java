@@ -160,7 +160,7 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract
     {
         Temporal date = LocalDate.of(2015, 11, 12);
         String expectedString = "20151112";
-        String madeString = DateTimeUtilities.format(date);
+        String madeString = DateTimeUtilities.temporalToString(date);
         assertEquals(expectedString, madeString);
     }
 

@@ -12,7 +12,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Daily;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Monthly;
@@ -41,7 +41,7 @@ public final class ICalendarStaticVEvents
                 .withDuration(Duration.ofHours(1))
                 .withDescription(new Description("Yearly1 Description"))
                 .withSummary(new Summary("Yearly1 Summary"))
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Yearly()));
     }
         
@@ -50,7 +50,7 @@ public final class ICalendarStaticVEvents
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Monthly()));
     }
     
@@ -59,7 +59,7 @@ public final class ICalendarStaticVEvents
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.MONDAY, 3)))));
     }
@@ -70,7 +70,7 @@ public final class ICalendarStaticVEvents
     {
         return new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()));
     }
 
@@ -85,7 +85,7 @@ public final class ICalendarStaticVEvents
                 .withSummary(new Summary("Weekly1 Summary"))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -108,7 +108,7 @@ public final class ICalendarStaticVEvents
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
                 .withDescription(new Description("WeeklyZoned Description"))
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
                 .withSummary(new Summary("WeeklyZoned Summary"))
@@ -126,7 +126,7 @@ public final class ICalendarStaticVEvents
                 .withSummary(new Summary("Daily1 Summary"))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Daily()));
     }
 
@@ -142,7 +142,7 @@ public final class ICalendarStaticVEvents
                 .withSummary(new Summary("Daily2 Summary"))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withCount(6)
                         .withFrequency(new Daily()
                                 .withInterval(3)));
@@ -159,7 +159,7 @@ public final class ICalendarStaticVEvents
                 .withSummary(new Summary("Daily6 Summary"))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
                                 .withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Daily()
@@ -220,7 +220,7 @@ public final class ICalendarStaticVEvents
                 .withDateTimeEnd(LocalDate.of(2015, 11, 11))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withUntil(LocalDate.of(2015, 11, 24))
                         .withFrequency(new Daily()
                                 .withInterval(3)));

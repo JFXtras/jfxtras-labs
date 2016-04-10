@@ -35,7 +35,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
@@ -49,7 +49,7 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
  * @param <I> - recurrence instance type
  * @param <T> - Implementation class
  */
-public abstract class VComponentDisplayableBase<I, T> implements VComponentDisplayableOld<I>
+public abstract class VComponentDisplayableOldBase<I, T> implements VComponentDisplayableOld<I>
 {
     /**
      * CATEGORIES: RFC 5545 iCalendar 3.8.1.12. page 81
@@ -486,17 +486,17 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
      * If event is not repeating value is null
      */
     @Override
-    public ObjectProperty<RecurrenceImpl> rRuleProperty()
+    public ObjectProperty<RecurrenceRule> rRuleProperty()
     {
-        if (rRule == null) rRule = new SimpleObjectProperty<RecurrenceImpl>(this, VComponentPropertyOld.RECURRENCE_RULE.toString(), _rRule);
+        if (rRule == null) rRule = new SimpleObjectProperty<RecurrenceRule>(this, VComponentPropertyOld.RECURRENCE_RULE.toString(), _rRule);
         return rRule;
     }
-    private ObjectProperty<RecurrenceImpl> rRule;
-    private RecurrenceImpl _rRule;
+    private ObjectProperty<RecurrenceRule> rRule;
+    private RecurrenceRule _rRule;
     @Override
-    public RecurrenceImpl getRRule() { return (rRule == null) ? _rRule : rRule.get(); }
+    public RecurrenceRule getRRule() { return (rRule == null) ? _rRule : rRule.get(); }
     @Override
-    public void setRRule(RecurrenceImpl rRule)
+    public void setRRule(RecurrenceRule rRule)
     {
         if (this.rRule == null)
         {
@@ -506,7 +506,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
             this.rRule.set(rRule);
         }
     }
-    public T withRRule(RecurrenceImpl rRule) { setRRule(rRule); return (T) this; }
+    public T withRRule(RecurrenceRule rRule) { setRRule(rRule); return (T) this; }
     
     /**
      *  SEQUENCE: RFC 5545 iCalendar 3.8.7.4. page 138
@@ -626,12 +626,12 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
 
     // CONSTRUCTORS
     /** Copy constructor */
-    public VComponentDisplayableBase(VComponentDisplayableBase<I, T> vcomponent)
+    public VComponentDisplayableOldBase(VComponentDisplayableOldBase<I, T> vcomponent)
     {
         copy(vcomponent, this);
     }
     
-    public VComponentDisplayableBase() { }
+    public VComponentDisplayableOldBase() { }
     
     @Override
     public boolean handleEdit(
@@ -1094,7 +1094,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     
     /** Deep copy all fields from source to destination 
      * @param <J>*/
-    private static <J> void copy(VComponentDisplayableBase<J,?> source, VComponentDisplayableBase<J,?> destination)
+    private static <J> void copy(VComponentDisplayableOldBase<J,?> source, VComponentDisplayableOldBase<J,?> destination)
     {
         Arrays.stream(VComponentPropertyOld.values())
         .forEach(p ->
@@ -1118,7 +1118,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     @Override
     public void copyTo(VComponentDisplayableOld<I> destination)
     {
-        copy(this, (VComponentDisplayableBase<I,?>) destination);
+        copy(this, (VComponentDisplayableOldBase<I,?>) destination);
     }
 
     /**
@@ -1147,7 +1147,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
     private int skipCounter = 0; // counter that increments up to CACHE_SKIP, indicates time to record a value, then resets to 0
     private Temporal[] temporalCache; // the start date or date/time cache
     private Temporal dateTimeStartLast; // last dateTimeStart, when changes indicates clearing the cache is necessary
-    private RecurrenceImpl rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
+    private RecurrenceRule rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
     private int cacheStart = 0; // start index where cache values are stored (starts in middle)
     private int cacheEnd = 0; // end index where cache values are stored
 
@@ -1299,7 +1299,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
                 earliestCacheValue = getDateTimeStart();
                 latestCacheValue = getDateTimeStart();
             }
-            stream1 = getRRule().stream(match);
+            stream1 = getRRule().streamRecurrence(match);
         }
         
         Stream<Temporal> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, start2); // add recurrence list
@@ -1362,7 +1362,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
                     .filter(d -> ! DateTimeUtilities.isBefore(d, start));
         } else
         { // if has recurrence rule
-            stream1 = getRRule().stream(getDateTimeStart());
+            stream1 = getRRule().streamRecurrence(getDateTimeStart());
         }
         Stream<Temporal> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, start); // add recurrence list
         Stream<Temporal> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, start); // remove exceptions
@@ -1376,7 +1376,7 @@ public abstract class VComponentDisplayableBase<I, T> implements VComponentDispl
         WITH_NEW_REPEAT, 
         HAD_REPEAT_BECOMING_INDIVIDUAL;
       
-        public static RRuleStatus getRRuleType(RecurrenceImpl rruleNew, RecurrenceImpl rruleOld)
+        public static RRuleStatus getRRuleType(RecurrenceRule rruleNew, RecurrenceRule rruleOld)
         {
             if (rruleNew == null)
             {

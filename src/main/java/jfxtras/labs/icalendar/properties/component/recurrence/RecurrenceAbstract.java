@@ -150,7 +150,7 @@ public abstract class RecurrenceAbstract<T> implements Recurrence
         String datesString = getTemporals()
                 .stream()
                 .sorted()
-                .map(d -> DateTimeUtilities.format(d) + ",")
+                .map(d -> DateTimeUtilities.temporalToString(d) + ",")
                 .collect(Collectors.joining());
         return datesString.substring(0, datesString.length()-1); // remove last comma
     }

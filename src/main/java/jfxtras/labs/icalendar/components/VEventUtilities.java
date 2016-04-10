@@ -239,7 +239,7 @@ public final class VEventUtilities
                 } else if (vEvent.endPriority == EndType.DTEND)
                 {
 //                    String tag = DateTimeUtilities.dateTimePropertyTag(toString(), vEvent.getDateTimeEnd());
-                    return toString() + ":" + DateTimeUtilities.format(vEvent.getDateTimeEnd().getValue());
+                    return toString() + ":" + DateTimeUtilities.temporalToString(vEvent.getDateTimeEnd().getValue());
                 } else
                 {
                     throw new RuntimeException("DTEND and EndPriority don't match");

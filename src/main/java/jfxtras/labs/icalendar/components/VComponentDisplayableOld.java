@@ -25,7 +25,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
@@ -126,7 +126,7 @@ this limitation is a future goal. - I plan on fixing this problem by combining m
 instances into one property internally.
 
  * @param <I> - type of recurrence instance, such as an appointment implementation
- * @see VComponentDisplayableBase
+ * @see VComponentDisplayableOldBase
  * @see VEventOld
  * @see VTodoOld // not implemented yet
  * @see VJournalOld // not implemented yet
@@ -286,9 +286,9 @@ public interface VComponentDisplayableOld<I>
      * to-dos, journal entries, or time zone definitions
      * If component is not repeating the value is null.
      */
-    RecurrenceImpl getRRule();
-    ObjectProperty<RecurrenceImpl> rRuleProperty();
-    void setRRule(RecurrenceImpl rRule);
+    RecurrenceRule getRRule();
+    ObjectProperty<RecurrenceRule> rRuleProperty();
+    void setRRule(RecurrenceRule rRule);
 
     /**
      *  SEQUENCE: RFC 5545 iCalendar 3.8.7.4. page 138
@@ -759,7 +759,7 @@ public interface VComponentDisplayableOld<I>
             VComponentDisplayableOld<U> v = i.next();
             if (v.getRRule() == null && v.getRDate() == null) count++; // individual
             else if ((v.getRRule().getUntil() == null) && (v.getRRule().getCount() == 0)) count = -1; // infinite
-            else count += v.getRRule().stream(v.getDateTimeStart()).count();
+            else count += v.getRRule().streamRecurrence(v.getDateTimeStart()).count();
             if (count == -1) break;
         }
         if (count == 0) throw new RuntimeException("Invalid VComponent: no instances in recurrence set");

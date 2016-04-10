@@ -38,7 +38,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Frequency;
@@ -1324,7 +1324,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 45), ZoneId.of("America/Los_Angeles")))
                 .withSequence(1)
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
         
@@ -1396,9 +1396,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "CREATED:" + DateTimeUtilities.format(v.getDateTimeCreated()) + System.lineSeparator()
+                + "CREATED:" + DateTimeUtilities.temporalToString(v.getDateTimeCreated()) + System.lineSeparator()
                 + "DTEND;TZID=" + zone + ":20151111T120000" + System.lineSeparator()
-                + "DTSTAMP:" + DateTimeUtilities.format(v.getDateTimeStamp()) + System.lineSeparator()
+                + "DTSTAMP:" + DateTimeUtilities.temporalToString(v.getDateTimeStamp()) + System.lineSeparator()
                 + "DTSTART;TZID=" + zone + ":20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=WEEKLY;BYDAY=WE,FR,MO" + System.lineSeparator()
                 + "SEQUENCE:1" + System.lineSeparator()
@@ -1450,9 +1450,9 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         String zone = ZoneId.systemDefault().toString();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
-                + "CREATED:" + DateTimeUtilities.format(v.getDateTimeCreated()) + System.lineSeparator()
+                + "CREATED:" + DateTimeUtilities.temporalToString(v.getDateTimeCreated()) + System.lineSeparator()
                 + "DTEND;TZID=" + zone + ":20151111T120000" + System.lineSeparator()
-                + "DTSTAMP:" + DateTimeUtilities.format(v.getDateTimeStamp()) + System.lineSeparator()
+                + "DTSTAMP:" + DateTimeUtilities.temporalToString(v.getDateTimeStamp()) + System.lineSeparator()
                 + "DTSTART;TZID=" + zone + ":20151111T100000" + System.lineSeparator()
                 + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6" + System.lineSeparator()
                 + "SEQUENCE:1" + System.lineSeparator()

@@ -21,7 +21,7 @@ import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceImpl;
+import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Daily;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
 
@@ -144,7 +144,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
         assertEquals(expectedDates, madeDates);
 
         VEventMock expectedVEvent = getDailyUTC()
-                .withRRule(new RecurrenceImpl()
+                .withRRule(new RecurrenceRule()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 15, 10, 0), ZoneOffset.UTC))
                         .withFrequency(new Daily()
                                 .withInterval(2)));

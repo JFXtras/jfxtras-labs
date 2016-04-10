@@ -4,7 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-public class VJournalOld<I,T> extends VComponentDisplayableBase<I,T>
+public class VJournalOld<I,T> extends VComponentDisplayableOldBase<I,T>
 {
 
     public VJournalOld() { throw new RuntimeException("not supported"); }
