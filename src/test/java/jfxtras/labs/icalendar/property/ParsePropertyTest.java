@@ -82,7 +82,7 @@ public class ParsePropertyTest
         SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
         SortedMap<String, String> expectedMap = new TreeMap<>();
         expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "mailto:jimdo@example.com");
-        expectedMap.put("DIR", "ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)");
+        expectedMap.put("DIR", "\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
         assertEquals(expectedMap, valueMap);
     }
 

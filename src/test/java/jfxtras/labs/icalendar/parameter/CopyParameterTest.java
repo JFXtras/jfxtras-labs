@@ -12,7 +12,7 @@ public class CopyParameterTest
     @Test
     public void canCopyDirectory()
     {
-        DirectoryEntryReference parameter = new DirectoryEntryReference(";DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
+        DirectoryEntryReference parameter = new DirectoryEntryReference("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
         DirectoryEntryReference parameter2 = new DirectoryEntryReference(parameter);
         assertEquals(parameter, parameter2);
     }

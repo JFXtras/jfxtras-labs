@@ -51,6 +51,21 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  */
 public abstract class PropertyBase<T,U> implements Property<T>
 {
+    /**
+     * PROPERTY VALUE
+     * 
+     * Example: for the property content LOCATION:The park the property
+     * value is the string "The park"
+     */
+    @Override
+    public T getValue() { return value.get(); }
+    @Override
+    public ObjectProperty<T> valueProperty() { return value; }
+    private ObjectProperty<T> value;
+    @Override
+    public void setValue(T value) { this.value.set(value); }
+    public U withValue(T value) { setValue(value); return (U) this; }
+    
     /** The name of the property, such as DESCRIPTION
      * Remains the default value unless set by a non-standard property*/
     public String getPropertyName()
@@ -92,18 +107,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
     @Override
     public PropertyEnum propertyType() { return propertyType; }
     final private PropertyEnum propertyType;
-
-    /**
-     * The property's value
-     */
-    @Override
-    public T getValue() { return value.get(); }
-    @Override
-    public ObjectProperty<T> valueProperty() { return value; }
-    private ObjectProperty<T> value;
-    @Override
-    public void setValue(T value) { this.value.set(value); }
-    public U withValue(T value) { setValue(value); return (U) this; }
     
     /*
      * Unknown values
@@ -210,7 +213,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
 //    private boolean isCustomConverter;
     private boolean isCustomConverter()
     {
-        System.out.println("custom:" + getConverter() + " " + ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
+//        System.out.println("custom:" + getConverter() + " " + ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
         return ! getConverter().equals(defaultConverter);
     }
     
@@ -225,7 +228,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
         defaultConverter = defaultValueType.getConverter();
         setConverter(defaultConverter);
-//        setValueParameter(valueType);
+//        setValueParameter(defaultValueType);
     }
     
 //    // construct empty property

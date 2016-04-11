@@ -74,7 +74,8 @@ public class TimeZoneIdentifier extends PropertyBase<ZoneId,TimeZoneIdentifier>
     {
         boolean isNonGlobalOK = (getValue() != null);
         boolean isGloballyUniqueOK = ((getUnknownValue() != null) && (getUnknownValue().charAt(0) == '/'));
-        boolean isValueTypeOK = propertyType().allowedValueTypes().contains(getValueParameter().getValue());
+        System.out.println("time zone isValid:" + propertyType() + " " + getValueParameter());
+        boolean isValueTypeOK = (getValueParameter() != null) ? propertyType().allowedValueTypes().contains(getValueParameter().getValue()) : true;
 //        System.out.println("TimeZoneIdentifier isValid:" + isNonGlobalOK + " " + isGloballyUniqueOK + " " + isValueTypeOK);
         return (isNonGlobalOK || isGloballyUniqueOK) && isValueTypeOK;
     }

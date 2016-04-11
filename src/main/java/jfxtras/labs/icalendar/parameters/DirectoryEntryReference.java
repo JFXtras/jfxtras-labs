@@ -24,11 +24,6 @@ import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
  */
 public class DirectoryEntryReference extends ParameterBase<DirectoryEntryReference, URI>
 {
-//    public DirectoryEntryReference()
-//    {
-//        super();
-//    }
-
     public DirectoryEntryReference(URI uri)
     {
         super(uri);

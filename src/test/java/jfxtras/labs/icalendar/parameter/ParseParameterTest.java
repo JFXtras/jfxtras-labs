@@ -32,7 +32,7 @@ public class ParseParameterTest
     @Test // tests list of URI value
     public void canParseDelegatees()
     {
-        Delegatees parameter = new Delegatees("DELEGATED-TO=\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"");
+        Delegatees parameter = new Delegatees("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"");
         String expectedContent = ";DELEGATED-TO=\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"";
         assertEquals(expectedContent, parameter.toContent());
     }
@@ -40,7 +40,7 @@ public class ParseParameterTest
     @Test // tests single URI as value
     public void canParseAlternateText()
     {
-        AlternateText parameter = new AlternateText(";ALTREP=\"CID:part3.msg.970415T083000@example.com\"");
+        AlternateText parameter = new AlternateText("\"CID:part3.msg.970415T083000@example.com\"");
         String expectedContent = ";ALTREP=\"CID:part3.msg.970415T083000@example.com\"";
         assertEquals(expectedContent, parameter.toContent());
     }
@@ -48,7 +48,7 @@ public class ParseParameterTest
     @Test // tests list as value
     public void canParseDirectory()
     {
-        DirectoryEntryReference parameter = new DirectoryEntryReference(";DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
+        DirectoryEntryReference parameter = new DirectoryEntryReference("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
         String expectedContent = ";DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"";
         assertEquals(expectedContent, parameter.toContent());
     }
@@ -56,7 +56,7 @@ public class ParseParameterTest
     @Test // tests two-value parameter
     public void canParseFormatType()
     {
-        FormatType parameter = new FormatType(";FMTTYPE=application/msword");
+        FormatType parameter = new FormatType("application/msword");
         String expectedContent = ";FMTTYPE=application/msword";
         assertEquals(expectedContent, parameter.toContent());
         assertEquals("application", parameter.getTypeName());

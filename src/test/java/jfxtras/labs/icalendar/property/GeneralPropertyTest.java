@@ -18,8 +18,10 @@ public class GeneralPropertyTest
         SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(contentLine));
         SortedMap<String, String> expectedMap = new TreeMap<>();
         expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management");
-        expectedMap.put("ALTREP", "CID:part3.msg.970415T083000@example.com");
+        expectedMap.put("ALTREP", "\"CID:part3.msg.970415T083000@example.com\"");
         expectedMap.put("LANGUAGE", "en");
+        expectedMap.entrySet().stream().forEach(System.out::println);
+        valueMap.entrySet().stream().forEach(System.out::println);
         assertEquals(expectedMap, valueMap);
     }
     

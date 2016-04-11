@@ -5,7 +5,11 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -258,15 +262,24 @@ public enum ValueType
         }
     },
     UTC_OFFSET ("UTC-OFFSET") {
-        
-//        private final static DateTimeFormatter ZONE_OFFSET_FORMATTER = new DateTimeFormatterBuilder()
-//                .appendOffset("+HHMM", "+0000")
-//                .toFormatter();
         @Override
         public <T> StringConverter<T> getConverter()
         {
             // TODO Auto-generated method stub
-            return null;
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return ZONE_OFFSET_FORMATTER.format((TemporalAccessor) object);
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) ZoneOffset.of(string);
+                }
+            };
         }
     },
     UNKNOWN ("UNKNOWN") {
@@ -276,7 +289,11 @@ public enum ValueType
             // TODO Auto-generated method stub
             return null;
         }
-    };    
+    };
+    private final static DateTimeFormatter ZONE_OFFSET_FORMATTER = new DateTimeFormatterBuilder()
+            .appendOffset("+HHMM", "+0000")
+            .toFormatter();
+    
     private static Map<String, ValueType> enumFromNameMap = makeEnumFromNameMap();
     private static Map<String, ValueType> makeEnumFromNameMap()
     {
