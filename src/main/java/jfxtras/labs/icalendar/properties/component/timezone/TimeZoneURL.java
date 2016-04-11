@@ -9,7 +9,7 @@ public class TimeZoneURL extends PropertyBase<TimeZoneURL, URI>
     public TimeZoneURL(CharSequence contentLine)
     {
         // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public TimeZoneURL(TimeZoneURL source)
@@ -20,6 +20,6 @@ public class TimeZoneURL extends PropertyBase<TimeZoneURL, URI>
     public TimeZoneURL(URI value)
     {
         // null as argument for string converter causes default converter from ValueType to be used
-        super(value, null);
+        super(value);
     }
 }

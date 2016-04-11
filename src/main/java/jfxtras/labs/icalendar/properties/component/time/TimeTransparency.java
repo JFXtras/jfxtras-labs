@@ -47,17 +47,20 @@ public class TimeTransparency extends PropertyBase<TimeTransparency, Transparenc
             return TransparencyType.enumFromName(string);
         }
     };
-//    private String unknownValue; // contains exact string for unknown property value
 
     public TimeTransparency(CharSequence contentLine)
     {
-        super(contentLine, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        parseContent(contentLine);
         
     }
     
     public TimeTransparency(TransparencyType value)
     {
-        super(value, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        setValue(value);
     }
     
     public TimeTransparency(TimeTransparency source)
@@ -67,29 +70,10 @@ public class TimeTransparency extends PropertyBase<TimeTransparency, Transparenc
     
     public TimeTransparency()
     {
-        super(TransparencyType.OPAQUE, CONVERTER); // default value
+        super();
+        setConverter(CONVERTER);
+        setValue(TransparencyType.OPAQUE); // default value
     }
-    
-//    @Override
-//    protected TransparencyType valueFromString(String propertyValueString)
-//    {
-//        TransparencyType type = TransparencyType.enumFromName(propertyValueString);
-//        if (type == TransparencyType.UNKNOWN)
-//        {
-//            unknownValue = propertyValueString;
-//        }
-//        return type;
-//    }
-//    
-//    @Override
-//    protected String valueToString(TransparencyType value)
-//    {
-//        if (value == TransparencyType.UNKNOWN)
-//        {
-//            return unknownValue;
-//        }
-//        return getValue().toString();
-//    }
     
     public enum TransparencyType
     {

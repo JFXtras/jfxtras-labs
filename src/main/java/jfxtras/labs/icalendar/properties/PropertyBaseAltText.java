@@ -106,5 +106,8 @@ public abstract class PropertyBaseAltText<U,T> extends PropertyBaseLanguage<U,T>
         super(value);
     }
     
-//    public PropertyAlternateTextRepresentation() { super(); }
+    protected PropertyBaseAltText()
+    {
+        super();
+    }
 }

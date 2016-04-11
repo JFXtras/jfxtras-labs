@@ -25,6 +25,7 @@ import jfxtras.labs.icalendar.properties.component.time.PropertyBaseZonedTime;
  * @see VTodo
  * @see VFreeBusy
  */
+@Deprecated
 public class DTStartZonedDateTime extends PropertyBaseZonedTime<DTStartZonedDateTime>
 {
     public DTStartZonedDateTime(ZonedDateTime temporal)

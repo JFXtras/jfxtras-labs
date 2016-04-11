@@ -68,4 +68,9 @@ public abstract class PropertyBaseLanguage<U,T> extends PropertyBase<U,T> implem
     {
         super(value);
     }
+    
+    protected PropertyBaseLanguage()
+    {
+        super();
+    }
 }

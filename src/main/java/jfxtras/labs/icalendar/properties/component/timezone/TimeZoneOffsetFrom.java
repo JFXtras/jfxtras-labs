@@ -23,8 +23,7 @@ public class TimeZoneOffsetFrom extends PropertyBaseZoneOffset<TimeZoneOffsetFro
 {    
     public TimeZoneOffsetFrom(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public TimeZoneOffsetFrom(TimeZoneOffsetFrom source)
@@ -34,7 +33,6 @@ public class TimeZoneOffsetFrom extends PropertyBaseZoneOffset<TimeZoneOffsetFro
     
     public TimeZoneOffsetFrom(ZoneOffset value)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(value, null);
+        super(value);
     }
 }

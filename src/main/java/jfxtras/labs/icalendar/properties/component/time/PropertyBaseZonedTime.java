@@ -24,6 +24,7 @@ import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTi
  * @see DTEndZonedDateTime
  * @see RecurrenceIDZonedDateTime
  */
+@Deprecated
 public abstract class PropertyBaseZonedTime<U> extends PropertyBase<U, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
 {
     /**

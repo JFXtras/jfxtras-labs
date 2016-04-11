@@ -45,12 +45,16 @@ public class Resources extends PropertyBaseAltText<Resources, List<String>>
     
     public Resources(CharSequence contentLine)
     {
-        super(contentLine, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        parseContent(contentLine);
     }
 
     public Resources(List<String> values)
     {
-        super(values, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        setValue(values);
     }
     
     public Resources(Resources source)

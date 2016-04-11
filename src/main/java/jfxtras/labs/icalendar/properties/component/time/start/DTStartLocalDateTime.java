@@ -24,18 +24,19 @@ import jfxtras.labs.icalendar.properties.component.time.PropertyBaseDateTime;
  * @see VTodo
  * @see VFreeBusy
  */
+@Deprecated
 public class DTStartLocalDateTime extends PropertyBaseDateTime<DTStartLocalDateTime>
 {
     public DTStartLocalDateTime(LocalDateTime temporal)
     {
         // null as argument for string converter causes default converter from ValueType to be used
-        super(temporal, null);
+        super(temporal);
     }
 
     public DTStartLocalDateTime(CharSequence contentLine)
     {
         // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public DTStartLocalDateTime(DTStartLocalDateTime source)

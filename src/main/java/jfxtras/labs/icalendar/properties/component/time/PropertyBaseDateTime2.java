@@ -75,15 +75,20 @@ public abstract class PropertyBaseDateTime2<U, T extends Temporal> extends Prope
     /*
      * CONSTRUCTORS
      */
+    protected PropertyBaseDateTime2()
+    {
+        super();
+    }
     
     public PropertyBaseDateTime2(T temporal)
     {
         super(temporal);
     }
 
-    public PropertyBaseDateTime2(CharSequence contentLine)
+    public PropertyBaseDateTime2(Class<T> clazz, CharSequence contentLine)
     {
         super(contentLine);
+        clazz.cast(getValue()); // ensure value class type matches parameterized type
     }
     
     public PropertyBaseDateTime2(PropertyBaseDateTime2<U,T> source)
@@ -114,6 +119,10 @@ public abstract class PropertyBaseDateTime2<U, T extends Temporal> extends Prope
             if (getTimeZoneIdentifier() != null)
             {
                 throw new DateTimeException("Only ZonedDateTime is permitted when specifying a Time Zone Identifier");                            
+            }
+            if (value instanceof LocalDate)
+            {
+                setValueParameter(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
             }
         } else
         {

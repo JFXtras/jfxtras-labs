@@ -19,6 +19,7 @@ import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
  * @see DTEndLocalDate
  * @see RecurrenceIDLocalDate
  */
+@Deprecated
 public abstract class PropertyBaseDate<U> extends PropertyBase<U, LocalDate> implements PropertyDateTime<LocalDate>
 {
     public PropertyBaseDate(LocalDate temporal)

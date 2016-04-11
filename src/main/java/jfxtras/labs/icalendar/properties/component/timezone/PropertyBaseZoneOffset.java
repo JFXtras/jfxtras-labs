@@ -2,14 +2,13 @@ package jfxtras.labs.icalendar.properties.component.timezone;
 
 import java.time.ZoneOffset;
 
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
 public abstract class PropertyBaseZoneOffset<T> extends PropertyBase<T, ZoneOffset>
 {
-    public PropertyBaseZoneOffset(CharSequence contentLine, StringConverter<ZoneOffset> converter)
+    public PropertyBaseZoneOffset(CharSequence contentLine)
     {
-        super(contentLine, converter);
+        super(contentLine);
     }
     
     public PropertyBaseZoneOffset(PropertyBaseZoneOffset<T> source)
@@ -17,8 +16,8 @@ public abstract class PropertyBaseZoneOffset<T> extends PropertyBase<T, ZoneOffs
         super(source);
     }
     
-    public PropertyBaseZoneOffset(ZoneOffset value, StringConverter<ZoneOffset> converter)
+    public PropertyBaseZoneOffset(ZoneOffset value)
     {
-        super(value, converter);
+        super(value);
     }
 }

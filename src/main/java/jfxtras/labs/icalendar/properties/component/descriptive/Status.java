@@ -45,12 +45,16 @@ public class Status extends PropertyBase<Status, StatusType>
     
     public Status(CharSequence contentLine)
     {
-        super(contentLine, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        parseContent(contentLine);
     }
     
     public Status(StatusType value)
     {
-        super(value, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        setValue(value);
     }
     
     public Status(Status source)

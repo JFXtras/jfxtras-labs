@@ -14,16 +14,17 @@ import jfxtras.labs.icalendar.properties.PropertyDateTime;
  * @param <U> - implementation class
  * @see DateTimeCompleted
  */
+@Deprecated
 public abstract class PropertyBaseUTCTime<U> extends PropertyBase<U, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
 {
     public PropertyBaseUTCTime(ZonedDateTime temporal, StringConverter<ZonedDateTime> converter)
     {
-        super(temporal, converter);
+        super(temporal);
     }
 
     public PropertyBaseUTCTime(CharSequence contentLine, StringConverter<ZonedDateTime> converter)
     {
-        super(contentLine, converter);
+        super(contentLine);
     }
     
     public PropertyBaseUTCTime(PropertyBaseUTCTime<U> source)

@@ -388,8 +388,17 @@ public abstract class PropertyBase<U,T> implements Property<T>
         
         final String propertyValue;
         List<Integer> indices = new ArrayList<>();
-        indices.add(propertyString.indexOf(':'));
-        indices.add(propertyString.indexOf(';'));
+        int firstSpaceIndex = (propertyString.indexOf(' ') > 0) ? propertyString.indexOf(' ') : Integer.MAX_VALUE;
+        int firstColonIndex = propertyString.indexOf(':');
+        if (firstColonIndex < firstSpaceIndex)
+        {
+            indices.add(firstColonIndex);
+        }
+        int firstSemicolonIndex = propertyString.indexOf(';');
+        if (firstSemicolonIndex < firstSpaceIndex)
+        {
+            indices.add(firstSemicolonIndex);
+        }
         Optional<Integer> hasPropertyName = indices
                 .stream()
                 .filter(v -> v > 0)
@@ -446,12 +455,14 @@ public abstract class PropertyBase<U,T> implements Property<T>
         // save property value        
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
         T value = getConverter().fromString(getPropertyValueString());
+//        System.out.println("value class:" + value.getClass());
         if (value == null)
         {
             setUnknownValue(propertyValueString);
         } else
         {
             setValue(value);
+//            System.out.println("value class2:" + getValue().getClass());
             if (value.toString() == "UNKNOWN") // enum name indicating unknown value
             {
                 setUnknownValue(propertyValueString);
@@ -481,11 +492,11 @@ public abstract class PropertyBase<U,T> implements Property<T>
     /* test if value type is valid */
     private boolean isValueParameterValid(ValueParameter value)
     {
-        boolean isMatchingType = propertyType().allowedValueTypes().contains(value.getValue());
+        boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value.getValue());
         boolean isUnknownType = value.getValue().equals(ValueType.UNKNOWN);
         boolean isNonStandardProperty = propertyType().equals(PropertyEnum.NON_STANDARD) || propertyType().equals(PropertyEnum.IANA_PROPERTY);
-//        System.out.println("e2:" + isMatchingType + " " + isUnknownType + " " + isNonStandardProperty);
-        return (isMatchingType || isUnknownType || isNonStandardProperty);
+//        System.out.println("e2:" + isValueTypeOK + " " + isUnknownType + " " + isNonStandardProperty);
+        return (isValueTypeOK || isUnknownType || isNonStandardProperty);
     }
     
     /**

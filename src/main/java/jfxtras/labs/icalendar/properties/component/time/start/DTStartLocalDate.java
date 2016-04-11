@@ -24,6 +24,7 @@ import jfxtras.labs.icalendar.properties.component.time.PropertyBaseDate;
  * @see VTodo
  * @see VFreeBusy
  */
+@Deprecated
 public class DTStartLocalDate extends PropertyBaseDate<DTStartLocalDate>
 {
     public DTStartLocalDate(LocalDate temporal)

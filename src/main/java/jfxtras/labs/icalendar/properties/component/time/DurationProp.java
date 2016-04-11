@@ -35,12 +35,12 @@ public class DurationProp extends PropertyBaseLanguage<DurationProp, TemporalAmo
 {
     public DurationProp(CharSequence contentLine)
     {
-        super(contentLine, null);
+        super(contentLine);
     }
 
     public DurationProp(TemporalAmount value)
     {
-        super(value, null);
+        super(value);
     }
 
     public DurationProp(DurationProp source)
