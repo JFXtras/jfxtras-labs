@@ -20,12 +20,11 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  * @author David Bal
  * @see VCalendar
  */
-public class ProductIdentifier extends PropertyBase<ProductIdentifier, String>
+public class ProductIdentifier extends PropertyBase<String, ProductIdentifier>
 {
     public ProductIdentifier(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public ProductIdentifier(ProductIdentifier source)

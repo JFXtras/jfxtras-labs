@@ -2,20 +2,18 @@ package jfxtras.labs.icalendar.properties.component.change;
 
 import java.time.ZonedDateTime;
 
-import jfxtras.labs.icalendar.properties.PropertyBase;
+import jfxtras.labs.icalendar.properties.PropertyBaseUTC;
 
-public class DateTimeStamp extends PropertyBase<DateTimeStamp, ZonedDateTime>
+public class DateTimeStamp extends PropertyBaseUTC<DateTimeStamp>
 {    
     public DateTimeStamp(ZonedDateTime temporal)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(temporal, null);
+        super(temporal);
     }
 
     public DateTimeStamp(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public DateTimeStamp(DateTimeStamp source)

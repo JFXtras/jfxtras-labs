@@ -19,12 +19,11 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  * @author David Bal
  * @see VCalendar
  */
-public class Method extends PropertyBase<Method, String>
+public class Method extends PropertyBase<String, Method>
 {
     public Method(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public Method(Method source)

@@ -14,6 +14,7 @@ import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendar.properties.component.change.Sequence;
+import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendar.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
@@ -22,9 +23,6 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Location;
 import jfxtras.labs.icalendar.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendar.properties.component.descriptive.Status;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentURI;
 import jfxtras.labs.icalendar.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendar.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
@@ -86,43 +84,7 @@ public enum PropertyEnum
                     return null;
                 }
             },
-    // property class
-    ATTACHMENT_URI ("ATTACH" // property name
-            , Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER) // valid property value types, first is default
-            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
-            , AttachmentURI.class) {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            },
-    ATTACHMENT_BASE64 ("ATTACH" // property name
-            , Arrays.asList(ValueType.BINARY) // valid property value types, first is default
-            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
-            , AttachmentBase64.class) {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
     ATTENDEE ("ATTENDEE"    // property name
             , Arrays.asList(ValueType.CALENDAR_USER_ADDRESS) // valid property value types, first is default
             , Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.CALENDAR_USER_TYPE, ParameterEnum.DELEGATEES,
@@ -516,21 +478,22 @@ public enum PropertyEnum
             Arrays.asList(ValueType.CALENDAR_USER_ADDRESS), // valid property value types, first is default
             Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.DIRECTORY_ENTRY_REFERENCE, ParameterEnum.LANGUAGE,
                     ParameterEnum.SENT_BY), // allowed parameters
-            Organizer.class) {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            Organizer.class)
+    {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // property class
     PERCENT_COMPLETE ("PERCENT", null, null, null) {
         @Override
         public Property<?> getProperty(VComponent vComponent)
@@ -952,27 +915,27 @@ public enum PropertyEnum
         });
         return map;
     }
+    @Deprecated // go back to one name per proprety
     public static List<PropertyEnum> enumListFromName(String propertyName)
     {
         return enumListFromNameMap.get(propertyName.toUpperCase());
     }
     
-//    private static Map<Pair<String, ValueType>, PropertyEnum> enumFromNameMap = makeEnumFromNameMap();
-//    private static Map<Pair<String, ValueType>, PropertyEnum> makeEnumFromNameMap()
-//    {
-//        Map<Pair<String, ValueType>, PropertyEnum> map = new HashMap<>();
-//        PropertyEnum[] values = PropertyEnum.values();
-//        for (int i=0; i<values.length; i++)
-//        {
-//            map.put(new Pair<String, ValueType>(values[i].toString(), values[i].defaultValueType()), values[i]);
-//        }
-//        return map;
-//    }
-//    @Deprecated
-//    public static PropertyEnum enumFromName(String propertyName, ValueType valueType)
-//    {
-//        return enumFromNameMap.get(new Pair<String, ValueType>(propertyName.toUpperCase(),valueType));
-//    }
+    private static Map<String, PropertyEnum> enumFromNameMap = makeEnumFromNameMap();
+    private static Map<String, PropertyEnum> makeEnumFromNameMap()
+    {
+        Map<String, PropertyEnum> map = new HashMap<>();
+        PropertyEnum[] values = PropertyEnum.values();
+        for (int i=0; i<values.length; i++)
+        {
+            map.put(values[i].toString(), values[i]);
+        }
+        return map;
+    }
+    public static PropertyEnum enumFromName(String propertyName)
+    {
+        return enumFromNameMap.get(propertyName);
+    }
     
     // Map to match up class to enum
     private static Map<Class<? extends Property>, PropertyEnum> enumFromClassMap = makeEnumFromClassMap();

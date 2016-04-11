@@ -14,12 +14,12 @@ import java.net.URI;
  * @author David Bal
  *
  */
-public class Organizer extends PropertyBaseCalendarUser<Organizer, URI>
+public class Organizer extends PropertyBaseCalendarUser<URI, Organizer>
 {
     public Organizer(String contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
+        URI.class.cast(getValue()); // ensure value class type matches parameterized type
     }
     
     public Organizer(Organizer source)

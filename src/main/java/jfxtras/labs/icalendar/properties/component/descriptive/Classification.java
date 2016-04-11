@@ -24,7 +24,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Classification.Cl
  * @see VTodo
  * @see VJournal
  */
-public class Classification extends PropertyBase<Classification, ClassificationType>
+public class Classification extends PropertyBase<ClassificationType, Classification>
 {
     private final static StringConverter<ClassificationType> CONVERTER = new StringConverter<ClassificationType>()
     {

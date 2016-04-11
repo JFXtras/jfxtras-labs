@@ -8,7 +8,7 @@ package jfxtras.labs.icalendar.properties.component.misc;
  *
  */
 // TODO - DO I WANT TO MAKE INTERFACES FOR PARAMETERS?
-public class IANAProperty extends UnknownProperty<IANAProperty, Object>
+public class IANAProperty extends UnknownProperty<Object, IANAProperty>
 {    
     public IANAProperty(CharSequence contentLine)
     {

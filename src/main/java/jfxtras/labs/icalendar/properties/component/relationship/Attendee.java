@@ -25,18 +25,17 @@ import jfxtras.labs.icalendar.components.VTodo;
  * @see VJournal
  * @see VAlarm
  */
-public class Attendee extends PropertyBaseAttendee<Attendee, URI>
+public class Attendee extends PropertyBaseAttendee<URI, Attendee>
 {    
     public Attendee(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
+        URI.class.cast(getValue()); // ensure value class type matches parameterized type
     }
     
     public Attendee(URI value)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(value, null);
+        super(value);
     }
     
     public Attendee(Attendee source)

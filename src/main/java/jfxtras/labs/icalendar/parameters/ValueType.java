@@ -59,8 +59,27 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
-            return null;
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return object.toString();
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                    try
+                    {
+                        return (T) new URI(string);
+                    } catch (URISyntaxException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            };
         }
     },
     DATE ("DATE") {

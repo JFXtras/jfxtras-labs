@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
  * @see VEvent
  * @see VTodo
  */
-public class Resources extends PropertyBaseAltText<Resources, List<String>>
+public class Resources extends PropertyBaseAltText<List<String>, Resources>
 {
     private final static StringConverter<List<String>> CONVERTER = new StringConverter<List<String>>()
     {

@@ -11,12 +11,10 @@ import jfxtras.labs.icalendar.properties.PropertyAttachment;
 import jfxtras.labs.icalendar.properties.PropertyAttendee;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
-import jfxtras.labs.icalendar.properties.PropertyBaseDateTime;
 import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
+import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseCalendarUser;
 
 public enum ParameterEnum
@@ -165,7 +163,7 @@ public enum ParameterEnum
         public void parse(Property<?> property, String content)
         {
 //            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
-            Attachment<?> castProperty = (Attachment<?>) property;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
             castProperty.setEncoding(new Encoding(content));
         }
 
@@ -173,14 +171,14 @@ public enum ParameterEnum
         public Parameter<?> getParameter(Property<?> parent)
         {
 //            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
-            Attachment<?> castProperty = (Attachment<?>) parent;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
             return castProperty.getEncoding();
         }
 
         @Override
         public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
         {
-            AttachmentBase64 castProperty = (AttachmentBase64) destination;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) destination;
             castProperty.setEncoding(new Encoding((Encoding) sourceParameter)); 
         }
     },
@@ -190,7 +188,7 @@ public enum ParameterEnum
         public void parse(Property<?> property, String content)
         {
 //            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
-            Attachment<?> castProperty = (Attachment<?>) property;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
             castProperty.setFormatType(new FormatType(content));
         }
 
@@ -198,7 +196,7 @@ public enum ParameterEnum
         public Parameter<?> getParameter(Property<?> parent)
         {
 //            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
-            Attachment<?> castProperty = (Attachment<?>) parent;
+            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
             return castProperty.getFormatType();
         }
 
@@ -437,14 +435,14 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyBaseDateTime<? extends Temporal,?> castProperty = (PropertyBaseDateTime<? extends Temporal,?>) property;
+            PropertyDateTime<? extends Temporal> castProperty = (PropertyDateTime<? extends Temporal>) property;
             castProperty.setTimeZoneIdentifier(new TimeZoneIdentifierParameter(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyBaseDateTime<? extends Temporal,?> castProperty = (PropertyBaseDateTime<? extends Temporal,?>) parent;
+            PropertyDateTime<? extends Temporal> castProperty = (PropertyDateTime<? extends Temporal>) parent;
             TimeZoneIdentifierParameter parameter = castProperty.getTimeZoneIdentifier();
             return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
         }

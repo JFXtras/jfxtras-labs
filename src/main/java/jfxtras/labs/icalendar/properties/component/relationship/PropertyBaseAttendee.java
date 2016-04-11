@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.PropertyAttendee;
  * @param <U> - subclass
  * @param <T> - property value type
  */
-public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser<T,U> implements PropertyAttendee<U>
+public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser<T,U> implements PropertyAttendee<T>
 {
     /**
      * CUTYPE

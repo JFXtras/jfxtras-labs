@@ -23,12 +23,11 @@ import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
  * @see VJournal
  * @see VFreeBusy
  */
-public class Contact extends PropertyBaseAltText<Contact, String>
+public class Contact extends PropertyBaseAltText<String, Contact>
 {   
     public Contact(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public Contact(Contact source)

@@ -27,7 +27,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
  * @see VTodo
  * @see VJournal
  */
-public class Categories extends PropertyBaseLanguage<Categories, List<String>>
+public class Categories extends PropertyBaseLanguage<List<String>, Categories>
 {
     private final static StringConverter<List<String>> CONVERTER = new StringConverter<List<String>>()
     {

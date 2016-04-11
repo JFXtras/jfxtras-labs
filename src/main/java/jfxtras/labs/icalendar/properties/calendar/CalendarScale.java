@@ -22,7 +22,7 @@ import jfxtras.labs.icalendar.properties.calendar.CalendarScale.CalendarScaleTyp
  * @author David Bal
  * @see VCalendar
  */
-public class CalendarScale extends PropertyBase<CalendarScale, CalendarScaleType>
+public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale>
 {
     public CalendarScale(CharSequence contentLine)
     {

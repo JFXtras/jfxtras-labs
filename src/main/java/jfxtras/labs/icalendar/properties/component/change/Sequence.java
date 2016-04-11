@@ -2,18 +2,16 @@ package jfxtras.labs.icalendar.properties.component.change;
 
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class Sequence extends PropertyBase<Sequence, Integer>
+public class Sequence extends PropertyBase<Integer, Sequence>
 {
     public Sequence(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
 
     public Sequence(Integer value)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(value, null);
+        super(value);
     }
     
     public Sequence(Sequence source)

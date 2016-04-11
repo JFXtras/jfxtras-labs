@@ -20,12 +20,11 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  * @author David Bal
  * @see VCalendar
  */
-public class Version extends PropertyBase<Version, String>
+public class Version extends PropertyBase<String, Version>
 {
     public Version(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public Version(Version source)
@@ -37,6 +36,6 @@ public class Version extends PropertyBase<Version, String>
     public Version()
     {
         // null as argument for string converter causes default converter from ValueType to be used
-        super("2.0", null);
+        super("2.0");
     }
 }

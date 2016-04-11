@@ -30,6 +30,7 @@ public class UniformResourceLocator extends PropertyBase<URI,UniformResourceLoca
     public UniformResourceLocator(String contentLine)
     {
         super(contentLine);
+        URI.class.cast(getValue()); // ensure value class type matches parameterized type
     }
     
     public UniformResourceLocator(URI value)

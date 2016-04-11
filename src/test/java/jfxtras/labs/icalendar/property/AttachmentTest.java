@@ -9,11 +9,11 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
+import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
+import jfxtras.labs.icalendar.properties.component.descriptive.AttachmentBase;
+import jfxtras.labs.icalendar.properties.component.descriptive.AttachmentBase64;
+import jfxtras.labs.icalendar.properties.component.descriptive.AttachmentURI;
 import jfxtras.labs.icalendar.parameters.ValueType;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentURI;
 
 public class AttachmentTest
 {

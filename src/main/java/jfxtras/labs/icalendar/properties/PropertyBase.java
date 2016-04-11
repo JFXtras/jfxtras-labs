@@ -135,6 +135,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         {
             valueParameterProperty().set(valueType);
             // replace converter if it is equal to default converter
+            System.out.println("isCustomConverter:" + isCustomConverter());
             if (! isCustomConverter())
             {
                 System.out.println("set converter:" + valueType.getValue());
@@ -388,17 +389,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
         
         final String propertyValue;
         List<Integer> indices = new ArrayList<>();
-        int firstSpaceIndex = (propertyString.indexOf(' ') > 0) ? propertyString.indexOf(' ') : Integer.MAX_VALUE;
-        int firstColonIndex = propertyString.indexOf(':');
-        if (firstColonIndex < firstSpaceIndex)
-        {
-            indices.add(firstColonIndex);
-        }
-        int firstSemicolonIndex = propertyString.indexOf(';');
-        if (firstSemicolonIndex < firstSpaceIndex)
-        {
-            indices.add(firstSemicolonIndex);
-        }
+        indices.add(propertyString.indexOf(':'));
+        indices.add(propertyString.indexOf(';'));
         Optional<Integer> hasPropertyName = indices
                 .stream()
                 .filter(v -> v > 0)
@@ -418,9 +410,15 @@ public abstract class PropertyBase<T,U> implements Property<T>
                 propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
             } else
             {
-                throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
-                        getClass().getSimpleName() + ".  Property name associated with class " + 
-                        getClass().getSimpleName() + " is " +  propertyType.toString());
+                if (PropertyEnum.enumFromName(propertyName) == null)
+                {
+                    propertyValue = ":" + propertyString; // doesn't match a known property name, assume its all a property value
+                } else
+                {
+                    throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
+                            getClass().getSimpleName() + ".  Property name associated with class " + 
+                            getClass().getSimpleName() + " is " +  propertyType.toString());
+                }
             }
         } else
         {

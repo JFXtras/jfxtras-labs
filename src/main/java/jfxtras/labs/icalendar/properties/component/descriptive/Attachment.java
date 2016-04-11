@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
+package jfxtras.labs.icalendar.properties.component.descriptive;
 
 import java.net.URI;
 
@@ -9,17 +9,20 @@ import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendar.parameters.FormatType;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueType;
+import jfxtras.labs.icalendar.properties.PropertyAttachment;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class Attachment<T> extends PropertyBase<Attachment<T>,T>
+public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements PropertyAttachment<T>
 {
     /**
     * FMTTYPE: Format type parameter
     * RFC 5545, 3.2.8, page 19
     * specify the content type of a referenced object.
     */
-   public FormatType getFormatType() { return (formatType == null) ? null : formatType.get(); }
-   public ObjectProperty<FormatType> formatTypeProperty()
+   @Override
+public FormatType getFormatType() { return (formatType == null) ? null : formatType.get(); }
+   @Override
+public ObjectProperty<FormatType> formatTypeProperty()
    {
        if (formatType == null)
        {
@@ -28,7 +31,8 @@ public class Attachment<T> extends PropertyBase<Attachment<T>,T>
        return formatType;
    }
    private ObjectProperty<FormatType> formatType;
-   public void setFormatType(FormatType formatType)
+   @Override
+public void setFormatType(FormatType formatType)
    {
        if (formatType != null)
        {
@@ -49,8 +53,10 @@ public class Attachment<T> extends PropertyBase<Attachment<T>,T>
     * If the value type parameter is ";VALUE=BINARY", then the inline
     * encoding parameter MUST be specified with the value" ;ENCODING=BASE64".
     */
-   public Encoding getEncoding() { return (encoding == null) ? null : encoding.get(); }
-   public ObjectProperty<Encoding> encodingProperty()
+   @Override
+public Encoding getEncoding() { return (encoding == null) ? null : encoding.get(); }
+   @Override
+public ObjectProperty<Encoding> encodingProperty()
    {
        if (encoding == null)
        {
@@ -59,7 +65,8 @@ public class Attachment<T> extends PropertyBase<Attachment<T>,T>
        return encoding;
    }
    private ObjectProperty<Encoding> encoding;
-   public void setEncoding(Encoding encoding)
+   @Override
+public void setEncoding(Encoding encoding)
    {
        if (encoding.getValue() != EncodingType.BASE64)
        {

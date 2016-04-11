@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Status.StatusType
  * @see VTodo
  * @see VJournal
  */
-public class Status extends PropertyBase<Status, StatusType>
+public class Status extends PropertyBase<StatusType, Status>
 {
     private final static StringConverter<StatusType> CONVERTER = new StringConverter<StatusType>()
     {

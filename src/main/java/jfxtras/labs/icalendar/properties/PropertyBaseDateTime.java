@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifierParameter;
 import jfxtras.labs.icalendar.parameters.ValueType;
-import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDZonedDateTime;
+import jfxtras.labs.icalendar.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 
@@ -25,7 +25,7 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
  * @param <U> - implementation class
  * @see DateTimeStart
  * @see DateTimeEnd
- * @see RecurrenceIDZonedDateTime
+ * @see RecurrenceId
  */
 public abstract class PropertyBaseDateTime<T extends Temporal, U> extends PropertyBase<T,U>
 {
