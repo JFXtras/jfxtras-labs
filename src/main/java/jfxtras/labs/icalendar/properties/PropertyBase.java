@@ -137,12 +137,13 @@ public abstract class PropertyBase<U,T> implements Property<T>
             // replace converter if it is equal to default converter
             if (! isCustomConverter())
             {
+                System.out.println("set converter:" + valueType.getValue());
                 setConverter(valueType.getValue().getConverter());
             }
             // If value previously set as string (as done with non-standard properties) convert to type T
             if ((getValue() != null) && (getValue() instanceof String))
             {
-                T newPropValue= getConverter().fromString(getPropertyValueString());
+                T newPropValue = getConverter().fromString(getPropertyValueString());
                 setValue(newPropValue);
             }
         } else
@@ -206,8 +207,9 @@ public abstract class PropertyBase<U,T> implements Property<T>
     public void setConverter(StringConverter<T> converter) { this.converter = converter; }
     private boolean isCustomConverter()
     {
-//        System.out.println("custom:" + getConverter() + " " + getValueParameter());
+        System.out.println("custom:" + getConverter() + " " + ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
         return ! getConverter().equals(getValueParameter().getValue().getConverter());
+//        return ! propertyType().allowedValueTypes().get(0).getConverter().equals(getConverter());
     }
     
     /*
@@ -485,7 +487,7 @@ public abstract class PropertyBase<U,T> implements Property<T>
         } else
         {
             boolean isValueTypeOK = isValueParameterValid(getValueParameter());
-//            System.out.println("PropertyBase isValid:" + Property.super.isValid() + " " + isValueTypeOK);
+            System.out.println("PropertyBase isValid:" + Property.super.isValid() + " " + isValueTypeOK);
             return (Property.super.isValid()) && isValueTypeOK;
         }
     }
@@ -495,7 +497,7 @@ public abstract class PropertyBase<U,T> implements Property<T>
         boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value.getValue());
         boolean isUnknownType = value.getValue().equals(ValueType.UNKNOWN);
         boolean isNonStandardProperty = propertyType().equals(PropertyEnum.NON_STANDARD) || propertyType().equals(PropertyEnum.IANA_PROPERTY);
-//        System.out.println("e2:" + isValueTypeOK + " " + isUnknownType + " " + isNonStandardProperty);
+        System.out.println("e2:" + isValueTypeOK + " " + isUnknownType + " " + isNonStandardProperty);
         return (isValueTypeOK || isUnknownType || isNonStandardProperty);
     }
     

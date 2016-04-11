@@ -15,6 +15,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
+import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseCalendarUser;
 
@@ -163,14 +164,16 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
+//            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
+            Attachment<?> castProperty = (Attachment<?>) property;
             castProperty.setEncoding(new Encoding(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
+//            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
+            Attachment<?> castProperty = (Attachment<?>) parent;
             return castProperty.getEncoding();
         }
 
@@ -186,14 +189,16 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
+//            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
+            Attachment<?> castProperty = (Attachment<?>) property;
             castProperty.setFormatType(new FormatType(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
+//            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
+            Attachment<?> castProperty = (Attachment<?>) parent;
             return castProperty.getFormatType();
         }
 

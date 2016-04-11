@@ -44,12 +44,16 @@ public class Classification extends PropertyBase<Classification, ClassificationT
     
     public Classification(CharSequence contentLine)
     {
-        super(contentLine, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        parseContent(contentLine);
     }
     
     public Classification(ClassificationType type)
     {
-        super(type, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        setValue(type);
     }
     
     public Classification(Classification source)
@@ -59,7 +63,9 @@ public class Classification extends PropertyBase<Classification, ClassificationT
     
     public Classification()
     {
-        super(ClassificationType.PUBLIC, CONVERTER); // default value
+        super();
+        setConverter(CONVERTER);
+        setValue(ClassificationType.PUBLIC); // default value
     }
     
     public enum ClassificationType

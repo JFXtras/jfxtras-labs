@@ -5,7 +5,6 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.parameters.CalendarUser;
 import jfxtras.labs.icalendar.parameters.CalendarUser.CalendarUserType;
 import jfxtras.labs.icalendar.parameters.Delegatees;
@@ -16,8 +15,8 @@ import jfxtras.labs.icalendar.parameters.Participation;
 import jfxtras.labs.icalendar.parameters.Participation.ParticipationStatus;
 import jfxtras.labs.icalendar.parameters.ParticipationRole;
 import jfxtras.labs.icalendar.parameters.ParticipationRole.ParticipationRoleType;
-import jfxtras.labs.icalendar.properties.PropertyAttendee;
 import jfxtras.labs.icalendar.parameters.RSVP;
+import jfxtras.labs.icalendar.properties.PropertyAttendee;
 
 /**
  * Abstract class for Attendee and unknown properties
@@ -285,14 +284,14 @@ public abstract class PropertyBaseAttendee<U, T> extends PropertyBaseCalendarUse
      * CONSTRUCTORS
      */
     
-    public PropertyBaseAttendee(CharSequence contentLine, StringConverter<T> converter)
+    public PropertyBaseAttendee(CharSequence contentLine)
     {
-        super(contentLine, converter);
+        super(contentLine);
     }
     
-    public PropertyBaseAttendee(T value, StringConverter<T> converter)
+    public PropertyBaseAttendee(T value)
     {
-        super(value, converter);
+        super(value);
     }
     
     public PropertyBaseAttendee(PropertyBaseAttendee<U, T> source)

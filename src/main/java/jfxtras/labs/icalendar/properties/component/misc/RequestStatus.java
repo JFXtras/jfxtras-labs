@@ -6,8 +6,7 @@ public class RequestStatus extends PropertyBaseLanguage<RequestStatus, String>
 {
     public RequestStatus(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
 
     public RequestStatus(RequestStatus source)

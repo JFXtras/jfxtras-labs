@@ -35,8 +35,7 @@ public class Comment extends PropertyBaseAltText<Comment, String>
 {
     public Comment(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public Comment(Comment source)

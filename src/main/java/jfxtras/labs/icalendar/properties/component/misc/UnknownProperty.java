@@ -23,13 +23,13 @@ import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
 import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseAttendee;
 
 /**
+ * Abstract class for non-standard properties and IANA properties
  * 
  * contains all parameters
  * 
  * @author David Bal
  *
  */
-// TODO - DO I WANT TO MAKE INTERFACES FOR PARAMETERS?
 public abstract class UnknownProperty<U,T> extends PropertyBaseAttendee<U,T> implements PropertyAttendee<T>, PropertyAltText<T>, PropertyAttachment<T>, PropertyFreeBusy<T>, PropertyRecurrenceID<T>, PropertyDateTime<T>
 {
     /**
@@ -271,14 +271,14 @@ public abstract class UnknownProperty<U,T> extends PropertyBaseAttendee<U,T> imp
     {
         // null as argument for string converter causes default converter from ValueType to be used
         // Unknown properties MUST use the default converter for the set value type (or TEXT if no value type is set)
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public UnknownProperty(T value)
     {
         // null as argument for string converter causes default converter from ValueType to be used
         // Unknown properties MUST use the default converter for the set value type (or TEXT if no value type is set)
-        super(value, null);
+        super(value);
     }
     
     public UnknownProperty(UnknownProperty<U, T> source)

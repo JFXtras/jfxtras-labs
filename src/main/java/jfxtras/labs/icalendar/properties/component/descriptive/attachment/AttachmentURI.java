@@ -16,8 +16,7 @@ public class AttachmentURI extends AttachmentBase<AttachmentURI, URI>
 {
     public AttachmentURI(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public AttachmentURI(AttachmentURI source)
@@ -27,20 +26,6 @@ public class AttachmentURI extends AttachmentBase<AttachmentURI, URI>
     
     public AttachmentURI(URI value)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(value, null);
+        super(value);
     }
-    
-//    @Override
-//    protected URI valueFromString(String propertyValueString)
-//    {
-//        try
-//        {
-//            return new URI(propertyValueString);
-//        } catch (URISyntaxException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
 }

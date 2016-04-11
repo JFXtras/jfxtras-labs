@@ -3,12 +3,14 @@ package jfxtras.labs.icalendar.property;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendar.parameters.ValueType;
+import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentURI;
@@ -16,7 +18,29 @@ import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attach
 public class AttachmentTest
 {
     @Test
-    public void canParseAttachementSimple() throws URISyntaxException
+    public void canParseAttachement1()
+    {
+        Attachment<URI> property = new Attachment<URI>(URI.class, "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com");
+        String expectedContentLine = "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com";
+        String madeContentLine = property.toContentLine();
+        assertEquals(expectedContentLine, madeContentLine);
+    }
+    
+    @Test
+    public void canParseAttachement2()
+    {
+        String contentLine = "ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW";
+        Attachment<String> madeProperty = new Attachment<String>(String.class, contentLine);
+        Attachment<String> expectedProperty = new Attachment<String>(String.class, "TG9yZW")
+                .withFormatType("text/plain")
+                .withEncoding(EncodingType.BASE64)
+                .withValueParameter(ValueType.BINARY);
+        assertEquals(expectedProperty, madeProperty);
+        assertFalse(expectedProperty == madeProperty);
+    }
+    
+    @Test
+    public void canParseAttachementSimpleOld() throws URISyntaxException
     {
         AttachmentBase<?,?> property = new AttachmentURI("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com");
         String expectedContentLine = "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com";

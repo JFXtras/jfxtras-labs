@@ -22,6 +22,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Location;
 import jfxtras.labs.icalendar.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendar.properties.component.descriptive.Status;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendar.properties.component.descriptive.attachment.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase64;
 import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentURI;
 import jfxtras.labs.icalendar.properties.component.misc.IANAProperty;
@@ -57,6 +58,7 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneURL;
 
 public enum PropertyEnum
 {
+    // Alarm
     ACTION ("ACTION", null, null, null) {
         @Override
         public Property<?> getProperty(VComponent vComponent)
@@ -71,7 +73,27 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Alarm
+    },
+    // property class
+    ATTACHMENT ("ATTACH" // property name
+            , Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER, ValueType.BINARY) // valid property value types, first is default
+            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
+            , Attachment.class) {
+                @Override
+                public Property<?> getProperty(VComponent vComponent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            },
+    // property class
     ATTACHMENT_URI ("ATTACH" // property name
             , Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER) // valid property value types, first is default
             , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
@@ -89,7 +111,7 @@ public enum PropertyEnum
                     // TODO Auto-generated method stub
                     return null;
                 }
-            }, // property class
+            },
     ATTACHMENT_BASE64 ("ATTACH" // property name
             , Arrays.asList(ValueType.BINARY) // valid property value types, first is default
             , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters

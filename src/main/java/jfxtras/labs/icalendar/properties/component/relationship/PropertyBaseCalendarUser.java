@@ -4,7 +4,6 @@ import java.net.URI;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.parameters.CommonName;
 import jfxtras.labs.icalendar.parameters.DirectoryEntryReference;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
@@ -147,9 +146,9 @@ public abstract class PropertyBaseCalendarUser<U, T> extends PropertyBaseLanguag
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyBaseCalendarUser(CharSequence contentLine, StringConverter<T> converter)
+    protected PropertyBaseCalendarUser(CharSequence contentLine)
     {
-        super(contentLine, converter);
+        super(contentLine);
     }
 
     // copy constructor
@@ -158,9 +157,9 @@ public abstract class PropertyBaseCalendarUser<U, T> extends PropertyBaseLanguag
         super(property);
     }
     
-    public PropertyBaseCalendarUser(T value, StringConverter<T> converter)
+    public PropertyBaseCalendarUser(T value)
     {
-        super(value, converter);
+        super(value);
     }
     
 //    public PropertyCalendarUserAddress() { super(); }

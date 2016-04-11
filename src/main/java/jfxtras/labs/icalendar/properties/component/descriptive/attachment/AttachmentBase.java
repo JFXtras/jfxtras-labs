@@ -2,7 +2,6 @@ package jfxtras.labs.icalendar.properties.component.descriptive.attachment;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.components.VAlarm;
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VJournal;
@@ -110,9 +109,9 @@ public abstract class AttachmentBase<U,T> extends PropertyBase<U,T> implements P
      * CONSTRUCTORS
      */
     
-    AttachmentBase(CharSequence contentLine, StringConverter<T> converter)
+    AttachmentBase(CharSequence contentLine)
     {
-        super(contentLine, converter);
+        super(contentLine);
     }
     
     AttachmentBase(AttachmentBase<U,T> source)
@@ -120,9 +119,9 @@ public abstract class AttachmentBase<U,T> extends PropertyBase<U,T> implements P
         super(source);
     }
     
-    AttachmentBase(T value, StringConverter<T> converter)
+    AttachmentBase(T value)
     {
-        super(value, converter);
+        super(value);
     }
     
     @Override

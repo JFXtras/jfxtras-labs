@@ -20,7 +20,8 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @see ExDate
  * @see RDate
  * */
-public abstract class RecurrenceAbstract<T> implements Recurrence
+@Deprecated
+public abstract class RecurrenceAbstract<T> // implements Recurrence
 {
     /**
      * EXDATE or RDATE: Set of dates or date/times included or excepted for recurring events, to-dos, journal entries.

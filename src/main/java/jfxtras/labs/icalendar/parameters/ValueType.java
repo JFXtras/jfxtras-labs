@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendar.parameters;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
@@ -17,8 +19,20 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
-            return null;
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return object.toString();
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                         return (T) string;            
+                }
+            };
         }
     },
     BOOLEAN ("BOOLEAN") {
@@ -199,8 +213,27 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
-            return null;
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return object.toString();
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                    try
+                    {
+                        return (T) new URI(string);
+                    } catch (URISyntaxException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            };
         }
     },
     UTC_OFFSET ("UTC-OFFSET") {

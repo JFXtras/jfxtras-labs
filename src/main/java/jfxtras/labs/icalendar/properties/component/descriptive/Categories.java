@@ -46,22 +46,20 @@ public class Categories extends PropertyBaseLanguage<Categories, List<String>>
     
     public Categories(CharSequence contentLine)
     {
-        super(contentLine, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        parseContent(contentLine);
     }
     
     public Categories(List<String> values)
     {
-        super(values, CONVERTER);
+        super();
+        setConverter(CONVERTER);
+        setValue(values);
     }
     
     public Categories(Categories source)
     {
         super(source);
-    }
-    
-    // set one category
-    public void setValue(String category)
-    {
-        setValue(Arrays.asList(category));
     }
 }
