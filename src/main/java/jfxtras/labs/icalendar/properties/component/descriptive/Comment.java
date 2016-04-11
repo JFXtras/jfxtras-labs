@@ -31,7 +31,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
  * @see StandardTime
  * @see DaylightSavingTime
  */
-public class Comment extends PropertyBaseAltText<Comment, String>
+public class Comment extends PropertyBaseAltText<String, Comment>
 {
     public Comment(CharSequence contentLine)
     {

@@ -20,9 +20,9 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
     * specify the content type of a referenced object.
     */
    @Override
-public FormatType getFormatType() { return (formatType == null) ? null : formatType.get(); }
+   public FormatType getFormatType() { return (formatType == null) ? null : formatType.get(); }
    @Override
-public ObjectProperty<FormatType> formatTypeProperty()
+   public ObjectProperty<FormatType> formatTypeProperty()
    {
        if (formatType == null)
        {
@@ -32,7 +32,7 @@ public ObjectProperty<FormatType> formatTypeProperty()
    }
    private ObjectProperty<FormatType> formatType;
    @Override
-public void setFormatType(FormatType formatType)
+   public void setFormatType(FormatType formatType)
    {
        if (formatType != null)
        {
@@ -54,9 +54,9 @@ public void setFormatType(FormatType formatType)
     * encoding parameter MUST be specified with the value" ;ENCODING=BASE64".
     */
    @Override
-public Encoding getEncoding() { return (encoding == null) ? null : encoding.get(); }
+   public Encoding getEncoding() { return (encoding == null) ? null : encoding.get(); }
    @Override
-public ObjectProperty<Encoding> encodingProperty()
+   public ObjectProperty<Encoding> encodingProperty()
    {
        if (encoding == null)
        {
@@ -66,7 +66,7 @@ public ObjectProperty<Encoding> encodingProperty()
    }
    private ObjectProperty<Encoding> encoding;
    @Override
-public void setEncoding(Encoding encoding)
+   public void setEncoding(Encoding encoding)
    {
        if (encoding.getValue() != EncodingType.BASE64)
        {
@@ -88,7 +88,7 @@ public void setEncoding(Encoding encoding)
    
    public Attachment(Class<T> clazz, CharSequence contentLine)
    {
-       super(contentLine);
+       super(clazz, contentLine);
        clazz.cast(getValue()); // ensure value class type matches parameterized type
    }
    
@@ -97,28 +97,45 @@ public void setEncoding(Encoding encoding)
        super(source);
    }
    
-   public Attachment(Class<T> clazz, T value)
+   public Attachment(T value)
    {
        super(value);
-       clazz.cast(getValue()); // ensure value class type matches parameterized type
+//       clazz.cast(getValue()); // ensure value class type matches parameterized type
    }
    
    @Override
-   public void setValue(T value)
+   protected void setConverterByClass(Class<T> clazz)
    {
-       if (value instanceof URI)
+       if (clazz.equals(URI.class))
        {
-//           setValueParameter(ValueType.UNIFORM_RESOURCE_IDENTIFIER); // default value
-       } else if (value instanceof String)
+           setConverter(ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
+       } else if (clazz.equals(String.class))
        {
-           System.out.println("set to binary:");
-           setValueParameter(ValueType.BINARY);           
+           setConverter(ValueType.BINARY.getConverter());           
        } else
        {
-           throw new IllegalArgumentException("Only parameterized types of URI and String supported.");
+           throw new IllegalArgumentException("Only parameterized types of URI and String supported.");           
        }
-       super.setValue(value);
    }
+
+   
+//   @Override
+//   public void setValue(T value)
+//   {
+//       System.out.println(value + " " + value.getClass());
+//       if (value instanceof URI)
+//       {
+////           setValueParameter(ValueType.UNIFORM_RESOURCE_IDENTIFIER); // default value
+//       } else if (value instanceof String)
+//       {
+//           System.out.println("set to binary:");
+//           setValueParameter(ValueType.BINARY);           
+//       } else
+//       {
+//           throw new IllegalArgumentException("Only parameterized types of URI and String supported.");
+//       }
+//       super.setValue(value);
+//   }
 
    
    @Override

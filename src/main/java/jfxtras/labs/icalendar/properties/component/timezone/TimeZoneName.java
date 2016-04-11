@@ -18,11 +18,10 @@ import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
  * @see DaylightSavingsTime
  * @see StandardTime
  */
-public class TimeZoneName extends PropertyBaseLanguage<TimeZoneName, String>
+public class TimeZoneName extends PropertyBaseLanguage<String, TimeZoneName>
 {
     public TimeZoneName(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
         super(contentLine);
     }
     

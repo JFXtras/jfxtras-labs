@@ -30,7 +30,8 @@ public enum ValueType
                 @Override
                 public T fromString(String string)
                 {
-                         return (T) string;            
+                    System.out.println("nun binary converter");
+                     return (T) string;            
                 }
             };
         }
@@ -243,6 +244,7 @@ public enum ValueType
                 @Override
                 public T fromString(String string)
                 {
+                    System.out.println("nun URI converter");
                     try
                     {
                         return (T) new URI(string);

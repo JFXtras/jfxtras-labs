@@ -20,7 +20,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
  * @see VEventNew
  * @see VTodo
  */
-public class Location extends PropertyBaseAltText<Location, String>
+public class Location extends PropertyBaseAltText<String, Location>
 {    
     public Location(CharSequence contentLine)
     {

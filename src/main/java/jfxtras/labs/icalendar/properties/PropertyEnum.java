@@ -233,7 +233,7 @@ public enum PropertyEnum
         }
     }, // Change management
     DATE_TIME_DUE ("DUE", // property name
-            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
+            Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
             Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             DateTimeDue.class)
     {
@@ -252,7 +252,7 @@ public enum PropertyEnum
         }
     },
     DATE_TIME_END ("DTEND", // property name
-            Arrays.asList(ValueType.DATE), // valid property value types, first is default
+            Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
             Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             DateTimeEnd.class)
     {

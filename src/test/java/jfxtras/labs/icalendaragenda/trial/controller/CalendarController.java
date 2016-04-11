@@ -31,7 +31,6 @@ import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.icalendar.components.VComponent;
-import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -139,7 +138,8 @@ public class CalendarController
                 .withDateTimeEnd(LocalDateTime.of(endDate, LocalTime.of(5, 45)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(endDate.minusDays(1), LocalTime.of(15, 45)))
-                .withDescription(new Description("Split Description"))
+//                .withDescription(new Description("Split Description"))
+                .withDescription("Split Description")
                 .withSummary(new Summary("Split"))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
             agenda.vComponents().add(vEventSplit);
@@ -149,7 +149,7 @@ public class CalendarController
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(9, 45)), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")))
-                .withDescription(new Description("WeeklyZoned Description"))
+                .withDescription("WeeklyZoned Description")
                 .withRRule(new RecurrenceRule()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(15), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")).withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Weekly()
@@ -163,7 +163,7 @@ public class CalendarController
             .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(12, 00)), ZoneId.of("America/Los_Angeles")))
             .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
             .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(7, 30)), ZoneId.of("America/Los_Angeles")))
-            .withDescription(new Description("WeeklyZoned Description"))
+            .withDescription("WeeklyZoned Description")
             .withRRule(new RecurrenceRule()
                     .withFrequency(new Weekly()
                             .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
@@ -176,7 +176,7 @@ public class CalendarController
                 .withDateTimeStart(startDate)
                 .withDateTimeEnd(startDate.plusDays(1))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withDescription(new Description("LocalDate Description"))
+                .withDescription("LocalDate Description")
                 .withSummary(new Summary("LocalDate"))
                 .withUniqueIdentifier("20150110T080000-3@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -189,7 +189,7 @@ public class CalendarController
                 .withDateTimeStart(LocalDateTime.of(startDate, LocalTime.of(11, 00)))
                 .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(13, 0)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withDescription(new Description("LocalDateTime Daily Description"))
+                .withDescription("LocalDateTime Daily Description")
                 .withSummary(new Summary("LocalDateTime Daily"))
                 .withUniqueIdentifier("20150110T080000-4@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -201,7 +201,7 @@ public class CalendarController
                 .withDateTimeStart(LocalDateTime.of(startDate, LocalTime.of(14, 00)))
                 .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(15, 0)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withDescription(new Description("Monthly Description"))
+                .withDescription("Monthly Description")
                 .withSummary(new Summary("Monthly"))
                 .withUniqueIdentifier("20150110T080000-5@jfxtras.org")
                 .withRRule(new RecurrenceRule()
@@ -215,7 +215,7 @@ public class CalendarController
                 .withDateTimeStart(startDate.plusDays(2))
                 .withDateTimeEnd(startDate.plusDays(3))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withDescription(new Description("Monthly Ordinal Description " + dayOfWeek + "#" + ordinalWeekNumber + " in month"))
+                .withDescription("Monthly Ordinal Description " + dayOfWeek + "#" + ordinalWeekNumber + " in month")
                 .withSummary(new Summary("Monthly Ordinal"))
                 .withUniqueIdentifier("20150110T080000-6@jfxtras.org")
                 .withRRule(new RecurrenceRule()

@@ -142,7 +142,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
                 setConverter(valueType.getValue().getConverter());
             }
             // If value previously set as string (as done with non-standard properties) convert to type T
-            if ((getValue() != null) && (getValue() instanceof String))
+            if ((getPropertyValueString() != null) && (getValue() instanceof String))
             {
                 T newPropValue = getConverter().fromString(getPropertyValueString());
                 setValue(newPropValue);
@@ -206,10 +206,12 @@ public abstract class PropertyBase<T,U> implements Property<T>
     private StringConverter<T> converter;
     @Override
     public void setConverter(StringConverter<T> converter) { this.converter = converter; }
+    private StringConverter<T> defaultConverter;
+//    private boolean isCustomConverter;
     private boolean isCustomConverter()
     {
-//        System.out.println("custom:" + getConverter() + " " + ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
-        return ! getConverter().equals(getValueParameter().getValue().getConverter());
+        System.out.println("custom:" + getConverter() + " " + ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
+        return ! getConverter().equals(defaultConverter);
     }
     
     /*
@@ -221,7 +223,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         propertyType = PropertyEnum.enumFromClass(getClass());
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
         ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
-        StringConverter<T> defaultConverter = defaultValueType.getConverter();
+        defaultConverter = defaultValueType.getConverter();
         setConverter(defaultConverter);
 //        setValueParameter(valueType);
     }
@@ -254,8 +256,20 @@ public abstract class PropertyBase<T,U> implements Property<T>
         parseContent(contentLine);
     }
 
+    public PropertyBase(Class<T> clazz, CharSequence contentLine)
+    {
+        this();
+        setConverterByClass(clazz);
+        parseContent(contentLine);
+    }
+
     
-//    /**
+    protected void setConverterByClass(Class<T> clazz)
+    {
+        // do nothing - override in subclass for functionality
+    }
+
+    //    /**
 //     * Parse iCalendar content line constructor
 //     * 
 //     * construct new property by parsing content line
@@ -356,6 +370,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     {
         this();
         setConverter(source.getConverter());
+//        isCustomConverter = source.isCustomConverter;
         Iterator<ParameterEnum> i = source.parameters().stream().iterator();
         while (i.hasNext())
         {
@@ -424,6 +439,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         {
             propertyValue = ":" + propertyString;
         }
+//        System.out.println("prop value***" + propertyString);
         
         // add parameters
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);

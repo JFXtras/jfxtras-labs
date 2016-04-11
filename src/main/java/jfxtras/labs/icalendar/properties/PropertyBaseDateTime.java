@@ -27,7 +27,7 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
  * @see DateTimeEnd
  * @see RecurrenceId
  */
-public abstract class PropertyBaseDateTime<T extends Temporal, U> extends PropertyBase<T,U>
+public abstract class PropertyBaseDateTime<T extends Temporal, U> extends PropertyBase<T,U> implements PropertyDateTime<T>
 {
     /**
      * TZID
@@ -38,7 +38,9 @@ public abstract class PropertyBaseDateTime<T extends Temporal, U> extends Proper
      * Examples:
      * DTSTART;TZID=America/New_York:19980119T020000
      */
+    @Override
     public TimeZoneIdentifierParameter getTimeZoneIdentifier() { return (timeZoneIdentifier == null) ? null : timeZoneIdentifier.get(); }
+    @Override
     public ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifierProperty()
     {
         if (timeZoneIdentifier == null)
@@ -48,6 +50,7 @@ public abstract class PropertyBaseDateTime<T extends Temporal, U> extends Proper
         return timeZoneIdentifier;
     }
     private ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifier;
+    @Override
     public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier)
     {
         if ((getValue() == null) || (getValue() instanceof ZonedDateTime))
