@@ -26,8 +26,7 @@ public class CalendarScale extends PropertyBase<CalendarScale, CalendarScaleType
 {
     public CalendarScale(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public CalendarScale(CalendarScale source)
@@ -39,7 +38,7 @@ public class CalendarScale extends PropertyBase<CalendarScale, CalendarScaleType
     public CalendarScale()
     {
         // null as argument for string converter causes default converter from ValueType to be used
-       super(CalendarScaleType.GREGORIAN, null);
+       super(CalendarScaleType.GREGORIAN);
     }
     
     public enum CalendarScaleType

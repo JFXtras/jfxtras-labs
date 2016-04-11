@@ -2,7 +2,6 @@ package jfxtras.labs.icalendar.properties.component.time;
 
 import java.time.LocalDate;
 
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
@@ -22,14 +21,14 @@ import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
  */
 public abstract class PropertyBaseDate<U> extends PropertyBase<U, LocalDate> implements PropertyDateTime<LocalDate>
 {
-    public PropertyBaseDate(LocalDate temporal, StringConverter<LocalDate> converter)
+    public PropertyBaseDate(LocalDate temporal)
     {
-        super(temporal, converter);
+        super(temporal);
     }
 
-    public PropertyBaseDate(CharSequence contentLine, StringConverter<LocalDate> converter)
+    public PropertyBaseDate(CharSequence contentLine)
     {
-        super(contentLine, converter);
+        super(contentLine);
     }
     
     public PropertyBaseDate(PropertyBaseDate<U> source)
@@ -43,16 +42,4 @@ public abstract class PropertyBaseDate<U> extends PropertyBase<U, LocalDate> imp
         super.setValue(value);
         setValueParameter(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
     }
-//    
-//    @Override
-//    protected LocalDate valueFromString(String propertyValueString)
-//    {
-//        return LocalDate.parse(propertyValueString, DateTimeUtilities.LOCAL_DATE_FORMATTER);
-//    }
-//    
-//    @Override
-//    protected String valueToString(LocalDate value)
-//    {
-//        return DateTimeUtilities.LOCAL_DATE_FORMATTER.format(value);  
-//    }
 }

@@ -287,6 +287,9 @@ public final class DateTimeUtilities
 //        return DateTimeType.of(temporal).formatDateTimeType(temporal);
     }
     
+    /**
+     * Make ISO.8601 string from LocalDate, LocalDateTime or ZonedDateTime Temporal object.
+     */ 
     public static Temporal temporalFromString(String string)
     {
         final String form0 = "^[0-9]{8}";
@@ -295,7 +298,7 @@ public final class DateTimeUtilities
         final String form3 = "^(.*/.*:)[0-9]{8}T([0-9]{6})";
         if (string.matches(form0))
         {
-            return LocalDate.parse(string, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                                                
+            return LocalDate.parse(string, DateTimeUtilities.LOCAL_DATE_FORMATTER);                                                
         } else if (string.matches(form1))
         {
             return LocalDateTime.parse(string, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                                                

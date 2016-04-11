@@ -2,7 +2,6 @@ package jfxtras.labs.icalendar.properties;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendar.parameters.Language;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
@@ -54,23 +53,19 @@ public abstract class PropertyBaseLanguage<U,T> extends PropertyBase<U,T> implem
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyBaseLanguage(CharSequence contentLine, StringConverter<T> converter)
+    protected PropertyBaseLanguage(CharSequence contentLine)
     {
-        super(contentLine, converter);
+        super(contentLine);
     }
     
     // copy constructor
     public PropertyBaseLanguage(PropertyBaseLanguage<U,T> property)
     {
         super(property);
-        if (getLanguage() != null)
-        {
-            setLanguage(property.getLanguage());
-        }
     }
     
-    public PropertyBaseLanguage(T value, StringConverter<T> converter)
+    public PropertyBaseLanguage(T value)
     {
-        super(value, converter);
+        super(value);
     }
 }

@@ -13,9 +13,41 @@ import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
 import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
+import jfxtras.labs.icalendar.properties.component.time.start.DateTimeStart;
 
 public class DateTimeStartTest
 {
+    @Test
+    public void canParseDateTimeStart1()
+    {
+        DateTimeStart<LocalDateTime> dateTimeStart = new DateTimeStart<>("20160322T174422");
+        String expectedContentLine = "DTSTART:20160322T174422";
+        String madeContentLine = dateTimeStart.toContentLine();
+        assertEquals(expectedContentLine, madeContentLine);
+        assertEquals(LocalDateTime.of(2016, 3, 22, 17, 44, 22), dateTimeStart.getValue());
+    }
+    
+    @Test
+    public void canParseDateTimeStart2()
+    {
+        DateTimeStart<LocalDate> dateTimeStart = new DateTimeStart<>("DTSTART;VALUE=DATE:20160322");
+        dateTimeStart.setTimeZoneIdentifier(ZoneId.of("Z"));
+        String expectedContentLine = "DTSTART;VALUE=DATE:20160322";
+        String madeContentLine = dateTimeStart.toContentLine();
+        assertEquals(expectedContentLine, madeContentLine);
+        assertEquals(LocalDate.of(2016, 3, 22), dateTimeStart.getValue());
+    }
+    
+    @Test
+    public void canParseDateTimeStart3()
+    {
+        DateTimeStart<LocalDate> dateTimeStart = new DateTimeStart<>("DTSTART;TZID=America/Los_Angeles:20160306T043000");
+        String expectedContentLine = "DTSTART;TZID=America/Los_Angeles:20160306T043000";
+        String madeContentLine = dateTimeStart.toContentLine();
+        assertEquals(expectedContentLine, madeContentLine);
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")), dateTimeStart.getValue());
+    }
+    
     @Test
     public void canParseDateTimeStartSimple()
     {

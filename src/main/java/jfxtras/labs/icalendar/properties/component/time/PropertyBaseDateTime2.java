@@ -1,6 +1,11 @@
 package jfxtras.labs.icalendar.properties.component.time;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -24,7 +29,7 @@ import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTi
  * @see DTEndZonedDateTime
  * @see RecurrenceIDZonedDateTime
  */
-public abstract class PropertyBaseZonedTime<U> extends PropertyBase<U, ZonedDateTime> implements PropertyDateTime<ZonedDateTime>
+public abstract class PropertyBaseDateTime2<U, T extends Temporal> extends PropertyBase<U,T> implements PropertyDateTime<T>
 {
     /**
      * TZID
@@ -50,30 +55,38 @@ public abstract class PropertyBaseZonedTime<U> extends PropertyBase<U, ZonedDate
     @Override
     public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier)
     {
-        if (timeZoneIdentifier != null)
+        if ((getValue() == null) || (getValue() instanceof ZonedDateTime))
         {
-            timeZoneIdentifierProperty().set(timeZoneIdentifier);
+            if (timeZoneIdentifier != null)
+            {
+                timeZoneIdentifierProperty().set(timeZoneIdentifier);
+            }
+        } else
+        {
+            throw new DateTimeException(ParameterEnum.TIME_ZONE_IDENTIFIER.toString() + " can't be set for date-time of type " + getValue().getClass().getSimpleName());
         }
     }
     public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value)); }
+    public void setTimeZoneIdentifier(ZoneId zone) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone)); }
     public U withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (U) this; }
+    public U withTimeZoneIdentifier(ZoneId zone) { setTimeZoneIdentifier(zone); return (U) this; }
     public U withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
     
     /*
      * CONSTRUCTORS
      */
     
-    public PropertyBaseZonedTime(ZonedDateTime temporal)
+    public PropertyBaseDateTime2(T temporal)
     {
         super(temporal);
     }
 
-    public PropertyBaseZonedTime(CharSequence contentLine)
+    public PropertyBaseDateTime2(CharSequence contentLine)
     {
         super(contentLine);
     }
     
-    public PropertyBaseZonedTime(PropertyBaseZonedTime<U> source)
+    public PropertyBaseDateTime2(PropertyBaseDateTime2<U,T> source)
     {
         super(source);
     }
@@ -90,9 +103,22 @@ public abstract class PropertyBaseZonedTime<U> extends PropertyBase<U, ZonedDate
     }
 
     @Override
-    public void setValue(ZonedDateTime value)
+    public void setValue(T value)
     {
+        if (value instanceof ZonedDateTime)
+        {
+            ZoneId zone = ((ZonedDateTime) value).getZone();
+            setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
+        } else if ((value instanceof LocalDateTime) || (value instanceof LocalDate))
+        {
+            if (getTimeZoneIdentifier() != null)
+            {
+                throw new DateTimeException("Only ZonedDateTime is permitted when specifying a Time Zone Identifier");                            
+            }
+        } else
+        {
+            throw new DateTimeException("Unsupported Temporal type:" + value.getClass().getSimpleName());            
+        }
         super.setValue(value);
-        setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value.getZone()));
     }
 }

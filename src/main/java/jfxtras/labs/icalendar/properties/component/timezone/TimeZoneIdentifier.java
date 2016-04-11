@@ -70,7 +70,7 @@ public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
     {
         boolean nonGlobalOK = (getValue() != null);
         boolean globallyUniqueOK = ((getUnknownValue() != null) && (getUnknownValue().charAt(0) == '/'));
-        boolean valueTypeOK = ((getValueParameter() == null) || (getValueParameter().getValue().equals(propertyType().defaultValueType())));
+        boolean valueTypeOK = ((getValueParameter() == null) || (getValueParameter().getValue().equals(propertyType().allowedValueTypes())));
 //        System.out.println("TimeZoneIdentifier isValid:" + nonGlobalOK + " " + globallyUniqueOK + " " + valueTypeOK);
         return (nonGlobalOK || globallyUniqueOK) && valueTypeOK;
     }

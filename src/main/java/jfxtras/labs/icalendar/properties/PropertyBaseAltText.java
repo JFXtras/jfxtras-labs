@@ -90,24 +90,20 @@ public abstract class PropertyBaseAltText<U,T> extends PropertyBaseLanguage<U,T>
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyBaseAltText(CharSequence contentLine, StringConverter<T> converter)
+    protected PropertyBaseAltText(CharSequence contentLine)
     {
-        super(contentLine, converter);
+        super(contentLine);
     }
 
     // copy constructor
     public PropertyBaseAltText(PropertyBaseAltText<U,T> property)
     {
         super(property);
-        if (getAlternateText() != null)
-        {
-            setAlternateText(property.getAlternateText());
-        }
     }
 
     public PropertyBaseAltText(T value, StringConverter<T> converter)
     {
-        super(value, converter);
+        super(value);
     }
     
 //    public PropertyAlternateTextRepresentation() { super(); }
