@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventNew;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.time.TimeTransparency.TransparencyType;
 
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendar.properties.component.time.TimeTransparency.Transpa
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEvent
+ * @see VEventNew
  */
     // TODO - REMOVE UNKNOWN AS VALUE - MAKE PROPER WITH REAL UNKNOWN WORK BEFORE DELETING CODE
 public class TimeTransparency extends PropertyBase<TransparencyType,TimeTransparency>

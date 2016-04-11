@@ -5,7 +5,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld.StartEndRange;
+import jfxtras.labs.icalendar.components.VComponent.StartEndRange;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 public class AgendaDateTimeUtilities

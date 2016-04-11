@@ -15,7 +15,6 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.RDate;
-import jfxtras.labs.icalendar.properties.component.recurrence.Recurrence;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
@@ -32,7 +31,7 @@ public final class VComponentUtilities
      * @param verbose - true = display list of unequal properties, false no display output
      * @return - equality result
      */
-    public static <T> boolean isEqualTo(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2, boolean verbose)
+    public static <T> boolean isEqualTo(VComponent<?> v1, VComponent<?> v2, boolean verbose)
     {
         List<String> changedProperties = new ArrayList<>();
         Arrays.stream(VComponentPropertyOld.values())
@@ -72,7 +71,7 @@ public final class VComponentUtilities
      * @param propertyValuePair - property name-value pair (e.g. DTSTART and TZID=America/Los_Angeles:20160214T110000)
      * @return - true if property found and set, false otherwise
      */
-    public static boolean parse(VComponentDisplayableOld<?> vComponent, String propertyLine)
+    public static boolean parse(VComponent<?> vComponent, String propertyLine)
     {
         String propertyName = ICalendarUtilities.getPropertyName(propertyLine);
         VComponentPropertyOld vComponentProperty = VComponentPropertyOld.propertyFromName(propertyName);
@@ -103,31 +102,31 @@ public final class VComponentUtilities
         CATEGORIES ("CATEGORIES", true)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 vComponent.setCategories(new Categories(propertyLine));
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getCategories();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return ((vComponent.getCategories() == null) || (vComponent.getCategories().getValue().isEmpty())) ? null : vComponent.getCategories().toContentLine().toString();
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getCategories() == null) ? (v2.getCategories() == null) : v1.getCategories().equals(v2.getCategories());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setCategories(source.getCategories());
             }
@@ -145,33 +144,33 @@ public final class VComponentUtilities
       , COMMENT ("COMMENT", true)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 // TODO - need way to handle multiple comments - use list of Comments?
                 vComponent.setComment(new Comment(propertyLine));
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getComment();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
-                return ((vComponent.getComment() == null) || (vComponent.getComment().getValue().isEmpty())) ? null : toString()
-                        + ":" + vComponent.getComment();
+                return ((vComponent.getComment() == null) || (vComponent.getComment().getValue() == null) ? null : toString()
+                        + ":" + vComponent.getComment().toContentLine().toString());
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getComment() == null) ? (v2.getComment() == null) : v1.getComment().equals(v2.getComment());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setComment(source.getComment());
             }
@@ -185,7 +184,7 @@ public final class VComponentUtilities
       , CREATED ("CREATED", false)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 if (vComponent.getDateTimeCreated() == null)
                 {
@@ -199,26 +198,26 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getDateTimeCreated();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getDateTimeCreated() == null) ? null : toString() + ":"
                         + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeCreated());
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getDateTimeCreated() == null) ? (v2.getDateTimeCreated() == null) : v1.getDateTimeCreated().equals(v2.getDateTimeCreated());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setDateTimeCreated(source.getDateTimeCreated());
             }
@@ -232,7 +231,7 @@ public final class VComponentUtilities
       , DATE_TIME_STAMP ("DTSTAMP", false)
             {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 if (vComponent.getDateTimeStamp() == null)
                 {
@@ -248,26 +247,26 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getDateTimeStamp();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getDateTimeStamp() == null) ? null : toString() + ":"
                         + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeStamp());
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getDateTimeStamp() == null) ? (v2.getDateTimeStamp() == null) : v1.getDateTimeStamp().equals(v2.getDateTimeStamp());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setDateTimeStamp(source.getDateTimeStamp());
             }
@@ -280,7 +279,7 @@ public final class VComponentUtilities
       , DATE_TIME_START ("DTSTART", true)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 if (vComponent.getDateTimeStart() == null)
                 {
@@ -293,13 +292,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getDateTimeStart();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 if (vComponent.getDateTimeStart() == null)
                 {
@@ -312,13 +311,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getDateTimeStart() == null) ? (v2.getDateTimeStart() == null) : v1.getDateTimeStart().equals(v2.getDateTimeStart());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setDateTimeStart(source.getDateTimeStart());
             }
@@ -330,9 +329,9 @@ public final class VComponentUtilities
       , EXCEPTIONS ("EXDATE", false)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
-                Collection<Temporal> temporals = Recurrence.parseTemporals(propertyLine);
+                Collection<Temporal> temporals = null; //Recurrence.parseTemporals(propertyLine);
                 if (vComponent.getExDate() == null)
                 {
                     vComponent.setExDate(new ExDate());
@@ -341,13 +340,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getExDate();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 if (vComponent.getExDate() == null)
                 {
@@ -374,13 +373,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getExDate() == null) ? (v2.getExDate() == null) : v1.getExDate().equals(v2.getExDate());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 if (source.getExDate() != null)
                 {
@@ -407,7 +406,7 @@ public final class VComponentUtilities
       , LAST_MODIFIED ("LAST-MODIFIED", false)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 if (vComponent.getDateTimeLastModified() == null)
                 {
@@ -420,26 +419,26 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getDateTimeLastModified();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getDateTimeLastModified() == null) ? null : toString() + ":"
                         + DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(vComponent.getDateTimeLastModified());
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getDateTimeLastModified() == null) ? (v2.getDateTimeLastModified() == null) : v1.getDateTimeLastModified().equals(v2.getDateTimeLastModified());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setDateTimeLastModified(source.getDateTimeLastModified());
             }
@@ -456,32 +455,32 @@ public final class VComponentUtilities
       , ORGANIZER ("ORGANIZER", true)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 vComponent.setOrganizer(propertyLine);
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getOrganizer();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return ((vComponent.getOrganizer() == null) || (vComponent.getOrganizer().isEmpty())) ? null : toString() + ":"
                         + vComponent.getOrganizer().toString();
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getOrganizer() == null) ? (v2.getOrganizer() == null) : v1.getOrganizer().equals(v2.getOrganizer());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setOrganizer(source.getOrganizer());
             }
@@ -493,9 +492,9 @@ public final class VComponentUtilities
       , RECURRENCES ("RDATE", false)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
-                Collection<Temporal> temporals = Recurrence.parseTemporals(propertyLine);
+                Collection<Temporal> temporals = null; //Recurrence.parseTemporals(propertyLine);
                 if (vComponent.getRDate() == null)
                 {
                     vComponent.setRDate(new RDate());
@@ -504,13 +503,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getRDate();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 if (vComponent.getRDate() == null)
                 {
@@ -524,13 +523,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getRDate() == null) ? (v2.getRDate() == null) : v1.getRDate().equals(v2.getRDate()); // required 
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 if (source.getRDate() != null)
                 {
@@ -556,7 +555,7 @@ public final class VComponentUtilities
       , RECURRENCE_ID ("RECURRENCE-ID", false)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 if (vComponent.getDateTimeRecurrence() == null)
                 {
@@ -569,13 +568,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getDateTimeRecurrence();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 if (vComponent.getDateTimeRecurrence() == null)
                 {
@@ -588,13 +587,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getDateTimeRecurrence() == null) ? (v2.getDateTimeRecurrence() == null) : v1.getDateTimeRecurrence().equals(v2.getDateTimeRecurrence());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 if (source.getDateTimeRecurrence() != null)
                 {
@@ -611,7 +610,7 @@ public final class VComponentUtilities
       , RECURRENCE_RULE ("RRULE", false)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 if (vComponent.getRRule() == null)
                 {
@@ -623,26 +622,26 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getRRule();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getRRule() == null) ? null : toString() + ":"
                         + vComponent.getRRule().toString();
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getRRule() == null) ? (v2.getRRule() == null) : v1.getRRule().equals(v2.getRRule());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setRRule(new RecurrenceRule(source.getRRule()));
 //                if (source.getRRule() != null)
@@ -665,32 +664,32 @@ public final class VComponentUtilities
       , RELATED_TO ("RELATED-TO", false)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 vComponent.setRelatedTo(propertyLine); // TODO - collect multiple values - comma separate? Use list?
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getRelatedTo();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return ((vComponent.getRelatedTo() == null) || (vComponent.getRelatedTo().isEmpty())) ? null : toString() + ":"
                         + vComponent.getRelatedTo().toString();
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getRelatedTo() == null) ? (v2.getRelatedTo() == null) : v1.getRelatedTo().equals(v2.getRelatedTo());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setRelatedTo(source.getRelatedTo());
             }
@@ -712,7 +711,7 @@ public final class VComponentUtilities
       , SEQUENCE ("SEQUENCE", false)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 if (vComponent.getSequence() == 0)
                 {
@@ -724,26 +723,26 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getSequence();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 return (vComponent.getSequence() == 0) ? null : toString() + ":"
                         + Integer.toString(vComponent.getSequence());
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return v1.getSequence() == v2.getSequence();
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setSequence(source.getSequence());
             }
@@ -757,7 +756,7 @@ public final class VComponentUtilities
       , SUMMARY ("SUMMARY", true)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 if (propertyLine != null)
                 {
@@ -772,25 +771,25 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getSummary();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
-                return ((vComponent.getSummary() == null) || (vComponent.getSummary().getValue().isEmpty())) ? null : vComponent.getSummary().toContentLine().toString();
+                return ((vComponent.getSummary() == null) || (vComponent.getSummary().getValue() == null)) ? null : vComponent.getSummary().toContentLine().toString();
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getSummary() == null) ? (v2.getSummary() == null) : v1.getSummary().equals(v2.getSummary());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setSummary(source.getSummary());
             }
@@ -804,7 +803,7 @@ public final class VComponentUtilities
       , UNIQUE_IDENTIFIER ("UID", false)
         {
             @Override
-            public void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine)
+            public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 if (vComponent.getUniqueIdentifier() == null)
                 {
@@ -818,13 +817,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public Object getPropertyValue(VComponentDisplayableOld<?> vComponent)
+            public Object getPropertyValue(VComponent<?> vComponent)
             {
                 return vComponent.getUniqueIdentifier();
             }
             
             @Override
-            public String toPropertyString(VComponentDisplayableOld<?> vComponent)
+            public String toPropertyString(VComponent<?> vComponent)
             {
                 System.out.println("uid2:" + vComponent.getUniqueIdentifier());
                 return ((vComponent.getUniqueIdentifier() == null) || (vComponent.getUniqueIdentifier().isEmpty())) ? null : toString()
@@ -832,13 +831,13 @@ public final class VComponentUtilities
             }
 
             @Override
-            public boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2)
+            public boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2)
             {
                 return (v1.getUniqueIdentifier() == null) ? (v2.getUniqueIdentifier() == null) : v1.getUniqueIdentifier().equals(v2.getUniqueIdentifier());
             }
 
             @Override
-            public void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination)
+            public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
                 destination.setUniqueIdentifier(source.getUniqueIdentifier());
             }
@@ -884,18 +883,18 @@ public final class VComponentUtilities
         /** sets VComponent's property for this VComponentProperty to parameter value
          * value is a string that is parsed if necessary to the appropriate type
          * returns true, if property was found and set */
-        public abstract void parseAndSetProperty(VComponentDisplayableOld<?> vComponent, String propertyLine);
+        public abstract void parseAndSetProperty(VComponent<?> vComponent, String propertyLine);
 
         /** gets VComponent's property value for this VComponentProperty */
-        public abstract Object getPropertyValue(VComponentDisplayableOld<?> vComponent);
+        public abstract Object getPropertyValue(VComponent<?> vComponent);
                 
         /** makes content line (RFC 5545 3.1) from a vComponent property  */
-        public abstract String toPropertyString(VComponentDisplayableOld<?> vComponent);       
+        public abstract String toPropertyString(VComponent<?> vComponent);       
 
         /** Checks is corresponding property is equal between v1 and v2 */
-        public abstract boolean isPropertyEqual(VComponentDisplayableOld<?> v1, VComponentDisplayableOld<?> v2);
+        public abstract boolean isPropertyEqual(VComponent<?> v1, VComponent<?> v2);
         
         /** Copies property value from source to destination */
-        public abstract void copyProperty(VComponentDisplayableOld<?> source, VComponentDisplayableOld<?> destination);        
+        public abstract void copyProperty(VComponent<?> source, VComponent<?> destination);        
     }
 }

@@ -15,14 +15,14 @@ import jfxtras.labs.icalendar.properties.PropertyEnum;
  * @author David Bal
  *
  * @param <T> - implementation class
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy
  * @see VTimeZone
  * @see VAlarm
  */
-public class VComponentBase<T> implements VComponent
+public class VComponentBase<T> implements VComponentNew
 {
     /**
      * other-properties, 3.8.8 RFC 5545 page 139

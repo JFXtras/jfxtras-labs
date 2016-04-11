@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AgendaDateTimeUtilities;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
@@ -67,7 +67,7 @@ public class SelectedOneAppointmentController extends Rectangle
     @FXML private void handleDeleteAppointment()
     {
         Temporal startInstance = appointment.getStartTemporal();
-        VComponentDisplayableOld<Appointment> vComponent = agenda.findVComponent(appointment);
+        VComponent<Appointment> vComponent = agenda.findVComponent(appointment);
         agenda.appointments().removeListener(agenda.getAppointmentsListChangeListener());
         vComponent.handleDelete(
                 agenda.vComponents()

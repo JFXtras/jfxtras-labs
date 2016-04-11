@@ -20,11 +20,11 @@ import jfxtras.labs.icalendar.properties.component.relationship.RelatedTo;
  * @author David Bal
  *
  * @param <I> class of recurrence instance
- * @see VEventOld
+ * @see VEvent
  * @see VTodoOld
  * @see VJournalOld
  */
-public interface VComponentDisplayable<I> extends VComponentPersonal, VComponentRepeatable, VComponentDescribable
+public interface VComponentDisplayableNew<I> extends VComponentPersonal, VComponentRepeatable, VComponentDescribable
 {
     /**
      * CATEGORIES:

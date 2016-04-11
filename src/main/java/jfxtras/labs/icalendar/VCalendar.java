@@ -6,8 +6,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.icalendar.components.VAlarmOld;
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
-import jfxtras.labs.icalendar.components.VEventOld;
+import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.components.VJournalOld;
 import jfxtras.labs.icalendar.components.VTimeZoneOld;
@@ -146,11 +146,11 @@ public class VCalendar
      * 
      * A grouping of component properties that describe an event.
      * 
-     * @see VComponentDisplayableOld
-     * @see VEventOld
+     * @see VComponent
+     * @see VEvent
      */
-    public ObservableList<VEventOld<?, ?>> vEvents() { return vEvents; }
-    private ObservableList<VEventOld<?,?>> vEvents = FXCollections.observableArrayList();
+    public ObservableList<VEvent<?, ?>> vEvents() { return vEvents; }
+    private ObservableList<VEvent<?,?>> vEvents = FXCollections.observableArrayList();
 
     /** 
      * VEVENT Callback
@@ -160,17 +160,17 @@ public class VCalendar
      * For example, the following callback is used in the test cases with the VEvent implementation VEventMock:
      * (s) -> VEventMock.parse(s)
      *  */
-    public  Callback<String, VEventOld<?,?>> getMakeVEventCallback() { return makeVEventCallback; }
-    private Callback<String, VEventOld<?,?>> makeVEventCallback;
-    public void setMakeVEventCallback(Callback<String, VEventOld<?,?>> callback) { makeVEventCallback = callback; }
-    public VCalendar withVEventCallback(Callback<String, VEventOld<?,?>> callback) { setMakeVEventCallback(callback); return this; }
+    public  Callback<String, VEvent<?,?>> getMakeVEventCallback() { return makeVEventCallback; }
+    private Callback<String, VEvent<?,?>> makeVEventCallback;
+    public void setMakeVEventCallback(Callback<String, VEvent<?,?>> callback) { makeVEventCallback = callback; }
+    public VCalendar withVEventCallback(Callback<String, VEvent<?,?>> callback) { setMakeVEventCallback(callback); return this; }
     
     /** 
      * VTODO: RFC 5545 iCalendar 3.6.2. page 55
      * 
      * A grouping of component properties that describe a task that needs to be completed.
      * 
-     * @see VComponentDisplayableOld
+     * @see VComponent
      * @see VTodoOld
      */
     public ObservableList<VTodoOld<?,?>> vTodos() { return vTodos; }
@@ -192,7 +192,7 @@ public class VCalendar
      * 
      * A grouping of component properties that describe a task that needs to be completed.
      * 
-     * @see VComponentDisplayableOld
+     * @see VComponent
      * @see VJournalOld
      */
     public ObservableList<VJournalOld<?,?>> vJournals() { return vJournals; }

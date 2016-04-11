@@ -13,7 +13,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier
  * VComponents that involve communication between people
  * 
  * @author David Bal
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy

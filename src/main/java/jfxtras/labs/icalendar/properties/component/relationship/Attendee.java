@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.properties.component.relationship;
 import java.net.URI;
 
 import jfxtras.labs.icalendar.components.VAlarm;
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventNew;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
 
@@ -20,7 +20,7 @@ import jfxtras.labs.icalendar.components.VTodo;
  *  example.com
  * 
  * @author David Bal
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VJournal
  * @see VAlarm

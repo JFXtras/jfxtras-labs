@@ -2,7 +2,7 @@ package jfxtras.labs.icalendar.properties.component.recurrence;
 
 import jfxtras.labs.icalendar.components.DaylightSavingTime;
 import jfxtras.labs.icalendar.components.StandardTime;
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventNew;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
@@ -18,7 +18,7 @@ import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRu
  * Produces a stream of start date/times after applying all modification rules.
  * 
  * @author David Bal
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see TJournal
  * @see DaylightSavingTime

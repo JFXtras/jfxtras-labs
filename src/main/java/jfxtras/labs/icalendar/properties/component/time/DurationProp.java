@@ -3,7 +3,7 @@ package jfxtras.labs.icalendar.properties.component.time;
 import java.time.temporal.TemporalAmount;
 
 import jfxtras.labs.icalendar.components.VAlarm;
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventNew;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
 
@@ -27,7 +27,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VAlarm
  */

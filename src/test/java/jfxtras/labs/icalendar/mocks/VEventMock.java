@@ -10,7 +10,7 @@ import java.util.List;
 
 import javafx.util.Callback;
 import jfxtras.labs.icalendar.components.VComponentUtilities;
-import jfxtras.labs.icalendar.components.VEventOld;
+import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VEventUtilities;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
@@ -20,7 +20,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
-public class VEventMock extends VEventOld<InstanceMock, VEventMock>
+public class VEventMock extends VEvent<InstanceMock, VEventMock>
 {
     private final static Callback<StartEndRange, InstanceMock> NEW_INSTANCE = (p) ->
     {

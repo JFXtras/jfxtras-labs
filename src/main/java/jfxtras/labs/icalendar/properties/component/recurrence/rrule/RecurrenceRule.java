@@ -21,7 +21,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.properties.component.recurrence.RecurrenceRuleProp;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Frequency;
@@ -143,10 +143,10 @@ public class RecurrenceRule
      * the recurrence instance.  The UID matches the UID of the parent calendar component.
      * See 3.8.4.4 of RFC 5545 iCalendar
      */
-    public Set<VComponentDisplayableOld<?>> recurrences() { return recurrences; }
-    private Set<VComponentDisplayableOld<?>> recurrences = new HashSet<>();
+    public Set<VComponent<?>> recurrences() { return recurrences; }
+    private Set<VComponent<?>> recurrences = new HashSet<>();
 //    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
-    public RecurrenceRule withRecurrences(VComponentDisplayableOld<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
+    public RecurrenceRule withRecurrences(VComponent<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
     /*
      * CONSTRUCTORS
@@ -282,7 +282,7 @@ public class RecurrenceRule
      * Checks to see if object contains required properties.  Returns empty string if it is
      * valid.  Returns string of errors if not valid.
      */
-    public String makeErrorString(VComponentDisplayableOld<?> parent)
+    public String makeErrorString(VComponent<?> parent)
     {
         StringBuilder builder = new StringBuilder();
         if (recurrences() != null)

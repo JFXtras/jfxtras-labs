@@ -344,6 +344,38 @@ public final class DateTimeUtilities
         return (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(temporal);
     }
     
+    
+    /**
+     * produced ISO.8601 date and date-time string for given Temporal of type
+     * LocalDate, LocalDateTime or ZonedDateTime
+     * 
+     * @param temporal
+     * @return
+     */
+    @Deprecated
+    public static String format(Temporal temporal)
+    {
+        return DateTimeType.of(temporal).formatDateTimeType(temporal);
+    }
+    
+    /**
+     * Produces property name and attribute, if necessary.
+     * For example:
+     * LocalDate : DTSTART;VALUE=DATE:
+     * LocalDateTime : DTSTART:
+     * ZonedDateTime (UTC) : DTSTART:
+     * ZonedDateTime : DTEND;TZID=America/New_York:
+     * 
+     * @param propertyName
+     * @param temporal - temporal of LocalDate, LocalDateTime or ZonedDateTime
+     * @return
+     */
+    @Deprecated
+    public static String dateTimePropertyTag(String propertyName, Temporal temporal)
+    {
+        return DateTimeType.of(temporal).propertyTag(propertyName, temporal);
+    }
+    
     public enum DateTimeType
     {
 //        DATE ("^(VALUE=DATE:)?[0-9]{8}")
@@ -378,11 +410,11 @@ public final class DateTimeUtilities
                 return LOCAL_DATE_FORMATTER.format(temporal);
             }
 
-//            @Override
-//            String propertyTag(String propertyName, Temporal temporal)
-//            {
-//                return propertyName + ";VALUE=DATE:";
-//            }
+            @Override
+            String propertyTag(String propertyName, Temporal temporal)
+            {
+                return propertyName + ";VALUE=DATE:";
+            }
 
 //            @Override
 //            Temporal parse(String temporalString)
@@ -453,11 +485,11 @@ public final class DateTimeUtilities
                 return LOCAL_DATE_TIME_FORMATTER.format(temporal);
             }
 
-//            @Override
-//            String propertyTag(String propertyName, Temporal temporal)
-//            {
-//                return propertyName + ":";
-//            }
+            @Override
+            String propertyTag(String propertyName, Temporal temporal)
+            {
+                return propertyName + ":";
+            }
 
 //            @Override
 //            Temporal parse(String temporalString)
@@ -530,11 +562,11 @@ public final class DateTimeUtilities
                 return ZONED_DATE_TIME_UTC_FORMATTER.format(temporal);
             }
 
-//            @Override
-//            String propertyTag(String propertyName, Temporal temporal)
-//            {
-//                return propertyName + ":";
-//            }
+            @Override
+            String propertyTag(String propertyName, Temporal temporal)
+            {
+                return propertyName + ":";
+            }
 
 //            @Override
 //            Temporal parse(String temporalString)
@@ -608,12 +640,12 @@ public final class DateTimeUtilities
                 return LOCAL_DATE_TIME_FORMATTER.format(temporal); // don't use ZONED_DATE_TIME_FORMATTER because time zone is added to property tag
             }
 
-//            @Override
-//            String propertyTag(String propertyName, Temporal temporal)
-//            {
-//                String zone = ZONE_FORMATTER.format(temporal);
-//                return propertyName + ";" + zone + ":";
-//            }
+            @Override
+            String propertyTag(String propertyName, Temporal temporal)
+            {
+                String zone = ZONE_FORMATTER.format(temporal);
+                return propertyName + ";" + zone + ":";
+            }
 //
 //            @Override
 //            Temporal parse(String temporalString)
@@ -717,8 +749,8 @@ public final class DateTimeUtilities
 //         * @param temporal - temporal of LocalDate, LocalDateTime or ZonedDateTime
 //         * @return
 //         */
-//        @Deprecated
-//        abstract String propertyTag(String propertyName, Temporal temporal);
+        @Deprecated
+        abstract String propertyTag(String propertyName, Temporal temporal);
     
         /** Format temporal to embedded DateTimeFormatter */
         abstract String formatDateTimeType(Temporal temporal);

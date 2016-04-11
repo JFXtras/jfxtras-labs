@@ -20,8 +20,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javafx.util.Pair;
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld.StartEndRange;
+import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VComponent.StartEndRange;
 import jfxtras.labs.icalendar.components.VComponentUtilities.VComponentPropertyOld;
 
 /**
@@ -487,7 +487,7 @@ public final class ICalendarUtilities
       , THIS_AND_FUTURE      // selected instance and all in the future
       , CANCEL;              // do nothing
         
-        public static Map<ChangeDialogOption, StartEndRange> makeDialogChoices(VComponentDisplayableOld<?> vComponent, Temporal startInstance)
+        public static Map<ChangeDialogOption, StartEndRange> makeDialogChoices(VComponent<?> vComponent, Temporal startInstance)
         {
             Map<ChangeDialogOption, StartEndRange> choices = new LinkedHashMap<>();
             choices.put(ChangeDialogOption.ONE, new StartEndRange(startInstance, startInstance));

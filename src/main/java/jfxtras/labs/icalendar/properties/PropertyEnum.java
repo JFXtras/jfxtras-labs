@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendar.components.VComponentNew;
 import jfxtras.labs.icalendar.components.VComponentPrimary;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueType;
@@ -52,14 +52,14 @@ public enum PropertyEnum
     // Alarm
     ACTION ("ACTION", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -71,14 +71,14 @@ public enum PropertyEnum
             , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
             , Attachment.class) {
                 @Override
-                public Property<?> getProperty(VComponent vComponent)
+                public Property<?> getProperty(VComponentNew vComponent)
                 {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
                 {
                     // TODO Auto-generated method stub
                     return null;
@@ -94,14 +94,14 @@ public enum PropertyEnum
                     ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
             , Attendee.class) {
                 @Override
-                public Property<?> getProperty(VComponent vComponent)
+                public Property<?> getProperty(VComponentNew vComponent)
                 {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
                 {
                     // TODO Auto-generated method stub
                     return null;
@@ -109,14 +109,14 @@ public enum PropertyEnum
             }, // property class
     CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -127,14 +127,14 @@ public enum PropertyEnum
             , Arrays.asList(ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
             , Categories.class) {
                 @Override
-                public Property<?> getProperty(VComponent vComponent)
+                public Property<?> getProperty(VComponentNew vComponent)
                 {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
                 {
                     // TODO Auto-generated method stub
                     return null;
@@ -145,14 +145,14 @@ public enum PropertyEnum
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             Classification.class) {
                 @Override
-                public Property<?> getProperty(VComponent vComponent)
+                public Property<?> getProperty(VComponentNew vComponent)
                 {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
                 {
                     // TODO Auto-generated method stub
                     return null;
@@ -164,13 +164,13 @@ public enum PropertyEnum
             Comment.class)
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             return null; // handled in getPropertyList
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             VComponentPrimary castProperty = (VComponentPrimary) parent;
             return castProperty.comments();
@@ -182,14 +182,14 @@ public enum PropertyEnum
             Contact.class)
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -200,14 +200,14 @@ public enum PropertyEnum
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             DateTimeCompleted.class) {
                 @Override
-                public Property<?> getProperty(VComponent vComponent)
+                public Property<?> getProperty(VComponentNew vComponent)
                 {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
                 {
                     // TODO Auto-generated method stub
                     return null;
@@ -219,14 +219,14 @@ public enum PropertyEnum
             DateTimeCreated.class)
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -238,14 +238,14 @@ public enum PropertyEnum
             DateTimeDue.class)
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -257,14 +257,14 @@ public enum PropertyEnum
             DateTimeEnd.class)
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -273,14 +273,14 @@ public enum PropertyEnum
     // Change management
     DATE_TIME_STAMP ("DTSTAMP", null, null, DateTimeStamp.class) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -292,14 +292,14 @@ public enum PropertyEnum
             DateTimeStart.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent parent)
+        public Property<?> getProperty(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -312,14 +312,14 @@ public enum PropertyEnum
             Description.class)
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -331,14 +331,14 @@ public enum PropertyEnum
             DurationProp.class)
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -350,14 +350,14 @@ public enum PropertyEnum
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             Exceptions.class) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -369,14 +369,14 @@ public enum PropertyEnum
             Arrays.asList(ParameterEnum.FREE_BUSY_TIME_TYPE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             FreeBusyTime.class) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -385,14 +385,14 @@ public enum PropertyEnum
     // Descriptive
     GEOGRAPHIC_POSITION ("GEO", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -405,14 +405,14 @@ public enum PropertyEnum
             IANAProperty.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -425,14 +425,14 @@ public enum PropertyEnum
             Location.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -441,14 +441,14 @@ public enum PropertyEnum
     // Calendar
     METHOD ("METHOD", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -461,14 +461,14 @@ public enum PropertyEnum
             NonStandardProperty.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -481,14 +481,14 @@ public enum PropertyEnum
             Organizer.class)
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -496,14 +496,14 @@ public enum PropertyEnum
     }, // property class
     PERCENT_COMPLETE ("PERCENT", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -511,14 +511,14 @@ public enum PropertyEnum
     }, // Descriptive
     PRIORITY ("PRIORITY", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -526,14 +526,14 @@ public enum PropertyEnum
     }, // Descriptive
     PRODUCT_IDENTIFIER ("PRODID", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -542,14 +542,14 @@ public enum PropertyEnum
     // Recurrence
     RECURRENCE_DATE_TIMES ("RDATE", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -562,14 +562,14 @@ public enum PropertyEnum
             RecurrenceId.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -581,14 +581,14 @@ public enum PropertyEnum
             RecurrenceRuleProp.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -596,14 +596,14 @@ public enum PropertyEnum
     }, // Recurrence
     RELATED_TO ("RELATED-TO", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -611,14 +611,14 @@ public enum PropertyEnum
     }, // Relationship
     REPEAT_COUNT ("REPEAT", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -626,14 +626,14 @@ public enum PropertyEnum
     }, // Alarm
     REQUEST_STATUS ("REQUEST-STATUS", null, null, RequestStatus.class) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -644,14 +644,14 @@ public enum PropertyEnum
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             Resources.class) {
                 @Override
-                public Property<?> getProperty(VComponent vComponent)
+                public Property<?> getProperty(VComponentNew vComponent)
                 {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
                 {
                     // TODO Auto-generated method stub
                     return null;
@@ -659,14 +659,14 @@ public enum PropertyEnum
             }, // property class
     SEQUENCE ("SEQUENCE", null, null, Sequence.class) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -678,14 +678,14 @@ public enum PropertyEnum
             Status.class) // property class
     {
                 @Override
-                public Property<?> getProperty(VComponent vComponent)
+                public Property<?> getProperty(VComponentNew vComponent)
                 {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
+                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
                 {
                     // TODO Auto-generated method stub
                     return null;
@@ -698,14 +698,14 @@ public enum PropertyEnum
             Summary.class) // property class
     {
             @Override
-            public Property<?> getProperty(VComponent vComponent)
+            public Property<?> getProperty(VComponentNew vComponent)
             {
                 // TODO Auto-generated method stub
                 return null;
             }
 
             @Override
-            public List<? extends Property<?>> getPropertyList(VComponent parent)
+            public List<? extends Property<?>> getPropertyList(VComponentNew parent)
             {
                 // TODO Auto-generated method stub
                 return null;
@@ -718,14 +718,14 @@ public enum PropertyEnum
             TimeTransparency.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -738,14 +738,14 @@ public enum PropertyEnum
             TimeZoneIdentifier.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -757,14 +757,14 @@ public enum PropertyEnum
             TimeZoneName.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -776,14 +776,14 @@ public enum PropertyEnum
             TimeZoneOffsetFrom.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -795,14 +795,14 @@ public enum PropertyEnum
             TimeZoneOffsetTo.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -814,14 +814,14 @@ public enum PropertyEnum
             TimeZoneURL.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -829,14 +829,14 @@ public enum PropertyEnum
     }, // Time Zone
     TRIGGER ("TRIGGER", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -848,14 +848,14 @@ public enum PropertyEnum
             UniqueIdentifier.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -867,14 +867,14 @@ public enum PropertyEnum
             UniformResourceLocator.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -882,14 +882,14 @@ public enum PropertyEnum
     }, // Relationship
     VERSION ("VERSION", Arrays.asList(ValueType.TEXT), null, null) {
         @Override
-        public Property<?> getProperty(VComponent vComponent)
+        public Property<?> getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -982,6 +982,6 @@ public enum PropertyEnum
     /*
      * ABSTRACT METHODS
      */
-    abstract public Property<?> getProperty(VComponent vComponent);
-    abstract public List<? extends Property<?>> getPropertyList(VComponent parent);
+    abstract public Property<?> getProperty(VComponentNew vComponent);
+    abstract public List<? extends Property<?>> getPropertyList(VComponentNew parent);
 }

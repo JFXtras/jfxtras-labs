@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventNew;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBase;
@@ -22,7 +22,7 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Status.StatusType
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VJournal
  */

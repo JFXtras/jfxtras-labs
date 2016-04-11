@@ -2,7 +2,7 @@ package jfxtras.labs.icalendar.properties.component.descriptive;
 
 import jfxtras.labs.icalendar.components.DaylightSavingTime;
 import jfxtras.labs.icalendar.components.StandardTime;
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventNew;
 import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
@@ -24,7 +24,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy

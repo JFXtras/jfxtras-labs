@@ -17,7 +17,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 * @author David Bal
  *
  * @param <T> - implementation subclass
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy
@@ -67,7 +67,7 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
      */
     @Override
     public ObjectProperty<PropertyDateTime<? extends Temporal>> dateTimeStartProperty() { return dateTimeStart; }
-    final private ObjectProperty<PropertyDateTime<? extends Temporal>> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START_LOCAL_DATE_TIME.toString());
+    final private ObjectProperty<PropertyDateTime<? extends Temporal>> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
 //    private DateTimeStart dateTimeStart;
     @Override public PropertyDateTime<? extends Temporal> getDateTimeStart()
     {

@@ -1,15 +1,15 @@
 package jfxtras.labs.icalendar.components;
 
 import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendar.properties.component.descriptive.attachment.AttachmentBase;
 
 /**
  * Describable VComponents
  * 
  * @author David Bal
- * @see VEventOld
+ * @see VEvent
  * @see VTodoOld
  * @see VJournalOld
  * @see VAlarmOld
@@ -26,9 +26,9 @@ public interface VComponentDescribable
      * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
      *  reports/r-960812.p
      */
-    public ObjectProperty<AttachmentBase> attachmentProperty();
-    public AttachmentBase getAttachment();
-    public void setAttachment(AttachmentBase attachment);
+    public ObjectProperty<Attachment> attachmentProperty();
+    public Attachment getAttachment();
+    public void setAttachment(Attachment attachment);
     
     /**
      * DESCRIPTION:

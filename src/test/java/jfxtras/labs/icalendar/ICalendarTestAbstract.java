@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
@@ -542,9 +542,9 @@ public abstract class ICalendarTestAbstract
      *  Branches have RELATED-TO
      */
     
-    public static List<VComponentDisplayableOld<InstanceMock>> getRecurrenceSetDaily1()
+    public static List<VComponent<InstanceMock>> getRecurrenceSetDaily1()
     {
-        List<VComponentDisplayableOld<InstanceMock>> recurrenceSet = new ArrayList<>();
+        List<VComponent<InstanceMock>> recurrenceSet = new ArrayList<>();
         VEventMock parent = getDaily1();
 
         VEventMock child1 = getDaily1()

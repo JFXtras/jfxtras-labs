@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendar.properties.component.relationship;
 
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventNew;
 import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.components.VJournal;
 import jfxtras.labs.icalendar.components.VTodo;
@@ -38,7 +38,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy

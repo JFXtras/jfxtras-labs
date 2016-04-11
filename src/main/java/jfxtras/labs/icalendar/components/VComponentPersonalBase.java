@@ -20,7 +20,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier
 * @author David Bal
  *
  * @param <T> - implementation subclass
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy

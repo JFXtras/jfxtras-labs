@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventNew;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
 
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  */
 public class Resources extends PropertyBaseAltText<List<String>, Resources>

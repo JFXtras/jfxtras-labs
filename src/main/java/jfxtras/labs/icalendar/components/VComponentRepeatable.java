@@ -12,7 +12,7 @@ import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRu
  * Calendar components that can repeat
  * 
  * @author David Bal
- * @see VEventOld
+ * @see VEvent
  * @see VTodoOld
  * @see VJournalOld
  * @see VTimeZoneOld

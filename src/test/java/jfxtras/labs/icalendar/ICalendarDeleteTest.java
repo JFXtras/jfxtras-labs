@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.mocks.InstanceMock;
 import jfxtras.labs.icalendar.mocks.VEventMock;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
@@ -34,7 +34,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
     public void canDeleteOne()
     {
         VEventMock vEvent = getWeeklyZoned();
-        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponent<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -79,7 +79,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
     public void canDeleteAll()
     {
         VEventMock vEvent = getWeeklyZoned();
-        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponent<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();
@@ -111,7 +111,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
     public void canDeleteThisAndFuture()
     {
         VEventMock vEvent = getDailyUTC();
-        List<VComponentDisplayableOld<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
+        List<VComponent<InstanceMock>> vComponents = new ArrayList<>(Arrays.asList(vEvent));
         LocalDateTime start = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime end = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<InstanceMock> instances = new ArrayList<InstanceMock>();

@@ -56,7 +56,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
 import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -84,7 +84,7 @@ final public static int INITIAL_COUNT = 10;
 final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on) 
 final private static int INITIAL_INTERVAL = 1;
     
-private VComponentDisplayableOld<T> vComponent;
+private VComponent<T> vComponent;
 private Temporal dateTimeStartInstanceNew;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -649,7 +649,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
  * @param dateTimeStartInstanceNew : start date-time for edited event
  */
     public void setupData(
-            VComponentDisplayableOld<T> vComponent
+            VComponent<T> vComponent
           , Temporal dateTimeStartInstanceNew
           , Stage stage)
     {
@@ -776,7 +776,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     }
     
     /* Set controls to values in rRule */
-    private void setInitialValues(VComponentDisplayableOld<T> vComponent)
+    private void setInitialValues(VComponent<T> vComponent)
     {
         int initialInterval = (vComponent.getRRule().getFrequency().getInterval() > 0) ?
                 vComponent.getRRule().getFrequency().getInterval() : INITIAL_INTERVAL;
@@ -1091,7 +1091,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         return builder.toString();
     }
     
-    private boolean isSupported(VComponentDisplayableOld<?> vComponent)
+    private boolean isSupported(VComponent<?> vComponent)
     {
         RecurrenceRule rRule = vComponent.getRRule();
         if (rRule == null)

@@ -13,7 +13,7 @@ import org.junit.Test;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonBar.ButtonData;
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.scene.control.agenda.Agenda;
@@ -227,7 +227,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
         Appointment a = agenda.appointments().get(0);
         
         Assert.assertEquals(1, agenda.appointments().size());
-        VComponentDisplayableOld<Appointment> v = agenda.vComponents().get(0);
+        VComponent<Appointment> v = agenda.vComponents().get(0);
         System.out.println(v.getDateTimeStart() + " ");
         String dateTimeStamp = DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(v.getDateTimeStamp());
         String dateTimeCreated = DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(v.getDateTimeCreated());

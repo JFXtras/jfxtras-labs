@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendar.properties.component.descriptive;
 
-import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VEventNew;
 import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
 
@@ -17,7 +17,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  */
 public class Location extends PropertyBaseAltText<Location, String>

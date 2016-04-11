@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javafx.beans.property.IntegerProperty;
@@ -11,7 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
-import jfxtras.labs.icalendar.components.VComponentDisplayableOld;
+import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -33,13 +34,13 @@ public AppointmentGroupGridPane()
     checkIcon.getStyleClass().add("check-icon");
 }
 
-public AppointmentGroupGridPane(VComponentDisplayableOld<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
+public AppointmentGroupGridPane(VComponent<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
 {
     this();
     setupData(vComponent, appointmentGroups);
 }
  
- public void setupData(VComponentDisplayableOld<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
+ public void setupData(VComponent<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
  {
 //      myIcon = new SVGPath();
 //     myIcon.setFill(Color.rgb(0, 255, 0, .9));
@@ -74,7 +75,8 @@ public AppointmentGroupGridPane(VComponentDisplayableOld<Appointment> vComponent
 
              // assign appointment group, store description in CATEGORIES field
              AppointmentGroup g = appointmentGroups.get(appointmentGroupSelected.getValue());
-             vComponent.getCategories().setValue(g.getDescription());
+             vComponent.getCategories().setValue(Arrays.asList(g.getDescription()));
+//             vComponent.setCategories(g.getDescription());
          });
          lCnt++;
      }

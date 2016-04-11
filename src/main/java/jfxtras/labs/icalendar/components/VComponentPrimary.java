@@ -14,13 +14,13 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
  * A calendar component that can contain a child event, such as an Alarm
  * 
  * @author David Bal
- * @see VEvent
+ * @see VEventNew
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy
  * @see VTimeZone
  *  */
-public interface VComponentPrimary extends VComponent
+public interface VComponentPrimary extends VComponentNew
 {
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83

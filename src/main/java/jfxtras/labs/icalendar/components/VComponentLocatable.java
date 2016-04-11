@@ -14,10 +14,10 @@ import jfxtras.labs.icalendar.properties.component.descriptive.Resources;
  * @author David Bal
  *
  * @param <I> class of recurrence instance
- * @see VEventOld
+ * @see VEvent
  * @see VTodoOld
  */
-public interface VComponentLocatable<I> extends VComponentDisplayable<I>
+public interface VComponentLocatable<I> extends VComponentDisplayableNew<I>
 {
     /** 
      * DURATION
