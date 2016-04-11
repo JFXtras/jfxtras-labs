@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javafx.util.Pair;
 import jfxtras.labs.icalendar.components.VEvent.EndType;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
 public final class VEventUtilities
 {
@@ -69,6 +70,27 @@ public final class VEventUtilities
         {
             vEventProperty.parseAndSetProperty(vEvent, value);
         }
+    }
+    
+    
+    /**
+     * Parses the property-value pair to the matching property, if a match is found.
+     * If no matching property, does nothing.
+     * 
+     * @param vComponent - object to add property values
+     * @param propertyValuePair - property name-value pair (e.g. DTSTART and TZID=America/Los_Angeles:20160214T110000)
+     * @return - true if property found and set, false otherwise
+     */
+    public static boolean parse(VEvent<?,?> vEvent, String propertyLine)
+    {
+        String propertyName = ICalendarUtilities.getPropertyName(propertyLine);
+        VEventProperty vEventProperty = VEventProperty.propertyFromName(propertyName);
+        if (vEventProperty != null)
+        {
+            vEventProperty.parseAndSetProperty(vEvent, propertyLine);
+            return true;
+        }
+        return false;
     }
     /**
      * VEvent specific properties with the following data and methods:

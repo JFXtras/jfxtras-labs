@@ -87,6 +87,21 @@ public class VEventMock extends VEvent<InstanceMock, VEventMock>
         return vEvent;
     }
     
+//    public static VEventMock parse(String vEventString)
+//    {
+//        VEventMock vEvent = new VEventMock();
+//        Iterator<Pair<String, String>> i = ICalendarUtilities.componentStringToPropertyList(vEventString).iterator();
+//        while (i.hasNext())
+//        {
+//            Pair<String, String> propertyValuePair = i.next();
+//            
+//            // parse each property-value pair by all associated property enums
+//            VEventUtilities.parse(vEvent, propertyValuePair);
+////            VComponentUtilities.parse(vEvent, propertyValuePair);
+//        }
+//        return vEvent;
+//    }
+    
     public static boolean isEqualTo(VEventMock v1, VEventMock v2)
     {
         return VEventUtilities.isEqualTo(v1, v2, true);
