@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendar.properties.component.time;
+package jfxtras.labs.icalendar.properties;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -12,24 +12,22 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifierParameter;
 import jfxtras.labs.icalendar.parameters.ValueType;
-import jfxtras.labs.icalendar.properties.PropertyBase;
-import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDZonedDateTime;
-import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
-import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 
 /**
- * Abstract class for all zoned-date-time classes
+ * Abstract class for all non-UTC date-time classes
  * Contains the time zone identifier parameter
  * 
  * @author David Bal
  *
  * @param <U> - implementation class
- * @see DTStartZonedDateTime
- * @see DTEndZonedDateTime
+ * @see DateTimeStart
+ * @see DateTimeEnd
  * @see RecurrenceIDZonedDateTime
  */
-public abstract class PropertyBaseDateTime2<U, T extends Temporal> extends PropertyBase<U,T> implements PropertyDateTime<T>
+public abstract class PropertyBaseDateTime<T extends Temporal, U> extends PropertyBase<T,U>
 {
     /**
      * TZID
@@ -40,9 +38,7 @@ public abstract class PropertyBaseDateTime2<U, T extends Temporal> extends Prope
      * Examples:
      * DTSTART;TZID=America/New_York:19980119T020000
      */
-    @Override
     public TimeZoneIdentifierParameter getTimeZoneIdentifier() { return (timeZoneIdentifier == null) ? null : timeZoneIdentifier.get(); }
-    @Override
     public ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifierProperty()
     {
         if (timeZoneIdentifier == null)
@@ -52,7 +48,6 @@ public abstract class PropertyBaseDateTime2<U, T extends Temporal> extends Prope
         return timeZoneIdentifier;
     }
     private ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifier;
-    @Override
     public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier)
     {
         if ((getValue() == null) || (getValue() instanceof ZonedDateTime))
@@ -75,23 +70,23 @@ public abstract class PropertyBaseDateTime2<U, T extends Temporal> extends Prope
     /*
      * CONSTRUCTORS
      */
-    protected PropertyBaseDateTime2()
+    protected PropertyBaseDateTime()
     {
         super();
     }
     
-    public PropertyBaseDateTime2(T temporal)
+    public PropertyBaseDateTime(T temporal)
     {
         super(temporal);
     }
 
-    public PropertyBaseDateTime2(Class<T> clazz, CharSequence contentLine)
+    public PropertyBaseDateTime(Class<T> clazz, CharSequence contentLine)
     {
         super(contentLine);
         clazz.cast(getValue()); // ensure value class type matches parameterized type
     }
     
-    public PropertyBaseDateTime2(PropertyBaseDateTime2<U,T> source)
+    public PropertyBaseDateTime(PropertyBaseDateTime<T,U> source)
     {
         super(source);
     }

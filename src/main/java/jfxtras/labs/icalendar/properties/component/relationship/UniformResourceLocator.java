@@ -2,20 +2,39 @@ package jfxtras.labs.icalendar.properties.component.relationship;
 
 import java.net.URI;
 
+import jfxtras.labs.icalendar.components.VEvent;
+import jfxtras.labs.icalendar.components.VFreeBusy;
+import jfxtras.labs.icalendar.components.VJournal;
+import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class UniformResourceLocator extends PropertyBase<UniformResourceLocator, URI>
+/**
+ * DURATION
+ * RFC 5545, 3.8.4.6, page 116
+ * 
+ * This property defines a Uniform Resource Locator (URL) associated with the iCalendar object.
+ *
+ * Examples:
+ * URL:http://example.com/pub/calendars/jsmith/mytime.ics
+ * 
+ * @author David Bal
+ * 
+ * The property can be specified in following components:
+ * @see VEvent
+ * @see VTodo
+ * @see VJournal
+ * @see VFreeBusy
+ */
+public class UniformResourceLocator extends PropertyBase<URI,UniformResourceLocator>
 {
     public UniformResourceLocator(String contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public UniformResourceLocator(URI value)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(value, null);
+        super(value);
     }
     
     public UniformResourceLocator(UniformResourceLocator source)

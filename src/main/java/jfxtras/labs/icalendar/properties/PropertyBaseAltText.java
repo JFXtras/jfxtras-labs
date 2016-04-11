@@ -27,7 +27,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Contact;
  * @see Resources
  * @see Summary
  */
-public abstract class PropertyBaseAltText<U,T> extends PropertyBaseLanguage<U,T> implements PropertyAltText<T>
+public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U> implements PropertyAltText<T>
 {
     /**
      * ALTREP : Alternate Text Representation
@@ -96,7 +96,7 @@ public abstract class PropertyBaseAltText<U,T> extends PropertyBaseLanguage<U,T>
     }
 
     // copy constructor
-    public PropertyBaseAltText(PropertyBaseAltText<U,T> property)
+    public PropertyBaseAltText(PropertyBaseAltText<T,U> property)
     {
         super(property);
     }

@@ -33,7 +33,7 @@ import jfxtras.labs.icalendar.properties.PropertyCalendarUser;
  * @see Organizer
  * @see Attendee
  */
-public abstract class PropertyBaseCalendarUser<U, T> extends PropertyBaseLanguage<U, T> implements PropertyCalendarUser<T>
+public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage<T,U> implements PropertyCalendarUser<T>
 {
     /**
      * CN
@@ -152,7 +152,7 @@ public abstract class PropertyBaseCalendarUser<U, T> extends PropertyBaseLanguag
     }
 
     // copy constructor
-    public PropertyBaseCalendarUser(PropertyBaseCalendarUser<U, T> property)
+    public PropertyBaseCalendarUser(PropertyBaseCalendarUser<T,U> property)
     {
         super(property);
     }

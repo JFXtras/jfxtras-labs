@@ -47,7 +47,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * The property can be specified in following components:
  * @see VFreeBusy
  */
-public class FreeBusyTime extends PropertyBase<FreeBusyTime, List<Pair<ZonedDateTime, TemporalAmount>>> implements PropertyFreeBusy<List<Pair<ZonedDateTime, TemporalAmount>>>
+public class FreeBusyTime extends PropertyBase<List<Pair<ZonedDateTime, TemporalAmount>>, FreeBusyTime> implements PropertyFreeBusy<List<Pair<ZonedDateTime, TemporalAmount>>>
 {
     private final static StringConverter<List<Pair<ZonedDateTime, TemporalAmount>>> CONVERTER = new StringConverter<List<Pair<ZonedDateTime, TemporalAmount>>>()
     {

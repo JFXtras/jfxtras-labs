@@ -1,9 +1,9 @@
 package jfxtras.labs.icalendar.properties.component.time;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import jfxtras.labs.icalendar.components.VTodo;
+import jfxtras.labs.icalendar.properties.PropertyBaseUTC;
 
 /**
  * COMPLETED
@@ -21,33 +21,20 @@ import jfxtras.labs.icalendar.components.VTodo;
  * The property can be specified in following components:
  * @see VTodo
  */
-public class DateTimeCompleted extends PropertyBaseUTCTime<DateTimeCompleted>
+public class DateTimeCompleted extends PropertyBaseUTC<DateTimeCompleted>
 {
     public DateTimeCompleted(ZonedDateTime temporal)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(temporal, null);
+        super(temporal);
     }
 
     public DateTimeCompleted(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(contentLine);
     }
     
     public DateTimeCompleted(DateTimeCompleted source)
     {
         super(source);
     }
-
-    @Override
-    public boolean isValid()
-    {
-        if (! getValue().getZone().equals(ZoneId.of("Z")))
-        {
-            return false;
-        }
-        return super.isValid();
-    }
-    
 }

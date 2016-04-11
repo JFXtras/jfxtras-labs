@@ -4,7 +4,7 @@ import java.net.URI;
 
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public class TimeZoneURL extends PropertyBase<TimeZoneURL, URI>
+public class TimeZoneURL extends PropertyBase<URI,TimeZoneURL>
 {
     public TimeZoneURL(CharSequence contentLine)
     {

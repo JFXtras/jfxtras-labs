@@ -14,7 +14,7 @@ import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
-public class Exceptions<T extends Temporal> extends PropertyBase<Exceptions<Temporal>, ObservableSet<T>>
+public class Exceptions<T extends Temporal> extends PropertyBase<ObservableSet<T>, Exceptions<Temporal>>
 {
     private final StringConverter<ObservableSet<T>> CONVERTER = new StringConverter<ObservableSet<T>>()
     {

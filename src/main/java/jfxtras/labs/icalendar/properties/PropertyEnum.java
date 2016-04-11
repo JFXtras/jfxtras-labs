@@ -33,23 +33,16 @@ import jfxtras.labs.icalendar.properties.component.recurrence.RecurrenceRuleProp
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Contact;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
-import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDLocalDate;
-import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDLocalDateTime;
-import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDZonedDateTime;
+import jfxtras.labs.icalendar.properties.component.relationship.RecurrenceId;
+import jfxtras.labs.icalendar.properties.component.relationship.UniformResourceLocator;
+import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeDue;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendar.properties.component.time.DurationProp;
 import jfxtras.labs.icalendar.properties.component.time.FreeBusyTime;
 import jfxtras.labs.icalendar.properties.component.time.TimeTransparency;
-import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDate;
-import jfxtras.labs.icalendar.properties.component.time.due.DueLocalDateTime;
-import jfxtras.labs.icalendar.properties.component.time.due.DueZonedDateTime;
-import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDate;
-import jfxtras.labs.icalendar.properties.component.time.end.DTEndLocalDateTime;
-import jfxtras.labs.icalendar.properties.component.time.end.DTEndZonedDateTime;
-import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDate;
-import jfxtras.labs.icalendar.properties.component.time.start.DTStartLocalDateTime;
-import jfxtras.labs.icalendar.properties.component.time.start.DTStartZonedDateTime;
-import jfxtras.labs.icalendar.properties.component.time.start.DateTimeStart;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneIdentifier;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneOffsetFrom;
@@ -258,7 +251,11 @@ public enum PropertyEnum
                     return null;
                 }
             }, // property class
-    DATE_TIME_CREATED ("CREATED", null, null, DateTimeCreated.class) {
+    DATE_TIME_CREATED ("CREATED", // property name
+            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DateTimeCreated.class)
+    {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {
@@ -273,100 +270,29 @@ public enum PropertyEnum
             return null;
         }
     }, // Change management
-    DATE_TIME_DUE_LOCAL_DATE ("DUE", // property name
-            Arrays.asList(ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DueLocalDate.class) {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
-    DATE_TIME_DUE_LOCAL_DATE_TIME ("DUE", // property name
-            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DueLocalDateTime.class) {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
-    DATE_TIME_DUE_ZONED_DATE_TIME ("DUE", // property name
+    DATE_TIME_DUE ("DUE", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
             Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DueZonedDateTime.class) {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            DateTimeDue.class)
+    {
+        @Override
+        public Property<?> getProperty(VComponent vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
-    DATE_TIME_END_LOCAL_DATE ("DTEND", // property name
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponent parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },
+    DATE_TIME_END ("DTEND", // property name
             Arrays.asList(ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTEndLocalDate.class) {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
-    DATE_TIME_END_LOCAL_DATE_TIME ("DTEND", // property name
-            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTEndLocalDateTime.class) {
-                @Override
-                public Property<?> getProperty(VComponent vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponent parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
-    DATE_TIME_END_ZONED_DATE_TIME ("DTEND", // property name
-            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
             Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTEndZonedDateTime.class) // property class
+            DateTimeEnd.class)
     {
         @Override
         public Property<?> getProperty(VComponent vComponent)
@@ -406,44 +332,6 @@ public enum PropertyEnum
         @Override
         public Property<?> getProperty(VComponent parent)
         {
-            VComponentPrimary castProperty = (VComponentPrimary) parent;
-            return castProperty.getDateTimeStart();
-        }
-
-        @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    },
-    DATE_TIME_START_LOCAL_DATE ("DTSTART", // property name
-            Arrays.asList(ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTStartLocalDate.class) // property class
-    {
-        @Override
-        public Property<?> getProperty(VComponent parent)
-        {
-            VComponentPrimary castProperty = (VComponentPrimary) parent;
-            return castProperty.getDateTimeStart();
-        }
-
-        @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    },
-    DATE_TIME_START_LOCAL_DATE_TIME ("DTSTART", // property name
-            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTStartLocalDateTime.class) // property class
-    {
-        @Override
-        public Property<?> getProperty(VComponent vComponent)
-        {
             // TODO Auto-generated method stub
             return null;
         }
@@ -455,25 +343,7 @@ public enum PropertyEnum
             return null;
         }
     },
-    DATE_TIME_START_ZONED_DATE_TIME ("DTSTART", // property name
-            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DTStartZonedDateTime.class)
-    {
-        @Override
-        public Property<?> getProperty(VComponent vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
 
-        @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    }, // property class
     DESCRIPTION ("DESCRIPTION",
             Arrays.asList(ValueType.TEXT),
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE),
@@ -723,50 +593,10 @@ public enum PropertyEnum
         }
     },
     // Relationship
-    RECURRENCE_IDENTIFIER_LOCAL_DATE ("RECURRENCE-ID", // property name
-            Arrays.asList(ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.RECURRENCE_IDENTIFIER_RANGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            RecurrenceIDLocalDate.class) // property class
-    {
-        @Override
-        public Property<?> getProperty(VComponent vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    },
-    // Relationship
-    RECURRENCE_IDENTIFIER_LOCAL_DATE_TIME ("RECURRENCE-ID", // property name
-            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.RECURRENCE_IDENTIFIER_RANGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            RecurrenceIDLocalDateTime.class) // property class
-    {
-        @Override
-        public Property<?> getProperty(VComponent vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public List<? extends Property<?>> getPropertyList(VComponent parent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    },
-    // Relationship
-    RECURRENCE_IDENTIFIER_ZONED_DATE_TIME ("RECURRENCE-ID", // property name
-            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
+    RECURRENCE_IDENTIFIER ("RECURRENCE-ID", // property name
+            Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
             Arrays.asList(ParameterEnum.RECURRENCE_IDENTIFIER_RANGE, ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            RecurrenceIDZonedDateTime.class) // property class
+            RecurrenceId.class) // property class
     {
         @Override
         public Property<?> getProperty(VComponent vComponent)
@@ -1049,7 +879,11 @@ public enum PropertyEnum
             return null;
         }
     },  // Alarm
-    UNIQUE_IDENTIFIER ("UID", Arrays.asList(ValueType.TEXT), null, null) {
+    UNIQUE_IDENTIFIER ("UID", // property name
+            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            UniqueIdentifier.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {
@@ -1064,7 +898,11 @@ public enum PropertyEnum
             return null;
         }
     }, // Relationship
-    UNIFORM_RESOURCE_LOCATOR ("URL", null, null, null) {
+    UNIFORM_RESOURCE_LOCATOR ("URL", // property name
+            Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            UniformResourceLocator.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponent vComponent)
         {

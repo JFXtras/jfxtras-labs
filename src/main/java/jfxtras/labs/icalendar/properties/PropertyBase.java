@@ -49,7 +49,7 @@ import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
  * @param <U> - type of implementing subclass
  * @param <T> - type of property value
  */
-public abstract class PropertyBase<U,T> implements Property<T>
+public abstract class PropertyBase<T,U> implements Property<T>
 {
     /** The name of the property, such as DESCRIPTION
      * Remains the default value unless set by a non-standard property*/
@@ -207,9 +207,8 @@ public abstract class PropertyBase<U,T> implements Property<T>
     public void setConverter(StringConverter<T> converter) { this.converter = converter; }
     private boolean isCustomConverter()
     {
-        System.out.println("custom:" + getConverter() + " " + ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
+//        System.out.println("custom:" + getConverter() + " " + ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
         return ! getConverter().equals(getValueParameter().getValue().getConverter());
-//        return ! propertyType().allowedValueTypes().get(0).getConverter().equals(getConverter());
     }
     
     /*
@@ -223,7 +222,6 @@ public abstract class PropertyBase<U,T> implements Property<T>
         ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
         StringConverter<T> defaultConverter = defaultValueType.getConverter();
         setConverter(defaultConverter);
-//        System.out.println("converter:" + defaultConverter);
 //        setValueParameter(valueType);
     }
     
@@ -497,7 +495,7 @@ public abstract class PropertyBase<U,T> implements Property<T>
         boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value.getValue());
         boolean isUnknownType = value.getValue().equals(ValueType.UNKNOWN);
         boolean isNonStandardProperty = propertyType().equals(PropertyEnum.NON_STANDARD) || propertyType().equals(PropertyEnum.IANA_PROPERTY);
-        System.out.println("e2:" + isValueTypeOK + " " + isUnknownType + " " + isNonStandardProperty);
+//        System.out.println("parameter valid:" + isValueTypeOK + " " + isUnknownType + " " + isNonStandardProperty);
         return (isValueTypeOK || isUnknownType || isNonStandardProperty);
     }
     

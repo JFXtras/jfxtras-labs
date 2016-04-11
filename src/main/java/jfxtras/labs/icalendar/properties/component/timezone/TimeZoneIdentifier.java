@@ -25,7 +25,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  * @author David Bal
  * @see VTimeZone
  */
-public class TimeZoneIdentifier extends PropertyBase<TimeZoneIdentifier, ZoneId>
+public class TimeZoneIdentifier extends PropertyBase<ZoneId,TimeZoneIdentifier>
 {
     private final static StringConverter<ZoneId> CONVERTER = new StringConverter<ZoneId>()
     {

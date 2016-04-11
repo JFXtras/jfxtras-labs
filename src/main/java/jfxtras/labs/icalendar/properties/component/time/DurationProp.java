@@ -31,7 +31,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
  * @see VTodo
  * @see VAlarm
  */
-public class DurationProp extends PropertyBaseLanguage<DurationProp, TemporalAmount>
+public class DurationProp extends PropertyBaseLanguage<TemporalAmount,DurationProp>
 {
     public DurationProp(CharSequence contentLine)
     {

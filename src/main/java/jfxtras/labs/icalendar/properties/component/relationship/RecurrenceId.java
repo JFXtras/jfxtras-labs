@@ -1,16 +1,16 @@
-package jfxtras.labs.icalendar.properties.component.relationship.recurrenceid;
+package jfxtras.labs.icalendar.properties.component.relationship;
 
-import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.Range;
 import jfxtras.labs.icalendar.parameters.Range.RangeType;
-import jfxtras.labs.icalendar.properties.PropertyBaseUTC;
+import jfxtras.labs.icalendar.properties.PropertyBaseDateTime;
 import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
 
-public class RecurrenceIDLocalDateTime extends PropertyBaseUTC<RecurrenceIDLocalDateTime> implements PropertyRecurrenceID<LocalDateTime>
+public class RecurrenceId<T extends Temporal> extends PropertyBaseDateTime<T, RecurrenceId<T>> implements PropertyRecurrenceID<T>
 {
     /**
      * RANGE
@@ -48,23 +48,21 @@ public class RecurrenceIDLocalDateTime extends PropertyBaseUTC<RecurrenceIDLocal
         }
     }
     public void setRange(String value) { setRange(new Range(value)); }
-    public RecurrenceIDLocalDateTime withRange(Range altrep) { setRange(altrep); return this; }
-    public RecurrenceIDLocalDateTime withRange(RangeType value) { setRange(new Range(value)); return this; }
-    public RecurrenceIDLocalDateTime withRange(String content) { setRange(content); return this; }
-    
-    public RecurrenceIDLocalDateTime(LocalDateTime temporal)
+    public RecurrenceId<T> withRange(Range altrep) { setRange(altrep); return this; }
+    public RecurrenceId<T> withRange(RangeType value) { setRange(new Range(value)); return this; }
+    public RecurrenceId<T> withRange(String content) { setRange(content); return this; }
+
+   public RecurrenceId(T temporal)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(temporal, null);
+        super(temporal);
     }
 
-    public RecurrenceIDLocalDateTime(CharSequence contentLine)
+    public RecurrenceId(Class<T> clazz, CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super(contentLine, null);
+        super(clazz, contentLine);
     }
     
-    public RecurrenceIDLocalDateTime(RecurrenceIDLocalDateTime source)
+    public RecurrenceId(RecurrenceId<T> source)
     {
         super(source);
     }

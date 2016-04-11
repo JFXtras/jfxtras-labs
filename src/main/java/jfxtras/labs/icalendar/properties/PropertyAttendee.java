@@ -15,12 +15,11 @@ import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseAtte
  * 
  * @author David Bal
  *
- * @param <T> - subclass
- * @param <T> - property value type
+ * @param <U> - subclass
  * 
  * @see PropertyBaseAttendee
  */
-public interface PropertyAttendee<T> extends PropertyCalendarUser<T>
+public interface PropertyAttendee<U> extends PropertyCalendarUser<U>
 {
     /**
      * CUTYPE

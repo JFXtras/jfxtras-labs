@@ -4,14 +4,14 @@ import java.time.ZoneOffset;
 
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
-public abstract class PropertyBaseZoneOffset<T> extends PropertyBase<T, ZoneOffset>
+public abstract class PropertyBaseZoneOffset<U> extends PropertyBase<ZoneOffset,U>
 {
     public PropertyBaseZoneOffset(CharSequence contentLine)
     {
         super(contentLine);
     }
     
-    public PropertyBaseZoneOffset(PropertyBaseZoneOffset<T> source)
+    public PropertyBaseZoneOffset(PropertyBaseZoneOffset<U> source)
     {
         super(source);
     }

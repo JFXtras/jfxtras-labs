@@ -26,7 +26,7 @@ import jfxtras.labs.icalendar.properties.component.time.TimeTransparency.Transpa
  * @see VEvent
  */
     // TODO - REMOVE UNKNOWN AS VALUE - MAKE PROPER WITH REAL UNKNOWN WORK BEFORE DELETING CODE
-public class TimeTransparency extends PropertyBase<TimeTransparency, TransparencyType>
+public class TimeTransparency extends PropertyBase<TransparencyType,TimeTransparency>
 {
     private final static StringConverter<TransparencyType> CONVERTER = new StringConverter<TransparencyType>()
     {

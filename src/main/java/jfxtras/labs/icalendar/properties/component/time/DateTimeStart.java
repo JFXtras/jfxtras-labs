@@ -1,11 +1,11 @@
-package jfxtras.labs.icalendar.properties.component.time.start;
+package jfxtras.labs.icalendar.properties.component.time;
 
-import java.time.LocalDate;
+import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendar.components.VFreeBusy;
 import jfxtras.labs.icalendar.components.VTodo;
-import jfxtras.labs.icalendar.properties.component.time.PropertyBaseDate;
+import jfxtras.labs.icalendar.properties.PropertyBaseDateTime;
 
 /**
  * DTSTART
@@ -24,20 +24,19 @@ import jfxtras.labs.icalendar.properties.component.time.PropertyBaseDate;
  * @see VTodo
  * @see VFreeBusy
  */
-@Deprecated
-public class DTStartLocalDate extends PropertyBaseDate<DTStartLocalDate>
+public class DateTimeStart<T extends Temporal> extends PropertyBaseDateTime<T,DateTimeStart<T>>
 {
-    public DTStartLocalDate(LocalDate temporal)
+   public DateTimeStart(T temporal)
     {
         super(temporal);
     }
 
-    public DTStartLocalDate(CharSequence contentLine)
+    public DateTimeStart(Class<T> clazz, CharSequence contentLine)
     {
-        super(contentLine);
+        super(clazz, contentLine);
     }
     
-    public DTStartLocalDate(DTStartLocalDate source)
+    public DateTimeStart(DateTimeStart<T> source)
     {
         super(source);
     }

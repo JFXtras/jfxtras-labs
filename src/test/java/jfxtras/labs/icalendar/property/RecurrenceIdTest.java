@@ -10,16 +10,14 @@ import java.time.ZonedDateTime;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.parameters.Range.RangeType;
-import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDLocalDate;
-import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDLocalDateTime;
-import jfxtras.labs.icalendar.properties.component.relationship.recurrenceid.RecurrenceIDZonedDateTime;
+import jfxtras.labs.icalendar.properties.component.relationship.RecurrenceId;
 
-public class RecurrenceIDTest
+public class RecurrenceIdTest
 {
     @Test
-    public void canParseRecurrenceID1()
+    public void canParseRecurrenceId1()
     {
-        RecurrenceIDLocalDateTime property = new RecurrenceIDLocalDateTime("20160322T174422");
+        RecurrenceId<LocalDateTime> property = new RecurrenceId<LocalDateTime>(LocalDateTime.class, "20160322T174422");
         String expectedContentLine = "RECURRENCE-ID:20160322T174422";
         String madeContentLine = property.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
@@ -27,9 +25,9 @@ public class RecurrenceIDTest
     }
     
     @Test
-    public void canParseRecurrenceID2()
+    public void canParseRecurrenceId2()
     {
-        RecurrenceIDLocalDate property = new RecurrenceIDLocalDate("20160322");
+        RecurrenceId<LocalDate> property = new RecurrenceId<LocalDate>(LocalDate.class, "20160322");
         String expectedContentLine = "RECURRENCE-ID;VALUE=DATE:20160322";
         String madeContentLine = property.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
@@ -37,9 +35,9 @@ public class RecurrenceIDTest
     }
     
     @Test
-    public void canParseRecurrenceID3()
+    public void canParseRecurrenceId3()
     {
-        RecurrenceIDZonedDateTime property = new RecurrenceIDZonedDateTime(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
+        RecurrenceId<ZonedDateTime> property = new RecurrenceId<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
         String expectedContentLine = "RECURRENCE-ID;TZID=America/Los_Angeles:20160306T043000";
         String madeContentLine = property.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
@@ -47,9 +45,9 @@ public class RecurrenceIDTest
     }
     
     @Test
-    public void canParseRecurrenceID4()
+    public void canParseRecurrenceId4()
     {
-        RecurrenceIDZonedDateTime property = new RecurrenceIDZonedDateTime(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z")))
+        RecurrenceId<ZonedDateTime> property = new RecurrenceId<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z")))
                 .withRange(RangeType.THIS_AND_FUTURE);
         String expectedContentLine = "RECURRENCE-ID;RANGE=THISANDFUTURE:20160306T043000Z";
         String madeContentLine = property.toContentLine();

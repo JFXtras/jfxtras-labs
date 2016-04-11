@@ -8,7 +8,7 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 /**
  * Property with language and a text-based value
  *  
- * @param <T>
+ * @param <T> - type of property value
  * 
  * @see PropertyBaseLanguage
  * 

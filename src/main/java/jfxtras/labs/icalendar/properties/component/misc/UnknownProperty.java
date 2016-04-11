@@ -30,7 +30,8 @@ import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseAtte
  * @author David Bal
  *
  */
-public abstract class UnknownProperty<U,T> extends PropertyBaseAttendee<U,T> implements PropertyAttendee<T>, PropertyAltText<T>, PropertyAttachment<T>, PropertyFreeBusy<T>, PropertyRecurrenceID<T>, PropertyDateTime<T>
+public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> implements PropertyAttendee<U>, PropertyAltText<U>,
+    PropertyAttachment<U>, PropertyFreeBusy<U>, PropertyRecurrenceID<U>, PropertyDateTime<U>
 {
     /**
      * ALTREP : Alternate Text Representation

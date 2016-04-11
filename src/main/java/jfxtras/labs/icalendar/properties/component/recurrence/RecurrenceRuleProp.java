@@ -24,7 +24,7 @@ import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRu
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public class RecurrenceRuleProp extends PropertyBase<RecurrenceRuleProp, RecurrenceRule>
+public class RecurrenceRuleProp extends PropertyBase<RecurrenceRule, RecurrenceRuleProp>
 {
     public RecurrenceRuleProp(CharSequence contentLine)
     {

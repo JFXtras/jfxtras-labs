@@ -28,7 +28,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseAltText;
  * @see VJournal
  * @see VAlarm
  */
-public class Description extends PropertyBaseAltText<Description, String>
+public class Description extends PropertyBaseAltText<String,Description>
 {
     public Description(CharSequence contentLine)
     {

@@ -10,13 +10,16 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 /**
  * Property with language and a text-based value
  *  
- * @param <U>
- * 
  * concrete subclasses
  * @see Categories
  * @see TimeZoneName
+ * 
+ * @author David Bal
+ *
+ * @param <U> - type of implementing subclass
+ * @param <T> - type of property value
  */
-public abstract class PropertyBaseLanguage<U,T> extends PropertyBase<U,T> implements PropertyLanguage<T>
+public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implements PropertyLanguage<T>
 {
     /**
      * LANGUAGE
@@ -59,7 +62,7 @@ public abstract class PropertyBaseLanguage<U,T> extends PropertyBase<U,T> implem
     }
     
     // copy constructor
-    public PropertyBaseLanguage(PropertyBaseLanguage<U,T> property)
+    public PropertyBaseLanguage(PropertyBaseLanguage<T,U> property)
     {
         super(property);
     }
