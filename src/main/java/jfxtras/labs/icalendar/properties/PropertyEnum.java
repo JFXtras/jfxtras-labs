@@ -11,6 +11,7 @@ import jfxtras.labs.icalendar.components.VComponentPrimary;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
+import jfxtras.labs.icalendar.properties.component.alarm.Action;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendar.properties.component.change.Sequence;
@@ -51,7 +52,11 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneURL;
 public enum PropertyEnum
 {
     // Alarm
-    ACTION ("ACTION", null, null, null) {
+    ACTION ("ACTION", // property name
+            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Action.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponentNew vComponent)
         {
@@ -93,21 +98,23 @@ public enum PropertyEnum
                     ParameterEnum.GROUP_OR_LIST_MEMBERSHIP, ParameterEnum.LANGUAGE, ParameterEnum.PARTICIPATION_ROLE,
                     ParameterEnum.PARTICIPATION_STATUS, ParameterEnum.RSVP_EXPECTATION, ParameterEnum.SENT_BY,
                     ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
-            , Attendee.class) {
-                @Override
-                public Property<?> getProperty(VComponentNew vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            , Attendee.class) // property class
+    {
+        @Override
+        public Property<?> getProperty(VComponentNew vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },
+    // Calendar
     CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class) {
         @Override
         public Property<?> getProperty(VComponentNew vComponent)
@@ -122,43 +129,46 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Calendar
+    },
     CATEGORIES ("CATEGORIES" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
             , Arrays.asList(ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
-            , Categories.class) {
-                @Override
-                public Property<?> getProperty(VComponentNew vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            , Categories.class) // property class
+    {
+        @Override
+        public Property<?> getProperty(VComponentNew vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },
+    // descriptive
     CLASSIFICATION ("CLASS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Classification.class) {
-                @Override
-                public Property<?> getProperty(VComponentNew vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            Classification.class) // property class
+    {
+        @Override
+        public Property<?> getProperty(VComponentNew vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            },
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },
     COMMENT ("COMMENT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters

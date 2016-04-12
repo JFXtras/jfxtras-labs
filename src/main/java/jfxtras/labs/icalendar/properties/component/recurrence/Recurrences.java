@@ -17,7 +17,7 @@ import jfxtras.labs.icalendar.components.VTodo;
  * This property defines the list of DATE-TIME values for
  * recurring events, to-dos, journal entries, or time zone definitions.
  * 
- * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD
+ * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
  * 
  * @author David Bal
  * @see VEvent
