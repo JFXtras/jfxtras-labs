@@ -11,6 +11,7 @@ import java.util.stream.Stream;
  * @author David Bal
  *
  */
+@Deprecated
 public class ExDate extends RecurrenceAbstract<ExDate>
 {    
     // CONSTRUCTORS

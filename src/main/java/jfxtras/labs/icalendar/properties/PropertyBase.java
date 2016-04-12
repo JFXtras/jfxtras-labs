@@ -502,7 +502,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         } else
         {
             boolean isValueTypeOK = isValueParameterValid(getValueParameter());
-            System.out.println("PropertyBase isValid:" + Property.super.isValid() + " " + isValueTypeOK);
+//            System.out.println("PropertyBase isValid:" + Property.super.isValid() + " " + isValueTypeOK);
             return (Property.super.isValid()) && isValueTypeOK;
         }
     }

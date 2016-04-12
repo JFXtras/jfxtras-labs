@@ -28,6 +28,7 @@ import jfxtras.labs.icalendar.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendar.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendar.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendar.properties.component.recurrence.RecurrenceRuleProp;
+import jfxtras.labs.icalendar.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Contact;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
@@ -347,8 +348,9 @@ public enum PropertyEnum
     // Recurrence
     EXCEPTION_DATE_TIMES ("EXDATE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Exceptions.class) {
+            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Exceptions.class)
+    {
         @Override
         public Property<?> getProperty(VComponentNew vComponent)
         {
@@ -524,6 +526,7 @@ public enum PropertyEnum
             return null;
         }
     }, // Descriptive
+    // Calendar
     PRODUCT_IDENTIFIER ("PRODID", null, null, null) {
         @Override
         public Property<?> getProperty(VComponentNew vComponent)
@@ -538,9 +541,13 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
-    }, // Calendar
+    },
     // Recurrence
-    RECURRENCE_DATE_TIMES ("RDATE", null, null, null) {
+    RECURRENCE_DATE_TIMES ("RDATE", // property name
+            Arrays.asList(ValueType.DATE_TIME, ValueType.DATE, ValueType.PERIOD), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Recurrences.class)
+    {
         @Override
         public Property<?> getProperty(VComponentNew vComponent)
         {

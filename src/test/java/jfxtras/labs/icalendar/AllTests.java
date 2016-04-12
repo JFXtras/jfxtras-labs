@@ -24,7 +24,7 @@ import jfxtras.labs.icalendar.property.LocationTest;
 import jfxtras.labs.icalendar.property.NonStandardPropertyTest;
 import jfxtras.labs.icalendar.property.OrganizerTest;
 import jfxtras.labs.icalendar.property.ParsePropertyTest;
-import jfxtras.labs.icalendar.property.RDateTest;
+import jfxtras.labs.icalendar.property.RecurrencesTest;
 import jfxtras.labs.icalendar.property.StatusTest;
 import jfxtras.labs.icalendar.property.SummaryTest;
 import jfxtras.labs.icalendar.property.TimeTransparencyTest;
@@ -37,15 +37,15 @@ import jfxtras.labs.icalendar.property.UniqueIdentifierTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
-//                ICalendarCopyTest.class
-//              , ICalendarDateTest.class
-//              , ICalendarDeleteTest.class
-//              , ICalendarEditTest.class
-//              , ICalendarEqualsTest.class
-//              , ICalendarMakeInstancesTest.class
+                ICalendarCopyTest.class,
+                ICalendarDateTest.class,
+                ICalendarDeleteTest.class,
+                ICalendarEditTest.class,
+                ICalendarEqualsTest.class,
+                ICalendarMakeInstancesTest.class,
 //              , ICalendarParseVEventTest.class
-//              , ICalendarVEventToStringTest.class
-//              , ICalendarReadICSTest.class
+//                ICalendarVEventToStringTest.class,
+//              , ICalendarReadICSTest.class,
               // parameter tests
         CopyParameterTest.class, 
         ParseParameterTest.class,
@@ -69,7 +69,7 @@ import jfxtras.labs.icalendar.property.UniqueIdentifierTest;
         NonStandardPropertyTest.class,
         OrganizerTest.class,
         ParsePropertyTest.class,
-        RDateTest.class,
+        RecurrencesTest.class,
         StatusTest.class,
         SummaryTest.class,
         TimeTransparencyTest.class,

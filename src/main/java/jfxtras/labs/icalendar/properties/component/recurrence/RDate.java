@@ -19,6 +19,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
+@Deprecated
 public class RDate extends RecurrenceAbstract<RDate>
 {
 

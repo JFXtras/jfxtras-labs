@@ -12,10 +12,12 @@ import jfxtras.labs.icalendar.components.VTodo;
 /**
  * EXDATE
  * Exception Date-Times
- * RFC 5545 iCalendar 3.8.5.1, page 117.
+ * RFC 5545 iCalendar 3.8.5.2, page 120.
  * 
- * This property defines the list of DATE-TIME exceptions for
+ * This property defines the list of DATE-TIME values for
  * recurring events, to-dos, journal entries, or time zone definitions.
+ * 
+ * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD
  * 
  * @author David Bal
  * @see VEvent
@@ -24,14 +26,14 @@ import jfxtras.labs.icalendar.components.VTodo;
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public class Exceptions<T extends Temporal> extends PropertyBaseRecurrence<T, Exceptions<T>>
+public class Recurrences<T extends Temporal> extends PropertyBaseRecurrence<T, Exceptions<T>>
 {       
-    public Exceptions(CharSequence contentLine)
+    public Recurrences(CharSequence contentLine)
     {
         super(contentLine);
     }
 
-    public Exceptions(ObservableSet<T> value)
+    public Recurrences(ObservableSet<T> value)
     {
         super(value);
     }

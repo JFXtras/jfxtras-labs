@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.Temporal;
+import java.util.Collection;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -27,7 +27,7 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
  * @see DateTimeEnd
  * @see RecurrenceId
  */
-public abstract class PropertyBaseDateTime<T extends Temporal, U> extends PropertyBase<T,U> implements PropertyDateTime<T>
+public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> implements PropertyDateTime<T>
 {
     /**
      * TZID
@@ -108,17 +108,26 @@ public abstract class PropertyBaseDateTime<T extends Temporal, U> extends Proper
     @Override
     public void setValue(T value)
     {
-        if (value instanceof ZonedDateTime)
+        final Object element;
+        if (value instanceof Collection)
         {
-            ZoneId zone = ((ZonedDateTime) value).getZone();
+            element = ((Collection<?>) value).iterator().next();
+        } else
+        {
+            element = value;
+        }
+
+        if (element instanceof ZonedDateTime)
+        {
+            ZoneId zone = ((ZonedDateTime) element).getZone();
             setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
-        } else if ((value instanceof LocalDateTime) || (value instanceof LocalDate))
+        } else if ((element instanceof LocalDateTime) || (element instanceof LocalDate))
         {
             if (getTimeZoneIdentifier() != null)
             {
                 throw new DateTimeException("Only ZonedDateTime is permitted when specifying a Time Zone Identifier");                            
             }
-            if (value instanceof LocalDate)
+            if (element instanceof LocalDate)
             {
                 setValueParameter(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
             }
