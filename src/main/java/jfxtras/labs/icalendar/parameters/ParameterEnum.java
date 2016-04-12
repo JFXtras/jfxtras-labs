@@ -15,6 +15,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
+import jfxtras.labs.icalendar.properties.PropertyTrigger;
 import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseCalendarUser;
 
 public enum ParameterEnum
@@ -319,20 +320,19 @@ public enum ParameterEnum
             
         }
     },
-    ALARM_TRIGGER_RELATIONSHIP ("RELATED", AlarmTrigger.class) {
+    ALARM_TRIGGER_RELATIONSHIP ("RELATED", AlarmTriggerRelationship.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyTrigger<?> castProperty = (PropertyTrigger<?>) property;
+            castProperty.setRelationship(new AlarmTriggerRelationship(content));
         }
-
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            PropertyTrigger<?> castProperty = (PropertyTrigger<?>) parent;
+            return castProperty.getRelationship();
         }
 
         @Override

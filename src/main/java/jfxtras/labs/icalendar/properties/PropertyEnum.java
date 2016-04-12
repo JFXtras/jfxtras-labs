@@ -12,6 +12,8 @@ import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.component.alarm.Action;
+import jfxtras.labs.icalendar.properties.component.alarm.RepeatCount;
+import jfxtras.labs.icalendar.properties.component.alarm.Trigger;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendar.properties.component.change.Sequence;
@@ -75,21 +77,22 @@ public enum PropertyEnum
     ATTACHMENT ("ATTACH" // property name
             , Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER, ValueType.BINARY) // valid property value types, first is default
             , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
-            , Attachment.class) {
-                @Override
-                public Property<?> getProperty(VComponentNew vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            , Attachment.class)
+    {
+        @Override
+        public Property<?> getProperty(VComponentNew vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            },
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },
 
     ATTENDEE ("ATTENDEE"    // property name
             , Arrays.asList(ValueType.CALENDAR_USER_ADDRESS) // valid property value types, first is default
@@ -626,7 +629,11 @@ public enum PropertyEnum
             return null;
         }
     }, // Relationship
-    REPEAT_COUNT ("REPEAT", null, null, null) {
+    REPEAT_COUNT ("REPEAT", // property name
+            Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            RepeatCount.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponentNew vComponent)
         {
@@ -659,22 +666,27 @@ public enum PropertyEnum
     RESOURCES ("RESOURCES", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Resources.class) {
-                @Override
-                public Property<?> getProperty(VComponentNew vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            Resources.class)
+    {
+        @Override
+        public Property<?> getProperty(VComponentNew vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
-    SEQUENCE ("SEQUENCE", null, null, Sequence.class) {
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }, // property class
+    SEQUENCE ("SEQUENCE", // property name
+            Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Sequence.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponentNew vComponent)
         {
@@ -844,7 +856,11 @@ public enum PropertyEnum
             return null;
         }
     }, // Time Zone
-    TRIGGER ("TRIGGER", null, null, null) {
+    TRIGGER ("TRIGGER", // property name
+            Arrays.asList(ValueType.DURATION, ValueType.DATE_TIME), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.ALARM_TRIGGER_RELATIONSHIP, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Trigger.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponentNew vComponent)
         {

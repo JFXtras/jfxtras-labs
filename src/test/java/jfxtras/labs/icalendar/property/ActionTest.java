@@ -11,7 +11,7 @@ import jfxtras.labs.icalendar.properties.component.alarm.Action.ActionType;
 public class ActionTest
 {
     @Test
-    public void canParseClassification()
+    public void canParseAction()
     {
         Action madeProperty = new Action("ACTION:AUDIO");
         String expectedContent = "ACTION:AUDIO";
@@ -20,7 +20,7 @@ public class ActionTest
     }
     
     @Test
-    public void canParseClassification2()
+    public void canParseAction2()
     {
         Action madeProperty = new Action(ActionType.DISPLAY);
         String expectedContent = "ACTION:DISPLAY";
@@ -29,7 +29,7 @@ public class ActionTest
     }
     
     @Test
-    public void canParseClassification3()
+    public void canParseAction3()
     {
         Action madeProperty = new Action("DANCE");
         String expectedContent = "ACTION:DANCE";
@@ -38,7 +38,7 @@ public class ActionTest
     }
     
     @Test
-    public void canParseClassification4()
+    public void canParseAction4()
     {
         Action madeProperty = new Action("EMAIL");
         String expectedContent = "ACTION:EMAIL";

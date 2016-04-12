@@ -1,9 +1,29 @@
 package jfxtras.labs.icalendar.properties.component.alarm;
 
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendar.components.VAlarm;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.component.alarm.Action.ActionType;
 
+/**
+ * ACTION
+ * RFC 5545, 3.8.6.1, page 132
+ * 
+ * This property defines the action to be invoked when an alarm is triggered.
+ * 
+ * actionvalue = "AUDIO" / "DISPLAY" / "EMAIL" / iana-token / x-name
+ * 
+ * Applications MUST ignore alarms with x-name and iana-token values they don't recognize.
+ * 
+ * Examples:
+ * ACTION:AUDIO
+ * ACTION:DISPLAY
+ * 
+ * @author David Bal
+ * 
+ * The property can be specified in following components:
+ * @see VAlarm
+ */
 public class Action extends PropertyBase<ActionType, Action>
 {
     private final static StringConverter<ActionType> CONVERTER = new StringConverter<ActionType>()

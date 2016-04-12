@@ -4,13 +4,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javafx.util.StringConverter;
@@ -19,7 +24,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 public enum ValueType
 {
-    BINARY ("BINARY") {
+    BINARY ("BINARY", Arrays.asList(String.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -40,7 +45,7 @@ public enum ValueType
             };
         }
     },
-    BOOLEAN ("BOOLEAN") {
+    BOOLEAN ("BOOLEAN", Arrays.asList(Boolean.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -60,7 +65,7 @@ public enum ValueType
             };
         }
     }, 
-    CALENDAR_USER_ADDRESS ("CAL-ADDRESS") {
+    CALENDAR_USER_ADDRESS ("CAL-ADDRESS", Arrays.asList(URI.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -87,7 +92,7 @@ public enum ValueType
             };
         }
     },
-    DATE ("DATE") {
+    DATE ("DATE", Arrays.asList(LocalDate.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -108,7 +113,7 @@ public enum ValueType
             };
         }
     },
-    DATE_TIME ("DATE-TIME") {
+    DATE_TIME ("DATE-TIME", Arrays.asList(LocalDateTime.class, ZonedDateTime.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -128,7 +133,7 @@ public enum ValueType
             };
         }
     },
-    DURATION ("DURATION") {
+    DURATION ("DURATION", Arrays.asList(Duration.class, Period.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -137,7 +142,13 @@ public enum ValueType
                 @Override
                 public String toString(T object)
                 {
-                    return object.toString();
+                    String s = object.toString();
+                    // move minus sign to front
+                    if (s.contains("-"))
+                    {
+                        s = "-" + s.replaceFirst("-", "");
+                    }
+                    return s;
                 }
 
                 @Override
@@ -154,7 +165,7 @@ public enum ValueType
             };
         }
     }, // Based on ISO.8601.2004 (but Y and M for years and months is not supported by iCalendar)
-    FLOAT ("FLOAT") {
+    FLOAT ("FLOAT", Arrays.asList(Double.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -162,7 +173,28 @@ public enum ValueType
             return null;
         }
     },
-    INTEGER ("INTEGER") {
+    INTEGER ("INTEGER", Arrays.asList(Integer.class)) {
+        @Override
+        public <T> StringConverter<T> getConverter()
+        {
+            // TODO Auto-generated method stub
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return object.toString();
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) new Integer(Integer.parseInt(string));
+                }
+            };
+        }
+    },
+    PERIOD ("PERIOD", Arrays.asList(List.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -170,15 +202,7 @@ public enum ValueType
             return null;
         }
     },
-    PERIOD ("PERIOD") {
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-    },
-    RECURRENCE_RULE ("RECUR") {
+    RECURRENCE_RULE ("RECUR", Arrays.asList(RecurrenceRule.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -205,7 +229,7 @@ public enum ValueType
      * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
      * ZoneId.  A different converter is required to make the conversion to ZoneId.
     */
-    TEXT ("TEXT") {
+    TEXT ("TEXT", Arrays.asList(String.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -225,7 +249,7 @@ public enum ValueType
             };
         }
     },
-    TIME ("TIME") {
+    TIME ("TIME", Arrays.asList(LocalTime.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -233,7 +257,7 @@ public enum ValueType
             return null;
         }
     },
-    UNIFORM_RESOURCE_IDENTIFIER ("URI") {
+    UNIFORM_RESOURCE_IDENTIFIER ("URI", Arrays.asList(URI.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -261,7 +285,7 @@ public enum ValueType
             };
         }
     },
-    UTC_OFFSET ("UTC-OFFSET") {
+    UTC_OFFSET ("UTC-OFFSET", Arrays.asList(ZoneOffset.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -282,7 +306,7 @@ public enum ValueType
             };
         }
     },
-    UNKNOWN ("UNKNOWN") {
+    UNKNOWN ("UNKNOWN", Arrays.asList(Object.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -313,9 +337,12 @@ public enum ValueType
     
     private String name;
     @Override public String toString() { return name; }
-    ValueType(String name)
+    List<Class<?>> allowedClasses;
+    public List<Class<?>> allowedClasses() { return allowedClasses; }
+    ValueType(String name, List<Class<?>> allowedClasses)
     {
         this.name = name;
+        this.allowedClasses = allowedClasses;
     }
 
     /** return default String converter associated with property value type */

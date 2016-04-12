@@ -55,12 +55,7 @@ public class FormatType extends ParameterBase<FormatType, String>
 
     /*
      * CONSTRUCTORS
-     */
-//    public FormatType()
-//    {
-//        super();
-//    }
-  
+     */  
     public FormatType(String content)
     {
         super(content);

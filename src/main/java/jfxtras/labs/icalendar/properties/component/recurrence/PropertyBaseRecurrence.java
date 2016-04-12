@@ -94,7 +94,6 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
     @Override
     public void setValue(ObservableSet<T> value)
     {
-        super.setValue(value);
         if (! value.isEmpty())
         {
             T sampleValue = value.iterator().next();
@@ -107,6 +106,7 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
                         ". Accepted types are: " + propertyType().allowedValueTypes());                
             }
         }
+        super.setValue(value);
     }
     
     @Override

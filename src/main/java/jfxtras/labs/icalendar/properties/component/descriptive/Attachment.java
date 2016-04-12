@@ -4,6 +4,10 @@ import java.net.URI;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendar.components.VAlarm;
+import jfxtras.labs.icalendar.components.VEventNew;
+import jfxtras.labs.icalendar.components.VJournal;
+import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.parameters.Encoding;
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendar.parameters.FormatType;
@@ -12,6 +16,26 @@ import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyAttachment;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
+/**
+ * ATTACH
+ * Attachment
+ * RFC 5545, 3.8.1.1, page 80
+ * 
+ * This property provides the capability to associate a document object with a calendar component.
+ * 
+ * Examples:
+ * ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com
+ * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
+ *  reports/r-960812.ps
+ * 
+ * @author David Bal
+ * 
+ * The property can be specified in following components:
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
+ * @see VAlarm
+ */
 public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements PropertyAttachment<T>
 {
     /**

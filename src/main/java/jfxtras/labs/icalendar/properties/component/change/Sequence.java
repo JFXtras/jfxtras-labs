@@ -1,7 +1,33 @@
 package jfxtras.labs.icalendar.properties.component.change;
 
+import jfxtras.labs.icalendar.components.VEventNew;
+import jfxtras.labs.icalendar.components.VJournal;
+import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
+/**
+ * SEQUENCE
+ * Sequence Number
+ * RFC 5545, 3.8.7.4, page 138
+ * 
+ * This property defines the revision sequence number of the
+ * calendar component within a sequence of revisions.
+ * 
+ * Example:  The following is an example of this property for a calendar
+ * component that was just created by the "Organizer":
+ * SEQUENCE:0
+ * 
+ * The following is an example of this property for a calendar
+ * component that has been revised two different times by the "Organizer":
+ * SEQUENCE:2
+ * 
+ * @author David Bal
+ * 
+ * The property can be specified in following components:
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
+ */
 public class Sequence extends PropertyBase<Integer, Sequence>
 {
     public Sequence(CharSequence contentLine)
@@ -17,5 +43,22 @@ public class Sequence extends PropertyBase<Integer, Sequence>
     public Sequence(Sequence source)
     {
         super(source);
+    }
+    
+    public Sequence()
+    {
+        super(0);
+    }
+    
+    @Override
+    public void setValue(Integer value)
+    {
+        if (value >= 0)
+        {
+            super.setValue(value);
+        } else
+        {
+            throw new IllegalArgumentException(propertyType() + " must be greater than or equal to zero");
+        }
     }
 }

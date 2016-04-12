@@ -65,6 +65,17 @@ public abstract class PropertyBase<T,U> implements Property<T>
     @Override
     public void setValue(T value) { this.value.set(value); }
     public U withValue(T value) { setValue(value); return (U) this; }
+    private Class<T> valueClass;
+    private Class<T> getValueClass()
+    {
+        if (valueClass == null)
+        {
+            return (getValue() != null) ? (Class<T>) getValue().getClass() : null;
+        } else
+        {
+            return valueClass;
+        }
+    }
     
     /** The name of the property, such as DESCRIPTION
      * Remains the default value unless set by a non-standard property*/
@@ -117,8 +128,10 @@ public abstract class PropertyBase<T,U> implements Property<T>
     private void setUnknownValue(String value) { unknownValue = value; }
     
     /**
-     * VALUE: Value Data Types
+     * VALUE
+     * Value Data Types
      * RFC 5545, 3.2.20, page 29
+     * 
      * To specify the value for text values in a property or property parameter.
      * This parameter is optional for properties when the default value type is used.
      * 
@@ -134,15 +147,17 @@ public abstract class PropertyBase<T,U> implements Property<T>
     @Override
     public void setValueParameter(ValueParameter valueType)
     {
-        if (isValueParameterValid(valueType))
+        if (isValueParameterValid(valueType.getValue()))
         {
             valueParameterProperty().set(valueType);
             // replace converter if it is equal to default converter
             System.out.println("isCustomConverter:" + isCustomConverter());
             if (! isCustomConverter())
             {
-                System.out.println("set converter:" + valueType.getValue());
+                System.out.println("set converter:" + valueType.getValue() + " " + valueClass + " " + getValue());
+
                 setConverter(valueType.getValue().getConverter());
+//                System.out.println("CONVERTED:" + getConverter().toString(getValue())); // ensure value class type matches parameterized type
             }
             // If value previously set as string (as done with non-standard properties) convert to type T
             if ((getPropertyValueString() != null) && (getValue() instanceof String))
@@ -228,18 +243,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
         defaultConverter = defaultValueType.getConverter();
         setConverter(defaultConverter);
-//        setValueParameter(defaultValueType);
     }
-    
-//    // construct empty property
-//    @Deprecated
-//    private PropertyBase(StringConverter<T> converter)
-//    {
-//        this();
-//        setValueParameter(propertyType.allowedValueTypes().get(0));
-//        StringConverter<T> myConverter = (converter == null) ? getValueParameter().getValue().getConverter() : converter;
-//        setConverter(myConverter);
-//    }
 
     /**
      * Parse iCalendar content line constructor
@@ -259,15 +263,16 @@ public abstract class PropertyBase<T,U> implements Property<T>
         parseContent(contentLine);
     }
 
-    public PropertyBase(Class<T> clazz, CharSequence contentLine)
+    public PropertyBase(Class<T> valueClass, CharSequence contentLine)
     {
         this();
-        setConverterByClass(clazz);
+        this.valueClass = valueClass;
+        setConverterByClass(valueClass);
         parseContent(contentLine);
     }
 
     
-    protected void setConverterByClass(Class<T> clazz)
+    protected void setConverterByClass(Class<T> valueClass)
     {
         // do nothing - override in subclass for functionality
     }
@@ -501,16 +506,21 @@ public abstract class PropertyBase<T,U> implements Property<T>
             return Property.super.isValid();
         } else
         {
-            boolean isValueTypeOK = isValueParameterValid(getValueParameter());
+            boolean isValueTypeOK = isValueParameterValid(getValueParameter().getValue());
 //            System.out.println("PropertyBase isValid:" + Property.super.isValid() + " " + isValueTypeOK);
             return (Property.super.isValid()) && isValueTypeOK;
         }
     }
     /* test if value type is valid */
-    private boolean isValueParameterValid(ValueParameter value)
+    private boolean isValueParameterValid(ValueType value)
     {
-        boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value.getValue());
-        boolean isUnknownType = value.getValue().equals(ValueType.UNKNOWN);
+        if ((getValueClass() != null) && ! value.allowedClasses().contains(getValueClass()))
+        {
+            throw new IllegalArgumentException("Value class " + getValueClass().getSimpleName() +
+                    " doesn't match allowed value classes: " + value.allowedClasses());
+        }
+        boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value);
+        boolean isUnknownType = value.equals(ValueType.UNKNOWN);
         boolean isNonStandardProperty = propertyType().equals(PropertyEnum.NON_STANDARD) || propertyType().equals(PropertyEnum.IANA_PROPERTY);
 //        System.out.println("parameter valid:" + isValueTypeOK + " " + isUnknownType + " " + isNonStandardProperty);
         return (isValueTypeOK || isUnknownType || isNonStandardProperty);

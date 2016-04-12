@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendar.parameters.AlarmTriggerRelationship;
 import jfxtras.labs.icalendar.parameters.AlternateText;
 import jfxtras.labs.icalendar.parameters.Encoding;
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
@@ -20,6 +21,7 @@ import jfxtras.labs.icalendar.properties.PropertyAttendee;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
+import jfxtras.labs.icalendar.properties.PropertyTrigger;
 import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseAttendee;
 
 /**
@@ -31,7 +33,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseAtte
  *
  */
 public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> implements PropertyAttendee<T>, PropertyAltText<T>,
-    PropertyAttachment<T>, PropertyFreeBusy<T>, PropertyRecurrenceID<T>, PropertyDateTime<T>
+    PropertyAttachment<T>, PropertyFreeBusy<T>, PropertyRecurrenceID<T>, PropertyDateTime<T>, PropertyTrigger<T>
 {
     /**
      * ALTREP : Alternate Text Representation
@@ -231,6 +233,36 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     public U withRange(RangeType value) { setRange(new Range(value)); return (U) this; }
     public U withRange(String content) { setRange(content); return (U) this; }
 
+    /**
+     * RELATED: Alarm Trigger Relationship
+     * RFC 5545, 3.2.14, page 24
+     * To specify the relationship of the alarm trigger with
+     * respect to the start or end of the calendar component.
+     */
+    @Override
+    public AlarmTriggerRelationship getRelationship() { return (AlarmTrigger == null) ? null : AlarmTrigger.get(); }
+    @Override
+    public ObjectProperty<AlarmTriggerRelationship> RelationshipProperty()
+    {
+        if (AlarmTrigger == null)
+        {
+            AlarmTrigger = new SimpleObjectProperty<>(this, ParameterEnum.FORMAT_TYPE.toString());
+        }
+        return AlarmTrigger;
+    }
+    private ObjectProperty<AlarmTriggerRelationship> AlarmTrigger;
+    @Override
+    public void setRelationship(AlarmTriggerRelationship AlarmTrigger)
+    {
+        if (AlarmTrigger != null)
+        {
+            RelationshipProperty().set(AlarmTrigger);
+        }
+    }
+    public U withAlarmTrigger(AlarmTriggerRelationship format) { setRelationship(format); return (U) this; }
+    public U withAlarmTrigger(String format) { setRelationship(new AlarmTriggerRelationship(format)); return (U) this; }
+
+    
     /**
      * TZID
      * Time Zone Identifier
