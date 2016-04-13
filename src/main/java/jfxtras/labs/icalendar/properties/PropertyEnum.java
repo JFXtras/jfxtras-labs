@@ -212,21 +212,22 @@ public enum PropertyEnum
     DATE_TIME_COMPLETED ("COMPLETED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DateTimeCompleted.class) {
-                @Override
-                public Property<?> getProperty(VComponentNew vComponent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
+            DateTimeCompleted.class) // property class
+    {
+        @Override
+        public Property<?> getProperty(VComponentNew vComponent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-                @Override
-                public List<? extends Property<?>> getPropertyList(VComponentNew parent)
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            }, // property class
+        @Override
+        public List<? extends Property<?>> getPropertyList(VComponentNew parent)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    },
     DATE_TIME_CREATED ("CREATED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -285,7 +286,11 @@ public enum PropertyEnum
         }
     },
     // Change management
-    DATE_TIME_STAMP ("DTSTAMP", null, null, DateTimeStamp.class) {
+    DATE_TIME_STAMP ("DTSTAMP", // property name
+            Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            DateTimeStamp.class) // property class
+    {
         @Override
         public Property<?> getProperty(VComponentNew vComponent)
         {

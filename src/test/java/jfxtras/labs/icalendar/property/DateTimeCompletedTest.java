@@ -13,7 +13,7 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
 public class DateTimeCompletedTest
 {
     @Test
-    public void canParseDateTimeEndSimple()
+    public void canParseDateTimeCompleted()
     {
         DateTimeCompleted property = new DateTimeCompleted("COMPLETED:20160322T174422Z");
         String expectedContentLine = "COMPLETED:20160322T174422Z";

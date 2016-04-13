@@ -47,7 +47,7 @@ public class Sequence extends PropertyBase<Integer, Sequence>
     
     public Sequence()
     {
-        super(0);
+        super(0); // default is 0
     }
     
     @Override

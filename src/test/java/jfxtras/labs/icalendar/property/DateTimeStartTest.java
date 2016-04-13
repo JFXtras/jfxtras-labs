@@ -98,4 +98,10 @@ public class DateTimeStartTest
         assertEquals(expectedContentLine, dateTimeStart.toContentLine());
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
+    
+    @Test (expected=ClassCastException.class)
+    public void canCatchWrongTemporalType()
+    {
+        new DateTimeStart<LocalDate>(LocalDate.class, "DTSTART;TZID=America/Los_Angeles:20160306T043000");
+    }
 }

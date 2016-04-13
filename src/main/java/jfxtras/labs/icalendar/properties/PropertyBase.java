@@ -65,7 +65,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     private ObjectProperty<T> value;
     @Override
     public void setValue(T value) { this.value.set(value); }
-    public U withValue(T value) { setValue(value); return (U) this; }
+//    public U withValue(T value) { setValue(value); return (U) this; }
     private Class<T> valueClass;
     private Class<?> getValueClass()
     {

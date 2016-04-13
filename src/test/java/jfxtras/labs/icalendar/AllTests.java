@@ -13,8 +13,10 @@ import jfxtras.labs.icalendar.property.CategoriesTest;
 import jfxtras.labs.icalendar.property.ClassificationTest;
 import jfxtras.labs.icalendar.property.CommentTest;
 import jfxtras.labs.icalendar.property.DateTimeCompletedTest;
+import jfxtras.labs.icalendar.property.DateTimeCreatedTest;
 import jfxtras.labs.icalendar.property.DateTimeDueTest;
 import jfxtras.labs.icalendar.property.DateTimeEndTest;
+import jfxtras.labs.icalendar.property.DateTimeStampTest;
 import jfxtras.labs.icalendar.property.DateTimeStartTest;
 import jfxtras.labs.icalendar.property.DescriptionTest;
 import jfxtras.labs.icalendar.property.DurationTest;
@@ -25,8 +27,12 @@ import jfxtras.labs.icalendar.property.LocationTest;
 import jfxtras.labs.icalendar.property.NonStandardPropertyTest;
 import jfxtras.labs.icalendar.property.OrganizerTest;
 import jfxtras.labs.icalendar.property.ParsePropertyTest;
+import jfxtras.labs.icalendar.property.RecurrenceIdTest;
+import jfxtras.labs.icalendar.property.RecurrenceRuleTest;
 import jfxtras.labs.icalendar.property.RecurrencesTest;
 import jfxtras.labs.icalendar.property.RepeatCountTest;
+import jfxtras.labs.icalendar.property.ResourcesTest;
+import jfxtras.labs.icalendar.property.SequenceTest;
 import jfxtras.labs.icalendar.property.StatusTest;
 import jfxtras.labs.icalendar.property.SummaryTest;
 import jfxtras.labs.icalendar.property.TimeTransparencyTest;
@@ -61,8 +67,10 @@ import jfxtras.labs.icalendar.property.UniqueIdentifierTest;
         ClassificationTest.class,
         CommentTest.class,
         DateTimeCompletedTest.class,
+        DateTimeCreatedTest.class,
         DateTimeDueTest.class,
         DateTimeEndTest.class,
+        DateTimeStampTest.class,
         DateTimeStartTest.class,
         DescriptionTest.class,
         DurationTest.class,
@@ -73,8 +81,12 @@ import jfxtras.labs.icalendar.property.UniqueIdentifierTest;
         NonStandardPropertyTest.class,
         OrganizerTest.class,
         ParsePropertyTest.class,
+        RecurrenceIdTest.class,
+        RecurrenceRuleTest.class,
         RecurrencesTest.class,
         RepeatCountTest.class,
+        ResourcesTest.class,
+        SequenceTest.class,
         StatusTest.class,
         SummaryTest.class,
         TimeTransparencyTest.class,

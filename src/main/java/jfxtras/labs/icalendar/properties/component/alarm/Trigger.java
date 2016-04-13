@@ -79,7 +79,6 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
     public Trigger(Class<T> clazz, CharSequence contentLine)
     {
         super(clazz, contentLine);
-        clazz.cast(getValue()); // ensure value class type matches parameterized type
     }
     
     public Trigger(Trigger<T> source)
@@ -95,7 +94,6 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
     @Override
     public void setValue(T value)
     {
-        System.out.println("set value:" + value.getClass());
         if (value instanceof ZonedDateTime)
         {
             ZoneId zone = ((ZonedDateTime) value).getZone();
@@ -121,7 +119,6 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
     @Override
     protected void setConverterByClass(Class<T> clazz)
     {
-//        if (clazz.equals(Duration.class))
         if (TemporalAmount.class.isAssignableFrom(clazz))
         {
             setConverter(ValueType.DURATION.getConverter());
@@ -130,7 +127,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
             setConverter(ValueType.DATE_TIME.getConverter());           
         } else
         {
-            throw new IllegalArgumentException("Only parameterized types of Duration and ZonedDateTime supported.");           
+            throw new IllegalArgumentException("Only parameterized types of Duration, Period and ZonedDateTime are supported.");           
         }
     }
     

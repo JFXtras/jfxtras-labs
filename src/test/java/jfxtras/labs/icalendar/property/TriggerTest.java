@@ -26,7 +26,7 @@ public class TriggerTest
     }
     
     @Test
-    public void canParseTrigger2()
+    public void canBuildTrigger1()
     {
         Trigger<Duration> madeProperty = new Trigger<Duration>(Duration.ofMinutes(5))
                 .withRelationship(AlarmTriggerRelationshipType.END);
@@ -35,9 +35,18 @@ public class TriggerTest
         assertEquals(Duration.ofMinutes(5), madeProperty.getValue());
         assertEquals(AlarmTriggerRelationshipType.END, madeProperty.getRelationship().getValue());
     }
+
+    @Test
+    public void canBuildTrigger2()
+    {
+        ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
+        Trigger<ZonedDateTime> madeProperty = new Trigger<ZonedDateTime>(d);
+        String expectedContent = "TRIGGER;VALUE=DATE-TIME:20160306T043000Z";
+        assertEquals(expectedContent, madeProperty.toContentLine());
+    }
     
     @Test (expected=IllegalArgumentException.class)
-    public void canParseTrigger3()
+    public void canCatchInvalidTypeChange()
     {
         new Trigger<Duration>(Duration.ofMinutes(5))
                 .withRelationship(AlarmTriggerRelationshipType.END)
@@ -45,26 +54,35 @@ public class TriggerTest
     }
     
     @Test (expected=IllegalArgumentException.class)
-    public void canParseTrigger4()
+    public void canCatchInvalidRelationship()
     {
         ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
         new Trigger<ZonedDateTime>(d)
-                .withRelationship(AlarmTriggerRelationshipType.END);
+                .withRelationship(AlarmTriggerRelationshipType.END); // not allowed for DATE-TIME value type
     }    
     
     @Test (expected=DateTimeException.class)
-    public void canParseTrigger5()
+    public void canCatchNonUTCZone()
     {
         ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles"));
         new Trigger<ZonedDateTime>(d);
     }
     
-    @Test
-    public void canParseTrigger6()
+    @Test (expected=IllegalArgumentException.class)
+    public void canCatchInvalidParameterizedType()
     {
-        ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
-        Trigger<ZonedDateTime> madeProperty = new Trigger<ZonedDateTime>(d);
-        String expectedContent = "TRIGGER;VALUE=DATE-TIME:20160306T043000Z";
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        new Trigger<>(Integer.class, "123"); // only TemporalAmount and ZonedDateTime accepted
+    }
+    
+    @Test (expected=DateTimeException.class)
+    public void canCatchTypeContentMismatch()
+    {
+        new Trigger<>(ZonedDateTime.class, "TRIGGER;RELATED=END:PT5M");
+    }
+    
+    @Test (expected=DateTimeException.class)
+    public void canCatchTypeContentMismatch2()
+    {
+        new Trigger<>(Duration.class, "TRIGGER;VALUE=DATE-TIME:20160306T043000Z");
     }
 }

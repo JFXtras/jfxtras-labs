@@ -4,6 +4,8 @@ import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import jfxtras.labs.icalendar.properties.component.change.DateTimeCreated;
+import jfxtras.labs.icalendar.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
 
 /**
@@ -13,6 +15,8 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
  *
  * @param <U> - implementation class
  * @see DateTimeCompleted
+ * @see DateTimeCreated
+ * @see DateTimeStamp
  */
 public abstract class PropertyBaseUTC<U> extends PropertyBase<ZonedDateTime,U>
 {
