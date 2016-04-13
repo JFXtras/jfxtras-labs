@@ -78,12 +78,6 @@ public class ParameterBase<U,T> implements Parameter<T>
         return getValue().hashCode();
     }
     
-//    @Override // MAY HAVE TO GO TO ENUM
-//    public void copyTo(Parameter<U> destination)
-//    {
-//        destination.setValue(getValue());
-//    }
-    
     @Override
     public int compareTo(Parameter<T> test)
     {

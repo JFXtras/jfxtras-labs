@@ -19,11 +19,6 @@ import java.util.List;
  */
 public class GroupMembership extends ParameterURIList<GroupMembership>
 {
-//    public GroupMembership()
-//    {
-//        super();
-//    }
-
     public GroupMembership(List<URI> values)
     {
         super(values);

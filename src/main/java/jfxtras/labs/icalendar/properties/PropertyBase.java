@@ -217,7 +217,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
         {
             ParameterEnum parameterType = i.next();
             Parameter<?> parameter = parameterType.getParameter(this);
-//            System.out.println("pt:" + parameterType + " " + parameter);
             if (parameter != null)
             {
                 populatedParameters.add(parameterType);
@@ -364,7 +363,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
         {
             propertyValue = ":" + propertyString;
         }
-        System.out.println("prop value***" + (propertyValueString == null));
         
         // add parameters
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
@@ -393,7 +391,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
 
         // save property value        
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-        System.out.println("propertyValueString :" + propertyValueString + " " + (propertyValueString == null));
         T value = getConverter().fromString(getPropertyValueString());
 //        System.out.println("value class:" + value.getClass());
         if (value == null)

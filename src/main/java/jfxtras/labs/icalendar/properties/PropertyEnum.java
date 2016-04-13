@@ -187,7 +187,7 @@ public enum PropertyEnum
         public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
             VComponentPrimary castProperty = (VComponentPrimary) parent;
-            return castProperty.comments();
+            return castProperty.getComments();
         }
     },
     CONTACT ("CONTACT", // property name
@@ -313,8 +313,8 @@ public enum PropertyEnum
         @Override
         public Property<?> getProperty(VComponentNew parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentPrimary castComponent = (VComponentPrimary) parent;
+            return castComponent.getDateTimeStart();
         }
 
         @Override

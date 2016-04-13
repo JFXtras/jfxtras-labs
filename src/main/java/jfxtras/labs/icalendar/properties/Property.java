@@ -40,7 +40,7 @@ public interface Property<T>
      * 
      * To explicitly specify the value type format for a property value.
      * 
-     * Property value type.  Optional in most cases.
+     * Property value type.  Optional if default type is used.
      * Example:
      * VALUE=DATE
      */
@@ -106,14 +106,4 @@ public interface Property<T>
      * tests if property's value and parameters are valid
      */
     default boolean isValid() { return getValue() != null; }
-    
-    /*
-     * need: with map
-     *  parse - in enum
-     *  copy - in enum
-     *  toContentLine - in class
-     *  isEqualTo - use equals in class
-     * 
-     */
-    
 }

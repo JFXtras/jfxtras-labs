@@ -46,7 +46,7 @@ public class VComponentBase<T> implements VComponentNew
         {
             PropertyEnum propertyType = i.next();
             Property<?> property = propertyType.getProperty(this);
-//          System.out.println("pt:" + propertyType + " " + property);
+//          System.out.println("property:" + propertyType + " " + property);
             if (property != null)
             {
                 populatedProperties.add(propertyType);
@@ -77,7 +77,7 @@ public class VComponentBase<T> implements VComponentNew
         StringBuilder builder = new StringBuilder(400);
         builder.append(firstContentLine() + System.lineSeparator());
         List<PropertyEnum> properties = properties(); // make properties local to avoid creating list multiple times
-        // add parameters
+        // add properties
         properties.stream()
                 .map(p -> p.getProperty(this))
                 .filter(p -> p != null)

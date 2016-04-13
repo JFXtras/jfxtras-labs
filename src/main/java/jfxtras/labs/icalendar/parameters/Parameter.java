@@ -39,13 +39,4 @@ public interface Parameter<T> extends Comparable<Parameter<T>>
      * LANGUAGE=en-US
      */
     String toContent();
-    
-//    /**
-//     * Copy parameter from source property to destination property
-//     * 
-//     * @param source
-//     * @param propertyBase
-//     */
-//    void copyTo(Parameter<U> destination);
-
 }

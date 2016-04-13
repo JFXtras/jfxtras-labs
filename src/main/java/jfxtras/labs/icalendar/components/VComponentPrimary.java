@@ -6,8 +6,8 @@ import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -35,16 +35,17 @@ public interface VComponentPrimary extends VComponentNew
 //    Comment getComment();
 //    ObjectProperty<Comment> commentProperty();
 //    void setComment(Comment comment);
-    ObservableList<Comment> comments();
+    ObservableList<Comment> getComments();
+    void setComments(ObservableList<Comment> comments);
     
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
-    PropertyDateTime<? extends Temporal> getDateTimeStart();
-    ObjectProperty<PropertyDateTime<? extends Temporal>> dateTimeStartProperty();
-    void setDateTimeStart(PropertyDateTime<? extends Temporal> dtStart);
+    DateTimeStart<? extends Temporal> getDateTimeStart();
+    ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty();
+    void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart);
     default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };
     default ZoneId getZoneId()
     {

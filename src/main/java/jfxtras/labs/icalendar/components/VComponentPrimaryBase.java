@@ -1,15 +1,20 @@
 package jfxtras.labs.icalendar.components;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -23,7 +28,7 @@ import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
  * @see VFreeBusy
  * @see VTimeZone
  */
-public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComponentPrimary
+public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComponentPrimary
 {
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -36,7 +41,7 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
          their site. - - John
      * */
     @Override
-    public ObservableList<Comment> comments()
+    public ObservableList<Comment> getComments()
     {
         if (comments == null)
         {
@@ -45,6 +50,14 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
         return comments;
     }
     private ObservableList<Comment> comments;
+    @Override
+    public void setComments(ObservableList<Comment> comments) { this.comments = comments; }
+    /** add comma separated comments into separate comment objects */
+    public T withComments(String...comments)
+    {
+        Arrays.stream(comments).forEach(c -> getComments().add(new Comment(c)));
+        return (T) this;
+    }
     
     /* DTSTART temporal class and ZoneId
      * 
@@ -66,16 +79,16 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
      * @SEE VDateTime
      */
     @Override
-    public ObjectProperty<PropertyDateTime<? extends Temporal>> dateTimeStartProperty() { return dateTimeStart; }
-    final private ObjectProperty<PropertyDateTime<? extends Temporal>> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
+    public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty() { return dateTimeStart; }
+    final private ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
 //    private DateTimeStart dateTimeStart;
-    @Override public PropertyDateTime<? extends Temporal> getDateTimeStart()
+    @Override public DateTimeStart<? extends Temporal> getDateTimeStart()
     {
 //        return (DateTimeStart) propertyMap().get(PropertyEnum.DATE_TIME_START);
         return dateTimeStart.get();
     }
     @Override
-    public void setDateTimeStart(PropertyDateTime<? extends Temporal> dtStart)
+    public void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart)
     {
         // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
         DateTimeType myDateTimeType = DateTimeType.of(dtStart.getValue());
@@ -93,7 +106,25 @@ public class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComp
             ensureDateTimeTypeConsistency(myDateTimeType, getZoneId());
         }
     }
-    public T withDateTimeStart(PropertyDateTime<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
+    public T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
+    public T withDateTimeStart(Temporal temporal)
+    {
+        if (temporal instanceof LocalDate)
+        {
+            setDateTimeStart(new DateTimeStart<LocalDate>((LocalDate) temporal));            
+        } else if (temporal instanceof LocalDateTime)
+        {
+            setDateTimeStart(new DateTimeStart<LocalDateTime>((LocalDateTime) temporal));            
+        } else if (temporal instanceof ZonedDateTime)
+        {
+            setDateTimeStart(new DateTimeStart<ZonedDateTime>((ZonedDateTime) temporal));            
+        } else
+        {
+            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+                    + temporal.getClass().getSimpleName() + " is not supported");
+        }
+        return (T) this;
+    }
 
     /**
      * Changes Temporal type of some properties to match the input parameter.  The input

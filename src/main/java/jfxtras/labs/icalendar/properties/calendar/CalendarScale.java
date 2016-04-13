@@ -37,7 +37,6 @@ public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale
     /** sets default value of GREGORIAN */
     public CalendarScale()
     {
-        // null as argument for string converter causes default converter from ValueType to be used
        super(CalendarScaleType.GREGORIAN);
     }
     
