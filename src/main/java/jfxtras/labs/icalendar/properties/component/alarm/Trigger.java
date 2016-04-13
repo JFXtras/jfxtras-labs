@@ -11,6 +11,7 @@ import jfxtras.labs.icalendar.components.VAlarm;
 import jfxtras.labs.icalendar.parameters.AlarmTriggerRelationship;
 import jfxtras.labs.icalendar.parameters.AlarmTriggerRelationship.AlarmTriggerRelationshipType;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
+import jfxtras.labs.icalendar.parameters.ValueParameter;
 import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 import jfxtras.labs.icalendar.properties.PropertyTrigger;
@@ -94,6 +95,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
     @Override
     public void setValue(T value)
     {
+        System.out.println("set value:" + value.getClass());
         if (value instanceof ZonedDateTime)
         {
             ZoneId zone = ((ZonedDateTime) value).getZone();
@@ -106,6 +108,15 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
         super.setValue(value);
     }
 
+    @Override
+    public void setValueParameter(ValueParameter valueType)
+    {
+        if ((valueType.getValue() == ValueType.DATE_TIME) && (getRelationship() != null))
+        {
+            throw new IllegalArgumentException("Value type can only be set to DATE-TIME if Alarm Trigger Relationship is null");
+        }
+        super.setValueParameter(valueType);
+    }
     
     @Override
     protected void setConverterByClass(Class<T> clazz)

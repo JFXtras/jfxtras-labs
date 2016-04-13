@@ -47,7 +47,7 @@ public class TriggerTest
     @Test (expected=IllegalArgumentException.class)
     public void canParseTrigger4()
     {
-        ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles"));
+        ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
         new Trigger<ZonedDateTime>(d)
                 .withRelationship(AlarmTriggerRelationshipType.END);
     }    

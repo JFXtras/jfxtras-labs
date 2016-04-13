@@ -101,8 +101,14 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
     @Override
     protected String getPropertyValueString()
     {
-        String timeZone = (getTimeZoneIdentifier() != null) ? getTimeZoneIdentifier().getValue().toString() + ":" : "";
-        return timeZone + super.getPropertyValueString();
+        if (super.getPropertyValueString() == null)
+        {
+            return null;
+        } else
+        {
+            String timeZone = (getTimeZoneIdentifier() != null) ? getTimeZoneIdentifier().getValue().toString() + ":" : "";
+            return timeZone + super.getPropertyValueString();
+        }
     }
 
     @Override

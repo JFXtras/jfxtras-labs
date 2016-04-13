@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendar.properties;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -66,11 +67,19 @@ public abstract class PropertyBase<T,U> implements Property<T>
     public void setValue(T value) { this.value.set(value); }
     public U withValue(T value) { setValue(value); return (U) this; }
     private Class<T> valueClass;
-    private Class<T> getValueClass()
+    private Class<?> getValueClass()
     {
         if (valueClass == null)
         {
-            return (getValue() != null) ? (Class<T>) getValue().getClass() : null;
+            if (getValue() != null)
+            {
+                if (getValue() instanceof Collection)
+                {
+                    return ((Collection<?>) getValue()).iterator().next().getClass();
+                }
+                return getValue().getClass();
+            }
+            return null;
         } else
         {
             return valueClass;
@@ -150,20 +159,33 @@ public abstract class PropertyBase<T,U> implements Property<T>
         if (isValueParameterValid(valueType.getValue()))
         {
             valueParameterProperty().set(valueType);
-            // replace converter if it is equal to default converter
-            System.out.println("isCustomConverter:" + isCustomConverter());
+            // replace converter if using default converter
             if (! isCustomConverter())
             {
-                System.out.println("set converter:" + valueType.getValue() + " " + valueClass + " " + getValue());
-
+//                System.out.println("set converter:" + valueType.getValue() + " " + valueClass + " " + getValue());
                 setConverter(valueType.getValue().getConverter());
-//                System.out.println("CONVERTED:" + getConverter().toString(getValue())); // ensure value class type matches parameterized type
+
+                // Convert property value string, if present
+                if (getPropertyValueString() != null)
+                {
+                    T newPropValue = getConverter().fromString(getPropertyValueString());
+                    setValue(newPropValue);
+                }
             }
-            // If value previously set as string (as done with non-standard properties) convert to type T
-            if ((getPropertyValueString() != null) && (getValue() instanceof String))
+            
+            // verify value class is allowed
+            if (getValueClass() != null) // && ! valueType.getValue().allowedClasses().contains(getValueClass()))
             {
-                T newPropValue = getConverter().fromString(getPropertyValueString());
-                setValue(newPropValue);
+                boolean isMatch = valueType.getValue().allowedClasses()
+                        .stream()
+                        .map(c -> getValueClass().isAssignableFrom(c))
+                        .findAny()
+                        .isPresent();
+                if (! isMatch)
+                {
+                    throw new IllegalArgumentException("Value class " + getValueClass().getSimpleName() +
+                            " doesn't match allowed value classes: " + valueType.getValue().allowedClasses());
+                }
             }
         } else
         {
@@ -205,7 +227,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     }    
     
     // property value
-    private String propertyValueString;
+    private String propertyValueString = null;
     // Note: in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes add time zone as prefix)
     protected String getPropertyValueString() { return propertyValueString; }
     
@@ -271,108 +293,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
         parseContent(contentLine);
     }
 
-    
-    protected void setConverterByClass(Class<T> valueClass)
-    {
-        // do nothing - override in subclass for functionality
-    }
-
-    //    /**
-//     * Parse iCalendar content line constructor
-//     * 
-//     * construct new property by parsing content line
-//     * sets parameters by running parse for each parameter enum
-//     * 
-//     * parameter is CharSequence to avoid ambiguous constructors for parameters that have
-//     * the value of String
-//     * 
-//     * @param contentLine - property text string
-//     * @param converter - string converter, if null use converter for default value type
-//     */
-//    @Deprecated
-//    public PropertyBase(CharSequence contentLine, StringConverter<T> converter)
-//    {
-//        this(converter);
-//        String propertyString = contentLine.toString();
-//        
-//        final String propertyValue;
-//        List<Integer> indices = new ArrayList<>();
-//        indices.add(propertyString.indexOf(':'));
-//        indices.add(propertyString.indexOf(';'));
-//        Optional<Integer> hasPropertyName = indices
-//                .stream()
-//                .filter(v -> v > 0)
-//                .min(Comparator.naturalOrder());
-//        if (hasPropertyName.isPresent())
-//        {
-//            int endNameIndex = hasPropertyName.get();
-//            String propertyName = (endNameIndex > 0) ? propertyString.subSequence(0, endNameIndex).toString().toUpperCase() : null;
-//            boolean isNonStandard = propertyName.substring(0, 2).equals(PropertyEnum.NON_STANDARD.toString());
-//            boolean isMatch = propertyName.equals(propertyType.toString());
-//            if (isMatch || isNonStandard)
-//            {
-//                if (isNonStandard)
-//                {
-//                    setPropertyName(propertyString.substring(0,endNameIndex));
-//                }
-//                propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
-//            } else
-//            {
-//                throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
-//                        getClass().getSimpleName() + ".  Property name associated with class " + 
-//                        getClass().getSimpleName() + " is " +  propertyType.toString());
-//            }
-//        } else
-//        {
-//            propertyValue = ":" + propertyString;
-//        }
-//        
-//        // add parameters
-//        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
-////        System.out.println("propertyString:" + propertyString + " " + map.size());
-//        map.entrySet()
-//            .stream()
-////            .peek(System.out::println)
-//            .filter(e -> ! (e.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
-//            .forEach(e ->
-//            {
-//                ParameterEnum p = ParameterEnum.enumFromName(e.getKey());
-//                if (p != null)
-//                {
-//                    if (propertyType().allowedParameters().contains(p))
-//                    {
-//                        p.parse(this, e.getValue());
-//                    } else
-//                    {
-//                        throw new IllegalArgumentException("Parameter " + p + " not allowed for property " + propertyType());
-//                    }
-//                } else if ((e.getKey() != null) && (e.getValue() != null))
-//                { // unknown parameter - store as String in other parameter
-//                    otherParameters().add(e.getKey() + "=" + e.getValue());
-//                } // if parameter doesn't contain both a key and a value it is ignored
-//            });
-//
-//        // save property value        
-//        propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-//        T value = getConverter().fromString(getPropertyValueString());
-//        if (value == null)
-//        {
-//            setUnknownValue(propertyValueString);
-//        } else
-//        {
-//            setValue(value);
-//            if (value.toString() == "UNKNOWN") // enum name indicating unknown value
-//            {
-//                setUnknownValue(propertyValueString);
-//            }
-//        }
-//        
-//        if (! isValid())
-//        {
-//            throw new IllegalArgumentException("Error in parsing " + propertyType().toString() + " content line");
-//        }
-//    }
-//    
     // copy constructor
     public PropertyBase(Property<T> source)
     {
@@ -388,15 +308,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
         }
         setValue(source.getValue());
     }
-
-    //    
-//    // constructor with only value parameter
-//    @Deprecated
-//    public PropertyBase(T value, StringConverter<T> converter)
-//    {
-//        this(converter);
-//        setValue(value);
-//    }
     
     // constructor with only value parameter
     public PropertyBase(T value)
@@ -405,6 +316,12 @@ public abstract class PropertyBase<T,U> implements Property<T>
         setValue(value);
     }
 
+    // Set converter when using constructor with class parameter
+    protected void setConverterByClass(Class<T> valueClass)
+    {
+        // do nothing - override in subclass for functionality
+    }
+    
     protected void parseContent(CharSequence contentLine)
     {
         setConverter(converter);
@@ -447,7 +364,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         {
             propertyValue = ":" + propertyString;
         }
-//        System.out.println("prop value***" + propertyString);
+        System.out.println("prop value***" + (propertyValueString == null));
         
         // add parameters
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
@@ -476,6 +393,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
 
         // save property value        
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+        System.out.println("propertyValueString :" + propertyValueString + " " + (propertyValueString == null));
         T value = getConverter().fromString(getPropertyValueString());
 //        System.out.println("value class:" + value.getClass());
         if (value == null)
@@ -514,11 +432,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
     /* test if value type is valid */
     private boolean isValueParameterValid(ValueType value)
     {
-        if ((getValueClass() != null) && ! value.allowedClasses().contains(getValueClass()))
-        {
-            throw new IllegalArgumentException("Value class " + getValueClass().getSimpleName() +
-                    " doesn't match allowed value classes: " + value.allowedClasses());
-        }
         boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value);
         boolean isUnknownType = value.equals(ValueType.UNKNOWN);
         boolean isNonStandardProperty = propertyType().equals(PropertyEnum.NON_STANDARD) || propertyType().equals(PropertyEnum.IANA_PROPERTY);
@@ -556,64 +469,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         builder.append(":" + stringValue);
 //        builder.append(":" + valueToString(getValue()));
         return builder.toString();
-    }
-    
-//    /*
-//     * DEFAULT STRING CONVERTERS
-//     * override in subclasses if necessary
-//     */
-//    
-//    public PropValueStringConverter<T> getConverter() { return converter; }
-//    private PropValueStringConverter<T> converter = new PropValueStringConverter<T>(this)
-//    {
-//        @Override
-//        public String toString(T object)
-//        {
-//            return object.toString();
-//        }
-//
-//        @Override
-//        public T fromString(String string)
-//        {
-//            Type[] types = ((ParameterizedType)getProperty().getClass().getGenericSuperclass())
-//                    .getActualTypeArguments();
-//            System.out.println("class2:" + getProperty().getClass());
-//             Class<T> myClass = (Class<T>) types[types.length-1]; // get last parameterized type
-//             if (myClass.equals(String.class))
-//             {
-//                 return (T) propertyValueString;            
-//             }
-//             throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
-//                     ". You need to override string converter for class " + getProperty().getClass().getSimpleName());
-//        }
-//    };
-//    public void setConverter(PropValueStringConverter<T> converter) { this.converter = converter; }
-//    
-//    
-//    /* Convert property value to string.  Override in subclass if necessary */
-//    @Deprecated
-//    protected String valueToString(T value)
-//    {
-//        return converter.toString(value);
-////        return value.toString();
-//    }    
-//    /* parse property value, override in subclasses if necessary */
-////    @SuppressWarnings("unchecked")
-//    @Deprecated
-//    protected T valueFromString(String propertyValueString)
-//    {
-//        System.out.println("class1:" + getClass());
-//        return converter.fromString(propertyValueString);
-////        Type[] types = ((ParameterizedType)getClass().getGenericSuperclass())
-////                   .getActualTypeArguments();
-////        Class<T> myClass = (Class<T>) types[types.length-1]; // get last parameterized type
-////        if (myClass.equals(String.class))
-////        {
-////            return (T) propertyValueString;            
-////        }
-////        throw new RuntimeException("can't convert property value to type: " + myClass.getSimpleName() +
-////                ". You need to override valueFromString in subclass " + getClass().getSimpleName());
-//    }
+    }    
 
     @Override
     public int hashCode()

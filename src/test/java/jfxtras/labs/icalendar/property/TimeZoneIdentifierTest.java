@@ -19,6 +19,8 @@ public class TimeZoneIdentifierTest
         TimeZoneIdentifier madeProperty = new TimeZoneIdentifier(content);
         assertEquals(content, madeProperty.toContentLine());
         TimeZoneIdentifier expectedProperty = new TimeZoneIdentifier(ZoneId.of("America/Los_Angeles"));
+//        Class<? extends ZoneId> c = ZoneId.of("America/Los_Angeles").getClass();
+//        System.out.println(ZoneId.class.isAssignableFrom(c));
         assertEquals(expectedProperty, madeProperty);
     }
     

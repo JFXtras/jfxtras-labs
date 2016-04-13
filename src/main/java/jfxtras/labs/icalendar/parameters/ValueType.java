@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -229,7 +230,7 @@ public enum ValueType
      * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
      * ZoneId.  A different converter is required to make the conversion to ZoneId.
     */
-    TEXT ("TEXT", Arrays.asList(String.class)) {
+    TEXT ("TEXT", Arrays.asList(String.class, ZoneId.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
