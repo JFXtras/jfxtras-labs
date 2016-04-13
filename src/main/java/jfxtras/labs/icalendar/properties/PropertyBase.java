@@ -246,7 +246,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
     @Override
     public void setConverter(StringConverter<T> converter) { this.converter = converter; }
     private StringConverter<T> defaultConverter;
-//    private boolean isCustomConverter;
     private boolean isCustomConverter()
     {
 //        System.out.println("custom:" + getConverter() + " " + ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
@@ -522,11 +521,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
         return valueEquals && otherParametersEquals && parametersEquals;
     }
     
-    // test equality for property values
-//    protected boolean isValueEqual(PropertyBase<?,?> testObj)
-//    {
-//        return getValue().equals(testObj.getValue());
-//    }
 
     @Override
     public String toString()

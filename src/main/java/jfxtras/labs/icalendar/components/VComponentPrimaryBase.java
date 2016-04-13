@@ -59,7 +59,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         return (T) this;
     }
     
-    /* DTSTART temporal class and ZoneId
+    /* previous temporal backing DTSTART
      * 
      * Used to ensure the following date-time properties use the same Temporal class
      * and ZoneId (if using ZonedDateTime, null otherwise)
@@ -68,8 +68,8 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
      * EXDATE (underlying collection of Temporals)
      * RDATE (underlying collection of Temporals)
      */
-    private DateTimeType lastDtStartDateTimeType;
-    DateTimeType lastDtStartDateTimeType() { return lastDtStartDateTimeType; }
+    private Temporal lastDtStart;
+    Temporal lastDtStart() { return lastDtStart; }
     
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
@@ -78,22 +78,17 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
      * Can contain either a LocalDate (DATE) or LocalDateTime (DATE-TIME)
      * @SEE VDateTime
      */
-    @Override
-    public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty() { return dateTimeStart; }
+    @Override public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty() { return dateTimeStart; }
     final private ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
-//    private DateTimeStart dateTimeStart;
-    @Override public DateTimeStart<? extends Temporal> getDateTimeStart()
-    {
-//        return (DateTimeStart) propertyMap().get(PropertyEnum.DATE_TIME_START);
-        return dateTimeStart.get();
-    }
+    @Override public DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStart.get(); }
     @Override
     public void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart)
     {
         // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
+        // TODO - I MAY WANT TO CHANGE CHECKING METHOD
         DateTimeType myDateTimeType = DateTimeType.of(dtStart.getValue());
-        boolean changed = (lastDtStartDateTimeType != null) && (myDateTimeType != lastDtStartDateTimeType);
-        lastDtStartDateTimeType = myDateTimeType;
+        boolean changed = (lastDtStart != null) && (myDateTimeType != lastDtStart);
+        lastDtStart = getDateTimeStart().getValue();
         dateTimeStart.set(dtStart);
 //        dateTimeStart = dtStart;
 //        propertyMap().put(PropertyEnum.DATE_TIME_START, new ArrayList<DateTimeStart>(Arrays.asList(dtStart)));

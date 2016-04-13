@@ -32,11 +32,8 @@ public interface VComponentPrimary extends VComponentNew
          As a matter of fact\, the venue for the meeting ought to be at
          their site. - - John
      * */
-//    Comment getComment();
-//    ObjectProperty<Comment> commentProperty();
-//    void setComment(Comment comment);
     ObservableList<Comment> getComments();
-    void setComments(ObservableList<Comment> comments);
+    void setComments(ObservableList<Comment> properties);
     
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97

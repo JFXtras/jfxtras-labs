@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendar.components;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +10,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.Property;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
+import jfxtras.labs.icalendar.properties.component.misc.IANAProperty;
+import jfxtras.labs.icalendar.properties.component.misc.NonStandardProperty;
 
 /**
  * 
@@ -25,17 +28,65 @@ import jfxtras.labs.icalendar.properties.PropertyEnum;
 public class VComponentBase<T> implements VComponentNew
 {
     /**
-     * other-properties, 3.8.8 RFC 5545 page 139
-     * IANA and non-standard properties
-     * the entire property name and value are combined into one object
-     * This is a limitation as the parameters are not separated
-     * TODO - MAKE OBJECTS PROPERTIES
+     * 3.8.8.2.  Non-Standard Properties
+     * Any property name with a "X-" prefix
+     * 
+     * Example:
+     * X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.
+     *  org/mysubj.au
      */
     @Override
-    public ObservableList<Object> otherProperties() { return otherProperties; }
-    private ObservableList<Object> otherProperties = FXCollections.observableArrayList();
-    public T withOtherParameters(Object... properties) { otherProperties().addAll(properties); return (T) this; }
-
+    public ObservableList<NonStandardProperty> getNonStandardProperties()
+    {
+        if (nonStandardProps == null)
+        {
+            nonStandardProps = FXCollections.observableArrayList();
+        }
+        return nonStandardProps;
+    }
+    private ObservableList<NonStandardProperty> nonStandardProps;
+    @Override
+    public void setNonStandardProperties(ObservableList<NonStandardProperty> comments) { this.nonStandardProps = comments; }
+    /** add comma separated comments into separate comment objects */
+    public T withNonStandardProperty(String...comments)
+    {
+        Arrays.stream(comments).forEach(c -> getNonStandardProperties().add(new NonStandardProperty(c)));
+        return (T) this;
+    }
+    
+    /**
+     * 3.8.8.1.  IANA Properties
+     * An IANA-registered property name
+     * 
+     * Examples:
+     * NON-SMOKING;VALUE=BOOLEAN:TRUE
+     * DRESSCODE:CASUAL
+     */
+    @Override
+    public ObservableList<IANAProperty> getIANAProperties()
+    {
+        if (IANAProps == null)
+        {
+            IANAProps = FXCollections.observableArrayList();
+        }
+        return IANAProps;
+    }
+    private ObservableList<IANAProperty> IANAProps;
+    @Override
+    public void setIANAProperties(ObservableList<IANAProperty> comments) { this.IANAProps = comments; }
+    /** add comma separated comments into separate comment objects */
+    public T withIANAProperty(String...comments)
+    {
+        Arrays.stream(comments).forEach(c -> getIANAProperties().add(new IANAProperty(c)));
+        return (T) this;
+    }
+    
+    /**
+     * List of all properties found in component.
+     * The list is unmodifiable.
+     * 
+     * @return - the list of properties
+     */
     @Override
     public List<PropertyEnum> properties()
     {
@@ -61,15 +112,7 @@ public class VComponentBase<T> implements VComponentNew
         }
       return Collections.unmodifiableList(populatedProperties);
     }
-//    @Override public ObservableList<String> getXProperties() { return xProperties; }
-//    private ObservableList<String> xProperties = FXCollections.observableArrayList();
-//    @Override public void setXProperties(ObservableList<String> xprop) { xProperties = xprop; }
-//    public T withXProperties(String... xProperties) { getXProperties().addAll(xProperties); return (T) this; }
-//
-//    @Override public ObservableList<String> getIANAProperties() { return ianaProperties; }
-//    private ObservableList<String> ianaProperties = FXCollections.observableArrayList();
-//    @Override public void setIANAProperties(ObservableList<String> iana) { ianaProperties = iana; }
-//    public T withIANAProperties(String... ianaProperties) { getIANAProperties().addAll(ianaProperties); return (T) this; }
+
 
     @Override
     public CharSequence toContentLines()
@@ -94,7 +137,8 @@ public class VComponentBase<T> implements VComponentNew
 
         // TODO - SPLIT LINES
         // add non-standard parameters
-        otherProperties().stream().forEach(p -> builder.append(";" + p));
+        getNonStandardProperties().stream().forEach(p -> builder.append(";" + p));
+        getIANAProperties().stream().forEach(p -> builder.append(";" + p));
         builder.append(lastContentLine());
         // add property value
 //        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
