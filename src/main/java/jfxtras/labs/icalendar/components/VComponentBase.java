@@ -145,12 +145,10 @@ public class VComponentBase<T> implements VComponentNew
             propertySortOrder.put(propertyName, counter++);
             PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
             
-            // combine multi-line properties
-            StringBuilder builder = new StringBuilder(100);
-            
             // ignore unknown properties
             if (propertyType != null)
             {
+//                System.out.println(propertyType + " " + line);
                 propertyType.parse(this, line);
             }
         }
@@ -340,7 +338,7 @@ public class VComponentBase<T> implements VComponentNew
             String line = builder.toString();
             propertyLines.add(line);
         }
-        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
+//        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
         return propertyLines;
     }
     

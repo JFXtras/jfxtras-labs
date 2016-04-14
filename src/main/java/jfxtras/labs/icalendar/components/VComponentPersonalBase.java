@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendar.components;
 
+import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
@@ -144,14 +145,19 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      * Example:
      * UID:19960401T080045Z-4000F192713-0052@example.com
      */
-    @Override public ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty() { return uniqueIdentifier; }
+    @Override public ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty()
+    {
+        if (uniqueIdentifier == null)
+        {
+            uniqueIdentifier = new SimpleObjectProperty<>(this, PropertyEnum.UNIQUE_IDENTIFIER.toString());
+        }
+        return uniqueIdentifier;
+    }
     private ObjectProperty<UniqueIdentifier> uniqueIdentifier;
     @Override public UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifier.get(); }
-    @Override public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier)
-    {
-        this.uniqueIdentifier.set(uniqueIdentifier);
-    }
-    public void withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); }
+    @Override public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
+    public T withUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(new UniqueIdentifier(uniqueIdentifier)); return (T) this; }
+    public T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); return (T) this; }
 
     /**
      * URL: Uniform Resource Locator
@@ -165,24 +171,20 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override
     public ObjectProperty<UniformResourceLocator> uniformResourceLocatorProperty()
     {
-        if (uniformResourceLocator == null) uniformResourceLocator = new SimpleObjectProperty<UniformResourceLocator>(this, PropertyEnum.ORGANIZER.toString(), _uniformResourceLocator);
+        if (uniformResourceLocator == null)
+        {
+            uniformResourceLocator = new SimpleObjectProperty<>(this, PropertyEnum.UNIFORM_RESOURCE_LOCATOR.toString());
+        }
         return uniformResourceLocator;
     }
     private ObjectProperty<UniformResourceLocator> uniformResourceLocator;
-    @Override public UniformResourceLocator getUniformResourceLocator() { return (uniformResourceLocator == null) ? _uniformResourceLocator : uniformResourceLocator.get(); }
-    private UniformResourceLocator _uniformResourceLocator;
     @Override
-    public void setUniformResourceLocator(UniformResourceLocator url)
-    {
-        if (this.uniformResourceLocator == null)
-        {
-            _uniformResourceLocator = url;
-        } else
-        {
-            this.uniformResourceLocator.set(url);            
-        }
-    }
-    public T withUniformResourceLocator(UniformResourceLocator uniformResourceLocator) { setUniformResourceLocator(uniformResourceLocator); return (T) this; }
+    public UniformResourceLocator getUniformResourceLocator() { return uniformResourceLocatorProperty().get(); }
+    @Override
+    public void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
+    public T withUniformResourceLocator(String url) { setUniformResourceLocator(new UniformResourceLocator(url)); return (T) this; }
+    public T withUniformResourceLocator(URI uri) { setUniformResourceLocator(new UniformResourceLocator(uri)); return (T) this; }
+    public T withUniformResourceLocator(UniformResourceLocator url) { setUniformResourceLocator(url); return (T) this; }
 
 
     /*

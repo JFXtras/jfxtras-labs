@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendar.components;
 
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
@@ -13,23 +12,12 @@ import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRu
  * 
  * @author David Bal
  * @see VEvent
- * @see VTodoOld
- * @see VJournalOld
- * @see VTimeZoneOld
+ * @see VTodo
+ * @see VJournal
+ * @see StandardOrSavings
  */
 public interface VComponentRepeatable
-{
-    /**
-     * LAST-MODIFIED: Date-Time Last Modified, from RFC 5545 iCalendar 3.8.7.3 page 138
-     * This property specifies the date and time that the information associated with
-     * the calendar component was last revised.
-     * 
-     * The property value MUST be specified in the UTC time format.
-     */
-    ZonedDateTime getDateTimeLastModified();
-    ObjectProperty<ZonedDateTime> dateTimeLastModifiedProperty();
-    void setDateTimeLastModified(ZonedDateTime dtLastModified);
-    
+{   
     /**
      * RDATE: Recurrence Date-Times
      * Set of date/times for recurring events, to-dos, journal entries.

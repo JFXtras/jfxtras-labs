@@ -292,22 +292,25 @@ public final class DateTimeUtilities
      */ 
     public static Temporal temporalFromString(String string)
     {
+        int lastColonIndex = string.lastIndexOf(':');
+        String string2 = string.substring(lastColonIndex+1);
+
         final String form0 = "^[0-9]{8}";
         final String form1 = "^[0-9]{8}T([0-9]{6})";
         final String form2 = "^[0-9]{8}T([0-9]{6})Z";
         final String form3 = "^(.*/.*:)[0-9]{8}T([0-9]{6})";
-        if (string.matches(form0))
+        if (string2.matches(form0))
         {
-            return LocalDate.parse(string, DateTimeUtilities.LOCAL_DATE_FORMATTER);                                                
-        } else if (string.matches(form1))
+            return LocalDate.parse(string2, DateTimeUtilities.LOCAL_DATE_FORMATTER);                                                
+        } else if (string2.matches(form1))
         {
-            return LocalDateTime.parse(string, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                                                
-        } else if (string.matches(form2))
+            return LocalDateTime.parse(string2, DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER);                                                
+        } else if (string2.matches(form2))
         {
-            return ZonedDateTime.parse(string, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                                                
-        } else if (string.matches(form3))
+            return ZonedDateTime.parse(string2, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);                                                
+        } else if (string2.matches(form3))
         {
-            return ZonedDateTime.parse(string, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);                                                
+            return ZonedDateTime.parse(string2, DateTimeUtilities.ZONED_DATE_TIME_FORMATTER);                                                
         } else
         {
             throw new DateTimeException("Can't parse date-time string:" + string);                        

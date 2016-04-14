@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 import org.junit.Test;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.components.VComponentTest;
 
 public class VComponentPartialTest
@@ -13,13 +15,20 @@ public class VComponentPartialTest
     @Test
     public void canBuildPrimary()
     {
+        ObjectProperty<String> s = new SimpleObjectProperty<>("start");
+        s.set(null);
+        
         VComponentTest builtComponent = new VComponentTest()
                 .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
                 .withComments("This is a test comment", "Another comment")
-                .withOrganizer("ORGANIZER;CN=David Bal;SENT-BY=\"mailto:ddbal1@yahoo.com\":mailto:ddbal1@yahoo.com");
+                .withOrganizer("ORGANIZER;CN=David Bal;SENT-BY=\"mailto:ddbal1@yahoo.com\":mailto:ddbal1@yahoo.com")
+                .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
+                .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics");
         System.out.println(builtComponent.toContentLines());
         
         String content = "BEGIN:VEVENT" + System.lineSeparator() +
+                "UID:19960401T080045Z-4000F192713-0052@example.com" + System.lineSeparator() +
+                "URL:http://example.com/pub/calendars/jsmith/mytime.ics" + System.lineSeparator() +
                 "DTSTART:20160415T120000" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
@@ -30,11 +39,8 @@ public class VComponentPartialTest
         VComponentTest madeComponent = new VComponentTest(content);
         System.out.println(madeComponent.toContentLines());
         assertEquals(madeComponent, builtComponent);
-//        String expectedContent = "ACTION:AUDIO";
-//        assertEquals(expectedContent, madeProperty.toContentLine());
-//        assertEquals(ActionType.AUDIO, madeProperty.getValue());
     }
-    
+        
     @Test
     public void canParse()
     {

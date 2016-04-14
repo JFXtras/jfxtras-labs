@@ -7,7 +7,8 @@ import jfxtras.labs.icalendar.components.VTodo;
 import jfxtras.labs.icalendar.properties.PropertyBase;
 
 /**
- * DURATION
+ * UID
+ * Unique Identifier
  * RFC 5545, 3.8.4.7, page 117
  * 
  * This property defines the persistent, globally unique identifier for the calendar component.

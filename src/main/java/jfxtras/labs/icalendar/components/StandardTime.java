@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendar.components;
 
-public class StandardTime
+public abstract class StandardTime extends StandardOrSavingsBase
 {
 
 }
