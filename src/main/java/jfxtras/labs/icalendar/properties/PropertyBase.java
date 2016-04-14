@@ -325,6 +325,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         setConverter(converter);
         String propertyString = contentLine.toString();
         
+        // test line, make changes if necessary
         final String propertyValue;
         List<Integer> indices = new ArrayList<>();
         indices.add(propertyString.indexOf(':'));
@@ -363,7 +364,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
             propertyValue = ":" + propertyString;
         }
         
-        // add parameters
+        // process parameters
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
 //        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()

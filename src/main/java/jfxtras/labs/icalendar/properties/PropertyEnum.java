@@ -1,5 +1,9 @@
 package jfxtras.labs.icalendar.properties;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,6 +54,7 @@ import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneName;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneOffsetFrom;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneOffsetTo;
 import jfxtras.labs.icalendar.properties.component.timezone.TimeZoneURL;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 
 public enum PropertyEnum
 {
@@ -60,7 +65,7 @@ public enum PropertyEnum
             Action.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -71,6 +76,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // property class
@@ -80,7 +92,7 @@ public enum PropertyEnum
             , Attachment.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -91,6 +103,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
 
@@ -104,7 +123,7 @@ public enum PropertyEnum
             , Attendee.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -115,12 +134,19 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Calendar
     CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -131,6 +157,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     CATEGORIES ("CATEGORIES" // property name
@@ -139,7 +172,7 @@ public enum PropertyEnum
             , Categories.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -150,6 +183,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // descriptive
@@ -159,7 +199,7 @@ public enum PropertyEnum
             Classification.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -170,6 +210,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     COMMENT ("COMMENT", // property name
@@ -178,9 +225,10 @@ public enum PropertyEnum
             Comment.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
-            return null; // handled in getPropertyList
+            VComponentPrimary castProperty = (VComponentPrimary) vComponent;
+            return castProperty.getComments();
         }
 
         @Override
@@ -189,6 +237,13 @@ public enum PropertyEnum
             VComponentPrimary castProperty = (VComponentPrimary) parent;
             return castProperty.getComments();
         }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            VComponentPrimary castComponent = (VComponentPrimary) component;
+            castComponent.getComments().add(new Comment(propertyContent));
+        }
     },
     CONTACT ("CONTACT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
@@ -196,7 +251,7 @@ public enum PropertyEnum
             Contact.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -207,6 +262,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Relationship
     DATE_TIME_COMPLETED ("COMPLETED", // property name
@@ -215,7 +277,7 @@ public enum PropertyEnum
             DateTimeCompleted.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -226,6 +288,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     DATE_TIME_CREATED ("CREATED", // property name
@@ -234,7 +303,7 @@ public enum PropertyEnum
             DateTimeCreated.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -245,6 +314,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Change management
     DATE_TIME_DUE ("DUE", // property name
@@ -253,7 +329,7 @@ public enum PropertyEnum
             DateTimeDue.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -264,6 +340,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     DATE_TIME_END ("DTEND", // property name
@@ -272,7 +355,7 @@ public enum PropertyEnum
             DateTimeEnd.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -283,6 +366,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Change management
@@ -292,7 +382,7 @@ public enum PropertyEnum
             DateTimeStamp.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -303,6 +393,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     DATE_TIME_START ("DTSTART", // property name
@@ -311,7 +408,7 @@ public enum PropertyEnum
             DateTimeStart.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew parent)
+        public Object getProperty(VComponentNew parent)
         {
             VComponentPrimary castComponent = (VComponentPrimary) parent;
             return castComponent.getDateTimeStart();
@@ -320,8 +417,26 @@ public enum PropertyEnum
         @Override
         public List<? extends Property<?>> getPropertyList(VComponentNew parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            return null; // handled by getProperty
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            VComponentPrimary castComponent = (VComponentPrimary) component;
+            int lastColonIndex = propertyContent.lastIndexOf(':');
+            Temporal t = DateTimeUtilities.temporalFromString(propertyContent.substring(lastColonIndex+1));
+            if (t instanceof LocalDate)
+            {
+                castComponent.setDateTimeStart(new DateTimeStart<LocalDate>((LocalDate) t));                
+            } else if (t instanceof LocalDateTime)
+            {
+                castComponent.setDateTimeStart(new DateTimeStart<LocalDateTime>((LocalDateTime) t));                
+                
+            } else if (t instanceof ZonedDateTime)
+            {
+                castComponent.setDateTimeStart(new DateTimeStart<ZonedDateTime>((ZonedDateTime) t));                                
+            }
         }
     },
 
@@ -331,7 +446,7 @@ public enum PropertyEnum
             Description.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -342,6 +457,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Descriptive
     DURATION ("DURATION", // property name
@@ -350,7 +472,7 @@ public enum PropertyEnum
             DurationProp.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -361,6 +483,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Recurrence
@@ -370,7 +499,7 @@ public enum PropertyEnum
             Exceptions.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -381,6 +510,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Date and Time
@@ -389,7 +525,7 @@ public enum PropertyEnum
             Arrays.asList(ParameterEnum.FREE_BUSY_TIME_TYPE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             FreeBusyTime.class) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -400,12 +536,19 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Descriptive
     GEOGRAPHIC_POSITION ("GEO", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -416,6 +559,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Miscellaneous
@@ -425,7 +575,7 @@ public enum PropertyEnum
             IANAProperty.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -436,6 +586,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Descriptive
@@ -445,7 +602,7 @@ public enum PropertyEnum
             Location.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -456,12 +613,19 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Calendar
     METHOD ("METHOD", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -472,6 +636,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Miscellaneous
@@ -481,7 +652,7 @@ public enum PropertyEnum
             NonStandardProperty.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -492,6 +663,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     ORGANIZER ("ORGANIZER", // name
@@ -501,7 +679,7 @@ public enum PropertyEnum
             Organizer.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -512,11 +690,18 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // property class
     PERCENT_COMPLETE ("PERCENT", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -527,11 +712,18 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Descriptive
     PRIORITY ("PRIORITY", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -542,12 +734,19 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Descriptive
     // Calendar
     PRODUCT_IDENTIFIER ("PRODID", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -558,6 +757,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Recurrence
@@ -567,7 +773,7 @@ public enum PropertyEnum
             Recurrences.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -578,6 +784,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Relationship
@@ -587,7 +800,7 @@ public enum PropertyEnum
             RecurrenceId.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -598,6 +811,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     RECURRENCE_RULE ("RRULE", // property name
@@ -606,7 +826,7 @@ public enum PropertyEnum
             RecurrenceRuleProp.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -617,11 +837,18 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Recurrence
     RELATED_TO ("RELATED-TO", null, null, null) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -632,6 +859,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Relationship
     REPEAT_COUNT ("REPEAT", // property name
@@ -640,7 +874,7 @@ public enum PropertyEnum
             RepeatCount.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -651,11 +885,18 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Alarm
     REQUEST_STATUS ("REQUEST-STATUS", null, null, RequestStatus.class) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -666,6 +907,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Miscellaneous
     RESOURCES ("RESOURCES", // property name
@@ -674,7 +922,7 @@ public enum PropertyEnum
             Resources.class)
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -685,6 +933,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // property class
     SEQUENCE ("SEQUENCE", // property name
@@ -693,7 +948,7 @@ public enum PropertyEnum
             Sequence.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -705,6 +960,13 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     }, // Change management
     STATUS ("STATUS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
@@ -712,7 +974,7 @@ public enum PropertyEnum
             Status.class) // property class
     {
                 @Override
-                public Property<?> getProperty(VComponentNew vComponent)
+                public Object getProperty(VComponentNew vComponent)
                 {
                     // TODO Auto-generated method stub
                     return null;
@@ -724,6 +986,13 @@ public enum PropertyEnum
                     // TODO Auto-generated method stub
                     return null;
                 }
+
+                @Override
+                public void parse(VComponentNew component, String propertyContent)
+                {
+                    // TODO Auto-generated method stub
+                    
+                }
             },
     SUMMARY ("SUMMARY", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
@@ -732,7 +1001,7 @@ public enum PropertyEnum
             Summary.class) // property class
     {
             @Override
-            public Property<?> getProperty(VComponentNew vComponent)
+            public Object getProperty(VComponentNew vComponent)
             {
                 // TODO Auto-generated method stub
                 return null;
@@ -744,6 +1013,13 @@ public enum PropertyEnum
                 // TODO Auto-generated method stub
                 return null;
             }
+
+            @Override
+            public void parse(VComponentNew component, String propertyContent)
+            {
+                // TODO Auto-generated method stub
+                
+            }
         },
     // Date and Time
     TIME_TRANSPARENCY ("TRANSP", // property name
@@ -752,7 +1028,7 @@ public enum PropertyEnum
             TimeTransparency.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -763,6 +1039,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Time Zone
@@ -772,7 +1055,7 @@ public enum PropertyEnum
             TimeZoneIdentifier.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -783,6 +1066,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     TIME_ZONE_NAME ("TZNAME", // property name
@@ -791,7 +1081,7 @@ public enum PropertyEnum
             TimeZoneName.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -802,6 +1092,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Time Zone
     TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", // property name
@@ -810,7 +1107,7 @@ public enum PropertyEnum
             TimeZoneOffsetFrom.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -821,6 +1118,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Time Zone
     TIME_ZONE_OFFSET_TO ("TZOFFSETTO", // property name
@@ -829,7 +1133,7 @@ public enum PropertyEnum
             TimeZoneOffsetTo.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -840,6 +1144,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Time Zone
     TIME_ZONE_URL ("TZURL", // property name
@@ -848,7 +1159,7 @@ public enum PropertyEnum
             TimeZoneURL.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -859,6 +1170,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Time Zone
     TRIGGER ("TRIGGER", // property name
@@ -867,7 +1185,7 @@ public enum PropertyEnum
             Trigger.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -878,6 +1196,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },  // Alarm
     UNIQUE_IDENTIFIER ("UID", // property name
@@ -886,7 +1211,7 @@ public enum PropertyEnum
             UniqueIdentifier.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -897,6 +1222,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Relationship
     UNIFORM_RESOURCE_LOCATOR ("URL", // property name
@@ -905,7 +1237,7 @@ public enum PropertyEnum
             UniformResourceLocator.class) // property class
     {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -916,11 +1248,18 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }, // Relationship
     VERSION ("VERSION", Arrays.asList(ValueType.TEXT), null, null) {
         @Override
-        public Property<?> getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew vComponent)
         {
             // TODO Auto-generated method stub
             return null;
@@ -931,6 +1270,13 @@ public enum PropertyEnum
         {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        @Override
+        public void parse(VComponentNew component, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
         }
     }; // Calendar
     
@@ -1020,6 +1366,8 @@ public enum PropertyEnum
     /*
      * ABSTRACT METHODS
      */
-    abstract public Property<?> getProperty(VComponentNew vComponent);
+    abstract public Object getProperty(VComponentNew vComponent);
+    @Deprecated
     abstract public List<? extends Property<?>> getPropertyList(VComponentNew parent);
+    abstract public void parse(VComponentNew component, String propertyContent);
 }

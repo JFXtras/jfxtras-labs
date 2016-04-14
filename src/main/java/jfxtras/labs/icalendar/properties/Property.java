@@ -20,6 +20,13 @@ import jfxtras.labs.icalendar.parameters.ValueParameter;
 public interface Property<T>
 {    
     /**
+     * Property Name
+     * 
+     * The name of the property, such as DESCRIPTION
+     * Remains the default value from {@link #PropertyEnum} unless set by a non-standard property
+     * */
+    String getPropertyName();
+    /**
      * The value of the property.
      * 
      * For example, in the below property:

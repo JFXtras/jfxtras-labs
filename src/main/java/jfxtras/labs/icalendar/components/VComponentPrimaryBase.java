@@ -78,9 +78,16 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
      * Can contain either a LocalDate (DATE) or LocalDateTime (DATE-TIME)
      * @SEE VDateTime
      */
-    @Override public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty() { return dateTimeStart; }
-    final private ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
-    @Override public DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStart.get(); }
+    @Override public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty()
+    {
+        if (dateTimeStart == null)
+        {
+            dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
+        }
+        return dateTimeStart;
+    }
+    private ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStart;
+    @Override public DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStartProperty().get(); }
     @Override
     public void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart)
     {
@@ -88,8 +95,14 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         // TODO - I MAY WANT TO CHANGE CHECKING METHOD
         DateTimeType myDateTimeType = DateTimeType.of(dtStart.getValue());
         boolean changed = (lastDtStart != null) && (myDateTimeType != lastDtStart);
-        lastDtStart = getDateTimeStart().getValue();
-        dateTimeStart.set(dtStart);
+//        System.out.println("getDateTimeStart()" +  dateTimeStartProperty());
+//        System.out.println("getDateTimeStart().getValue()" +  dateTimeStartProperty().getValue());
+//        System.out.println("dtStart:" + dtStart);
+        if (dateTimeStartProperty().getValue() != null)
+        {
+            lastDtStart = getDateTimeStart().getValue();
+        }
+        dateTimeStartProperty().set(dtStart);
 //        dateTimeStart = dtStart;
 //        propertyMap().put(PropertyEnum.DATE_TIME_START, new ArrayList<DateTimeStart>(Arrays.asList(dtStart)));
 //        propertyMap().put(PropertyEnum.DATE_TIME_START, dtStart);
@@ -121,6 +134,16 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         return (T) this;
     }
 
+    /*
+     * CONSTRUCTORS
+     */
+    VComponentPrimaryBase() { }
+    
+    VComponentPrimaryBase(String contentLines)
+    {
+        super(contentLines);
+    }
+    
     /**
      * Changes Temporal type of some properties to match the input parameter.  The input
      * parameter should be based on the DTSTART property.

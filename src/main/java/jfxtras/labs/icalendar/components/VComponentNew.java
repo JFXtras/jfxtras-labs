@@ -34,11 +34,13 @@ public interface VComponentNew
      */
     VComponentEnum componentType();
     
+    /** first line of component delimiter string */
     default String firstContentLine()
     {
         return "BEGIN:" + componentType().toString();
     }
-    
+
+    /** last line of component delimiter string */    
     default String lastContentLine()
     {
         return "END:" + componentType().toString();
@@ -81,9 +83,6 @@ public interface VComponentNew
      * 
      * The following is a simple example of an iCalendar component:
      *
-     *  BEGIN:VCALENDAR
-     *  VERSION:2.0
-     *  PRODID:-//hacksw/handcal//NONSGML v1.0//EN
      *  BEGIN:VEVENT
      *  UID:19970610T172345Z-AF23B2@example.com
      *  DTSTAMP:19970610T172345Z
@@ -91,7 +90,6 @@ public interface VComponentNew
      *  DTEND:19970715T040000Z
      *  SUMMARY:Bastille Day Party
      *  END:VEVENT
-     *  END:VCALENDAR
      * 
      * @return - the component content lines
      */
