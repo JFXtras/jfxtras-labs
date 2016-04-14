@@ -66,13 +66,21 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      * iCalendar object was created
      */
     @Override
-    public ObjectProperty<DateTimeStamp> dateTimeStampProperty() { return dateTimeStamp; }
-    final private ObjectProperty<DateTimeStamp> dateTimeStamp = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_STAMP.toString());
+    public ObjectProperty<DateTimeStamp> dateTimeStampProperty()
+    {
+        if (dateTimeStamp == null)
+        {
+            dateTimeStamp = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_STAMP.toString());
+        }
+        return dateTimeStamp;
+    }
+    private ObjectProperty<DateTimeStamp> dateTimeStamp;
     @Override
-    public DateTimeStamp getDateTimeStamp() { return dateTimeStamp.get(); }
+    public DateTimeStamp getDateTimeStamp() { return dateTimeStampProperty().get(); }
     @Override
-    public void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStamp.set(dtStamp); }
+    public void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStampProperty().set(dtStamp); }
     public T withDateTimeStamp(ZonedDateTime zonedDateTime) { setDateTimeStamp(new DateTimeStamp(zonedDateTime)); return (T) this; }
+    public T withDateTimeStamp(String zonedDateTime) { setDateTimeStamp(new DateTimeStamp(zonedDateTime)); return (T) this; }
     public T withDateTimeStamp(DateTimeStamp dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
 
     /**
@@ -86,23 +94,17 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override
     public ObjectProperty<Organizer> organizerProperty()
     {
-        if (organizer == null) organizer = new SimpleObjectProperty<Organizer>(this, PropertyEnum.ORGANIZER.toString(), _organizer);
+        if (organizer == null)
+        {
+            organizer = new SimpleObjectProperty<Organizer>(this, PropertyEnum.ORGANIZER.toString());
+        }
         return organizer;
     }
     private ObjectProperty<Organizer> organizer;
-    @Override public Organizer getOrganizer() { return (organizer == null) ? _organizer : organizer.get(); }
-    private Organizer _organizer;
     @Override
-    public void setOrganizer(Organizer organizer)
-    {
-        if (this.organizer == null)
-        {
-            _organizer = organizer;
-        } else
-        {
-            this.organizer.set(organizer);            
-        }
-    }
+    public Organizer getOrganizer() { return (organizer == null) ? null : organizer.get(); }
+    @Override
+    public void setOrganizer(Organizer organizer) { organizerProperty().set(organizer); }
     public T withOrganizer(String content) { setOrganizer(new Organizer(content)); return (T) this; }
     public T withOrganizer(Organizer organizer) { setOrganizer(organizer); return (T) this; }
 
@@ -154,8 +156,10 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         return uniqueIdentifier;
     }
     private ObjectProperty<UniqueIdentifier> uniqueIdentifier;
-    @Override public UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifier.get(); }
-    @Override public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
+    @Override
+    public UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifierProperty().get(); }
+    @Override
+    public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
     public T withUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(new UniqueIdentifier(uniqueIdentifier)); return (T) this; }
     public T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); return (T) this; }
 
@@ -179,7 +183,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     }
     private ObjectProperty<UniformResourceLocator> uniformResourceLocator;
     @Override
-    public UniformResourceLocator getUniformResourceLocator() { return uniformResourceLocatorProperty().get(); }
+    public UniformResourceLocator getUniformResourceLocator() { return (uniformResourceLocator == null) ? null : uniformResourceLocatorProperty().get(); }
     @Override
     public void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
     public T withUniformResourceLocator(String url) { setUniformResourceLocator(new UniformResourceLocator(url)); return (T) this; }

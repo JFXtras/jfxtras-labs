@@ -20,6 +20,7 @@ public class VComponentPartialTest
         
         VComponentTest builtComponent = new VComponentTest()
                 .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
+                .withDateTimeStamp("20160306T080000Z")
                 .withComments("This is a test comment", "Another comment")
                 .withOrganizer("ORGANIZER;CN=David Bal;SENT-BY=\"mailto:ddbal1@yahoo.com\":mailto:ddbal1@yahoo.com")
                 .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
@@ -30,6 +31,7 @@ public class VComponentPartialTest
                 "UID:19960401T080045Z-4000F192713-0052@example.com" + System.lineSeparator() +
                 "URL:http://example.com/pub/calendars/jsmith/mytime.ics" + System.lineSeparator() +
                 "DTSTART:20160415T120000" + System.lineSeparator() +
+                "DTSTAMP:20160306T080000Z" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
                 "ORGANIZER;CN=David Bal;SENT-BY=\"mailto:ddbal1@yahoo.com\":mailto:ddbal1@yaho" + System.lineSeparator() +

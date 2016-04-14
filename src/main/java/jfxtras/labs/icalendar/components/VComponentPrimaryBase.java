@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendar.properties.PropertyEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
+import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -117,6 +118,11 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         }
     }
     public T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
+    public T withDateTimeStart(String dtStart)
+    {
+        Temporal temporal = DateTimeUtilities.temporalFromString(dtStart);
+        return withDateTimeStart(temporal);
+    }
     public T withDateTimeStart(Temporal temporal)
     {
         if (temporal instanceof LocalDate)
