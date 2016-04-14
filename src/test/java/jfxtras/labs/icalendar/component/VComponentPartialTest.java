@@ -22,6 +22,8 @@ public class VComponentPartialTest
                 "DTSTART:20160415T120000" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
+                "ORGANIZER;CN=David Bal;SENT-BY=\"mailto:ddbal1@yahoo.com\":mailto:ddbal1@yaho" + System.lineSeparator() +
+                " o.com" + System.lineSeparator() +
                 "END:VEVENT";
                 
         VComponentTest madeComponent = new VComponentTest(content);
@@ -38,6 +40,8 @@ public class VComponentPartialTest
                 "DTSTART:20160415T120000" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
+                "ORGANIZER;CN=David Bal;SENT-BY=\"mailto:ddbal1@yahoo.com\":mailto:ddbal1@yaho" + System.lineSeparator() +
+                " o.com" + System.lineSeparator() +
                 "END:VEVENT";
         
         // TODO - do I need to maintain order?
@@ -46,4 +50,13 @@ public class VComponentPartialTest
         System.out.println(content);
         assertEquals(content, madeComponent.toContentLines());
     }
+    
+//    @Test
+//    public void canFold()
+//    {
+//        String s = "Note: It is possible for very simple implementations to generate improperly folded lines in the middle of a UTF-8 multi-octet sequence.  For this reason, implementations need to unfold lines in such a way to properly restore the original sequence.";
+//        CharSequence s2 = VComponentBase.foldLine(s);
+//        System.out.println(s2);
+//    }
+
 }

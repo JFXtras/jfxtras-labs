@@ -108,11 +108,10 @@ public class VComponentBase<T> implements VComponentNew
         }
       return Collections.unmodifiableList(populatedProperties);
     }
-    
-//    // List of properties obtained by parsing content lines, used to maintain order when generating content lines
-//    private LinkedList<Property<?>> propertyOrderList = new LinkedList<>();
 
-    // Property sort order map.  Key is property name.  Follows sort order of parsed content.  If not present sorts alphabetical
+    /* Property sort order map.  Key is property name.  Follows sort order of parsed content.
+     * If a property is not present in the map, it is put at the end of the sorted ones.
+     */
     private Map<String, Integer> propertySortOrder = new HashMap<>();
     
     /*
@@ -123,8 +122,10 @@ public class VComponentBase<T> implements VComponentNew
     /** Parse content lines into calendar component */
     VComponentBase(String contentLines)
     {
+        
         Integer counter = 0;
-        Iterator<String> i = Arrays.asList(contentLines.split(System.lineSeparator())).iterator();
+//        Iterator<String> i = Arrays.asList(contentLines.split(System.lineSeparator())).iterator();
+        Iterator<String> i = unfoldLines(contentLines).iterator();
         while (i.hasNext())
         {
             String line = i.next();
@@ -140,49 +141,16 @@ public class VComponentBase<T> implements VComponentNew
            
             propertySortOrder.put(propertyName, counter++);
             PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
+            
+            // combine multi-line properties
+            StringBuilder builder = new StringBuilder(100);
+            
             // ignore unknown properties
             if (propertyType != null)
             {
                 propertyType.parse(this, line);
             }
         }
-
-//        Arrays.stream(contentLines.split(System.lineSeparator()))
-//        .forEach(line ->
-//        {
-//            List<Integer> indices = new ArrayList<>();
-//            indices.add(line.indexOf(':'));
-//            indices.add(line.indexOf(';'));
-//            int nameEndIndex = indices
-//                    .stream()
-//                    .filter(v -> v > 0)
-//                    .min(Comparator.naturalOrder())
-//                    .get();
-//            String propertyName = line.substring(0, nameEndIndex);
-//           
-//            propertySortOrder.put(propertyName, counter++);
-////            String propertyContent = line.substring(nameEndIndex);
-////            System.out.println("propertyName" + propertyName);
-////            System.out.println("propertyContent" + propertyContent);
-//            PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
-//            // ignore unknown properties
-//            if (propertyType != null)
-//            {
-//                propertyType.parse(this, line);
-////                Object property = propertyType.getProperty(this);
-////                if (property instanceof Property<?>)
-////                {
-////                    propertySortOrder.add((Property<?>) property);
-////                } else if (property instanceof List<?>)
-////                {
-////                    ((List<? extends Property<?>>) property).stream()
-////                            .forEach(p -> propertyOrderList.add(p));
-////                } else
-////                {
-////                    throw new IllegalArgumentException("Invalid property type:" + property.getClass());
-////                }
-//            }
-//        });
     }
 
     @Override
@@ -219,7 +187,7 @@ public class VComponentBase<T> implements VComponentNew
             {
                 Object p1 = i1.next().getProperty(this);
                 Object p2 = i2.next().getProperty(testObj);
-                System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
+//                System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
                 if (! p1.equals(p2))
                 {
                     isFailure = true;
@@ -238,35 +206,7 @@ public class VComponentBase<T> implements VComponentNew
     @Override
     public String toContentLines()
     {
-//        List<PropertyEnum> properties = properties(); // make properties local to avoid creating list multiple times
-        // add individual properties
-//        List<Pair<Object,CharSequence>> propertyAndContent = new ArrayList<>();
         Map<String, List<CharSequence>> propertyNameContentMap = new HashMap<>();
-        
-//        Map<Object, Object> nameAndContent = properties.stream().collect(Collectors
-//                .toMap(p -> p.getProperty(this),
-//                       p -> p.getProperty(this).toConentLine() ));
-        
-//        Iterator<PropertyEnum> i = properties().iterator();
-//        while (i.hasNext())
-//        {
-//            Object object = i.next().getProperty(this);
-//            if (object instanceof Property<?>)
-//            {
-//                Property<?> property = (Property<?>) object;
-//                propertyNameContentMap.put(property.getPropertyName(), property.toContentLine());
-////                propertyAndContent.add(new Pair<>(property, ((Property<?>) property).toContentLine()));
-//            } else if (object instanceof List<?>)
-//            {
-//                ((List<? extends Property<?>>) object).stream()
-////                        .forEach(p -> propertyAndContent.add( new Pair<>(property, ((Property<?>) p).toContentLine())));                
-//                        .forEach(p -> propertyNameContentMap.put(object, ((Property<?>) p).toContentLine()));                
-//            } else
-//            {
-//                throw new IllegalArgumentException("Invalid property type:" + object.getClass());
-//            }
-//        }
-        propertySortOrder.entrySet().stream().forEach(System.out::println);
         
         properties().stream()
                 .map(e -> e.getProperty(this))
@@ -297,52 +237,26 @@ public class VComponentBase<T> implements VComponentNew
                     }
                 });
 
-        // TODO - SPLIT LINES
-        // add non-standard parameters
-//        getNonStandardProperties().stream().forEach(p -> builder.append(";" + p));
-//        getIANAProperties().stream().forEach(p -> builder.append(";" + p));
-        
-//        propertyAndContent.stream().forEach(System.out::println);
         
         StringBuilder builder = new StringBuilder(400);
         builder.append(firstContentLine() + System.lineSeparator());
         
-        Comparator<? super Entry<String, List<CharSequence>>> comparator = (e1, e2) -> 
-        {
-            Integer s1 = propertySortOrder.get(e1.getKey());
-            Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
-            Integer s2 = propertySortOrder.get(e2.getKey());
-            Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
-            return sort1.compareTo(sort2);
-        };
-        
-        //        propertyOrderList.stream().forEach(p -> System.out.println(p.hashCode()));
-        // add properties from propertyOrder sort order
         propertyNameContentMap.entrySet().stream()
-                .sorted(comparator)
+                .sorted((Comparator<? super Entry<String, List<CharSequence>>>) (e1, e2) -> 
+                {
+                    Integer s1 = propertySortOrder.get(e1.getKey());
+                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
+                    Integer s2 = propertySortOrder.get(e2.getKey());
+                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
+                    return sort1.compareTo(sort2);
+                })
                 .forEach(p -> 
                 {
                     p.getValue().stream()
-                            .forEach(s -> builder.append(s + System.lineSeparator()));
+                            .forEach(s -> builder.append(foldLine(s) + System.lineSeparator()));
                 });
-        
-//        propertyOrderList.stream().forEach(p -> 
-//        {
-//            boolean inList = propertyAndContent.contains(p);
-//            if (inList)
-//            {
-//                String line = 
-//                // TODO - MAYBE CHANGE TO HAVING SORT ORDER BASED BY PROPERTY NAME
-//                builder.append( + System.lineSeparator());
-//            }
-//        } );
-//        // add properties not in propertyOrder
-//        propertyAndContent.stream().forEach(p -> builder.append(p.getValue() + System.lineSeparator()));
-        
+
         builder.append(lastContentLine());
-        // add property value
-//        builder.append(":" + propertyType().defaultValueType().makeContent(getValue()));
-//        builder.append(":" + valueToString(getValue()));
         return builder.toString();
     }
 
@@ -351,12 +265,109 @@ public class VComponentBase<T> implements VComponentNew
     {
         return VComponentEnum.VEVENT; // for testing
     }
+
+    /**
+     * Starting with lines-separated list of content lines, the lines are unwrapped and 
+     * converted into a list of property name and property value list wrapped in a Pair.
+     * DTSTART property is put on top, if present.
+     * 
+     * This method unwraps multi-line content lines as defined in iCalendar RFC5545 3.1, page 9
+     * 
+     * For example:
+     * string is
+     * BEGIN:VEVENT
+     * SUMMARY:test1
+     * DTSTART;TZID=Etc/GMT:20160306T080000Z
+     * DTEND;TZID=Etc/GMT:20160306T093000Z
+     * RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
+     * ORGANIZER;CN=David Bal;SENT-BY="mailto:ddbal1@yahoo.com":mailto:ddbal1@yaho
+     *  o.com
+     * UID:fc3577e0-8155-4fa2-a085-a15bdc50a5b4
+     * DTSTAMP:20160313T053147Z
+     * END:VEVENT
+     *  
+     *  results in list
+     *  Element 1, BEGIN:VEVENT
+     *  Element 2, SUMMARY:test1
+     *  Element 3, DTSTART;TZID=Etc/GMT:20160306T080000Z
+     *  Element 4, DTEND;TZID=Etc/GMT:20160306T093000Z
+     *  Element 5, RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
+     *  Element 5, ORGANIZER;CN=David Bal;SENT-BY="mailto:ddbal1@yahoo.com":mailto:ddbal1@yahoo.com
+     *  Element 6, UID:fc3577e0-8155-4fa2-a085-a15bdc50a5b4
+     *  Element 7, DTSTAMP:20160313T053147Z
+     *  Element 8, END:VEVENT
+     *  
+     *  Note: the list of Pair<String,String> is used instead of a Map<String,String> because some properties
+     *  can appear more than once resulting in duplicate key values.
+     *  
+     * @param componentString
+     * @return
+     */
+    private static List<String> unfoldLines(String componentString)
+    {
+//        List<Pair<String,String>> propertyPairs = new ArrayList<>();
+        List<String> propertyLines = new ArrayList<>();
+        String storedLine = "";
+        Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
+        while (lineIterator.hasNext())
+        {
+            // unwrap lines by storing previous line, adding to it if next is a continuation
+            // when no more continuation lines are found loop back and start with last storedLine
+            String startLine;
+            if (storedLine.isEmpty())
+            {
+                startLine = lineIterator.next();
+            } else
+            {
+                startLine = storedLine;
+                storedLine = "";
+            }
+            StringBuilder builder = new StringBuilder(startLine);
+            while (lineIterator.hasNext())
+            {
+                String anotherLine = lineIterator.next();
+                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+                { // unwrap anotherLine into line
+                    builder.append(anotherLine.substring(1, anotherLine.length()));
+                } else
+                {
+                    storedLine = anotherLine; // save for next iteration
+                    break;  // no continuation line, exit while loop
+                }
+            }
+            String line = builder.toString();
+            propertyLines.add(line);
+//            Pair<String, String> pair = parsePropertyLine(line);
+//            if (pair != null) { propertyPairs.add(pair); }
+        }
+        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list
+        return propertyLines;
+    }
     
-//    Map<PropertyEnum, List<Property>> propertyMap() { return propertyMap; }
-//    Map<PropertyEnum, Property> propertyMap() { return propertyMap; } // properties that can only occur once
- //   Map<PropertyEnum, List<? extends Property>> propertyListMap() { return propertyListMap; } // properties that can occur more than once
-//    Map<PropertyEnum, List<? extends Property>> propertyMap() { return propertyMap; }
-//    private final Map<PropertyEnum, Property> propertyMap = new HashMap<>();
-//    private final Map<PropertyEnum, List<? extends Property>> propertyListMap = new HashMap<>();
-//    private final Map<PropertyEnum, List<Property>> propertyMap = new HashMap<>();
+    private static CharSequence foldLine(CharSequence s)
+    {
+        final int maxLineLength = 75;
+        if (s.length() <= maxLineLength)
+        {
+            return s;
+        } else
+        {
+            StringBuilder builder = new StringBuilder(s.length()+20);
+            builder.append(s.subSequence(0, 75));
+            int i;
+            for (i=maxLineLength;i < s.length(); i=i+maxLineLength)
+            {
+                builder.append(System.lineSeparator() + " " + s.subSequence(i, Math.min(i+maxLineLength, s.length())));
+            }
+            return builder;
+        }
+    }
+    
+    final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
+    {
+        int endIndex = PropertyEnum.DATE_TIME_START.toString().length();
+        String myString = p1.substring(0, endIndex);
+        return (myString.equals(PropertyEnum.DATE_TIME_START.toString())) ? -1 : 1;
+    };
+    
 }
