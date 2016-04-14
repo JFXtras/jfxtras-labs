@@ -8,7 +8,9 @@ import jfxtras.labs.icalendar.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendar.properties.component.misc.NonStandardProperty;
 
 /**
- * top-level iCalendar component
+ * iCalendar component
+ * Contains the following properties:
+ * Non-Standard Properties, IANA Properties
  * 
  * @author David Bal
  * @see VComponentBase

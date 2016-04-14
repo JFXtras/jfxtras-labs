@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.components.VComponentNew;
+import jfxtras.labs.icalendar.components.VComponentPersonal;
 import jfxtras.labs.icalendar.components.VComponentPrimary;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueType;
@@ -408,9 +409,9 @@ public enum PropertyEnum
             DateTimeStart.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew parent)
+        public Object getProperty(VComponentNew vComponent)
         {
-            VComponentPrimary castComponent = (VComponentPrimary) parent;
+            VComponentPrimary castComponent = (VComponentPrimary) vComponent;
             return castComponent.getDateTimeStart();
         }
 
@@ -681,8 +682,8 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            return castComponent.getOrganizer();
         }
 
         @Override
@@ -695,8 +696,8 @@ public enum PropertyEnum
         @Override
         public void parse(VComponentNew component, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentPersonal castComponent = (VComponentPersonal) component;
+            castComponent.setOrganizer(new Organizer(propertyContent));
         }
     }, // property class
     PERCENT_COMPLETE ("PERCENT", null, null, null) {

@@ -18,8 +18,10 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
+ * Components with the following properties:
+ * COMMENT, DTSTART
  * 
-* @author David Bal
+ * @author David Bal
  *
  * @param <T> - implementation subclass
  * @see VEventNew
@@ -153,6 +155,8 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
      * @param dateTimeType - new DateTimeType
      * @param zone - ZoneId of dateTimeType, null if not applicable
      */
+    // HOW AM I GOING TO RUN THIS WHEN THE OTHER PROPERTIES ARE IN LOWER CLASSES?
+    // DO I NEED LISTENERS?
     void ensureDateTimeTypeConsistency(DateTimeType dateTimeType, ZoneId zone)
     {
         // does something as overridden method in subclasses

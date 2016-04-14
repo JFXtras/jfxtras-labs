@@ -18,6 +18,9 @@ import jfxtras.labs.icalendar.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendar.properties.component.misc.NonStandardProperty;
 
 /**
+ * iCalendar component
+ * Contains the following properties:
+ * Non-Standard Properties, IANA Properties
  * 
  * @author David Bal
  *
@@ -305,7 +308,6 @@ public class VComponentBase<T> implements VComponentNew
      */
     private static List<String> unfoldLines(String componentString)
     {
-//        List<Pair<String,String>> propertyPairs = new ArrayList<>();
         List<String> propertyLines = new ArrayList<>();
         String storedLine = "";
         Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
@@ -337,25 +339,30 @@ public class VComponentBase<T> implements VComponentNew
             }
             String line = builder.toString();
             propertyLines.add(line);
-//            Pair<String, String> pair = parsePropertyLine(line);
-//            if (pair != null) { propertyPairs.add(pair); }
         }
-        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list
+        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
         return propertyLines;
     }
     
+    /**
+     * Folds lines at character 75 into multiple lines.
+     * A space is added to the first character of the subsequent lines.
+     * 
+     * @param s
+     * @return
+     */
     private static CharSequence foldLine(CharSequence s)
     {
-        final int maxLineLength = 75;
+        final int maxLineLength = 74; // one less than 75 to accommodate the leading space
         if (s.length() <= maxLineLength)
         {
             return s;
         } else
         {
             StringBuilder builder = new StringBuilder(s.length()+20);
-            builder.append(s.subSequence(0, 75));
+            builder.append(s.subSequence(0, maxLineLength+1));
             int i;
-            for (i=maxLineLength;i < s.length(); i=i+maxLineLength)
+            for (i=maxLineLength+1;i < s.length(); i=i+maxLineLength)
             {
                 builder.append(System.lineSeparator() + " " + s.subSequence(i, Math.min(i+maxLineLength, s.length())));
             }

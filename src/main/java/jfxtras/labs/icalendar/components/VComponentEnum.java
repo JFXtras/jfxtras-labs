@@ -7,7 +7,7 @@ import jfxtras.labs.icalendar.properties.PropertyEnum;
 
 public enum VComponentEnum
 {
-    VEVENT (Arrays.asList(PropertyEnum.COMMENT, PropertyEnum.DATE_TIME_START,
+    VEVENT (Arrays.asList(PropertyEnum.COMMENT, PropertyEnum.DATE_TIME_START, PropertyEnum.ORGANIZER,
             PropertyEnum.UNIFORM_RESOURCE_LOCATOR)),
     VTODO (Arrays.asList(PropertyEnum.UNIFORM_RESOURCE_LOCATOR)),
     VJOURNAL (Arrays.asList(PropertyEnum.UNIFORM_RESOURCE_LOCATOR)),

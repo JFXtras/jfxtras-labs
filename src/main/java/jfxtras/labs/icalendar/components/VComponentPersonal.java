@@ -10,7 +10,8 @@ import jfxtras.labs.icalendar.properties.component.relationship.UniformResourceL
 import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
 
 /**
- * VComponents that involve communication between people
+ * Components with the following properties:
+ * ATTENDEE, DTSTAMP, ORGANIZER, REQUEST-STATUS, UID, URL
  * 
  * @author David Bal
  * @see VEventNew
@@ -31,10 +32,8 @@ public interface VComponentPersonal extends VComponentPrimary
      * ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Jane Doe
      *  :mailto:jdoe@example.com
      */
-    ObservableList<Attendee> attendees();
-//    Attendee getAttendee();
-//    ObjectProperty<Attendee> attendeeProperty();
-//    void setAttendee(Attendee attendee);
+    ObservableList<Attendee> getAttendees();
+    void setAttendees(ObservableList<Attendee> properties);
     
     /**
      * DTSTAMP: Date-Time Stamp
@@ -73,10 +72,8 @@ public interface VComponentPersonal extends VComponentPrimary
      *  mailto:jsmith@example.com
      * 
      */
-    ObservableList<RequestStatus> requestStatus();
-//    RequestStatus getRequestStatus();
-//    ObjectProperty<RequestStatus> requestStatusProperty();
-//    void setRequestStatus(RequestStatus requestStatus);
+    ObservableList<RequestStatus> getRequestStatus();
+    void setRequestStatus(ObservableList<RequestStatus> properties);
     
     /**
      * UID, Unique identifier

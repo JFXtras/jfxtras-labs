@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendar.components;
 
-public class VComponentTest extends VComponentPrimaryBase<VComponentTest>
+public class VComponentTest extends VComponentPersonalBase<VComponentTest>
 {
 
     /*

@@ -11,7 +11,8 @@ import jfxtras.labs.icalendar.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 
 /**
- * A calendar component that can contain a child event, such as an Alarm
+ * Components with the following properties:
+ * COMMENT, DTSTART
  * 
  * @author David Bal
  * @see VEventNew

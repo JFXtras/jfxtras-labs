@@ -15,7 +15,8 @@ public class VComponentPartialTest
     {
         VComponentTest builtComponent = new VComponentTest()
                 .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
-                .withComments("This is a test comment", "Another comment");
+                .withComments("This is a test comment", "Another comment")
+                .withOrganizer("ORGANIZER;CN=David Bal;SENT-BY=\"mailto:ddbal1@yahoo.com\":mailto:ddbal1@yahoo.com");
         System.out.println(builtComponent.toContentLines());
         
         String content = "BEGIN:VEVENT" + System.lineSeparator() +
@@ -27,6 +28,7 @@ public class VComponentPartialTest
                 "END:VEVENT";
                 
         VComponentTest madeComponent = new VComponentTest(content);
+        System.out.println(madeComponent.toContentLines());
         assertEquals(madeComponent, builtComponent);
 //        String expectedContent = "ACTION:AUDIO";
 //        assertEquals(expectedContent, madeProperty.toContentLine());

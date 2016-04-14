@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendar.components;
 
-import java.time.DateTimeException;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -16,8 +16,10 @@ import jfxtras.labs.icalendar.properties.component.relationship.UniformResourceL
 import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
 
 /**
+ * Components with the following properties:
+ * ATTENDEE, DTSTAMP, ORGANIZER, REQUEST-STATUS, UID, URL
  * 
-* @author David Bal
+ * @author David Bal
  *
  * @param <T> - implementation subclass
  * @see VEventNew
@@ -38,48 +40,24 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      * ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Jane Doe
      *  :mailto:jdoe@example.com
      */
-//    @Override
-//    public ObjectProperty<Attendee> attendeeProperty()
-//    {
-//        if (attendee == null) attendee = new SimpleObjectProperty<Attendee>(this, PropertyEnum.ATTENDEE.toString(), _attendee);
-//        return attendee;
-//    }
-//    private ObjectProperty<Attendee> attendee;
-//    @Override public Attendee getAttendee() { return (attendee == null) ? _attendee : attendee.get(); }
-//    private Attendee _attendee;
-//    @Override
-//    public void setAttendee(Attendee attendee)
-//    {
-//        if (this.attendee == null)
-//        {
-//            _attendee = attendee;
-//        } else
-//        {
-//            this.attendee.set(attendee);            
-//        }
-//    }
-//    public T withAttendee(Attendee attendee) { setAttendee(attendee); return (T) this; }
     @Override
-    public ObservableList<Attendee> attendees()
+    public ObservableList<Attendee> getAttendees()
     {
         if (attendees == null)
         {
             attendees = FXCollections.observableArrayList();
-//            attendees.addListener((InvalidationListener) (obs) ->
-//            {
-//                int size = attendees().size();
-//                if (size > 0)
-//                {
-//                    propertyMap().put(PropertyEnum.ATTENDEE, attendees());
-//                } else if (size == 0)
-//                {
-//                    propertyMap().remove(PropertyEnum.ATTENDEE);
-//                }
-//            });
         }
         return attendees;
     }
     private ObservableList<Attendee> attendees;
+    @Override
+    public void setAttendees(ObservableList<Attendee> attendees) { this.attendees = attendees; }
+    /** add comma separated attendees into separate Attendee objects */
+    public T withAttendees(String...attendees)
+    {
+        Arrays.stream(attendees).forEach(c -> getAttendees().add(new Attendee(c)));
+        return (T) this;
+    }
     
     /**
      * DTSTAMP: Date-Time Stamp, from RFC 5545 iCalendar 3.8.7.2 page 137
@@ -92,16 +70,8 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override
     public DateTimeStamp getDateTimeStamp() { return dateTimeStamp.get(); }
     @Override
-    public void setDateTimeStamp(DateTimeStamp dtStamp)
-    {
-        if ((dtStamp != null) && ! (dtStamp.getValue().getOffset().equals(ZoneOffset.UTC)))
-        {
-            throw new DateTimeException("dateTimeStamp (DTSTAMP) must be specified in the UTC time format (Z)");
-        }
-        dateTimeStamp.set(dtStamp);
-//        propertyMap().put(PropertyEnum.DATE_TIME_STAMP, new ArrayList<DateTimeStamp>(Arrays.asList(dtStamp)));
-//        propertyMap().put(PropertyEnum.DATE_TIME_STAMP, dtStamp);
-    }
+    public void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStamp.set(dtStamp); }
+    public T withDateTimeStamp(ZonedDateTime zonedDateTime) { setDateTimeStamp(new DateTimeStamp(zonedDateTime)); return (T) this; }
     public T withDateTimeStamp(DateTimeStamp dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
 
     /**
@@ -131,8 +101,8 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         {
             this.organizer.set(organizer);            
         }
-//        propertyMap().put(PropertyEnum.ORGANIZER, organizer);
     }
+    public T withOrganizer(String content) { setOrganizer(new Organizer(content)); return (T) this; }
     public T withOrganizer(Organizer organizer) { setOrganizer(organizer); return (T) this; }
 
     /**
@@ -146,48 +116,24 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      *  mailto:jsmith@example.com
      * 
      */
-//    @Override
-//    public ObjectProperty<RequestStatus> requestStatusProperty()
-//    {
-//        if (requestStatus == null) requestStatus = new SimpleObjectProperty<RequestStatus>(this, PropertyEnum.ORGANIZER.toString(), _requestStatus);
-//        return requestStatus;
-//    }
-//    private ObjectProperty<RequestStatus> requestStatus;
-//    @Override public RequestStatus getRequestStatus() { return (requestStatus == null) ? _requestStatus : requestStatus.get(); }
-//    private RequestStatus _requestStatus;
-//    @Override
-//    public void setRequestStatus(RequestStatus requestStatus)
-//    {
-//        if (this.requestStatus == null)
-//        {
-//            _requestStatus = requestStatus;
-//        } else
-//        {
-//            this.requestStatus.set(requestStatus);            
-//        }
-//    }
-//    public T withRequestStatus(RequestStatus requestStatus) { setRequestStatus(requestStatus); return (T) this; }
     @Override
-    public ObservableList<RequestStatus> requestStatus()
+    public ObservableList<RequestStatus> getRequestStatus()
     {
         if (requestStatus == null)
         {
             requestStatus = FXCollections.observableArrayList();
-//            requestStatus.addListener((InvalidationListener) (obs) ->
-//            {
-//                int size = requestStatus().size();
-//                if (size > 0)
-//                {
-//                    propertyMap().put(PropertyEnum.REQUEST_STATUS, requestStatus());
-//                } else if (size == 0)
-//                {
-//                    propertyMap().remove(PropertyEnum.REQUEST_STATUS);
-//                }
-//            });
         }
         return requestStatus;
     }
     private ObservableList<RequestStatus> requestStatus;
+    @Override
+    public void setRequestStatus(ObservableList<RequestStatus> requestStatus) { this.requestStatus = requestStatus; }
+    /** add comma separated requestStatus into separate comment objects */
+    public T withRequestStatus(String...requestStatus)
+    {
+        Arrays.stream(requestStatus).forEach(c -> getRequestStatus().add(new RequestStatus(c)));
+        return (T) this;
+    }
 
     /**
      * UID, Unique identifier
@@ -204,7 +150,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier)
     {
         this.uniqueIdentifier.set(uniqueIdentifier);
-//        propertyMap().put(PropertyEnum.UNIQUE_IDENTIFIER, uniqueIdentifier);
     }
     public void withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); }
 
@@ -236,8 +181,17 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         {
             this.uniformResourceLocator.set(url);            
         }
-//        propertyMap().put(PropertyEnum.UNIFORM_RESOURCE_LOCATOR, url);
     }
     public T withUniformResourceLocator(UniformResourceLocator uniformResourceLocator) { setUniformResourceLocator(uniformResourceLocator); return (T) this; }
 
+
+    /*
+     * CONSTRUCTORS
+     */
+    VComponentPersonalBase() { }
+    
+    VComponentPersonalBase(String contentLines)
+    {
+        super(contentLines);
+    }
 }
