@@ -236,7 +236,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
      * the order appearing in {@link #ParameterEnum}
      */
     public Map<ParameterEnum, Integer> parameterSortOrder() { return parameterSortOrder; }
-    private Map<ParameterEnum, Integer> parameterSortOrder = new HashMap<>();
+    final private Map<ParameterEnum, Integer> parameterSortOrder = new HashMap<>();
     private Integer parameterCounter = 0;
     
     // property value

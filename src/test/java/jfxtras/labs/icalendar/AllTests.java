@@ -79,6 +79,7 @@ import jfxtras.labs.icalendar.property.UniqueIdentifierTest;
         ExceptionsTest.class,
         FreeBusyTimeTest.class,
         GeneralPropertyTest.class,
+        IANATest.class,
         LocationTest.class,
         NonStandardTest.class,
         OrganizerTest.class,

@@ -19,4 +19,17 @@ public class IANATest
         assertEquals(expectedProperty, madeProperty);
         assertEquals("CASUAL", madeProperty.getValue());
     }
+    
+    @Test
+    public void canParseIANA2()
+    {
+        String content = "TESTPROP2;VALUE=INTEGER:12";
+        IANAProperty madeProperty = new IANAProperty(content);
+        assertEquals(content, madeProperty.toContentLine());
+        IANAProperty expectedProperty = new IANAProperty(12)
+                .withPropertyName("TESTPROP2")
+                .withValueParameter("INTEGER");
+        assertEquals(expectedProperty, madeProperty);
+        assertEquals(12, madeProperty.getValue());
+    }
 }

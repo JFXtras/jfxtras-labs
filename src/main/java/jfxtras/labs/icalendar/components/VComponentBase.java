@@ -115,9 +115,12 @@ public class VComponentBase<T> implements VComponentNew
     /** 
      * Property sort order map.  Key is property name.  Follows sort order of parsed content.
      * If a property is not present in the map, it is put at the end of the sorted ones in
-     * the order appearing in {@link #PropertyEnum}
+     * the order appearing in {@link #PropertyEnum} <br>
+     * Generally, this map shouldn't be modified.  Only modify it when you want to force
+     * a specific property order.
      */
-    private Map<String, Integer> propertySortOrder = new HashMap<>();
+    public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
+    final private Map<String, Integer> propertySortOrder = new HashMap<>();
     
     /*
      * CONSTRUCTORS
@@ -148,16 +151,19 @@ public class VComponentBase<T> implements VComponentNew
                 propertySortOrder.put(propertyName, counter++);
                 PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
                 
-                // parse property (ignores unknown properties)
+                // parse property
                 if (propertyType != null)
                 {
                     propertyType.parse(this, line);
                 } else if (propertyName.substring(0, PropertyEnum.NON_STANDARD.toString().length()).equals(PropertyEnum.NON_STANDARD.toString()))
                 {
                     PropertyEnum.NON_STANDARD.parse(this, line);
-//                } else
-//                {
-//                    PropertyEnum.IANA_PROPERTY.parse(this, line);
+                } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(propertyName))
+                {
+                    PropertyEnum.IANA_PROPERTY.parse(this, line);
+                } else
+                {
+                    // ignores unknown properties - change if other behavior desired
                 }
             }
         }

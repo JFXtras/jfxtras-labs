@@ -20,16 +20,22 @@ public class ParsePropertiesTest
         s.set(null);
         
         VComponentTest builtComponent = new VComponentTest()
-                .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au");
-        System.out.println(builtComponent.toContentLines());
+                .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
+                .withIANAProperty("TESTPROP2:CASUAL")
+                .withNonStandardProperty("X-TEST-OBJ:testid");
+        builtComponent.propertySortOrder().put("X-ABC-MMSUBJ", 0);
+        builtComponent.propertySortOrder().put("TESTPROP2", 1);
+        builtComponent.propertySortOrder().put("X-TEST-OBJ", 2);
         
         String content = "BEGIN:VEVENT" + System.lineSeparator() +
                 "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au" + System.lineSeparator() +
+                "TESTPROP2:CASUAL" + System.lineSeparator() +
+                "X-TEST-OBJ:testid" + System.lineSeparator() +
                 "END:VEVENT";
                 
         VComponentTest madeComponent = new VComponentTest(content);
-        System.out.println(madeComponent.toContentLines());
         assertEquals(madeComponent, builtComponent);
+        assertEquals(madeComponent.toContentLines(), builtComponent.toContentLines());
     }
     
     @Test
