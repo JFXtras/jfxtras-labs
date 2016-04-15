@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendar.parameters.CalendarUser.CalendarUserType;
 import jfxtras.labs.icalendar.parameters.GroupMembership;
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.Participation.ParticipationStatus;
 import jfxtras.labs.icalendar.parameters.ParticipationRole.ParticipationRoleType;
 import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
@@ -142,6 +143,15 @@ public class AttendeeTest
                 .withParticipationRole(ParticipationRoleType.CHAIR)
                 .withParticipation(ParticipationStatus.DECLINED)
                 .withSentBy("mailto:sray@example.com");
+        expectedProperty.parameterSortOrder().put(ParameterEnum.COMMON_NAME, 0);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.CALENDAR_USER_TYPE, 1);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.DELEGATEES, 2);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.DELEGATORS, 3);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.GROUP_OR_LIST_MEMBERSHIP, 4);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.PARTICIPATION_ROLE, 5);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.PARTICIPATION_STATUS, 6);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.RSVP_EXPECTATION, 7);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.SENT_BY, 8);
         assertEquals(expectedProperty, madeProperty);
         assertEquals(content, expectedProperty.toContentLine());
     }

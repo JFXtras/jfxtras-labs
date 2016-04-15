@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -88,6 +91,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     
     /** The name of the property, such as DESCRIPTION
      * Remains the default value unless set by a non-standard property*/
+    @Override
     public String getPropertyName()
     {
         if (propertyName == null)
@@ -223,7 +227,16 @@ public abstract class PropertyBase<T,U> implements Property<T>
             }
         }
         return Collections.unmodifiableList(populatedParameters);
-    }    
+    }
+    
+    /** 
+     * Parameter sort order map.  Key is parameter name.  Follows sort order of parsed content.
+     * If a parameter is not present in the map, it is put at the end of the sorted ones in
+     * the order appearing in {@link #ParameterEnum}
+     */
+    public Map<ParameterEnum, Integer> parameterSortOrder() { return parameterSortOrder; }
+    private Map<ParameterEnum, Integer> parameterSortOrder = new HashMap<>();
+    private Integer counter = 0;
     
     // property value
     private String propertyValueString = null;
@@ -365,6 +378,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         }
         
         // process parameters
+        
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
 //        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()
@@ -374,6 +388,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
             .forEach(e ->
             {
                 ParameterEnum p = ParameterEnum.enumFromName(e.getKey());
+                parameterSortOrder().put(p, counter++);
                 if (p != null)
                 {
                     if (propertyType().allowedParameters().contains(p))
@@ -391,6 +406,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
 
         // save property value        
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+//        System.out.println("propertyValueString:" + getPropertyValueString());
         T value = getConverter().fromString(getPropertyValueString());
 //        System.out.println("value class:" + value.getClass());
         if (value == null)
@@ -449,6 +465,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     @Override
     public String toContentLine()
     {
+        // property name
         StringBuilder builder = new StringBuilder(50);
         if (propertyName == null)
         {
@@ -457,8 +474,31 @@ public abstract class PropertyBase<T,U> implements Property<T>
         {
             builder.append(propertyName);
         }
-        // add parameters
-        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
+        
+        // PARAMETERS
+        Map<String, CharSequence> parameterNameContentMap = parameters().stream()
+                .collect(Collectors.toMap(p -> p.toString(),
+                                          p -> p.getParameter(this).toContent()));
+        
+        // restore parameter sort order if parameters were parsed from content
+        parameterNameContentMap.entrySet().stream()
+                .sorted((Comparator<? super Entry<String, CharSequence>>) (e1, e2) -> 
+                {
+                    ParameterEnum p1 = ParameterEnum.enumFromName(e1.getKey());
+                    Integer s1 = parameterSortOrder.get(p1);
+                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
+                    ParameterEnum p2 = ParameterEnum.enumFromName(e2.getKey());
+                    Integer s2 = parameterSortOrder.get(p2);
+                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
+//                    System.out.println("s12:" + sort1 + " " + sort2);
+                    return sort1.compareTo(sort2);
+                })
+                .forEach(p -> 
+                {
+                    builder.append(p.getValue());
+                });
+        
+//        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
         // add non-standard parameters
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         // add property value

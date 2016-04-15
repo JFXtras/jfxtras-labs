@@ -292,8 +292,9 @@ public final class DateTimeUtilities
      */ 
     public static Temporal temporalFromString(String string)
     {
-        int lastColonIndex = string.lastIndexOf(':');
-        String string2 = string.substring(lastColonIndex+1);
+//        int lastColonIndex = string.lastIndexOf(':');
+//        String string2 = string.substring(lastColonIndex+1);
+        String string2 = string;
 
         final String form0 = "^[0-9]{8}";
         final String form1 = "^[0-9]{8}T([0-9]{6})";

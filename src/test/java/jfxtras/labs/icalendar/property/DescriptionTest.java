@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.properties.component.descriptive.Description;
 
 public class DescriptionTest
@@ -27,6 +28,8 @@ public class DescriptionTest
         Description expectedDescription = new Description("Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management")
                 .withAlternateText("CID:part3.msg.970415T083000@example.com")
                 .withLanguage("en");
+        expectedDescription.parameterSortOrder().put(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, 0);
+        expectedDescription.parameterSortOrder().put(ParameterEnum.LANGUAGE, 1);
         assertEquals(expectedDescription, madeDescription);
         assertEquals(contentLine, expectedDescription.toContentLine());
     }

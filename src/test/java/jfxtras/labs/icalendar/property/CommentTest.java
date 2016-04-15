@@ -33,10 +33,9 @@ public class CommentTest
     @Test
     public void canParseComment3()
     {
-        String content = ":The meeting needs to be canceled";
+        String content = "The meeting needs to be canceled";
         Comment madeProperty = new Comment(content);
-        System.out.println(madeProperty.toContentLine());
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals("COMMENT:" + content, madeProperty.toContentLine());
         Comment expectedProperty = new Comment("The meeting needs to be canceled");
         assertEquals(expectedProperty, madeProperty);
     }

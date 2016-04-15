@@ -131,7 +131,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
         {
             if (getTimeZoneIdentifier() != null)
             {
-                throw new DateTimeException("Only ZonedDateTime is permitted when specifying a Time Zone Identifier");                            
+                throw new DateTimeException("Only ZonedDateTime is permitted when specifying a Time Zone Identifier (" + element.getClass().getSimpleName() + ")");                            
             }
             if (element instanceof LocalDate)
             {

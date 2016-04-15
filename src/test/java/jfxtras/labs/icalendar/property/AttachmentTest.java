@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
+import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.component.descriptive.Attachment;
 
@@ -65,8 +66,10 @@ public class AttachmentTest
                 .withFormatType("text/plain")
                 .withEncoding(EncodingType.BASE64)
                 .withValueParameter(ValueType.BINARY);
-        System.out.println(expectedProperty.toContentLine());
-        System.out.println(madeProperty.toContentLine());
+        expectedProperty.parameterSortOrder().put(ParameterEnum.FORMAT_TYPE, 0);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.INLINE_ENCODING, 1);
+        expectedProperty.parameterSortOrder().put(ParameterEnum.VALUE_DATA_TYPES, 2);
+
         assertEquals(expectedProperty, madeProperty);
         assertEquals(contentLine, expectedProperty.toContentLine());
     }

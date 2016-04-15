@@ -112,8 +112,10 @@ public class VComponentBase<T> implements VComponentNew
       return Collections.unmodifiableList(populatedProperties);
     }
 
-    /* Property sort order map.  Key is property name.  Follows sort order of parsed content.
-     * If a property is not present in the map, it is put at the end of the sorted ones.
+    /** 
+     * Property sort order map.  Key is property name.  Follows sort order of parsed content.
+     * If a property is not present in the map, it is put at the end of the sorted ones in
+     * the order appearing in {@link #PropertyEnum}
      */
     private Map<String, Integer> propertySortOrder = new HashMap<>();
     
@@ -207,8 +209,8 @@ public class VComponentBase<T> implements VComponentNew
     @Override
     public String toContentLines()
     {
+        // make map of property name/content
         Map<String, List<CharSequence>> propertyNameContentMap = new HashMap<>();
-        
         properties().stream()
                 .map(e -> e.getProperty(this))
                 .flatMap(prop -> 
@@ -242,6 +244,7 @@ public class VComponentBase<T> implements VComponentNew
         StringBuilder builder = new StringBuilder(400);
         builder.append(firstContentLine() + System.lineSeparator());
         
+        // restore property sort order if properties were parsed from content
         propertyNameContentMap.entrySet().stream()
                 .sorted((Comparator<? super Entry<String, List<CharSequence>>>) (e1, e2) -> 
                 {
