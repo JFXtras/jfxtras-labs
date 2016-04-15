@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendar.properties.Property;
+import jfxtras.labs.icalendar.properties.PropertyAlarmTrigger;
 import jfxtras.labs.icalendar.properties.PropertyAltText;
 import jfxtras.labs.icalendar.properties.PropertyAttachment;
 import jfxtras.labs.icalendar.properties.PropertyAttendee;
@@ -15,7 +16,7 @@ import jfxtras.labs.icalendar.properties.PropertyBaseLanguage;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
-import jfxtras.labs.icalendar.properties.PropertyTrigger;
+import jfxtras.labs.icalendar.properties.PropertyRelationship;
 import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseCalendarUser;
 
 public enum ParameterEnum
@@ -324,15 +325,15 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyTrigger<?> castProperty = (PropertyTrigger<?>) property;
-            castProperty.setRelationship(new AlarmTriggerRelationship(content));
+            PropertyAlarmTrigger<?> castProperty = (PropertyAlarmTrigger<?>) property;
+            castProperty.setAlarmTrigger(new AlarmTriggerRelationship(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyTrigger<?> castProperty = (PropertyTrigger<?>) parent;
-            return castProperty.getRelationship();
+            PropertyAlarmTrigger<?> castProperty = (PropertyAlarmTrigger<?>) parent;
+            return castProperty.getAlarmTrigger();
         }
 
         @Override
@@ -346,16 +347,16 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyRelationship<?> castProperty = (PropertyRelationship<?>) property;
+            castProperty.setRelationship(new Relationship(content));
         }
 
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            PropertyRelationship<?> castProperty = (PropertyRelationship<?>) parent;
+            return castProperty.getRelationship();
         }
 
         @Override
@@ -383,8 +384,8 @@ public enum ParameterEnum
         @Override
         public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) destination;
+            castProperty.setParticipationRole(new ParticipationRole((ParticipationRole) sourceParameter));
         }
     },
     RSVP_EXPECTATION ("RSVP", RSVP.class) {
@@ -405,8 +406,8 @@ public enum ParameterEnum
         @Override
         public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) destination;
+            castProperty.setRSVP(new RSVP((RSVP) sourceParameter));
         }
     },
     SENT_BY ("SENT-BY", SentBy.class) {
@@ -427,8 +428,8 @@ public enum ParameterEnum
         @Override
         public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) destination;
+            castProperty.setSentBy(new SentBy((SentBy) sourceParameter));
         }
     },
     TIME_ZONE_IDENTIFIER ("TZID", TimeZoneIdentifierParameter.class) {
@@ -450,8 +451,8 @@ public enum ParameterEnum
         @Override
         public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyDateTime<? extends Temporal> castProperty = (PropertyDateTime<? extends Temporal>) destination;
+            castProperty.setTimeZoneIdentifier(new TimeZoneIdentifierParameter((TimeZoneIdentifierParameter) sourceParameter));
         }
     },
     VALUE_DATA_TYPES ("VALUE", ValueParameter.class) {
@@ -562,26 +563,9 @@ public enum ParameterEnum
      * ABSTRACT METHODS
      */
     /** Parse content string into parameter value type U */
-//    @Deprecated
-//    abstract public <U> U parse(String content);
-    
     abstract public void parse(Property<?> property, String content);
-    public Object copyTo(Property<?> source, Property<?> destination)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
     
     abstract public Parameter<?> getParameter(Property<?> parent);
-//    public void setParameter(Property<?> property, Parameter<?> parameter)
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
-    abstract public void copyTo(Parameter<?> sourceParameter, Property<?> destination);
-//    {
-//        // TODO Auto-generated method stub
-//        
-//    }
 
+    abstract public void copyTo(Parameter<?> sourceParameter, Property<?> destination);
 }

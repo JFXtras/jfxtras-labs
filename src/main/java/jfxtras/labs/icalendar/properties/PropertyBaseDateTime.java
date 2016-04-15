@@ -55,10 +55,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
     {
         if ((getValue() == null) || (getValue() instanceof ZonedDateTime))
         {
-            if (timeZoneIdentifier != null)
-            {
-                timeZoneIdentifierProperty().set(timeZoneIdentifier);
-            }
+            timeZoneIdentifierProperty().set(timeZoneIdentifier);
         } else
         {
             throw new DateTimeException(ParameterEnum.TIME_ZONE_IDENTIFIER.toString() + " can't be set for date-time of type " + getValue().getClass().getSimpleName());

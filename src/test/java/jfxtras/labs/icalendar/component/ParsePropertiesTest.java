@@ -35,11 +35,31 @@ public class ParsePropertiesTest
                 
         VComponentTest madeComponent = new VComponentTest(content);
         assertEquals(madeComponent, builtComponent);
-        assertEquals(madeComponent.toContentLines(), builtComponent.toContentLines());
+        assertEquals(content, builtComponent.toContentLines());
     }
     
     @Test
     public void canBuildPrimary()
+    {
+        VComponentTest builtComponent = new VComponentTest()
+                .withDateTimeStamp("20160306T080000Z")
+                .withComments("This is a test comment", "Another comment")
+                .withComments("COMMENT:My third comment");
+        
+        String content = "BEGIN:VEVENT" + System.lineSeparator() +
+                "DTSTAMP:20160306T080000Z" + System.lineSeparator() +
+                "COMMENT:This is a test comment" + System.lineSeparator() +
+                "COMMENT:Another comment" + System.lineSeparator() +
+                "COMMENT:My third comment" + System.lineSeparator() +
+                "END:VEVENT";
+                
+        VComponentTest madeComponent = new VComponentTest(content);
+        assertEquals(madeComponent, builtComponent);
+        assertEquals(content, builtComponent.toContentLines());
+    }
+    
+    @Test
+    public void canBuildPersonal()
     {
         ObjectProperty<String> s = new SimpleObjectProperty<>("start");
         s.set(null);

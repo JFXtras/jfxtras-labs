@@ -13,8 +13,8 @@ import jfxtras.labs.icalendar.parameters.AlarmTriggerRelationship.AlarmTriggerRe
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.ValueParameter;
 import jfxtras.labs.icalendar.parameters.ValueType;
+import jfxtras.labs.icalendar.properties.PropertyAlarmTrigger;
 import jfxtras.labs.icalendar.properties.PropertyBase;
-import jfxtras.labs.icalendar.properties.PropertyTrigger;
 
 /**
  * TRIGGER
@@ -35,7 +35,7 @@ import jfxtras.labs.icalendar.properties.PropertyTrigger;
  * The property can be specified in following components:
  * @see VAlarm
  */
-public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyTrigger<T>
+public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyAlarmTrigger<T>
 {
     /**
     * RELATED: Alarm Trigger Relationship
@@ -44,9 +44,9 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
     * respect to the start or end of the calendar component.
     */
    @Override
-   public AlarmTriggerRelationship getRelationship() { return (relationship == null) ? null : relationship.get(); }
+   public AlarmTriggerRelationship getAlarmTrigger() { return (relationship == null) ? null : relationship.get(); }
    @Override
-   public ObjectProperty<AlarmTriggerRelationship> RelationshipProperty()
+   public ObjectProperty<AlarmTriggerRelationship> AlarmTriggerProperty()
    {
        if (relationship == null)
        {
@@ -56,24 +56,24 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
    }
    private ObjectProperty<AlarmTriggerRelationship> relationship;
    @Override
-   public void setRelationship(AlarmTriggerRelationship relationship)
+   public void setAlarmTrigger(AlarmTriggerRelationship relationship)
    {
        if (relationship != null)
        {
            ValueType valueType = (getValueParameter() == null) ? propertyType().allowedValueTypes().get(0) : getValueParameter().getValue();
            if (valueType == ValueType.DURATION)
            {
-               RelationshipProperty().set(relationship);
+               AlarmTriggerProperty().set(relationship);
            } else
            {
                throw new IllegalArgumentException("Alarm Trigger Relationship can only be set if value type is DURATION");
            }
        }
    }
-   public void setRelationship(AlarmTriggerRelationshipType type) { setRelationship(new AlarmTriggerRelationship(type)); } 
-   public Trigger<T> withRelationship(AlarmTriggerRelationship format) { setRelationship(format); return this; }
-   public Trigger<T> withRelationship(AlarmTriggerRelationshipType type) { setRelationship(type); return this; }
-   public Trigger<T> withRelationship(String format) { setRelationship(new AlarmTriggerRelationship(format)); return this; }
+   public void setAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(new AlarmTriggerRelationship(type)); } 
+   public Trigger<T> withAlarmTrigger(AlarmTriggerRelationship format) { setAlarmTrigger(format); return this; }
+   public Trigger<T> withAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(type); return this; }
+   public Trigger<T> withAlarmTrigger(String format) { setAlarmTrigger(new AlarmTriggerRelationship(format)); return this; }
 
    
     public Trigger(Class<T> clazz, CharSequence contentLine)
@@ -109,7 +109,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
     @Override
     public void setValueParameter(ValueParameter valueType)
     {
-        if ((valueType.getValue() == ValueType.DATE_TIME) && (getRelationship() != null))
+        if ((valueType.getValue() == ValueType.DATE_TIME) && (getAlarmTrigger() != null))
         {
             throw new IllegalArgumentException("Value type can only be set to DATE-TIME if Alarm Trigger Relationship is null");
         }
@@ -138,7 +138,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyT
         if (isDateTimeValue)
         {
             // The "RELATED" property parameter is not valid if the value type of the property is set to DATE-TIME
-            if (getRelationship() != null)
+            if (getAlarmTrigger() != null)
             {
                 return false;
             }

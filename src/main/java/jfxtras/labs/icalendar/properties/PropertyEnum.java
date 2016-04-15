@@ -42,6 +42,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendar.properties.component.relationship.Contact;
 import jfxtras.labs.icalendar.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendar.properties.component.relationship.RecurrenceId;
+import jfxtras.labs.icalendar.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendar.properties.component.relationship.UniformResourceLocator;
 import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
 import jfxtras.labs.icalendar.properties.component.time.DateTimeCompleted;
@@ -656,7 +657,11 @@ public enum PropertyEnum
             
         }
     }, // Recurrence
-    RELATED_TO ("RELATED-TO", null, null, null) {
+    RELATED_TO ("RELATED-TO", // property name
+            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.RELATIONSHIP_TYPE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            RelatedTo.class) // property class
+    {
         @Override
         public Object getProperty(VComponentNew vComponent)
         {

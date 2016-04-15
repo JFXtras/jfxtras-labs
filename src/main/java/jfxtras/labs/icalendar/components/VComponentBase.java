@@ -117,7 +117,7 @@ public class VComponentBase<T> implements VComponentNew
      * If a property is not present in the map, it is put at the end of the sorted ones in
      * the order appearing in {@link #PropertyEnum} <br>
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
-     * a specific property order.
+     * a specific property order (e.g. unit testing).
      */
     public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
     final private Map<String, Integer> propertySortOrder = new HashMap<>();

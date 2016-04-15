@@ -5,7 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import jfxtras.labs.icalendar.component.ParsePropertiesTest;
-import jfxtras.labs.icalendar.parameter.CopyParameterTest;
+import jfxtras.labs.icalendar.parameter.DelegateesTest;
+import jfxtras.labs.icalendar.parameter.DirectoryEntryReferenceTest;
 import jfxtras.labs.icalendar.parameter.ParseParameterTest;
 import jfxtras.labs.icalendar.property.ActionTest;
 import jfxtras.labs.icalendar.property.AttachmentTest;
@@ -102,7 +103,8 @@ import jfxtras.labs.icalendar.property.UniqueIdentifierTest;
         URLTest.class,
         
         // parameter tests
-        CopyParameterTest.class, 
+        DelegateesTest.class,
+        DirectoryEntryReferenceTest.class, 
         ParseParameterTest.class
               
               })

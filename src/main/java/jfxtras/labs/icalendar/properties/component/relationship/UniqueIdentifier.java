@@ -44,7 +44,7 @@ import jfxtras.labs.icalendar.properties.PropertyBase;
  * @see VJournal
  * @see VFreeBusy
  */
-public class UniqueIdentifier extends PropertyBase<String,UniqueIdentifier>
+public class UniqueIdentifier extends PropertyBase<String, UniqueIdentifier>
 {
     public UniqueIdentifier(CharSequence contentLine)
     {

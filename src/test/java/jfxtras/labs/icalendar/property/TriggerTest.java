@@ -29,11 +29,11 @@ public class TriggerTest
     public void canBuildTrigger1()
     {
         Trigger<Duration> madeProperty = new Trigger<Duration>(Duration.ofMinutes(5))
-                .withRelationship(AlarmTriggerRelationshipType.END);
+                .withAlarmTrigger(AlarmTriggerRelationshipType.END);
         String expectedContent = "TRIGGER;RELATED=END:PT5M";
         assertEquals(expectedContent, madeProperty.toContentLine());
         assertEquals(Duration.ofMinutes(5), madeProperty.getValue());
-        assertEquals(AlarmTriggerRelationshipType.END, madeProperty.getRelationship().getValue());
+        assertEquals(AlarmTriggerRelationshipType.END, madeProperty.getAlarmTrigger().getValue());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class TriggerTest
     public void canCatchInvalidTypeChange()
     {
         new Trigger<Duration>(Duration.ofMinutes(5))
-                .withRelationship(AlarmTriggerRelationshipType.END)
+                .withAlarmTrigger(AlarmTriggerRelationshipType.END)
                 .withValueParameter(ValueType.DATE_TIME); // invalid type
     }
     
@@ -58,7 +58,7 @@ public class TriggerTest
     {
         ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
         new Trigger<ZonedDateTime>(d)
-                .withRelationship(AlarmTriggerRelationshipType.END); // not allowed for DATE-TIME value type
+                .withAlarmTrigger(AlarmTriggerRelationshipType.END); // not allowed for DATE-TIME value type
     }    
     
     @Test (expected=DateTimeException.class)

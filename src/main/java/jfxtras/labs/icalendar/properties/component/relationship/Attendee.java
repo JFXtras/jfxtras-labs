@@ -10,7 +10,7 @@ import jfxtras.labs.icalendar.components.VTodo;
 /**
  * ATTENDEE
  * Attendee
- * RFC 5545, 3.8.4.1
+ * RFC 5545, 3.8.4.1, page 107
  * 
  * This property defines an "Attendee" within a calendar component.
  * 

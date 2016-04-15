@@ -75,13 +75,7 @@ public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U>
     }
     private ObjectProperty<AlternateText> alternateText;
     @Override
-    public void setAlternateText(AlternateText alternateText)
-    {
-        if (alternateText != null)
-        {
-            alternateTextProperty().set(alternateText);
-        }
-    }
+    public void setAlternateText(AlternateText alternateText) { alternateTextProperty().set(alternateText); }
     public void setAlternateText(String value) { setAlternateText(new AlternateText(value)); }
     public U withAlternateText(AlternateText altrep) { setAlternateText(altrep); return (U) this; }
     public U withAlternateText(URI value) { setAlternateText(new AlternateText(value)); return (U) this; }

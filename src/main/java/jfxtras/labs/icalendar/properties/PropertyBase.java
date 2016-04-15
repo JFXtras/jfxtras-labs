@@ -66,10 +66,12 @@ public abstract class PropertyBase<T,U> implements Property<T>
     public T getValue() { return value.get(); }
     @Override
     public ObjectProperty<T> valueProperty() { return value; }
-    private ObjectProperty<T> value;
+    private ObjectProperty<T> value; // initialized in constructor
     @Override
     public void setValue(T value) { this.value.set(value); }
-//    public U withValue(T value) { setValue(value); return (U) this; }
+//    public U withValue(T value) { setValue(value); return (U) this; } // in constructor
+
+    // class of value.  Used to verify value class is allowed for the property type
     private Class<T> valueClass;
     private Class<?> getValueClass()
     {
@@ -114,12 +116,18 @@ public abstract class PropertyBase<T,U> implements Property<T>
             {
                 throw new RuntimeException("Non-standard properties must begin with X-");                
             }
-        } else if (propertyType().equals(PropertyEnum.IANA_PROPERTY) && IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(name))
+        } else if (propertyType().equals(PropertyEnum.IANA_PROPERTY))
         {
-            propertyName = name;
+            if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(name))
+            {
+                propertyName = name;
+            } else
+            {
+                throw new RuntimeException(name + " is not an IANA-registered property name.  Registered names are in IANAProperty.REGISTERED_IANA_PROPERTY_NAMES");
+            }
         } else
         {
-            throw new RuntimeException(name + " is not an IANA-registered property name.  Registered names are in IANAProperty.REGISTERED_IANA_PROPERTY_NAMES");
+            throw new RuntimeException("Property names can only be set for non-standard and IANA-registered properties.");
         }
     }
     public U withPropertyName(String name) { setPropertyName(name); return (U) this; }
@@ -234,6 +242,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
      * Parameter sort order map.  Key is parameter name.  Follows sort order of parsed content.
      * If a parameter is not present in the map, it is put at the end of the sorted ones in
      * the order appearing in {@link #ParameterEnum}
+     * Generally, this map shouldn't be modified.  Only modify it when you want to force
+     * a specific parameter order (e.g. unit testing).
      */
     public Map<ParameterEnum, Integer> parameterSortOrder() { return parameterSortOrder; }
     final private Map<ParameterEnum, Integer> parameterSortOrder = new HashMap<>();

@@ -301,7 +301,7 @@ public final class DateTimeUtilities
         final String form0 = "^[0-9]{8}";
         final String form1 = "^[0-9]{8}T([0-9]{6})";
         final String form2 = "^[0-9]{8}T([0-9]{6})Z";
-        final String form3 = "^([.*/.*])[0-9]{8}T([0-9]{6})";
+        final String form3 = "^(\\[.*/.*\\])[0-9]{8}T([0-9]{6})";
         if (string2.matches(form0))
         {
             return LocalDate.parse(string2, DateTimeUtilities.LOCAL_DATE_FORMATTER);                                                

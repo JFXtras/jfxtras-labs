@@ -5,6 +5,7 @@ import java.net.URI;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.parameters.AlarmTriggerRelationship;
+import jfxtras.labs.icalendar.parameters.AlarmTriggerRelationship.AlarmTriggerRelationshipType;
 import jfxtras.labs.icalendar.parameters.AlternateText;
 import jfxtras.labs.icalendar.parameters.Encoding;
 import jfxtras.labs.icalendar.parameters.Encoding.EncodingType;
@@ -14,14 +15,17 @@ import jfxtras.labs.icalendar.parameters.FreeBusyType.FreeBusyTypeEnum;
 import jfxtras.labs.icalendar.parameters.ParameterEnum;
 import jfxtras.labs.icalendar.parameters.Range;
 import jfxtras.labs.icalendar.parameters.Range.RangeType;
+import jfxtras.labs.icalendar.parameters.Relationship;
+import jfxtras.labs.icalendar.parameters.Relationship.RelationshipType;
 import jfxtras.labs.icalendar.parameters.TimeZoneIdentifierParameter;
+import jfxtras.labs.icalendar.properties.PropertyAlarmTrigger;
 import jfxtras.labs.icalendar.properties.PropertyAltText;
 import jfxtras.labs.icalendar.properties.PropertyAttachment;
 import jfxtras.labs.icalendar.properties.PropertyAttendee;
 import jfxtras.labs.icalendar.properties.PropertyDateTime;
 import jfxtras.labs.icalendar.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendar.properties.PropertyRecurrenceID;
-import jfxtras.labs.icalendar.properties.PropertyTrigger;
+import jfxtras.labs.icalendar.properties.PropertyRelationship;
 import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseAttendee;
 
 /**
@@ -33,7 +37,7 @@ import jfxtras.labs.icalendar.properties.component.relationship.PropertyBaseAtte
  *
  */
 public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> implements PropertyAttendee<T>, PropertyAltText<T>,
-    PropertyAttachment<T>, PropertyFreeBusy<T>, PropertyRecurrenceID<T>, PropertyDateTime<T>, PropertyTrigger<T>
+    PropertyAttachment<T>, PropertyFreeBusy<T>, PropertyRecurrenceID<T>, PropertyDateTime<T>, PropertyAlarmTrigger<T>, PropertyRelationship<T>
 {
     /**
      * ALTREP : Alternate Text Representation
@@ -240,9 +244,9 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
      * respect to the start or end of the calendar component.
      */
     @Override
-    public AlarmTriggerRelationship getRelationship() { return (AlarmTrigger == null) ? null : AlarmTrigger.get(); }
+    public AlarmTriggerRelationship getAlarmTrigger() { return (AlarmTrigger == null) ? null : AlarmTrigger.get(); }
     @Override
-    public ObjectProperty<AlarmTriggerRelationship> RelationshipProperty()
+    public ObjectProperty<AlarmTriggerRelationship> AlarmTriggerProperty()
     {
         if (AlarmTrigger == null)
         {
@@ -252,17 +256,49 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     }
     private ObjectProperty<AlarmTriggerRelationship> AlarmTrigger;
     @Override
-    public void setRelationship(AlarmTriggerRelationship AlarmTrigger)
+    public void setAlarmTrigger(AlarmTriggerRelationship AlarmTrigger)
     {
         if (AlarmTrigger != null)
         {
-            RelationshipProperty().set(AlarmTrigger);
+            AlarmTriggerProperty().set(AlarmTrigger);
         }
     }
-    public U withAlarmTrigger(AlarmTriggerRelationship format) { setRelationship(format); return (U) this; }
-    public U withAlarmTrigger(String format) { setRelationship(new AlarmTriggerRelationship(format)); return (U) this; }
+    public void setAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(new AlarmTriggerRelationship(type)); } 
+    public U withAlarmTrigger(AlarmTriggerRelationship format) { setAlarmTrigger(format); return (U) this; }
+    public U withAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(type); return (U) this; }
+    public U withAlarmTrigger(String format) { setAlarmTrigger(new AlarmTriggerRelationship(format)); return (U) this; }
 
-    
+    /**
+     * RELTYPE
+     * Relationship Type
+     * RFC 5545, 3.2.15, page 25
+     * 
+     * To specify the type of hierarchical relationship associated
+     *  with the calendar component specified by the property.
+     * 
+     * Example:
+     * RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@
+     *  example.com
+     */
+    @Override
+    public Relationship getRelationship() { return (relationship == null) ? null : relationship.get(); }
+    @Override
+    public ObjectProperty<Relationship> relationshipProperty()
+    {
+        if (relationship == null)
+        {
+            relationship = new SimpleObjectProperty<>(this, ParameterEnum.RELATIONSHIP_TYPE.toString());
+        }
+        return relationship;
+    }
+    private ObjectProperty<Relationship> relationship;
+    @Override
+    public void setRelationship(Relationship relationship) { relationshipProperty().set(relationship); }
+    public void setRelationship(String value) { setRelationship(new Relationship(value)); }
+    public U withRelationship(Relationship altrep) { setRelationship(altrep); return (U) this; }
+    public U withRelationship(RelationshipType value) { setRelationship(new Relationship(value)); return (U) this; }
+    public U withRelationship(String content) { setRelationship(content); return (U) this; }
+
     /**
      * TZID
      * Time Zone Identifier
