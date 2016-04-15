@@ -15,7 +15,7 @@ public class VComponentPartialTest
     
     @Test
     public void canBuildBase()
-    {
+    {        
         ObjectProperty<String> s = new SimpleObjectProperty<>("start");
         s.set(null);
         
@@ -24,14 +24,7 @@ public class VComponentPartialTest
         System.out.println(builtComponent.toContentLines());
         
         String content = "BEGIN:VEVENT" + System.lineSeparator() +
-                "UID:19960401T080045Z-4000F192713-0052@example.com" + System.lineSeparator() +
-                "URL:http://example.com/pub/calendars/jsmith/mytime.ics" + System.lineSeparator() +
-                "DTSTART:20160415T120000" + System.lineSeparator() +
-                "DTSTAMP:20160306T080000Z" + System.lineSeparator() +
-                "COMMENT:This is a test comment" + System.lineSeparator() +
-                "COMMENT:Another comment" + System.lineSeparator() +
-                "ORGANIZER;CN=David Bal;SENT-BY=\"mailto:ddbal1@yahoo.com\":mailto:ddbal1@yaho" + System.lineSeparator() +
-                " o.com" + System.lineSeparator() +
+                "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au" + System.lineSeparator() +
                 "END:VEVENT";
                 
         VComponentTest madeComponent = new VComponentTest(content);

@@ -236,7 +236,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
      */
     public Map<ParameterEnum, Integer> parameterSortOrder() { return parameterSortOrder; }
     private Map<ParameterEnum, Integer> parameterSortOrder = new HashMap<>();
-    private Integer counter = 0;
+    private Integer parameterCounter = 0;
     
     // property value
     private String propertyValueString = null;
@@ -378,7 +378,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
         }
         
         // process parameters
-        
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
 //        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()
@@ -388,7 +387,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
             .forEach(e ->
             {
                 ParameterEnum p = ParameterEnum.enumFromName(e.getKey());
-                parameterSortOrder().put(p, counter++);
+                parameterSortOrder().put(p, parameterCounter++);
                 if (p != null)
                 {
                     if (propertyType().allowedParameters().contains(p))

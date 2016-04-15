@@ -448,15 +448,13 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            return vComponent.getIANAProperties();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            vComponent.getIANAProperties().add(new IANAProperty(propertyContent));
         }
     },
     // Change management
@@ -524,15 +522,13 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            return vComponent.getNonStandardProperties();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            vComponent.getNonStandardProperties().add(new NonStandardProperty(propertyContent));
         }
     },
     ORGANIZER ("ORGANIZER", // name

@@ -209,6 +209,7 @@ public class VComponentBase<T> implements VComponentNew
     @Override
     public String toContentLines()
     {
+//        System.out.println("prop num:" + properties().size());
         // make map of property name/content
         Map<String, List<CharSequence>> propertyNameContentMap = new HashMap<>();
         properties().stream()

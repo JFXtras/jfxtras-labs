@@ -73,9 +73,10 @@ public final class DateTimeUtilities
 //    @Deprecated
     public final static DateTimeFormatter ZONED_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .optionalStart()
+            .appendLiteral('[')
             .parseCaseInsensitive()
             .appendZoneRegionId()
-            .appendLiteral(':')
+            .appendLiteral(']')
             .optionalEnd()
             .append(LOCAL_DATE_TIME_FORMATTER)
             .optionalStart()
@@ -292,14 +293,15 @@ public final class DateTimeUtilities
      */ 
     public static Temporal temporalFromString(String string)
     {
-//        int lastColonIndex = string.lastIndexOf(':');
-//        String string2 = string.substring(lastColonIndex+1);
-        String string2 = string;
+//        System.out.println("string:" + string);
+        int lastColonIndex = string.lastIndexOf(':');
+        String string2 = string.substring(lastColonIndex+1);
+//        String string2 = string;
 
         final String form0 = "^[0-9]{8}";
         final String form1 = "^[0-9]{8}T([0-9]{6})";
         final String form2 = "^[0-9]{8}T([0-9]{6})Z";
-        final String form3 = "^(.*/.*:)[0-9]{8}T([0-9]{6})";
+        final String form3 = "^([.*/.*])[0-9]{8}T([0-9]{6})";
         if (string2.matches(form0))
         {
             return LocalDate.parse(string2, DateTimeUtilities.LOCAL_DATE_FORMATTER);                                                
