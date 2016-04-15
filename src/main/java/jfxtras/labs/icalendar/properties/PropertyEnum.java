@@ -440,7 +440,7 @@ public enum PropertyEnum
         }
     },
     // Miscellaneous
-    IANA_PROPERTY ("UNKNOWN", // property name
+    IANA_PROPERTY (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.get(0), /** property name (one in list of valid names at {@link #IANAProperty} */
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default (any value allowed)
             Arrays.asList(ParameterEnum.values()), // all parameters allowed
             IANAProperty.class) // property class

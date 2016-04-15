@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import jfxtras.labs.icalendar.component.ParsePropertiesTest;
 import jfxtras.labs.icalendar.parameter.CopyParameterTest;
 import jfxtras.labs.icalendar.parameter.ParseParameterTest;
 import jfxtras.labs.icalendar.property.ActionTest;
@@ -23,8 +24,9 @@ import jfxtras.labs.icalendar.property.DurationTest;
 import jfxtras.labs.icalendar.property.ExceptionsTest;
 import jfxtras.labs.icalendar.property.FreeBusyTimeTest;
 import jfxtras.labs.icalendar.property.GeneralPropertyTest;
+import jfxtras.labs.icalendar.property.IANATest;
 import jfxtras.labs.icalendar.property.LocationTest;
-import jfxtras.labs.icalendar.property.NonStandardPropertyTest;
+import jfxtras.labs.icalendar.property.NonStandardTest;
 import jfxtras.labs.icalendar.property.OrganizerTest;
 import jfxtras.labs.icalendar.property.ParsePropertyTest;
 import jfxtras.labs.icalendar.property.RecurrenceIdTest;
@@ -55,9 +57,9 @@ import jfxtras.labs.icalendar.property.UniqueIdentifierTest;
 //              , ICalendarParseVEventTest.class
 //                ICalendarVEventToStringTest.class,
 //              , ICalendarReadICSTest.class,
-              // parameter tests
-        CopyParameterTest.class, 
-        ParseParameterTest.class,
+        
+        //component tests
+        ParsePropertiesTest.class,
        
        // property tests
         ActionTest.class,
@@ -78,7 +80,7 @@ import jfxtras.labs.icalendar.property.UniqueIdentifierTest;
         FreeBusyTimeTest.class,
         GeneralPropertyTest.class,
         LocationTest.class,
-        NonStandardPropertyTest.class,
+        NonStandardTest.class,
         OrganizerTest.class,
         ParsePropertyTest.class,
         RecurrenceIdTest.class,
@@ -96,8 +98,11 @@ import jfxtras.labs.icalendar.property.UniqueIdentifierTest;
         TimeZoneURLTest.class,
         TriggerTest.class,
         UniqueIdentifierTest.class,
-        URLTest.class
+        URLTest.class,
         
+        // parameter tests
+        CopyParameterTest.class, 
+        ParseParameterTest.class
               
               })
 

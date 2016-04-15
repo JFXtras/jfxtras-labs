@@ -10,7 +10,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendar.components.VComponentTest;
 
-public class VComponentPartialTest
+public class ParsePropertiesTest
 {
     
     @Test

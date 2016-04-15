@@ -10,7 +10,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendar.parameters.ValueType;
 import jfxtras.labs.icalendar.properties.component.misc.NonStandardProperty;
 
-public class NonStandardPropertyTest
+public class NonStandardTest
 {
     @Test
     public void canParseNonStandard1()
@@ -31,12 +31,12 @@ public class NonStandardPropertyTest
         // MAINTAIN ORDER OF PROPERTIES?
         String content = "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au";
         NonStandardProperty madeProperty = new NonStandardProperty(content);
-        System.out.println(madeProperty.toContentLine());
+//        System.out.println(madeProperty.toContentLine());
         assertEquals(content, madeProperty.toContentLine());
         NonStandardProperty expectedProperty = new NonStandardProperty("http://www.example.org/mysubj.au")
                 .withFormatType("audio/basic")
                 .withValueParameter(ValueType.UNIFORM_RESOURCE_IDENTIFIER);
-        System.out.println(expectedProperty.toContentLine());
+//        System.out.println(expectedProperty.toContentLine());
 
         assertEquals(expectedProperty, madeProperty);
         assertEquals(ValueType.UNIFORM_RESOURCE_IDENTIFIER, madeProperty.getValueParameter().getValue());

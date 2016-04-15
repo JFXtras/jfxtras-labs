@@ -25,6 +25,7 @@ import jfxtras.labs.icalendar.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendar.properties.calendar.Method;
 import jfxtras.labs.icalendar.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendar.properties.calendar.Version;
+import jfxtras.labs.icalendar.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendar.properties.component.relationship.UniqueIdentifier;
 import jfxtras.labs.icalendar.utilities.ICalendarUtilities;
 
@@ -113,12 +114,12 @@ public abstract class PropertyBase<T,U> implements Property<T>
             {
                 throw new RuntimeException("Non-standard properties must begin with X-");                
             }
-        } else if (propertyType().equals(PropertyEnum.IANA_PROPERTY))
+        } else if (propertyType().equals(PropertyEnum.IANA_PROPERTY) && IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(name))
         {
-            propertyName = name;            
+            propertyName = name;
         } else
         {
-            throw new RuntimeException("Only non-standard properties can be renamed.  This property must be named " + propertyType().toString());
+            throw new RuntimeException(name + " is not an IANA-registered property name.  Registered names are in IANAProperty.REGISTERED_IANA_PROPERTY_NAMES");
         }
     }
     public U withPropertyName(String name) { setPropertyName(name); return (U) this; }
@@ -351,11 +352,12 @@ public abstract class PropertyBase<T,U> implements Property<T>
         {
             int endNameIndex = hasPropertyName.get();
             String propertyName = (endNameIndex > 0) ? propertyString.subSequence(0, endNameIndex).toString().toUpperCase() : null;
-            boolean isNonStandard = propertyName.substring(0, 2).equals(PropertyEnum.NON_STANDARD.toString());
             boolean isMatch = propertyName.equals(propertyType.toString());
-            if (isMatch || isNonStandard)
+            boolean isNonStandard = propertyName.substring(0, PropertyEnum.NON_STANDARD.toString().length()).equals(PropertyEnum.NON_STANDARD.toString());
+            boolean isIANA = propertyType.equals(PropertyEnum.IANA_PROPERTY);
+            if (isMatch || isNonStandard || isIANA)
             {
-                if (isNonStandard)
+                if (isNonStandard || isIANA)
                 {
                     setPropertyName(propertyString.substring(0,endNameIndex));
                 }

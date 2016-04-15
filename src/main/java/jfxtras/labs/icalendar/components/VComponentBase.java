@@ -143,15 +143,22 @@ public class VComponentBase<T> implements VComponentNew
                     .min(Comparator.naturalOrder())
                     .get();
             String propertyName = line.substring(0, nameEndIndex);
-           
-            propertySortOrder.put(propertyName, counter++);
-            PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
-            
-            // ignore unknown properties
-            if (propertyType != null)
+            if (! (propertyName.equals("BEGIN") || propertyName.equals("END")))
             {
-//                System.out.println(propertyType + " " + line);
-                propertyType.parse(this, line);
+                propertySortOrder.put(propertyName, counter++);
+                PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
+                
+                // parse property (ignores unknown properties)
+                if (propertyType != null)
+                {
+                    propertyType.parse(this, line);
+                } else if (propertyName.substring(0, PropertyEnum.NON_STANDARD.toString().length()).equals(PropertyEnum.NON_STANDARD.toString()))
+                {
+                    PropertyEnum.NON_STANDARD.parse(this, line);
+//                } else
+//                {
+//                    PropertyEnum.IANA_PROPERTY.parse(this, line);
+                }
             }
         }
     }
