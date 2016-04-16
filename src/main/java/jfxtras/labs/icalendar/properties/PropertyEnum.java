@@ -946,7 +946,6 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentPersonal castComponent = (VComponentPersonal) vComponent;
-            System.out.println("content:" + propertyContent + " " + new UniqueIdentifier(propertyContent));
             castComponent.setUniqueIdentifier(new UniqueIdentifier(propertyContent));
         }
     },

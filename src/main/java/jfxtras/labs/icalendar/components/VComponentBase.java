@@ -321,7 +321,8 @@ public class VComponentBase<T> implements VComponentNew
      * @param componentString
      * @return
      */
-    private static List<String> unfoldLines(String componentString)
+    // TODO - MOVE THIS TO A UTILITY CLASS
+    public static List<String> unfoldLines(String componentString)
     {
         List<String> propertyLines = new ArrayList<>();
         String storedLine = "";
@@ -352,12 +353,37 @@ public class VComponentBase<T> implements VComponentNew
                     break;  // no continuation line, exit while loop
                 }
             }
-            String line = builder.toString();
+            
+            // UNESCAPE SPECIAL CHARACTERS \ , ; \n (newline)
+            final char[] specialCharacters = new char[] {',' , ';' , '\\' , 'n' };
+            final char[] replacementCharacters = new char[] {',' , ';' , '\\' , '\n' };
+            StringBuilder builder2 = new StringBuilder(builder.length()); 
+            for (int i=0; i<builder.length(); i++)
+            {
+                char charToAdd = builder.charAt(i);
+                if (builder.charAt(i) == '\\')
+                {
+                    char nextChar = builder.charAt(i+1);
+                    for (int j=0;j<specialCharacters.length; j++)
+                    {
+                        if (nextChar == specialCharacters[j])
+                        {
+                            charToAdd = replacementCharacters[j];
+                            i++;
+                            break;
+                        }
+                    }
+                }
+                builder2.append(charToAdd);                    
+            }
+
+            String line = builder2.toString();
             propertyLines.add(line);
         }
 //        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
         return propertyLines;
     }
+    //TODO - HANDLE SPECIAL CHARACTERS
     
     /**
      * Folds lines at character 75 into multiple lines.
@@ -366,6 +392,7 @@ public class VComponentBase<T> implements VComponentNew
      * @param s
      * @return
      */
+    //TODO - TOO SIMPLE NEED WORK
     private static CharSequence foldLine(CharSequence s)
     {
         final int maxLineLength = 74; // one less than 75 to accommodate the leading space
