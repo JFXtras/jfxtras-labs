@@ -238,13 +238,51 @@ public enum ValueType
                 @Override
                 public String toString(T object)
                 {
-                    return object.toString();
+                    // Add escape characters
+                    String line = object.toString();
+                    StringBuilder builder = new StringBuilder(line.length()+20); 
+                    for (int i=0; i<line.length(); i++)
+                    {
+                        char myChar = line.charAt(i);
+                        for (int j=0;j<REPLACEMENT_CHARACTERS.length; j++)
+                        {
+//                            char nextChar = line.charAt(j);
+                            if (myChar == REPLACEMENT_CHARACTERS[j])
+                            {
+                                builder.append('\\');
+                                myChar = SPECIAL_CHARACTERS[j];
+                                break;
+                            }
+                        }
+                        builder.append(myChar);
+                    }
+                    return builder.toString();
                 }
 
                 @Override
                 public T fromString(String string)
                 {
-                         return (T) string;            
+                    // Remove escape characters \ , ; \n (newline)
+                    StringBuilder builder = new StringBuilder(string.length()); 
+                    for (int i=0; i<string.length(); i++)
+                    {
+                        char charToAdd = string.charAt(i);
+                        if (string.charAt(i) == '\\')
+                        {
+                            char nextChar = string.charAt(i+1);
+                            for (int j=0;j<SPECIAL_CHARACTERS.length; j++)
+                            {
+                                if (nextChar == SPECIAL_CHARACTERS[j])
+                                {
+                                    charToAdd = REPLACEMENT_CHARACTERS[j];
+                                    i++;
+                                    break;
+                                }
+                            }
+                        }
+                        builder.append(charToAdd);
+                    }
+                    return (T) builder.toString();
                 }
             };
         }
@@ -313,6 +351,9 @@ public enum ValueType
             return null;
         }
     };
+    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
+    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', '\n'};
+
     private final static DateTimeFormatter ZONE_OFFSET_FORMATTER = new DateTimeFormatterBuilder()
             .appendOffset("+HHMM", "+0000")
             .toFormatter();

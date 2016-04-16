@@ -322,6 +322,8 @@ public class VComponentBase<T> implements VComponentNew
      * @return
      */
     // TODO - MOVE THIS TO A UTILITY CLASS
+//    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
+//    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', 'n'};
     public static List<String> unfoldLines(String componentString)
     {
         List<String> propertyLines = new ArrayList<>();
@@ -354,64 +356,107 @@ public class VComponentBase<T> implements VComponentNew
                 }
             }
             
-            // UNESCAPE SPECIAL CHARACTERS \ , ; \n (newline)
-            final char[] specialCharacters = new char[] {',' , ';' , '\\' , 'n' };
-            final char[] replacementCharacters = new char[] {',' , ';' , '\\' , '\n' };
-            StringBuilder builder2 = new StringBuilder(builder.length()); 
-            for (int i=0; i<builder.length(); i++)
-            {
-                char charToAdd = builder.charAt(i);
-                if (builder.charAt(i) == '\\')
-                {
-                    char nextChar = builder.charAt(i+1);
-                    for (int j=0;j<specialCharacters.length; j++)
-                    {
-                        if (nextChar == specialCharacters[j])
-                        {
-                            charToAdd = replacementCharacters[j];
-                            i++;
-                            break;
-                        }
-                    }
-                }
-                builder2.append(charToAdd);                    
-            }
+//            // UNESCAPE SPECIAL CHARACTERS \ , ; \n (newline)
+//            StringBuilder builder2 = new StringBuilder(builder.length()); 
+//            for (int i=0; i<builder.length(); i++)
+//            {
+//                char charToAdd = builder.charAt(i);
+//                if (builder.charAt(i) == '\\')
+//                {
+//                    char nextChar = builder.charAt(i+1);
+//                    for (int j=0;j<SPECIAL_CHARACTERS.length; j++)
+//                    {
+//                        if (nextChar == SPECIAL_CHARACTERS[j])
+//                        {
+//                            charToAdd = REPLACEMENT_CHARACTERS[j];
+//                            i++;
+//                            break;
+//                        }
+//                    }
+//                }
+//                builder2.append(charToAdd);                    
+//            }
 
-            String line = builder2.toString();
+            String line = builder.toString();
             propertyLines.add(line);
         }
 //        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
         return propertyLines;
     }
+    // SHOULD SPECIAL CHARACTER HANDLING BE IN STRING CONVERTERS? - ONLY FOR TEXT?
     //TODO - HANDLE SPECIAL CHARACTERS
     
     /**
-     * Folds lines at character 75 into multiple lines.
+     * Folds lines at character 75 into multiple lines.  Follows rules in
+     * RFC 5545, 3.1 Content Lines, page 9.
      * A space is added to the first character of the subsequent lines.
+     * does't break lines at escape characters
      * 
-     * @param s
-     * @return
+     * @param line - content line
+     * @return - folded content line
      */
-    //TODO - TOO SIMPLE NEED WORK
-    private static CharSequence foldLine(CharSequence s)
+    public static CharSequence foldLine(CharSequence line)
     {
-        final int maxLineLength = 74; // one less than 75 to accommodate the leading space
-        if (s.length() <= maxLineLength)
+        // first position is 0
+        final int maxLineLength = 75;
+        if (line.length() <= maxLineLength)
         {
-            return s;
+            return line;
         } else
         {
-            StringBuilder builder = new StringBuilder(s.length()+20);
-            builder.append(s.subSequence(0, maxLineLength+1));
-            int i;
-            for (i=maxLineLength+1;i < s.length(); i=i+maxLineLength)
+            StringBuilder builder = new StringBuilder(line.length()+20);
+            int leadingSpaceAdjustment = 0;
+            String leadingSpace = "";
+            int startIndex = 0;
+            while (startIndex < line.length())
             {
-                builder.append(System.lineSeparator() + " " + s.subSequence(i, Math.min(i+maxLineLength, s.length())));
+                int endIndex = Math.min(startIndex+maxLineLength-leadingSpaceAdjustment, line.length());
+                if (endIndex < line.length())
+                {
+                    System.out.println(line.charAt(endIndex-1));
+                    System.out.println(line.charAt(endIndex-1) == '\\');
+                    // ensure escaped characters are not broken up
+                    if (line.charAt(endIndex-1) == '\\')
+                    {
+                        endIndex = endIndex-1; 
+                    }
+                }
+                builder.append(leadingSpace + line.subSequence(startIndex, endIndex) + System.lineSeparator());
+                startIndex = endIndex;
+                leadingSpaceAdjustment = 1;
+                leadingSpace = " ";
             }
             return builder;
         }
     }
     
+//    public static CharSequence unfoldLine(CharSequence line)
+//    {
+//        String storedLine = "";
+//        String startLine;
+//        if (storedLine.isEmpty())
+//        {
+//            startLine = lineIterator.next();
+//        } else
+//        {
+//            startLine = storedLine;
+//            storedLine = "";
+//        }
+//        StringBuilder builder = new StringBuilder(startLine);
+//        while (lineIterator.hasNext())
+//        {
+//            String anotherLine = lineIterator.next();
+//            if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+//            { // unwrap anotherLine into line
+//                builder.append(anotherLine.substring(1, anotherLine.length()));
+//            } else
+//            {
+//                storedLine = anotherLine; // save for next iteration
+//                break;  // no continuation line, exit while loop
+//            }
+//        }
+//    }
+//    
     final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
     {
         int endIndex = PropertyEnum.DATE_TIME_START.toString().length();
