@@ -32,7 +32,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * @see VTimeZone
  * @see VAlarm
  */
-public class VComponentBase<T> implements VComponentNew
+public abstract class VComponentBase<T> implements VComponentNew
 {
     /**
      * 3.8.8.2.  Non-Standard Properties
@@ -45,10 +45,10 @@ public class VComponentBase<T> implements VComponentNew
     @Override
     public ObservableList<NonStandardProperty> getNonStandardProperties()
     {
-        if (nonStandardProps == null)
-        {
-            nonStandardProps = FXCollections.observableArrayList();
-        }
+//        if (nonStandardProps == null)
+//        {
+//            nonStandardProps = FXCollections.observableArrayList();
+//        }
         return nonStandardProps;
     }
     private ObservableList<NonStandardProperty> nonStandardProps;
@@ -57,6 +57,10 @@ public class VComponentBase<T> implements VComponentNew
     /** add comma separated comments into separate comment objects */
     public T withNonStandardProperty(String...comments)
     {
+        if (nonStandardProps == null)
+        {
+            nonStandardProps = FXCollections.observableArrayList();
+        }
         Arrays.stream(comments).forEach(c -> getNonStandardProperties().add(new NonStandardProperty(c)));
         return (T) this;
     }
@@ -72,10 +76,10 @@ public class VComponentBase<T> implements VComponentNew
     @Override
     public ObservableList<IANAProperty> getIANAProperties()
     {
-        if (IANAProps == null)
-        {
-            IANAProps = FXCollections.observableArrayList();
-        }
+//        if (IANAProps == null)
+//        {
+//            IANAProps = FXCollections.observableArrayList();
+//        }
         return IANAProps;
     }
     private ObservableList<IANAProperty> IANAProps;
@@ -84,6 +88,10 @@ public class VComponentBase<T> implements VComponentNew
     /** add comma separated comments into separate comment objects */
     public T withIANAProperty(String...comments)
     {
+        if (IANAProps == null)
+        {
+            IANAProps = FXCollections.observableArrayList();
+        }
         Arrays.stream(comments).forEach(c -> getIANAProperties().add(new IANAProperty(c)));
         return (T) this;
     }
@@ -193,6 +201,9 @@ public class VComponentBase<T> implements VComponentNew
         
         final boolean propertiesEquals;
         List<PropertyEnum> properties = properties(); // make properties local to avoid creating list multiple times
+        System.out.println("equals:" + properties.size() + " " + testObj.properties().size());
+        properties.stream().forEach(System.out::println);
+        testObj.properties().stream().forEach(System.out::println);
         List<PropertyEnum> testProperties = testObj.properties(); // make properties local to avoid creating list multiple times
         if (properties.size() == testProperties.size())
         {
@@ -203,7 +214,7 @@ public class VComponentBase<T> implements VComponentNew
             {
                 Object p1 = i1.next().getProperty(this);
                 Object p2 = i2.next().getProperty(testObj);
-//                System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
+                System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
                 if (! p1.equals(p2))
                 {
                     isFailure = true;
@@ -215,7 +226,6 @@ public class VComponentBase<T> implements VComponentNew
         {
             propertiesEquals = false;
         }
-//        System.out.println("equals:" + valueEquals + " " + otherParametersEquals + " " + parametersEquals);
         return propertiesEquals;
     }
     
@@ -276,12 +286,6 @@ public class VComponentBase<T> implements VComponentNew
 
         builder.append(lastContentLine());
         return builder.toString();
-    }
-
-    @Override
-    public VComponentEnum componentType()
-    {
-        return VComponentEnum.VEVENT; // for testing
     }
 
     /**

@@ -3,16 +3,61 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VComponentTest;
+import jfxtras.labs.icalendarfx.components.VComponentTest2;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
 public class ParsePropertiesTest
 {
+    
+    @Test
+    public void canEscapeTest()
+    {
+        String contentLine = "DESCRIPTION:a dog\\nran\\, far\\;\\naway \\\\\\\\1";
+        Description d = new Description(contentLine);
+        String expectedValue = "a dog" + System.lineSeparator() +
+                               "ran, far;" + System.lineSeparator() +
+                               "away \\\\1";
+        assertEquals(expectedValue, d.getValue());
+        assertEquals(contentLine, d.toContentLine());
+    }
+
+    
+    @Test
+    public void canFoldAndUnfoldLine()
+    {
+        String line = "Ek and Lorentzon said they would consider halting investment at th,eir headquarters in Stockholm. The pioneering music streaming company employs about 850 people in the city, and more than 1,000 in nearly 30 other offices around the world.";
+        VComponentTest builtComponent = new VComponentTest()
+                .withComments(line);
+        String expectedContent = "BEGIN:VEVENT" + System.lineSeparator() +
+                                 "COMMENT:Ek and Lorentzon said they would consider halting investment at th" + System.lineSeparator() +
+                                 " \\,eir headquarters in Stockholm. The pioneering music streaming company em" + System.lineSeparator() +
+                                 " ploys about 850 people in the city\\, and more than 1\\,000 in nearly 30 oth" + System.lineSeparator() +
+                                 " er offices around the world." + System.lineSeparator() +
+                                 "END:VEVENT";
+        assertEquals(expectedContent, builtComponent.toContentLines());
+        assertEquals(line, builtComponent.getComments().get(0).getValue());
+    }
+    
+    @Test
+    public void canGetProperties()
+    {
+        VComponentTest builtComponent = new VComponentTest()
+                .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
+                .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
+                .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
+                .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com");
+        List<PropertyEnum> expectedProperties = Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.DATE_TIME_START, PropertyEnum.ORGANIZER, PropertyEnum.UNIQUE_IDENTIFIER);
+        assertEquals(expectedProperties, builtComponent.properties());
+    }
     
     @Test
     public void canBuildBase()
@@ -58,35 +103,6 @@ public class ParsePropertiesTest
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
-    
-    @Test
-    public void canEscapeTest()
-    {
-        String contentLine = "DESCRIPTION:a dog\\nran\\, far\\;\\naway \\\\\\\\1";
-        Description d = new Description(contentLine);
-        String expectedValue = "a dog" + System.lineSeparator() +
-                               "ran, far;" + System.lineSeparator() +
-                               "away \\\\1";
-        assertEquals(expectedValue, d.getValue());
-        assertEquals(contentLine, d.toContentLine());
-    }
-
-    
-    @Test
-    public void canFoldAndUnfoldLine()
-    {
-        String line = "Ek and Lorentzon said they would consider halting investment at th,eir headquarters in Stockholm. The pioneering music streaming company employs about 850 people in the city, and more than 1,000 in nearly 30 other offices around the world.";
-        VComponentTest builtComponent = new VComponentTest()
-                .withComments(line);
-        String expectedContent = "BEGIN:VEVENT" + System.lineSeparator() +
-                                 "COMMENT:Ek and Lorentzon said they would consider halting investment at th" + System.lineSeparator() +
-                                 " \\,eir headquarters in Stockholm. The pioneering music streaming company em" + System.lineSeparator() +
-                                 " ploys about 850 people in the city\\, and more than 1\\,000 in nearly 30 oth" + System.lineSeparator() +
-                                 " er offices around the world." + System.lineSeparator() +
-                                 "END:VEVENT";
-        assertEquals(expectedContent, builtComponent.toContentLines());
-        assertEquals(line, builtComponent.getComments().get(0).getValue());
-    }
 
     @Test
     public void canBuildPersonal()
@@ -113,5 +129,23 @@ public class ParsePropertiesTest
         VComponentTest madeComponent = new VComponentTest(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com", madeComponent.getOrganizer().toContentLine());
+    }
+    
+    @Test
+    public void canBuildRepeatable()
+    {
+        VComponentTest2 builtComponent = new VComponentTest2()
+                .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
+        
+        String content = "BEGIN:VEVENT" + System.lineSeparator() +
+                "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +
+                "END:VEVENT";
+                
+        System.out.println(builtComponent.toContentLines());
+        System.out.println(builtComponent.getRecurrences());
+        builtComponent.getRecurrences().get(0).getValue().forEach(System.out::println);
+        VComponentTest2 madeComponent = new VComponentTest2(content);
+        System.out.println(madeComponent.toContentLines());
+        assertEquals(madeComponent, builtComponent);
     }
 }

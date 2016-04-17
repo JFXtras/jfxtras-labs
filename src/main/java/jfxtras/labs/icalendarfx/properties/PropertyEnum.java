@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.properties;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -10,9 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
+import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
@@ -196,7 +200,16 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentPrimary castComponent = (VComponentPrimary) vComponent;
-            castComponent.getComments().add(new Comment(propertyContent));
+            final ObservableList<Comment> list;
+            if (castComponent.getComments() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castComponent.setComments(list);
+            } else
+            {
+                list = castComponent.getComments();
+            }
+            list.add(new Comment(propertyContent));
         }
     },
     CONTACT ("CONTACT", // property name
@@ -331,7 +344,6 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentPrimary castComponent = (VComponentPrimary) vComponent;
-//            int lastColonIndex = propertyContent.lastIndexOf(':');
             Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
             if (t instanceof LocalDate)
             {
@@ -455,7 +467,16 @@ public enum PropertyEnum
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            vComponent.getIANAProperties().add(new IANAProperty(propertyContent));
+            final ObservableList<IANAProperty> list;
+            if (vComponent.getIANAProperties() == null)
+            {
+                list = FXCollections.observableArrayList();
+                vComponent.setIANAProperties(list);
+            } else
+            {
+                list = vComponent.getIANAProperties();
+            }
+            list.add(new IANAProperty(propertyContent));
         }
     },
     // Change management
@@ -529,7 +550,16 @@ public enum PropertyEnum
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            vComponent.getNonStandardProperties().add(new NonStandardProperty(propertyContent));
+            final ObservableList<NonStandardProperty> list;
+            if (vComponent.getNonStandardProperties() == null)
+            {
+                list = FXCollections.observableArrayList();
+                vComponent.setNonStandardProperties(list);
+            } else
+            {
+                list = vComponent.getNonStandardProperties();
+            }
+            list.add(new NonStandardProperty(propertyContent));
         }
     },
     ORGANIZER ("ORGANIZER", // name
@@ -607,15 +637,40 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentRepeatable castComponent = (VComponentRepeatable) vComponent;
+            return castComponent.getRecurrences();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
+            VComponentRepeatable castComponent = (VComponentRepeatable) vComponent;
             
+            final ObservableList<Recurrences<? extends Temporal>> list;
+            if (castComponent.getRecurrences() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castComponent.setRecurrences(list);
+            } else
+            {
+                list = castComponent.getRecurrences();
+            }
+            
+            Temporal t = DateTimeUtilities.temporalFromString(propertyContent.split(",")[0]);
+            if (t instanceof LocalDate)
+            {
+                list.add(new Recurrences<LocalDate>(propertyContent));
+            } else if (t instanceof LocalDateTime)
+            {
+                list.add(new Recurrences<LocalDateTime>(propertyContent));
+                
+            } else if (t instanceof ZonedDateTime)
+            {
+                list.add(new Recurrences<ZonedDateTime>(propertyContent));
+            } else
+            {
+                throw new DateTimeException("Unsupported Temporal type: " + t.getClass().getSimpleName());
+            }            
         }
     },
     // Relationship
@@ -713,7 +768,16 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentPersonal castComponent = (VComponentPersonal) vComponent;
-            castComponent.getRequestStatus().add(new RequestStatus(propertyContent));
+            final ObservableList<RequestStatus> list;
+            if (castComponent.getRequestStatus() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castComponent.setRequestStatus(list);
+            } else
+            {
+                list = castComponent.getRequestStatus();
+            }
+            list.add(new RequestStatus(propertyContent));
         }
     },
     RESOURCES ("RESOURCES", // property name

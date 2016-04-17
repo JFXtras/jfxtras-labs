@@ -122,10 +122,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override
     public ObservableList<RequestStatus> getRequestStatus()
     {
-        if (requestStatus == null)
-        {
-            requestStatus = FXCollections.observableArrayList();
-        }
         return requestStatus;
     }
     private ObservableList<RequestStatus> requestStatus;
@@ -134,6 +130,10 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     /** add comma separated requestStatus into separate comment objects */
     public T withRequestStatus(String...requestStatus)
     {
+        if (this.requestStatus == null)
+        {
+            this.requestStatus = FXCollections.observableArrayList();
+        }
         Arrays.stream(requestStatus).forEach(c -> getRequestStatus().add(new RequestStatus(c)));
         return (T) this;
     }

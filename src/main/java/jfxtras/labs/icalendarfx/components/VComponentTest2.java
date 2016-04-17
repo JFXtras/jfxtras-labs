@@ -12,4 +12,10 @@ public class VComponentTest2 extends VComponentRepeatableBase<VComponentTest2>
     {
         super(contentLines);
     }
+    
+    @Override
+    public VComponentEnum componentType()
+    {
+        return VComponentEnum.STANDARD_OR_SAVINGS_TIME; // for testing
+    }
 }

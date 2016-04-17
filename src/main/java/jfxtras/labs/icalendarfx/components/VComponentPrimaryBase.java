@@ -46,10 +46,10 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
     @Override
     public ObservableList<Comment> getComments()
     {
-        if (comments == null)
-        {
-            comments = FXCollections.observableArrayList();
-        }
+//        if (comments == null)
+//        {
+//            comments = FXCollections.observableArrayList();
+//        }
         return comments;
     }
     private ObservableList<Comment> comments;
@@ -58,6 +58,10 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
     /** add comma separated comments into separate comment objects */
     public T withComments(String...comments)
     {
+        if (this.comments == null)
+        {
+            this.comments = FXCollections.observableArrayList();
+        }
         Arrays.stream(comments).forEach(c -> getComments().add(new Comment(c)));
         return (T) this;
     }
