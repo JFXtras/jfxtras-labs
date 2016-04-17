@@ -94,36 +94,9 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
     @Override
     public void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart)
     {
-        // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
-        // TODO - I MAY WANT TO CHANGE CHECKING METHOD
-        DateTimeType myDateTimeType = DateTimeType.of(dtStart.getValue());
-        boolean changed = (lastDtStart != null) && (myDateTimeType != lastDtStart);
-//        System.out.println("getDateTimeStart()" +  dateTimeStartProperty());
-//        System.out.println("getDateTimeStart().getValue()" +  dateTimeStartProperty().getValue());
-//        System.out.println("dtStart:" + dtStart);
-        if (dateTimeStartProperty().getValue() != null)
-        {
-            lastDtStart = getDateTimeStart().getValue();
-        }
         dateTimeStartProperty().set(dtStart);
-//        dateTimeStart = dtStart;
-//        propertyMap().put(PropertyEnum.DATE_TIME_START, new ArrayList<DateTimeStart>(Arrays.asList(dtStart)));
-//        propertyMap().put(PropertyEnum.DATE_TIME_START, dtStart);
-        
-        // if type has changed then make all date-time properties the same
-        if (changed)
-        {
-//            System.out.println("**********************start:" + dtStart);
-            ensureDateTimeTypeConsistency(myDateTimeType, getZoneId());
-        }
     }
-    public T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
-    public T withDateTimeStart(String dtStart)
-    {
-        Temporal temporal = DateTimeUtilities.temporalFromString(dtStart);
-        return withDateTimeStart(temporal);
-    }
-    public T withDateTimeStart(Temporal temporal)
+    public void setDateTimeStart(Temporal temporal)
     {
         if (temporal instanceof LocalDate)
         {
@@ -139,6 +112,55 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
             throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
                     + temporal.getClass().getSimpleName() + " is not supported");
         }
+    }
+//    public void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart)
+//    {
+//        // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
+//        // TODO - I MAY WANT TO CHANGE CHECKING METHOD
+//        DateTimeType myDateTimeType = DateTimeType.of(dtStart.getValue());
+//        boolean changed = (lastDtStart != null) && (myDateTimeType != lastDtStart);
+////        System.out.println("getDateTimeStart()" +  dateTimeStartProperty());
+////        System.out.println("getDateTimeStart().getValue()" +  dateTimeStartProperty().getValue());
+////        System.out.println("dtStart:" + dtStart);
+//        if (dateTimeStartProperty().getValue() != null)
+//        {
+//            lastDtStart = getDateTimeStart().getValue();
+//        }
+//        dateTimeStartProperty().set(dtStart);
+////        dateTimeStart = dtStart;
+////        propertyMap().put(PropertyEnum.DATE_TIME_START, new ArrayList<DateTimeStart>(Arrays.asList(dtStart)));
+////        propertyMap().put(PropertyEnum.DATE_TIME_START, dtStart);
+//        
+//        // if type has changed then make all date-time properties the same
+//        if (changed)
+//        {
+////            System.out.println("**********************start:" + dtStart);
+//            ensureDateTimeTypeConsistency(myDateTimeType, getZoneId());
+//        }
+//    }
+    public T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
+    public T withDateTimeStart(String dtStart)
+    {
+        Temporal temporal = DateTimeUtilities.temporalFromString(dtStart);
+        return withDateTimeStart(temporal);
+    }
+    public T withDateTimeStart(Temporal temporal)
+    {
+        setDateTimeStart(temporal);
+//        if (temporal instanceof LocalDate)
+//        {
+//            setDateTimeStart(new DateTimeStart<LocalDate>((LocalDate) temporal));            
+//        } else if (temporal instanceof LocalDateTime)
+//        {
+//            setDateTimeStart(new DateTimeStart<LocalDateTime>((LocalDateTime) temporal));            
+//        } else if (temporal instanceof ZonedDateTime)
+//        {
+//            setDateTimeStart(new DateTimeStart<ZonedDateTime>((ZonedDateTime) temporal));            
+//        } else
+//        {
+//            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+//                    + temporal.getClass().getSimpleName() + " is not supported");
+//        }
         return (T) this;
     }
 

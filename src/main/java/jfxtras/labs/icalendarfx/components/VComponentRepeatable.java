@@ -4,8 +4,9 @@ import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RDate;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleProp;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 
 /**
  * Calendar components that can repeat
@@ -16,7 +17,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
  * @see VJournal
  * @see StandardOrSavings
  */
-public interface VComponentRepeatable
+public interface VComponentRepeatable extends VComponentPrimary
 {   
     /**
      * RDATE: Recurrence Date-Times
@@ -28,9 +29,8 @@ public interface VComponentRepeatable
      * RDATE;VALUE=DATE:19970101,19970120,19970217,19970421
      *  19970526,19970704,19970901,19971014,19971128,19971129,1997122
      */
-    RDate getRecurrenceDateTimes();
-    ObjectProperty<RDate> recurrenceDateTimesProperty();
-    void setRecurrenceDateTimes(RDate rDate);
+    ObservableList<Recurrences<? extends Temporal>> getRecurrences();
+    void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences);
     
     /**
      * RRULE, Recurrence Rule
@@ -43,9 +43,9 @@ public interface VComponentRepeatable
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    RecurrenceRule getRecurrenceRule();
-    ObjectProperty<RecurrenceRule> recurrenceRuleProperty();
-    void setRecurrenceRule(RecurrenceRule rRule);
+    RecurrenceRuleProp getRecurrenceRule();
+    ObjectProperty<RecurrenceRuleProp> recurrenceRuleProperty();
+    void setRecurrenceRule(RecurrenceRuleProp rRule);
     
     /** Stream of dates or date-times that indicate the series of start date-times of the event(s).
      * iCalendar calls this series the recurrence set.
@@ -62,6 +62,6 @@ public interface VComponentRepeatable
      * it will be adjusted to be the next occurrence
      * @return - stream of start dates or date/times for the recurrence set
      */
-    Stream<Temporal> stream(Temporal startTemporal);
+    Stream<Temporal> streamRecurrences(Temporal startTemporal);
 
 }

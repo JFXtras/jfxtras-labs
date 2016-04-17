@@ -10,8 +10,8 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 
 /**
- * EXDATE
- * Exception Date-Times
+ * RDATE
+ * Recurrence Date-Times
  * RFC 5545 iCalendar 3.8.5.2, page 120.
  * 
  * This property defines the list of DATE-TIME values for
