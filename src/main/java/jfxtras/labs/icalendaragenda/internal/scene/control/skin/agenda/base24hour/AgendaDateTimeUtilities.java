@@ -5,8 +5,8 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendar.components.VComponent.StartEndRange;
-import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
+import jfxtras.labs.icalendarfx.components.VComponent.StartEndRange;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 public class AgendaDateTimeUtilities
 {

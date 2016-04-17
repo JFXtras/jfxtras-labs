@@ -10,10 +10,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import jfxtras.labs.icalendar.components.VComponent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AgendaDateTimeUtilities;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**

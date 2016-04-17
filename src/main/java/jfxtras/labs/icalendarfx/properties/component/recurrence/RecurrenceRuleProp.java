@@ -1,0 +1,38 @@
+package jfxtras.labs.icalendarfx.properties.component.recurrence;
+
+import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
+import jfxtras.labs.icalendarfx.components.StandardTime;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.PropertyBase;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+
+/**
+ * RRULE
+ * Recurrence Rule
+ * RFC 5545 iCalendar 3.8.5.3, page 122.
+ * 
+ * This property defines a rule or repeating pattern for
+ * recurring events, to-dos, journal entries, or time zone definitions.
+ * 
+ * Produces a stream of start date/times after applying all modification rules.
+ * 
+ * @author David Bal
+ * @see VEventNew
+ * @see VTodo
+ * @see TJournal
+ * @see DaylightSavingTime
+ * @see StandardTime
+ */
+public class RecurrenceRuleProp extends PropertyBase<RecurrenceRule, RecurrenceRuleProp>
+{
+    public RecurrenceRuleProp(CharSequence contentLine)
+    {
+        super(contentLine);
+    }
+
+    public RecurrenceRuleProp(RecurrenceRule value)
+    {
+        super(value);
+    }
+}

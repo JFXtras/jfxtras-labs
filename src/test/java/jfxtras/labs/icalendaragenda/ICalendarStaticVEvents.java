@@ -8,17 +8,17 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import jfxtras.labs.icalendar.properties.component.descriptive.Categories;
-import jfxtras.labs.icalendar.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Daily;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Monthly;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Weekly;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Yearly;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Monthly;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
 
 /**
  * Static VEvents representing iCalendar components

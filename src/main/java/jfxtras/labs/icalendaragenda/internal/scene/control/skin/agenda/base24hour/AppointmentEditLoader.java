@@ -9,10 +9,10 @@ import javafx.scene.control.Control;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.components.VComponent;
-import jfxtras.labs.icalendar.components.VEvent;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 

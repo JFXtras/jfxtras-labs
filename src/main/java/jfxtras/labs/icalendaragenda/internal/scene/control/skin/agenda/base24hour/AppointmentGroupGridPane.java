@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
-import jfxtras.labs.icalendar.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 

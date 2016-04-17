@@ -20,10 +20,10 @@ import org.junit.Test;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
-import jfxtras.labs.icalendar.components.VComponent;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
-import jfxtras.labs.icalendar.utilities.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
+import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.test.TestUtil;
 
 public class AgendaChangeTest extends AgendaTestAbstract

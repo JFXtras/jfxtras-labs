@@ -8,10 +8,10 @@ import java.util.Locale;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.test.JFXtrasGuiTest;
 

@@ -56,19 +56,19 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendar.components.VComponent;
-import jfxtras.labs.icalendar.properties.component.recurrence.ExDate;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.RecurrenceRule;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Frequency;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.Weekly;
-import jfxtras.labs.icalendar.properties.component.recurrence.rrule.frequency.FrequencyUtilities.FrequencyEnum;
-import jfxtras.labs.icalendar.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendar.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
+import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyUtilities.FrequencyEnum;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * Makes pane for selection some repeatable rules
