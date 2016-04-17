@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VComponentTest;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
@@ -61,20 +60,32 @@ public class ParsePropertiesTest
     }
     
     @Test
-    public void canFoldingLine()
+    public void canEscapeTest()
     {
-        Description d = new Description("a dog\\nran\\, far\\;\\naway \\\\\\\\1");
-        System.out.println(d.toContentLine());
-        System.out.println(d.getValue());
-        
-        String line = "Ek and Lorentzon said they would consider halting investment at their head\\,quarters in Stockholm. The pioneering music streaming company employs about 850 people in the city, and more than 1,000 in nearly 30 other offices around the world.";
-        String f = VComponentBase.foldLine(line).toString();
-        String line2 = VComponentBase.unfoldLines(f).get(0);
-        
-        assertEquals(line, line2);
-//        System.out.println(VComponentBase.foldLine(line));
-//        String s1 = "away \\\\\\\\1";
-//        System.out.println(VComponentBase.unfoldLines(s1));
+        String contentLine = "DESCRIPTION:a dog\\nran\\, far\\;\\naway \\\\\\\\1";
+        Description d = new Description(contentLine);
+        String expectedValue = "a dog" + System.lineSeparator() +
+                               "ran, far;" + System.lineSeparator() +
+                               "away \\\\1";
+        assertEquals(expectedValue, d.getValue());
+        assertEquals(contentLine, d.toContentLine());
+    }
+
+    
+    @Test
+    public void canFoldAndUnfoldLine()
+    {
+        String line = "Ek and Lorentzon said they would consider halting investment at th,eir headquarters in Stockholm. The pioneering music streaming company employs about 850 people in the city, and more than 1,000 in nearly 30 other offices around the world.";
+        VComponentTest builtComponent = new VComponentTest()
+                .withComments(line);
+        String expectedContent = "BEGIN:VEVENT" + System.lineSeparator() +
+                                 "COMMENT:Ek and Lorentzon said they would consider halting investment at th" + System.lineSeparator() +
+                                 " \\,eir headquarters in Stockholm. The pioneering music streaming company em" + System.lineSeparator() +
+                                 " ploys about 850 people in the city\\, and more than 1\\,000 in nearly 30 oth" + System.lineSeparator() +
+                                 " er offices around the world." + System.lineSeparator() +
+                                 "END:VEVENT";
+        assertEquals(expectedContent, builtComponent.toContentLines());
+        assertEquals(line, builtComponent.getComments().get(0).getValue());
     }
 
     @Test

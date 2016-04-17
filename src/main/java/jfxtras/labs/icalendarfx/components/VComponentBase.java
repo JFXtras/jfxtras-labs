@@ -324,7 +324,7 @@ public class VComponentBase<T> implements VComponentNew
     // TODO - MOVE THIS TO A UTILITY CLASS
 //    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
 //    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', 'n'};
-    public static List<String> unfoldLines(String componentString)
+    private static List<String> unfoldLines(String componentString)
     {
         List<String> propertyLines = new ArrayList<>();
         String storedLine = "";
@@ -355,36 +355,12 @@ public class VComponentBase<T> implements VComponentNew
                     break;  // no continuation line, exit while loop
                 }
             }
-            
-//            // UNESCAPE SPECIAL CHARACTERS \ , ; \n (newline)
-//            StringBuilder builder2 = new StringBuilder(builder.length()); 
-//            for (int i=0; i<builder.length(); i++)
-//            {
-//                char charToAdd = builder.charAt(i);
-//                if (builder.charAt(i) == '\\')
-//                {
-//                    char nextChar = builder.charAt(i+1);
-//                    for (int j=0;j<SPECIAL_CHARACTERS.length; j++)
-//                    {
-//                        if (nextChar == SPECIAL_CHARACTERS[j])
-//                        {
-//                            charToAdd = REPLACEMENT_CHARACTERS[j];
-//                            i++;
-//                            break;
-//                        }
-//                    }
-//                }
-//                builder2.append(charToAdd);                    
-//            }
-
             String line = builder.toString();
             propertyLines.add(line);
         }
 //        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
         return propertyLines;
     }
-    // SHOULD SPECIAL CHARACTER HANDLING BE IN STRING CONVERTERS? - ONLY FOR TEXT?
-    //TODO - HANDLE SPECIAL CHARACTERS
     
     /**
      * Folds lines at character 75 into multiple lines.  Follows rules in
@@ -395,7 +371,7 @@ public class VComponentBase<T> implements VComponentNew
      * @param line - content line
      * @return - folded content line
      */
-    public static CharSequence foldLine(CharSequence line)
+    private static CharSequence foldLine(CharSequence line)
     {
         // first position is 0
         final int maxLineLength = 75;
@@ -413,15 +389,16 @@ public class VComponentBase<T> implements VComponentNew
                 int endIndex = Math.min(startIndex+maxLineLength-leadingSpaceAdjustment, line.length());
                 if (endIndex < line.length())
                 {
-                    System.out.println(line.charAt(endIndex-1));
-                    System.out.println(line.charAt(endIndex-1) == '\\');
                     // ensure escaped characters are not broken up
                     if (line.charAt(endIndex-1) == '\\')
                     {
                         endIndex = endIndex-1; 
                     }
+                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex) + System.lineSeparator());
+                } else
+                {                    
+                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex));
                 }
-                builder.append(leadingSpace + line.subSequence(startIndex, endIndex) + System.lineSeparator());
                 startIndex = endIndex;
                 leadingSpaceAdjustment = 1;
                 leadingSpace = " ";
@@ -430,33 +407,6 @@ public class VComponentBase<T> implements VComponentNew
         }
     }
     
-//    public static CharSequence unfoldLine(CharSequence line)
-//    {
-//        String storedLine = "";
-//        String startLine;
-//        if (storedLine.isEmpty())
-//        {
-//            startLine = lineIterator.next();
-//        } else
-//        {
-//            startLine = storedLine;
-//            storedLine = "";
-//        }
-//        StringBuilder builder = new StringBuilder(startLine);
-//        while (lineIterator.hasNext())
-//        {
-//            String anotherLine = lineIterator.next();
-//            if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-//            { // unwrap anotherLine into line
-//                builder.append(anotherLine.substring(1, anotherLine.length()));
-//            } else
-//            {
-//                storedLine = anotherLine; // save for next iteration
-//                break;  // no continuation line, exit while loop
-//            }
-//        }
-//    }
-//    
     final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
     {
         int endIndex = PropertyEnum.DATE_TIME_START.toString().length();
