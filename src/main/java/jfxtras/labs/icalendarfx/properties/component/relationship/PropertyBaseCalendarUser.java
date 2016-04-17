@@ -58,13 +58,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     }
     private ObjectProperty<CommonName> commonName;
     @Override
-    public void setCommonName(CommonName commonName)
-    {
-        if (commonName != null)
-        {
-            commonNameProperty().set(commonName);
-        }
-    }
+    public void setCommonName(CommonName commonName) { commonNameProperty().set(commonName); }
     public void setCommonName(String content) { setCommonName(new CommonName(content)); }
     public U withCommonName(CommonName commonName) { setCommonName(commonName); return (U) this; }
     public U withCommonName(String content) { setCommonName(content); return (U) this; }    

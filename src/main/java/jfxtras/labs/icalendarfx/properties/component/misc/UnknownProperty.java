@@ -5,19 +5,19 @@ import java.net.URI;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship;
+import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship.AlarmTriggerRelationshipType;
 import jfxtras.labs.icalendarfx.parameters.AlternateText;
 import jfxtras.labs.icalendarfx.parameters.Encoding;
+import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
 import jfxtras.labs.icalendarfx.parameters.FreeBusyType;
+import jfxtras.labs.icalendarfx.parameters.FreeBusyType.FreeBusyTypeEnum;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.Range;
-import jfxtras.labs.icalendarfx.parameters.Relationship;
-import jfxtras.labs.icalendarfx.parameters.TimeZoneIdentifierParameter;
-import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship.AlarmTriggerRelationshipType;
-import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
-import jfxtras.labs.icalendarfx.parameters.FreeBusyType.FreeBusyTypeEnum;
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
+import jfxtras.labs.icalendarfx.parameters.Relationship;
 import jfxtras.labs.icalendarfx.parameters.Relationship.RelationshipType;
+import jfxtras.labs.icalendarfx.parameters.TimeZoneIdentifierParameter;
 import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
 import jfxtras.labs.icalendarfx.properties.PropertyAltText;
 import jfxtras.labs.icalendarfx.properties.PropertyAttachment;
@@ -85,13 +85,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     }
     private ObjectProperty<AlternateText> alternateText;
     @Override
-    public void setAlternateText(AlternateText alternateText)
-    {
-        if (alternateText != null)
-        {
-            alternateTextProperty().set(alternateText);
-        }
-    }
+    public void setAlternateText(AlternateText alternateText) { alternateTextProperty().set(alternateText); }
     public void setAlternateText(String value) { setAlternateText(new AlternateText(value)); }
     public U withAlternateText(AlternateText altrep) { setAlternateText(altrep); return (U) this; }
     public U withAlternateText(URI value) { setAlternateText(new AlternateText(value)); return (U) this; }
@@ -127,11 +121,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
         {
             throw new IllegalArgumentException("Attachment property only allows ENCODING to be set to" + EncodingType.BASE64);
         }
-
-        if (encoding != null)
-        {
-            encodingProperty().set(encoding);
-        }
+        encodingProperty().set(encoding);
     }
     public U withEncoding(Encoding encoding) { setEncoding(encoding); return (U) this; }
     public U withEncoding(EncodingType encoding) { setEncoding(new Encoding(encoding)); return (U) this; }
@@ -157,13 +147,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     }
     private ObjectProperty<FreeBusyType> freeBusyType;
     @Override
-    public void setFreeBusyType(FreeBusyType freeBusyType)
-    {
-        if (freeBusyType != null)
-        {
-            freeBusyTypeProperty().set(freeBusyType);
-        }
-    }
+    public void setFreeBusyType(FreeBusyType freeBusyType) { freeBusyTypeProperty().set(freeBusyType); }
     public void setFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(new FreeBusyType(type)); }
     public U withFreeBusyType(FreeBusyType freeBusyType) { setFreeBusyType(freeBusyType); return (U)this; }
     public U withFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(type); return (U) this; }
@@ -187,13 +171,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     }
     private ObjectProperty<FormatType> formatType;
     @Override
-    public void setFormatType(FormatType formatType)
-    {
-        if (formatType != null)
-        {
-            formatTypeProperty().set(formatType);
-        }
-    }
+    public void setFormatType(FormatType formatType) { formatTypeProperty().set(formatType); }
     public U withFormatType(FormatType format) { setFormatType(format); return (U) this; }
     public U withFormatType(String format) { setFormatType(new FormatType(format)); return (U) this; }
 
@@ -225,13 +203,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     }
     private ObjectProperty<Range> range;
     @Override
-    public void setRange(Range range)
-    {
-        if (range != null)
-        {
-            rangeProperty().set(range);
-        }
-    }
+    public void setRange(Range range) { rangeProperty().set(range); }
     public void setRange(String value) { setRange(new Range(value)); }
     public U withRange(Range altrep) { setRange(altrep); return (U) this; }
     public U withRange(RangeType value) { setRange(new Range(value)); return (U) this; }
@@ -256,13 +228,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     }
     private ObjectProperty<AlarmTriggerRelationship> AlarmTrigger;
     @Override
-    public void setAlarmTrigger(AlarmTriggerRelationship AlarmTrigger)
-    {
-        if (AlarmTrigger != null)
-        {
-            AlarmTriggerProperty().set(AlarmTrigger);
-        }
-    }
+    public void setAlarmTrigger(AlarmTriggerRelationship AlarmTrigger) { AlarmTriggerProperty().set(AlarmTrigger); }
     public void setAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(new AlarmTriggerRelationship(type)); } 
     public U withAlarmTrigger(AlarmTriggerRelationship format) { setAlarmTrigger(format); return (U) this; }
     public U withAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(type); return (U) this; }
@@ -321,13 +287,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     }
     private ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifier;
     @Override
-    public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier)
-    {
-        if (timeZoneIdentifier != null)
-        {
-            timeZoneIdentifierProperty().set(timeZoneIdentifier);
-        }
-    }
+    public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { timeZoneIdentifierProperty().set(timeZoneIdentifier); }
     public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value)); }
     public U withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (U) this; }
     public U withTimeZoneIdentifier(String content) { ParameterEnum.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        

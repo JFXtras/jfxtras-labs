@@ -17,6 +17,16 @@ import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
+/**
+ * Abstract class for Exceptions and Recurrences
+ * 
+ * @author David Bal
+ *
+ * @param <U> - subclass
+ * @param <T> - property value type
+ * @see Exceptions
+ * @see Recurrences
+ */
 public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends PropertyBaseDateTime<ObservableSet<T>, U>
 {
     private ZoneId zone;

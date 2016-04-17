@@ -42,13 +42,7 @@ public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implem
     }
     private ObjectProperty<Language> language;
     @Override
-    public void setLanguage(Language language)
-    {
-        if (language != null)
-        {
-            languageProperty().set(language);
-        }
-    }
+    public void setLanguage(Language language) { languageProperty().set(language); }
     public void setLanguage(String value) { setLanguage(new Language(value)); }
     public U withLanguage(Language language) { setLanguage(language); return (U) this; }
     public U withLanguage(String content) { ParameterEnum.LANGUAGE.parse(this, content); return (U) this; }    

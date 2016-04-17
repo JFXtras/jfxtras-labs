@@ -173,34 +173,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
         if (isValueParameterValid(valueType.getValue()))
         {
             valueParameterProperty().set(valueType);
-            // replace converter if using default converter
-//            if (! isCustomConverter())
-//            {
-////                System.out.println("set converter:" + valueType.getValue() + " " + valueClass + " " + getValue());
-//                setConverter(valueType.getValue().getConverter());
-//
-//                // Convert property value string, if present
-//                if (getPropertyValueString() != null)
-//                {
-//                    T newPropValue = getConverter().fromString(getPropertyValueString());
-//                    setValue(newPropValue);
-//                }
-//            }
-//            
-//            // verify value class is allowed
-//            if (getValueClass() != null) // && ! valueType.getValue().allowedClasses().contains(getValueClass()))
-//            {
-//                boolean isMatch = valueType.getValue().allowedClasses()
-//                        .stream()
-//                        .map(c -> getValueClass().isAssignableFrom(c))
-//                        .findAny()
-//                        .isPresent();
-//                if (! isMatch)
-//                {
-//                    throw new IllegalArgumentException("Value class " + getValueClass().getSimpleName() +
-//                            " doesn't match allowed value classes: " + valueType.getValue().allowedClasses());
-//                }
-//            }
         } else
         {
             throw new IllegalArgumentException("Invalid Value Date Type:" + valueType.getValue() + ", allowed = " + propertyType().allowedValueTypes());
