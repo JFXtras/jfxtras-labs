@@ -7,6 +7,9 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendarfx.parameters.ValueParameter;
+import jfxtras.labs.icalendarfx.parameters.ValueType;
+import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class GeneralPropertyTest
@@ -43,5 +46,14 @@ public class GeneralPropertyTest
         SortedMap<String, String> expectedMap = new TreeMap<>();
         expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party");
         assertEquals(expectedMap, valueMap);
+    }
+    
+    @Test
+    public void canChangeValueType()
+    {
+        String content = "X-MYPROP:1";
+        NonStandardProperty madeProperty = new NonStandardProperty(content);
+        madeProperty.valueParameterProperty().set(new ValueParameter(ValueType.INTEGER));
+        assertEquals(1, madeProperty.getValue());
     }
 }

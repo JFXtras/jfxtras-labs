@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
@@ -173,33 +174,33 @@ public abstract class PropertyBase<T,U> implements Property<T>
         {
             valueParameterProperty().set(valueType);
             // replace converter if using default converter
-            if (! isCustomConverter())
-            {
-//                System.out.println("set converter:" + valueType.getValue() + " " + valueClass + " " + getValue());
-                setConverter(valueType.getValue().getConverter());
-
-                // Convert property value string, if present
-                if (getPropertyValueString() != null)
-                {
-                    T newPropValue = getConverter().fromString(getPropertyValueString());
-                    setValue(newPropValue);
-                }
-            }
-            
-            // verify value class is allowed
-            if (getValueClass() != null) // && ! valueType.getValue().allowedClasses().contains(getValueClass()))
-            {
-                boolean isMatch = valueType.getValue().allowedClasses()
-                        .stream()
-                        .map(c -> getValueClass().isAssignableFrom(c))
-                        .findAny()
-                        .isPresent();
-                if (! isMatch)
-                {
-                    throw new IllegalArgumentException("Value class " + getValueClass().getSimpleName() +
-                            " doesn't match allowed value classes: " + valueType.getValue().allowedClasses());
-                }
-            }
+//            if (! isCustomConverter())
+//            {
+////                System.out.println("set converter:" + valueType.getValue() + " " + valueClass + " " + getValue());
+//                setConverter(valueType.getValue().getConverter());
+//
+//                // Convert property value string, if present
+//                if (getPropertyValueString() != null)
+//                {
+//                    T newPropValue = getConverter().fromString(getPropertyValueString());
+//                    setValue(newPropValue);
+//                }
+//            }
+//            
+//            // verify value class is allowed
+//            if (getValueClass() != null) // && ! valueType.getValue().allowedClasses().contains(getValueClass()))
+//            {
+//                boolean isMatch = valueType.getValue().allowedClasses()
+//                        .stream()
+//                        .map(c -> getValueClass().isAssignableFrom(c))
+//                        .findAny()
+//                        .isPresent();
+//                if (! isMatch)
+//                {
+//                    throw new IllegalArgumentException("Value class " + getValueClass().getSimpleName() +
+//                            " doesn't match allowed value classes: " + valueType.getValue().allowedClasses());
+//                }
+//            }
         } else
         {
             throw new IllegalArgumentException("Invalid Value Date Type:" + valueType.getValue() + ", allowed = " + propertyType().allowedValueTypes());
@@ -208,7 +209,39 @@ public abstract class PropertyBase<T,U> implements Property<T>
     public void setValueParameter(ValueType value) { setValueParameter(new ValueParameter(value)); }
     public void setValueParameter(String value) { setValueParameter(new ValueParameter(value)); }
     public U withValueParameter(ValueType value) { setValueParameter(value); return (U) this; } 
-    public U withValueParameter(String value) { setValueParameter(value); return (U) this; } 
+    public U withValueParameter(String value) { setValueParameter(value); return (U) this; }
+    // Synch value with type produced by string converter
+    private final ChangeListener<? super ValueParameter> valueParameterChangeListener = (observable, oldValue, newValue) ->
+    {
+        // replace converter if using default converter
+        if (! isCustomConverter())
+        {
+//                System.out.println("set converter:" + newValue.getValue() + " " + valueClass + " " + getValue());
+            setConverter(newValue.getValue().getConverter());
+
+            // Convert property value string, if present
+            if (getPropertyValueString() != null)
+            {
+                T newPropValue = getConverter().fromString(getPropertyValueString());
+                setValue(newPropValue);
+            }
+        }
+        
+        // verify value class is allowed
+        if (getValueClass() != null) // && ! newValue.getValue().allowedClasses().contains(getValueClass()))
+        {
+            boolean isMatch = newValue.getValue().allowedClasses()
+                    .stream()
+                    .map(c -> getValueClass().isAssignableFrom(c))
+                    .findAny()
+                    .isPresent();
+            if (! isMatch)
+            {
+                throw new IllegalArgumentException("Value class " + getValueClass().getSimpleName() +
+                        " doesn't match allowed value classes: " + newValue.getValue().allowedClasses());
+            }
+        }
+    };
     
     /**
      * other-param, 3.2 RFC 5545 page 14
@@ -287,6 +320,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
         defaultConverter = defaultValueType.getConverter();
         setConverter(defaultConverter);
+        valueParameterProperty().addListener(valueParameterChangeListener); // keeps value synched with value type
     }
 
     /**

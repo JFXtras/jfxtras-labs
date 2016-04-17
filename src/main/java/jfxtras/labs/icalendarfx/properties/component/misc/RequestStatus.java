@@ -115,10 +115,7 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
         valueProperty().addListener(valueChangeListener);        
     }
     
-    private final ChangeListener<? super String> valueChangeListener = (observable, oldValue, newValue) ->
-    {
-        updateParts(newValue);
-    };
+    private final ChangeListener<? super String> valueChangeListener = (observable, oldValue, newValue) -> updateParts(newValue);
     
     private void updateParts(String newValue)
     {

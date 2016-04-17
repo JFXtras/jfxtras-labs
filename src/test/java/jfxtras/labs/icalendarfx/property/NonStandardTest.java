@@ -15,11 +15,11 @@ public class NonStandardTest
     @Test
     public void canParseNonStandard1()
     {
-        String content = "X-MICROSOFT-CDO-ALLDAYEVENT;VALUE=BOOLEAN:FALSE";
+        String content = "X-MYPROP;VALUE=BOOLEAN:FALSE";
         NonStandardProperty madeProperty = new NonStandardProperty(content);
         assertEquals(content, madeProperty.toContentLine());
         NonStandardProperty expectedProperty = new NonStandardProperty("FALSE")
-                .withPropertyName("X-MICROSOFT-CDO-ALLDAYEVENT")
+                .withPropertyName("X-MYPROP")
                 .withValueParameter(ValueType.BOOLEAN);
         assertEquals(expectedProperty, madeProperty);
         assertEquals(Boolean.FALSE, madeProperty.getValue());
