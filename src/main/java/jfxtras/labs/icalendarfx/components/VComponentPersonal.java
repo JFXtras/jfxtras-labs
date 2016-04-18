@@ -14,7 +14,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
  * ATTENDEE, DTSTAMP, ORGANIZER, REQUEST-STATUS, UID, URL
  * 
  * @author David Bal
- * @see VEventNew
+ * @see VEventNewInt
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy

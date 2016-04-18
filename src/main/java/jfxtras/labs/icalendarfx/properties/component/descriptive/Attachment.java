@@ -5,7 +5,7 @@ import java.net.URI;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VAlarm;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.Encoding;
@@ -31,7 +31,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNew
+ * @see VEventNewInt
  * @see VTodo
  * @see VJournal
  * @see VAlarm

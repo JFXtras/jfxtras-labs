@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * @author David Bal
  *
  * @param <T> - implementation subclass
- * @see VEventNew
+ * @see VEventNewInt
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy

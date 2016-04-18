@@ -15,7 +15,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * COMMENT, DTSTART
  * 
  * @author David Bal
- * @see VEventNew
+ * @see VEventNewInt
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy

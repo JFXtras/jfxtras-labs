@@ -5,6 +5,7 @@ import java.time.temporal.TemporalAmount;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 
@@ -17,8 +18,22 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
  * @see VEvent
  * @see VTodoOld
  */
-public interface VComponentLocatable<I> extends VComponentDisplayableNew<I>
+public interface VComponentLocatable<I> extends VComponentDisplayable<I>
 {
+    /**
+     * DESCRIPTION:
+     * RFC 5545 iCalendar 3.8.1.12. page 84
+     * This property provides a more complete description of the
+     * calendar component than that provided by the "SUMMARY" property.
+     * Example:
+     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
+     *  design.\nHappy Face Conference Room. Phoenix design team
+     *  MUST attend this meeting.\nRSVP to team leader.
+     */
+    public ObjectProperty<Description> descriptionProperty();
+    public Description getDescription();
+    public void setDescription(Description description);
+    
     /** 
      * DURATION
      * RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34

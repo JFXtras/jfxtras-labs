@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.time;
 
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
  * @author David Bal
  *
  * The property can be specified in following components:
- * @see VEventNew
+ * @see VEventNewInt
  * @see VTodo
  * @see VFreeBusy
  */

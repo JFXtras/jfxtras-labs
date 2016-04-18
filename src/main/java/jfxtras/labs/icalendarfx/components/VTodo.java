@@ -6,7 +6,7 @@ import java.time.temporal.Temporal;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 
-public interface VTodo<I> extends VComponentDisplayableNew<I>
+public interface VTodo<I> extends VComponentLocatable<I>
 {
     /**
      * COMPLETED: Date-Time Completed

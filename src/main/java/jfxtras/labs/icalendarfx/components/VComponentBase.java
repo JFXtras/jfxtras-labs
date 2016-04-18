@@ -25,7 +25,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * @author David Bal
  *
  * @param <T> - implementation class
- * @see VEventNew
+ * @see VEventNewInt
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy
@@ -57,7 +57,7 @@ public abstract class VComponentBase<T> implements VComponentNew
         {
             this.nonStandardProps = FXCollections.observableArrayList();
         }
-        Arrays.stream(nonStandardProps).forEach(c -> getNonStandardProperties().add(new NonStandardProperty(c)));
+        Arrays.stream(nonStandardProps).forEach(c -> PropertyEnum.NON_STANDARD.parse(this, c));
         return (T) this;
     }
     public T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return (T) this; }
@@ -85,7 +85,7 @@ public abstract class VComponentBase<T> implements VComponentNew
         {
             this.ianaProps = FXCollections.observableArrayList();
         }
-        Arrays.stream(ianaProps).forEach(c -> getIANAProperties().add(new IANAProperty(c)));
+        Arrays.stream(ianaProps).forEach(c -> PropertyEnum.IANA_PROPERTY.parse(this, c));
         return (T) this;
     }
     public T withIANAProperty(ObservableList<IANAProperty> ianaProps) { setIANAProperties(ianaProps); return (T) this; }
@@ -101,7 +101,6 @@ public abstract class VComponentBase<T> implements VComponentNew
     public List<PropertyEnum> properties()
     {
         List<PropertyEnum> populatedProperties = new ArrayList<>();
-//      System.out.println("parameters:" + propertyType().possibleParameters().size());
         Iterator<PropertyEnum> i = componentType().allowedProperties().stream().iterator();
         while (i.hasNext())
         {
@@ -206,7 +205,7 @@ public abstract class VComponentBase<T> implements VComponentNew
             {
                 Object p1 = i1.next().getProperty(this);
                 Object p2 = i2.next().getProperty(testObj);
-                System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
+//                System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
                 if (! p1.equals(p2))
                 {
                     isFailure = true;

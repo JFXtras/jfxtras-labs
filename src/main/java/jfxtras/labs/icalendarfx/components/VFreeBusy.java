@@ -7,7 +7,7 @@ package jfxtras.labs.icalendarfx.components;
  * @author David Bal
  *
  */
-public class VFreeBusy
+public abstract class VFreeBusy extends VComponentPersonalBase<VFreeBusy>
 {
-    public VFreeBusy() { throw new RuntimeException("not supported"); }
+
 }

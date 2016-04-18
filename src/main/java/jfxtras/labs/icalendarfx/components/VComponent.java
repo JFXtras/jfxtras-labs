@@ -129,7 +129,7 @@ instances into one property internally.
  * @see VComponentDisplayableOldBase
  * @see VEvent
  * @see VTodoOld // not implemented yet
- * @see VJournalOld // not implemented yet
+ * @see VJournalBase // not implemented yet
  * 
  * @author David Bal
  * */

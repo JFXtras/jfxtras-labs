@@ -22,9 +22,9 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
  * @param <I> class of recurrence instance
  * @see VEvent
  * @see VTodoOld
- * @see VJournalOld
+ * @see VJournalBase
  */
-public interface VComponentDisplayableNew<I> extends VComponentPersonal, VComponentRepeatable, VComponentDescribable
+public interface VComponentDisplayable<I> extends VComponentPersonal, VComponentRepeatable, VComponentDescribable, VComponentLastModified
 {
     /**
      * CATEGORIES:
@@ -103,8 +103,11 @@ public interface VComponentDisplayableNew<I> extends VComponentPersonal, VCompon
      * 
      * The property value MUST be specified in the UTC time format.
      */
+    @Override
     ZonedDateTime getDateTimeLastModified();
+    @Override
     ObjectProperty<ZonedDateTime> dateTimeLastModifiedProperty();
+    @Override
     void setDateTimeLastModified(ZonedDateTime dtLastModified);
     
     /**

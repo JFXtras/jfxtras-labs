@@ -7,9 +7,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 
 public enum VComponentEnum
 {
-    VEVENT (Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.COMMENT, PropertyEnum.DATE_TIME_STAMP,
-            PropertyEnum.DATE_TIME_START, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD,
-            PropertyEnum.ORGANIZER, PropertyEnum.REQUEST_STATUS, PropertyEnum.UNIQUE_IDENTIFIER,
+    VEVENT (Arrays.asList(PropertyEnum.ATTACHMENT, PropertyEnum.ATTENDEE, PropertyEnum.COMMENT, PropertyEnum.DATE_TIME_STAMP,
+            PropertyEnum.DATE_TIME_START, PropertyEnum.DESCRIPTION, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD,
+            PropertyEnum.ORGANIZER, PropertyEnum.RECURRENCE_DATE_TIMES, PropertyEnum.RECURRENCE_RULE,
+            PropertyEnum.REQUEST_STATUS, PropertyEnum.SUMMARY, PropertyEnum.UNIQUE_IDENTIFIER,
             PropertyEnum.UNIFORM_RESOURCE_LOCATOR)),
     VTODO (Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.COMMENT, PropertyEnum.DATE_TIME_STAMP,
             PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.ORGANIZER,

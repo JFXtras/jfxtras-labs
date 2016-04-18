@@ -17,9 +17,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import jfxtras.labs.icalendarfx.components.VComponentTest;
-import jfxtras.labs.icalendarfx.components.VComponentTest2;
-import jfxtras.labs.icalendarfx.components.VComponentTest3;
+import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
@@ -46,7 +44,7 @@ public class ParsePropertiesTest
     public void canFoldAndUnfoldLine()
     {
         String line = "Ek and Lorentzon said they would consider halting investment at th,eir headquarters in Stockholm. The pioneering music streaming company employs about 850 people in the city, and more than 1,000 in nearly 30 other offices around the world.";
-        VComponentTest builtComponent = new VComponentTest()
+        VEventMockNew builtComponent = new VEventMockNew()
                 .withComments(line);
         String componentName = builtComponent.componentType().toString();
         String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
@@ -62,7 +60,7 @@ public class ParsePropertiesTest
     @Test
     public void canGetProperties()
     {
-        VComponentTest builtComponent = new VComponentTest()
+        VEventMockNew builtComponent = new VEventMockNew()
                 .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
                 .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
                 .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
@@ -77,7 +75,7 @@ public class ParsePropertiesTest
         ObjectProperty<String> s = new SimpleObjectProperty<>("start");
         s.set(null);
         
-        VComponentTest builtComponent = new VComponentTest()
+        VEventMockNew builtComponent = new VEventMockNew()
                 .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
                 .withIANAProperty("TESTPROP2:CASUAL")
                 .withNonStandardProperty("X-TEST-OBJ:testid");
@@ -92,7 +90,7 @@ public class ParsePropertiesTest
                 "X-TEST-OBJ:testid" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VComponentTest madeComponent = new VComponentTest(content);
+        VEventMockNew madeComponent = new VEventMockNew(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
@@ -100,7 +98,7 @@ public class ParsePropertiesTest
     @Test
     public void canBuildPrimary()
     {
-        VComponentTest builtComponent = new VComponentTest()
+        VEventMockNew builtComponent = new VEventMockNew()
                 .withDateTimeStamp("20160306T080000Z")
                 .withComments("This is a test comment", "Another comment")
                 .withComments("COMMENT:My third comment");
@@ -113,7 +111,7 @@ public class ParsePropertiesTest
                 "COMMENT:My third comment" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VComponentTest madeComponent = new VComponentTest(content);
+        VEventMockNew madeComponent = new VEventMockNew(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
@@ -121,7 +119,7 @@ public class ParsePropertiesTest
     @Test
     public void canBuildPersonal()
     {
-        VComponentTest builtComponent = new VComponentTest()
+        VEventMockNew builtComponent = new VEventMockNew()
                 .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
                 .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
                 .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
@@ -141,7 +139,7 @@ public class ParsePropertiesTest
                 "REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com" + System.lineSeparator() +
                 "END:" + componentName;
 
-        VComponentTest madeComponent = new VComponentTest(content);
+        VEventMockNew madeComponent = new VEventMockNew(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com", madeComponent.getOrganizer().toContentLine());
     }
@@ -149,7 +147,7 @@ public class ParsePropertiesTest
     @Test
     public void canBuildRepeatable()
     {
-        VComponentTest2 builtComponent = new VComponentTest2()
+        VEventMockNew builtComponent = new VEventMockNew()
                 .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
                 .withRecurrenceRule(new RecurrenceRuleParameter()
                     .withFrequency(new Daily()
@@ -161,7 +159,7 @@ public class ParsePropertiesTest
                 "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
                 "END:" + componentName;
 
-        VComponentTest2 madeComponent = new VComponentTest2(content);
+        VEventMockNew madeComponent = new VEventMockNew(content);
         assertEquals(madeComponent, builtComponent);
         
         // add another set of recurrences
@@ -183,7 +181,7 @@ public class ParsePropertiesTest
     @Ignore // JUnit won't recognize exception - maybe exception thrown in listener is cause
     public void canCatchDifferentRepeatableTypes()
     {
-        VComponentTest2 builtComponent = new VComponentTest2()
+        VEventMockNew builtComponent = new VEventMockNew()
                 .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
         ObservableSet<ZonedDateTime> expectedValues = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
@@ -193,7 +191,7 @@ public class ParsePropertiesTest
     @Test
     public void canBuildDescribable()
     {
-        VComponentTest3 builtComponent = new VComponentTest3()
+        VEventMockNew builtComponent = new VEventMockNew()
                 .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
                         "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com");
      
@@ -203,7 +201,7 @@ public class ParsePropertiesTest
                 "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com" + System.lineSeparator() +
                 "END:" + componentName;
 
-        VComponentTest3 madeComponent = new VComponentTest3(content);
+        VEventMockNew madeComponent = new VEventMockNew(content);
         
         assertEquals(madeComponent, builtComponent);
 

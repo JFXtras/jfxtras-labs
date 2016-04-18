@@ -229,7 +229,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
     public List<ParameterEnum> parameters()
     {
         List<ParameterEnum> populatedParameters = new ArrayList<>();
-//        System.out.println("parameters:" + propertyType().possibleParameters().size());
         Iterator<ParameterEnum> i = propertyType().allowedParameters().stream().iterator();
         while (i.hasNext())
         {

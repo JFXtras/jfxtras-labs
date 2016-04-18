@@ -17,7 +17,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * 
  * @see VComponentPrimary
  * 
- * @see VEventNew
+ * @see VEventNewInt
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy

@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
-public interface VJournal<I> extends VComponentDisplayableNew<I>
+public interface VJournal<I> extends VComponentDisplayable<I>
 {
     // no new methods
 }

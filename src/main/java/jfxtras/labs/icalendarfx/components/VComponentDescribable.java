@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.components;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
 /**
@@ -12,7 +11,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  * @author David Bal
  * @see VEvent
  * @see VTodoOld
- * @see VJournalOld
+ * @see VJournalBase
  * @see VAlarmOld
  *  */
 public interface VComponentDescribable extends VComponentNew
@@ -29,20 +28,6 @@ public interface VComponentDescribable extends VComponentNew
      */
     ObservableList<Attachment<?>> getAttachments();
     void setAttachments(ObservableList<Attachment<?>> properties);
-    
-    /**
-     * DESCRIPTION:
-     * RFC 5545 iCalendar 3.8.1.12. page 84
-     * This property provides a more complete description of the
-     * calendar component than that provided by the "SUMMARY" property.
-     * Example:
-     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
-     *  design.\nHappy Face Conference Room. Phoenix design team
-     *  MUST attend this meeting.\nRSVP to team leader.
-     */
-    public ObjectProperty<Description> descriptionProperty();
-    public Description getDescription();
-    public void setDescription(Description description);
     
     /**
      * SUMMARY:

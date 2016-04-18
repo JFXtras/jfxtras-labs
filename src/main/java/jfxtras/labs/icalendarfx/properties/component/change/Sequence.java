@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendarfx.properties.component.change;
 
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNew
+ * @see VEventNewInt
  * @see VTodo
  * @see VJournal
  */
