@@ -46,10 +46,6 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
     @Override
     public ObservableList<Comment> getComments()
     {
-//        if (comments == null)
-//        {
-//            comments = FXCollections.observableArrayList();
-//        }
         return comments;
     }
     private ObservableList<Comment> comments;
@@ -66,6 +62,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         return (T) this;
     }
     
+    // TODO - MY BE OBSOLETE - IF NOT USED DELETE
     /* previous temporal backing DTSTART
      * 
      * Used to ensure the following date-time properties use the same Temporal class
@@ -75,7 +72,9 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
      * EXDATE (underlying collection of Temporals)
      * RDATE (underlying collection of Temporals)
      */
+    @Deprecated
     private Temporal lastDtStart;
+    @Deprecated
     Temporal lastDtStart() { return lastDtStart; }
     
     /**

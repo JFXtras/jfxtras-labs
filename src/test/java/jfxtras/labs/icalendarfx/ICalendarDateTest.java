@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.mocks.VEventMock;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -1008,7 +1008,7 @@ public class ICalendarDateTest extends ICalendarTestAbstract
         }
 
         // Change RRule
-        v.setRRule(new RecurrenceRule()
+        v.setRRule(new RecurrenceRuleParameter()
                 .withFrequency(new Weekly()
                         .withInterval(2)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));

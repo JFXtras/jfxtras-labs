@@ -5,7 +5,7 @@ import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 
 /**
  * RRULE
@@ -24,14 +24,14 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public class RecurrenceRuleProp extends PropertyBase<RecurrenceRule, RecurrenceRuleProp>
+public class RecurrenceRule extends PropertyBase<RecurrenceRuleParameter, RecurrenceRule>
 {
-    public RecurrenceRuleProp(CharSequence contentLine)
+    public RecurrenceRule(CharSequence contentLine)
     {
         super(contentLine);
     }
 
-    public RecurrenceRuleProp(RecurrenceRule value)
+    public RecurrenceRule(RecurrenceRuleParameter value)
     {
         super(value);
     }

@@ -201,9 +201,6 @@ public abstract class VComponentBase<T> implements VComponentNew
         
         final boolean propertiesEquals;
         List<PropertyEnum> properties = properties(); // make properties local to avoid creating list multiple times
-        System.out.println("equals:" + properties.size() + " " + testObj.properties().size());
-        properties.stream().forEach(System.out::println);
-        testObj.properties().stream().forEach(System.out::println);
         List<PropertyEnum> testProperties = testObj.properties(); // make properties local to avoid creating list multiple times
         if (properties.size() == testProperties.size())
         {

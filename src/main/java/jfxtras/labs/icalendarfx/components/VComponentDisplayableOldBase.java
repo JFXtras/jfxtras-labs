@@ -35,7 +35,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RDate;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
@@ -486,17 +486,17 @@ public abstract class VComponentDisplayableOldBase<I, T> implements VComponent<I
      * If event is not repeating value is null
      */
     @Override
-    public ObjectProperty<RecurrenceRule> rRuleProperty()
+    public ObjectProperty<RecurrenceRuleParameter> rRuleProperty()
     {
-        if (rRule == null) rRule = new SimpleObjectProperty<RecurrenceRule>(this, VComponentPropertyOld.RECURRENCE_RULE.toString(), _rRule);
+        if (rRule == null) rRule = new SimpleObjectProperty<RecurrenceRuleParameter>(this, VComponentPropertyOld.RECURRENCE_RULE.toString(), _rRule);
         return rRule;
     }
-    private ObjectProperty<RecurrenceRule> rRule;
-    private RecurrenceRule _rRule;
+    private ObjectProperty<RecurrenceRuleParameter> rRule;
+    private RecurrenceRuleParameter _rRule;
     @Override
-    public RecurrenceRule getRRule() { return (rRule == null) ? _rRule : rRule.get(); }
+    public RecurrenceRuleParameter getRRule() { return (rRule == null) ? _rRule : rRule.get(); }
     @Override
-    public void setRRule(RecurrenceRule rRule)
+    public void setRRule(RecurrenceRuleParameter rRule)
     {
         if (this.rRule == null)
         {
@@ -506,7 +506,7 @@ public abstract class VComponentDisplayableOldBase<I, T> implements VComponent<I
             this.rRule.set(rRule);
         }
     }
-    public T withRRule(RecurrenceRule rRule) { setRRule(rRule); return (T) this; }
+    public T withRRule(RecurrenceRuleParameter rRule) { setRRule(rRule); return (T) this; }
     
     /**
      *  SEQUENCE: RFC 5545 iCalendar 3.8.7.4. page 138
@@ -1147,7 +1147,7 @@ public abstract class VComponentDisplayableOldBase<I, T> implements VComponent<I
     private int skipCounter = 0; // counter that increments up to CACHE_SKIP, indicates time to record a value, then resets to 0
     private Temporal[] temporalCache; // the start date or date/time cache
     private Temporal dateTimeStartLast; // last dateTimeStart, when changes indicates clearing the cache is necessary
-    private RecurrenceRule rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
+    private RecurrenceRuleParameter rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
     private int cacheStart = 0; // start index where cache values are stored (starts in middle)
     private int cacheEnd = 0; // end index where cache values are stored
 
@@ -1376,7 +1376,7 @@ public abstract class VComponentDisplayableOldBase<I, T> implements VComponent<I
         WITH_NEW_REPEAT, 
         HAD_REPEAT_BECOMING_INDIVIDUAL;
       
-        public static RRuleStatus getRRuleType(RecurrenceRule rruleNew, RecurrenceRule rruleOld)
+        public static RRuleStatus getRRuleType(RecurrenceRuleParameter rruleNew, RecurrenceRuleParameter rruleOld)
         {
             if (rruleNew == null)
             {

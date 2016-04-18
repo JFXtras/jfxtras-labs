@@ -25,7 +25,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RDate;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
@@ -286,9 +286,9 @@ public interface VComponent<I>
      * to-dos, journal entries, or time zone definitions
      * If component is not repeating the value is null.
      */
-    RecurrenceRule getRRule();
-    ObjectProperty<RecurrenceRule> rRuleProperty();
-    void setRRule(RecurrenceRule rRule);
+    RecurrenceRuleParameter getRRule();
+    ObjectProperty<RecurrenceRuleParameter> rRuleProperty();
+    void setRRule(RecurrenceRuleParameter rRule);
 
     /**
      *  SEQUENCE: RFC 5545 iCalendar 3.8.7.4. page 138

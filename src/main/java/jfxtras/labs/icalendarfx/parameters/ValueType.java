@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public enum ValueType
@@ -202,7 +202,7 @@ public enum ValueType
             return null;
         }
     },
-    RECURRENCE_RULE ("RECUR", Arrays.asList(RecurrenceRule.class)) {
+    RECURRENCE_RULE ("RECUR", Arrays.asList(RecurrenceRuleParameter.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -217,7 +217,7 @@ public enum ValueType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) new RecurrenceRule(string);
+                    return (T) new RecurrenceRuleParameter(string);
                 }
             };
         }

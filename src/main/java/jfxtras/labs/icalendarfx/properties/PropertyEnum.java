@@ -40,7 +40,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleProp;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
@@ -324,8 +324,14 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentPersonal castComponent = (VComponentPersonal) vComponent;
-            Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-            castComponent.setDateTimeStamp(new DateTimeStamp((ZonedDateTime) t));                                
+            if (castComponent.getDateTimeStamp() == null)
+            {
+                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
+                castComponent.setDateTimeStamp(new DateTimeStamp((ZonedDateTime) t));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     DATE_TIME_START ("DTSTART", // property name
@@ -344,17 +350,23 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentPrimary castComponent = (VComponentPrimary) vComponent;
-            Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-            if (t instanceof LocalDate)
+            if (castComponent.getDateTimeStart() == null)
             {
-                castComponent.setDateTimeStart(new DateTimeStart<LocalDate>((LocalDate) t));                
-            } else if (t instanceof LocalDateTime)
+                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
+                if (t instanceof LocalDate)
+                {
+                    castComponent.setDateTimeStart(new DateTimeStart<LocalDate>((LocalDate) t));                
+                } else if (t instanceof LocalDateTime)
+                {
+                    castComponent.setDateTimeStart(new DateTimeStart<LocalDateTime>((LocalDateTime) t));                
+                    
+                } else if (t instanceof ZonedDateTime)
+                {
+                    castComponent.setDateTimeStart(new DateTimeStart<ZonedDateTime>((ZonedDateTime) t));                                
+                }
+            } else
             {
-                castComponent.setDateTimeStart(new DateTimeStart<LocalDateTime>((LocalDateTime) t));                
-                
-            } else if (t instanceof ZonedDateTime)
-            {
-                castComponent.setDateTimeStart(new DateTimeStart<ZonedDateTime>((ZonedDateTime) t));                                
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
     },
@@ -696,20 +708,26 @@ public enum PropertyEnum
     RECURRENCE_RULE ("RRULE", // property name
             Arrays.asList(ValueType.RECURRENCE_RULE), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            RecurrenceRuleProp.class) // property class
+            RecurrenceRule.class) // property class
     {
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentRepeatable castComponent = (VComponentRepeatable) vComponent;
+            return castComponent.getRecurrenceRule();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentRepeatable castComponent = (VComponentRepeatable) vComponent;
+            if (castComponent.getRecurrenceRule() == null)
+            {
+                castComponent.setRecurrenceRule(new RecurrenceRule(propertyContent));                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     }, // Recurrence
     RELATED_TO ("RELATED-TO", // property name
@@ -1010,7 +1028,13 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentPersonal castComponent = (VComponentPersonal) vComponent;
-            castComponent.setUniqueIdentifier(new UniqueIdentifier(propertyContent));
+            if (castComponent.getUniqueIdentifier() == null)
+            {
+                castComponent.setUniqueIdentifier(new UniqueIdentifier(propertyContent));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     UNIFORM_RESOURCE_LOCATOR ("URL", // property name

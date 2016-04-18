@@ -16,6 +16,6 @@ public class VComponentTest2 extends VComponentRepeatableBase<VComponentTest2>
     @Override
     public VComponentEnum componentType()
     {
-        return VComponentEnum.STANDARD_OR_SAVINGS_TIME; // for testing
+        return VComponentEnum.STANDARD; // for testing
     }
 }

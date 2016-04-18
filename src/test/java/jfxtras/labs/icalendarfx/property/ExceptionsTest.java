@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 
 public class ExceptionsTest
@@ -40,10 +41,11 @@ public class ExceptionsTest
         String content = "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z";
         Exceptions<ZonedDateTime> madeProperty = new Exceptions<ZonedDateTime>(content);
         assertEquals(content, madeProperty.toContentLine());
-        Exceptions<ZonedDateTime> expectedProperty = new Exceptions<ZonedDateTime>(FXCollections.observableSet(
+        ObservableSet<ZonedDateTime> observableSet = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("Z")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("Z")),
-                ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) ));
+                ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );
+        Exceptions<ZonedDateTime> expectedProperty = new Exceptions<ZonedDateTime>(observableSet);
         assertEquals(expectedProperty, madeProperty);
         
         Set<ZonedDateTime> expectedValues = new HashSet<>(Arrays.asList(
@@ -51,6 +53,9 @@ public class ExceptionsTest
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("Z")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) ));
         assertEquals(expectedValues, madeProperty.getValue());
+        
+        observableSet.add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 5, 1, 0), ZoneId.of("Z")));
+        assertEquals(4, expectedProperty.getValue().size());
     }
     
     @Test

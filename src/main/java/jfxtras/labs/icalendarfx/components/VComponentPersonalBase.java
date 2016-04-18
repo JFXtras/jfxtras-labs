@@ -186,8 +186,9 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     public UniformResourceLocator getUniformResourceLocator() { return (uniformResourceLocator == null) ? null : uniformResourceLocatorProperty().get(); }
     @Override
     public void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
+    public void setUniformResourceLocator(URI url) { setUniformResourceLocator(new UniformResourceLocator(url)); };
     public T withUniformResourceLocator(String url) { setUniformResourceLocator(new UniformResourceLocator(url)); return (T) this; }
-    public T withUniformResourceLocator(URI uri) { setUniformResourceLocator(new UniformResourceLocator(uri)); return (T) this; }
+    public T withUniformResourceLocator(URI url) { setUniformResourceLocator(url); return (T) this; }
     public T withUniformResourceLocator(UniformResourceLocator url) { setUniformResourceLocator(url); return (T) this; }
 
 
