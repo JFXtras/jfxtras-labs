@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
 
 /**
@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  * 
  * The property can be specified in following components:
  * @see VEventNewInt
- * @see VTodo
+ * @see VTodoInt
  */
 public class Resources extends PropertyBaseAltText<List<String>, Resources>
 {

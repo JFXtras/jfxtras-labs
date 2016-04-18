@@ -6,8 +6,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VJournalInt;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.parameters.Encoding;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
@@ -32,8 +32,8 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * 
  * The property can be specified in following components:
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see VAlarm
  */
 public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements PropertyAttachment<T>

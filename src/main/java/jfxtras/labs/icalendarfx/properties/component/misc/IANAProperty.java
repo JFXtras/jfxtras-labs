@@ -7,9 +7,9 @@ import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VJournalInt;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 
 /**
  * IANA Properties
@@ -29,8 +29,8 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * 
  * The property can be specified in following components:
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see VAlarm
  * @see VTimeZone
  * @see DaylightSavingTime

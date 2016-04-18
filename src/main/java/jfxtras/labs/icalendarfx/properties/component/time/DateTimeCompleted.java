@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.time;
 
 import java.time.ZonedDateTime;
 
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
 
 /**
@@ -19,7 +19,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
  * @author David Bal
  *
  * The property can be specified in following components:
- * @see VTodo
+ * @see VTodoInt
  */
 public class DateTimeCompleted extends PropertyBaseUTC<DateTimeCompleted>
 {

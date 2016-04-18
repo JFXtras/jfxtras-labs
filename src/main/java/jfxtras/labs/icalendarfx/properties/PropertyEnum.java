@@ -875,6 +875,7 @@ public enum PropertyEnum
             
         }
     },
+    // descriptive
     SUMMARY ("SUMMARY", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE,
@@ -884,15 +885,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDescribable castComponent = (VComponentDescribable) vComponent;
+            return castComponent.getSummary();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDescribable castComponent = (VComponentDescribable) vComponent;
+            if (castComponent.getSummary() == null)
+            {
+                castComponent.setSummary(new Summary(propertyContent));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Date and Time

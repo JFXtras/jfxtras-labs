@@ -4,8 +4,8 @@ import java.net.URI;
 
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VJournalInt;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 
 /**
  * ORGANIZER
@@ -18,8 +18,8 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * 
  * @author David Bal
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see VFreeBusy
  */
 public class Organizer extends PropertyBaseCalendarUser<URI, Organizer>

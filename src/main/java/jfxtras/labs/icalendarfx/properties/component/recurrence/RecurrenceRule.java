@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 
@@ -19,7 +19,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
  * 
  * @author David Bal
  * @see VEventNewInt
- * @see VTodo
+ * @see VTodoInt
  * @see TJournal
  * @see DaylightSavingTime
  * @see StandardTime

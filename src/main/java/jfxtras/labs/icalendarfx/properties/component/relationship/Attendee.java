@@ -4,8 +4,8 @@ import java.net.URI;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VJournalInt;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 
 /**
  * ATTENDEE
@@ -21,8 +21,8 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * 
  * @author David Bal
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see VAlarm
  */
 public class Attendee extends PropertyBaseAttendee<URI, Attendee>

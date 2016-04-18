@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VJournalInt;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
 
 /**
@@ -24,8 +24,8 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  * 
  * The property can be specified in following components:
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  */
 public class Categories extends PropertyBaseLanguage<List<String>, Categories>
 {

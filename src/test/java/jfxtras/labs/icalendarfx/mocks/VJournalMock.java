@@ -2,176 +2,41 @@ package jfxtras.labs.icalendarfx.mocks;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
 import java.util.Collection;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
-import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
-public class VEventMockNew extends VEventNew<VEventMockNew, InstanceMock>
+public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
 {
     /*
      * CONSTRUCTORS
      */
-    public VEventMockNew() { }
+    public VJournalMock() { }
     
-    public VEventMockNew(String contentLines)
+    public VJournalMock(String contentLines)
     {
         super(contentLines);
     }
-    
+
     @Override
-    public Temporal getDateTimeEnd()
+    public ObservableList<Description> getDescriptions()
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ObjectProperty<Temporal> dateTimeEndProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDateTimeEnd(Temporal dtEnd)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public String getTimeTransparency()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public StringProperty timeTransparencyProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setTimeTransparency(String transparency)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public ObjectProperty<TemporalAmount> durationProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public TemporalAmount getDuration()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDuration(TemporalAmount duration)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Pair<Double, Double> getGeographicPosition()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<Pair<Double, Double>> geographicPositionProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setGeographicPosition(ObjectProperty<Pair<Double, Double>> geo)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Location getLocation()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<Location> locationProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setLocation(Location location)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public int getPriority()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public IntegerProperty priorityProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setPriority(int priority)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Resources getResources()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<Resources> resourcesProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setResources(Resources resources)
+    public void setDescriptions(ObservableList<Description> properties)
     {
         // TODO Auto-generated method stub
         
@@ -449,5 +314,4 @@ public class VEventMockNew extends VEventNew<VEventMockNew, InstanceMock>
         // TODO Auto-generated method stub
         return null;
     }
-
 }

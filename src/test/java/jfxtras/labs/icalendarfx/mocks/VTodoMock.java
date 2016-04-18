@@ -10,7 +10,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
@@ -18,55 +18,76 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
-public class VEventMockNew extends VEventNew<VEventMockNew, InstanceMock>
+public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
 {
     /*
      * CONSTRUCTORS
      */
-    public VEventMockNew() { }
+    public VTodoMock() { }
     
-    public VEventMockNew(String contentLines)
+    public VTodoMock(String contentLines)
     {
         super(contentLines);
     }
     
     @Override
-    public Temporal getDateTimeEnd()
+    public ZonedDateTime getDateTimeCompleted()
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ObjectProperty<Temporal> dateTimeEndProperty()
+    public ObjectProperty<ZonedDateTime> dateTimeCompletedProperty()
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setDateTimeEnd(Temporal dtEnd)
+    public void setDateTimeCompleted(ZonedDateTime dateTimeCompleted)
     {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public String getTimeTransparency()
+    public Temporal getDateTimeDue()
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public StringProperty timeTransparencyProperty()
+    public ObjectProperty<Temporal> dateTimeDueProperty()
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setTimeTransparency(String transparency)
+    public void setDateTimeDue(Temporal dateTimeDue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getPercentComplete()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public IntegerProperty percentCompleteProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setPercentComplete(int percentComplete)
     {
         // TODO Auto-generated method stub
         
@@ -448,6 +469,48 @@ public class VEventMockNew extends VEventNew<VEventMockNew, InstanceMock>
     {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public Temporal getDateTimeEnd()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<Temporal> dateTimeEndProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setDateTimeEnd(Temporal dtEnd)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String getTimeTransparency()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public StringProperty timeTransparencyProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setTimeTransparency(String transparency)
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

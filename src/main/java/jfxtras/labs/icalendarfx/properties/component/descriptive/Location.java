@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
 
 /**
@@ -18,7 +18,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  * 
  * The property can be specified in following components:
  * @see VEventNewInt
- * @see VTodo
+ * @see VTodoInt
  */
 public class Location extends PropertyBaseAltText<String, Location>
 {    

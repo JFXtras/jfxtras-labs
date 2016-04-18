@@ -15,8 +15,8 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
  * 
  * @author David Bal
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see VFreeBusy
  */
 public interface VComponentPersonal extends VComponentPrimary

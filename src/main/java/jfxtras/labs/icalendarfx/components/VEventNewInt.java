@@ -5,6 +5,7 @@ import java.time.temporal.Temporal;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 
+@Deprecated // put into abstract class when done building VEvent
 public interface VEventNewInt<I> extends VComponentLocatable<I>
 {
     /**

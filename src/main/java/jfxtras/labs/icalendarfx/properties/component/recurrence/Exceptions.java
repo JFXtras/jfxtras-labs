@@ -6,8 +6,8 @@ import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VJournalInt;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 
 /**
  * EXDATE
@@ -19,8 +19,8 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * 
  * @author David Bal
  * @see VEvent
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see DaylightSavingTime
  * @see StandardTime
  */

@@ -9,8 +9,8 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VJournalInt;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
 
 /**
@@ -27,8 +27,8 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  * 
  * The property can be specified in following components:
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see VFreeBusy
  */
 public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>

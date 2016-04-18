@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
@@ -15,11 +16,13 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  *
  * @param <T>
  * @see VEventNewInt
- * @see VTodo
- * Note: not VJournal - allows multiple Descriptions
+ * @see VTodoInt
+ * Note: not VJournal - allows multiple Summarys
  * 
  * Note: can't be used for VAlarm
  */
+@Deprecated
+
 public abstract class VComponentDescribableBase<T> extends VComponentBase<T> implements VComponentDescribable
 {
     /**
@@ -49,28 +52,31 @@ public abstract class VComponentDescribableBase<T> extends VComponentBase<T> imp
         Arrays.stream(attachments).forEach(c -> PropertyEnum.ATTACHMENT.parse(this, c));
         return (T) this;
     }
-
- 
-    @Override
-    public Summary getSummary()
+    
+    /**
+     * SUMMARY
+     * RFC 5545 iCalendar 3.8.1.12. page 93
+     * 
+     * This property defines a short summary or subject for the calendar component.
+     * 
+     * Example:
+     * SUMMARY:Department Party
+     */
+    @Override public ObjectProperty<Summary> summaryProperty()
     {
-        // TODO Auto-generated method stub
-        return null;
+        if (summary == null)
+        {
+            summary = new SimpleObjectProperty<>(this, PropertyEnum.SUMMARY.toString());
+        }
+        return summary;
     }
-
+    private ObjectProperty<Summary> summary;
+    @Override public Summary getSummary() { return summaryProperty().get(); }
     @Override
-    public ObjectProperty<Summary> summaryProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    public void setSummary(Summary summary) { summaryProperty().set(summary); }
+    public T withSummary(Summary summary) { setSummary(summary); return (T) this; }
+    public T withSummary(String summary) { PropertyEnum.SUMMARY.parse(this, summary); return (T) this; }
 
-    @Override
-    public void setSummary(Summary summary)
-    {
-        // TODO Auto-generated method stub
-        
-    }
     
     /*
      * CONSTRUCTORS

@@ -17,6 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
@@ -174,6 +175,31 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     public T withRecurrenceRule(RecurrenceRule rrule) { setRecurrenceRule(rrule); return (T) this; }
     public T withRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(rrule); return (T) this; }
 
+    /**
+     * SUMMARY
+     * RFC 5545 iCalendar 3.8.1.12. page 93
+     * 
+     * This property defines a short summary or subject for the calendar component.
+     * 
+     * Example:
+     * SUMMARY:Department Party
+     */
+    @Override public ObjectProperty<Summary> summaryProperty()
+    {
+        if (summary == null)
+        {
+            summary = new SimpleObjectProperty<>(this, PropertyEnum.SUMMARY.toString());
+        }
+        return summary;
+    }
+    private ObjectProperty<Summary> summary;
+    @Override public Summary getSummary() { return summaryProperty().get(); }
+    @Override
+    public void setSummary(Summary summary) { summaryProperty().set(summary); }
+    public T withSummary(Summary summary) { setSummary(summary); return (T) this; }
+    public T withSummary(String summary) { PropertyEnum.SUMMARY.parse(this, summary); return (T) this; }
+
+    
     /*
      * CONSTRUCTORS
      */

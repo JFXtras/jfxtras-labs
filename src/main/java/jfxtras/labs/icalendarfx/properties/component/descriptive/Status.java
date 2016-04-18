@@ -5,8 +5,8 @@ import java.util.Map;
 
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VJournalInt;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusType;
 
@@ -23,8 +23,8 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusTy
  * 
  * The property can be specified in following components:
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  */
 public class Status extends PropertyBase<StatusType, Status>
 {

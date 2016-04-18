@@ -1,6 +1,20 @@
 package jfxtras.labs.icalendarfx.components;
 
-public interface VJournal<I> extends VComponentDisplayable<I>
+public abstract class VJournal<T, I> extends VComponentDisplayableBase<T, I> implements VJournalInt
 {
-    // no new methods
+    @Override
+    public VComponentEnum componentType()
+    {
+        return VComponentEnum.VJOURNAL;
+    }
+    
+    /*
+     * CONSTRUCTORS
+     */
+    public VJournal() { }
+    
+    public VJournal(String contentLines)
+    {
+        super(contentLines);
+    }
 }

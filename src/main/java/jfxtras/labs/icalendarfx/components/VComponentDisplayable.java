@@ -22,7 +22,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
  * @param <I> class of recurrence instance
  * @see VEvent
  * @see VTodoOld
- * @see VJournalBase
+ * @see VJournal
  */
 public interface VComponentDisplayable<I> extends VComponentPersonal, VComponentRepeatable, VComponentDescribable, VComponentLastModified
 {

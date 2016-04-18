@@ -9,7 +9,7 @@ import jfxtras.labs.icalendarfx.components.VAlarmOld;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
-import jfxtras.labs.icalendarfx.components.VJournalBase;
+import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZoneOld;
 import jfxtras.labs.icalendarfx.components.VTodoOld;
 import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities;
@@ -193,10 +193,10 @@ public class VCalendar
      * A grouping of component properties that describe a task that needs to be completed.
      * 
      * @see VComponent
-     * @see VJournalBase
+     * @see VJournal
      */
-    public ObservableList<VJournalBase<?,?>> vJournals() { return vJournals; }
-    private ObservableList<VJournalBase<?,?>> vJournals = FXCollections.observableArrayList();
+    public ObservableList<VJournal<?,?>> vJournals() { return vJournals; }
+    private ObservableList<VJournal<?,?>> vJournals = FXCollections.observableArrayList();
 
     /** 
      * VJOURNAL callback
@@ -204,10 +204,10 @@ public class VCalendar
      * creates VJournal objects
      * 
      *  */
-    public  Callback<String, VJournalBase<?,?>> getMakeVJournalCallback() { return makeVJournalCallback; }
-    private Callback<String, VJournalBase<?,?>> makeVJournalCallback;
-    public void setMakeVJournalCallback(Callback<String, VJournalBase<?,?>> callback) { makeVJournalCallback = callback; }
-    public VCalendar withVJournalCallback(Callback<String, VJournalBase<?,?>> callback) { setMakeVJournalCallback(callback); return this; }
+    public  Callback<String, VJournal<?,?>> getMakeVJournalCallback() { return makeVJournalCallback; }
+    private Callback<String, VJournal<?,?>> makeVJournalCallback;
+    public void setMakeVJournalCallback(Callback<String, VJournal<?,?>> callback) { makeVJournalCallback = callback; }
+    public VCalendar withVJournalCallback(Callback<String, VJournal<?,?>> callback) { setMakeVJournalCallback(callback); return this; }
     
     /** 
      * VFREEBUSY: RFC 5545 iCalendar 3.6.4. page 59

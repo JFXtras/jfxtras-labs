@@ -4,7 +4,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import jfxtras.labs.icalendarfx.component.ParsePropertiesTest;
+import jfxtras.labs.icalendarfx.component.DaylightSavingsTimeTest;
+import jfxtras.labs.icalendarfx.component.GeneralTest;
+import jfxtras.labs.icalendarfx.component.StandardTimeTest;
+import jfxtras.labs.icalendarfx.component.VAlarmTest;
+import jfxtras.labs.icalendarfx.component.VEventTest;
+import jfxtras.labs.icalendarfx.component.VFreeBusyTest;
+import jfxtras.labs.icalendarfx.component.VJournalTest;
+import jfxtras.labs.icalendarfx.component.VTimeZoneTest;
+import jfxtras.labs.icalendarfx.component.VTodoTest;
 import jfxtras.labs.icalendarfx.parameter.DelegateesTest;
 import jfxtras.labs.icalendarfx.parameter.DirectoryEntryReferenceTest;
 import jfxtras.labs.icalendarfx.parameter.ParseParameterTest;
@@ -60,7 +68,15 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
 //              , ICalendarReadICSTest.class,
         
         //component tests
-        ParsePropertiesTest.class,
+        GeneralTest.class,
+        VEventTest.class,
+        VTodoTest.class,
+        VJournalTest.class,
+        VFreeBusyTest.class,
+        VTimeZoneTest.class,
+        VAlarmTest.class,
+        StandardTimeTest.class,
+        DaylightSavingsTimeTest.class,
        
        // property tests
         ActionTest.class,

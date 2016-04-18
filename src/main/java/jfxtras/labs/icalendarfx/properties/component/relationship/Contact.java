@@ -2,8 +2,8 @@ package jfxtras.labs.icalendarfx.properties.component.relationship;
 
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VJournalInt;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
 
 /**
@@ -19,8 +19,8 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  * 
  * @author David Bal
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see VFreeBusy
  */
 public class Contact extends PropertyBaseAltText<String, Contact>

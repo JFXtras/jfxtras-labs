@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.time;
 
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
 
 /**
@@ -21,7 +21,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
  * @author David Bal
  *
  * The property can be specified in following components:
- * @see VTodo
+ * @see VTodoInt
  */
 public class DateTimeDue<T extends Temporal> extends PropertyBaseDateTime<T, DateTimeDue<T>>
 {    

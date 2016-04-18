@@ -24,8 +24,8 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
  *
  * @param <T> - implementation subclass
  * @see VEventNewInt
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see VFreeBusy
  */
 public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T> implements VComponentPersonal

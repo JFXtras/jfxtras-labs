@@ -13,8 +13,8 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
  * 
  * @author David Bal
  * @see VEvent
- * @see VTodo
- * @see VJournal
+ * @see VTodoInt
+ * @see VJournalInt
  * @see StandardOrSavings
  */
 public interface VComponentRepeatable extends VComponentPrimary
