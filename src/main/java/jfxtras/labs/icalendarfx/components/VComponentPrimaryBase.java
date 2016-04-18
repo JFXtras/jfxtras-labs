@@ -10,7 +10,6 @@ import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
@@ -52,13 +51,15 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
     @Override
     public void setComments(ObservableList<Comment> comments) { this.comments = comments; }
     /** add comma separated comments into separate comment objects */
+    public T withComments(ObservableList<Comment> comments) { setComments(comments); return (T) this; }
     public T withComments(String...comments)
     {
-        if (this.comments == null)
-        {
-            this.comments = FXCollections.observableArrayList();
-        }
-        Arrays.stream(comments).forEach(c -> getComments().add(new Comment(c)));
+//        if (this.comments == null)
+//        {
+//            this.comments = FXCollections.observableArrayList();
+//        }
+//        Arrays.stream(comments).forEach(c -> getComments().add(new Comment(c)));
+        Arrays.stream(comments).forEach(c -> PropertyEnum.COMMENT.parse(this, c));
         return (T) this;
     }
     
@@ -116,56 +117,9 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
                     + temporal.getClass().getSimpleName() + " is not supported");
         }
     }
-//    public void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart)
-//    {
-//        // check Temporal class is LocalDate, LocalDateTime or ZonedDateTime - others are not supported
-//        // TODO - I MAY WANT TO CHANGE CHECKING METHOD
-//        DateTimeType myDateTimeType = DateTimeType.of(dtStart.getValue());
-//        boolean changed = (lastDtStart != null) && (myDateTimeType != lastDtStart);
-////        System.out.println("getDateTimeStart()" +  dateTimeStartProperty());
-////        System.out.println("getDateTimeStart().getValue()" +  dateTimeStartProperty().getValue());
-////        System.out.println("dtStart:" + dtStart);
-//        if (dateTimeStartProperty().getValue() != null)
-//        {
-//            lastDtStart = getDateTimeStart().getValue();
-//        }
-//        dateTimeStartProperty().set(dtStart);
-////        dateTimeStart = dtStart;
-////        propertyMap().put(PropertyEnum.DATE_TIME_START, new ArrayList<DateTimeStart>(Arrays.asList(dtStart)));
-////        propertyMap().put(PropertyEnum.DATE_TIME_START, dtStart);
-//        
-//        // if type has changed then make all date-time properties the same
-//        if (changed)
-//        {
-////            System.out.println("**********************start:" + dtStart);
-//            ensureDateTimeTypeConsistency(myDateTimeType, getZoneId());
-//        }
-//    }
     public T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
-    public T withDateTimeStart(String dtStart)
-    {
-        Temporal temporal = DateTimeUtilities.temporalFromString(dtStart);
-        return withDateTimeStart(temporal);
-    }
-    public T withDateTimeStart(Temporal temporal)
-    {
-        setDateTimeStart(temporal);
-//        if (temporal instanceof LocalDate)
-//        {
-//            setDateTimeStart(new DateTimeStart<LocalDate>((LocalDate) temporal));            
-//        } else if (temporal instanceof LocalDateTime)
-//        {
-//            setDateTimeStart(new DateTimeStart<LocalDateTime>((LocalDateTime) temporal));            
-//        } else if (temporal instanceof ZonedDateTime)
-//        {
-//            setDateTimeStart(new DateTimeStart<ZonedDateTime>((ZonedDateTime) temporal));            
-//        } else
-//        {
-//            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
-//                    + temporal.getClass().getSimpleName() + " is not supported");
-//        }
-        return (T) this;
-    }
+    public T withDateTimeStart(String dtStart) { return withDateTimeStart(DateTimeUtilities.temporalFromString(dtStart)); }
+    public T withDateTimeStart(Temporal temporal) { setDateTimeStart(temporal); return (T) this; }
 
     /*
      * CONSTRUCTORS

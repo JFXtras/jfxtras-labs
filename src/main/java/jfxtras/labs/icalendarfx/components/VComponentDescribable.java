@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
@@ -14,7 +15,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  * @see VJournalOld
  * @see VAlarmOld
  *  */
-public interface VComponentDescribable
+public interface VComponentDescribable extends VComponentNew
 {
     /**
      * ATTACH: Attachment
@@ -26,9 +27,8 @@ public interface VComponentDescribable
      * ATTACH;FMTTYPE=application/postscript:ftp://example.com/pub/
      *  reports/r-960812.p
      */
-    public ObjectProperty<Attachment> attachmentProperty();
-    public Attachment getAttachment();
-    public void setAttachment(Attachment attachment);
+    ObservableList<Attachment<?>> getAttachments();
+    void setAttachments(ObservableList<Attachment<?>> properties);
     
     /**
      * DESCRIPTION:

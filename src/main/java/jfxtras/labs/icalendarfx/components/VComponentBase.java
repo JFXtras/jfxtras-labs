@@ -45,25 +45,22 @@ public abstract class VComponentBase<T> implements VComponentNew
     @Override
     public ObservableList<NonStandardProperty> getNonStandardProperties()
     {
-//        if (nonStandardProps == null)
-//        {
-//            nonStandardProps = FXCollections.observableArrayList();
-//        }
         return nonStandardProps;
     }
     private ObservableList<NonStandardProperty> nonStandardProps;
     @Override
-    public void setNonStandardProperties(ObservableList<NonStandardProperty> comments) { this.nonStandardProps = comments; }
-    /** add comma separated comments into separate comment objects */
-    public T withNonStandardProperty(String...comments)
+    public void setNonStandardProperties(ObservableList<NonStandardProperty> nonStandardProps) { this.nonStandardProps = nonStandardProps; }
+    /** add comma separated nonStandardProps into separate nonStandardProps objects */
+    public T withNonStandardProperty(String...nonStandardProps)
     {
-        if (nonStandardProps == null)
+        if (this.nonStandardProps == null)
         {
-            nonStandardProps = FXCollections.observableArrayList();
+            this.nonStandardProps = FXCollections.observableArrayList();
         }
-        Arrays.stream(comments).forEach(c -> getNonStandardProperties().add(new NonStandardProperty(c)));
+        Arrays.stream(nonStandardProps).forEach(c -> getNonStandardProperties().add(new NonStandardProperty(c)));
         return (T) this;
     }
+    public T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return (T) this; }
     
     /**
      * 3.8.8.1.  IANA Properties
@@ -76,25 +73,23 @@ public abstract class VComponentBase<T> implements VComponentNew
     @Override
     public ObservableList<IANAProperty> getIANAProperties()
     {
-//        if (IANAProps == null)
-//        {
-//            IANAProps = FXCollections.observableArrayList();
-//        }
-        return IANAProps;
+        return ianaProps;
     }
-    private ObservableList<IANAProperty> IANAProps;
+    private ObservableList<IANAProperty> ianaProps;
     @Override
-    public void setIANAProperties(ObservableList<IANAProperty> comments) { this.IANAProps = comments; }
-    /** add comma separated comments into separate comment objects */
-    public T withIANAProperty(String...comments)
+    public void setIANAProperties(ObservableList<IANAProperty> ianaProps) { this.ianaProps = ianaProps; }
+    /** add comma separated ianaProps into separate comment objects */
+    public T withIANAProperty(String...ianaProps)
     {
-        if (IANAProps == null)
+        if (this.ianaProps == null)
         {
-            IANAProps = FXCollections.observableArrayList();
+            this.ianaProps = FXCollections.observableArrayList();
         }
-        Arrays.stream(comments).forEach(c -> getIANAProperties().add(new IANAProperty(c)));
+        Arrays.stream(ianaProps).forEach(c -> getIANAProperties().add(new IANAProperty(c)));
         return (T) this;
     }
+    public T withIANAProperty(ObservableList<IANAProperty> ianaProps) { setIANAProperties(ianaProps); return (T) this; }
+
     
     /**
      * List of all properties found in component.

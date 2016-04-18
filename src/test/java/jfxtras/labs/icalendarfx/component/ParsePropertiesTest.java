@@ -19,6 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.VComponentTest;
 import jfxtras.labs.icalendarfx.components.VComponentTest2;
+import jfxtras.labs.icalendarfx.components.VComponentTest3;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
@@ -139,7 +140,7 @@ public class ParsePropertiesTest
                 "REQUEST-STATUS:4.1;Event conflict.  Date-time is busy." + System.lineSeparator() +
                 "REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com" + System.lineSeparator() +
                 "END:" + componentName;
-                
+
         VComponentTest madeComponent = new VComponentTest(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com", madeComponent.getOrganizer().toContentLine());
@@ -188,5 +189,25 @@ public class ParsePropertiesTest
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
         builtComponent.getRecurrences().add(new Recurrences<ZonedDateTime>(expectedValues));
     }
+    
+    @Test
+    public void canBuildDescribable()
+    {
+        VComponentTest3 builtComponent = new VComponentTest3()
+                .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
+                        "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com");
+     
+        String componentName = builtComponent.componentType().toString();
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW" + System.lineSeparator() +
+                "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com" + System.lineSeparator() +
+                "END:" + componentName;
+
+        VComponentTest3 madeComponent = new VComponentTest3(content);
+        
+        assertEquals(madeComponent, builtComponent);
+
+    }
+
 
 }

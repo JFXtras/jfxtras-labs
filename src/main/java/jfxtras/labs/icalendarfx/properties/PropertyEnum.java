@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.properties;
 
+import java.net.URI;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
@@ -94,15 +96,33 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDescribable castComponent = (VComponentDescribable) vComponent;
+            return castComponent.getAttachments();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
+            VComponentDescribable castComponent = (VComponentDescribable) vComponent;
             
+            final ObservableList<Attachment<?>> list;
+            if (castComponent.getAttachments() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castComponent.setAttachments(list);
+            } else
+            {
+                list = castComponent.getAttachments();
+            }
+
+            boolean isBinary = propertyContent.toUpperCase().contains("VALUE=BINARY");
+            if (isBinary)
+            {
+                list.add(new Attachment<String>(String.class, propertyContent));
+            } else
+            {
+                list.add(new Attachment<URI>(URI.class, propertyContent));
+            }
         }
     },
 

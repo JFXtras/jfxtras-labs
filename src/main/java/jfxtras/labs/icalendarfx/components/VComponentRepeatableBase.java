@@ -70,34 +70,12 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         return recurrences;
     }
     private ObservableList<Recurrences<? extends Temporal>> recurrences;
-//    private void addRecurrences(String recurrences)
-//    {
-//        if (recurrences.length() > 0)
-//        {
-//            Temporal t = DateTimeUtilities.temporalFromString(recurrences.split(",")[0]);
-//            if (t instanceof LocalDate)
-//            {
-//                getRecurrences().add(new Recurrences<LocalDate>(recurrences));
-//            } else if (t instanceof LocalDateTime)
-//            {
-//                getRecurrences().add(new Recurrences<LocalDateTime>(recurrences));
-//                
-//            } else if (t instanceof ZonedDateTime)
-//            {
-//                getRecurrences().add(new Recurrences<ZonedDateTime>(recurrences));
-//            }
-//        } else
-//        {
-//            this.recurrences = FXCollections.observableArrayList();
-//        }        
-//    }
     @Override
     public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences) { this.recurrences = recurrences; }
     /** add comma separated recurrences into separate recurrences objects */
     public T withRecurrences(String...recurrences)
     {        
         String recurrencesCollected = Arrays.stream(recurrences).collect(Collectors.joining(","));
-//        setRecurrences(recurrencesCollected);
         if (recurrencesCollected.length() > 0)
         {
             Temporal t = DateTimeUtilities.temporalFromString(recurrencesCollected.split(",")[0]);
@@ -122,17 +100,17 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
             Temporal t = recurrences.iterator().next();
             if (t instanceof LocalDate)
             {
-                ObservableSet<LocalDate> recurrenceCast = (ObservableSet<LocalDate>) recurrences;
-                getRecurrences().add(new Recurrences<LocalDate>(recurrenceCast));
+                ObservableSet<LocalDate> recurrencesCast = (ObservableSet<LocalDate>) recurrences;
+                getRecurrences().add(new Recurrences<LocalDate>(recurrencesCast));
             } else if (t instanceof LocalDateTime)
             {
-                ObservableSet<LocalDateTime> recurrenceCast = (ObservableSet<LocalDateTime>) recurrences;
-                getRecurrences().add(new Recurrences<LocalDateTime>(recurrenceCast));
+                ObservableSet<LocalDateTime> recurrencesCast = (ObservableSet<LocalDateTime>) recurrences;
+                getRecurrences().add(new Recurrences<LocalDateTime>(recurrencesCast));
                 
             } else if (t instanceof ZonedDateTime)
             {
-                ObservableSet<ZonedDateTime> recurrenceCast = (ObservableSet<ZonedDateTime>) recurrences;
-                getRecurrences().add(new Recurrences<ZonedDateTime>(recurrenceCast));
+                ObservableSet<ZonedDateTime> recurrencesCast = (ObservableSet<ZonedDateTime>) recurrences;
+                getRecurrences().add(new Recurrences<ZonedDateTime>(recurrencesCast));
             }
         }    
         return (T) this;
