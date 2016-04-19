@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
-public abstract class VTodo<T, I> extends VComponentLocatableBase<T, I> implements VTodoInt<I>
+public abstract class VTodo<T, I> extends VComponentLocatableBase<T, I> implements VTodoInt<T,I>
 {
     @Override
     public VComponentEnum componentType()

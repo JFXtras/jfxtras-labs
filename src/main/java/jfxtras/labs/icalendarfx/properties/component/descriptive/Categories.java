@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,6 +57,13 @@ public class Categories extends PropertyBaseLanguage<List<String>, Categories>
         super();
         setConverter(CONVERTER);
         setValue(values);
+    }
+    
+    public Categories(String...values)
+    {
+        super();
+        setConverter(CONVERTER);
+        setValue(new ArrayList<>(Arrays.asList(values)));
     }
     
     public Categories(Categories source)

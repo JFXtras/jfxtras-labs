@@ -471,46 +471,4 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
         return null;
     }
 
-    @Override
-    public Temporal getDateTimeEnd()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<Temporal> dateTimeEndProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDateTimeEnd(Temporal dtEnd)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public String getTimeTransparency()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public StringProperty timeTransparencyProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setTimeTransparency(String transparency)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

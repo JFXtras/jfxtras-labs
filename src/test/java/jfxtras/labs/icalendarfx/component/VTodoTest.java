@@ -53,13 +53,13 @@ public class VTodoTest
     public void canBuildPrimary()
     {
         VTodoMock builtComponent = new VTodoMock()
-                .withDateTimeStamp("20160306T080000")
+                .withDateTimeStamp("20160306T080000Z")
                 .withComments("This is a test comment", "Another comment")
                 .withComments("COMMENT:My third comment");
         String componentName = builtComponent.componentType().toString();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
-                "DTSTART:20160306T080000" + System.lineSeparator() +
+                "DTSTAMP:20160306T080000Z" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
                 "COMMENT:My third comment" + System.lineSeparator() +

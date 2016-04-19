@@ -1,29 +1,19 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonalBase<T> implements VComponentDisplayable<I>, VComponentRepeatable, VComponentDescribable
+public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonalBase<T> implements VComponentDisplayable<T,I>, VComponentRepeatable<T>, VComponentDescribable
 {
     /**
      * ATTACH
@@ -66,85 +56,15 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     @Override
     public ObservableList<Recurrences<? extends Temporal>> getRecurrences()
     {
-        if (recurrences == null)
-        {
-            recurrences = FXCollections.observableArrayList();
-            // change listener to ensure added recurrence sets match Temporal type of existing recurrence sets
-            recurrences.addListener((ListChangeListener<? super Recurrences<? extends Temporal>>)
-                    (ListChangeListener.Change<? extends Recurrences<? extends Temporal>> change) ->
-            {
-                if (recurrences.size() > 1)
-                {
-                Class<? extends Temporal> firstTemporalClass = recurrences.get(0).getValue().iterator().next().getClass();
-                while (change.next())
-                    {
-                        if (change.wasAdded())
-                        {
-                            Iterator<? extends Recurrences<? extends Temporal>> i = change.getAddedSubList().iterator();
-                            while (i.hasNext())
-                            {
-                                Recurrences<? extends Temporal> r = i.next();
-                                Class<? extends Temporal> myTemporalClass = r.getValue().iterator().next().getClass();
-                                if (! myTemporalClass.equals(firstTemporalClass))
-                                {
-                                    throw new DateTimeException("Added recurrences Temporal class " + myTemporalClass.getSimpleName() +
-                                            " doesn't match previous recurrences Temporal class " + firstTemporalClass.getSimpleName());
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
         return recurrences;
     }
     private ObservableList<Recurrences<? extends Temporal>> recurrences;
     @Override
-    public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences) { this.recurrences = recurrences; }
-    /** add comma separated recurrences into separate recurrences objects */
-    public T withRecurrences(String...recurrences)
-    {        
-        String recurrencesCollected = Arrays.stream(recurrences).collect(Collectors.joining(","));
-        if (recurrencesCollected.length() > 0)
-        {
-            Temporal t = DateTimeUtilities.temporalFromString(recurrencesCollected.split(",")[0]);
-            if (t instanceof LocalDate)
-            {
-                getRecurrences().add(new Recurrences<LocalDate>(recurrencesCollected));
-            } else if (t instanceof LocalDateTime)
-            {
-                getRecurrences().add(new Recurrences<LocalDateTime>(recurrencesCollected));
-                
-            } else if (t instanceof ZonedDateTime)
-            {
-                getRecurrences().add(new Recurrences<ZonedDateTime>(recurrencesCollected));
-            }
-        }     
-        return (T) this;
-    }
-    public T withRecurrences(ObservableSet<? extends Temporal> recurrences)
+    public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
     {
-        if (recurrences.size() > 0)
-        {
-            Temporal t = recurrences.iterator().next();
-            if (t instanceof LocalDate)
-            {
-                ObservableSet<LocalDate> recurrencesCast = (ObservableSet<LocalDate>) recurrences;
-                getRecurrences().add(new Recurrences<LocalDate>(recurrencesCast));
-            } else if (t instanceof LocalDateTime)
-            {
-                ObservableSet<LocalDateTime> recurrencesCast = (ObservableSet<LocalDateTime>) recurrences;
-                getRecurrences().add(new Recurrences<LocalDateTime>(recurrencesCast));
-                
-            } else if (t instanceof ZonedDateTime)
-            {
-                ObservableSet<ZonedDateTime> recurrencesCast = (ObservableSet<ZonedDateTime>) recurrences;
-                getRecurrences().add(new Recurrences<ZonedDateTime>(recurrencesCast));
-            }
-        }    
-        return (T) this;
+        this.recurrences = recurrences;
+        VComponentRepeatable.addRecurrencesListener(recurrences);
     }
-    public T withRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences) { setRecurrences(recurrences); return (T) this; }
 
     /**
      * RRULE, Recurrence Rule

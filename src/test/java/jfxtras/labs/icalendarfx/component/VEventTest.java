@@ -103,6 +103,7 @@ public class VEventTest
     {
         VEventMockNew builtComponent = new VEventMockNew()
                 .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
+                .withRecurrences(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
                 .withRecurrenceRule(new RecurrenceRuleParameter()
                     .withFrequency(new Daily()
                             .withInterval(4)));
@@ -110,6 +111,7 @@ public class VEventTest
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +
+                "RDATE;VALUE=DATE:20160415,20160416,20160417" + System.lineSeparator() +
                 "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
                 "END:" + componentName;
 
@@ -124,6 +126,7 @@ public class VEventTest
         builtComponent.getRecurrences().add(new Recurrences<LocalDate>(expectedValues));
         String content2 = "BEGIN:" + componentName + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +
+                "RDATE;VALUE=DATE:20160415,20160416,20160417" + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19960402,19960403,19960404" + System.lineSeparator() +
                 "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
                 "END:" + componentName;

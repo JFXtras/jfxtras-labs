@@ -52,6 +52,8 @@ public class GeneralTest
                 .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
                 .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
                 .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com");
+        VEventMockNew builtComponent2 = new VEventMockNew();
+        System.out.println("here:" + builtComponent2.getRecurrences());
         List<PropertyEnum> expectedProperties = Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.DATE_TIME_START, PropertyEnum.ORGANIZER, PropertyEnum.UNIQUE_IDENTIFIER);
         assertEquals(expectedProperties, builtComponent.properties());
     }

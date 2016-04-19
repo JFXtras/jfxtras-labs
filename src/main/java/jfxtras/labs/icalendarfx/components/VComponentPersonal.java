@@ -19,7 +19,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
  * @see VJournalInt
  * @see VFreeBusy
  */
-public interface VComponentPersonal extends VComponentPrimary
+public interface VComponentPersonal<T> extends VComponentPrimary<T>
 {
     /**
      * ATTENDEE: Attendee

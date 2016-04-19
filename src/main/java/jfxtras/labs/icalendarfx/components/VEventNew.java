@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
-public abstract class VEventNew<T, I> extends VComponentLocatableBase<T, I> implements VEventNewInt<I>
+public abstract class VEventNew<T, I> extends VComponentLocatableBase<T, I> implements VEventNewInt<T,I>
 {
     @Override
     public VComponentEnum componentType()

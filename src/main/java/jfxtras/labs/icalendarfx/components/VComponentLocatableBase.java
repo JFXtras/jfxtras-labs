@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
-public abstract class VComponentLocatableBase<T, I> extends VComponentDisplayableBase<T, I> implements VEventNewInt<I>
+public abstract class VComponentLocatableBase<T, I> extends VComponentDisplayableBase<T, I> implements VComponentLocatable<T,I>
 {
     /**
      * DESCRIPTION

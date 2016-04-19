@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import javafx.beans.property.StringProperty;
 
 @Deprecated // put into abstract class when done building VEvent
-public interface VEventNewInt<I> extends VComponentLocatable<I>, VComponentDateTimeEnd
+public interface VEventNewInt<T,I> extends VComponentLocatable<T,I>, VComponentDateTimeEnd
 {    
     /**
      * TRANSP: Time Transparency

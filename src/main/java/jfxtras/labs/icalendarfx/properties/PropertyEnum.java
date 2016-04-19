@@ -677,7 +677,7 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentRepeatable castComponent = (VComponentRepeatable) vComponent;
-            
+//            System.out.println("content:" + propertyContent);
             final ObservableList<Recurrences<? extends Temporal>> list;
             if (castComponent.getRecurrences() == null)
             {

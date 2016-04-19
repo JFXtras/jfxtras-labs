@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -86,5 +87,18 @@ public class RecurrencesTest
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("America/Los_Angeles")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("America/Los_Angeles")) ));
         assertEquals(expectedValues, madeProperty.getValue());
+    }
+    
+    @Test
+    public void canParseRecurrences3()
+    {
+        String content = "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904";
+        Recurrences<LocalDate> madeProperty = new Recurrences<LocalDate>(
+                LocalDate.of(1997, 3, 4),
+                LocalDate.of(1997, 5, 4),
+                LocalDate.of(1997, 7, 4),
+                LocalDate.of(1997, 9, 4)
+                );        
+        assertEquals(content, madeProperty.toContentLine());
     }
 }

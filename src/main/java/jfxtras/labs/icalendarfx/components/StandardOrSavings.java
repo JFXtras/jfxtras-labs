@@ -14,7 +14,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
  * @author David Bal
  *
  */
-public interface StandardOrSavings extends VComponentRepeatable
+public interface StandardOrSavings<T> extends VComponentRepeatable<T>
 {
     /**
      * TZID: Time Zone Identifier

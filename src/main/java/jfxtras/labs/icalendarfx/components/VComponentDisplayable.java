@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
  * @see VTodoOld
  * @see VJournal
  */
-public interface VComponentDisplayable<I> extends VComponentPersonal, VComponentRepeatable, VComponentDescribable, VComponentLastModified
+public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComponentRepeatable<T>, VComponentDescribable, VComponentLastModified
 {
     /**
      * CATEGORIES:

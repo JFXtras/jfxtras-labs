@@ -30,7 +30,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * @see VFreeBusy
  * @see VTimeZone
  */
-public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComponentPrimary
+public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComponentPrimary<T>
 {
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83
@@ -54,11 +54,6 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
     public T withComments(ObservableList<Comment> comments) { setComments(comments); return (T) this; }
     public T withComments(String...comments)
     {
-//        if (this.comments == null)
-//        {
-//            this.comments = FXCollections.observableArrayList();
-//        }
-//        Arrays.stream(comments).forEach(c -> getComments().add(new Comment(c)));
         Arrays.stream(comments).forEach(c -> PropertyEnum.COMMENT.parse(this, c));
         return (T) this;
     }

@@ -1,10 +1,21 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 
@@ -17,7 +28,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
  * @see VJournalInt
  * @see StandardOrSavings
  */
-public interface VComponentRepeatable extends VComponentPrimary
+public interface VComponentRepeatable<T> extends VComponentPrimary<T>
 {   
     /**
      * RDATE: Recurrence Date-Times
@@ -31,6 +42,72 @@ public interface VComponentRepeatable extends VComponentPrimary
      */
     ObservableList<Recurrences<? extends Temporal>> getRecurrences();
     void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences);
+    static void addRecurrencesListener(ObservableList<Recurrences<? extends Temporal>> recurrences)
+    {
+        recurrences.addListener((ListChangeListener.Change<? extends Recurrences<? extends Temporal>> change) ->
+        {
+            if (recurrences.size() > 1)
+            {
+                Class<? extends Temporal> firstTemporalClass = recurrences.get(0).getValue().iterator().next().getClass();
+                while (change.next())
+                {
+                    if (change.wasAdded())
+                    {
+                        Iterator<? extends Recurrences<? extends Temporal>> i = change.getAddedSubList().iterator();
+                        while (i.hasNext())
+                        {
+                            Recurrences<? extends Temporal> r = i.next();
+                            Class<? extends Temporal> myTemporalClass = r.getValue().iterator().next().getClass();
+                            if (! myTemporalClass.equals(firstTemporalClass))
+                            {
+                                throw new DateTimeException("Added recurrences Temporal class " + myTemporalClass.getSimpleName() +
+                                        " doesn't match previous recurrences Temporal class " + firstTemporalClass.getSimpleName());
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    default T withRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
+    {
+        setRecurrences(recurrences);
+        return (T) this;
+    }
+    default T withRecurrences(String...recurrences)
+    {
+        Arrays.stream(recurrences).forEach(s -> PropertyEnum.RECURRENCE_DATE_TIMES.parse(this, s));   
+        return (T) this;
+    }
+    default T withRecurrences(Temporal...recurrences)
+    {
+        if (recurrences.length > 0)
+        {
+            final ObservableList<Recurrences<? extends Temporal>> list;
+            if (getRecurrences() == null)
+            {
+                list = FXCollections.observableArrayList();
+                setRecurrences(list);
+            } else
+            {
+                list = getRecurrences();
+            }
+            
+            Temporal t = recurrences[0];
+            if (t instanceof LocalDate)
+            {
+                Set<LocalDate> recurrences2 = Arrays.stream(recurrences).map(r -> (LocalDate) r).collect(Collectors.toSet());
+                getRecurrences().add(new Recurrences<LocalDate>(FXCollections.observableSet(recurrences2)));
+            } else if (t instanceof LocalDateTime)
+            {
+                getRecurrences().add(new Recurrences<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) recurrences)));
+            } else if (t instanceof ZonedDateTime)
+            {
+                getRecurrences().add(new Recurrences<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) recurrences)));
+            }
+        }
+        return (T) this;
+    }
     
     /**
      * RRULE, Recurrence Rule

@@ -106,6 +106,22 @@ public abstract class VComponentBase<T> implements VComponentNew
         {
             PropertyEnum propertyType = i.next();
             Object property = propertyType.getProperty(this);
+//            final boolean isPropertyEmpty;
+//            if (property == null)
+//            {
+//                isPropertyEmpty = true;
+//            } else if (property instanceof Collection)
+//            {
+//                isPropertyEmpty = ((Collection<?>) property).isEmpty();
+//            } else
+//            {
+//                isPropertyEmpty = false;
+//            }
+//            System.out.println("props:" + propertyType + " " + property );
+//            if (! isPropertyEmpty)
+//            {
+//                populatedProperties.add(propertyType);
+//            }
             if (property != null)
             {
                 populatedProperties.add(propertyType);

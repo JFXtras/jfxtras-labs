@@ -7,7 +7,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 
-public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<T> implements StandardOrSavings
+public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<T> implements StandardOrSavings<T>
 {
     /*
      * CONSTRUCTORS
