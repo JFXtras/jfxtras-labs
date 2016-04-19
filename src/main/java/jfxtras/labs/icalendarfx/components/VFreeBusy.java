@@ -7,7 +7,21 @@ package jfxtras.labs.icalendarfx.components;
  * @author David Bal
  *
  */
-public abstract class VFreeBusy extends VComponentPersonalBase<VFreeBusy>
+public abstract class VFreeBusy<T> extends VComponentPersonalBase<T> implements VFreeBusyInt
 {
-
+    @Override
+    public VComponentEnum componentType()
+    {
+        return VComponentEnum.VFREEBUSY;
+    }
+    
+    /*
+     * CONSTRUCTORS
+     */
+    public VFreeBusy() { }
+    
+    public VFreeBusy(String contentLines)
+    {
+        super(contentLines);
+    }
 }

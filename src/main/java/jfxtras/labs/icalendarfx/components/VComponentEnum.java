@@ -31,9 +31,9 @@ public enum VComponentEnum
             PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.RECURRENCE_DATE_TIMES,
             PropertyEnum.RECURRENCE_RULE)),
     VALARM (Arrays.asList(PropertyEnum.ATTACHMENT, PropertyEnum.COMMENT, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD)),
-    VFREEBUSY (Arrays.asList(PropertyEnum.ATTACHMENT, PropertyEnum.ATTENDEE, PropertyEnum.COMMENT,
+    VFREEBUSY (Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.COMMENT,
             PropertyEnum.DATE_TIME_STAMP, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.ORGANIZER,
-            PropertyEnum.REQUEST_STATUS, PropertyEnum.UNIQUE_IDENTIFIER, PropertyEnum.UNIFORM_RESOURCE_LOCATOR));
+            PropertyEnum.REQUEST_STATUS, PropertyEnum.UNIQUE_IDENTIFIER));
 
     private List<PropertyEnum> allowedProperties;
     public List<PropertyEnum> allowedProperties() { return allowedProperties; }
