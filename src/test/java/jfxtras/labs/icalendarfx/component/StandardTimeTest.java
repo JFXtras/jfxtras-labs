@@ -1,6 +1,115 @@
 package jfxtras.labs.icalendarfx.component;
 
+import static org.junit.Assert.assertEquals;
+
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
+import jfxtras.labs.icalendarfx.components.StandardTime;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
+
 public class StandardTimeTest
 {
+    @Test
+    public void canBuildBase()
+    {        
+        ObjectProperty<String> s = new SimpleObjectProperty<>("start");
+        s.set(null);
+        
+        StandardTime builtComponent = new StandardTime()
+                .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
+                .withIANAProperty("TESTPROP2:CASUAL")
+                .withNonStandardProperty("X-TEST-OBJ:testid");
+        builtComponent.propertySortOrder().put("X-ABC-MMSUBJ", 0);
+        builtComponent.propertySortOrder().put("TESTPROP2", 1);
+        builtComponent.propertySortOrder().put("X-TEST-OBJ", 2);
+        String componentName = builtComponent.componentType().toString();
+        
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au" + System.lineSeparator() +
+                "TESTPROP2:CASUAL" + System.lineSeparator() +
+                "X-TEST-OBJ:testid" + System.lineSeparator() +
+                "END:" + componentName;
+                
+        StandardTime madeComponent = new StandardTime(content);
+        assertEquals(madeComponent, builtComponent);
+        assertEquals(content, builtComponent.toContentLines());
+    }
+    
+    @Test
+    public void canBuildPrimary()
+    {
+        StandardTime builtComponent = new StandardTime()
+                .withDateTimeStart("20160306T080000Z")
+                .withComments("This is a test comment", "Another comment")
+                .withComments("COMMENT:My third comment");
+        String componentName = builtComponent.componentType().toString();
+        
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "DTSTART:20160306T080000Z" + System.lineSeparator() +
+                "COMMENT:This is a test comment" + System.lineSeparator() +
+                "COMMENT:Another comment" + System.lineSeparator() +
+                "COMMENT:My third comment" + System.lineSeparator() +
+                "END:" + componentName;
+                
+        StandardTime madeComponent = new StandardTime(content);
+        assertEquals(madeComponent, builtComponent);
+        assertEquals(content, builtComponent.toContentLines());
+    }
+    
+    @Test
+    public void canBuildRepeatable()
+    {
+        StandardTime builtComponent = new StandardTime()
+                .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                    .withFrequency(new Daily()
+                            .withInterval(4)));
+        String componentName = builtComponent.componentType().toString();
+        
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
+                "END:" + componentName;
 
+        StandardTime madeComponent = new StandardTime(content);
+        assertEquals(madeComponent, builtComponent);
+        
+        // add another set of recurrences
+        ObservableSet<LocalDate> expectedValues = FXCollections.observableSet(
+                LocalDate.of(1996, 4, 2),
+                LocalDate.of(1996, 4, 3),
+                LocalDate.of(1996, 4, 4) );        
+        builtComponent.getRecurrences().add(new Recurrences<LocalDate>(expectedValues));
+        String content2 = "BEGIN:" + componentName + System.lineSeparator() +
+                "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +
+                "RDATE;VALUE=DATE:19960402,19960403,19960404" + System.lineSeparator() +
+                "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
+                "END:" + componentName;
+        
+        assertEquals(content2, builtComponent.toContentLines());
+    }
+    
+    @Test (expected = DateTimeException.class)
+    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause maybe the cause
+    public void canCatchDifferentRepeatableTypes()
+    {
+        StandardTime builtComponent = new StandardTime()
+                .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
+        ObservableSet<ZonedDateTime> expectedValues = FXCollections.observableSet(
+                ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
+        builtComponent.getRecurrences().add(new Recurrences<ZonedDateTime>(expectedValues));
+    }
 }

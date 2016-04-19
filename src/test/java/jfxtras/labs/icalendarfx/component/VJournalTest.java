@@ -53,13 +53,13 @@ public class VJournalTest
     public void canBuildPrimary()
     {
         VJournalMock builtComponent = new VJournalMock()
-                .withDateTimeStamp("20160306T080000Z")
+                .withDateTimeStart("20160306T080000")
                 .withComments("This is a test comment", "Another comment")
                 .withComments("COMMENT:My third comment");
         String componentName = builtComponent.componentType().toString();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
-                "DTSTAMP:20160306T080000Z" + System.lineSeparator() +
+                "DTSTART:20160306T080000" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
                 "COMMENT:My third comment" + System.lineSeparator() +
@@ -75,7 +75,7 @@ public class VJournalTest
     {
         VJournalMock builtComponent = new VJournalMock()
                 .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
-                .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 4, 15, 12, 0), ZoneId.of("Z")))
                 .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
                 .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
                 .withRequestStatus("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy.")
@@ -86,7 +86,7 @@ public class VJournalTest
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "UID:19960401T080045Z-4000F192713-0052@example.com" + System.lineSeparator() +
                 "URL:http://example.com/pub/calendars/jsmith/mytime.ics" + System.lineSeparator() +
-                "DTSTART:20160415T120000" + System.lineSeparator() +
+                "DTSTAMP:20160415T120000Z" + System.lineSeparator() +
                 "ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com" + System.lineSeparator() +
                 "ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com" + System.lineSeparator() +
                 "REQUEST-STATUS:4.1;Event conflict.  Date-time is busy." + System.lineSeparator() +

@@ -7,6 +7,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 
+/**
+ * Either StandardTime or DaylightSavingsTime.
+ * Both classes have identical methods.
+ * 
+ * @author David Bal
+ *
+ */
 public interface StandardOrSavings extends VComponentRepeatable
 {
     /**

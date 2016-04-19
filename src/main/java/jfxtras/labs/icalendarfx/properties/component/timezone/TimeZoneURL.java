@@ -2,13 +2,28 @@ package jfxtras.labs.icalendarfx.properties.component.timezone;
 
 import java.net.URI;
 
+import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 
+/**
+ * TZURL
+ * Time Zone URL
+ * RFC 5545, 3.8.3.5, page 106
+ * 
+ * This property provides a means for a "VTIMEZONE" component
+ * to point to a network location that can be used to retrieve an up-
+ * to-date version of itself
+ * 
+ * EXAMPLES:
+ * TZURL:http://timezones.example.org/tz/America-Los_Angeles.ics
+ * 
+ * @author David Bal
+ * @see VTimeZone
+ */
 public class TimeZoneURL extends PropertyBase<URI,TimeZoneURL>
 {
     public TimeZoneURL(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
         super(contentLine);
     }
     
@@ -19,7 +34,6 @@ public class TimeZoneURL extends PropertyBase<URI,TimeZoneURL>
     
     public TimeZoneURL(URI value)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
         super(value);
     }
 }

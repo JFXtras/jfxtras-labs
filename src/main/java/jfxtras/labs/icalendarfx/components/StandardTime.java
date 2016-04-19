@@ -1,6 +1,20 @@
 package jfxtras.labs.icalendarfx.components;
 
-public abstract class StandardTime extends StandardOrSavingsBase
+public class StandardTime extends StandardOrSavingsBase<StandardTime>
 {
-
+    @Override
+    public VComponentEnum componentType()
+    {
+        return VComponentEnum.STANDARD;
+    }
+    
+    /*
+     * CONSTRUCTORS
+     */
+    public StandardTime() { }
+    
+    public StandardTime(String contentLines)
+    {
+        super(contentLines);
+    }
 }

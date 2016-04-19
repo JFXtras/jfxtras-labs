@@ -4,7 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import jfxtras.labs.icalendarfx.component.DaylightSavingsTimeTest;
 import jfxtras.labs.icalendarfx.component.GeneralTest;
 import jfxtras.labs.icalendarfx.component.StandardTimeTest;
 import jfxtras.labs.icalendarfx.component.VAlarmTest;
@@ -76,7 +75,6 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
         VTimeZoneTest.class,
         VAlarmTest.class,
         StandardTimeTest.class,
-        DaylightSavingsTimeTest.class,
        
        // property tests
         ActionTest.class,

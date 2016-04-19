@@ -10,7 +10,7 @@ import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTimeZoneOld;
+import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodoOld;
 import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities;
 import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities.VCalendarComponent;
@@ -214,16 +214,16 @@ public class VCalendar
      * 
      * @see VFreeBusy
      */
-    public ObservableList<VFreeBusy> vFreeBusyList() { return vFreeBusyList; }
-    private ObservableList<VFreeBusy> vFreeBusyList = FXCollections.observableArrayList();
+    public ObservableList<VFreeBusy<?>> vFreeBusyList() { return vFreeBusyList; }
+    private ObservableList<VFreeBusy<?>> vFreeBusyList = FXCollections.observableArrayList();
 
     /** 
      * VTIMEZONE: RFC 5545 iCalendar 3.6.5. page 62
      * 
      * @see VTimeZoneOld
      */
-    public ObservableList<VTimeZoneOld> vTimeZones() { return vTimeZones; }
-    private ObservableList<VTimeZoneOld> vTimeZones = FXCollections.observableArrayList();
+    public ObservableList<VTimeZone<?>> vTimeZones() { return vTimeZones; }
+    private ObservableList<VTimeZone<?>> vTimeZones = FXCollections.observableArrayList();
     
     /** 
      * VALARM: RFC 5545 iCalendar 3.6.6. page 71
