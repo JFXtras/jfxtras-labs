@@ -11,7 +11,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
@@ -34,14 +33,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public ZonedDateTime getDateTimeCompleted()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<ZonedDateTime> dateTimeCompletedProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -55,14 +54,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public Temporal getDateTimeDue()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<Temporal> dateTimeDueProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -83,7 +82,7 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public IntegerProperty percentCompleteProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -97,14 +96,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public ObjectProperty<TemporalAmount> durationProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public TemporalAmount getDuration()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -118,14 +117,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public Pair<Double, Double> getGeographicPosition()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<Pair<Double, Double>> geographicPositionProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -139,14 +138,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public Location getLocation()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<Location> locationProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -167,7 +166,7 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public IntegerProperty priorityProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -181,14 +180,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public Resources getResources()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<Resources> resourcesProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -199,38 +198,17 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     }
 
     @Override
-    public Categories getCategories()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<Categories> categoriesProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCategories(Categories categories)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public String getClassification()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public StringProperty classificationProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -244,14 +222,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public Contact getContact()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<Contact> contactProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -265,14 +243,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public ZonedDateTime getDateTimeCreated()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<ZonedDateTime> dateTimeCreatedProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -286,14 +264,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public ExDate getExDate()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<ExDate> exDateProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -307,14 +285,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public Temporal getDateTimeRecurrence()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<Temporal> dateTimeRecurrenceProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -328,14 +306,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public RelatedTo getRelatedTo()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<RelatedTo> relatedToProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -356,7 +334,7 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public IntegerProperty sequenceProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -370,14 +348,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public String getStatus()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public StringProperty statusProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -391,14 +369,14 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public Stream<Temporal> streamLimitedByRange()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public Temporal getStartRange()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -412,7 +390,7 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public Temporal getEndRange()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -426,28 +404,28 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     public Collection<InstanceMock> makeInstances(Temporal start, Temporal end)
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public Collection<InstanceMock> makeInstances()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public Collection<InstanceMock> instances()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public Stream<Temporal> streamRecurrences(Temporal startTemporal)
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
 }

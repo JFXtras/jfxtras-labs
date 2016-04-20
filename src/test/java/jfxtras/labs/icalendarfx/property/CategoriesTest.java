@@ -22,7 +22,15 @@ public class CategoriesTest
         Categories property = new Categories("CATEGORIES:group03,group04,group05");
         String expectedSummary = "CATEGORIES:group03,group04,group05";
         assertEquals(expectedSummary, property.toContentLine());
-        assertEquals(3, property.getValue().size());
-        
+        assertEquals(3, property.getValue().size());        
+    }
+    
+    @Test
+    public void canParseMultipleCategories2()
+    {
+        Categories property = new Categories("group03,group04,group05");
+        String expectedSummary = "CATEGORIES:group03,group04,group05";
+        assertEquals(expectedSummary, property.toContentLine());
+        assertEquals(3, property.getValue().size());        
     }
 }

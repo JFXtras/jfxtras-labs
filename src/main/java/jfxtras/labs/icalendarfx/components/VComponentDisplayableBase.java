@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
@@ -34,6 +35,25 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     private ObservableList<Attachment<?>> attachments;
     @Override
     public void setAttachments(ObservableList<Attachment<?>> attachments) { this.attachments = attachments; }
+    
+    /**
+     * CATEGORIES:
+     * RFC 5545 iCalendar 3.8.1.12. page 81
+     * This property defines the categories for a calendar component.
+     * Example:
+     * CATEGORIES:APPOINTMENT,EDUCATION
+     * CATEGORIES:MEETING
+     */
+    @Override
+    public ObjectProperty<Categories> categoriesProperty()
+    {
+        if (categories == null)
+        {
+            categories = new SimpleObjectProperty<>(this, PropertyEnum.CATEGORIES.toString());
+        }
+        return categories;
+    }
+    private ObjectProperty<Categories> categories;
     
     /**
     * LAST-MODIFIED

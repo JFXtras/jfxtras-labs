@@ -2,12 +2,15 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
@@ -34,9 +37,18 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      * CATEGORIES:APPOINTMENT,EDUCATION
      * CATEGORIES:MEETING
      */
-    Categories getCategories();
     ObjectProperty<Categories> categoriesProperty();
-    void setCategories(Categories categories);
+    default Categories getCategories() { return categoriesProperty().get(); }
+    default void setCategories(String...summary) { setCategories(new Categories(summary)); }
+    default void setCategories(Categories summary) { categoriesProperty().set(summary); }
+    default T withCategories(Categories summary) { setCategories(summary); return (T) this; }
+    default T withCategories(String...summary)
+    {
+        String commaSeparatedList = Arrays.stream(summary).collect(Collectors.joining(","));
+        PropertyEnum.CATEGORIES.parse(this, commaSeparatedList);
+        return (T) this;
+    }
+
     
     /**
      * CLASS: Classification

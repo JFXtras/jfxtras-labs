@@ -30,4 +30,19 @@ public class VTimeZoneTest
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
+    
+    @Test
+    public void canBuildLastModified()
+    {
+        VTimeZone builtComponent = new VTimeZone()
+                .withDateTimeLastModified("20160306T080000Z");
+        String componentName = builtComponent.componentType().toString();
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "LAST-MODIFIED:20160306T080000Z" + System.lineSeparator() +
+                "END:" + componentName;
+
+        VTimeZone madeComponent = new VTimeZone(content);
+        assertEquals(madeComponent, builtComponent);
+        assertEquals(content, builtComponent.toContentLines());
+    }
 }

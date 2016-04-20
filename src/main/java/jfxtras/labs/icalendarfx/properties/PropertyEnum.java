@@ -16,6 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLastModified;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
@@ -184,15 +185,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            return castComponent.getCategories();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            if (castComponent.getCategories() == null)
+            {
+                castComponent.setCategories(new Categories(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // descriptive

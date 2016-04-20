@@ -175,6 +175,43 @@ public class VEventTest
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
+    
+    @Test
+    public void canBuildDisplayable()
+    {
+        VEventMockNew builtComponent = new VEventMockNew()
+                .withCategories("group03","group04","group05");
+        String componentName = builtComponent.componentType().toString();
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "CATEGORIES:group03,group04,group05" + System.lineSeparator() +
+                "END:" + componentName;
 
+        VEventMockNew madeComponent = new VEventMockNew(content);
+        assertEquals(madeComponent, builtComponent);
+        assertEquals(content, builtComponent.toContentLines());
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void canCatchSecondAssignmentException()
+    {
+        String componentName = "VEVENT";
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "CATEGORIES:group03,group04,group05" + System.lineSeparator() +
+                "CATEGORIES:group06" + System.lineSeparator() + // not allowed
+                "END:" + componentName;
+        new VEventMockNew(content);
+    }
+    
+    @Test
+    public void canChangePropertyAllowedOnlyOnce()
+    {
+        String componentName = "VEVENT";
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "CATEGORIES:group03,group04,group05" + System.lineSeparator() +
+                "END:" + componentName;
+        VEventMockNew madeComponent = new VEventMockNew(content);
+        madeComponent.setCategories("group6");
+        assertEquals("CATEGORIES:group6", madeComponent.getCategories().toContentLine());
+    }
 
 }

@@ -10,7 +10,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
@@ -32,7 +31,7 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public ObservableList<Description> getDescriptions()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -43,38 +42,17 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     }
 
     @Override
-    public Categories getCategories()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<Categories> categoriesProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCategories(Categories categories)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public String getClassification()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public StringProperty classificationProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -88,14 +66,14 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public Contact getContact()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<Contact> contactProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -109,14 +87,14 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public ZonedDateTime getDateTimeCreated()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<ZonedDateTime> dateTimeCreatedProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -130,14 +108,14 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public ExDate getExDate()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<ExDate> exDateProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -151,14 +129,14 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public Temporal getDateTimeRecurrence()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<Temporal> dateTimeRecurrenceProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -172,14 +150,14 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public RelatedTo getRelatedTo()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public ObjectProperty<RelatedTo> relatedToProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -200,7 +178,7 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public IntegerProperty sequenceProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -214,14 +192,14 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public String getStatus()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public StringProperty statusProperty()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -235,14 +213,14 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public Stream<Temporal> streamLimitedByRange()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public Temporal getStartRange()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -256,7 +234,7 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public Temporal getEndRange()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -270,27 +248,27 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     public Collection<InstanceMock> makeInstances(Temporal start, Temporal end)
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public Collection<InstanceMock> makeInstances()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public Collection<InstanceMock> instances()
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 
     @Override
     public Stream<Temporal> streamRecurrences(Temporal startTemporal)
     {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("not implemented");
     }
 }
