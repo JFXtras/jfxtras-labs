@@ -37,10 +37,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
          their site. - - John
      * */
     @Override
-    public ObservableList<Comment> getComments()
-    {
-        return comments;
-    }
+    public ObservableList<Comment> getComments() { return comments; }
     private ObservableList<Comment> comments;
     @Override
     public void setComments(ObservableList<Comment> comments) { this.comments = comments; }
@@ -76,7 +73,6 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         return dateTimeStart;
     }
     private ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStart;
-    @Override public DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStartProperty().get(); }
 
     /*
      * CONSTRUCTORS

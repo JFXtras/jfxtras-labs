@@ -1,9 +1,11 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
 public interface VComponentLastModified<T> extends VComponentNew<T>
 {
@@ -14,9 +16,9 @@ public interface VComponentLastModified<T> extends VComponentNew<T>
      * 
      * The property value MUST be specified in the UTC time format.
      */
-    LastModified getDateTimeLastModified();
     ObjectProperty<LastModified> dateTimeLastModifiedProperty();
-    void setDateTimeLastModified(LastModified dtLastModified);
+    default LastModified getDateTimeLastModified() { return dateTimeLastModifiedProperty().get(); }
+    default void setDateTimeLastModified(LastModified dtLastModified) { dateTimeLastModifiedProperty().set(dtLastModified); }
     default T withDateTimeLastModified(ZonedDateTime zonedDateTime) { setDateTimeLastModified(new LastModified(zonedDateTime)); return (T) this; }
     default T withDateTimeLastModified(String zonedDateTime) { setDateTimeLastModified(new LastModified(zonedDateTime)); return (T) this; }
     default T withDateTimeLastModified(LastModified dtLastModified) { setDateTimeLastModified(dtLastModified); return (T) this; }

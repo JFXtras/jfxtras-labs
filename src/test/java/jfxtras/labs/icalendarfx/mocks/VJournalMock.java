@@ -10,7 +10,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
@@ -293,26 +292,5 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
     {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public LastModified getDateTimeLastModified()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<LastModified> dateTimeLastModifiedProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDateTimeLastModified(LastModified dtLastModified)
-    {
-        // TODO Auto-generated method stub
-        
     }
 }

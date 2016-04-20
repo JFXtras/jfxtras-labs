@@ -160,6 +160,21 @@ public class VEventTest
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
+    
+    @Test
+    public void canBuildLastModified()
+    {
+        VEventMockNew builtComponent = new VEventMockNew()
+                .withDateTimeLastModified("20160306T080000Z");
+        String componentName = builtComponent.componentType().toString();
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "LAST-MODIFIED:20160306T080000Z" + System.lineSeparator() +
+                "END:" + componentName;
+
+        VEventMockNew madeComponent = new VEventMockNew(content);
+        assertEquals(madeComponent, builtComponent);
+        assertEquals(content, builtComponent.toContentLines());
+    }
 
 
 }

@@ -72,28 +72,13 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     public List<PropertyEnum> properties()
     {
         List<PropertyEnum> populatedProperties = new ArrayList<>();
-        System.out.println("componentType():" + componentType());
+//        System.out.println("componentType():" + componentType());
         Iterator<PropertyEnum> i = componentType().allowedProperties().stream().iterator();
         while (i.hasNext())
         {
             PropertyEnum propertyType = i.next();
             Object property = propertyType.getProperty(this);
-//            final boolean isPropertyEmpty;
-//            if (property == null)
-//            {
-//                isPropertyEmpty = true;
-//            } else if (property instanceof Collection)
-//            {
-//                isPropertyEmpty = ((Collection<?>) property).isEmpty();
-//            } else
-//            {
-//                isPropertyEmpty = false;
-//            }
 //            System.out.println("props:" + propertyType + " " + property );
-//            if (! isPropertyEmpty)
-//            {
-//                populatedProperties.add(propertyType);
-//            }
             if (property != null)
             {
                 populatedProperties.add(propertyType);
@@ -244,9 +229,8 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                     }
                 });
 
-        
         StringBuilder builder = new StringBuilder(400);
-        builder.append(firstContentLine() + System.lineSeparator());
+        builder.append(firstContentLine + System.lineSeparator());
         
         // restore property sort order if properties were parsed from content
         propertyNameContentMap.entrySet().stream()
@@ -264,9 +248,12 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                             .forEach(s -> builder.append(foldLine(s) + System.lineSeparator()));
                 });
 
-        builder.append(lastContentLine());
+        builder.append(lastContentLine);
         return builder.toString();
     }
+    private final String firstContentLine = "BEGIN:" + componentType().toString();
+    private final String lastContentLine = "END:" + componentType().toString();
+
 
     /**
      * Starting with lines-separated list of content lines, the lines are unwrapped and 

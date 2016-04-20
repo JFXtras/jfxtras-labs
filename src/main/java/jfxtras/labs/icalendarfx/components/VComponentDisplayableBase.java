@@ -6,6 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
@@ -33,6 +34,33 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     private ObservableList<Attachment<?>> attachments;
     @Override
     public void setAttachments(ObservableList<Attachment<?>> attachments) { this.attachments = attachments; }
+    
+    /**
+    * LAST-MODIFIED
+    * RFC 5545, 3.8.7.3, page 138
+    * 
+    * This property specifies the date and time that the
+    * information associated with the calendar component was last
+    * revised in the calendar store.
+    *
+    * Note: This is analogous to the modification date and time for a
+    * file in the file system.
+    * 
+    * The value MUST be specified as a date with UTC time.
+    * 
+    * Example:
+    * LAST-MODIFIED:19960817T133000Z
+    */
+    @Override
+    public ObjectProperty<LastModified> dateTimeLastModifiedProperty()
+    {
+        if (lastModified == null)
+        {
+            lastModified = new SimpleObjectProperty<>(this, PropertyEnum.LAST_MODIFIED.toString());
+        }
+        return lastModified;
+    }
+    private ObjectProperty<LastModified> lastModified;
     
     /**
      * RDATE

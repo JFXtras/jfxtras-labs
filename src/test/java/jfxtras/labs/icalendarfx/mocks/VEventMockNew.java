@@ -11,7 +11,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VEventNew;
-import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
@@ -429,26 +428,4 @@ public class VEventMockNew extends VEventNew<VEventMockNew, InstanceMock>
         // TODO Auto-generated method stub
         return null;
     }
-
-    @Override
-    public LastModified getDateTimeLastModified()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<LastModified> dateTimeLastModifiedProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDateTimeLastModified(LastModified dtLastModified)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

@@ -54,8 +54,8 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
-    DateTimeStart<? extends Temporal> getDateTimeStart();
     ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty();
+    default DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStartProperty().get(); }
     default void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { dateTimeStartProperty().set(dtStart); }
     default void setDateTimeStart(Temporal temporal)
     {

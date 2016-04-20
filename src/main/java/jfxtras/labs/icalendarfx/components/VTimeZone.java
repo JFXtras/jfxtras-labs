@@ -1,7 +1,9 @@
 package jfxtras.labs.icalendarfx.components;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneIdentifier;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
@@ -28,6 +30,33 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
     {
         return VComponentEnum.VTIMEZONE;
     }
+ 
+    /**
+    * LAST-MODIFIED
+    * RFC 5545, 3.8.7.3, page 138
+    * 
+    * This property specifies the date and time that the
+    * information associated with the calendar component was last
+    * revised in the calendar store.
+    *
+    * Note: This is analogous to the modification date and time for a
+    * file in the file system.
+    * 
+    * The value MUST be specified as a date with UTC time.
+    * 
+    * Example:
+    * LAST-MODIFIED:19960817T133000Z
+    */
+    @Override
+    public ObjectProperty<LastModified> dateTimeLastModifiedProperty()
+    {
+        if (lastModified == null)
+        {
+            lastModified = new SimpleObjectProperty<>(this, PropertyEnum.LAST_MODIFIED.toString());
+        }
+        return lastModified;
+    }
+    private ObjectProperty<LastModified> lastModified;
     
     /*
      * CONSTRUCTORS
@@ -90,27 +119,6 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
 
     @Override
     public void setStandardOrSavingsTime(ObservableList<StandardOrSavings> properties)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public LastModified getDateTimeLastModified()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<LastModified> dateTimeLastModifiedProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDateTimeLastModified(LastModified dtLastModified)
     {
         // TODO Auto-generated method stub
         

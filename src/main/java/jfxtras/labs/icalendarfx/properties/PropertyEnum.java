@@ -16,6 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
+import jfxtras.labs.icalendarfx.components.VComponentLastModified;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
@@ -147,7 +148,16 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vComponent;
-            castComponent.getAttendees().add(new Attendee(propertyContent));
+            final ObservableList<Attendee> list;
+            if (castComponent.getAttendees() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castComponent.setAttendees(list);
+            } else
+            {
+                list = castComponent.getAttendees();
+            }
+            list.add(new Attendee(propertyContent));
         }
     },
     // Calendar
@@ -521,15 +531,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vComponent;
+            return castComponent.getDateTimeLastModified();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vComponent;
+            if (castComponent.getDateTimeLastModified() == null)
+            {
+                castComponent.setDateTimeLastModified(new LastModified(propertyContent));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Descriptive

@@ -38,18 +38,6 @@ public interface VComponentNew<T>
      */
     VComponentEnum componentType();
     
-    /** first line of component delimiter string */
-    default String firstContentLine()
-    {
-        return "BEGIN:" + componentType().toString();
-    }
-
-    /** last line of component delimiter string */    
-    default String lastContentLine()
-    {
-        return "END:" + componentType().toString();
-    }
-    
     /**
      * 3.8.8.2.  Non-Standard Properties
      * Any property name with a "X-" prefix

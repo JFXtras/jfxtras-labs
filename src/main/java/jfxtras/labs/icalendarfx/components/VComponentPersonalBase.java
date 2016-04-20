@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.components;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
@@ -38,14 +37,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
      *  :mailto:jdoe@example.com
      */
     @Override
-    public ObservableList<Attendee> getAttendees()
-    {
-        if (attendees == null)
-        {
-            attendees = FXCollections.observableArrayList();
-        }
-        return attendees;
-    }
+    public ObservableList<Attendee> getAttendees() { return attendees; }
     private ObservableList<Attendee> attendees;
     @Override
     public void setAttendees(ObservableList<Attendee> attendees) { this.attendees = attendees; }
