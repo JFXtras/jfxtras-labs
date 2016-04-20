@@ -9,6 +9,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
@@ -45,15 +46,31 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
      * CATEGORIES:MEETING
      */
     @Override
-    public ObjectProperty<Categories> categoriesProperty()
+    public ObservableList<Categories> getCategories() { return categories; }
+    private ObservableList<Categories> categories;
+    @Override
+    public void setCategories(ObservableList<Categories> categories) { this.categories = categories; }
+    
+    /**
+     * CLASS
+     * Classification
+     * RFC 5545, 3.8.1.3, page 82
+     * 
+     * This property defines the access classification for a calendar component.
+     * 
+     * Example:
+     * CLASS:PUBLIC
+     */
+    @Override
+    public ObjectProperty<Classification> classificationProperty()
     {
-        if (categories == null)
+        if (classification == null)
         {
-            categories = new SimpleObjectProperty<>(this, PropertyEnum.CATEGORIES.toString());
+            classification = new SimpleObjectProperty<>(this, PropertyEnum.CLASSIFICATION.toString());
         }
-        return categories;
+        return classification;
     }
-    private ObjectProperty<Categories> categories;
+    private ObjectProperty<Classification> classification;
     
     /**
     * LAST-MODIFIED

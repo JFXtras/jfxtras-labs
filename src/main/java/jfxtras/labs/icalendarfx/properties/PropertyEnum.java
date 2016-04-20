@@ -193,13 +193,16 @@ public enum PropertyEnum
         public void parse(VComponentNew vComponent, String propertyContent)
         {
             VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            final ObservableList<Categories> list;
             if (castComponent.getCategories() == null)
             {
-                castComponent.setCategories(new Categories(propertyContent));                                
+                list = FXCollections.observableArrayList();
+                castComponent.setCategories(list);
             } else
             {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+                list = castComponent.getCategories();
             }
+            list.add(new Categories(propertyContent));
         }
     },
     // descriptive
@@ -211,15 +214,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            return castComponent.getClassification();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            if (castComponent.getClassification() == null)
+            {
+                castComponent.setClassification(new Classification(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     COMMENT ("COMMENT", // property name

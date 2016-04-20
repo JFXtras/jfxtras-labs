@@ -14,6 +14,7 @@ import org.junit.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
@@ -180,10 +181,15 @@ public class VEventTest
     public void canBuildDisplayable()
     {
         VEventMockNew builtComponent = new VEventMockNew()
-                .withCategories("group03","group04","group05");
+                .withCategories("group03","group04","group05")
+                .withCategories("group06")
+                .withClassification(ClassificationType.PUBLIC);
+        System.out.println(builtComponent.toContentLines());
         String componentName = builtComponent.componentType().toString();
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "CATEGORIES:group03,group04,group05" + System.lineSeparator() +
+                "CATEGORIES:group06" + System.lineSeparator() +
+                "CLASS:PUBLIC" + System.lineSeparator() +
                 "END:" + componentName;
 
         VEventMockNew madeComponent = new VEventMockNew(content);
@@ -196,8 +202,8 @@ public class VEventTest
     {
         String componentName = "VEVENT";
         String content = "BEGIN:" + componentName + System.lineSeparator() +
-                "CATEGORIES:group03,group04,group05" + System.lineSeparator() +
-                "CATEGORIES:group06" + System.lineSeparator() + // not allowed
+                "CLASS:PUBLIC" + System.lineSeparator() +
+                "CLASS:PRIVATE" + System.lineSeparator() + // not allowed
                 "END:" + componentName;
         new VEventMockNew(content);
     }
@@ -207,11 +213,11 @@ public class VEventTest
     {
         String componentName = "VEVENT";
         String content = "BEGIN:" + componentName + System.lineSeparator() +
-                "CATEGORIES:group03,group04,group05" + System.lineSeparator() +
+                "CLASS:PUBLIC" + System.lineSeparator() +
                 "END:" + componentName;
         VEventMockNew madeComponent = new VEventMockNew(content);
-        madeComponent.setCategories("group6");
-        assertEquals("CATEGORIES:group6", madeComponent.getCategories().toContentLine());
+        madeComponent.setClassification("PRIVATE");
+        assertEquals(ClassificationType.PRIVATE, madeComponent.getClassification().getValue());
     }
 
 }

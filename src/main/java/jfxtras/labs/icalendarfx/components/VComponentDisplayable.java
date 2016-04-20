@@ -10,8 +10,11 @@ import java.util.stream.Stream;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
@@ -37,17 +40,27 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      * CATEGORIES:APPOINTMENT,EDUCATION
      * CATEGORIES:MEETING
      */
-    ObjectProperty<Categories> categoriesProperty();
-    default Categories getCategories() { return categoriesProperty().get(); }
-    default void setCategories(String...summary) { setCategories(new Categories(summary)); }
-    default void setCategories(Categories summary) { categoriesProperty().set(summary); }
-    default T withCategories(Categories summary) { setCategories(summary); return (T) this; }
-    default T withCategories(String...summary)
+    ObservableList<Categories> getCategories();
+    void setCategories(ObservableList<Categories> properties);
+    default T withCategories(ObservableList<Categories> categories) { setCategories(categories); return (T) this; }
+    default T withCategories(String...categories)
     {
-        String commaSeparatedList = Arrays.stream(summary).collect(Collectors.joining(","));
+        String commaSeparatedList = Arrays.stream(categories).collect(Collectors.joining(","));
         PropertyEnum.CATEGORIES.parse(this, commaSeparatedList);
         return (T) this;
     }
+
+//    ObjectProperty<Categories> categoriesProperty();
+//    default Categories getCategories() { return categoriesProperty().get(); }
+//    default void setCategories(String...summary) { setCategories(new Categories(summary)); }
+//    default void setCategories(Categories summary) { categoriesProperty().set(summary); }
+//    default T withCategories(Categories summary) { setCategories(summary); return (T) this; }
+//    default T withCategories(String...summary)
+//    {
+//        String commaSeparatedList = Arrays.stream(summary).collect(Collectors.joining(","));
+//        PropertyEnum.CATEGORIES.parse(this, commaSeparatedList);
+//        return (T) this;
+//    }
 
     
     /**
@@ -60,9 +73,14 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      * Example:
      * CLASS:PUBLIC
      */
-    String getClassification();
-    StringProperty classificationProperty();
-    void setClassification(String classification);
+    ObjectProperty<Classification> classificationProperty();
+    default Classification getClassification() { return classificationProperty().get(); }
+    default void setClassification(String classification) { setClassification(new Classification(classification)); }
+    default void setClassification(Classification classification) { classificationProperty().set(classification); }
+    default void setClassification(ClassificationType classification) { setClassification(new Classification(classification)); }
+    default T withClassification(Classification classification) { setClassification(classification); return (T) this; }
+    default T withClassification(ClassificationType classification) { setClassification(classification); return (T) this; }
+    default T withClassification(String classification) { PropertyEnum.CLASSIFICATION.parse(this, classification); return (T) this; }
     
     /**
      * CONTACT:

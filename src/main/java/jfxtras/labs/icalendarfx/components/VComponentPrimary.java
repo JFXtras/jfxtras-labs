@@ -41,7 +41,6 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
      * */
     ObservableList<Comment> getComments();
     void setComments(ObservableList<Comment> properties);
-    /** add comma separated comments into separate comment objects */
     default T withComments(ObservableList<Comment> comments) { setComments(comments); return (T) this; }
     default T withComments(String...comments)
     {

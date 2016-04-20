@@ -177,27 +177,6 @@ public class VEventMockNew extends VEventNew<VEventMockNew, InstanceMock>
     }
 
     @Override
-    public String getClassification()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public StringProperty classificationProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setClassification(String classification)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public Contact getContact()
     {
         // TODO Auto-generated method stub

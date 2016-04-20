@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -199,7 +200,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     {
 //        System.out.println("prop num:" + properties().size());
         // make map of property name/content
-        Map<String, List<CharSequence>> propertyNameContentMap = new HashMap<>();
+        Map<String, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
         properties().stream()
                 .map(e -> e.getProperty(this))
                 .flatMap(prop -> 
@@ -219,11 +220,11 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 .forEach(property -> 
                 {
                     if (propertyNameContentMap.get(property.getPropertyName()) == null)
-                    {
+                    { // make new list for new entry
                         List<CharSequence> list = new ArrayList<>(Arrays.asList(property.toContentLine()));
                         propertyNameContentMap.put(property.getPropertyName(), list);
                     } else
-                    {
+                    { // add properties to existing list for existing entry
                         List<CharSequence> list = propertyNameContentMap.get(property.getPropertyName());
                         list.add(property.toContentLine());
                     }
