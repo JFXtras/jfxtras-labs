@@ -11,20 +11,24 @@ import java.time.ZonedDateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import jfxtras.labs.icalendarfx.mocks.VJournalMock;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
 
-public class VJournalTest
+public class DaylightSavingsTimeTest
 {
     @Test
     public void canBuildBase()
-    {
-        VJournalMock builtComponent = new VJournalMock()
+    {        
+        ObjectProperty<String> s = new SimpleObjectProperty<>("start");
+        s.set(null);
+        
+        DaylightSavingTime builtComponent = new DaylightSavingTime()
                 .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
                 .withIANAProperty("TESTPROP2:CASUAL")
                 .withNonStandardProperty("X-TEST-OBJ:testid");
@@ -39,7 +43,7 @@ public class VJournalTest
                 "X-TEST-OBJ:testid" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VJournalMock madeComponent = new VJournalMock(content);
+        DaylightSavingTime madeComponent = new DaylightSavingTime(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
@@ -47,56 +51,28 @@ public class VJournalTest
     @Test
     public void canBuildPrimary()
     {
-        VJournalMock builtComponent = new VJournalMock()
-                .withDateTimeStart("20160306T080000")
+        DaylightSavingTime builtComponent = new DaylightSavingTime()
+                .withDateTimeStart("20160306T080000Z")
                 .withComments("This is a test comment", "Another comment")
                 .withComments("COMMENT:My third comment");
         String componentName = builtComponent.componentType().toString();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
-                "DTSTART:20160306T080000" + System.lineSeparator() +
+                "DTSTART:20160306T080000Z" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
                 "COMMENT:My third comment" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VJournalMock madeComponent = new VJournalMock(content);
+        DaylightSavingTime madeComponent = new DaylightSavingTime(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
-    }
-
-    @Test
-    public void canBuildPersonal()
-    {
-        VJournalMock builtComponent = new VJournalMock()
-                .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
-                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 4, 15, 12, 0), ZoneId.of("Z")))
-                .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
-                .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
-                .withRequestStatus("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy.")
-                .withRequestStatus("REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com")
-                .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics");
-        String componentName = builtComponent.componentType().toString();
-
-        String content = "BEGIN:" + componentName + System.lineSeparator() +
-                "UID:19960401T080045Z-4000F192713-0052@example.com" + System.lineSeparator() +
-                "URL:http://example.com/pub/calendars/jsmith/mytime.ics" + System.lineSeparator() +
-                "DTSTAMP:20160415T120000Z" + System.lineSeparator() +
-                "ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com" + System.lineSeparator() +
-                "ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com" + System.lineSeparator() +
-                "REQUEST-STATUS:4.1;Event conflict.  Date-time is busy." + System.lineSeparator() +
-                "REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com" + System.lineSeparator() +
-                "END:" + componentName;
-
-        VJournalMock madeComponent = new VJournalMock(content);
-        assertEquals(madeComponent, builtComponent);
-        assertEquals("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com", madeComponent.getOrganizer().toContentLine());
     }
     
     @Test
     public void canBuildRepeatable()
     {
-        VJournalMock builtComponent = new VJournalMock()
+        DaylightSavingTime builtComponent = new DaylightSavingTime()
                 .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
                 .withRecurrenceRule(new RecurrenceRuleParameter()
                     .withFrequency(new Daily()
@@ -108,7 +84,7 @@ public class VJournalTest
                 "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
                 "END:" + componentName;
 
-        VJournalMock madeComponent = new VJournalMock(content);
+        DaylightSavingTime madeComponent = new DaylightSavingTime(content);
         assertEquals(madeComponent, builtComponent);
         
         // add another set of recurrences
@@ -130,30 +106,10 @@ public class VJournalTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause maybe the cause
     public void canCatchDifferentRepeatableTypes()
     {
-        VJournalMock builtComponent = new VJournalMock()
+        DaylightSavingTime builtComponent = new DaylightSavingTime()
                 .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
         ObservableSet<ZonedDateTime> expectedValues = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
         builtComponent.getRecurrences().add(new Recurrences<ZonedDateTime>(expectedValues));
-    }
-    
-    @Test
-    public void canBuildDescribable()
-    {
-        VJournalMock builtComponent = new VJournalMock()
-                .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
-                        "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
-                .withSummary(new Summary("a test summary")
-                        .withLanguage("en-USA"));
-        String componentName = builtComponent.componentType().toString();
-        String content = "BEGIN:" + componentName + System.lineSeparator() +
-                "ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW" + System.lineSeparator() +
-                "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com" + System.lineSeparator() +
-                "SUMMARY;LANGUAGE=en-USA:a test summary" + System.lineSeparator() +
-                "END:" + componentName;
-
-        VJournalMock madeComponent = new VJournalMock(content);
-        assertEquals(madeComponent, builtComponent);
-        assertEquals(content, builtComponent.toContentLines());
     }
 }

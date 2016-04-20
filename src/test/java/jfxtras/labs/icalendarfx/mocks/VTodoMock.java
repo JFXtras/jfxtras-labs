@@ -11,6 +11,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
@@ -304,27 +305,6 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     }
 
     @Override
-    public ZonedDateTime getDateTimeLastModified()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<ZonedDateTime> dateTimeLastModifiedProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDateTimeLastModified(ZonedDateTime dtLastModified)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public Temporal getDateTimeRecurrence()
     {
         // TODO Auto-generated method stub
@@ -469,6 +449,27 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
     {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public LastModified getDateTimeLastModified()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<LastModified> dateTimeLastModifiedProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setDateTimeLastModified(LastModified dtLastModified)
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

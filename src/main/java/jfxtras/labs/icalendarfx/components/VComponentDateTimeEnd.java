@@ -4,7 +4,7 @@ import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 
-public interface VComponentDateTimeEnd
+public interface VComponentDateTimeEnd<T> extends VComponentNew<T>
 {
     /**
      * DTEND, Date-Time End.

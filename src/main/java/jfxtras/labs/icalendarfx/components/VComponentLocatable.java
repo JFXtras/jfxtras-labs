@@ -5,6 +5,7 @@ import java.time.temporal.TemporalAmount;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
@@ -31,9 +32,11 @@ public interface VComponentLocatable<T,I> extends VComponentDisplayable<T,I>
      *  MUST attend this meeting.\nRSVP to team leader.
      */
     public ObjectProperty<Description> descriptionProperty();
-    public Description getDescription();
-    public void setDescription(Description description);
-    
+    default Description getDescription() { return descriptionProperty().get(); }
+    default void setDescription(Description description) { descriptionProperty().set(description); }
+    default T withDescription(Description description) { setDescription(description); return (T) this; }
+    default T withDescription(String description) { PropertyEnum.DESCRIPTION.parse(this, description); return (T) this; }
+
     /** 
      * DURATION
      * RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34

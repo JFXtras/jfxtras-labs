@@ -18,6 +18,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 
 /**
  * Calendar components that can repeat
@@ -120,9 +121,13 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    RecurrenceRule getRecurrenceRule();
+    default RecurrenceRule getRecurrenceRule() { return recurrenceRuleProperty().get(); }
     ObjectProperty<RecurrenceRule> recurrenceRuleProperty();
-    void setRecurrenceRule(RecurrenceRule rRule);
+    default void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
+    default void setRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
+    default T withRecurrenceRule(String rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); return (T) this; }
+    default T withRecurrenceRule(RecurrenceRule rrule) { setRecurrenceRule(rrule); return (T) this; }
+    default T withRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(rrule); return (T) this; }
     
     /** Stream of dates or date-times that indicate the series of start date-times of the event(s).
      * iCalendar calls this series the recurrence set.

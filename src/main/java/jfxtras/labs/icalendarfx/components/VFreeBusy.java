@@ -14,7 +14,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
  * @author David Bal
  *
  */
-public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFreeBusyInt
+public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFreeBusyInt<VFreeBusy>
 {
     @Override
     public VComponentEnum componentType()

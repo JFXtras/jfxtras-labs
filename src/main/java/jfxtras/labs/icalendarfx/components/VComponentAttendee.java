@@ -1,9 +1,12 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.util.Arrays;
+
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
-public interface VComponentAttendee<T>
+public interface VComponentAttendee<T> extends VComponentNew<T>
 {
     /**
      * ATTENDEE: Attendee
@@ -18,4 +21,10 @@ public interface VComponentAttendee<T>
      */
     ObservableList<Attendee> getAttendees();
     void setAttendees(ObservableList<Attendee> properties);
+    default T withAttendees(ObservableList<Attendee> attendees) { setAttendees(attendees); return (T) this; }
+    default T withAttendees(String...attendees)
+    {
+        Arrays.stream(attendees).forEach(c -> PropertyEnum.ATTENDEE.parse(this, c));
+        return (T) this;
+    }
 }

@@ -95,20 +95,6 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
     ExDate getExDate();
     ObjectProperty<ExDate> exDateProperty();
     void setExDate(ExDate exDate);
-
-    /**
-     * LAST-MODIFIED: Date-Time Last Modified, from RFC 5545 iCalendar 3.8.7.3 page 138
-     * This property specifies the date and time that the information associated with
-     * the calendar component was last revised.
-     * 
-     * The property value MUST be specified in the UTC time format.
-     */
-    @Override
-    ZonedDateTime getDateTimeLastModified();
-    @Override
-    ObjectProperty<ZonedDateTime> dateTimeLastModifiedProperty();
-    @Override
-    void setDateTimeLastModified(ZonedDateTime dtLastModified);
     
     /**
      * RECURRENCE-ID: Recurrence Identifier

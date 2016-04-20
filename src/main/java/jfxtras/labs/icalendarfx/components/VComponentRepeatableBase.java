@@ -9,7 +9,6 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 
 @Deprecated
 public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<T> implements VComponentRepeatable<T>
@@ -57,15 +56,6 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         return recurrenceRule;
     }
     private ObjectProperty<RecurrenceRule> recurrenceRule;
-    @Override
-    public RecurrenceRule getRecurrenceRule() { return recurrenceRuleProperty().get(); }
-    @Override
-    public void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
-    public void setRecurrenceRule(RecurrenceRuleParameter rrule) { recurrenceRuleProperty().set(new RecurrenceRule(rrule)); }
-    public T withRecurrenceRule(String rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); return (T) this; }
-    public T withRecurrenceRule(RecurrenceRule rrule) { setRecurrenceRule(rrule); return (T) this; }
-    public T withRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(rrule); return (T) this; }
-
 
     // put in subclass
     @Override

@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
 @Deprecated // put into abstract class when done building VTodo
-public interface VJournalInt
+public interface VJournalInt<T, I> extends VComponentDisplayable<T, I>
 {
     /**
      * DESCRIPTION:
@@ -18,4 +18,5 @@ public interface VJournalInt
      *  MUST attend this meeting.\nRSVP to team leader.
      */
     ObservableList<Description> getDescriptions();
-    void setDescriptions(ObservableList<Description> properties);}
+    void setDescriptions(ObservableList<Description> properties);    
+}

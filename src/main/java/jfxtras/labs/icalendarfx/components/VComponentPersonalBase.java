@@ -1,9 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.net.URI;
-import java.time.ZonedDateTime;
-import java.util.Arrays;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -53,12 +49,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     private ObservableList<Attendee> attendees;
     @Override
     public void setAttendees(ObservableList<Attendee> attendees) { this.attendees = attendees; }
-    /** add comma separated attendees into separate Attendee objects */
-    public T withAttendees(String...attendees)
-    {
-        Arrays.stream(attendees).forEach(c -> getAttendees().add(new Attendee(c)));
-        return (T) this;
-    }
     
     /**
      * DTSTAMP: Date-Time Stamp, from RFC 5545 iCalendar 3.8.7.2 page 137
@@ -75,13 +65,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         return dateTimeStamp;
     }
     private ObjectProperty<DateTimeStamp> dateTimeStamp;
-    @Override
-    public DateTimeStamp getDateTimeStamp() { return dateTimeStampProperty().get(); }
-    @Override
-    public void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStampProperty().set(dtStamp); }
-    public T withDateTimeStamp(ZonedDateTime zonedDateTime) { setDateTimeStamp(new DateTimeStamp(zonedDateTime)); return (T) this; }
-    public T withDateTimeStamp(String zonedDateTime) { setDateTimeStamp(new DateTimeStamp(zonedDateTime)); return (T) this; }
-    public T withDateTimeStamp(DateTimeStamp dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
 
     /**
      * ORGANIZER: Organizer
@@ -101,12 +84,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         return organizer;
     }
     private ObjectProperty<Organizer> organizer;
-    @Override
-    public Organizer getOrganizer() { return (organizer == null) ? null : organizer.get(); }
-    @Override
-    public void setOrganizer(Organizer organizer) { organizerProperty().set(organizer); }
-    public T withOrganizer(String content) { setOrganizer(new Organizer(content)); return (T) this; }
-    public T withOrganizer(Organizer organizer) { setOrganizer(organizer); return (T) this; }
 
     /**
      * REQUEST-STATUS: Request Status
@@ -127,16 +104,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     private ObservableList<RequestStatus> requestStatus;
     @Override
     public void setRequestStatus(ObservableList<RequestStatus> requestStatus) { this.requestStatus = requestStatus; }
-    /** add comma separated requestStatus into separate comment objects */
-    public T withRequestStatus(String...requestStatus)
-    {
-        if (this.requestStatus == null)
-        {
-            this.requestStatus = FXCollections.observableArrayList();
-        }
-        Arrays.stream(requestStatus).forEach(c -> getRequestStatus().add(new RequestStatus(c)));
-        return (T) this;
-    }
 
     /**
      * UID, Unique identifier
@@ -156,12 +123,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         return uniqueIdentifier;
     }
     private ObjectProperty<UniqueIdentifier> uniqueIdentifier;
-    @Override
-    public UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifierProperty().get(); }
-    @Override
-    public void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
-    public T withUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(new UniqueIdentifier(uniqueIdentifier)); return (T) this; }
-    public T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); return (T) this; }
 
     /**
      * URL: Uniform Resource Locator
@@ -182,15 +143,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         return uniformResourceLocator;
     }
     private ObjectProperty<UniformResourceLocator> uniformResourceLocator;
-    @Override
-    public UniformResourceLocator getUniformResourceLocator() { return (uniformResourceLocator == null) ? null : uniformResourceLocatorProperty().get(); }
-    @Override
-    public void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
-    public void setUniformResourceLocator(URI url) { setUniformResourceLocator(new UniformResourceLocator(url)); };
-    public T withUniformResourceLocator(String url) { setUniformResourceLocator(new UniformResourceLocator(url)); return (T) this; }
-    public T withUniformResourceLocator(URI url) { setUniformResourceLocator(url); return (T) this; }
-    public T withUniformResourceLocator(UniformResourceLocator url) { setUniformResourceLocator(url); return (T) this; }
-
 
     /*
      * CONSTRUCTORS

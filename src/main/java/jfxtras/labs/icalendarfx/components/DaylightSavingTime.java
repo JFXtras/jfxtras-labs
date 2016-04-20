@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
 // both this class and Standard are identical - need to extend common class
-public abstract class DaylightSavingTime extends StandardOrSavingsBase<DaylightSavingTime>
+public class DaylightSavingTime extends StandardOrSavingsBase<DaylightSavingTime>
 {
     @Override
     public VComponentEnum componentType()

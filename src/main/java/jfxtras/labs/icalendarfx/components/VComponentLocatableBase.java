@@ -30,11 +30,6 @@ public abstract class VComponentLocatableBase<T, I> extends VComponentDisplayabl
         return description;
     }
     private ObjectProperty<Description> description;
-    @Override public Description getDescription() { return descriptionProperty().get(); }
-    @Override
-    public void setDescription(Description description) { descriptionProperty().set(description); }
-    public T withDescription(Description description) { setDescription(description); return (T) this; }
-    public T withDescription(String description) { PropertyEnum.DESCRIPTION.parse(this, description); return (T) this; }
     
     /*
      * CONSTRUCTORS

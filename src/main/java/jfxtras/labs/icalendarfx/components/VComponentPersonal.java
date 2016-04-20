@@ -1,6 +1,11 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.net.URI;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
@@ -44,10 +49,13 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      * Example:
      * DTSTAMP:19971210T080000Z
      */
-    DateTimeStamp getDateTimeStamp();
     ObjectProperty<DateTimeStamp> dateTimeStampProperty();
-    void setDateTimeStamp(DateTimeStamp dtStamp);
-    
+    default DateTimeStamp getDateTimeStamp() { return dateTimeStampProperty().get(); }
+    default void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStampProperty().set(dtStamp); }
+    default T withDateTimeStamp(ZonedDateTime zonedDateTime) { setDateTimeStamp(new DateTimeStamp(zonedDateTime)); return (T) this; }
+    default T withDateTimeStamp(String zonedDateTime) { setDateTimeStamp(new DateTimeStamp(zonedDateTime)); return (T) this; }
+    default T withDateTimeStamp(DateTimeStamp dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
+
     /**
      * ORGANIZER: Organizer
      * RFC 5545 iCalendar 3.8.4.3 page 111
@@ -56,10 +64,12 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      * Example:
      * ORGANIZER;CN=John Smith:mailto:jsmith@example.com
      */
-    Organizer getOrganizer();
     ObjectProperty<Organizer> organizerProperty();
-    void setOrganizer(Organizer organizer);
-    
+    default Organizer getOrganizer() { return organizerProperty().get(); }
+    default void setOrganizer(Organizer organizer) { organizerProperty().set(organizer); }
+    default T withOrganizer(String content) { setOrganizer(new Organizer(content)); return (T) this; }
+    default T withOrganizer(Organizer organizer) { setOrganizer(organizer); return (T) this; }
+
     /**
      * REQUEST-STATUS: Request Status
      * RFC 5545 iCalendar 3.8.8.3 page 141
@@ -73,7 +83,17 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      */
     ObservableList<RequestStatus> getRequestStatus();
     void setRequestStatus(ObservableList<RequestStatus> properties);
-    
+    /** add comma separated requestStatus into separate comment objects */
+    default T withRequestStatus(ObservableList<RequestStatus> requestStatus) { setRequestStatus(requestStatus); return (T) this; }
+    default T withRequestStatus(String...requestStatus)
+    {
+        if (getRequestStatus() == null)
+        {
+            setRequestStatus(FXCollections.observableArrayList());
+        }
+        Arrays.stream(requestStatus).forEach(c -> getRequestStatus().add(new RequestStatus(c)));
+        return (T) this;
+    }
     /**
      * UID, Unique identifier
      * RFC 5545, iCalendar 3.8.4.7 page 117
@@ -83,10 +103,12 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      * Example:
      * UID:19960401T080045Z-4000F192713-0052@example.com
      */
-    UniqueIdentifier getUniqueIdentifier();
     ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty();
-    void setUniqueIdentifier(UniqueIdentifier uid);
-    
+    default UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifierProperty().get(); }
+    default void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
+    default T withUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(new UniqueIdentifier(uniqueIdentifier)); return (T) this; }
+    default T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); return (T) this; }
+
     /**
      * URL: Uniform Resource Locator
      * RFC 5545 iCalendar 3.8.4.6 page 116
@@ -96,7 +118,12 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      * Example:
      * URL:http://example.com/pub/calendars/jsmith/mytime.ics
      */
-    UniformResourceLocator getUniformResourceLocator();
     ObjectProperty<UniformResourceLocator> uniformResourceLocatorProperty();
-    void setUniformResourceLocator(UniformResourceLocator uri);
+    default UniformResourceLocator getUniformResourceLocator() { return uniformResourceLocatorProperty().get(); }
+    default void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
+    default void setUniformResourceLocator(URI url) { setUniformResourceLocator(new UniformResourceLocator(url)); };
+    default T withUniformResourceLocator(String url) { setUniformResourceLocator(new UniformResourceLocator(url)); return (T) this; }
+    default T withUniformResourceLocator(URI url) { setUniformResourceLocator(url); return (T) this; }
+    default T withUniformResourceLocator(UniformResourceLocator url) { setUniformResourceLocator(url); return (T) this; }
+
 }

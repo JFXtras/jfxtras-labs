@@ -1,9 +1,8 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.ZonedDateTime;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneIdentifier;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
 
@@ -38,27 +37,6 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
     public VTimeZone(String contentLines)
     {
         super(contentLines);
-    }
-
-    @Override
-    public ZonedDateTime getDateTimeLastModified()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<ZonedDateTime> dateTimeLastModifiedProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDateTimeLastModified(ZonedDateTime dtLastModified)
-    {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
@@ -112,6 +90,27 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
 
     @Override
     public void setStandardOrSavingsTime(ObservableList<StandardOrSavings> properties)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public LastModified getDateTimeLastModified()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<LastModified> dateTimeLastModifiedProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setDateTimeLastModified(LastModified dtLastModified)
     {
         // TODO Auto-generated method stub
         

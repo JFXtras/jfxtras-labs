@@ -1,7 +1,9 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.util.Arrays;
 import java.util.List;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
@@ -58,7 +60,17 @@ public interface VComponentNew<T>
      */
     ObservableList<NonStandardProperty> getNonStandardProperties();
     void setNonStandardProperties(ObservableList<NonStandardProperty> properties);
-    
+    default T withNonStandardProperty(String...nonStandardProps)
+    {
+        if (getNonStandardProperties() == null)
+        {
+            setNonStandardProperties(FXCollections.observableArrayList());
+        }
+        Arrays.stream(nonStandardProps).forEach(c -> PropertyEnum.NON_STANDARD.parse(this, c));
+        return (T) this;
+    }
+    default T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return (T) this; }
+
     /**
      * 3.8.8.1.  IANA Properties
      * An IANA-registered property name
@@ -69,7 +81,18 @@ public interface VComponentNew<T>
      */
     ObservableList<IANAProperty> getIANAProperties();
     void setIANAProperties(ObservableList<IANAProperty> properties);
-    
+    /** add comma separated ianaProps into separate comment objects */
+    default T withIANAProperty(String...ianaProps)
+    {
+        if (getIANAProperties() == null)
+        {
+            setIANAProperties(FXCollections.observableArrayList());
+        }
+        Arrays.stream(ianaProps).forEach(c -> PropertyEnum.IANA_PROPERTY.parse(this, c));
+        return (T) this;
+    }
+    default T withIANAProperty(ObservableList<IANAProperty> ianaProps) { setIANAProperties(ianaProps); return (T) this; }
+
     /**
      * List of all properties found in component.
      * The list is unmodifiable.

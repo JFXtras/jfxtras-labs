@@ -1,13 +1,19 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -35,7 +41,14 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
      * */
     ObservableList<Comment> getComments();
     void setComments(ObservableList<Comment> properties);
-    
+    /** add comma separated comments into separate comment objects */
+    default T withComments(ObservableList<Comment> comments) { setComments(comments); return (T) this; }
+    default T withComments(String...comments)
+    {
+        Arrays.stream(comments).forEach(c -> PropertyEnum.COMMENT.parse(this, c));
+        return (T) this;
+    }
+
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
@@ -43,7 +56,28 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
      */
     DateTimeStart<? extends Temporal> getDateTimeStart();
     ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty();
-    void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart);
+    default void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { dateTimeStartProperty().set(dtStart); }
+    default void setDateTimeStart(Temporal temporal)
+    {
+        if (temporal instanceof LocalDate)
+        {
+            setDateTimeStart(new DateTimeStart<LocalDate>((LocalDate) temporal));            
+        } else if (temporal instanceof LocalDateTime)
+        {
+            setDateTimeStart(new DateTimeStart<LocalDateTime>((LocalDateTime) temporal));            
+        } else if (temporal instanceof ZonedDateTime)
+        {
+            setDateTimeStart(new DateTimeStart<ZonedDateTime>((ZonedDateTime) temporal));            
+        } else
+        {
+            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+                    + temporal.getClass().getSimpleName() + " is not supported");
+        }
+    }
+    default T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
+    default T withDateTimeStart(String dtStart) { return withDateTimeStart(DateTimeUtilities.temporalFromString(dtStart)); }
+    default T withDateTimeStart(Temporal temporal) { setDateTimeStart(temporal); return (T) this; }
+
     default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };
     default ZoneId getZoneId()
     {

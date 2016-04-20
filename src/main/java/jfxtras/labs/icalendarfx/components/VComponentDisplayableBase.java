@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.temporal.Temporal;
-import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -11,7 +10,6 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 
 public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonalBase<T> implements VComponentDisplayable<T,I>, VComponentRepeatable<T>, VComponentDescribable<T>
 {
@@ -35,13 +33,6 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     private ObservableList<Attachment<?>> attachments;
     @Override
     public void setAttachments(ObservableList<Attachment<?>> attachments) { this.attachments = attachments; }
-    /** add comma separated attachments into separate comment objects */
-    public T withAttachments(ObservableList<Attachment<?>> attachments) { setAttachments(attachments); return (T) this; }
-    public T withAttachments(String...attachments)
-    {
-        Arrays.stream(attachments).forEach(c -> PropertyEnum.ATTACHMENT.parse(this, c));
-        return (T) this;
-    }
     
     /**
      * RDATE
@@ -86,15 +77,7 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
         return recurrenceRule;
     }
     private ObjectProperty<RecurrenceRule> recurrenceRule;
-    @Override
-    public RecurrenceRule getRecurrenceRule() { return recurrenceRuleProperty().get(); }
-    @Override
-    public void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
-    public void setRecurrenceRule(RecurrenceRuleParameter rrule) { recurrenceRuleProperty().set(new RecurrenceRule(rrule)); }
-    public T withRecurrenceRule(String rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); return (T) this; }
-    public T withRecurrenceRule(RecurrenceRule rrule) { setRecurrenceRule(rrule); return (T) this; }
-    public T withRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(rrule); return (T) this; }
-
+ 
     /**
      * SUMMARY
      * RFC 5545 iCalendar 3.8.1.12. page 93
@@ -113,12 +96,6 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
         return summary;
     }
     private ObjectProperty<Summary> summary;
-    @Override public Summary getSummary() { return summaryProperty().get(); }
-    @Override
-    public void setSummary(Summary summary) { summaryProperty().set(summary); }
-    public T withSummary(Summary summary) { setSummary(summary); return (T) this; }
-    public T withSummary(String summary) { PropertyEnum.SUMMARY.parse(this, summary); return (T) this; }
-
     
     /*
      * CONSTRUCTORS

@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.util.Arrays;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -45,13 +43,6 @@ public abstract class VComponentDescribableBase<T> extends VComponentBase<T> imp
     private ObservableList<Attachment<?>> attachments;
     @Override
     public void setAttachments(ObservableList<Attachment<?>> attachments) { this.attachments = attachments; }
-    /** add comma separated attachments into separate comment objects */
-    public T withAttachments(ObservableList<Attachment<?>> attachments) { setAttachments(attachments); return (T) this; }
-    public T withAttachments(String...attachments)
-    {
-        Arrays.stream(attachments).forEach(c -> PropertyEnum.ATTACHMENT.parse(this, c));
-        return (T) this;
-    }
     
     /**
      * SUMMARY
@@ -71,12 +62,6 @@ public abstract class VComponentDescribableBase<T> extends VComponentBase<T> imp
         return summary;
     }
     private ObjectProperty<Summary> summary;
-    @Override public Summary getSummary() { return summaryProperty().get(); }
-    @Override
-    public void setSummary(Summary summary) { summaryProperty().set(summary); }
-    public T withSummary(Summary summary) { setSummary(summary); return (T) this; }
-    public T withSummary(String summary) { PropertyEnum.SUMMARY.parse(this, summary); return (T) this; }
-
     
     /*
      * CONSTRUCTORS
