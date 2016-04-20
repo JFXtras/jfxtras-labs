@@ -10,7 +10,6 @@ import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 
-@Deprecated
 public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<T> implements VComponentRepeatable<T>
 {
     /**
@@ -33,7 +32,8 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
     public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
     {
         this.recurrences = recurrences;
-        VComponentRepeatable.addRecurrencesListener(recurrences);
+        recurrences.addListener(VComponentRepeatable.RECURRENCE_LISTENER);
+//        VComponentRepeatable.addRecurrencesListener(recurrences);
     }
 
     /**

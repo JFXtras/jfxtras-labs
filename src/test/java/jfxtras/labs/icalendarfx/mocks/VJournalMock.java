@@ -10,7 +10,6 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
 public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
@@ -34,27 +33,6 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
 
     @Override
     public void setDescriptions(ObservableList<Description> properties)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public ExDate getExDate()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<ExDate> exDateProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setExDate(ExDate exDate)
     {
         // TODO Auto-generated method stub
         

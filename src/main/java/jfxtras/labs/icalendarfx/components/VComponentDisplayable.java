@@ -1,22 +1,29 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
@@ -117,9 +124,74 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      * EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z
      * 
      */
-    ExDate getExDate();
-    ObjectProperty<ExDate> exDateProperty();
-    void setExDate(ExDate exDate);
+    ObservableList<Exceptions<? extends Temporal>> getExceptions();
+    void setExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions);
+    static void addExceptionsListener(ObservableList<Exceptions<? extends Temporal>> exceptions)
+    {
+        exceptions.addListener((ListChangeListener.Change<? extends Exceptions<? extends Temporal>> change) ->
+        {
+            if (exceptions.size() > 1)
+            {
+                Class<? extends Temporal> firstTemporalClass = exceptions.get(0).getValue().iterator().next().getClass();
+                while (change.next())
+                {
+                    if (change.wasAdded())
+                    {
+                        Iterator<? extends Exceptions<? extends Temporal>> i = change.getAddedSubList().iterator();
+                        while (i.hasNext())
+                        {
+                            Exceptions<? extends Temporal> r = i.next();
+                            Class<? extends Temporal> myTemporalClass = r.getValue().iterator().next().getClass();
+                            if (! myTemporalClass.equals(firstTemporalClass))
+                            {
+                                throw new DateTimeException("Added exceptions Temporal class " + myTemporalClass.getSimpleName() +
+                                        " doesn't match previous exceptions Temporal class " + firstTemporalClass.getSimpleName());
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    default T withExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions)
+    {
+        setExceptions(exceptions);
+        return (T) this;
+    }
+    default T withExceptions(String...exceptions)
+    {
+        Arrays.stream(exceptions).forEach(s -> PropertyEnum.RECURRENCE_DATE_TIMES.parse(this, s));   
+        return (T) this;
+    }
+    default T withExceptions(Temporal...exceptions)
+    {
+        if (exceptions.length > 0)
+        {
+            final ObservableList<Exceptions<? extends Temporal>> list;
+            if (getExceptions() == null)
+            {
+                list = FXCollections.observableArrayList();
+                setExceptions(list);
+            } else
+            {
+                list = getExceptions();
+            }
+            
+            Temporal t = exceptions[0];
+            if (t instanceof LocalDate)
+            {
+                Set<LocalDate> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
+                getExceptions().add(new Exceptions<LocalDate>(FXCollections.observableSet(exceptions2)));
+            } else if (t instanceof LocalDateTime)
+            {
+                getExceptions().add(new Exceptions<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) exceptions)));
+            } else if (t instanceof ZonedDateTime)
+            {
+                getExceptions().add(new Exceptions<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) exceptions)));
+            }
+        }
+        return (T) this;
+    }
     
     /**
      * RECURRENCE-ID: Recurrence Identifier

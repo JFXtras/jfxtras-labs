@@ -13,7 +13,6 @@ import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
 public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
@@ -191,27 +190,6 @@ public class VTodoMock extends VTodo<VTodoMock, InstanceMock>
 
     @Override
     public void setResources(Resources resources)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public ExDate getExDate()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<ExDate> exDateProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setExDate(ExDate exDate)
     {
         // TODO Auto-generated method stub
         

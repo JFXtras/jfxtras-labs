@@ -12,6 +12,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
@@ -118,6 +119,21 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     }
     private ObjectProperty<DateTimeCreated> dateTimeCreated;
     
+    
+    @Override
+    public ObservableList<Exceptions<? extends Temporal>> getExceptions()
+    {
+        return exceptions;
+    }
+    private ObservableList<Exceptions<? extends Temporal>> exceptions;
+    @Override
+    public void setExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions)
+    {
+        this.exceptions = exceptions;
+        exceptions.addListener(VComponentRepeatable.RECURRENCE_LISTENER);
+//        VComponentRepeatable.addRecurrencesListener2(VComponentRepeatable.listener);
+    }
+    
     /**
     * LAST-MODIFIED
     * RFC 5545, 3.8.7.3, page 138
@@ -165,7 +181,8 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
     {
         this.recurrences = recurrences;
-        VComponentRepeatable.addRecurrencesListener(recurrences);
+        recurrences.addListener(VComponentRepeatable.RECURRENCE_LISTENER);
+//        VComponentRepeatable.addRecurrencesListener(recurrences);
     }
 
     /**

@@ -43,8 +43,8 @@ public enum VComponentEnum
             PropertyEnum.DURATION, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.REPEAT_COUNT,
             PropertyEnum.SUMMARY, PropertyEnum.TRIGGER)),
     VFREEBUSY (Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.COMMENT,
-            PropertyEnum.DATE_TIME_STAMP, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.ORGANIZER,
-            PropertyEnum.REQUEST_STATUS, PropertyEnum.UNIQUE_IDENTIFIER));
+            PropertyEnum.DATE_TIME_STAMP, PropertyEnum.DATE_TIME_START, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.ORGANIZER,
+            PropertyEnum.REQUEST_STATUS, PropertyEnum.UNIQUE_IDENTIFIER, PropertyEnum.UNIFORM_RESOURCE_LOCATOR));
 
     private List<PropertyEnum> allowedProperties;
     public List<PropertyEnum> allowedProperties() { return allowedProperties; }

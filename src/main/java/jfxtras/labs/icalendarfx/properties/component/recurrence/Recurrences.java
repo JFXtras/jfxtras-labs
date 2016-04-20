@@ -27,7 +27,7 @@ import jfxtras.labs.icalendarfx.components.VTodoInt;
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public class Recurrences<T extends Temporal> extends PropertyBaseRecurrence<T, Exceptions<T>>
+public class Recurrences<T extends Temporal> extends PropertyBaseRecurrence<T, Recurrences<T>>
 {       
     public Recurrences(CharSequence contentLine)
     {

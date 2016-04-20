@@ -4,7 +4,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import jfxtras.labs.icalendarfx.component.BaseTest;
 import jfxtras.labs.icalendarfx.component.GeneralTest;
+import jfxtras.labs.icalendarfx.component.PersonalTest;
+import jfxtras.labs.icalendarfx.component.PrimaryTest;
 import jfxtras.labs.icalendarfx.component.StandardTimeTest;
 import jfxtras.labs.icalendarfx.component.VAlarmTest;
 import jfxtras.labs.icalendarfx.component.VEventTest;
@@ -68,6 +71,9 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
         
         //component tests
         GeneralTest.class,
+        BaseTest.class,
+        PrimaryTest.class,
+        PersonalTest.class,
         VEventTest.class,
         VTodoTest.class,
         VJournalTest.class,

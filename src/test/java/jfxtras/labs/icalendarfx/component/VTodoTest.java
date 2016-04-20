@@ -54,10 +54,10 @@ public class VTodoTest
         String componentName = builtComponent.componentType().toString();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
-                "DTSTAMP:20160306T080000Z" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
                 "COMMENT:My third comment" + System.lineSeparator() +
+                "DTSTAMP:20160306T080000Z" + System.lineSeparator() +
                 "END:" + componentName;
                 
         VTodoMock madeComponent = new VTodoMock(content);
