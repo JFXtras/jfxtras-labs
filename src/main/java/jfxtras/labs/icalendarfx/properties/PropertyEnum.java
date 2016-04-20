@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
@@ -138,14 +139,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew vComponent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vComponent;
             return castComponent.getAttendees();
         }
 
         @Override
         public void parse(VComponentNew vComponent, String propertyContent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vComponent;
             castComponent.getAttendees().add(new Attendee(propertyContent));
         }
     },

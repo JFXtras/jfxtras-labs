@@ -4,7 +4,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
-import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniformResourceLocator;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
@@ -19,22 +18,22 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
  * @see VJournalInt
  * @see VFreeBusy
  */
-public interface VComponentPersonal<T> extends VComponentPrimary<T>
+public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentAttendee<T>
 {
-    /**
-     * ATTENDEE: Attendee
-     * RFC 5545 iCalendar 3.8.4.1 page 107
-     * This property defines an "Attendee" within a calendar component.
-     * 
-     * Examples:
-     * ATTENDEE;MEMBER="mailto:DEV-GROUP@example.com":
-     *  mailto:joecool@example.com
-     * ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Jane Doe
-     *  :mailto:jdoe@example.com
-     */
-    ObservableList<Attendee> getAttendees();
-    void setAttendees(ObservableList<Attendee> properties);
-    
+//    /**
+//     * ATTENDEE: Attendee
+//     * RFC 5545 iCalendar 3.8.4.1 page 107
+//     * This property defines an "Attendee" within a calendar component.
+//     * 
+//     * Examples:
+//     * ATTENDEE;MEMBER="mailto:DEV-GROUP@example.com":
+//     *  mailto:joecool@example.com
+//     * ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Jane Doe
+//     *  :mailto:jdoe@example.com
+//     */
+//    ObservableList<Attendee> getAttendees();
+//    void setAttendees(ObservableList<Attendee> properties);
+//    
     /**
      * DTSTAMP: Date-Time Stamp
      * RFC 5545 iCalendar 3.8.7.2 page 137

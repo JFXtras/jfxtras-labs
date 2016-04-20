@@ -13,7 +13,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 
-public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonalBase<T> implements VComponentDisplayable<T,I>, VComponentRepeatable<T>, VComponentDescribable
+public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonalBase<T> implements VComponentDisplayable<T,I>, VComponentRepeatable<T>, VComponentDescribable<T>
 {
     /**
      * ATTACH

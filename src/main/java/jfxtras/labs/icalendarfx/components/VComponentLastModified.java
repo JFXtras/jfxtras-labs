@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 
 import javafx.beans.property.ObjectProperty;
 
-public interface VComponentLastModified
+public interface VComponentLastModified<T>
 {
     /**
      * LAST-MODIFIED: Date-Time Last Modified, from RFC 5545 iCalendar 3.8.7.3 page 138

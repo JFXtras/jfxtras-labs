@@ -4,19 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.mocks.VTimeZoneMock;
+import jfxtras.labs.icalendarfx.components.VTimeZone;
 
 public class VTimeZoneTest
 {
     @Test
     public void canBuildBase()
-    {        
-        ObjectProperty<String> s = new SimpleObjectProperty<>("start");
-        s.set(null);
-        
-        VTimeZoneMock builtComponent = new VTimeZoneMock()
+    {
+        VTimeZone builtComponent = new VTimeZone()
                 .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
                 .withIANAProperty("TESTPROP2:CASUAL")
                 .withNonStandardProperty("X-TEST-OBJ:testid");
@@ -31,7 +26,7 @@ public class VTimeZoneTest
                 "X-TEST-OBJ:testid" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VTimeZoneMock madeComponent = new VTimeZoneMock(content);
+        VTimeZone madeComponent = new VTimeZone(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }

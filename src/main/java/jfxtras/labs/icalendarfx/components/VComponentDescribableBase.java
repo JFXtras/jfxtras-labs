@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  */
 @Deprecated
 
-public abstract class VComponentDescribableBase<T> extends VComponentBase<T> implements VComponentDescribable
+public abstract class VComponentDescribableBase<T> extends VComponentBase<T> implements VComponentDescribable<T>
 {
     /**
      * ATTACH

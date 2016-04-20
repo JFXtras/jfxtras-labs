@@ -12,9 +12,9 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  * @see VEvent
  * @see VTodoOld
  * @see VJournal
- * @see VAlarmOld
+ * @see VAlarm
  *  */
-public interface VComponentDescribable extends VComponentNew
+public interface VComponentDescribable<T> extends VComponentNew<T>
 {
     /**
      * ATTACH: Attachment

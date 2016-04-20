@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.time;
 
 import java.time.temporal.TemporalAmount;
 
-import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VAlarmInt;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VTodoInt;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
@@ -29,7 +29,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  * The property can be specified in following components:
  * @see VEventNewInt
  * @see VTodoInt
- * @see VAlarm
+ * @see VAlarmInt
  */
 public class DurationProp extends PropertyBaseLanguage<TemporalAmount,DurationProp>
 {

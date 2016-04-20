@@ -7,7 +7,7 @@ import java.time.temporal.TemporalAmount;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VAlarmInt;
 import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
@@ -33,7 +33,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VAlarm
+ * @see VAlarmInt
  */
 public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyAlarmTrigger<T>
 {

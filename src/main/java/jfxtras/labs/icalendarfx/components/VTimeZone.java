@@ -1,5 +1,12 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.ZonedDateTime;
+
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneIdentifier;
+import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
+
 /**
  * VTIMEZONE: RFC 5545 iCalendar 3.6.5. page 62
  * currently not supported - ZonedDateTime is providing time zone information
@@ -12,7 +19,7 @@ package jfxtras.labs.icalendarfx.components;
  * @author David Bal
  *
  */
-public abstract class VTimeZone<T> extends VComponentBase<T> implements VTimeZoneInt
+public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt<VTimeZone>
 {
     //  NEED TO OVERRIDE toContentLines, AND MAYBE OTHER METHODS, TO ACCOMODIATE THE LIST
     // OF StandardOrSavings, BECAUSE THOSE ARE NOT PROPERTIES, BUT COMPONENTS THEMSELVES.
@@ -31,5 +38,82 @@ public abstract class VTimeZone<T> extends VComponentBase<T> implements VTimeZon
     public VTimeZone(String contentLines)
     {
         super(contentLines);
+    }
+
+    @Override
+    public ZonedDateTime getDateTimeLastModified()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<ZonedDateTime> dateTimeLastModifiedProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setDateTimeLastModified(ZonedDateTime dtLastModified)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public TimeZoneIdentifier getTimeZoneIdentifier()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<TimeZoneIdentifier> timeZoneIdentifierProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setTimeZoneIdentifier(TimeZoneIdentifier url)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public TimeZoneURL getTimeZoneURL()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<TimeZoneURL> timeZoneURLProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setTimeZoneURL(TimeZoneURL url)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public ObservableList<StandardOrSavings> getStandardOrSavingsTime()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setStandardOrSavingsTime(ObservableList<StandardOrSavings> properties)
+    {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -11,8 +11,6 @@ import java.time.ZonedDateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
@@ -25,10 +23,7 @@ public class VEventTest
 {
     @Test
     public void canBuildBase()
-    {        
-        ObjectProperty<String> s = new SimpleObjectProperty<>("start");
-        s.set(null);
-        
+    {
         VEventMockNew builtComponent = new VEventMockNew()
                 .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
                 .withIANAProperty("TESTPROP2:CASUAL")

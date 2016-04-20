@@ -6,19 +6,14 @@ import java.time.LocalDateTime;
 
 import org.junit.Test;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.mocks.VFreeBusyMock;
+import jfxtras.labs.icalendarfx.components.VFreeBusy;
 
 public class VFreeBusyTest
 {
     @Test
     public void canBuildBase()
-    {        
-        ObjectProperty<String> s = new SimpleObjectProperty<>("start");
-        s.set(null);
-        
-        VFreeBusyMock builtComponent = new VFreeBusyMock()
+    {
+        VFreeBusy builtComponent = new VFreeBusy()
                 .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
                 .withIANAProperty("TESTPROP2:CASUAL")
                 .withNonStandardProperty("X-TEST-OBJ:testid");
@@ -33,7 +28,7 @@ public class VFreeBusyTest
                 "X-TEST-OBJ:testid" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VFreeBusyMock madeComponent = new VFreeBusyMock(content);
+        VFreeBusy madeComponent = new VFreeBusy(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
@@ -41,7 +36,7 @@ public class VFreeBusyTest
     @Test
     public void canBuildPrimary()
     {
-        VFreeBusyMock builtComponent = new VFreeBusyMock()
+        VFreeBusy builtComponent = new VFreeBusy()
                 .withDateTimeStamp("20160306T080000Z")
                 .withComments("This is a test comment", "Another comment")
                 .withComments("COMMENT:My third comment");
@@ -54,7 +49,7 @@ public class VFreeBusyTest
                 "COMMENT:My third comment" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VFreeBusyMock madeComponent = new VFreeBusyMock(content);
+        VFreeBusy madeComponent = new VFreeBusy(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
@@ -62,7 +57,7 @@ public class VFreeBusyTest
     @Test
     public void canBuildPersonal()
     {
-        VFreeBusyMock builtComponent = new VFreeBusyMock()
+        VFreeBusy builtComponent = new VFreeBusy()
                 .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
                 .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
                 .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
@@ -82,7 +77,7 @@ public class VFreeBusyTest
                 "REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com" + System.lineSeparator() +
                 "END:" + componentName;
 
-        VFreeBusyMock madeComponent = new VFreeBusyMock(content);
+        VFreeBusy madeComponent = new VFreeBusy(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com", madeComponent.getOrganizer().toContentLine());
     }

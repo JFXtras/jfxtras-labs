@@ -6,7 +6,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneIdentifier
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
 
 @Deprecated // put into abstract class when done building VTodo
-public interface VTimeZoneInt extends VComponentNew, VComponentLastModified
+public interface VTimeZoneInt<T> extends VComponentNew<T>, VComponentLastModified<T>
 {
     /**
      * TZID

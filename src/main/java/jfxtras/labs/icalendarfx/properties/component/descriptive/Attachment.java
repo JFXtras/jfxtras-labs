@@ -4,7 +4,7 @@ import java.net.URI;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VAlarmInt;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VJournalInt;
 import jfxtras.labs.icalendarfx.components.VTodoInt;
@@ -34,7 +34,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @see VEventNewInt
  * @see VTodoInt
  * @see VJournalInt
- * @see VAlarm
+ * @see VAlarmInt
  */
 public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements PropertyAttachment<T>
 {

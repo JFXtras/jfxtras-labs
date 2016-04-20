@@ -22,9 +22,9 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * @see VJournalInt
  * @see VFreeBusy
  * @see VTimeZone
- * @see VAlarm
+ * @see VAlarmInt
  */
-public interface VComponentNew
+public interface VComponentNew<T>
 {
     /**
      * Returns the enum for the component as it would appear in the iCalendar content line

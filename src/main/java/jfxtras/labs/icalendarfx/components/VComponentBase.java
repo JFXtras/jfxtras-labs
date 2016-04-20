@@ -30,9 +30,9 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * @see VJournalInt
  * @see VFreeBusy
  * @see VTimeZone
- * @see VAlarm
+ * @see VAlarmInt
  */
-public abstract class VComponentBase<T> implements VComponentNew
+public abstract class VComponentBase<T> implements VComponentNew<T>
 {
     /**
      * 3.8.8.2.  Non-Standard Properties
@@ -101,6 +101,7 @@ public abstract class VComponentBase<T> implements VComponentNew
     public List<PropertyEnum> properties()
     {
         List<PropertyEnum> populatedProperties = new ArrayList<>();
+        System.out.println("componentType():" + componentType());
         Iterator<PropertyEnum> i = componentType().allowedProperties().stream().iterator();
         while (i.hasNext())
         {
@@ -212,6 +213,7 @@ public abstract class VComponentBase<T> implements VComponentNew
         final boolean propertiesEquals;
         List<PropertyEnum> properties = properties(); // make properties local to avoid creating list multiple times
         List<PropertyEnum> testProperties = testObj.properties(); // make properties local to avoid creating list multiple times
+        System.out.println("equals:" + this + " " + testObj);
         if (properties.size() == testProperties.size())
         {
             Iterator<PropertyEnum> i1 = properties.iterator();

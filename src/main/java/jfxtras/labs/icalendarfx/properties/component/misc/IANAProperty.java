@@ -5,7 +5,7 @@ import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
-import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VAlarmInt;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VJournalInt;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
@@ -31,7 +31,7 @@ import jfxtras.labs.icalendarfx.components.VTodoInt;
  * @see VEventNewInt
  * @see VTodoInt
  * @see VJournalInt
- * @see VAlarm
+ * @see VAlarmInt
  * @see VTimeZone
  * @see DaylightSavingTime
  * @see StandardTime

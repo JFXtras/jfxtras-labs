@@ -5,89 +5,172 @@ import java.time.temporal.TemporalAmount;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
-public interface VAlarm extends VComponentDescribable
+/** 
+ * VALARM: RFC 5545 iCalendar 3.6.6. page 71
+ * 
+ * Not implemented
+ */
+public class VAlarm extends VComponentDescribableBase<VAlarm> implements VAlarmInt<VAlarm>
 {
-    /**
-     * ACTION
-     * RFC 5545 iCalendar 3.8.6.1 page 132,
-     * This property defines the action to be invoked when an
-     * alarm is triggered.
-     * actionvalue = "AUDIO" / "DISPLAY" / "EMAIL" / iana-token / x-name
-     * 
-     * Example:
-     * ACTION:DISPLAY
-     */
-    String getAction();
-    StringProperty actionProperty();
-    void setAction(String action);
+    @Override
+    public VComponentEnum componentType()
+    {
+        return VComponentEnum.VALARM;
+    }
     
-    /**
-     * ATTENDEE: Attendee
-     * RFC 5545 iCalendar 3.8.4.1 page 107
-     * This property defines an "Attendee" within a calendar component.
-     * 
-     * Examples:
-     * ATTENDEE;MEMBER="mailto:DEV-GROUP@example.com":
-     *  mailto:joecool@example.com
-     * ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Jane Doe
-     *  :mailto:jdoe@example.com
+    /*
+     * CONSTRUCTORS
      */
-    Attendee getAttendee();
-    ObjectProperty<Attendee> attendeeProperty();
-    void setAttendee(Attendee attendee);
+    public VAlarm() { }
     
-    /** 
-     * DURATION
-     * RFC 5545 iCalendar 3.8.2.5 page 99,
-     * Can't be used if DTEND is used.  Must be one or the other.
-     * 
-     * Example:
-     * DURATION:PT15M
-     * */
-    ObjectProperty<TemporalAmount> durationProperty();
-    TemporalAmount getDuration();
-    void setDuration(TemporalAmount duration);
-    
-    /**
-     * REPEAT: Repeat Count
-     * RFC 5545 iCalendar 3.8.6.2 page 133,
-     * This property defines the number of times the alarm should
-     * be repeated, after the initial trigger.
-     * 
-     * If the alarm triggers more than once, then this property MUST be specified
-     * along with the "DURATION" property.
-     * 
-     * Example:  The following is an example of this property for an alarm
-     * that repeats 4 additional times with a 5-minute delay after the
-     * initial triggering of the alarm:
-     * 
-     * REPEAT:4
-     * DURATION:PT5M
-     */
-    int getRepeat();
-    IntegerProperty repeatProperty();
-    void setRepeat(int repeat);
-    
-    /**
-     * TRIGGER
-     * RFC 5545 iCalendar 3.8.6.3 page 133,
-     * This property specifies when an alarm will trigger.
-     * 
-     * Examples:
-     * A trigger set 15 minutes prior to the start of the event or to-do.
-     * TRIGGER:-PT15M
-     *  
-     * A trigger set five minutes after the end of an event or the due
-     * date of a to-do.
-     * TRIGGER;RELATED=END:PT5M
-     * 
-     * A trigger set to an absolute DATE-TIME.
-     * TRIGGER;VALUE=DATE-TIME:19980101T050000Z
-     */
-    Trigger getTrigger();
-    ObjectProperty<Trigger> triggerProperty();
-    void setTrigger(Trigger trigger);
+    public VAlarm(String contentLines)
+    {
+        super(contentLines);
+    }
+
+    @Override
+    public String getAction()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public StringProperty actionProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setAction(String action)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Attendee getAttendee()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<Attendee> attendeeProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setAttendee(Attendee attendee)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public ObservableList<Attendee> getAttendees()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setAttendees(ObservableList<Attendee> properties)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public ObjectProperty<Description> descriptionProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Description getDescription()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setDescription(Description description)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public ObjectProperty<TemporalAmount> durationProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TemporalAmount getDuration()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setDuration(TemporalAmount duration)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getRepeat()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public IntegerProperty repeatProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setRepeat(int repeat)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Trigger getTrigger()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<Trigger> triggerProperty()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setTrigger(Trigger trigger)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

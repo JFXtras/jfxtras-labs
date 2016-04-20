@@ -30,7 +30,9 @@ public enum VComponentEnum
     STANDARD (Arrays.asList(PropertyEnum.COMMENT, PropertyEnum.DATE_TIME_START,
             PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.RECURRENCE_DATE_TIMES,
             PropertyEnum.RECURRENCE_RULE)),
-    VALARM (Arrays.asList(PropertyEnum.ATTACHMENT, PropertyEnum.COMMENT, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD)),
+    VALARM (Arrays.asList(PropertyEnum.ACTION, PropertyEnum.ATTACHMENT, PropertyEnum.ATTENDEE, PropertyEnum.DESCRIPTION,
+            PropertyEnum.DURATION, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.REPEAT_COUNT,
+            PropertyEnum.SUMMARY, PropertyEnum.TRIGGER)),
     VFREEBUSY (Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.COMMENT,
             PropertyEnum.DATE_TIME_STAMP, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.ORGANIZER,
             PropertyEnum.REQUEST_STATUS, PropertyEnum.UNIQUE_IDENTIFIER));

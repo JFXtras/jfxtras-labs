@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.relationship;
 
 import java.net.URI;
 
-import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VAlarmInt;
 import jfxtras.labs.icalendarfx.components.VEventNewInt;
 import jfxtras.labs.icalendarfx.components.VJournalInt;
 import jfxtras.labs.icalendarfx.components.VTodoInt;
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.components.VTodoInt;
  * @see VEventNewInt
  * @see VTodoInt
  * @see VJournalInt
- * @see VAlarm
+ * @see VAlarmInt
  */
 public class Attendee extends PropertyBaseAttendee<URI, Attendee>
 {    

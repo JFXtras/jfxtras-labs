@@ -5,7 +5,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
-import jfxtras.labs.icalendarfx.components.VAlarmOld;
+import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
@@ -214,22 +214,22 @@ public class VCalendar
      * 
      * @see VFreeBusy
      */
-    public ObservableList<VFreeBusy<?>> vFreeBusyList() { return vFreeBusyList; }
-    private ObservableList<VFreeBusy<?>> vFreeBusyList = FXCollections.observableArrayList();
+    public ObservableList<VFreeBusy> vFreeBusyList() { return vFreeBusyList; }
+    private ObservableList<VFreeBusy> vFreeBusyList = FXCollections.observableArrayList();
 
     /** 
      * VTIMEZONE: RFC 5545 iCalendar 3.6.5. page 62
      * 
      * @see VTimeZoneOld
      */
-    public ObservableList<VTimeZone<?>> vTimeZones() { return vTimeZones; }
-    private ObservableList<VTimeZone<?>> vTimeZones = FXCollections.observableArrayList();
+    public ObservableList<VTimeZone> vTimeZones() { return vTimeZones; }
+    private ObservableList<VTimeZone> vTimeZones = FXCollections.observableArrayList();
     
     /** 
      * VALARM: RFC 5545 iCalendar 3.6.6. page 71
      * 
-     * @see VAlarmOld
+     * @see VAlarm
      */
-    public ObservableList<VAlarmOld> vAlarms() { return vAlarms; }
-    private ObservableList<VAlarmOld> vAlarms = FXCollections.observableArrayList();
+    public ObservableList<VAlarm> vAlarms() { return vAlarms; }
+    private ObservableList<VAlarm> vAlarms = FXCollections.observableArrayList();
 }
