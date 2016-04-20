@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.mocks;
 
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -12,7 +11,6 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
-import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
 public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
@@ -36,48 +34,6 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
 
     @Override
     public void setDescriptions(ObservableList<Description> properties)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Contact getContact()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<Contact> contactProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setContact(Contact contact)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public ZonedDateTime getDateTimeCreated()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<ZonedDateTime> dateTimeCreatedProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setDateTimeCreated(ZonedDateTime dtCreated)
     {
         // TODO Auto-generated method stub
         

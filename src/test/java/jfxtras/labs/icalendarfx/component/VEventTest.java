@@ -181,15 +181,19 @@ public class VEventTest
     public void canBuildDisplayable()
     {
         VEventMockNew builtComponent = new VEventMockNew()
+                .withDateTimeCreated("20160420T080000Z")
                 .withCategories("group03","group04","group05")
                 .withCategories("group06")
-                .withClassification(ClassificationType.PUBLIC);
+                .withClassification(ClassificationType.PUBLIC)
+                .withContact("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234");
         System.out.println(builtComponent.toContentLines());
         String componentName = builtComponent.componentType().toString();
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "CATEGORIES:group03,group04,group05" + System.lineSeparator() +
                 "CATEGORIES:group06" + System.lineSeparator() +
                 "CLASS:PUBLIC" + System.lineSeparator() +
+                "CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234" + System.lineSeparator() +
+                "CREATED:20160420T080000Z" + System.lineSeparator() +
                 "END:" + componentName;
 
         VEventMockNew madeComponent = new VEventMockNew(content);

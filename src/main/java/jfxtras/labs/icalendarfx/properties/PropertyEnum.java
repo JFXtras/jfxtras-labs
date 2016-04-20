@@ -77,14 +77,14 @@ public enum PropertyEnum
             Action.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -97,16 +97,16 @@ public enum PropertyEnum
             , Attachment.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDescribable castComponent = (VComponentDescribable) vComponent;
+            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
             return castComponent.getAttachments();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDescribable castComponent = (VComponentDescribable) vComponent;
+            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
             
             final ObservableList<Attachment<?>> list;
             if (castComponent.getAttachments() == null)
@@ -139,14 +139,14 @@ public enum PropertyEnum
             , Attendee.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vComponent;
             return castComponent.getAttendees();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vComponent;
             final ObservableList<Attendee> list;
@@ -164,14 +164,14 @@ public enum PropertyEnum
     // Calendar
     CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class) {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -183,14 +183,14 @@ public enum PropertyEnum
             , Categories.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
             return castComponent.getCategories();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
             final ObservableList<Categories> list;
@@ -212,14 +212,14 @@ public enum PropertyEnum
             Classification.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
             return castComponent.getClassification();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
             if (castComponent.getClassification() == null)
@@ -237,16 +237,16 @@ public enum PropertyEnum
             Comment.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentPrimary castProperty = (VComponentPrimary) vComponent;
+            VComponentPrimary<?> castProperty = (VComponentPrimary<?>) vComponent;
             return castProperty.getComments();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentPrimary castComponent = (VComponentPrimary) vComponent;
+            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
             final ObservableList<Comment> list;
             if (castComponent.getComments() == null)
             {
@@ -265,17 +265,23 @@ public enum PropertyEnum
             Contact.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            return castComponent.getContact();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            if (castComponent.getContact() == null)
+            {
+                castComponent.setContact(new Contact(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     }, // Relationship
     DATE_TIME_COMPLETED ("COMPLETED", // property name
@@ -284,14 +290,14 @@ public enum PropertyEnum
             DateTimeCompleted.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -303,17 +309,24 @@ public enum PropertyEnum
             DateTimeCreated.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            return castComponent.getDateTimeCreated();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            if (castComponent.getDateTimeCreated() == null)
+            {
+                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
+                castComponent.setDateTimeCreated(new DateTimeCreated((ZonedDateTime) t));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     }, // Change management
     DATE_TIME_DUE ("DUE", // property name
@@ -322,14 +335,14 @@ public enum PropertyEnum
             DateTimeDue.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -341,14 +354,14 @@ public enum PropertyEnum
             DateTimeEnd.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -361,16 +374,16 @@ public enum PropertyEnum
             DateTimeStamp.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             return castComponent.getDateTimeStamp();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             if (castComponent.getDateTimeStamp() == null)
             {
                 Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
@@ -387,16 +400,16 @@ public enum PropertyEnum
             DateTimeStart.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentPrimary castComponent = (VComponentPrimary) vComponent;
+            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
             return castComponent.getDateTimeStart();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentPrimary castComponent = (VComponentPrimary) vComponent;
+            VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
             if (castComponent.getDateTimeStart() == null)
             {
                 Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
@@ -424,14 +437,14 @@ public enum PropertyEnum
             Description.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -443,14 +456,14 @@ public enum PropertyEnum
             DurationProp.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -463,14 +476,14 @@ public enum PropertyEnum
             Exceptions.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -482,14 +495,14 @@ public enum PropertyEnum
             Arrays.asList(ParameterEnum.FREE_BUSY_TIME_TYPE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
             FreeBusyTime.class) {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -498,14 +511,14 @@ public enum PropertyEnum
     // Descriptive
     GEOGRAPHIC_POSITION ("GEO", null, null, null) {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
         
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -518,13 +531,13 @@ public enum PropertyEnum
             IANAProperty.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             return vComponent.getIANAProperties();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             final ObservableList<IANAProperty> list;
             if (vComponent.getIANAProperties() == null)
@@ -545,14 +558,14 @@ public enum PropertyEnum
             LastModified.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vComponent;
             return castComponent.getDateTimeLastModified();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vComponent;
             if (castComponent.getDateTimeLastModified() == null)
@@ -571,14 +584,14 @@ public enum PropertyEnum
             Location.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -587,14 +600,14 @@ public enum PropertyEnum
     // Calendar
     METHOD ("METHOD", null, null, null) {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -607,13 +620,13 @@ public enum PropertyEnum
             NonStandardProperty.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             return vComponent.getNonStandardProperties();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             final ObservableList<NonStandardProperty> list;
             if (vComponent.getNonStandardProperties() == null)
@@ -634,29 +647,29 @@ public enum PropertyEnum
             Organizer.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             return castComponent.getOrganizer();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             castComponent.setOrganizer(new Organizer(propertyContent));
         }
     }, // property class
     PERCENT_COMPLETE ("PERCENT", null, null, null) {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -664,14 +677,14 @@ public enum PropertyEnum
     }, // Descriptive
     PRIORITY ("PRIORITY", null, null, null) {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -680,14 +693,14 @@ public enum PropertyEnum
     // Calendar
     PRODUCT_IDENTIFIER ("PRODID", null, null, null) {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -700,16 +713,16 @@ public enum PropertyEnum
             Recurrences.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentRepeatable castComponent = (VComponentRepeatable) vComponent;
+            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             return castComponent.getRecurrences();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentRepeatable castComponent = (VComponentRepeatable) vComponent;
+            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
 //            System.out.println("content:" + propertyContent);
             final ObservableList<Recurrences<? extends Temporal>> list;
             if (castComponent.getRecurrences() == null)
@@ -745,14 +758,14 @@ public enum PropertyEnum
             RecurrenceId.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -764,16 +777,16 @@ public enum PropertyEnum
             RecurrenceRule.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentRepeatable castComponent = (VComponentRepeatable) vComponent;
+            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             return castComponent.getRecurrenceRule();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentRepeatable castComponent = (VComponentRepeatable) vComponent;
+            VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             if (castComponent.getRecurrenceRule() == null)
             {
                 castComponent.setRecurrenceRule(new RecurrenceRule(propertyContent));                
@@ -789,14 +802,14 @@ public enum PropertyEnum
             RelatedTo.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -809,14 +822,14 @@ public enum PropertyEnum
             RepeatCount.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -829,16 +842,16 @@ public enum PropertyEnum
             RequestStatus.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             return castComponent.getRequestStatus();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             final ObservableList<RequestStatus> list;
             if (castComponent.getRequestStatus() == null)
             {
@@ -857,14 +870,14 @@ public enum PropertyEnum
             Resources.class)
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -876,14 +889,14 @@ public enum PropertyEnum
             Sequence.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -895,14 +908,14 @@ public enum PropertyEnum
             Status.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -916,16 +929,16 @@ public enum PropertyEnum
             Summary.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDescribable castComponent = (VComponentDescribable) vComponent;
+            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
             return castComponent.getSummary();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDescribable castComponent = (VComponentDescribable) vComponent;
+            VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
             if (castComponent.getSummary() == null)
             {
                 castComponent.setSummary(new Summary(propertyContent));
@@ -942,14 +955,14 @@ public enum PropertyEnum
             TimeTransparency.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -962,14 +975,14 @@ public enum PropertyEnum
             TimeZoneIdentifier.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -981,14 +994,14 @@ public enum PropertyEnum
             TimeZoneName.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -1000,14 +1013,14 @@ public enum PropertyEnum
             TimeZoneOffsetFrom.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -1019,14 +1032,14 @@ public enum PropertyEnum
             TimeZoneOffsetTo.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -1038,14 +1051,14 @@ public enum PropertyEnum
             TimeZoneURL.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -1058,14 +1071,14 @@ public enum PropertyEnum
             Trigger.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -1078,16 +1091,16 @@ public enum PropertyEnum
             UniqueIdentifier.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             return castComponent.getUniqueIdentifier();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             if (castComponent.getUniqueIdentifier() == null)
             {
                 castComponent.setUniqueIdentifier(new UniqueIdentifier(propertyContent));
@@ -1103,29 +1116,29 @@ public enum PropertyEnum
             UniformResourceLocator.class) // property class
     {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             return castComponent.getUniformResourceLocator();
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentPersonal castComponent = (VComponentPersonal) vComponent;
+            VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             castComponent.setUniformResourceLocator(new UniformResourceLocator(propertyContent));
         }
     }, // Relationship
     VERSION ("VERSION", Arrays.asList(ValueType.TEXT), null, null) {
         @Override
-        public Object getProperty(VComponentNew vComponent)
+        public Object getProperty(VComponentNew<?> vComponent)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void parse(VComponentNew vComponent, String propertyContent)
+        public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             // TODO Auto-generated method stub
             
@@ -1219,7 +1232,7 @@ public enum PropertyEnum
      * ABSTRACT METHODS
      */
     /** Returns either Property<?> or List<Property<?>> */
-    abstract public Object getProperty(VComponentNew vComponent);
+    abstract public Object getProperty(VComponentNew<?> vComponent);
     /** Parses string and sets property */
-    abstract public void parse(VComponentNew vComponent, String propertyContent);
+    abstract public void parse(VComponentNew<?> vComponent, String propertyContent);
 }

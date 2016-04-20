@@ -12,6 +12,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
@@ -49,19 +50,6 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
         PropertyEnum.CATEGORIES.parse(this, commaSeparatedList);
         return (T) this;
     }
-
-//    ObjectProperty<Categories> categoriesProperty();
-//    default Categories getCategories() { return categoriesProperty().get(); }
-//    default void setCategories(String...summary) { setCategories(new Categories(summary)); }
-//    default void setCategories(Categories summary) { categoriesProperty().set(summary); }
-//    default T withCategories(Categories summary) { setCategories(summary); return (T) this; }
-//    default T withCategories(String...summary)
-//    {
-//        String commaSeparatedList = Arrays.stream(summary).collect(Collectors.joining(","));
-//        PropertyEnum.CATEGORIES.parse(this, commaSeparatedList);
-//        return (T) this;
-//    }
-
     
     /**
      * CLASS: Classification
@@ -75,12 +63,12 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      */
     ObjectProperty<Classification> classificationProperty();
     default Classification getClassification() { return classificationProperty().get(); }
-    default void setClassification(String classification) { setClassification(new Classification(classification)); }
-    default void setClassification(Classification classification) { classificationProperty().set(classification); }
-    default void setClassification(ClassificationType classification) { setClassification(new Classification(classification)); }
-    default T withClassification(Classification classification) { setClassification(classification); return (T) this; }
-    default T withClassification(ClassificationType classification) { setClassification(classification); return (T) this; }
-    default T withClassification(String classification) { PropertyEnum.CLASSIFICATION.parse(this, classification); return (T) this; }
+    default void setClassification(String contact) { setClassification(new Classification(contact)); }
+    default void setClassification(Classification contact) { classificationProperty().set(contact); }
+    default void setClassification(ClassificationType contact) { setClassification(new Classification(contact)); }
+    default T withClassification(Classification contact) { setClassification(contact); return (T) this; }
+    default T withClassification(ClassificationType contact) { setClassification(contact); return (T) this; }
+    default T withClassification(String contact) { PropertyEnum.CLASSIFICATION.parse(this, contact); return (T) this; }
     
     /**
      * CONTACT:
@@ -94,9 +82,13 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      *  c=US???(cn=Jim%20Dolittle)":Jim Dolittle\, ABC Industries\,
      *  +1-919-555-1234
      */
-    Contact getContact();
     ObjectProperty<Contact> contactProperty();
-    void setContact(Contact contact);
+    default Contact getContact() { return contactProperty().get(); }
+    default void setContact(String contact) { setContact(new Contact(contact)); }
+    default void setContact(Contact contact) { contactProperty().set(contact); }
+    default T withContact(Contact contact) { setContact(contact); return (T) this; }
+    default T withContact(String contact) { PropertyEnum.CONTACT.parse(this, contact); return (T) this; }
+
     
     /**
      * CREATED: Date-Time Created
@@ -108,9 +100,12 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      * Example:
      * CREATED:19960329T133000Z
      */
-    ZonedDateTime getDateTimeCreated();
-    ObjectProperty<ZonedDateTime> dateTimeCreatedProperty();
-    void setDateTimeCreated(ZonedDateTime dtCreated);
+    ObjectProperty<DateTimeCreated> dateTimeCreatedProperty();
+    default DateTimeCreated getDateTimeCreated() { return dateTimeCreatedProperty().get(); }
+    default void setDateTimeCreated(DateTimeCreated dtCreated) { dateTimeCreatedProperty().set(dtCreated); }
+    default T withDateTimeCreated(ZonedDateTime zonedDateTime) { setDateTimeCreated(new DateTimeCreated(zonedDateTime)); return (T) this; }
+    default T withDateTimeCreated(String zonedDateTime) { setDateTimeCreated(new DateTimeCreated(zonedDateTime)); return (T) this; }
+    default T withDateTimeCreated(DateTimeCreated dtCreated) { setDateTimeCreated(dtCreated); return (T) this; }
     
     /**
      * EXDATE: Exception Date-Times

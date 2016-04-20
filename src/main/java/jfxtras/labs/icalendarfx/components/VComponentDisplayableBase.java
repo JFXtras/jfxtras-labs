@@ -6,6 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
@@ -13,6 +14,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 
 public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonalBase<T> implements VComponentDisplayable<T,I>, VComponentRepeatable<T>, VComponentDescribable<T>
 {
@@ -71,6 +73,50 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
         return classification;
     }
     private ObjectProperty<Classification> classification;
+    
+    /**
+     * CONTACT:
+     * RFC 5545 iCalendar 3.8.4.2. page 109
+     * This property is used to represent contact information or
+     * alternately a reference to contact information associated with the
+     * calendar component.
+     * 
+     * Example:
+     * CONTACT;ALTREP="ldap://example.com:6666/o=ABC%20Industries\,
+     *  c=US???(cn=Jim%20Dolittle)":Jim Dolittle\, ABC Industries\,
+     *  +1-919-555-1234
+     */
+    @Override
+    public ObjectProperty<Contact> contactProperty()
+    {
+        if (contact == null)
+        {
+            contact = new SimpleObjectProperty<>(this, PropertyEnum.CONTACT.toString());
+        }
+        return contact;
+    }
+    private ObjectProperty<Contact> contact;
+    
+    /**
+     * CREATED: Date-Time Created
+     * RFC 5545 iCalendar 3.8.7.1 page 136
+     * This property specifies the date and time that the calendar information was created.
+     * This is analogous to the creation date and time for a file in the file system.
+     * The value MUST be specified in the UTC time format.
+     * 
+     * Example:
+     * CREATED:19960329T133000Z
+     */
+    @Override
+    public ObjectProperty<DateTimeCreated> dateTimeCreatedProperty()
+    {
+        if (dateTimeCreated == null)
+        {
+            dateTimeCreated = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_CREATED.toString());
+        }
+        return dateTimeCreated;
+    }
+    private ObjectProperty<DateTimeCreated> dateTimeCreated;
     
     /**
     * LAST-MODIFIED
