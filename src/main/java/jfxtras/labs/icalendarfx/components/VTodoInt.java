@@ -7,7 +7,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 
 @Deprecated // put into abstract class when done building VTodo
-public interface VTodoInt<T,I> extends VComponentLocatable<T,I>
+public interface VTodoInt<T> extends VComponentLocatable<T>
 {
     /**
      * COMPLETED: Date-Time Completed

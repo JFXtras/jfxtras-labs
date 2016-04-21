@@ -8,8 +8,7 @@ import java.nio.file.Paths;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.mocks.VEventMock;
+import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities;
 
 public class ICalendarReadICSTest
@@ -18,7 +17,7 @@ public class ICalendarReadICSTest
     public void canReadYahooICS()
     {
         VCalendar vCalendar = new VCalendar()
-                .withVEventCallback((s) -> VEventMock.parse(s));
+                .withVEventCallback((s) -> new VEventNew(s));
         
         String fileName = "Yahoo_Sample_Calendar.ics";
         URL url = getClass().getResource(fileName);

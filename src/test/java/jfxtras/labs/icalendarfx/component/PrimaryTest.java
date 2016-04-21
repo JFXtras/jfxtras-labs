@@ -15,9 +15,6 @@ import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
-import jfxtras.labs.icalendarfx.mocks.VJournalMock;
-import jfxtras.labs.icalendarfx.mocks.VTodoMock;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
@@ -43,15 +40,15 @@ public class PrimaryTest
     public void canBuildPrimary() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentPrimary<?>> components = Arrays.asList(
-                new VEventMockNew()
+                new VEventNew()
                     .withDateTimeStart("20160306T080000")
                     .withComments("This is a test comment", "Another comment")
                     .withComments("COMMENT:My third comment"),
-                new VTodoMock()
+                new VTodo()
                     .withDateTimeStart("20160306T080000")
                     .withComments("This is a test comment", "Another comment")
                     .withComments("COMMENT:My third comment"),
-                new VJournalMock()
+                new VJournal()
                     .withDateTimeStart("20160306T080000")
                     .withComments("This is a test comment", "Another comment")
                     .withComments("COMMENT:My third comment"),

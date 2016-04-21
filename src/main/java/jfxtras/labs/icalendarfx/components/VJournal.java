@@ -1,6 +1,12 @@
 package jfxtras.labs.icalendarfx.components;
 
-public abstract class VJournal<T, I> extends VComponentDisplayableBase<T, I> implements VJournalInt<T, I>
+import java.time.temporal.Temporal;
+import java.util.stream.Stream;
+
+import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+
+public class VJournal extends VComponentDisplayableBase<VJournal> implements VJournalInt<VJournal>
 {
     @Override
     public VComponentEnum componentType()
@@ -16,5 +22,27 @@ public abstract class VJournal<T, I> extends VComponentDisplayableBase<T, I> imp
     public VJournal(String contentLines)
     {
         super(contentLines);
+    }
+
+
+    @Override
+    public Stream<Temporal> streamRecurrences(Temporal startTemporal)
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public ObservableList<Description> getDescriptions()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public void setDescriptions(ObservableList<Description> properties)
+    {
+        // TODO Auto-generated method stub
+        
     }
 }

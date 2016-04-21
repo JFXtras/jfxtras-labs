@@ -6,13 +6,10 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
@@ -21,6 +18,8 @@ import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
@@ -33,12 +32,11 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * 
  * @author David Bal
  *
- * @param <I> class of recurrence instance
  * @see VEvent
  * @see VTodoOld
  * @see VJournal
  */
-public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComponentRepeatable<T>, VComponentDescribable<T>, VComponentLastModified<T>
+public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VComponentRepeatable<T>, VComponentDescribable<T>, VComponentLastModified<T>
 {
     /**
      * CATEGORIES:
@@ -61,7 +59,7 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
     /**
      * CLASS: Classification
      * RFC 5545 iCalendar 3.8.1.3. page 82
-     * This property defines the access classification for a calendar component.
+     * This property defines the access status for a calendar component.
      * "PUBLIC" / "PRIVATE" / "CONFIDENTIAL"
      * Default is PUBLIC
      * 
@@ -70,12 +68,12 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      */
     ObjectProperty<Classification> classificationProperty();
     default Classification getClassification() { return classificationProperty().get(); }
-    default void setClassification(String contact) { setClassification(new Classification(contact)); }
-    default void setClassification(Classification contact) { classificationProperty().set(contact); }
-    default void setClassification(ClassificationType contact) { setClassification(new Classification(contact)); }
-    default T withClassification(Classification contact) { setClassification(contact); return (T) this; }
-    default T withClassification(ClassificationType contact) { setClassification(contact); return (T) this; }
-    default T withClassification(String contact) { PropertyEnum.CLASSIFICATION.parse(this, contact); return (T) this; }
+    default void setClassification(String classification) { setClassification(new Classification(classification)); }
+    default void setClassification(Classification classification) { classificationProperty().set(classification); }
+    default void setClassification(ClassificationType classification) { setClassification(new Classification(classification)); }
+    default T withClassification(Classification classification) { setClassification(classification); return (T) this; }
+    default T withClassification(ClassificationType classificationType) { setClassification(classificationType); return (T) this; }
+    default T withClassification(String classification) { PropertyEnum.CLASSIFICATION.parse(this, classification); return (T) this; }
     
     /**
      * CONTACT:
@@ -97,14 +95,6 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
         Arrays.stream(contact).forEach(c -> PropertyEnum.CONTACT.parse(this, c));
         return (T) this;
     }
-//    // TODO - MAKE LIST
-//    ObjectProperty<Contact> contactProperty();
-//    default Contact getContact() { return contactProperty().get(); }
-//    default void setContact(String contact) { setContact(new Contact(contact)); }
-//    default void setContact(Contact contact) { contactProperty().set(contact); }
-//    default T withContact(Contact contact) { setContact(contact); return (T) this; }
-//    default T withContact(String contact) { PropertyEnum.CONTACT.parse(this, contact); return (T) this; }
-
     
     /**
      * CREATED: Date-Time Created
@@ -254,83 +244,21 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
 
     
     /**
-     * STATUS:
+     * STATUS
      * RFC 5545 iCalendar 3.8.1.11. page 92
-     * This property defines the overall status or confirmation
-     * for the calendar component.
-     */
-    String getStatus();
-    StringProperty statusProperty();
-    void setStatus(String classification);
-    
-    /**
-     * Produces a stream of start dates or date/times by calling {@link #stream(Temporal)} using {@link #getStartRange()}
-     * as the temporal parameter, minus the duration if the VComponent has one.  This stream is used
-     * by {@link #makeInstances()} to produce the displayed instances of the recurrence set.
      * 
-     * @return - stream of start dates or date/times between {@link #getStartRange()} and {@link #getEndRange()}
+     * This property defines the overall status or confirmation for the calendar component.
+     * 
+     * Example:
+     * STATUS:TENTATIVE
      */
-    Stream<Temporal> streamLimitedByRange();
-    
-    /**
-     * Start of range for which recurrence instances are generated.
-     * Should match the start date displayed on the calendar.
-     * This is not a part of an iCalendar VComponent.
-     */
-    Temporal getStartRange();
-    /**
-     * Start of range for which recurrence instances are generated.
-     * Should match the start date displayed on the calendar.
-     * This is not a part of an iCalendar VComponent.
-     */
-    void setStartRange(Temporal start);
-    /**
-     * End of range for which recurrence instances are generated.
-     * Should match the end date displayed on the calendar.
-     * This is not a part of an iCalendar VComponent.
-     */
-    Temporal getEndRange();
-    /**
-     * End of range for which recurrence instances are generated.
-     * Should match the end date displayed on the calendar.
-     * This is not a part of an iCalendar VComponent.
-     */
-    void setEndRange(Temporal end);
+    ObjectProperty<Status> statusProperty();
+    default Status getStatus() { return statusProperty().get(); }
+    default void setStatus(String status) { setStatus(new Status(status)); }
+    default void setStatus(Status status) { statusProperty().set(status); }
+    default void setStatus(StatusType status) { setStatus(new Status(status)); }
+    default T withStatus(Status status) { setStatus(status); return (T) this; }
+    default T withStatus(StatusType statusType) { setStatus(statusType); return (T) this; }
+    default T withStatus(String status) { PropertyEnum.STATUS.parse(this, status); return (T) this; }
 
-    /**
-     * Returns the collection of recurrence instances of calendar component of type T that exists
-     * between dateTimeRangeStart and dateTimeRangeEnd based on VComponent.
-     * Recurrence set is defined in RFC 5545 iCalendar page 121 as follows 
-     * "The recurrence set is the complete set of recurrence instances for a calendar component.  
-     * The recurrence set is generated by considering the initial "DTSTART" property along with
-     * the "RRULE", "RDATE", and "EXDATE" properties contained within the recurring component."
-     *  
-     * @param start - beginning of time frame to make instances
-     * @param end - end of time frame to make instances
-     * @return
-     */
-    Collection<I> makeInstances(Temporal start, Temporal end);
-    /**
-     * Returns the collection of recurrence instances of calendar component of type T that exists
-     * between dateTimeRangeStart and dateTimeRangeEnd based on VComponent.
-     * Recurrence set is defined in RFC 5545 iCalendar page 121 as follows 
-     * "The recurrence set is the complete set of recurrence instances for a calendar component.  
-     * The recurrence set is generated by considering the initial "DTSTART" property along with
-     * the "RRULE", "RDATE", and "EXDATE" properties contained within the recurring component."
-     * 
-     * Uses start and end values from a previous call to makeInstances(Temporal start, Temporal end)
-     * If there are no start and end values an exception is thrown.
-     *  
-     * @return
-     */
-    Collection<I> makeInstances();
-    /**
-     * Returns existing instances in the Recurrence Set (defined in RFC 5545 iCalendar page 121)
-     * made by the last call of makeRecurrenceSet
-     * @param <T> type of recurrence instance, such as an appointment implementation
-     * 
-     * @return - current instances of the Recurrence Set
-     * @see makeRecurrenceSet
-     */
-    Collection<I> instances();
 }

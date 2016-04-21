@@ -15,9 +15,6 @@ import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
-import jfxtras.labs.icalendarfx.mocks.VJournalMock;
-import jfxtras.labs.icalendarfx.mocks.VTodoMock;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
@@ -44,19 +41,19 @@ public class RepeatableTest
     public void canBuildRepeatable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentRepeatable<?>> components = Arrays.asList(
-                new VEventMockNew()
+                new VEventNew()
                     .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
                     .withRecurrences(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
                     .withRecurrenceRule(new RecurrenceRuleParameter()
                         .withFrequency(new Daily()
                                 .withInterval(4))),
-                new VTodoMock()
+                new VTodo()
                     .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
                     .withRecurrences(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
                     .withRecurrenceRule(new RecurrenceRuleParameter()
                         .withFrequency(new Daily()
                                 .withInterval(4))),
-                new VJournalMock()
+                new VJournal()
                     .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
                     .withRecurrences(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
                     .withRecurrenceRule(new RecurrenceRuleParameter()

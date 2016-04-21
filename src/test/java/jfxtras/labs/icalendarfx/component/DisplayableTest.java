@@ -15,9 +15,6 @@ import jfxtras.labs.icalendarfx.components.VComponentLastModified;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
-import jfxtras.labs.icalendarfx.mocks.VJournalMock;
-import jfxtras.labs.icalendarfx.mocks.VTodoMock;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
@@ -25,6 +22,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
@@ -64,7 +62,8 @@ public class DisplayableTest
     public void canBuildDisplayable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentLastModified<?>> components = Arrays.asList(
-                new VEventMockNew()
+                new VEventNew()
+                    .withStatus(StatusType.NEEDS_ACTION)
                     .withSequence(2)
                     .withRelatedTo("jsmith.part7.19960817T083000.xyzMail@example.com",
                             "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com")
@@ -80,7 +79,8 @@ public class DisplayableTest
                     .withClassification(ClassificationType.PUBLIC)
                     .withContact("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
                     .withExceptions("EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z"),
-                new VTodoMock()
+                new VTodo()
+                    .withStatus(StatusType.NEEDS_ACTION)
                     .withSequence(2)
                     .withRelatedTo("jsmith.part7.19960817T083000.xyzMail@example.com",
                             "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com")
@@ -96,7 +96,8 @@ public class DisplayableTest
                     .withClassification(ClassificationType.PUBLIC)
                     .withContact("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
                     .withExceptions("EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z"),
-                new VJournalMock()
+                new VJournal()
+                    .withStatus(StatusType.NEEDS_ACTION)
                     .withSequence(2)
                     .withRelatedTo("jsmith.part7.19960817T083000.xyzMail@example.com",
                             "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com")
@@ -134,6 +135,7 @@ public class DisplayableTest
                     "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com" + System.lineSeparator() +
                     "RRULE:FREQ=DAILY" + System.lineSeparator() +
                     "SEQUENCE:2" + System.lineSeparator() +
+                    "STATUS:NEEDS-ACTION" + System.lineSeparator() +
                     "SUMMARY:a test summary" + System.lineSeparator() +
                     "END:" + componentName;
                     

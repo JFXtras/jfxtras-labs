@@ -16,9 +16,6 @@ import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
-import jfxtras.labs.icalendarfx.mocks.VJournalMock;
-import jfxtras.labs.icalendarfx.mocks.VTodoMock;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
@@ -50,7 +47,7 @@ public class PersonalTest
     public void canBuildPersonal() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentPersonal<?>> components = Arrays.asList(
-                new VEventMockNew()
+                new VEventNew()
                     .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
                     .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 4, 15, 12, 0), ZoneId.of("Z")))
                     .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
@@ -58,7 +55,7 @@ public class PersonalTest
                     .withRequestStatus("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy.")
                     .withRequestStatus("REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com")
                     .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics"),
-                new VTodoMock()
+                new VTodo()
                     .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
                     .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 4, 15, 12, 0), ZoneId.of("Z")))
                     .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
@@ -66,7 +63,7 @@ public class PersonalTest
                     .withRequestStatus("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy.")
                     .withRequestStatus("REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com")
                     .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics"),
-                new VJournalMock()
+                new VJournal()
                     .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
                     .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 4, 15, 12, 0), ZoneId.of("Z")))
                     .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")

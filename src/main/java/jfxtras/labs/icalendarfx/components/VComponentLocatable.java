@@ -19,7 +19,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
  * @see VEvent
  * @see VTodoOld
  */
-public interface VComponentLocatable<T,I> extends VComponentDisplayable<T,I>
+public interface VComponentLocatable<T> extends VComponentDisplayable<T>
 {
     /**
      * DESCRIPTION:

@@ -13,9 +13,6 @@ import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
-import jfxtras.labs.icalendarfx.mocks.VJournalMock;
-import jfxtras.labs.icalendarfx.mocks.VTodoMock;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 
 /**
@@ -37,11 +34,11 @@ public class LastModifiedTest
     public void canBuildLastModified() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentLastModified<?>> components = Arrays.asList(
-                new VEventMockNew()
+                new VEventNew()
                         .withDateTimeLastModified("20160306T080000Z"),
-                new VTodoMock()
+                new VTodo()
                         .withDateTimeLastModified("20160306T080000Z"),
-                new VJournalMock()
+                new VJournal()
                         .withDateTimeLastModified("20160306T080000Z"),
                 new VTimeZone()
                         .withDateTimeLastModified("20160306T080000Z")

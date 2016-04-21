@@ -12,6 +12,7 @@ import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
@@ -20,7 +21,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
-public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonalBase<T> implements VComponentDisplayable<T,I>, VComponentRepeatable<T>, VComponentDescribable<T>
+public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBase<T> implements VComponentDisplayable<T>, VComponentRepeatable<T>, VComponentDescribable<T>
 {
     // TODO - ADD LISTENERS TO SYNCH TYPES FOR ALL DATE-TIME TYPES TO DTSTART
     
@@ -289,6 +290,27 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
         return summary;
     }
     private ObjectProperty<Summary> summary;
+    
+    /**
+     * STATUS
+     * RFC 5545 iCalendar 3.8.1.11. page 92
+     * 
+     * This property defines the overall status or confirmation for the calendar component.
+     * 
+     * Example:
+     * STATUS:TENTATIVE
+     */
+    @Override
+    public ObjectProperty<Status> statusProperty()
+    {
+        if (status == null)
+        {
+            status = new SimpleObjectProperty<>(this, PropertyEnum.STATUS.toString());
+        }
+        return status;
+    }
+    private ObjectProperty<Status> status;
+
     
     /*
      * CONSTRUCTORS

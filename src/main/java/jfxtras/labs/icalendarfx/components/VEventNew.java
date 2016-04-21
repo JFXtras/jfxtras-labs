@@ -1,6 +1,17 @@
 package jfxtras.labs.icalendarfx.components;
 
-public abstract class VEventNew<T, I> extends VComponentLocatableBase<T, I> implements VEventNewInt<T,I>
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
+import java.util.stream.Stream;
+
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.StringProperty;
+import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
+
+public class VEventNew extends VComponentLocatableBase<VEventNew> implements VEventNewInt<VEventNew>
 {
     @Override
     public VComponentEnum componentType()
@@ -16,5 +27,159 @@ public abstract class VEventNew<T, I> extends VComponentLocatableBase<T, I> impl
     public VEventNew(String contentLines)
     {
         super(contentLines);
+    }
+
+    @Override
+    public ObjectProperty<TemporalAmount> durationProperty()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public TemporalAmount getDuration()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public void setDuration(TemporalAmount duration)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Pair<Double, Double> getGeographicPosition()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public ObjectProperty<Pair<Double, Double>> geographicPositionProperty()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public void setGeographicPosition(ObjectProperty<Pair<Double, Double>> geo)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Location getLocation()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public ObjectProperty<Location> locationProperty()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public void setLocation(Location location)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getPriority()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public IntegerProperty priorityProperty()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public void setPriority(int priority)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Resources getResources()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public ObjectProperty<Resources> resourcesProperty()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public void setResources(Resources resources)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Stream<Temporal> streamRecurrences(Temporal startTemporal)
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public Temporal getDateTimeEnd()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public ObjectProperty<Temporal> dateTimeEndProperty()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public void setDateTimeEnd(Temporal dtEnd)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String getTimeTransparency()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public StringProperty timeTransparencyProperty()
+    {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public void setTimeTransparency(String transparency)
+    {
+        // TODO Auto-generated method stub
+        
     }
 }

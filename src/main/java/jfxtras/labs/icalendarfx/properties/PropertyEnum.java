@@ -185,14 +185,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getCategories();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             final ObservableList<Categories> list;
             if (castComponent.getCategories() == null)
             {
@@ -214,14 +214,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getClassification();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getClassification() == null)
             {
                 castComponent.setClassification(new Classification(propertyContent));                                
@@ -268,14 +268,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getContact();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             final ObservableList<Contact> list;
             if (castComponent.getContact() == null)
             {
@@ -316,14 +316,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getDateTimeCreated();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getDateTimeCreated() == null)
             {
                 Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
@@ -483,14 +483,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getExceptions();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             final ObservableList<Exceptions<? extends Temporal>> list;
             if (castComponent.getExceptions() == null)
             {
@@ -788,14 +788,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getRecurrenceId();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getRecurrenceId() == null)
             {
                 Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
@@ -851,14 +851,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getRelatedTo();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             final ObservableList<RelatedTo> list;
             if (castComponent.getRelatedTo() == null)
             {
@@ -947,14 +947,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getSequence();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getSequence() == null)
             {
                 castComponent.setSequence(new Sequence(propertyContent));                                
@@ -972,15 +972,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            return castComponent.getStatus();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+            if (castComponent.getStatus() == null)
+            {
+                castComponent.setStatus(new Status(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // descriptive

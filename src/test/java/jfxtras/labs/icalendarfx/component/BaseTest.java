@@ -17,9 +17,6 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
-import jfxtras.labs.icalendarfx.mocks.VJournalMock;
-import jfxtras.labs.icalendarfx.mocks.VTodoMock;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
@@ -47,15 +44,15 @@ public class BaseTest
     public void canBuildBase() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentBase<?>> components = Arrays.asList(
-                new VEventMockNew()
+                new VEventNew()
                     .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
                     .withIANAProperty("TESTPROP2:CASUAL")
                     .withNonStandardProperty("X-TEST-OBJ:testid"),
-                new VTodoMock()
+                new VTodo()
                     .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
                     .withIANAProperty("TESTPROP2:CASUAL")
                     .withNonStandardProperty("X-TEST-OBJ:testid"),
-                new VJournalMock()
+                new VJournal()
                     .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
                     .withIANAProperty("TESTPROP2:CASUAL")
                     .withNonStandardProperty("X-TEST-OBJ:testid"),

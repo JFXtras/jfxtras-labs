@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import jfxtras.labs.icalendarfx.mocks.VJournalMock;
+import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
@@ -24,7 +24,7 @@ public class VJournalTest
     @Test
     public void canBuildBase()
     {
-        VJournalMock builtComponent = new VJournalMock()
+        VJournal builtComponent = new VJournal()
                 .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
                 .withIANAProperty("TESTPROP2:CASUAL")
                 .withNonStandardProperty("X-TEST-OBJ:testid");
@@ -39,7 +39,7 @@ public class VJournalTest
                 "X-TEST-OBJ:testid" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VJournalMock madeComponent = new VJournalMock(content);
+        VJournal madeComponent = new VJournal(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
@@ -47,7 +47,7 @@ public class VJournalTest
     @Test
     public void canBuildPrimary()
     {
-        VJournalMock builtComponent = new VJournalMock()
+        VJournal builtComponent = new VJournal()
                 .withDateTimeStart("20160306T080000")
                 .withComments("This is a test comment", "Another comment")
                 .withComments("COMMENT:My third comment");
@@ -60,7 +60,7 @@ public class VJournalTest
                 "DTSTART:20160306T080000" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VJournalMock madeComponent = new VJournalMock(content);
+        VJournal madeComponent = new VJournal(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
@@ -68,7 +68,7 @@ public class VJournalTest
     @Test
     public void canBuildPersonal()
     {
-        VJournalMock builtComponent = new VJournalMock()
+        VJournal builtComponent = new VJournal()
                 .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 4, 15, 12, 0), ZoneId.of("Z")))
                 .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
@@ -88,7 +88,7 @@ public class VJournalTest
                 "REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com" + System.lineSeparator() +
                 "END:" + componentName;
 
-        VJournalMock madeComponent = new VJournalMock(content);
+        VJournal madeComponent = new VJournal(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com", madeComponent.getOrganizer().toContentLine());
     }
@@ -96,7 +96,7 @@ public class VJournalTest
     @Test
     public void canBuildRepeatable()
     {
-        VJournalMock builtComponent = new VJournalMock()
+        VJournal builtComponent = new VJournal()
                 .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
                 .withRecurrenceRule(new RecurrenceRuleParameter()
                     .withFrequency(new Daily()
@@ -108,7 +108,7 @@ public class VJournalTest
                 "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
                 "END:" + componentName;
 
-        VJournalMock madeComponent = new VJournalMock(content);
+        VJournal madeComponent = new VJournal(content);
         assertEquals(madeComponent, builtComponent);
         
         // add another set of recurrences
@@ -130,7 +130,7 @@ public class VJournalTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause maybe the cause
     public void canCatchDifferentRepeatableTypes()
     {
-        VJournalMock builtComponent = new VJournalMock()
+        VJournal builtComponent = new VJournal()
                 .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
         ObservableSet<ZonedDateTime> expectedValues = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
@@ -140,7 +140,7 @@ public class VJournalTest
     @Test
     public void canBuildDescribable()
     {
-        VJournalMock builtComponent = new VJournalMock()
+        VJournal builtComponent = new VJournal()
                 .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
                         "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
                 .withSummary(new Summary("a test summary")
@@ -152,7 +152,7 @@ public class VJournalTest
                 "SUMMARY;LANGUAGE=en-USA:a test summary" + System.lineSeparator() +
                 "END:" + componentName;
 
-        VJournalMock madeComponent = new VJournalMock(content);
+        VJournal madeComponent = new VJournal(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }

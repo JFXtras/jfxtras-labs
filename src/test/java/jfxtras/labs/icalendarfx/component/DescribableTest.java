@@ -13,9 +13,6 @@ import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.mocks.VEventMockNew;
-import jfxtras.labs.icalendarfx.mocks.VJournalMock;
-import jfxtras.labs.icalendarfx.mocks.VTodoMock;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
@@ -39,17 +36,17 @@ public class DescribableTest
     public void canBuildRepeatable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentDescribable<?>> components = Arrays.asList(
-                new VEventMockNew()
+                new VEventNew()
                     .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
                             "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
                     .withSummary(new Summary("a test summary")
                             .withLanguage("en-USA")),
-                new VTodoMock()
+                new VTodo()
                     .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
                             "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
                     .withSummary(new Summary("a test summary")
                             .withLanguage("en-USA")),
-                new VJournalMock()
+                new VJournal()
                     .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
                             "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
                     .withSummary(new Summary("a test summary")
