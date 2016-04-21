@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
+import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
@@ -16,9 +17,13 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
+import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
+import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
 public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonalBase<T> implements VComponentDisplayable<T,I>, VComponentRepeatable<T>, VComponentDescribable<T>
 {
+    // TODO - ADD LISTENERS TO SYNCH TYPES FOR ALL DATE-TIME TYPES TO DTSTART
+    
     /**
      * ATTACH
      * Attachment
@@ -88,15 +93,10 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
      *  +1-919-555-1234
      */
     @Override
-    public ObjectProperty<Contact> contactProperty()
-    {
-        if (contact == null)
-        {
-            contact = new SimpleObjectProperty<>(this, PropertyEnum.CONTACT.toString());
-        }
-        return contact;
-    }
-    private ObjectProperty<Contact> contact;
+    public ObservableList<Contact> getContact() { return contact; }
+    private ObservableList<Contact> contact;
+    @Override
+    public void setContact(ObservableList<Contact> contacts) { this.contact = contacts; }
     
     /**
      * CREATED: Date-Time Created
@@ -119,7 +119,14 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     }
     private ObjectProperty<DateTimeCreated> dateTimeCreated;
     
-    
+   /** 
+    * EXDATE
+    * Exception Date-Times
+    * RFC 5545 iCalendar 3.8.5.1, page 117.
+    * 
+    * This property defines the list of DATE-TIME exceptions for
+    * recurring events, to-dos, journal entries, or time zone definitions.
+    */ 
     @Override
     public ObservableList<Exceptions<? extends Temporal>> getExceptions()
     {
@@ -131,7 +138,6 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     {
         this.exceptions = exceptions;
         exceptions.addListener(VComponentRepeatable.RECURRENCE_LISTENER);
-//        VComponentRepeatable.addRecurrencesListener2(VComponentRepeatable.listener);
     }
     
     /**
@@ -172,19 +178,52 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
     @Override
-    public ObservableList<Recurrences<? extends Temporal>> getRecurrences()
-    {
-        return recurrences;
-    }
+    public ObservableList<Recurrences<? extends Temporal>> getRecurrences() { return recurrences; }
     private ObservableList<Recurrences<? extends Temporal>> recurrences;
     @Override
     public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
     {
         this.recurrences = recurrences;
         recurrences.addListener(VComponentRepeatable.RECURRENCE_LISTENER);
-//        VComponentRepeatable.addRecurrencesListener(recurrences);
     }
 
+    /**
+     * RECURRENCE-ID: Recurrence Identifier
+     * RFC 5545 iCalendar 3.8.4.4 page 112
+     * The property value is the original value of the "DTSTART" property of the 
+     * recurrence instance before an edit that changed the value.
+     * 
+     * Example:
+     * RECURRENCE-ID;VALUE=DATE:19960401
+     */
+    @Override
+    public ObjectProperty<RecurrenceId<? extends Temporal>> recurrenceIdProperty()
+    {
+        if (recurrenceId == null)
+        {
+            recurrenceId = new SimpleObjectProperty<>(this, PropertyEnum.RECURRENCE_IDENTIFIER.toString());
+        }
+        return recurrenceId;
+    }
+    private ObjectProperty<RecurrenceId<? extends Temporal>> recurrenceId;
+
+    /**
+     * RELATED-TO:
+     * 3.8.4.5, RFC 5545 iCalendar, page 115
+     * This property is used to represent a relationship or reference between
+     * one calendar component and another.  By default, the property value points to another
+     * calendar component's UID that has a PARENT relationship to the referencing object.
+     * This field is null unless the object contains as RECURRENCE-ID value.
+     * 
+     * Example:
+     * RELATED-TO:19960401-080045-4000F192713-0052@example.com
+     */
+    @Override
+    public ObservableList<RelatedTo> getRelatedTo() { return relatedTo; }
+    private ObservableList<RelatedTo> relatedTo;
+    @Override
+    public void setRelatedTo(ObservableList<RelatedTo> relatedTo) { this.relatedTo = relatedTo; }
+    
     /**
      * RRULE, Recurrence Rule
      * RFC 5545 iCalendar 3.8.5.3, page 122.
@@ -206,6 +245,32 @@ public abstract class VComponentDisplayableBase<T, I> extends VComponentPersonal
     }
     private ObjectProperty<RecurrenceRule> recurrenceRule;
  
+    /**
+     * SEQUENCE:
+     * RFC 5545 iCalendar 3.8.7.4. page 138
+     * This property defines the revision sequence number of the calendar component within a sequence of revisions.
+     * Example:  The following is an example of this property for a calendar
+     * component that was just created by the "Organizer":
+     *
+     * SEQUENCE:0
+     *
+     * The following is an example of this property for a calendar
+     * component that has been revised two different times by the
+     * "Organizer":
+     *
+     * SEQUENCE:2
+     */
+    @Override
+    public ObjectProperty<Sequence> sequenceProperty()
+    {
+        if (sequence == null)
+        {
+            sequence = new SimpleObjectProperty<>(this, PropertyEnum.SEQUENCE.toString());
+        }
+        return sequence;
+    }
+    private ObjectProperty<Sequence> sequence;
+
     /**
      * SUMMARY
      * RFC 5545 iCalendar 3.8.1.12. page 93

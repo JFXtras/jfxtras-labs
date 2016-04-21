@@ -7,25 +7,25 @@ import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
+import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
+import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * Calendar component that is displayable in a graphic.  Has methods to generate recurrence
@@ -89,12 +89,21 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      *  c=US???(cn=Jim%20Dolittle)":Jim Dolittle\, ABC Industries\,
      *  +1-919-555-1234
      */
-    ObjectProperty<Contact> contactProperty();
-    default Contact getContact() { return contactProperty().get(); }
-    default void setContact(String contact) { setContact(new Contact(contact)); }
-    default void setContact(Contact contact) { contactProperty().set(contact); }
-    default T withContact(Contact contact) { setContact(contact); return (T) this; }
-    default T withContact(String contact) { PropertyEnum.CONTACT.parse(this, contact); return (T) this; }
+    ObservableList<Contact> getContact();
+    void setContact(ObservableList<Contact> properties);
+    default T withContact(ObservableList<Contact> contact) { setContact(contact); return (T) this; }
+    default T withContact(String...contact)
+    {
+        Arrays.stream(contact).forEach(c -> PropertyEnum.CONTACT.parse(this, c));
+        return (T) this;
+    }
+//    // TODO - MAKE LIST
+//    ObjectProperty<Contact> contactProperty();
+//    default Contact getContact() { return contactProperty().get(); }
+//    default void setContact(String contact) { setContact(new Contact(contact)); }
+//    default void setContact(Contact contact) { contactProperty().set(contact); }
+//    default T withContact(Contact contact) { setContact(contact); return (T) this; }
+//    default T withContact(String contact) { PropertyEnum.CONTACT.parse(this, contact); return (T) this; }
 
     
     /**
@@ -126,33 +135,6 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      */
     ObservableList<Exceptions<? extends Temporal>> getExceptions();
     void setExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions);
-    static void addExceptionsListener(ObservableList<Exceptions<? extends Temporal>> exceptions)
-    {
-        exceptions.addListener((ListChangeListener.Change<? extends Exceptions<? extends Temporal>> change) ->
-        {
-            if (exceptions.size() > 1)
-            {
-                Class<? extends Temporal> firstTemporalClass = exceptions.get(0).getValue().iterator().next().getClass();
-                while (change.next())
-                {
-                    if (change.wasAdded())
-                    {
-                        Iterator<? extends Exceptions<? extends Temporal>> i = change.getAddedSubList().iterator();
-                        while (i.hasNext())
-                        {
-                            Exceptions<? extends Temporal> r = i.next();
-                            Class<? extends Temporal> myTemporalClass = r.getValue().iterator().next().getClass();
-                            if (! myTemporalClass.equals(firstTemporalClass))
-                            {
-                                throw new DateTimeException("Added exceptions Temporal class " + myTemporalClass.getSimpleName() +
-                                        " doesn't match previous exceptions Temporal class " + firstTemporalClass.getSimpleName());
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
     default T withExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions)
     {
         setExceptions(exceptions);
@@ -160,7 +142,7 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
     }
     default T withExceptions(String...exceptions)
     {
-        Arrays.stream(exceptions).forEach(s -> PropertyEnum.RECURRENCE_DATE_TIMES.parse(this, s));   
+        Arrays.stream(exceptions).forEach(s -> PropertyEnum.EXCEPTION_DATE_TIMES.parse(this, s));   
         return (T) this;
     }
     default T withExceptions(Temporal...exceptions)
@@ -202,9 +184,29 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      * Example:
      * RECURRENCE-ID;VALUE=DATE:19960401
      */
-    Temporal getDateTimeRecurrence();
-    ObjectProperty<Temporal> dateTimeRecurrenceProperty();
-    void setDateTimeRecurrence(Temporal recurrence);
+    ObjectProperty<RecurrenceId<? extends Temporal>> recurrenceIdProperty();
+    default RecurrenceId<? extends Temporal> getRecurrenceId() { return recurrenceIdProperty().get(); }
+    default void setRecurrenceId(RecurrenceId<? extends Temporal> dtStart) { recurrenceIdProperty().set(dtStart); }
+    default void setRecurrenceId(Temporal temporal)
+    {
+        if (temporal instanceof LocalDate)
+        {
+            setRecurrenceId(new RecurrenceId<LocalDate>((LocalDate) temporal));            
+        } else if (temporal instanceof LocalDateTime)
+        {
+            setRecurrenceId(new RecurrenceId<LocalDateTime>((LocalDateTime) temporal));            
+        } else if (temporal instanceof ZonedDateTime)
+        {
+            setRecurrenceId(new RecurrenceId<ZonedDateTime>((ZonedDateTime) temporal));            
+        } else
+        {
+            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+                    + temporal.getClass().getSimpleName() + " is not supported");
+        }
+    }
+    default T withRecurrenceId(RecurrenceId<? extends Temporal> dtStart) { setRecurrenceId(dtStart); return (T) this; }
+    default T withRecurrenceId(String dtStart) { return withRecurrenceId(DateTimeUtilities.temporalFromString(dtStart)); }
+    default T withRecurrenceId(Temporal temporal) { setRecurrenceId(temporal); return (T) this; }
     
     /**
      * RELATED-TO:
@@ -217,29 +219,39 @@ public interface VComponentDisplayable<T,I> extends VComponentPersonal<T>, VComp
      * Example:
      * RELATED-TO:19960401-080045-4000F192713-0052@example.com
      */
-    RelatedTo getRelatedTo();
-    ObjectProperty<RelatedTo> relatedToProperty();
-    void setRelatedTo(RelatedTo relatedTo);
+    ObservableList<RelatedTo> getRelatedTo();
+    void setRelatedTo(ObservableList<RelatedTo> properties);
+    default T withRelatedTo(ObservableList<RelatedTo> relatedTo) { setRelatedTo(relatedTo); return (T) this; }
+    default T withRelatedTo(String...relatedTo)
+    {
+        Arrays.stream(relatedTo).forEach(c -> PropertyEnum.RELATED_TO.parse(this, c));
+        return (T) this;
+    }
     
     /**
      * SEQUENCE:
      * RFC 5545 iCalendar 3.8.7.4. page 138
      * This property defines the revision sequence number of the calendar component within a sequence of revisions.
      * Example:  The following is an example of this property for a calendar
-      component that was just created by the "Organizer":
-
-       SEQUENCE:0
-
-      The following is an example of this property for a calendar
-      component that has been revised two different times by the
-      "Organizer":
-
-       SEQUENCE:2
+     * component that was just created by the "Organizer":
+     *
+     * SEQUENCE:0
+     *
+     * The following is an example of this property for a calendar
+     * component that has been revised two different times by the
+     * "Organizer":
+     *
+     * SEQUENCE:2
      */
-    int getSequence();
-    IntegerProperty sequenceProperty();
-    void setSequence(int value);
-    default void incrementSequence() { setSequence(getSequence()+1); }
+    ObjectProperty<Sequence> sequenceProperty();
+    default Sequence getSequence() { return sequenceProperty().get(); }
+    default void setSequence(String sequence) { setSequence(new Sequence(sequence)); }
+    default void setSequence(Integer sequence) { setSequence(new Sequence(sequence)); }
+    default void setSequence(Sequence sequence) { sequenceProperty().set(sequence); }
+    default T withSequence(Sequence sequence) { setSequence(sequence); return (T) this; }
+    default T withSequence(Integer sequence) { setSequence(sequence); return (T) this; }
+    default T withSequence(String sequence) { PropertyEnum.SEQUENCE.parse(this, sequence); return (T) this; }
+
     
     /**
      * STATUS:

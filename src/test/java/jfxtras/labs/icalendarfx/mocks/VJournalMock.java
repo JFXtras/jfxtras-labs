@@ -4,13 +4,10 @@ import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
-import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
 public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
 {
@@ -33,69 +30,6 @@ public class VJournalMock extends VJournal<VJournalMock, InstanceMock>
 
     @Override
     public void setDescriptions(ObservableList<Description> properties)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Temporal getDateTimeRecurrence()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<Temporal> dateTimeRecurrenceProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setDateTimeRecurrence(Temporal recurrence)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public RelatedTo getRelatedTo()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<RelatedTo> relatedToProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setRelatedTo(RelatedTo relatedTo)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public int getSequence()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public IntegerProperty sequenceProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setSequence(int value)
     {
         // TODO Auto-generated method stub
         

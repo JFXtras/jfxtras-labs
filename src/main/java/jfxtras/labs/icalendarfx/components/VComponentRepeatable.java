@@ -70,64 +70,6 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      */
     ObservableList<Recurrences<? extends Temporal>> getRecurrences();
     void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences);
-//    static void addRecurrencesListener(ObservableList<Recurrences<? extends Temporal>> recurrences)
-//    {
-//        recurrences.addListener(RECURRENCE_LISTENER);
-////        recurrences.addListener((ListChangeListener.Change<? extends Recurrences<? extends Temporal>> change) ->
-////        {
-////            if (recurrences.size() > 1)
-////            {
-////                Class<? extends Temporal> firstTemporalClass = recurrences.get(0).getValue().iterator().next().getClass();
-////                while (change.next())
-////                {
-////                    if (change.wasAdded())
-////                    {
-////                        Iterator<? extends Recurrences<? extends Temporal>> i = change.getAddedSubList().iterator();
-////                        while (i.hasNext())
-////                        {
-////                            Recurrences<? extends Temporal> r = i.next();
-////                            Class<? extends Temporal> myTemporalClass = r.getValue().iterator().next().getClass();
-////                            if (! myTemporalClass.equals(firstTemporalClass))
-////                            {
-////                                throw new DateTimeException("Added recurrences Temporal class " + myTemporalClass.getSimpleName() +
-////                                        " doesn't match previous recurrences Temporal class " + firstTemporalClass.getSimpleName());
-////                            }
-////                        }
-////                    }
-////                }
-////            }
-////        });
-//    }
-//    static void addRecurrencesListener2(ObservableList<PropertyBaseRecurrence<? extends Temporal, ?>> recurrences)
-//    {
-//        ListChangeListener<PropertyBaseRecurrence<? extends Temporal, ?>> listener = (ListChangeListener.Change<? extends PropertyBaseRecurrence<? extends Temporal, ?>> change) ->
-//        {
-//            ObservableList<? extends PropertyBaseRecurrence<? extends Temporal, ?>> list = change.getList();
-//            if (list.size() > 1)
-//            {
-//                Class<? extends Temporal> firstTemporalClass = list.get(0).getValue().iterator().next().getClass();
-//                while (change.next())
-//                {
-//                    if (change.wasAdded())
-//                    {
-//                        Iterator<? extends PropertyBaseRecurrence<? extends Temporal, ?>> i = change.getAddedSubList().iterator();
-//                        while (i.hasNext())
-//                        {
-//                            PropertyBaseRecurrence<? extends Temporal, ?> r = i.next();
-//                            Class<? extends Temporal> myTemporalClass = r.getValue().iterator().next().getClass();
-//                            if (! myTemporalClass.equals(firstTemporalClass))
-//                            {
-//                                throw new DateTimeException("Added recurrences Temporal class " + myTemporalClass.getSimpleName() +
-//                                        " doesn't match previous recurrences Temporal class " + firstTemporalClass.getSimpleName());
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        };
-//        recurrences.addListener(listener);
-//    }
-    
     default T withRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
     {
         setRecurrences(recurrences);

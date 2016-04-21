@@ -77,10 +77,12 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
     default T withDateTimeStart(String dtStart) { return withDateTimeStart(DateTimeUtilities.temporalFromString(dtStart)); }
     default T withDateTimeStart(Temporal temporal) { setDateTimeStart(temporal); return (T) this; }
 
+    @Deprecated
     default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };
     default ZoneId getZoneId()
     {
-        if (getDateTimeType() == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+//        if (getDateTimeType() == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+        if (getDateTimeStart().getValue() instanceof ZonedDateTime)
         {
             return ((ZonedDateTime) getDateTimeStart().getValue()).getZone();
         }

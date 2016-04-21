@@ -259,6 +259,7 @@ public enum PropertyEnum
             list.add(new Comment(propertyContent));
         }
     },
+    // Relationship
     CONTACT ("CONTACT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -275,15 +276,19 @@ public enum PropertyEnum
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            final ObservableList<Contact> list;
             if (castComponent.getContact() == null)
             {
-                castComponent.setContact(new Contact(propertyContent));                                
+                list = FXCollections.observableArrayList();
+                castComponent.setContact(list);
             } else
             {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+                list = castComponent.getContact();
             }
+            list.add(new Contact(propertyContent));
         }
-    }, // Relationship
+    },
+    // Date and Time
     DATE_TIME_COMPLETED ("COMPLETED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -478,15 +483,39 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            return castComponent.getExceptions();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            final ObservableList<Exceptions<? extends Temporal>> list;
+            if (castComponent.getExceptions() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castComponent.setExceptions(list);
+            } else
+            {
+                list = castComponent.getExceptions();
+            }
             
+            Temporal t = DateTimeUtilities.temporalFromString(propertyContent.split(",")[0]);
+            if (t instanceof LocalDate)
+            {
+                list.add(new Exceptions<LocalDate>(propertyContent));
+            } else if (t instanceof LocalDateTime)
+            {
+                list.add(new Exceptions<LocalDateTime>(propertyContent));
+                
+            } else if (t instanceof ZonedDateTime)
+            {
+                list.add(new Exceptions<ZonedDateTime>(propertyContent));
+            } else
+            {
+                throw new DateTimeException("Unsupported Temporal type: " + t.getClass().getSimpleName());
+            }
         }
     },
     // Date and Time
@@ -723,7 +752,6 @@ public enum PropertyEnum
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
-//            System.out.println("content:" + propertyContent);
             final ObservableList<Recurrences<? extends Temporal>> list;
             if (castComponent.getRecurrences() == null)
             {
@@ -748,7 +776,7 @@ public enum PropertyEnum
             } else
             {
                 throw new DateTimeException("Unsupported Temporal type: " + t.getClass().getSimpleName());
-            }            
+            }
         }
     },
     // Relationship
@@ -760,17 +788,35 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            return castComponent.getRecurrenceId();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            if (castComponent.getRecurrenceId() == null)
+            {
+                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
+                if (t instanceof LocalDate)
+                {
+                    castComponent.setRecurrenceId(new RecurrenceId<LocalDate>((LocalDate) t));                
+                } else if (t instanceof LocalDateTime)
+                {
+                    castComponent.setRecurrenceId(new RecurrenceId<LocalDateTime>((LocalDateTime) t));                
+                    
+                } else if (t instanceof ZonedDateTime)
+                {
+                    castComponent.setRecurrenceId(new RecurrenceId<ZonedDateTime>((ZonedDateTime) t));                                
+                }
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
+    // Recurrence
     RECURRENCE_RULE ("RRULE", // property name
             Arrays.asList(ValueType.RECURRENCE_RULE), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -795,7 +841,8 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
-    }, // Recurrence
+    },
+    // Relationship
     RELATED_TO ("RELATED-TO", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.RELATIONSHIP_TYPE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -804,17 +851,26 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            return castComponent.getRelatedTo();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            final ObservableList<RelatedTo> list;
+            if (castComponent.getRelatedTo() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castComponent.setRelatedTo(list);
+            } else
+            {
+                list = castComponent.getRelatedTo();
+            }
+            list.add(new RelatedTo(propertyContent));
         }
-    }, // Relationship
+    },
     // Alarm
     REPEAT_COUNT ("REPEAT", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
@@ -891,15 +947,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            return castComponent.getSequence();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?,?> castComponent = (VComponentDisplayable<?,?>) vComponent;
+            if (castComponent.getSequence() == null)
+            {
+                castComponent.setSequence(new Sequence(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     }, // Change management
     STATUS ("STATUS", // property name

@@ -33,7 +33,6 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
     {
         this.recurrences = recurrences;
         recurrences.addListener(VComponentRepeatable.RECURRENCE_LISTENER);
-//        VComponentRepeatable.addRecurrencesListener(recurrences);
     }
 
     /**
