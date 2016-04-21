@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
@@ -28,26 +27,6 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VEv
         super(contentLines);
     }
 
-    @Override
-    public ObjectProperty<TemporalAmount> durationProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public TemporalAmount getDuration()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setDuration(TemporalAmount duration)
-    {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public Location getLocation()

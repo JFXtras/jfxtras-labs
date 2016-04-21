@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
+import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBase<T> implements VComponentLocatable<T>
 {
@@ -31,6 +32,24 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         return description;
     }
     private ObjectProperty<Description> description;
+
+    /** 
+     * DURATION
+     * RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
+     * Can't be used if DTEND is used.  Must be one or the other.
+     * 
+     * Example:
+     * DURATION:PT15M
+     * */
+    @Override public ObjectProperty<DurationProp> durationProperty()
+    {
+        if (duration == null)
+        {
+            duration = new SimpleObjectProperty<>(this, PropertyEnum.DURATION.toString());
+        }
+        return duration;
+    }
+    private ObjectProperty<DurationProp> duration;
     
     /**
      * GEO: Geographic Position

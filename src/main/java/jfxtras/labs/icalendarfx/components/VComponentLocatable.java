@@ -9,6 +9,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
+import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 /**
  * Calendar component with location, among other properties
@@ -45,9 +46,12 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>
      * Example:
      * DURATION:PT15M
      * */
-    ObjectProperty<TemporalAmount> durationProperty();
-    TemporalAmount getDuration();
-    void setDuration(TemporalAmount duration);
+    ObjectProperty<DurationProp> durationProperty();
+    default DurationProp getDurationProp() { return durationProperty().get(); }
+    default void setDurationProp(DurationProp duration) { durationProperty().set(duration); }
+    default T withDurationProp(TemporalAmount amount) { setDurationProp(new DurationProp(amount)); return (T) this; }
+    default T withDurationProp(String amount) { setDurationProp(new DurationProp(amount)); return (T) this; }
+    default T withDurationProp(DurationProp duration) { setDurationProp(duration); return (T) this; }
     
     /**
      * GEO: Geographic Position

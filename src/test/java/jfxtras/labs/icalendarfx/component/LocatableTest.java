@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,9 +43,11 @@ public class LocatableTest
         List<VComponentLocatable<?>> components = Arrays.asList(
                 new VEventNew()
                     .withDescription("DESCRIPTION:A simple description")
+                    .withDurationProp(Duration.ofMinutes(45))
                     .withGeographicPosition("37.386013;-122.082932"),
                 new VTodo()
                     .withDescription("DESCRIPTION:A simple description")
+                    .withDurationProp(Duration.ofMinutes(45))
                     .withGeographicPosition("37.386013;-122.082932")
                 );
         
@@ -53,6 +56,7 @@ public class LocatableTest
             String componentName = builtComponent.componentType().toString();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "DESCRIPTION:A simple description" + System.lineSeparator() +
+                    "DURATION:PT45M" + System.lineSeparator() +
                     "GEO:37.386013;-122.082932" + System.lineSeparator() +
                     "END:" + componentName;
                     

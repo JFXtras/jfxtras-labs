@@ -472,15 +472,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            return castComponent.getDurationProp();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            if (castComponent.getDurationProp() == null)
+            {
+                castComponent.setDurationProp(new DurationProp(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Recurrence
