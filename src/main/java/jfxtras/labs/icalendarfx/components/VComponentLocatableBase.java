@@ -4,6 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 
 public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBase<T> implements VComponentLocatable<T>
 {
@@ -30,6 +31,28 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         return description;
     }
     private ObjectProperty<Description> description;
+    
+    /**
+     * GEO: Geographic Position
+     * RFC 5545 iCalendar 3.8.1.6 page 85, 3.3.6 page 85
+     * This property specifies information related to the global
+     * position for the activity specified by a calendar component.
+     * 
+     * This property value specifies latitude and longitude,
+     * in that order (i.e., "LAT LON" ordering).
+     * 
+     * Example:
+     * GEO:37.386013;-122.082932
+     */
+    @Override public ObjectProperty<GeographicPosition> geographicPositionProperty()
+    {
+        if (geographicPosition == null)
+        {
+            geographicPosition = new SimpleObjectProperty<>(this, PropertyEnum.GEOGRAPHIC_POSITION.toString());
+        }
+        return geographicPosition;
+    }
+    private ObjectProperty<GeographicPosition> geographicPosition;
     
     /*
      * CONSTRUCTORS

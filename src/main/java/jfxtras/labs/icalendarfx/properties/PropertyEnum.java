@@ -18,6 +18,7 @@ import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLastModified;
+import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
@@ -37,6 +38,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
@@ -435,7 +437,7 @@ public enum PropertyEnum
             }
         }
     },
-
+    // Descriptive
     DESCRIPTION ("DESCRIPTION",
             Arrays.asList(ValueType.TEXT),
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE),
@@ -444,17 +446,24 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            return castComponent.getDescription();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            if (castComponent.getDescription() == null)
+            {
+                castComponent.setDescription(new Description(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
-    }, // Descriptive
+    },
+    // Date and Time
     DURATION ("DURATION", // property name
             Arrays.asList(ValueType.DURATION), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -522,7 +531,8 @@ public enum PropertyEnum
     FREE_BUSY_TIME ("FREEBUSY", // property name
             Arrays.asList(ValueType.PERIOD), // valid property value types, first is default
             Arrays.asList(ParameterEnum.FREE_BUSY_TIME_TYPE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            FreeBusyTime.class) {
+            FreeBusyTime.class)
+    {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
@@ -538,19 +548,29 @@ public enum PropertyEnum
         }
     },
     // Descriptive
-    GEOGRAPHIC_POSITION ("GEO", null, null, null) {
+    GEOGRAPHIC_POSITION ("GEO", // property name
+            Arrays.asList(ValueType.TEXT), // In GeographicPosition there are two doubles for latitude and longitude
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            GeographicPosition.class)
+    {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            return castComponent.getGeographicPosition();
         }
-        
+
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            if (castComponent.getGeographicPosition() == null)
+            {
+                castComponent.setGeographicPosition(new GeographicPosition(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Miscellaneous

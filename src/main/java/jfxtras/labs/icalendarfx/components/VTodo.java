@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 
@@ -45,27 +44,6 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VTodoInt<VT
 
     @Override
     public void setDuration(TemporalAmount duration)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Pair<Double, Double> getGeographicPosition()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<Pair<Double, Double>> geographicPositionProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setGeographicPosition(ObjectProperty<Pair<Double, Double>> geo)
     {
         // TODO Auto-generated method stub
         

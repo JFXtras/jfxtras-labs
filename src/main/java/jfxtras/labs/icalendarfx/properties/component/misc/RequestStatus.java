@@ -150,5 +150,5 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
         }
         setValue(builder.toString());
         valueProperty().addListener(valueChangeListener);
-    }    
+    }
 }

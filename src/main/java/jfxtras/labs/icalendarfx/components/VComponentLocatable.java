@@ -4,9 +4,9 @@ import java.time.temporal.TemporalAmount;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 
@@ -61,9 +61,11 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>
      * Example:
      * GEO:37.386013;-122.082932
      */
-    Pair<Double,Double> getGeographicPosition();
-    ObjectProperty<Pair<Double,Double>> geographicPositionProperty();
-    void setGeographicPosition(ObjectProperty<Pair<Double,Double>> geo);
+    public ObjectProperty<GeographicPosition> geographicPositionProperty();
+    default GeographicPosition getGeographicPosition() { return geographicPositionProperty().get(); }
+    default void setGeographicPosition(GeographicPosition geographicPosition) { geographicPositionProperty().set(geographicPosition); }
+    default T withGeographicPosition(GeographicPosition geographicPosition) { setGeographicPosition(geographicPosition); return (T) this; }
+    default T withGeographicPosition(String geographicPosition) { PropertyEnum.GEOGRAPHIC_POSITION.parse(this, geographicPosition); return (T) this; }
     
     /**
      * LOCATION:
