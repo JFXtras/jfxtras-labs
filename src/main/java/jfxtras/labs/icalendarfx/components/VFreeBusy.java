@@ -3,8 +3,11 @@ package jfxtras.labs.icalendarfx.components;
 import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
 
 /**
@@ -22,6 +25,29 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
         return VComponentEnum.VFREEBUSY;
     }
     
+    /**
+     * DTEND
+     * Date-Time End (for local-date)
+     * RFC 5545, 3.8.2.2, page 95
+     * 
+     * This property specifies when the calendar component ends.
+     * 
+     * The value type of this property MUST be the same as the "DTSTART" property, and
+     * its value MUST be later in time than the value of the "DTSTART" property.
+     * 
+     * Example:
+     * DTEND;VALUE=DATE:19980704
+     */
+    @Override public ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty()
+    {
+        if (dateTimeEnd == null)
+        {
+            dateTimeEnd = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_END.toString());
+        }
+        return dateTimeEnd;
+    }
+    private ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEnd;
+    
     /*
      * CONSTRUCTORS
      */
@@ -30,27 +56,6 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
     public VFreeBusy(String contentLines)
     {
         super(contentLines);
-    }
-
-    @Override
-    public Temporal getDateTimeEnd()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<Temporal> dateTimeEndProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDateTimeEnd(Temporal dtEnd)
-    {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override

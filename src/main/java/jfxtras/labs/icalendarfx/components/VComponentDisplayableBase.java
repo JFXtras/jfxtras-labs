@@ -23,8 +23,6 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 
 public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBase<T> implements VComponentDisplayable<T>, VComponentRepeatable<T>, VComponentDescribable<T>
 {
-    // TODO - ADD LISTENERS TO SYNCH TYPES FOR ALL DATE-TIME TYPES TO DTSTART
-    
     /**
      * ATTACH
      * Attachment

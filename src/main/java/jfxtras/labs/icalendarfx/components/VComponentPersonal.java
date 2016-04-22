@@ -38,9 +38,11 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      */
     ObjectProperty<DateTimeStamp> dateTimeStampProperty();
     default DateTimeStamp getDateTimeStamp() { return dateTimeStampProperty().get(); }
+    default void setDateTimeStamp(String dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); }
     default void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStampProperty().set(dtStamp); }
-    default T withDateTimeStamp(ZonedDateTime zonedDateTime) { setDateTimeStamp(new DateTimeStamp(zonedDateTime)); return (T) this; }
-    default T withDateTimeStamp(String zonedDateTime) { setDateTimeStamp(new DateTimeStamp(zonedDateTime)); return (T) this; }
+    default void setDateTimeStamp(ZonedDateTime dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); }
+    default T withDateTimeStamp(ZonedDateTime dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
+    default T withDateTimeStamp(String dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
     default T withDateTimeStamp(DateTimeStamp dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
 
     /**

@@ -1,11 +1,9 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.ZonedDateTime;
-import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
-import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
 public interface VComponentLastModified<T> extends VComponentNew<T>
 {
@@ -18,9 +16,11 @@ public interface VComponentLastModified<T> extends VComponentNew<T>
      */
     ObjectProperty<LastModified> dateTimeLastModifiedProperty();
     default LastModified getDateTimeLastModified() { return dateTimeLastModifiedProperty().get(); }
-    default void setDateTimeLastModified(LastModified dtLastModified) { dateTimeLastModifiedProperty().set(dtLastModified); }
-    default T withDateTimeLastModified(ZonedDateTime zonedDateTime) { setDateTimeLastModified(new LastModified(zonedDateTime)); return (T) this; }
-    default T withDateTimeLastModified(String zonedDateTime) { setDateTimeLastModified(new LastModified(zonedDateTime)); return (T) this; }
-    default T withDateTimeLastModified(LastModified dtLastModified) { setDateTimeLastModified(dtLastModified); return (T) this; }
+    default void setDateTimeLastModified(String lastModified) { setDateTimeLastModified(new LastModified(lastModified)); }
+    default void setDateTimeLastModified(LastModified lastModified) { dateTimeLastModifiedProperty().set(lastModified); }
+    default void setDateTimeLastModified(ZonedDateTime lastModified) { setDateTimeLastModified(new LastModified(lastModified)); }
+    default T withDateTimeLastModified(ZonedDateTime lastModified) { setDateTimeLastModified(lastModified); return (T) this; }
+    default T withDateTimeLastModified(String lastModified) { setDateTimeLastModified(lastModified); return (T) this; }
+    default T withDateTimeLastModified(LastModified lastModified) { setDateTimeLastModified(lastModified); return (T) this; }
 
 }

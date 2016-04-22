@@ -1,8 +1,14 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public interface VComponentDateTimeEnd<T> extends VComponentNew<T>
 {
@@ -13,7 +19,30 @@ public interface VComponentDateTimeEnd<T> extends VComponentNew<T>
      * Can't be used if DURATION is used.  Must be one or the other.
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
-    Temporal getDateTimeEnd();
-    ObjectProperty<Temporal> dateTimeEndProperty();
-    void setDateTimeEnd(Temporal dtEnd);
+    ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty();
+    default DateTimeEnd<? extends Temporal> getDateTimeEnd() { return dateTimeEndProperty().get(); }
+    default void setDateTimeEnd(String dtEnd) { setDateTimeEnd(DateTimeUtilities.temporalFromString(dtEnd)); }
+    default void setDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd) { dateTimeEndProperty().set(dtEnd); }
+    default void setDateTimeEnd(Temporal temporal)
+    {
+        if (temporal instanceof LocalDate)
+        {
+            setDateTimeEnd(new DateTimeEnd<LocalDate>((LocalDate) temporal));            
+        } else if (temporal instanceof LocalDateTime)
+        {
+            setDateTimeEnd(new DateTimeEnd<LocalDateTime>((LocalDateTime) temporal));            
+        } else if (temporal instanceof ZonedDateTime)
+        {
+            setDateTimeEnd(new DateTimeEnd<ZonedDateTime>((ZonedDateTime) temporal));            
+        } else
+        {
+            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+                    + temporal.getClass().getSimpleName() + " is not supported");
+        }
+    }
+    default T withDateTimeEnd(Temporal temporal) { setDateTimeEnd(temporal); return (T) this; }
+    default T withDateTimeEnd(String dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
+    default T withDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
+
+    // TODO - SYNCH WITH DATE-TIME START
 }

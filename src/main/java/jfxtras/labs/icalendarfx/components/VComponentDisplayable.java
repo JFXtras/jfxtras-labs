@@ -130,9 +130,11 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObjectProperty<DateTimeCreated> dateTimeCreatedProperty();
     default DateTimeCreated getDateTimeCreated() { return dateTimeCreatedProperty().get(); }
+    default void setDateTimeCreated(String dtCreated) { setDateTimeCreated(dtCreated); }
     default void setDateTimeCreated(DateTimeCreated dtCreated) { dateTimeCreatedProperty().set(dtCreated); }
-    default T withDateTimeCreated(ZonedDateTime zonedDateTime) { setDateTimeCreated(new DateTimeCreated(zonedDateTime)); return (T) this; }
-    default T withDateTimeCreated(String zonedDateTime) { setDateTimeCreated(new DateTimeCreated(zonedDateTime)); return (T) this; }
+    default void setDateTimeCreated(ZonedDateTime zonedDateTime) { setDateTimeCreated(new DateTimeCreated(zonedDateTime)); }
+    default T withDateTimeCreated(ZonedDateTime zonedDateTime) { setDateTimeCreated(zonedDateTime); return (T) this; }
+    default T withDateTimeCreated(String dtCreated) { setDateTimeCreated(dtCreated); return (T) this; }
     default T withDateTimeCreated(DateTimeCreated dtCreated) { setDateTimeCreated(dtCreated); return (T) this; }
     
     /**

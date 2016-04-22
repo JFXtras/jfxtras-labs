@@ -15,6 +15,7 @@ import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
+import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentDuration;
@@ -367,15 +368,32 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentDateTimeEnd<?> castComponent = (VComponentDateTimeEnd<?>) vComponent;
+            return castComponent.getDateTimeEnd();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDateTimeEnd<?> castComponent = (VComponentDateTimeEnd<?>) vComponent;
+            if (castComponent.getDateTimeEnd() == null)
+            {
+                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
+                if (t instanceof LocalDate)
+                {
+                    castComponent.setDateTimeEnd(new DateTimeEnd<LocalDate>((LocalDate) t));                
+                } else if (t instanceof LocalDateTime)
+                {
+                    castComponent.setDateTimeEnd(new DateTimeEnd<LocalDateTime>((LocalDateTime) t));                
+                    
+                } else if (t instanceof ZonedDateTime)
+                {
+                    castComponent.setDateTimeEnd(new DateTimeEnd<ZonedDateTime>((ZonedDateTime) t));                                
+                }
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Change management
