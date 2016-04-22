@@ -2,10 +2,10 @@ package jfxtras.labs.icalendarfx.properties.component.relationship;
 
 import java.net.URI;
 
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
+import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
 
 /**
  * ORGANIZER
@@ -17,9 +17,9 @@ import jfxtras.labs.icalendarfx.components.VTodoInt;
  * ORGANIZER;CN=John Smith:mailto:jsmith@example.com
  * 
  * @author David Bal
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
  * @see VFreeBusy
  */
 public class Organizer extends PropertyBaseCalendarUser<URI, Organizer>

@@ -2,11 +2,11 @@ package jfxtras.labs.icalendarfx.properties.component.misc;
 
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
-import jfxtras.labs.icalendarfx.components.VAlarmInt;
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
+import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
+import jfxtras.labs.icalendarfx.components.VTodo;
 
 /**
  * Non-Standard Properties
@@ -21,10 +21,10 @@ import jfxtras.labs.icalendarfx.components.VTodoInt;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
- * @see VAlarmInt
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
+ * @see VAlarm
  * @see VTimeZone
  * @see DaylightSavingTime
  * @see StandardTime

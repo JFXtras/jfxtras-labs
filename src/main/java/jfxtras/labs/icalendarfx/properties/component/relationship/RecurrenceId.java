@@ -4,9 +4,9 @@ import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.Range;
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
@@ -36,9 +36,9 @@ import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
  * RECURRENCE-ID;VALUE=DATE:19960401
  * 
  * @author David Bal
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
  */
 public class RecurrenceId<T extends Temporal> extends PropertyBaseDateTime<T, RecurrenceId<T>> implements PropertyRecurrenceID<T>
 {

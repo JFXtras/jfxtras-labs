@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
 public class GeneralTest
@@ -56,5 +57,28 @@ public class GeneralTest
         System.out.println("here:" + builtComponent2.getRecurrences());
         List<PropertyEnum> expectedProperties = Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.DATE_TIME_START, PropertyEnum.ORGANIZER, PropertyEnum.UNIQUE_IDENTIFIER);
         assertEquals(expectedProperties, builtComponent.properties());
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void canCatchSecondAssignmentException()
+    {
+        String componentName = "VEVENT";
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "CLASS:PUBLIC" + System.lineSeparator() +
+                "CLASS:PRIVATE" + System.lineSeparator() + // not allowed
+                "END:" + componentName;
+        new VEventNew(content);
+    }
+    
+    @Test
+    public void canChangePropertyAllowedOnlyOnce()
+    {
+        String componentName = "VEVENT";
+        String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "CLASS:PUBLIC" + System.lineSeparator() +
+                "END:" + componentName;
+        VEventNew madeComponent = new VEventNew(content);
+        madeComponent.setClassification("PRIVATE");
+        assertEquals(ClassificationType.PRIVATE, madeComponent.getClassification().getValue());
     }
 }

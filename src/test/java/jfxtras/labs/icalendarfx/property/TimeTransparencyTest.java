@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
-import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TransparencyType;
+import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
 public class TimeTransparencyTest
 {
@@ -15,9 +15,9 @@ public class TimeTransparencyTest
         String content = "TRANSP:TRANSPARENT";
         TimeTransparency madeProperty = new TimeTransparency(content);
         assertEquals(content, madeProperty.toContentLine());
-        TimeTransparency expectedProperty = new TimeTransparency(TransparencyType.TRANSPARENT);
+        TimeTransparency expectedProperty = new TimeTransparency(TimeTransparencyType.TRANSPARENT);
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(TransparencyType.TRANSPARENT, madeProperty.getValue());
+        assertEquals(TimeTransparencyType.TRANSPARENT, madeProperty.getValue());
     }
     
     @Test
@@ -28,6 +28,6 @@ public class TimeTransparencyTest
         assertEquals(content, madeProperty.toContentLine());
 //        TimeTransparency expectedProperty = new TimeTransparency(TransparencyType.TRANSPARENT);
 //        assertEquals(expectedProperty, madeProperty);
-        assertEquals(TransparencyType.UNKNOWN, madeProperty.getValue());
+        assertEquals(TimeTransparencyType.UNKNOWN, madeProperty.getValue());
     }
 }

@@ -2,9 +2,9 @@ package jfxtras.labs.icalendarfx.properties.component.relationship;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.Relationship;
 import jfxtras.labs.icalendarfx.parameters.Relationship.RelationshipType;
@@ -22,9 +22,9 @@ import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
  * RECURRENCE-ID;VALUE=DATE:19960401
  * 
  * @author David Bal
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
  */
 public class RelatedTo extends PropertyBase<String, RelatedTo> implements PropertyRelationship<String>
 {

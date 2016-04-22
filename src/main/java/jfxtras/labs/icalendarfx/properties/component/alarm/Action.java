@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.alarm;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.components.VAlarmInt;
+import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
 
@@ -22,7 +22,7 @@ import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VAlarmInt
+ * @see VAlarm
  */
 public class Action extends PropertyBase<ActionType, Action>
 {

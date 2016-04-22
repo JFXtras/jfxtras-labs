@@ -1,9 +1,9 @@
 package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
-import jfxtras.labs.icalendarfx.components.VAlarmInt;
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
+import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
 
 /**
@@ -23,10 +23,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
- * @see VAlarmInt
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
+ * @see VAlarm
  */
 public class Description extends PropertyBaseAltText<String,Description>
 {

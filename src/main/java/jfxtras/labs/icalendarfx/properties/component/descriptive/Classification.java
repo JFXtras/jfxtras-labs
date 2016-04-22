@@ -1,9 +1,9 @@
 package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 
@@ -20,9 +20,9 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
  */
 public class Classification extends PropertyBase<ClassificationType, Classification>
 {

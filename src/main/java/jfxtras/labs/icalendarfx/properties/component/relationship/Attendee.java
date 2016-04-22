@@ -2,10 +2,10 @@ package jfxtras.labs.icalendarfx.properties.component.relationship;
 
 import java.net.URI;
 
-import jfxtras.labs.icalendarfx.components.VAlarmInt;
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
+import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
 
 /**
  * ATTENDEE
@@ -20,10 +20,10 @@ import jfxtras.labs.icalendarfx.components.VTodoInt;
  *  example.com
  * 
  * @author David Bal
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
- * @see VAlarmInt
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
+ * @see VAlarm
  */
 public class Attendee extends PropertyBaseAttendee<URI, Attendee>
 {    

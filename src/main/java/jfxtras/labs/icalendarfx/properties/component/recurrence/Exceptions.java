@@ -5,9 +5,9 @@ import java.time.temporal.Temporal;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
-import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
 
 /**
  * EXDATE
@@ -18,9 +18,9 @@ import jfxtras.labs.icalendarfx.components.VTodoInt;
  * recurring events, to-dos, journal entries, or time zone definitions.
  * 
  * @author David Bal
- * @see VEvent
- * @see VTodoInt
- * @see VJournalInt
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
  * @see DaylightSavingTime
  * @see StandardTime
  */

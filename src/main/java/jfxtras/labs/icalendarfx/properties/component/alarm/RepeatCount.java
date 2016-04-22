@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendarfx.properties.component.alarm;
 
-import jfxtras.labs.icalendarfx.components.VAlarmInt;
+import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 
 /**
@@ -21,7 +21,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VAlarmInt
+ * @see VAlarm
  */
 public class RepeatCount extends PropertyBase<Integer, RepeatCount>
 {

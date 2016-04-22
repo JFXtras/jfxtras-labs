@@ -2,9 +2,9 @@ package jfxtras.labs.icalendarfx.properties.component.change;
 
 import java.time.ZonedDateTime;
 
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
 
 /**
@@ -23,9 +23,9 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseUTC;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
  */
 public class DateTimeCreated extends PropertyBaseUTC<DateTimeCreated>
 {

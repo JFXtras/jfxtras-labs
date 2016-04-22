@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
+import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
-import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TransparencyType;
+import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
 /**
  * TRANSP
@@ -23,17 +23,17 @@ import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.Trans
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNewInt
+ * @see VEventNew
  */
     // TODO - REMOVE UNKNOWN AS VALUE - MAKE PROPER WITH REAL UNKNOWN WORK BEFORE DELETING CODE
-public class TimeTransparency extends PropertyBase<TransparencyType,TimeTransparency>
+public class TimeTransparency extends PropertyBase<TimeTransparencyType,TimeTransparency>
 {
-    private final static StringConverter<TransparencyType> CONVERTER = new StringConverter<TransparencyType>()
+    private final static StringConverter<TimeTransparencyType> CONVERTER = new StringConverter<TimeTransparencyType>()
     {
         @Override
-        public String toString(TransparencyType object)
+        public String toString(TimeTransparencyType object)
         {
-            if (object == TransparencyType.UNKNOWN)
+            if (object == TimeTransparencyType.UNKNOWN)
             {
                 // null means value is unknown and non-converted string in PropertyBase unknownValue should be used instead
                 return null;
@@ -42,9 +42,9 @@ public class TimeTransparency extends PropertyBase<TransparencyType,TimeTranspar
         }
 
         @Override
-        public TransparencyType fromString(String string)
+        public TimeTransparencyType fromString(String string)
         {
-            return TransparencyType.enumFromName(string);
+            return TimeTransparencyType.enumFromName(string);
         }
     };
 
@@ -56,7 +56,7 @@ public class TimeTransparency extends PropertyBase<TransparencyType,TimeTranspar
         
     }
     
-    public TimeTransparency(TransparencyType value)
+    public TimeTransparency(TimeTransparencyType value)
     {
         super();
         setConverter(CONVERTER);
@@ -72,20 +72,20 @@ public class TimeTransparency extends PropertyBase<TransparencyType,TimeTranspar
     {
         super();
         setConverter(CONVERTER);
-        setValue(TransparencyType.OPAQUE); // default value
+        setValue(TimeTransparencyType.OPAQUE); // default value
     }
     
-    public enum TransparencyType
+    public enum TimeTransparencyType
     {
         OPAQUE,
         TRANSPARENT,
         UNKNOWN;
         
-        private static Map<String, TransparencyType> enumFromNameMap = makeEnumFromNameMap();
-        private static Map<String, TransparencyType> makeEnumFromNameMap()
+        private static Map<String, TimeTransparencyType> enumFromNameMap = makeEnumFromNameMap();
+        private static Map<String, TimeTransparencyType> makeEnumFromNameMap()
         {
-            Map<String, TransparencyType> map = new HashMap<>();
-            TransparencyType[] values = TransparencyType.values();
+            Map<String, TimeTransparencyType> map = new HashMap<>();
+            TimeTransparencyType[] values = TimeTransparencyType.values();
             for (int i=0; i<values.length; i++)
             {
                 map.put(values[i].toString(), values[i]);
@@ -93,9 +93,9 @@ public class TimeTransparency extends PropertyBase<TransparencyType,TimeTranspar
             return map;
         }
         /** get enum from name */
-        public static TransparencyType enumFromName(String propertyName)
+        public static TimeTransparencyType enumFromName(String propertyName)
         {
-            TransparencyType type = enumFromNameMap.get(propertyName.toUpperCase());
+            TimeTransparencyType type = enumFromNameMap.get(propertyName.toUpperCase());
             return (type == null) ? UNKNOWN : type;
         }
     }
