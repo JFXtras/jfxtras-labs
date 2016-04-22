@@ -1,11 +1,15 @@
 package jfxtras.labs.icalendarfx.components;
 
-import javafx.beans.property.IntegerProperty;
+import java.util.Arrays;
+
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 
 /**
@@ -35,21 +39,6 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     default T withDescription(Description description) { setDescription(description); return (T) this; }
     default T withDescription(String description) { PropertyEnum.DESCRIPTION.parse(this, description); return (T) this; }
 
-//    /** 
-//     * DURATION
-//     * RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
-//     * Can't be used if DTEND is used.  Must be one or the other.
-//     * 
-//     * Example:
-//     * DURATION:PT15M
-//     * */
-//    ObjectProperty<DurationProp> durationProperty();
-//    default DurationProp getDurationProp() { return durationProperty().get(); }
-//    default void setDurationProp(DurationProp duration) { durationProperty().set(duration); }
-//    default T withDurationProp(TemporalAmount amount) { setDurationProp(new DurationProp(amount)); return (T) this; }
-//    default T withDurationProp(String amount) { setDurationProp(new DurationProp(amount)); return (T) this; }
-//    default T withDurationProp(DurationProp duration) { setDurationProp(duration); return (T) this; }
-    
     /**
      * GEO: Geographic Position
      * RFC 5545 iCalendar 3.8.1.6 page 85, 3.3.6 page 85
@@ -76,9 +65,11 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
      * Example:
      * LOCATION:Conference Room - F123\, Bldg. 002
      */
-    Location getLocation();
-    ObjectProperty<Location> locationProperty();
-    void setLocation(Location location);
+    public ObjectProperty<Location> locationProperty();
+    default Location getLocation() { return locationProperty().get(); }
+    default void setLocation(Location location) { locationProperty().set(location); }
+    default T withLocation(Location location) { setLocation(location); return (T) this; }
+    default T withLocation(String location) { PropertyEnum.LOCATION.parse(this, location); return (T) this; }
     
     /**
      * PRIORITY
@@ -89,9 +80,13 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
      * Example: The following is an example of a property with the highest priority:
      * PRIORITY:1
      */
-    int getPriority();
-    IntegerProperty priorityProperty();
-    void setPriority(int priority);
+    public ObjectProperty<Priority> priorityProperty();
+    default Priority getPriority() { return priorityProperty().get(); }
+    default void setPriority(Priority priority) { priorityProperty().set(priority); }
+    default void setPriority(int priority) { priorityProperty().set(new Priority(priority)); }
+    default T withPriority(Priority priority) { setPriority(priority); return (T) this; }
+    default T withPriority(String priority) { PropertyEnum.PRIORITY.parse(this, priority); return (T) this; }
+    default T withPriority(int priority) { setPriority(priority); return (T) this; }
     
     /**
      * RESOURCES:
@@ -103,7 +98,17 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
      * RESOURCES:EASEL,PROJECTOR,VCR
      * RESOURCES;LANGUAGE=fr:Nettoyeur haute pression
      */
-    Resources getResources();
-    ObjectProperty<Resources> resourcesProperty();
-    void setResources(Resources resources);
+    ObservableList<Resources> getResources();
+    void setResources(ObservableList<Resources> properties);
+    default T withResources(ObservableList<Resources> resources) { setResources(resources); return (T) this; }
+    default T withResources(String...resources)
+    {
+        Arrays.stream(resources).forEach(c -> PropertyEnum.RESOURCES.parse(this, c));
+        return (T) this;
+    }
+    default T withResources(Resources...resources)
+    {
+        setResources(FXCollections.observableArrayList(resources));
+        return (T) this;
+    }
 }

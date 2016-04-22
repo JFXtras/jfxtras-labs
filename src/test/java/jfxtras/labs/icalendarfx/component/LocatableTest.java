@@ -43,10 +43,18 @@ public class LocatableTest
         List<VComponentLocatable<?>> components = Arrays.asList(
                 new VEventNew()
                     .withDescription("DESCRIPTION:A simple description")
+                    .withLocation("Antarctica")
+                    .withPriority(2)
+                    .withResources(new Resources("Nettoyeur haute pression")
+                            .withLanguage("fr"))
                     .withDurationProp(Duration.ofMinutes(45))
                     .withGeographicPosition("37.386013;-122.082932"),
                 new VTodo()
                     .withDescription("DESCRIPTION:A simple description")
+                    .withLocation("Antarctica")
+                    .withPriority(2)
+                    .withResources(new Resources("Nettoyeur haute pression")
+                            .withLanguage("fr"))
                     .withDurationProp(Duration.ofMinutes(45))
                     .withGeographicPosition("37.386013;-122.082932")
                 );
@@ -58,6 +66,9 @@ public class LocatableTest
                     "DESCRIPTION:A simple description" + System.lineSeparator() +
                     "DURATION:PT45M" + System.lineSeparator() +
                     "GEO:37.386013;-122.082932" + System.lineSeparator() +
+                    "LOCATION:Antarctica" + System.lineSeparator() +
+                    "PRIORITY:2" + System.lineSeparator() +
+                    "RESOURCES;LANGUAGE=fr:Nettoyeur haute pression" + System.lineSeparator() +
                     "END:" + componentName;
                     
             VComponentLocatable<?> parsedComponent = builtComponent

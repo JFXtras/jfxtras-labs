@@ -41,6 +41,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
@@ -234,6 +235,7 @@ public enum PropertyEnum
             }
         }
     },
+    // Descriptive
     COMMENT ("COMMENT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -272,7 +274,7 @@ public enum PropertyEnum
         public Object getProperty(VComponentNew<?> vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
-            return castComponent.getContact();
+            return castComponent.getContacts();
         }
 
         @Override
@@ -280,13 +282,13 @@ public enum PropertyEnum
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             final ObservableList<Contact> list;
-            if (castComponent.getContact() == null)
+            if (castComponent.getContacts() == null)
             {
                 list = FXCollections.observableArrayList();
-                castComponent.setContact(list);
+                castComponent.setContacts(list);
             } else
             {
-                list = castComponent.getContact();
+                list = castComponent.getContacts();
             }
             list.add(new Contact(propertyContent));
         }
@@ -647,15 +649,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            return castComponent.getLocation();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            if (castComponent.getLocation() == null)
+            {
+                castComponent.setLocation(new Location(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Calendar
@@ -735,20 +743,31 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             
         }
-    }, // Descriptive
-    PRIORITY ("PRIORITY", null, null, null) {
+    },
+    // Descriptive
+    PRIORITY ("PRIORITY", // property name
+            Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Priority.class) // property class
+    {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            return castComponent.getPriority();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            if (castComponent.getPriority() == null)
+            {
+                castComponent.setPriority(new Priority(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     }, // Descriptive
     // Calendar
@@ -952,25 +971,36 @@ public enum PropertyEnum
             list.add(new RequestStatus(propertyContent));
         }
     },
+    // Resources
     RESOURCES ("RESOURCES", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Resources.class)
+            Resources.class) // property class
     {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VComponentLocatable<?> castProperty = (VComponentLocatable<?>) vComponent;
+            return castProperty.getResources();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            final ObservableList<Resources> list;
+            if (castComponent.getResources() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castComponent.setResources(list);
+            } else
+            {
+                list = castComponent.getResources();
+            }
+            list.add(new Resources(propertyContent));
         }
-    }, // property class
+    },
+    // Descriptive
     SEQUENCE ("SEQUENCE", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters

@@ -77,7 +77,7 @@ public class DisplayableTest
                     .withCategories("group03","group04","group05")
                     .withCategories("group06")
                     .withClassification(ClassificationType.PUBLIC)
-                    .withContact("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
+                    .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
                     .withExceptions("EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z"),
                 new VTodo()
                     .withStatus(StatusType.NEEDS_ACTION)
@@ -94,7 +94,7 @@ public class DisplayableTest
                     .withCategories("group03","group04","group05")
                     .withCategories("group06")
                     .withClassification(ClassificationType.PUBLIC)
-                    .withContact("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
+                    .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
                     .withExceptions("EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z"),
                 new VJournal()
                     .withStatus(StatusType.NEEDS_ACTION)
@@ -111,7 +111,7 @@ public class DisplayableTest
                     .withCategories("group03","group04","group05")
                     .withCategories("group06")
                     .withClassification(ClassificationType.PUBLIC)
-                    .withContact("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
+                    .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
                     .withExceptions("EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z")
                 );
         

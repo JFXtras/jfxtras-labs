@@ -185,7 +185,7 @@ public class VEventTest
                 .withCategories("group03","group04","group05")
                 .withCategories("group06")
                 .withClassification(ClassificationType.PUBLIC)
-                .withContact("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234");
+                .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234");
         System.out.println(builtComponent.toContentLines());
         String componentName = builtComponent.componentType().toString();
         String content = "BEGIN:" + componentName + System.lineSeparator() +

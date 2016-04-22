@@ -87,10 +87,10 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      *  c=US???(cn=Jim%20Dolittle)":Jim Dolittle\, ABC Industries\,
      *  +1-919-555-1234
      */
-    ObservableList<Contact> getContact();
-    void setContact(ObservableList<Contact> properties);
-    default T withContact(ObservableList<Contact> contact) { setContact(contact); return (T) this; }
-    default T withContact(String...contact)
+    ObservableList<Contact> getContacts();
+    void setContacts(ObservableList<Contact> properties);
+    default T withContacts(ObservableList<Contact> contact) { setContacts(contact); return (T) this; }
+    default T withContacts(String...contact)
     {
         Arrays.stream(contact).forEach(c -> PropertyEnum.CONTACT.parse(this, c));
         return (T) this;

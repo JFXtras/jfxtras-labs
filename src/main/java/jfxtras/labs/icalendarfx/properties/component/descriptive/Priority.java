@@ -1,37 +1,31 @@
 package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
-import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
-import jfxtras.labs.icalendarfx.components.StandardTime;
-import jfxtras.labs.icalendarfx.components.VEventNewInt;
-import jfxtras.labs.icalendarfx.components.VFreeBusy;
-import jfxtras.labs.icalendarfx.components.VJournalInt;
-import jfxtras.labs.icalendarfx.components.VTodoInt;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.PropertyBase;
 
 /**
- * COMMENT
- * RFC 5545 iCalendar 3.8.1.4. page 83
+ * PRIORITY
+ * RFC 5545 iCalendar 3.8.1.9. page 89
  * 
- * This property specifies non-processing information intended
- * to provide a comment to the calendar user
+ * This property defines the relative priority for a calendar component.
  * 
+ * A value of 0 specifies an undefined priority.  A value of 1
+ * is the highest priority.  A value of 2 is the second highest
+ * priority.  Subsequent numbers specify a decreasing ordinal
+ * priority.  A value of 9 is the lowest priority.
+ *     
  * Example:
- * COMMENT:The meeting really needs to include both ourselves
- *  and the customer. We can't hold this meeting without them.
- *  As a matter of fact\, the venue for the meeting ought to be at
- *  their site. - - John
+ * The following is an example of a property with the highest priority:
+ * PRIORITY:1
  *  
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
- * @see VFreeBusy
- * @see StandardTime
- * @see DaylightSavingTime
+ * @see VEventNew
+ * @see VTodo
  */
-public class Priority extends PropertyBaseAltText<String, Priority>
+public class Priority extends PropertyBase<Integer, Priority>
 {
     public Priority(CharSequence contentLine)
     {
@@ -41,5 +35,26 @@ public class Priority extends PropertyBaseAltText<String, Priority>
     public Priority(Priority source)
     {
         super(source);
+    }
+    
+    public Priority(Integer value)
+    {
+        super(value);
+    }
+
+    @Override
+    public void setValue(Integer value)
+    {
+        if ((value < 0) || (value > 9))
+        {
+            throw new IllegalArgumentException("Priority must between 0 and 9");
+        }
+        super.setValue(value);
+    }
+    
+    @Override
+    public boolean isValid()
+    {
+        return ((getValue() < 0) || (getValue() > 9)) ? false : super.isValid();
     }
 }

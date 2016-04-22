@@ -6,8 +6,6 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 
 public class VTodo extends VComponentLocatableBase<VTodo> implements VTodoInt<VTodo>
 {
@@ -29,68 +27,6 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VTodoInt<VT
 
 
 
-    @Override
-    public Location getLocation()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<Location> locationProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setLocation(Location location)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public int getPriority()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public IntegerProperty priorityProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setPriority(int priority)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Resources getResources()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<Resources> resourcesProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setResources(Resources resources)
-    {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public Stream<Temporal> streamRecurrences(Temporal startTemporal)
