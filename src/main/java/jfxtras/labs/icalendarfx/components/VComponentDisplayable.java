@@ -201,23 +201,6 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         }
         return (T) this;
     }
-    
-    @Override
-    default void checkDateTimeStartConsistency()
-    {
-        VComponentRepeatable.super.checkDateTimeStartConsistency();
-        if ((getExceptions() != null) && (getDateTimeStart() != null))
-        {
-            Temporal firstException = getExceptions().get(0).getValue().iterator().next();
-            DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(firstException);
-            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            if (exceptionType != dateTimeStartType)
-            {
-                throw new DateTimeException("Exceptions DateTimeType (" + exceptionType +
-                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
-            }
-        }        
-    }
 
 //    
 //    @Override
@@ -282,6 +265,21 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default T withRecurrenceId(RecurrenceId<? extends Temporal> dtStart) { setRecurrenceId(dtStart); return (T) this; }
     default T withRecurrenceId(String dtStart) { return withRecurrenceId(DateTimeUtilities.temporalFromString(dtStart)); }
     default T withRecurrenceId(Temporal temporal) { setRecurrenceId(temporal); return (T) this; }
+    /** Ensures RecurrenceId has same date-time type as DateTimeStart.  Should be put in listener
+     *  after recurrenceIdProperty() is initialized */
+    default void checkRecurrenceIdConsistency()
+    {
+        if ((getRecurrenceId() != null) && (getDateTimeStart() != null))
+        {
+            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
+            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            if (recurrenceIdType != dateTimeStartType)
+            {
+                throw new DateTimeException("RecurrenceId DateTimeType (" + recurrenceIdType +
+                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+            }
+        }
+    }
     
     /**
      * RELATED-TO:
@@ -357,4 +355,30 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default T withStatus(StatusType statusType) { setStatus(statusType); return (T) this; }
     default T withStatus(String status) { PropertyEnum.STATUS.parse(this, status); return (T) this; }
 
+    @Override
+    default void checkDateTimeStartConsistency()
+    {
+        VComponentRepeatable.super.checkDateTimeStartConsistency();
+        if ((getExceptions() != null) && (getDateTimeStart() != null))
+        {
+            Temporal firstException = getExceptions().get(0).getValue().iterator().next();
+            DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(firstException);
+            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            if (exceptionType != dateTimeStartType)
+            {
+                throw new DateTimeException("Exceptions DateTimeType (" + exceptionType +
+                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+            }
+        }
+        if ((getRecurrenceId() != null) && (getDateTimeStart() != null))
+        {
+            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
+            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            if (recurrenceIdType != dateTimeStartType)
+            {
+                throw new DateTimeException("RecurrenceId DateTimeType (" + recurrenceIdType +
+                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+            }
+        }        
+    }
 }

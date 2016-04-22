@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
 import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
@@ -7,6 +8,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
@@ -42,6 +44,32 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         return dateTimeEnd;
     }
     private ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEnd;
+    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be put in listener
+     *  after dateTimeEndProperty() is initialized */
+    @Override
+    public void checkDateTimeEndConsistency()
+    {
+        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
+        if ((getDateTimeEnd() != null) && (getDurationProp() != null))
+        {
+            throw new DateTimeException("DURATION and DTEND can't both be set");
+        }
+    }
+    
+    /** add listener to Duration to ensure both DURATION and DTEND are not both set */
+    @Override public ObjectProperty<DurationProp> durationProperty()
+    {
+        ObjectProperty<DurationProp> duration = super.durationProperty();
+        duration.addListener((obs) ->
+        {
+            if ((getDateTimeEnd() != null) && (getDurationProp() != null))
+            {
+                throw new DateTimeException("DURATION and DTEND can't both be set");
+            }            
+        });
+        return duration;
+    }
+
     
     /**
      * TRANSP
@@ -89,13 +117,6 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         VComponentDisplayable.super.checkDateTimeStartConsistency();
         checkDateTimeStartConsistency2();
     }
-//    @Override
-//    public void addDateTimeStartConsistencyListener()
-//    {
-//        System.out.println("added listener:");
-//        VComponentDateTimeEnd.super.addDateTimeStartConsistencyListener();
-//        VComponentDis.super.addDateTimeStartConsistencyListener();
-//    };
 
     @Override
     public Stream<Temporal> streamRecurrences(Temporal startTemporal)

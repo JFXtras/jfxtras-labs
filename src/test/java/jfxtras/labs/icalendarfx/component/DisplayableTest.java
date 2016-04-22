@@ -36,6 +36,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
 /**
  * Test following components:
@@ -124,7 +125,6 @@ public class DisplayableTest
         for (VComponentLastModified<?> builtComponent : components)
         {
             String componentName = builtComponent.componentType().toString();
-//            System.out.println(builtComponent.toContentLines());
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com" + System.lineSeparator() +
                     "CATEGORIES:group03,group04,group05" + System.lineSeparator() +
@@ -149,7 +149,6 @@ public class DisplayableTest
                     .getClass()
                     .getConstructor(String.class)
                     .newInstance(expectedContent);
-//            System.out.println(parsedComponent.toContentLines());
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContentLines());            
         }
@@ -174,5 +173,32 @@ public class DisplayableTest
         ObservableList<Exceptions<? extends Temporal>> exceptions = FXCollections.observableArrayList();
         exceptions.add(new Exceptions<LocalDateTime>("20160228T093000"));
         component.setExceptions(exceptions); // invalid        
+    }
+    
+    @Test //(expected = DateTimeException.class)
+    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
+    public void canCatchWrongRecurrenceIdType()
+    {
+        new VEventNew()
+                .withDateTimeStart(LocalDate.of(1997, 3, 1))
+                .withRecurrenceId("20160306T080000Z");
+    }
+    
+    @Test (expected = DateTimeException.class)
+    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
+    public void canCatchWrongRecurrenceIdType2()
+    {
+       new VEventNew()
+                .withRecurrenceId("20160306T080000Z")
+                .withDateTimeStart(LocalDate.of(1997, 3, 1));
+    }
+    
+    @Test (expected = DateTimeException.class)
+    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
+    public void canCatchWrongRecurrenceIdType3()
+    {
+        VEventNew builtComponent = new VEventNew();
+        builtComponent.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(1997, 3, 1)));
+        builtComponent.setRecurrenceId(new RecurrenceId<LocalDateTime>(LocalDateTime.of(2016, 3, 6, 8, 0)));
     }
 }

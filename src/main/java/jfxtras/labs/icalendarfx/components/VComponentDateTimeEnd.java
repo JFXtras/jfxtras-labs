@@ -45,7 +45,7 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
     default T withDateTimeEnd(String dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
     default T withDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
     
-    /** Enusres DateTimeEnd has same date-time type as DateTimeStart.  Should be put in listener
+    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be put in listener
      *  after dateTimeEndProperty() is initialized */
     default void checkDateTimeEndConsistency()
     {

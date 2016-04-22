@@ -204,6 +204,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (recurrenceId == null)
         {
             recurrenceId = new SimpleObjectProperty<>(this, PropertyEnum.RECURRENCE_IDENTIFIER.toString());
+            recurrenceId.addListener((observable, oldValue, newValue) -> checkRecurrenceIdConsistency());
         }
         return recurrenceId;
     }
