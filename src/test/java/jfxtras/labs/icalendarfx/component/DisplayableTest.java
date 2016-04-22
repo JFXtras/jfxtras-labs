@@ -3,14 +3,20 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponentLastModified;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -147,5 +153,26 @@ public class DisplayableTest
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContentLines());            
         }
+    }
+    
+    @Test (expected = DateTimeException.class)
+    @Ignore // can't catch exception in listener
+    public void canHandleDTStartTypeChange()
+    {
+        VEventNew component = new VEventNew()
+            .withDateTimeStart(LocalDate.of(1997, 3, 1))
+            .withExceptions("EXDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
+//      Platform.runLater(() -> component.setDateTimeStart("20160302T223316Z"));      
+        component.setDateTimeStart("20160302T223316Z"); // invalid
+    }
+    
+    @Test (expected = DateTimeException.class)
+    public void canCatchWrongDateType()
+    {
+        VEventNew component = new VEventNew()
+                .withDateTimeStart(LocalDate.of(1997, 3, 1));
+        ObservableList<Exceptions<? extends Temporal>> exceptions = FXCollections.observableArrayList();
+        exceptions.add(new Exceptions<LocalDateTime>("20160228T093000"));
+        component.setExceptions(exceptions); // invalid        
     }
 }

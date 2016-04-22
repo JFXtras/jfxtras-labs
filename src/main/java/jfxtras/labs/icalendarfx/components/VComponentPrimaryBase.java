@@ -62,13 +62,14 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid
      * start date/times of the repeating events.
      * Can contain either a LocalDate (DATE) or LocalDateTime (DATE-TIME)
-     * @SEE VDateTime
      */
     @Override public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty()
     {
         if (dateTimeStart == null)
         {
             dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
+            dateTimeStartProperty().addListener((observable, oldValue, newValue) -> checkDateTimeStartConsistency() );
+//            addDateTimeStartConsistencyListener();
         }
         return dateTimeStart;
     }

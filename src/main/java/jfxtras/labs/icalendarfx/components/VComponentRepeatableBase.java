@@ -36,8 +36,9 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
     public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
     {
         this.recurrences = recurrences;
-        validateRecurrencesConsistencyWithDTStart();
-        recurrences.addListener(VComponentRepeatable.RECURRENCE_CONSISTENCY_LISTENER);
+        recurrences.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
+        checkRecurrencesConsistency(recurrences, null);
+//        validateRecurrencesConsistencyWithDTStart();
     }
 
     /**
@@ -74,12 +75,12 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
      */
     VComponentRepeatableBase()
     {
-        setupRecurrenceListeners();
+//        setupRecurrenceListeners();
     }
     
     VComponentRepeatableBase(String contentLines)
     {
         super(contentLines);
-        setupRecurrenceListeners();
+//        setupRecurrenceListeners();
     }
 }

@@ -9,8 +9,9 @@ import java.time.temporal.Temporal;
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
-public interface VComponentDateTimeEnd<T> extends VComponentNew<T>
+public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
 {
     /**
      * DTEND, Date-Time End.
@@ -43,6 +44,53 @@ public interface VComponentDateTimeEnd<T> extends VComponentNew<T>
     default T withDateTimeEnd(Temporal temporal) { setDateTimeEnd(temporal); return (T) this; }
     default T withDateTimeEnd(String dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
     default T withDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
+    
+    /** Enusres DateTimeEnd has same date-time type as DateTimeStart.  Should be put in listener
+     *  after dateTimeEndProperty() is initialized */
+    default void checkDateTimeEndConsistency()
+    {
+        if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
+        {
+            DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            if (dateTimeEndType != dateTimeStartType)
+            {
+                throw new DateTimeException("DateTimeEnd DateTimeType (" + dateTimeEndType +
+                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+            }
+        }
+    }
+    
+    default void checkDateTimeStartConsistency2()
+    {
+        if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
+        {
+            DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            if (dateTimeEndType != dateTimeStartType)
+            {
+                throw new DateTimeException("DateTimeEnd DateTimeType (" + dateTimeEndType +
+                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+            }
+        }
+    }
 
-    // TODO - SYNCH WITH DATE-TIME START
+    
+//    @Override
+//    default void addDateTimeStartConsistencyListener()
+//    {       
+//        dateTimeStartProperty().addListener((observable, oldValue, newValue) -> 
+//        {
+//            if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
+//            {
+//                DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+//                DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//                if (dateTimeEndType != dateTimeStartType)
+//                {
+//                    throw new DateTimeException("DateTimeEnd DateTimeType (" + dateTimeEndType +
+//                            ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+//                }
+//            }
+//        });
+//    }
 }

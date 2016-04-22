@@ -100,4 +100,10 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
         }
         return null;
     }
+    
+    /** If subclass has date-time properties (e.g. DTEND) that must be consistent with DTSTART
+     * add a listener to dateTimeStartProperty() here to check for consistency
+     */
+//    default void addDateTimeStartConsistencyListener() { };
+    void checkDateTimeStartConsistency();
 }

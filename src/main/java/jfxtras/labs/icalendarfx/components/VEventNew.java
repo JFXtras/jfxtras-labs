@@ -10,7 +10,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
-public class VEventNew extends VComponentLocatableBase<VEventNew> implements VComponentLocatable<VEventNew>, VComponentDateTimeEnd<VEventNew>
+public class VEventNew extends VComponentLocatableBase<VEventNew> implements VComponentDateTimeEnd<VEventNew>, VComponentDisplayable<VEventNew>
 {
     @Override
     public VComponentEnum componentType()
@@ -31,11 +31,13 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
      * Example:
      * DTEND;VALUE=DATE:19980704
      */
-    @Override public ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty()
+    @Override
+    public ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty()
     {
         if (dateTimeEnd == null)
         {
             dateTimeEnd = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_END.toString());
+            dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
         return dateTimeEnd;
     }
@@ -81,6 +83,19 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         super(contentLines);
     }
 
+    @Override
+    public void checkDateTimeStartConsistency()
+    {
+        VComponentDisplayable.super.checkDateTimeStartConsistency();
+        checkDateTimeStartConsistency2();
+    }
+//    @Override
+//    public void addDateTimeStartConsistencyListener()
+//    {
+//        System.out.println("added listener:");
+//        VComponentDateTimeEnd.super.addDateTimeStartConsistencyListener();
+//        VComponentDis.super.addDateTimeStartConsistencyListener();
+//    };
 
     @Override
     public Stream<Temporal> streamRecurrences(Temporal startTemporal)
@@ -88,4 +103,5 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         // TODO Auto-generated method stub
         throw new RuntimeException("not implemented");
     }
+
 }

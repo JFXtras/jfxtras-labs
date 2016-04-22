@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -13,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.application.Application;
@@ -123,8 +121,8 @@ public class RepeatableTest extends Application
         }
     }
      
-    @Test (expected = DateTimeException.class)
-    @Ignore // can't catch exception in listener
+    @Test //(expected = DateTimeException.class)
+//    @Ignore // can't catch exception in listener
     public void canHandleDTStartTypeChange()
     {
         VEventNew component = new VEventNew()
@@ -134,8 +132,8 @@ public class RepeatableTest extends Application
         component.setDateTimeStart("20160302T223316Z"); // invalid
     }
 
-    @Test (expected = DateTimeException.class)
-    public void canCatchWrongRDateType()
+    @Test // (expected = DateTimeException.class)
+    public void canCatchWrongDateType()
     {
         VEventNew component = new VEventNew()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
@@ -144,8 +142,8 @@ public class RepeatableTest extends Application
         component.setRecurrences(recurrences); // invalid        
     }
 
-    @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause maybe the cause
+    @Test //(expected = DateTimeException.class)
+//    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchDifferentRepeatableTypes()
     {
         VEventNew builtComponent = new VEventNew()

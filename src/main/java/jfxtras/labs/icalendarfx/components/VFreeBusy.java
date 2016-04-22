@@ -17,7 +17,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
  * @author David Bal
  *
  */
-public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFreeBusyInt<VFreeBusy>
+public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFreeBusyInt<VFreeBusy>, VComponentDateTimeEnd<VFreeBusy>
 {
     @Override
     public VComponentEnum componentType()
@@ -56,6 +56,12 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
     public VFreeBusy(String contentLines)
     {
         super(contentLines);
+    }
+    
+    @Override
+    public void checkDateTimeStartConsistency()
+    {
+        checkDateTimeStartConsistency2();
     }
 
     @Override

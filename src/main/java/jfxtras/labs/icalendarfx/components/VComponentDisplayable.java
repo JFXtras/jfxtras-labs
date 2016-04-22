@@ -25,6 +25,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * Calendar component that is displayable in a graphic.  Has methods to generate recurrence
@@ -200,6 +201,54 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         }
         return (T) this;
     }
+    
+    @Override
+    default void checkDateTimeStartConsistency()
+    {
+        VComponentRepeatable.super.checkDateTimeStartConsistency();
+        if ((getExceptions() != null) && (getDateTimeStart() != null))
+        {
+            Temporal firstException = getExceptions().get(0).getValue().iterator().next();
+            DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(firstException);
+            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            if (exceptionType != dateTimeStartType)
+            {
+                throw new DateTimeException("Exceptions DateTimeType (" + exceptionType +
+                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+            }
+        }        
+    }
+
+//    
+//    @Override
+//    default void addDateTimeStartConsistencyListener()
+//    {
+//        dateTimeStartProperty().addListener((observable, oldValue, newValue) -> 
+//        {
+//            if ((getExceptions() != null) && (getDateTimeStart() != null))
+//            {
+//                Temporal firstException = getExceptions().get(0).getValue().iterator().next();
+//                DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(firstException);
+//                DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//                if (exceptionType != dateTimeStartType)
+//                {
+//                    throw new DateTimeException("Exceptions DateTimeType (" + exceptionType +
+//                            ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+//                }
+//            }
+//            if ((getRecurrences() != null) && (getDateTimeStart() != null))
+//            {
+//                Temporal firstRecurrence = getRecurrences().get(0).getValue().iterator().next();
+//                DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
+//                DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//                if (recurrenceType != dateTimeStartType)
+//                {
+//                    throw new DateTimeException("Recurrences DateTimeType (" + recurrenceType +
+//                            ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+//                }
+//            }
+//        });
+//    }
     
     /**
      * RECURRENCE-ID: Recurrence Identifier
