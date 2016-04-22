@@ -55,6 +55,17 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         PropertyEnum.CATEGORIES.parse(this, commaSeparatedList);
         return (T) this;
     }
+    default T withCategories(Categories...categories)
+    {
+        if (getCategories() == null)
+        {
+            setCategories(FXCollections.observableArrayList(categories));
+        } else
+        {
+            getCategories().addAll(categories);
+        }
+        return (T) this;
+    }
     
     /**
      * CLASS: Classification
@@ -89,10 +100,21 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObservableList<Contact> getContacts();
     void setContacts(ObservableList<Contact> properties);
-    default T withContacts(ObservableList<Contact> contact) { setContacts(contact); return (T) this; }
-    default T withContacts(String...contact)
+    default T withContacts(ObservableList<Contact> contacts) { setContacts(contacts); return (T) this; }
+    default T withContacts(String...contacts)
     {
-        Arrays.stream(contact).forEach(c -> PropertyEnum.CONTACT.parse(this, c));
+        Arrays.stream(contacts).forEach(c -> PropertyEnum.CONTACT.parse(this, c));
+        return (T) this;
+    }
+    default T withContacts(Contact...contacts)
+    {
+        if (getContacts() == null)
+        {
+            setContacts(FXCollections.observableArrayList(contacts));
+        } else
+        {
+            getContacts().addAll(contacts);
+        }
         return (T) this;
     }
     
@@ -164,6 +186,18 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         }
         return (T) this;
     }
+    default T withExceptions(Exceptions<?>...exceptions)
+    {
+        if (getExceptions() == null)
+        {
+            setExceptions(FXCollections.observableArrayList());
+            Arrays.stream(exceptions).forEach(e -> getExceptions().add(e)); // add one at a time to ensure date-time type compliance
+        } else
+        {
+            getExceptions().addAll(exceptions);
+        }
+        return (T) this;
+    }
     
     /**
      * RECURRENCE-ID: Recurrence Identifier
@@ -215,6 +249,17 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default T withRelatedTo(String...relatedTo)
     {
         Arrays.stream(relatedTo).forEach(c -> PropertyEnum.RELATED_TO.parse(this, c));
+        return (T) this;
+    }
+    default T withRelatedTo(RelatedTo...relatedTo)
+    {
+        if (getRelatedTo() == null)
+        {
+            setRelatedTo(FXCollections.observableArrayList(relatedTo));
+        } else
+        {
+            getRelatedTo().addAll(relatedTo);
+        }
         return (T) this;
     }
     

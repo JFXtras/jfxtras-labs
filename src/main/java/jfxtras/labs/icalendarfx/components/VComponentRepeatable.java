@@ -233,6 +233,19 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         }
         return (T) this;
     }
+    default T withRecurrences(Recurrences<?>...recurrences)
+    {
+        if (getRecurrences() == null)
+        {
+            setRecurrences(FXCollections.observableArrayList());
+            Arrays.stream(recurrences).forEach(r -> getRecurrences().add(r)); // add one at a time to ensure date-time type compliance
+        } else
+        {
+            getRecurrences().addAll(recurrences);
+        }
+        return (T) this;
+    }
+
     
     /**
      * RRULE, Recurrence Rule

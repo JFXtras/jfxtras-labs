@@ -58,6 +58,17 @@ public interface VComponentNew<T>
         return (T) this;
     }
     default T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return (T) this; }
+    default T withNonStandardProperty(NonStandardProperty...nonStandardProps)
+    {
+        if (getNonStandardProperties() == null)
+        {
+            setNonStandardProperties(FXCollections.observableArrayList(nonStandardProps));
+        } else
+        {
+            getNonStandardProperties().addAll(nonStandardProps);
+        }
+        return (T) this;
+    }
 
     /**
      * 3.8.8.1.  IANA Properties
@@ -80,6 +91,17 @@ public interface VComponentNew<T>
         return (T) this;
     }
     default T withIANAProperty(ObservableList<IANAProperty> ianaProps) { setIANAProperties(ianaProps); return (T) this; }
+    default T withIANAProperty(IANAProperty...ianaProps)
+    {
+        if (getIANAProperties() == null)
+        {
+            setIANAProperties(FXCollections.observableArrayList(ianaProps));
+        } else
+        {
+            getIANAProperties().addAll(ianaProps);
+        }
+        return (T) this;
+    }
 
     /**
      * List of all properties found in component.

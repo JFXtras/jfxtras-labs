@@ -52,8 +52,7 @@ public class PersonalTest
                     .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 4, 15, 12, 0), ZoneId.of("Z")))
                     .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
                     .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
-                    .withRequestStatus("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy.")
-                    .withRequestStatus("REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com")
+                    .withRequestStatus("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy.", "REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com")
                     .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics"),
                 new VTodo()
                     .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")

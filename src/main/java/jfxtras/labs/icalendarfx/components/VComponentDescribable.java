@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
@@ -38,20 +39,17 @@ public interface VComponentDescribable<T> extends VComponentNew<T>
         Arrays.stream(attachments).forEach(c -> PropertyEnum.ATTACHMENT.parse(this, c));
         return (T) this;
     }
-    
-//    /**
-//     * DESCRIPTION:
-//     * RFC 5545 iCalendar 3.8.1.12. page 84
-//     * This property provides a more complete description of the
-//     * calendar component than that provided by the "SUMMARY" property.
-//     * Example:
-//     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
-//     *  design.\nHappy Face Conference Room. Phoenix design team
-//     *  MUST attend this meeting.\nRSVP to team leader.
-//     */
-//    public ObjectProperty<Description> descriptionProperty();
-//    public Description getDescription();
-//    public void setDescription(Description description);
+    default T withAttachments(Attachment<?>...attachments)
+    {
+        if (getAttachments() == null)
+        {
+            setAttachments(FXCollections.observableArrayList(attachments));
+        } else
+        {
+            getAttachments().addAll(attachments);
+        }
+        return (T) this;
+    }
     
     /**
      * SUMMARY:

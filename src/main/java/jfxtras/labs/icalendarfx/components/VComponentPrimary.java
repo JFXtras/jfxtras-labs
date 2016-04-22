@@ -9,6 +9,7 @@ import java.time.temporal.Temporal;
 import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
@@ -47,7 +48,17 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
         Arrays.stream(comments).forEach(c -> PropertyEnum.COMMENT.parse(this, c));
         return (T) this;
     }
-
+    default T withComments(Comment...comments)
+    {
+        if (getComments() == null)
+        {
+            setComments(FXCollections.observableArrayList(comments));
+        } else
+        {
+            getComments().addAll(comments);
+        }
+        return (T) this;
+    }
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97
      * Start date/time of repeat rule.  Used as a starting point for making the Stream<LocalDateTime> of valid

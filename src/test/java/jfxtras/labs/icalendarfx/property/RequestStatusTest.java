@@ -26,6 +26,6 @@ public class RequestStatusTest
         assertEquals((Double) 3.7, madeProperty.getStatusCode());
         assertEquals("Invalid calendar user", madeProperty.getDescription());
         assertEquals("ATTENDEE:mailto:jsmith@example.com", madeProperty.getException());
-
     }
+    
 }

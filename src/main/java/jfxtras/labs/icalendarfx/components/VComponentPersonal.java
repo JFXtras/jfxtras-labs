@@ -7,6 +7,7 @@ import java.util.Arrays;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
@@ -73,13 +74,21 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     default T withRequestStatus(ObservableList<RequestStatus> requestStatus) { setRequestStatus(requestStatus); return (T) this; }
     default T withRequestStatus(String...requestStatus)
     {
-        if (getRequestStatus() == null)
-        {
-            setRequestStatus(FXCollections.observableArrayList());
-        }
-        Arrays.stream(requestStatus).forEach(c -> getRequestStatus().add(new RequestStatus(c)));
+        Arrays.stream(requestStatus).forEach(c -> PropertyEnum.REQUEST_STATUS.parse(this, c));
         return (T) this;
     }
+    default T withRequestStatus(RequestStatus...requestStatus)
+    {
+        if (getRequestStatus() == null)
+        {
+            setRequestStatus(FXCollections.observableArrayList(requestStatus));
+        } else
+        {
+            getRequestStatus().addAll(requestStatus);
+        }
+        return (T) this;
+    }
+
     /**
      * UID, Unique identifier
      * RFC 5545, iCalendar 3.8.4.7 page 117

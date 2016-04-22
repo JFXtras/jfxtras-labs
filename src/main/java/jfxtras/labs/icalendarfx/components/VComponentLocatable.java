@@ -108,7 +108,13 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     }
     default T withResources(Resources...resources)
     {
-        setResources(FXCollections.observableArrayList(resources));
+        if (getResources() == null)
+        {
+            setResources(FXCollections.observableArrayList(resources));
+        } else
+        {
+            getResources().addAll(resources);
+        }
         return (T) this;
     }
 }
