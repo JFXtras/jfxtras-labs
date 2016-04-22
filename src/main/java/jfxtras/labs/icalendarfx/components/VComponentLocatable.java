@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.temporal.TemporalAmount;
-
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
@@ -9,7 +7,6 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
-import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 /**
  * Calendar component with location, among other properties
@@ -20,7 +17,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
  * @see VEvent
  * @see VTodoOld
  */
-public interface VComponentLocatable<T> extends VComponentDisplayable<T>
+public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VComponentDuration<T>
 {
     /**
      * DESCRIPTION:
@@ -38,20 +35,20 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>
     default T withDescription(Description description) { setDescription(description); return (T) this; }
     default T withDescription(String description) { PropertyEnum.DESCRIPTION.parse(this, description); return (T) this; }
 
-    /** 
-     * DURATION
-     * RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
-     * Can't be used if DTEND is used.  Must be one or the other.
-     * 
-     * Example:
-     * DURATION:PT15M
-     * */
-    ObjectProperty<DurationProp> durationProperty();
-    default DurationProp getDurationProp() { return durationProperty().get(); }
-    default void setDurationProp(DurationProp duration) { durationProperty().set(duration); }
-    default T withDurationProp(TemporalAmount amount) { setDurationProp(new DurationProp(amount)); return (T) this; }
-    default T withDurationProp(String amount) { setDurationProp(new DurationProp(amount)); return (T) this; }
-    default T withDurationProp(DurationProp duration) { setDurationProp(duration); return (T) this; }
+//    /** 
+//     * DURATION
+//     * RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
+//     * Can't be used if DTEND is used.  Must be one or the other.
+//     * 
+//     * Example:
+//     * DURATION:PT15M
+//     * */
+//    ObjectProperty<DurationProp> durationProperty();
+//    default DurationProp getDurationProp() { return durationProperty().get(); }
+//    default void setDurationProp(DurationProp duration) { durationProperty().set(duration); }
+//    default T withDurationProp(TemporalAmount amount) { setDurationProp(new DurationProp(amount)); return (T) this; }
+//    default T withDurationProp(String amount) { setDurationProp(new DurationProp(amount)); return (T) this; }
+//    default T withDurationProp(DurationProp duration) { setDurationProp(duration); return (T) this; }
     
     /**
      * GEO: Geographic Position

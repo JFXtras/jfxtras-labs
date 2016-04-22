@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.temporal.TemporalAmount;
-
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -9,7 +7,7 @@ import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
-public interface VAlarmInt<T> extends VComponentDescribable<T>, VComponentAttendee<T>
+public interface VAlarmInt<T> extends VComponentDescribable<T>, VComponentAttendee<T>, VComponentDuration<T>
 {
     /**
      * ACTION
@@ -69,17 +67,18 @@ public interface VAlarmInt<T> extends VComponentDescribable<T>, VComponentAttend
     public Description getDescription();
     public void setDescription(Description description);
     
-    /** 
-     * DURATION
-     * RFC 5545 iCalendar 3.8.2.5 page 99,
-     * Can't be used if DTEND is used.  Must be one or the other.
-     * 
-     * Example:
-     * DURATION:PT15M
-     * */
-    ObjectProperty<TemporalAmount> durationProperty();
-    TemporalAmount getDuration();
-    void setDuration(TemporalAmount duration);
+//    /** 
+//     * DURATION
+//     * RFC 5545 iCalendar 3.8.2.5 page 99,
+//     * Can't be used if DTEND is used.  Must be one or the other.
+//     * 
+//     * Example:
+//     * DURATION:PT15M
+//     * */
+//    @Override
+//    ObjectProperty<TemporalAmount> durationProperty();
+//    TemporalAmount getDuration();
+//    void setDuration(TemporalAmount duration);
     
     /**
      * REPEAT: Repeat Count

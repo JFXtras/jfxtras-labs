@@ -2,22 +2,15 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 
 public class GeneralTest
 {
@@ -63,16 +56,5 @@ public class GeneralTest
         System.out.println("here:" + builtComponent2.getRecurrences());
         List<PropertyEnum> expectedProperties = Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.DATE_TIME_START, PropertyEnum.ORGANIZER, PropertyEnum.UNIQUE_IDENTIFIER);
         assertEquals(expectedProperties, builtComponent.properties());
-    }
-    
-    @Test (expected = DateTimeException.class)
-    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause maybe the cause
-    public void canCatchDifferentRepeatableTypes()
-    {
-        VEventNew builtComponent = new VEventNew()
-                .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
-        ObservableSet<ZonedDateTime> expectedValues = FXCollections.observableSet(
-                ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
-        builtComponent.getRecurrences().add(new Recurrences<ZonedDateTime>(expectedValues));
     }
 }

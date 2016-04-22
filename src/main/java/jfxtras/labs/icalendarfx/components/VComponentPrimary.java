@@ -55,6 +55,7 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
      */
     ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty();
     default DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStartProperty().get(); }
+    default void setDateTimeStart(String dtStart) { setDateTimeStart(DateTimeUtilities.temporalFromString(dtStart)); }
     default void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { dateTimeStartProperty().set(dtStart); }
     default void setDateTimeStart(Temporal temporal)
     {
@@ -74,7 +75,7 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
         }
     }
     default T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
-    default T withDateTimeStart(String dtStart) { return withDateTimeStart(DateTimeUtilities.temporalFromString(dtStart)); }
+    default T withDateTimeStart(String dtStart) { setDateTimeStart(dtStart); return (T) this; }
     default T withDateTimeStart(Temporal temporal) { setDateTimeStart(temporal); return (T) this; }
 
     @Deprecated

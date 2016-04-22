@@ -17,6 +17,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentDuration;
 import jfxtras.labs.icalendarfx.components.VComponentLastModified;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
@@ -446,8 +447,13 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
-            return castComponent.getDescription();
+            if (vComponent instanceof VComponentLocatable)
+            {
+                VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+                return castComponent.getDescription();
+            }
+            // TODO - HANDLE VJournal list of Description
+            return null;
         }
 
         @Override
@@ -472,14 +478,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            VComponentDuration<?> castComponent = (VComponentDuration<?>) vComponent;
             return castComponent.getDurationProp();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+            VComponentDuration<?> castComponent = (VComponentDuration<?>) vComponent;
             if (castComponent.getDurationProp() == null)
             {
                 castComponent.setDurationProp(new DurationProp(propertyContent));                                

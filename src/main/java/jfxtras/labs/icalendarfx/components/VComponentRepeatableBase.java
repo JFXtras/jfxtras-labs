@@ -9,7 +9,14 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
-
+/**
+ * 
+ * @author David Bal
+ *
+ * @param <T>
+ * @see DaylightSavingTime
+ * @see StandardTime
+ */
 public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<T> implements VComponentRepeatable<T>
 {
     /**
@@ -23,16 +30,14 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
     @Override
-    public ObservableList<Recurrences<? extends Temporal>> getRecurrences()
-    {
-        return recurrences;
-    }
+    public ObservableList<Recurrences<? extends Temporal>> getRecurrences() { return recurrences; }
     private ObservableList<Recurrences<? extends Temporal>> recurrences;
     @Override
     public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
     {
         this.recurrences = recurrences;
-        recurrences.addListener(VComponentRepeatable.RECURRENCE_LISTENER);
+        validateRecurrencesConsistencyWithDTStart();
+        recurrences.addListener(VComponentRepeatable.RECURRENCE_CONSISTENCY_LISTENER);
     }
 
     /**
@@ -63,15 +68,18 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         // TODO Auto-generated method stub
         return null;
     }
-
     
     /*
      * CONSTRUCTORS
      */
-    VComponentRepeatableBase() { }
+    VComponentRepeatableBase()
+    {
+        setupRecurrenceListeners();
+    }
     
     VComponentRepeatableBase(String contentLines)
     {
         super(contentLines);
+        setupRecurrenceListeners();
     }
 }

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -20,6 +21,9 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecu
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * Calendar components that can repeat
@@ -32,7 +36,8 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
  */
 public interface VComponentRepeatable<T> extends VComponentPrimary<T>
 {
-    static ListChangeListener<PropertyBaseRecurrence<? extends Temporal, ?>> RECURRENCE_LISTENER = (ListChangeListener.Change<? extends PropertyBaseRecurrence<? extends Temporal, ?>> change) ->
+    /** ensure additions to {@link #getRecurrences()} are the same Temporal type as former elements */
+    static ListChangeListener<PropertyBaseRecurrence<? extends Temporal, ?>> RECURRENCE_CONSISTENCY_LISTENER = (ListChangeListener.Change<? extends PropertyBaseRecurrence<? extends Temporal, ?>> change) ->
     {
         ObservableList<? extends PropertyBaseRecurrence<? extends Temporal, ?>> list = change.getList();
         if (list.size() > 1)
@@ -57,6 +62,125 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             }
         }
     };
+
+    /** ensure additions to {@link #getRecurrences()} are the same Temporal type as former elements */
+//    default void addRecurrenceListener()
+//    {
+//        if (getRecurrences() != null)
+//        {
+//            getRecurrences().addListener((ListChangeListener.Change<? extends PropertyBaseRecurrence<? extends Temporal, ?>> change) ->
+//            {
+//                ObservableList<? extends PropertyBaseRecurrence<? extends Temporal, ?>> list = change.getList();
+//                if (list.size() > 1)
+//                {
+//                    Class<? extends Temporal> firstTemporalClass = list.get(0).getValue().iterator().next().getClass();
+//                    while (change.next())
+//                    {
+//                        if (change.wasAdded())
+//                        {
+//                            Iterator<? extends PropertyBaseRecurrence<? extends Temporal, ?>> i = change.getAddedSubList().iterator();
+//                            while (i.hasNext())
+//                            {
+//                                PropertyBaseRecurrence<? extends Temporal, ?> r = i.next();
+//                                Class<? extends Temporal> myTemporalClass = r.getValue().iterator().next().getClass();
+//                                if (! myTemporalClass.equals(firstTemporalClass))
+//                                {
+//                                    throw new DateTimeException("Added recurrences Temporal class " + myTemporalClass.getSimpleName() +
+//                                            " doesn't match previous recurrences Temporal class " + firstTemporalClass.getSimpleName());
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else
+//                {
+//                    System.out.println("ensure matching DTSTART");
+//                    getRecurrences().
+//                }
+//            });
+//        }
+//    }
+    
+    
+    default void validateRecurrencesConsistencyWithDTStart()
+    {
+        System.out.println("ensure matching DTSTART");
+        if ((getRecurrences() != null) && (getDateTimeStart() != null))
+        {
+//            final boolean isValid;
+            Temporal firstRecurrence = getRecurrences().get(0).getValue().iterator().next();
+            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
+            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            if (recurrenceType != dateTimeStartType)
+            {
+                throw new DateTimeException("Recurrences DateTimeType (" + recurrenceType +
+                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+            }
+
+//            if (firstRecurrence.getClass().equals(dateTimeStart.getClass()))
+//            {
+//                if (firstRecurrence instanceof ZonedDateTime)
+//            } else
+//            {
+//                isValid = false;
+//            }
+            
+        }
+    }
+    
+    default void setupRecurrenceListeners()
+    {
+        ChangeListener<? super DateTimeStart<? extends Temporal>> RECURRENCE_TYPE_LISTENER = (observable, oldValue, newValue) -> 
+        {
+            System.out.println("DTSTART change" + newValue.getClass().getSimpleName());
+            if (getRecurrences() != null)
+            {
+                DateTimeType dtStartType = DateTimeUtilities.DateTimeType.of(newValue.getValue());
+                Temporal rDateTemporal = getRecurrences().get(0).getValue().iterator().next();
+                DateTimeType rDateType = DateTimeUtilities.DateTimeType.of(rDateTemporal);
+                if (dtStartType != rDateType)
+                {
+                    throw new DateTimeException("DateTimeType of DTSTART (" + dtStartType +") and RDATE (" + rDateType + ") must be the same.");
+//                    System.out.println("types different" + newValue.getClass().getSimpleName());
+                    
+//                    // Convert Recurrences to new DTSTART type -  DON'T USE HERE - USE IN IMPLEMENTATION
+//                    ObservableList<Recurrences<? extends Temporal>> newRecurrences = FXCollections.observableArrayList();
+//                    getRecurrences().stream().forEach(r ->
+//                    {
+//                        final Recurrences<? extends Temporal> recurrenceProperty;
+//                        switch (dtStartType)
+//                        {
+//                        case DATE:
+//                        {
+//                            LocalDate[] values = r.getValue().stream().map(t -> dtStartType.from(t)).toArray(LocalDate[]::new);
+//                            recurrenceProperty = new Recurrences<LocalDate>(values);
+//                            break;
+//                        }
+//                        case DATE_WITH_LOCAL_TIME:
+//                        {
+//                            LocalDateTime[] values = r.getValue().stream().map(t -> dtStartType.from(t)).toArray(LocalDateTime[]::new);
+//                            recurrenceProperty = new Recurrences<LocalDateTime>(values);
+//                            break;
+//                        }
+//                        case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+//                        case DATE_WITH_UTC_TIME:
+//                        {
+//                            ZoneId zone = ((ZonedDateTime) newValue.getValue()).getZone();
+//                            ZonedDateTime[] values = r.getValue().stream().map(t -> dtStartType.from(t, zone)).toArray(ZonedDateTime[]::new);
+//                            recurrenceProperty = new Recurrences<ZonedDateTime>(values);
+//                            break;
+//                        }
+//                        default:
+//                            throw new DateTimeException("Unsupported DateTimeType:" + dtStartType);
+//                        }
+//                        newRecurrences.add(recurrenceProperty);
+//                    });
+//                    setRecurrences(newRecurrences);
+                }
+            }
+        };
+        dateTimeStartProperty().addListener(RECURRENCE_TYPE_LISTENER);
+    }
+
     
     /**
      * RDATE: Recurrence Date-Times

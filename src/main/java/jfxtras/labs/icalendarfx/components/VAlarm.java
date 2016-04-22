@@ -1,14 +1,15 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.temporal.TemporalAmount;
-
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 /** 
  * VALARM: RFC 5545 iCalendar 3.6.6. page 71
@@ -22,6 +23,24 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VAlarmI
     {
         return VComponentEnum.VALARM;
     }
+ 
+    /** 
+     * DURATION
+     * RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
+     * Can't be used if DTEND is used.  Must be one or the other.
+     * 
+     * Example:
+     * DURATION:PT15M
+     * */
+    @Override public ObjectProperty<DurationProp> durationProperty()
+    {
+        if (duration == null)
+        {
+            duration = new SimpleObjectProperty<>(this, PropertyEnum.DURATION.toString());
+        }
+        return duration;
+    }
+    private ObjectProperty<DurationProp> duration;
     
     /*
      * CONSTRUCTORS
@@ -105,27 +124,6 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VAlarmI
 
     @Override
     public void setDescription(Description description)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public ObjectProperty<TemporalAmount> durationProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public TemporalAmount getDuration()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDuration(TemporalAmount duration)
     {
         // TODO Auto-generated method stub
         
