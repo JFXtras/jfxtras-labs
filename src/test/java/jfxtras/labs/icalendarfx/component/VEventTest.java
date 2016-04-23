@@ -82,4 +82,13 @@ public class VEventTest
         assertEquals(Duration.ofMinutes(15), builtComponent.getDurationProp().getValue());
         assertNull(builtComponent.getDateTimeEnd());
     }
+    
+    @Test
+    public void canStreamRecurrences1()
+    {
+        VEventNew component = new VEventNew()
+                .withRecurrenceRule("RRULE:FREQ=DAILY")
+                .withDateTimeStart(LocalDate.of(2016, 4, 22));
+        component.streamRecurrences(LocalDate.of(2016, 4, 22)).limit(10).forEach(System.out::println);
+    }
 }
