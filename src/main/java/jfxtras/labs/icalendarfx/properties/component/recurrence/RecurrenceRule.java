@@ -36,4 +36,31 @@ public class RecurrenceRule extends PropertyBase<RecurrenceRuleParameter, Recurr
     {
         super(value);
     }
+
+//    protected Stream<Temporal> getTemporalStream()
+//    {
+//        return getValue().stream().flatMap(r -> r.getValue().stream());
+//    }
+//    
+//    /** Add date/times in RDates set */
+//    public Stream<Temporal> stream(Stream<Temporal> inStream, Temporal startTemporal)
+//    {
+//        if (inStream == null)
+//        {
+//            getTemporalStream().filter(d -> ! DateTimeUtilities.isBefore(d, startTemporal));
+//        }
+//        return merge(inStream
+//                   , getTemporalStream()
+//                   , DateTimeUtilities.TEMPORAL_COMPARATOR);
+//    }
+//    
+//    private <T> Stream<T> merge(Stream<T> stream1, Stream<T> stream2, Comparator<T> comparator)
+//    {
+//            Iterator<T> iterator = new MergedIterator<T>(
+//                    stream1.iterator()
+//                  , stream2.iterator()
+//                  , comparator);
+//            Spliterator<T> spliterator = new SpliteratorAdapter<>(iterator);
+//            return StreamSupport.stream(spliterator, false);
+//    }
 }

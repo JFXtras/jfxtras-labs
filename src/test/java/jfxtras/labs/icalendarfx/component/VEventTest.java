@@ -46,6 +46,13 @@ public class VEventTest
         assertEquals(content, builtComponent.toContentLines());
     }
     
+    @Test
+    public void canBuildStreamRecurrences1()
+    {
+        
+    }
+
+    
     @Test (expected = DateTimeException.class)
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchBothDurationAndDTEnd()

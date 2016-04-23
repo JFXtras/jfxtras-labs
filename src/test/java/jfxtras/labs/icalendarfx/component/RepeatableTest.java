@@ -120,7 +120,17 @@ public class RepeatableTest extends Application
             assertEquals(expectedContent, builtComponent.toContentLines());            
         }
     }
-     
+
+    @Test
+    public void canStreamRecurrences1()
+    {
+        VEventNew component = new VEventNew()
+                .withRecurrenceRule("RRULE:FREQ=DAILY")
+                .withDateTimeStart(LocalDate.of(2016, 4, 22));
+        component.streamRecurrences(LocalDate.of(2016, 4, 22)).limit(10).forEach(System.out::println);
+    }
+
+    
     @Test //(expected = DateTimeException.class)
 //    @Ignore // can't catch exception in listener
     public void canHandleDTStartTypeChange()

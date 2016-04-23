@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
 import java.time.temporal.Temporal;
-import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -70,7 +69,6 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         return duration;
     }
 
-    
     /**
      * TRANSP
      * Time Transparency
@@ -117,12 +115,4 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         VComponentDisplayable.super.checkDateTimeStartConsistency();
         checkDateTimeStartConsistency2();
     }
-
-    @Override
-    public Stream<Temporal> streamRecurrences(Temporal startTemporal)
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
 }
