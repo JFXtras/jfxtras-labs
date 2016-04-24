@@ -105,7 +105,7 @@ public class RecurrenceStreamer
             throw new DateTimeException("Unsupported Temporal type:" + start.getClass().getSimpleName());
         }
         
-        recurrenceRule = component.getRecurrenceRule().getValue();
+        recurrenceRule = (component.getRecurrenceRule() != null) ? component.getRecurrenceRule().getValue() : null;
 
         // adjust start to ensure its not before dateTimeStart
         final Temporal start2 = (DateTimeUtilities.isBefore(start, dateTimeStart)) ? dateTimeStart : start;

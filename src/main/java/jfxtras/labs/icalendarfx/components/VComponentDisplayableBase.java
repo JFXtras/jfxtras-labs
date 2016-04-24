@@ -138,7 +138,6 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public void setExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions)
     {
         this.exceptions = exceptions;
-        System.out.println("here:");
         exceptions.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
         checkRecurrencesConsistency(exceptions, null);
     }

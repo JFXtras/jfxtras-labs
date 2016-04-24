@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
@@ -40,6 +42,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Monthly;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * Test following components:
@@ -784,6 +787,285 @@ public class RepeatableTest //extends Application
         assertEquals(expectedDates, madeDates);
         String expectedContent = "RRULE:FREQ=DAILY";
         assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
-
+    }
+    
+    /** Tests daily stream with FREQ=DAILY;INTERVAL=3;COUNT=6 */
+    @Test
+    public void dailyStreamTest2()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withCount(6)
+                        .withFrequency(new Daily()
+                                .withInterval(3)));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 18, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+              , LocalDateTime.of(2015, 11, 24, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6";
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    /** Tests daily stream with FREQ=DAILY;INTERVAL=3;BYMONTHDAY=9,10,11,12,13,14 */
+    @Test
+    public void dailyStreamTest3()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withFrequency(new Daily()
+                                .withInterval(3)
+                                .withByRules(new ByMonthDay()
+                                        .withDaysOfMonth(9,10,11,12,13,14))));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .limit(10)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 12, 9, 10, 0)
+              , LocalDateTime.of(2015, 12, 12, 10, 0)
+              , LocalDateTime.of(2016, 1, 11, 10, 0)
+              , LocalDateTime.of(2016, 1, 14, 10, 0)
+              , LocalDateTime.of(2016, 2, 10, 10, 0)
+              , LocalDateTime.of(2016, 2, 13, 10, 0)
+              , LocalDateTime.of(2016, 3, 11, 10, 0)
+              , LocalDateTime.of(2016, 3, 14, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=DAILY;INTERVAL=3;BYMONTHDAY=9,10,11,12,13,14";
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    /** Tests daily stream with FREQ=DAILY;INTERVAL=2;BYMONTHDAY=9 */
+    @Test
+    public void dailyStreamTest4()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withFrequency(new Daily()
+                                .withInterval(2)
+                                .withByRules(new ByMonthDay(9))));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .limit(6)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 12, 9, 10, 0)
+              , LocalDateTime.of(2016, 2, 9, 10, 0)
+              , LocalDateTime.of(2016, 4, 9, 10, 0)
+              , LocalDateTime.of(2016, 5, 9, 10, 0)
+              , LocalDateTime.of(2016, 8, 9, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=DAILY;INTERVAL=2;BYMONTHDAY=9";
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    /** Tests daily stream with FREQ=DAILY;INTERVAL=2;BYDAY=FR */
+    @Test
+    public void dailyStreamTest5()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withFrequency(new Daily()
+                                .withInterval(2)
+                                .withByRules(new ByDay(DayOfWeek.FRIDAY))));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .limit(6)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 27, 10, 0)
+              , LocalDateTime.of(2015, 12, 11, 10, 0)
+              , LocalDateTime.of(2015, 12, 25, 10, 0)
+              , LocalDateTime.of(2016, 1, 8, 10, 0)
+              , LocalDateTime.of(2016, 1, 22, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=DAILY;INTERVAL=2;BYDAY=FR";
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    @Test
+    public void dailyStreamTest6()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
+                                .withZoneSameInstant(ZoneId.of("Z")))
+                        .withFrequency(new Daily()
+                                .withInterval(2)));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 19, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+              , LocalDateTime.of(2015, 11, 23, 10, 0)
+              , LocalDateTime.of(2015, 11, 25, 10, 0)
+              , LocalDateTime.of(2015, 11, 27, 10, 0)
+              , LocalDateTime.of(2015, 11, 29, 10, 0)
+              ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=" + 
+                DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(
+                        ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
+                        .withZoneSameInstant(ZoneId.of("Z")));
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    @Test
+    public void dailyStreamTest7()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneOffset.systemDefault())
+                                .withZoneSameInstant(ZoneId.of("Z"))) // LocalDateTime adjusted to system default zone offset
+                        .withFrequency(new Daily()
+                                .withInterval(2)));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 10, 0)
+              , LocalDateTime.of(2015, 11, 13, 10, 0)
+              , LocalDateTime.of(2015, 11, 15, 10, 0)
+              , LocalDateTime.of(2015, 11, 17, 10, 0)
+              , LocalDateTime.of(2015, 11, 19, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+              , LocalDateTime.of(2015, 11, 23, 10, 0)
+              , LocalDateTime.of(2015, 11, 25, 10, 0)
+              , LocalDateTime.of(2015, 11, 27, 10, 0)
+              , LocalDateTime.of(2015, 11, 29, 10, 0)
+              ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=" +
+                DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(
+                        ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneOffset.systemDefault())
+                        .withZoneSameInstant(ZoneId.of("Z")));
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    @Test
+    public void dailyStreamTestJapanZone()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 0), ZoneId.of("Japan")))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 1, 0), ZoneId.of("Z")))
+                        .withFrequency(new Daily()));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .collect(Collectors.toList());
+        List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 12, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 14, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 15, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 16, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 8, 0), ZoneId.of("Japan"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 8, 0), ZoneId.of("Japan"))
+              ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=DAILY;UNTIL=20151119T010000Z";
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    @Test
+    public void dailyStreamTestUTC()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("Z")))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0), ZoneId.of("Z")))
+                        .withFrequency(new Daily()
+                                .withInterval(2)));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .collect(Collectors.toList());
+        List<ZonedDateTime> expectedDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 13, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 15, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 17, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 21, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 23, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 25, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 27, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneId.of("Z"))
+              , ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0), ZoneId.of("Z"))
+              ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    /** Tests individual VEvent */
+    @Test
+    public void individualTest1()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 11, 10, 30)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
+    public void exceptionTest1()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withCount(6)
+                        .withFrequency(new Daily()
+                                .withInterval(3)))
+                .withExceptions(new Exceptions<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
+                                     , LocalDateTime.of(2015, 11, 15, 10, 0)));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 18, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+              , LocalDateTime.of(2015, 11, 24, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "EXDATE:20151112T100000,20151115T100000";
+        assertEquals(expectedContent, e.getExceptions().get(0).toContentLine());
+        String expectedContent2 = "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6";
+        assertEquals(expectedContent2, e.getRecurrenceRule().toContentLine());
     }
 }
