@@ -19,8 +19,11 @@ import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonthDay;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Monthly;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -231,6 +234,108 @@ public class RecurrenceRuleTest
                 ));
         assertEquals(expectedDates, madeDates);
         String expectedContent = "RRULE:FREQ=YEARLY;INTERVAL=4;BYMONTH=11;BYMONTHDAY=2,3,4,5,6,7,8;BYDAY=TU";
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    /** FREQ=YEARLY;BYDAY=20MO */
+    @Test
+    public void yearlyStreamTest7()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withFrequency(new Yearly()
+                                .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 20)))));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .limit(3)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(1997, 5, 19, 10, 0)
+              , LocalDateTime.of(1998, 5, 18, 10, 0)
+              , LocalDateTime.of(1999, 5, 17, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=YEARLY;BYDAY=20MO";
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    /** FREQ=YEARLY;BYWEEKNO=20;BYDAY=MO */
+    @Test
+    public void yearlyStreamTest8()
+    {
+//        Locale oldLocale = Locale.getDefault();
+//        Locale.setDefault(Locale.FRANCE); // has Monday as first day of week system.  US is Sunday which causes an error.
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withFrequency(new Yearly()
+                                .withByRules(new ByWeekNumber(20).withWeekStart(DayOfWeek.MONDAY)
+                                           , new ByDay(DayOfWeek.MONDAY))));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .limit(5)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(1997, 5, 12, 10, 0)
+              , LocalDateTime.of(1998, 5, 11, 10, 0)
+              , LocalDateTime.of(1999, 5, 17, 10, 0)
+              , LocalDateTime.of(2000, 5, 15, 10, 0)
+              , LocalDateTime.of(2001, 5, 14, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=YEARLY;BYWEEKNO=20;BYDAY=MO";
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+//        Locale.setDefault(oldLocale);
+    }
+    
+    /** Tests daily stream with FREQ=MONTHLY */
+    @Test
+    public void monthlyStreamTest()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withFrequency(new Monthly()));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .limit(5)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 12, 9, 10, 0)
+              , LocalDateTime.of(2016, 1, 9, 10, 0)
+              , LocalDateTime.of(2016, 2, 9, 10, 0)
+              , LocalDateTime.of(2016, 3, 9, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=MONTHLY";
+        assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
+    }
+    
+    /** Tests daily stream with FREQ=MONTHLY;BYMONTHDAY=-2 */
+    @Test
+    public void monthlyStreamTest2()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withFrequency(new Monthly()
+                                .withByRules(new ByMonthDay()
+                                        .withDaysOfMonth(-2)))); // repeats 2nd to last day of month
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .limit(5)
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 29, 10, 0)
+              , LocalDateTime.of(2015, 12, 30, 10, 0)
+              , LocalDateTime.of(2016, 1, 30, 10, 0)
+              , LocalDateTime.of(2016, 2, 28, 10, 0)
+              , LocalDateTime.of(2016, 3, 30, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "RRULE:FREQ=MONTHLY;BYMONTHDAY=-2";
         assertEquals(expectedContent, e.getRecurrenceRule().toContentLine());
     }
 }
