@@ -45,14 +45,7 @@ public class VEventTest
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }
-    
-    @Test
-    public void canBuildStreamRecurrences1()
-    {
         
-    }
-
-    
     @Test (expected = DateTimeException.class)
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchBothDurationAndDTEnd()
@@ -81,14 +74,5 @@ public class VEventTest
         builtComponent.withDateTimeEnd((DateTimeEnd<? extends Temporal>) null).withDurationProp("PT15M");
         assertEquals(Duration.ofMinutes(15), builtComponent.getDurationProp().getValue());
         assertNull(builtComponent.getDateTimeEnd());
-    }
-    
-    @Test
-    public void canStreamRecurrences1()
-    {
-        VEventNew component = new VEventNew()
-                .withRecurrenceRule("RRULE:FREQ=DAILY")
-                .withDateTimeStart(LocalDate.of(2016, 4, 22));
-        component.streamRecurrences(LocalDate.of(2016, 4, 22)).limit(10).forEach(System.out::println);
     }
 }

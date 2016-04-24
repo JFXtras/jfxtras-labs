@@ -1,12 +1,18 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -73,6 +79,21 @@ public class RecurrenceStreamer
         final Stream<Temporal> stream1; // individual or rrule stream
         final Temporal earliestCacheValue;
         final Temporal latestCacheValue;
+        final Comparator<Temporal> temporalComparator;
+        
+        if (start instanceof LocalDate)
+        {
+            temporalComparator = (t1, t2) -> ((LocalDate) t1).compareTo((LocalDate) t2);
+        } else if (start instanceof LocalDateTime)
+        {
+            temporalComparator = (t1, t2) -> ((LocalDateTime) t1).compareTo((LocalDateTime) t2);            
+        } else if (start instanceof ZonedDateTime)
+        {
+            temporalComparator = (t1, t2) -> ((ZonedDateTime) t1).compareTo((ZonedDateTime) t2);
+        } else
+        {
+            throw new DateTimeException("Unsupported Temporal type:" + start.getClass().getSimpleName());
+        }
         
         if (component.getRecurrenceRule() == null)
         { // if individual event
@@ -179,15 +200,31 @@ public class RecurrenceStreamer
             }
             stream1 = component.getRecurrenceRule().getValue().streamRecurrence(match);
         }
-        // TODO - USE CALLBACK TO ADD OTHER STREAMS?
-        // VEVENT - RDATE AND EXDATE
-        // VTODO - RDATE AND EXDATE
-        // VJOURNAL - RDATE AND EXDATE
-        // DAYLIGHT & SAVINGS - RDATE ONLY
         
-//        Stream<Temporal> stream2 = (getRDate() == null) ? stream1 : getRDate().stream(stream1, start2); // add recurrence list
-//        Stream<Temporal> stream3 = (getExDate() == null) ? stream2 : getExDate().stream(stream2, start2); // remove exceptions
-        Stream<Temporal> stream4 = stream1
+        // If present, add recurrence list
+        final Stream<Temporal> stream2;
+        if (component.getRecurrences() == null)
+        {
+            stream2 = stream1;
+        } else
+        {
+            stream2 = RecurrenceStreamer.merge(stream1
+                       , component.getRecurrences().stream().flatMap(r -> r.getValue().stream()) // should these process be put outside so only done once?
+                       , temporalComparator);
+        }
+        
+        final Stream<Temporal> stream3;
+        if ((component instanceof VComponentDisplayable) && (((VComponentDisplayable<?>) component).getExceptions() != null))
+        {
+            /** Remove date/times in exDates set */
+            List<? extends Temporal> ex = ((VComponentDisplayable<?>) component).getExceptions().stream().flatMap(r -> r.getValue().stream()).collect(Collectors.toList());
+            stream3 = stream2.filter(d -> ! ex.contains(d));
+        } else
+        {
+            stream3 = stream2;
+        }
+        
+        Stream<Temporal> stream4 = stream3
                 .peek(t ->
                 { // save new values in cache
                     if (component.getRecurrenceRule() != null)

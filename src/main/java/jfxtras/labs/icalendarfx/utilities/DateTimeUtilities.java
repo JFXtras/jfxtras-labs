@@ -92,6 +92,7 @@ public final class DateTimeUtilities
             .toFormatter();
     
     /** Compares two temporals of the same type */
+    @Deprecated
     public final static Comparator<Temporal> TEMPORAL_COMPARATOR = (t1, t2) -> 
     {
         LocalDateTime ld1 = (t1.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t1) : LocalDate.from(t1).atStartOfDay();

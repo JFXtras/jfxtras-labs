@@ -18,6 +18,7 @@ import jfxtras.labs.icalendarfx.component.VTodoTest;
 import jfxtras.labs.icalendarfx.parameter.DelegateesTest;
 import jfxtras.labs.icalendarfx.parameter.DirectoryEntryReferenceTest;
 import jfxtras.labs.icalendarfx.parameter.ParseParameterTest;
+import jfxtras.labs.icalendarfx.parameter.RecurrenceRuleParameterTest;
 import jfxtras.labs.icalendarfx.property.ActionTest;
 import jfxtras.labs.icalendarfx.property.AttachmentTest;
 import jfxtras.labs.icalendarfx.property.AttendeeTest;
@@ -125,7 +126,8 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
         // parameter tests
         DelegateesTest.class,
         DirectoryEntryReferenceTest.class, 
-        ParseParameterTest.class
+        ParseParameterTest.class,
+        RecurrenceRuleParameterTest.class
               
               })
 

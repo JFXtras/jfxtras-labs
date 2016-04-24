@@ -26,8 +26,8 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
  * RRULE
@@ -157,7 +157,7 @@ public class RecurrenceRuleParameter
     // construct new object by parsing property line
     public RecurrenceRuleParameter(String propertyString)
     {
-        System.out.println("recur:" + propertyString);
+//        System.out.println("recur:" + propertyString);
 //        String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
         ICalendarUtilities.propertyLineToParameterMap(propertyString)
                 .entrySet()
@@ -452,9 +452,7 @@ public class RecurrenceRuleParameter
         Stream<String> byRuleParameterStream = getFrequency().byRules()
                 .stream()
                 .map(e -> e.byRuleType().toParameterString(this.getFrequency()));
-
         return Stream.concat(rruleParameterStream, byRuleParameterStream)
                 .collect(Collectors.joining(";"));
     }
-
 }

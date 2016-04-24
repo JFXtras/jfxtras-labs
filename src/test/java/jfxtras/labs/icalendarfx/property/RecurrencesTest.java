@@ -2,20 +2,26 @@ package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -100,5 +106,25 @@ public class RecurrencesTest
                 LocalDate.of(1997, 9, 4)
                 );        
         assertEquals(content, madeProperty.toContentLine());
+    }
+    
+    /** Tests VEvent with RDATE VEvent */
+    @Test
+    public void canStreamRDate()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withDurationProp(Duration.ofMinutes(60))
+                .withRecurrences(new Recurrences<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
+                                     , LocalDateTime.of(2015, 11, 14, 12, 0)));
+        List<Temporal> madeDates = e
+                .streamRecurrences(e.getDateTimeStart().getValue())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 12, 10, 0)
+              , LocalDateTime.of(2015, 11, 14, 12, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
     }
 }
