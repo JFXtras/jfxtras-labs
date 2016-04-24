@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.components;
+package jfxtras.labs.icalendarfx.properties.component.recurrence;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -11,16 +11,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
+/**
+ * Produces a stream of Temporal objects representing the recurrence set as defined 
+ * RFC 5545 3.8.5.2, page 121
+ * The recurrence set is the complete set of recurrence instances for a calendar component.
+ * 
+ * @author David Bal
+ * @param <T>
+ *
+ */
 public class RecurrenceStreamer
-{
+{    
     // Variables for start date or date/time cache used as starting Temporal for stream
     private static final int CACHE_RANGE = 51; // number of values in cache
     private static final int CACHE_SKIP = 21; // store every nth value in the cache
@@ -31,56 +41,56 @@ public class RecurrenceStreamer
     private int cacheStart = 0; // start index where cache values are stored (starts in middle)
     private int cacheEnd = 0; // end index where cache values are stored
     private VComponentRepeatable<?> component; // the VComponent
-
-    RecurrenceStreamer(VComponentRepeatable<?> component)
+    
+    public RecurrenceStreamer(VComponentRepeatable<?> component)
     {
         this.component = component;
     }
+
     /**
      * finds previous stream Temporal before input parameter value
      * 
      * @param value
      * @return
      */
-//    public Temporal previousStreamValue(Temporal value)
-//    {
-//        final Temporal start; 
-//        if (cacheEnd == 0)
-//        {
-//            start = component.getDateTimeStart().getValue();
-//        } else
-//        { // try to get start from cache
-//            Temporal m  = null;
-//            for (int i=cacheEnd; i>cacheStart; i--)
-//            {
-//                if (DateTimeUtilities.isBefore(temporalCache[i], value))
-//                {
-//                    m = temporalCache[i];
-//                    break;
-//                }
-//            }
-//            start = (m != null) ? m : component.getDateTimeStart().getValue();
-//        }
-//        Iterator<Temporal> i = streamNoCache(start).iterator();
-//        Temporal lastT = null;
-//        while (i.hasNext())
-//        {
-//            Temporal t = i.next();
-//            if (! DateTimeUtilities.isBefore(t, value)) break;
-//            lastT = t;
-//        }
-//        return lastT;
-//    }
+    public Temporal previousStreamValue(Temporal value)
+    {
+        final Temporal start; 
+        if (cacheEnd == 0)
+        {
+            start = component.getDateTimeStart().getValue();
+        } else
+        { // try to get start from cache
+            Temporal m  = null;
+            for (int i=cacheEnd; i>cacheStart; i--)
+            {
+                if (DateTimeUtilities.isBefore(temporalCache[i], value))
+                {
+                    m = temporalCache[i];
+                    break;
+                }
+            }
+            start = (m != null) ? m : component.getDateTimeStart().getValue();
+        }
+        Iterator<Temporal> i = streamNoCache(start).iterator();
+        Temporal lastT = null;
+        while (i.hasNext())
+        {
+            Temporal t = i.next();
+            if (! DateTimeUtilities.isBefore(t, value)) break;
+            lastT = t;
+        }
+        return lastT;
+    }
     
     public Stream<Temporal> stream(Temporal start)
     {
-        // adjust start to ensure its not before dateTimeStart
-        final Temporal start2 = (DateTimeUtilities.isBefore(start, component.getDateTimeStart().getValue())) ? component.getDateTimeStart().getValue() : start;
-        final Stream<Temporal> stream1; // individual or rrule stream
-        final Temporal earliestCacheValue;
-        final Temporal latestCacheValue;
-        final Comparator<Temporal> temporalComparator;
+        final Temporal dateTimeStart;
+        final RecurrenceRuleParameter recurrenceRule;
         
+        dateTimeStart = component.getDateTimeStart().getValue();
+
+        final Comparator<Temporal> temporalComparator;
         if (start instanceof LocalDate)
         {
             temporalComparator = (t1, t2) -> ((LocalDate) t1).compareTo((LocalDate) t2);
@@ -95,9 +105,18 @@ public class RecurrenceStreamer
             throw new DateTimeException("Unsupported Temporal type:" + start.getClass().getSimpleName());
         }
         
-        if (component.getRecurrenceRule() == null)
+        recurrenceRule = component.getRecurrenceRule().getValue();
+
+        // adjust start to ensure its not before dateTimeStart
+        final Temporal start2 = (DateTimeUtilities.isBefore(start, dateTimeStart)) ? dateTimeStart : start;
+        final Stream<Temporal> stream1; // individual or rrule stream
+        final Temporal earliestCacheValue;
+        final Temporal latestCacheValue;
+
+        
+        if (recurrenceRule == null)
         { // if individual event
-            stream1 = Arrays.asList((Temporal) component.getDateTimeStart().getValue())
+            stream1 = Arrays.asList(dateTimeStart)
                     .stream()
                     .filter(d -> ! DateTimeUtilities.isBefore(d, start2));
             earliestCacheValue = null;
@@ -107,21 +126,21 @@ public class RecurrenceStreamer
             // check if cache needs to be cleared (changes to RRULE or DTSTART)
             if ((dateTimeStartLast != null) && (rRuleLast != null))
             {
-                boolean startChanged = ! component.getDateTimeStart().getValue().equals(dateTimeStartLast);
-                boolean rRuleChanged = ! component.getRecurrenceRule().getValue().equals(rRuleLast);
+                boolean startChanged = ! dateTimeStart.equals(dateTimeStartLast);
+                boolean rRuleChanged = ! recurrenceRule.equals(rRuleLast);
                 if (startChanged || rRuleChanged)
                 {
                     temporalCache = null;
                     cacheStart = 0;
                     cacheEnd = 0;
                     skipCounter = 0;
-                    dateTimeStartLast = component.getDateTimeStart().getValue();
-                    rRuleLast = component.getRecurrenceRule().getValue();
+                    dateTimeStartLast = dateTimeStart;
+                    rRuleLast = recurrenceRule;
                 }
             } else
             { // save current DTSTART and RRULE for next time
-                dateTimeStartLast = component.getDateTimeStart().getValue();
-                rRuleLast = component.getRecurrenceRule().getValue();
+                dateTimeStartLast = dateTimeStart;
+                rRuleLast = recurrenceRule;
             }
             
             final Temporal match;
@@ -186,48 +205,51 @@ public class RecurrenceStreamer
                 { // all cached values too late - start over
                     cacheStart = 0;
                     cacheEnd = 0;
-                    temporalCache[cacheStart] = component.getDateTimeStart().getValue();
-                    match = component.getDateTimeStart().getValue();
+                    temporalCache[cacheStart] = dateTimeStart;
+                    match = dateTimeStart;
                 }
                 earliestCacheValue = temporalCache[cacheStart];
             } else
             { // no previous cache.  initialize new array with dateTimeStart as first value.
                 temporalCache = new Temporal[CACHE_RANGE];
-                temporalCache[cacheStart] = component.getDateTimeStart().getValue();
-                match = component.getDateTimeStart().getValue();
-                earliestCacheValue = component.getDateTimeStart().getValue();
-                latestCacheValue = component.getDateTimeStart().getValue();
+                temporalCache[cacheStart] = dateTimeStart;
+                match = dateTimeStart;
+                earliestCacheValue = dateTimeStart;
+                latestCacheValue = dateTimeStart;
             }
-            stream1 = component.getRecurrenceRule().getValue().streamRecurrence(match);
+            stream1 = recurrenceRule.streamRecurrence(match);
         }
         
         // If present, add recurrence list
-        final Stream<Temporal> stream2;
-        if (component.getRecurrences() == null)
-        {
-            stream2 = stream1;
-        } else
-        {
-            stream2 = RecurrenceStreamer.merge(stream1
-                       , component.getRecurrences().stream().flatMap(r -> r.getValue().stream()) // should these process be put outside so only done once?
-                       , temporalComparator);
-        }
+        final Stream<Temporal> stream2 = (component.getRecurrences() == null) ? stream1 : RecurrenceStreamer.merge(
+                stream1,
+                component.getRecurrences()
+                        .stream()
+                        .flatMap(r -> r.getValue().stream())
+                        .map(v -> (Temporal) v)
+                        .sorted(temporalComparator)
+                , temporalComparator);
         
+        // If present, remove exceptions
         final Stream<Temporal> stream3;
         if ((component instanceof VComponentDisplayable) && (((VComponentDisplayable<?>) component).getExceptions() != null))
         {
-            /** Remove date/times in exDates set */
-            List<? extends Temporal> ex = ((VComponentDisplayable<?>) component).getExceptions().stream().flatMap(r -> r.getValue().stream()).collect(Collectors.toList());
-            stream3 = stream2.filter(d -> ! ex.contains(d));
+            List<Temporal> exceptions = ((VComponentDisplayable<?>) component).getExceptions()
+                    .stream()
+                    .flatMap(r -> r.getValue().stream())
+                    .map(v -> (Temporal) v)
+                    .sorted(temporalComparator)
+                    .collect(Collectors.toList());
+            stream3 = stream2.filter(d -> ! exceptions.contains(d));
         } else
         {
             stream3 = stream2;
         }
-        
+
         Stream<Temporal> stream4 = stream3
                 .peek(t ->
                 { // save new values in cache
-                    if (component.getRecurrenceRule() != null)
+                    if (recurrenceRule != null)
                     {
                         if (DateTimeUtilities.isBefore(t, earliestCacheValue))
                         {
@@ -261,54 +283,91 @@ public class RecurrenceStreamer
         return stream4;
     }
     
-//    default Stream<Temporal> getTemporalStream()
-//    {
-//        return getRecurrences().stream().flatMap(r -> r.getValue().stream());
-//    }
-//    
-//    /** Add date/times in RDates set */
-//    default Stream<Temporal> stream(Stream<Temporal> inStream, Temporal startTemporal)
-//    {
-//        if (inStream == null)
-//        {
-//            getTemporalStream().filter(d -> ! DateTimeUtilities.isBefore(d, startTemporal));
-//        }
-//        return merge(inStream
-//                   , getTemporalStream()
-//                   , DateTimeUtilities.TEMPORAL_COMPARATOR);
-//    }
+    /** Stream of date/times that indicate the start of the event(s).
+     * For a VEvent without RRULE the stream will contain only one date/time element.
+     * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 
+     * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
+     * Starts on startDateTime, which must be a valid event date/time, not necessarily the
+     * first date/time (DTSTART) in the sequence. 
+     * 
+     * @param start - starting date or date/time for which occurrence start date or date/time
+     * are generated by the returned stream
+     * @return stream of starting dates or date/times for occurrences after rangeStart
+     */
+    public Stream<Temporal> streamNoCache(Temporal start)
+    {
+        final Comparator<Temporal> temporalComparator;
+        if (start instanceof LocalDate)
+        {
+            temporalComparator = (t1, t2) -> ((LocalDate) t1).compareTo((LocalDate) t2);
+        } else if (start instanceof LocalDateTime)
+        {
+            temporalComparator = (t1, t2) -> ((LocalDateTime) t1).compareTo((LocalDateTime) t2);            
+        } else if (start instanceof ZonedDateTime)
+        {
+            temporalComparator = (t1, t2) -> ((ZonedDateTime) t1).compareTo((ZonedDateTime) t2);
+        } else
+        {
+            throw new DateTimeException("Unsupported Temporal type:" + start.getClass().getSimpleName());
+        }
+        final Stream<Temporal> stream1;
+        if (component.getRecurrenceRule() == null)
+        { // if individual event
+            stream1 = Arrays.asList(component.getDateTimeStart().getValue())
+                    .stream()
+                    .map(v -> (Temporal) v)
+                    .filter(d -> ! DateTimeUtilities.isBefore(d, start));
+        } else
+        { // if has recurrence rule
+            stream1 = component.getRecurrenceRule().getValue().streamRecurrence(component.getDateTimeStart().getValue());
+        }
+        // If present, add recurrence list
+        final Stream<Temporal> stream2;
+        if (component.getRecurrences() == null)
+        {
+            stream2 = stream1;
+        } else
+        {
+            stream2 = RecurrenceStreamer.merge(
+                         stream1
+                       , component.getRecurrences()
+                               .stream()
+                               .flatMap(r -> r.getValue().stream())
+                               .map(v -> (Temporal) v)
+                               .sorted(temporalComparator)
+                       , temporalComparator);
+        }
+        
+        final Stream<Temporal> stream3;
+        if ((component instanceof VComponentDisplayable) && (((VComponentDisplayable<?>) component).getExceptions() != null))
+        {
+            /** Remove date/times in exDates set */
+            List<Temporal> exceptions = ((VComponentDisplayable<?>) component).getExceptions()
+                    .stream()
+                    .flatMap(r -> r.getValue().stream())
+                    .map(v -> (Temporal) v)
+                    .sorted(temporalComparator)
+                    .collect(Collectors.toList());
+            stream3 = stream2.filter(d -> ! exceptions.contains(d));
+        } else
+        {
+            stream3 = stream2;
+        }
+        return stream3.filter(t -> ! DateTimeUtilities.isBefore(t, start));
+    }
     
-    static <T> Stream<T> merge(Stream<T> stream1, Stream<T> stream2, Comparator<T> comparator)
+    public static <T> Stream<T> merge(Stream<T> stream1, Stream<T> stream2, Comparator<T> comparator)
     {
             Iterator<T> iterator = new MergedIterator<T>(
                     stream1.iterator()
                   , stream2.iterator()
                   , comparator);
-            Spliterator<T> spliterator = new SpliteratorAdapter<>(iterator);
-            return StreamSupport.stream(spliterator, false);
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false);
     }
     
     /*
      * Recommend using with StreamSupport.stream(iteratorStream, false);
      */
-    static class SpliteratorAdapter<T> extends Spliterators.AbstractSpliterator <T>
-    {
-        private final Iterator<T> iterator;
-     
-        public SpliteratorAdapter(Iterator<T> iter) {
-            super(Long.MAX_VALUE, 0);
-            iterator = iter;
-        }
-     
-        @Override
-        public synchronized boolean tryAdvance(Consumer<? super T> action) {
-            if(iterator.hasNext()) {
-                action.accept(iterator.next());
-                return true;
-            }
-            return false;
-        }
-    }        
 
     /** Merge two sorted iterators */
     static class MergedIterator<T> implements Iterator<T>
@@ -345,7 +404,7 @@ public class RecurrenceStreamer
             {
                 theNext = next2;
                 next2 = null;
-            } else if (comparator.compare(next1, next2) < 0)
+            } else if (result < 0)
             {
                 theNext = next1;
                 next1 = null;

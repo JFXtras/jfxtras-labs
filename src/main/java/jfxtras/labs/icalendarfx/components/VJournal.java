@@ -1,8 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.temporal.Temporal;
-import java.util.stream.Stream;
-
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
@@ -25,12 +22,6 @@ public class VJournal extends VComponentDisplayableBase<VJournal> implements VJo
     }
 
 
-    @Override
-    public Stream<Temporal> streamRecurrences(Temporal startTemporal)
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
 
     @Override
     public ObservableList<Description> getDescriptions()

@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
-import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -23,16 +22,6 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VTodoInt<VT
     public VTodo(String contentLines)
     {
         super(contentLines);
-    }
-
-
-
-
-    @Override
-    public Stream<Temporal> streamRecurrences(Temporal startTemporal)
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
     }
 
     @Override

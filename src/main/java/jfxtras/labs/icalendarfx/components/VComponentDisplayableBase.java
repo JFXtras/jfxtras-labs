@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.temporal.Temporal;
+import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -16,6 +17,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
@@ -317,14 +319,18 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     /*
      * CONSTRUCTORS
      */
-    public VComponentDisplayableBase()
-    {
-//        setupRecurrenceListeners();
-    }
+    public VComponentDisplayableBase() { }
     
     public VComponentDisplayableBase(String contentLines)
     {
         super(contentLines);
-//        setupRecurrenceListeners();
+    }
+    
+    // Recurrence streamer - produces recurrence set
+    private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
+    @Override
+    public Stream<Temporal> streamRecurrences(Temporal startTemporal)
+    {
+        return streamer.stream(startTemporal);
     }
 }

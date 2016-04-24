@@ -2,9 +2,12 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.net.URI;
 import java.time.ZoneOffset;
+import java.time.temporal.Temporal;
+import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 
 public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<T> implements StandardOrSavings<T>
@@ -19,6 +22,13 @@ public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<
         super(contentLines);
     }
     
+    // Recurrence streamer - produces recurrence set
+    private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
+    @Override
+    public Stream<Temporal> streamRecurrences(Temporal startTemporal)
+    {
+        return streamer.stream(startTemporal);
+    }
     
     @Override
     public String getTimeZoneIdentifier()

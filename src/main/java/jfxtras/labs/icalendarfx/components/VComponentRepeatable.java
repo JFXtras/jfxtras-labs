@@ -29,9 +29,10 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * 
  * @author David Bal
  * @see VEvent
- * @see VTodoInt
- * @see VJournalInt
- * @see StandardOrSavings
+ * @see VTodo
+ * @see VJournal
+ * @see StandardTime
+ * @see DaylightSavingTime
  */
 public interface VComponentRepeatable<T> extends VComponentPrimary<T>
 {    
@@ -231,39 +232,41 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * it will be adjusted to be the next occurrence
      * @return - stream of start dates or date/times for the recurrence set
      */
-    default Stream<Temporal> streamRecurrences(Temporal startTemporal)
-    {
-        final Stream<Temporal> stream1;
-        if (getRecurrenceRule() == null)
-        {
-            stream1 = Arrays.asList((Temporal) getDateTimeStart().getValue())
-                    .stream()
-                    .filter(d -> ! DateTimeUtilities.isBefore(d, startTemporal));            
-        } else
-        {
-            stream1 = getRecurrenceRule().getValue().streamRecurrence(startTemporal);            
-        }
-        Stream<Temporal> stream2; // add recurrence list
-        if (getRecurrences() == null)
-        {
-            stream2 = stream1;
-        } else
-        {
-            if (stream1 == null)
-            {
-                stream2 = getRecurrences().stream()
-                        .flatMap(r -> r.getValue().stream())
-                        .map(t -> (Temporal) t)
-                        .filter(d -> ! DateTimeUtilities.isBefore(d, startTemporal));
-            } else
-            {
-                stream2 = RecurrenceStreamer.merge(stream1
-                           , getRecurrences().stream().flatMap(r -> r.getValue().stream())
-                           , DateTimeUtilities.TEMPORAL_COMPARATOR);
-            }
-        }
-        return stream2;
-    }
+//    default Stream<Temporal> streamRecurrences(Temporal startTemporal)
+//    {
+//        final Stream<Temporal> stream1;
+//        if (getRecurrenceRule() == null)
+//        {
+//            stream1 = Arrays.asList((Temporal) getDateTimeStart().getValue())
+//                    .stream()
+//                    .filter(d -> ! DateTimeUtilities.isBefore(d, startTemporal));            
+//        } else
+//        {
+//            stream1 = getRecurrenceRule().getValue().streamRecurrence(startTemporal);            
+//        }
+//        Stream<Temporal> stream2; // add recurrence list
+//        if (getRecurrences() == null)
+//        {
+//            stream2 = stream1;
+//        } else
+//        {
+//            if (stream1 == null)
+//            {
+//                stream2 = getRecurrences().stream()
+//                        .flatMap(r -> r.getValue().stream())
+//                        .map(t -> (Temporal) t)
+//                        .filter(d -> ! DateTimeUtilities.isBefore(d, startTemporal));
+//            } else
+//            {
+//                stream2 = RecurrenceStreamer.merge(stream1
+//                           , getRecurrences().stream().flatMap(r -> r.getValue().stream())
+//                           , DateTimeUtilities.TEMPORAL_COMPARATOR);
+//            }
+//        }
+//        return stream2;
+//    }
+    
+    Stream<Temporal> streamRecurrences(Temporal startTemporal);
     
 //    default Stream<Temporal> streamRecurrences2(Temporal startTemporal)
 //    {
