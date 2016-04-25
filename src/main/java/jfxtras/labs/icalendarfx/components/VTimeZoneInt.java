@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.components;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneIdentifier;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
 
 @Deprecated // put into abstract class when done building VTodo
@@ -23,9 +22,9 @@ public interface VTimeZoneInt<T> extends VComponentNew<T>, VComponentLastModifie
      * EXAMPLE:
      * TZID:America/Los_Angeles
      */
-    TimeZoneIdentifier getTimeZoneIdentifier();
-    ObjectProperty<TimeZoneIdentifier> timeZoneIdentifierProperty();
-    void setTimeZoneIdentifier(TimeZoneIdentifier url);
+//    TimeZoneIdentifier getTimeZoneIdentifier();
+//    ObjectProperty<TimeZoneIdentifier> timeZoneIdentifierProperty();
+//    void setTimeZoneIdentifier(TimeZoneIdentifier url);
     
     /**
      * TZURL

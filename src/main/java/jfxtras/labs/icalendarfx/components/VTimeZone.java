@@ -22,9 +22,6 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
  */
 public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt<VTimeZone>
 {
-    //  NEED TO OVERRIDE toContentLines, AND MAYBE OTHER METHODS, TO ACCOMODIATE THE LIST
-    // OF StandardOrSavings, BECAUSE THOSE ARE NOT PROPERTIES, BUT COMPONENTS THEMSELVES.
-    
     @Override
     public VComponentEnum componentType()
     {
@@ -58,6 +55,36 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
     }
     private ObjectProperty<LastModified> lastModified;
     
+    /**
+     * TZID
+     * Time Zone Identifier
+     * RFC 5545, 3.8.3.1, page 102
+     * 
+     * To specify the identifier for the time zone definition for
+     * a time component in the property value
+     * 
+     * LIMITATION: globally unique time zones are stored as strings and the ZoneID is null.
+     * Only the toString and toContentLine methods will display the original string.  Another
+     * method to convert the unique time zone string into a ZoneId is required.
+     * 
+     * EXAMPLE:
+     * TZID:America/Los_Angeles
+     */
+    public ObjectProperty<TimeZoneIdentifier> timeZoneIdentifierProperty()
+    {
+        if (timeZoneIdentifier == null)
+        {
+            timeZoneIdentifier = new SimpleObjectProperty<>(this, PropertyEnum.TIME_ZONE_IDENTIFIER.toString());
+        }
+        return timeZoneIdentifier;
+    }
+    private ObjectProperty<TimeZoneIdentifier> timeZoneIdentifier;
+    public TimeZoneIdentifier getTimeZoneIdentifier() { return timeZoneIdentifierProperty().get(); }
+    public void setTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { timeZoneIdentifierProperty().set(timeZoneIdentifier); }
+    public VTimeZone withTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return this; }
+    public VTimeZone withTimeZoneIdentifier(String timeZoneIdentifier) { PropertyEnum.TIME_ZONE_IDENTIFIER.parse(this, timeZoneIdentifier); return this; }
+
+    
     /*
      * CONSTRUCTORS
      */
@@ -66,27 +93,6 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
     public VTimeZone(String contentLines)
     {
         super(contentLines);
-    }
-
-    @Override
-    public TimeZoneIdentifier getTimeZoneIdentifier()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<TimeZoneIdentifier> timeZoneIdentifierProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setTimeZoneIdentifier(TimeZoneIdentifier url)
-    {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override

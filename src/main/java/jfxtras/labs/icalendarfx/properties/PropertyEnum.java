@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.components.StandardOrSavings;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
@@ -26,6 +27,8 @@ import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
@@ -498,24 +501,42 @@ public enum PropertyEnum
         public Object getProperty(VComponentNew<?> vComponent)
         {
             if (vComponent instanceof VComponentLocatable)
-            {
+            { // Other components has only one Description
                 VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
                 return castComponent.getDescription();
+            } else
+            { // VJournal has list of Description
+                VJournal castComponent = (VJournal) vComponent;
+                return castComponent.getDescriptions();                
             }
-            // TODO - HANDLE VJournal list of Description
-            return null;
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
-            if (castComponent.getDescription() == null)
-            {
-                castComponent.setDescription(new Description(propertyContent));                                
+            if (vComponent instanceof VComponentLocatable)
+            { // Other components has only one Description
+                VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
+                if (castComponent.getDescription() == null)
+                {
+                    castComponent.setDescription(new Description(propertyContent));                                
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+                }
             } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            { // VJournal has list of Description
+                VJournal castComponent = (VJournal) vComponent;
+                final ObservableList<Description> list;
+                if (castComponent.getDescriptions() == null)
+                {
+                    list = FXCollections.observableArrayList();
+                    castComponent.setDescriptions(list);
+                } else
+                {
+                    list = castComponent.getDescriptions();
+                }
+                list.add(new Description(propertyContent));
             }
         }
     },
@@ -1173,17 +1194,24 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VTimeZone castComponent = (VTimeZone) vComponent;
+            return castComponent.getTimeZoneIdentifier();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VTimeZone castComponent = (VTimeZone) vComponent;
+            if (castComponent.getTimeZoneIdentifier() == null)
+            {
+                castComponent.setTimeZoneIdentifier(new TimeZoneIdentifier(propertyContent));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
+    // Time Zone
     TIME_ZONE_NAME ("TZNAME", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -1192,17 +1220,24 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            return castComponent.getTimeZoneName();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            if (castComponent.getTimeZoneName() == null)
+            {
+                castComponent.setTimeZoneName(new TimeZoneName(propertyContent));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
-    }, // Time Zone
+    },
+    // Time Zone
     TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", // property name
             Arrays.asList(ValueType.UTC_OFFSET), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -1221,7 +1256,8 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             
         }
-    }, // Time Zone
+    },
+    // Time Zone
     TIME_ZONE_OFFSET_TO ("TZOFFSETTO", // property name
             Arrays.asList(ValueType.UTC_OFFSET), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -1240,7 +1276,8 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             
         }
-    }, // Time Zone
+    },
+    // Time Zone
     TIME_ZONE_URL ("TZURL", // property name
             Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -1259,7 +1296,7 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             
         }
-    }, // Time Zone
+    },
     // Alarm
     TRIGGER ("TRIGGER", // property name
             Arrays.asList(ValueType.DURATION, ValueType.DATE_TIME), // valid property value types, first is default

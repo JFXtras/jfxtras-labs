@@ -1,10 +1,9 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.net.URI;
 import java.time.ZoneOffset;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.StringProperty;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 
 /**
@@ -17,32 +16,25 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 public interface StandardOrSavings<T> extends VComponentRepeatable<T>
 {
     /**
-     * TZID: Time Zone Identifier
-     * RFC 5545 iCalendar 3.8.3.1. page 102
+     * TZNAME
+     * Time Zone Name
+     * RFC 5545, 3.8.3.2, page 103
+     * 
+     * This property specifies the customary designation for a time zone description.
+     * 
      * This property specifies the text value that uniquely
      * identifies the "VTIMEZONE" calendar component in the scope of an
-     * iCalendar object.
      * 
-     * Example:
-     * TZID:America/New_York
+     * EXAMPLES:
+     * TZNAME:EST
+     * TZNAME;LANGUAGE=fr-CA:HN
      */
-    String getTimeZoneIdentifier();
-    StringProperty timeZoneIdentifierProperty();
-    void setTimeZoneIdentifier(String tzid);
-
-    /**
-     * TZNAME: Time Zone Name
-     * RFC 5545 iCalendar 3.8.3.2. page 103
-     * This property specifies the text value that uniquely
-     * identifies the "VTIMEZONE" calendar component in the scope of an
-     * iCalendar object.
-     * 
-     * Example:
-     * TZNAME;LANGUAGE=fr-CA:HNE
-     */
-    TimeZoneName getTimeZoneName();
-    StringProperty timeZoneNameProperty();
-    void setTimeZoneName(TimeZoneName tzname);
+    ObjectProperty<TimeZoneName> timeZoneNameProperty();
+    default TimeZoneName getTimeZoneName() { return timeZoneNameProperty().get(); }
+    default void setTimeZoneName(TimeZoneName timeZoneName) { timeZoneNameProperty().set(timeZoneName); }
+    default T withTimeZoneName(TimeZoneName timeZoneName) { setTimeZoneName(timeZoneName); return (T) this; }
+    default T withTimeZoneName(String timeZoneName) { PropertyEnum.TIME_ZONE_NAME.parse(this, timeZoneName); return (T) this; }
+  
     
     /**
      * TZOFFSETFROM: Time Zone Offset From
@@ -68,16 +60,5 @@ public interface StandardOrSavings<T> extends VComponentRepeatable<T>
      */
     ZoneOffset getTimeZoneOffsetTo();
     ObjectProperty<ZoneOffset> timeZoneOffsetToProperty();
-    void setTimeZoneOffsetTo(ZoneOffset timeZoneOffsetTo);
-    
-    /**
-     * TZURL: Time Zone URL
-     * RFC 5545 iCalendar 3.8.3.5. page 106
-     * This property provides a means for a "VTIMEZONE" component
-     * to point to a network location that can be used to retrieve an up-
-     * to-date version of itself.
-     */
-    URI getTimeZoneURL();
-    ObjectProperty<URI> timeZoneURLProperty();
-    void setTimeZoneURL(URI timeZoneURL);
+    void setTimeZoneOffsetTo(ZoneOffset timeZoneOffsetTo);    
 }

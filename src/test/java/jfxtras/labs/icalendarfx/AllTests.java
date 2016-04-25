@@ -8,7 +8,7 @@ import jfxtras.labs.icalendarfx.component.BaseTest;
 import jfxtras.labs.icalendarfx.component.GeneralTest;
 import jfxtras.labs.icalendarfx.component.PersonalTest;
 import jfxtras.labs.icalendarfx.component.PrimaryTest;
-import jfxtras.labs.icalendarfx.component.StandardTimeTest;
+import jfxtras.labs.icalendarfx.component.StandardOrDaylightTimeTest;
 import jfxtras.labs.icalendarfx.component.VAlarmTest;
 import jfxtras.labs.icalendarfx.component.VEventTest;
 import jfxtras.labs.icalendarfx.component.VFreeBusyTest;
@@ -82,7 +82,7 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
         VFreeBusyTest.class,
         VTimeZoneTest.class,
         VAlarmTest.class,
-        StandardTimeTest.class,
+        StandardOrDaylightTimeTest.class,
        
        // property tests
         ActionTest.class,

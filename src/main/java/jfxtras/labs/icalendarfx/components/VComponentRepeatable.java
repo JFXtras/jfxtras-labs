@@ -25,7 +25,9 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
- * Calendar components that can repeat
+ * Contains following properties:
+ * @see RecurrenceRule
+ * @see Recurrences
  * 
  * @author David Bal
  * @see VEvent

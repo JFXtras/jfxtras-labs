@@ -5,21 +5,17 @@ import static org.junit.Assert.assertEquals;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.temporal.Temporal;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public class VTodoTest
 {
     @Test
     public void canBuildVTodo()
     {
-        String string = "DTEND;TZID=America/Los_Angeles:20160307T053000";
-        Temporal t = DateTimeUtilities.temporalFromString(string);
         VTodo builtComponent = new VTodo()
                 .withDateTimeCompleted("COMPLETED:19960401T150000Z")
                 .withDateTimeDue("TZID=America/Los_Angeles:19960401T050000")

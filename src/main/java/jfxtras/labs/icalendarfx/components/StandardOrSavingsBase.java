@@ -1,15 +1,40 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.net.URI;
 import java.time.ZoneOffset;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 
 public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<T> implements StandardOrSavings<T>
 {
+    /**
+     * TZNAME
+     * Time Zone Name
+     * RFC 5545, 3.8.3.2, page 103
+     * 
+     * This property specifies the customary designation for a time zone description.
+     * 
+     * This property specifies the text value that uniquely
+     * identifies the "VTIMEZONE" calendar component in the scope of an
+     * 
+     * EXAMPLES:
+     * TZNAME:EST
+     * TZNAME;LANGUAGE=fr-CA:HN
+     */
+    @Override
+    public ObjectProperty<TimeZoneName> timeZoneNameProperty()
+    {
+        if (timeZoneName == null)
+        {
+            timeZoneName = new SimpleObjectProperty<>(this, PropertyEnum.TIME_ZONE_NAME.toString());
+        }
+        return timeZoneName;
+    }
+    private ObjectProperty<TimeZoneName> timeZoneName;
+    
     /*
      * CONSTRUCTORS
      */
@@ -24,53 +49,7 @@ public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<
     private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
     @Override
     public RecurrenceStreamer recurrenceStreamer() { return streamer; }
-//    @Override
-//    public Stream<Temporal> streamRecurrences(Temporal startTemporal)
-//    {
-//        return streamer.stream(startTemporal);
-//    }
-    
-    @Override
-    public String getTimeZoneIdentifier()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
-    @Override
-    public StringProperty timeZoneIdentifierProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setTimeZoneIdentifier(String tzid)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public TimeZoneName getTimeZoneName()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public StringProperty timeZoneNameProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setTimeZoneName(TimeZoneName tzname)
-    {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public ZoneOffset getTimeZoneOffsetFrom()
@@ -109,27 +88,6 @@ public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<
 
     @Override
     public void setTimeZoneOffsetTo(ZoneOffset timeZoneOffsetTo)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public URI getTimeZoneURL()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<URI> timeZoneURLProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setTimeZoneURL(URI timeZoneURL)
     {
         // TODO Auto-generated method stub
         
