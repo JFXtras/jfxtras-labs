@@ -9,15 +9,17 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.components.VComponentLastModified;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -33,6 +35,8 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
@@ -68,7 +72,7 @@ public class DisplayableTest
     @Test
     public void canBuildDisplayable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
-        List<VComponentLastModified<?>> components = Arrays.asList(
+        List<VComponentDisplayable<?>> components = Arrays.asList(
                 new VEventNew()
                     .withStatus(StatusType.NEEDS_ACTION)
                     .withSequence(2)
@@ -76,7 +80,7 @@ public class DisplayableTest
                             "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com")
                     .withRecurrenceId(ZonedDateTime.of(LocalDateTime.of(2016, 1, 1, 12, 0), ZoneId.of("Z")))
                     .withSummary("a test summary")
-                    .withRecurrences("RDATE:19960302T010000Z,19960303T010000Z")
+                    .withRecurrences("RDATE:19960302T010000Z,19960304T010000Z")
                     .withRecurrenceRule("RRULE:FREQ=DAILY")
                     .withDateTimeLastModified("20160306T080000Z")
                     .withAttachments("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
@@ -85,7 +89,7 @@ public class DisplayableTest
                     .withCategories("group06")
                     .withClassification(ClassificationType.PUBLIC)
                     .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
-                    .withExceptions("EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z"),
+                    .withExceptions("EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z"),
                 new VTodo()
                     .withStatus(StatusType.NEEDS_ACTION)
                     .withSequence(2)
@@ -93,7 +97,7 @@ public class DisplayableTest
                             "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com")
                     .withRecurrenceId(ZonedDateTime.of(LocalDateTime.of(2016, 1, 1, 12, 0), ZoneId.of("Z")))
                     .withSummary("a test summary")
-                    .withRecurrences("RDATE:19960302T010000Z,19960303T010000Z")
+                    .withRecurrences("RDATE:19960302T010000Z,19960304T010000Z")
                     .withRecurrenceRule("RRULE:FREQ=DAILY")
                     .withDateTimeLastModified("20160306T080000Z")
                     .withAttachments("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
@@ -102,7 +106,7 @@ public class DisplayableTest
                     .withCategories("group06")
                     .withClassification(ClassificationType.PUBLIC)
                     .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
-                    .withExceptions("EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z"),
+                    .withExceptions("EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z"),
                 new VJournal()
                     .withStatus(StatusType.NEEDS_ACTION)
                     .withSequence(2)
@@ -110,7 +114,7 @@ public class DisplayableTest
                             "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com")
                     .withRecurrenceId(ZonedDateTime.of(LocalDateTime.of(2016, 1, 1, 12, 0), ZoneId.of("Z")))
                     .withSummary("a test summary")
-                    .withRecurrences("RDATE:19960302T010000Z,19960303T010000Z")
+                    .withRecurrences("RDATE:19960302T010000Z,19960304T010000Z")
                     .withRecurrenceRule("RRULE:FREQ=DAILY")
                     .withDateTimeLastModified("20160306T080000Z")
                     .withAttachments("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
@@ -119,10 +123,19 @@ public class DisplayableTest
                     .withCategories("group06")
                     .withClassification(ClassificationType.PUBLIC)
                     .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
-                    .withExceptions("EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z")
+                    .withExceptions("EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z")
                 );
         
-        for (VComponentLastModified<?> builtComponent : components)
+        List<ZonedDateTime> expectedDates = Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(1996, 3, 2, 1, 0), ZoneId.of("Z")),
+                ZonedDateTime.of(LocalDateTime.of(1996, 3, 3, 1, 0), ZoneId.of("Z")),
+                ZonedDateTime.of(LocalDateTime.of(1996, 3, 5, 1, 0), ZoneId.of("Z")),
+                ZonedDateTime.of(LocalDateTime.of(1996, 3, 9, 1, 0), ZoneId.of("Z")),
+                ZonedDateTime.of(LocalDateTime.of(1996, 3, 11, 1, 0), ZoneId.of("Z")),
+                ZonedDateTime.of(LocalDateTime.of(1996, 3, 13, 1, 0), ZoneId.of("Z"))
+                );
+        
+        for (VComponentDisplayable<?> builtComponent : components)
         {
             String componentName = builtComponent.componentType().toString();
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
@@ -133,9 +146,9 @@ public class DisplayableTest
                     "CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234" + System.lineSeparator() +
                     "CONTACT:Harry Potter\\, Hogwarts\\, by owl" + System.lineSeparator() +
                     "CREATED:20160420T080000Z" + System.lineSeparator() +
-                    "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z" + System.lineSeparator() +
+                    "EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z" + System.lineSeparator() +
                     "LAST-MODIFIED:20160306T080000Z" + System.lineSeparator() +
-                    "RDATE:19960302T010000Z,19960303T010000Z" + System.lineSeparator() +
+                    "RDATE:19960302T010000Z,19960304T010000Z" + System.lineSeparator() +
                     "RECURRENCE-ID:20160101T120000Z" + System.lineSeparator() +
                     "RELATED-TO:jsmith.part7.19960817T083000.xyzMail@example.com" + System.lineSeparator() +
                     "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com" + System.lineSeparator() +
@@ -144,14 +157,108 @@ public class DisplayableTest
                     "STATUS:NEEDS-ACTION" + System.lineSeparator() +
                     "SUMMARY:a test summary" + System.lineSeparator() +
                     "END:" + componentName;
-                    
-            VComponentLastModified<?> parsedComponent = builtComponent
+
+            VComponentDisplayable<?> parsedComponent = builtComponent
                     .getClass()
                     .getConstructor(String.class)
                     .newInstance(expectedContent);
             assertEquals(parsedComponent, builtComponent);
-            assertEquals(expectedContent, builtComponent.toContentLines());            
+            assertEquals(expectedContent, builtComponent.toContentLines());     
+            
+            builtComponent.setRecurrenceRule("RRULE:FREQ=DAILY;INTERVAL=2");
+            builtComponent.setDateTimeStart("19960301T010000Z");
+            List<Temporal> myDates = builtComponent.recurrenceStreamer().stream().limit(6).collect(Collectors.toList());
+            assertEquals(expectedDates, myDates);
         }
+    }
+    
+    @Test
+    public void exceptionTest1()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withCount(6)
+                        .withFrequency(new Daily()
+                                .withInterval(3)))
+                .withExceptions(new Exceptions<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
+                                     , LocalDateTime.of(2015, 11, 15, 10, 0)));
+        List<Temporal> madeDates = e
+                .recurrenceStreamer().stream(e.getDateTimeStart().getValue())
+                .collect(Collectors.toList());
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 18, 10, 0)
+              , LocalDateTime.of(2015, 11, 21, 10, 0)
+              , LocalDateTime.of(2015, 11, 24, 10, 0)
+                ));
+        assertEquals(expectedDates, madeDates);
+        String expectedContent = "EXDATE:20151112T100000,20151115T100000";
+        assertEquals(expectedContent, e.getExceptions().get(0).toContentLine());
+        String expectedContent2 = "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6";
+        assertEquals(expectedContent2, e.getRecurrenceRule().toContentLine());
+    }
+    
+    // Google test
+    @Test
+    public void canStreamGoogleWithExDates()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
+                .withExceptions(new Exceptions<ZonedDateTime>(
+                            ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
+                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
+                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withFrequency(new Daily())
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
+        Temporal start = ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles"));
+        List<Temporal> madeDates = e
+                .recurrenceStreamer().stream(start)
+                .limit(5)
+                .collect(Collectors.toList());
+        List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 8, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 11, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 13, 12, 30), ZoneId.of("America/Los_Angeles"))
+              , ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 12, 30), ZoneId.of("America/Los_Angeles"))
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
+    public void canChangeGoogleWithExDatesToWholeDay()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
+                .withExceptions(new Exceptions<ZonedDateTime>(
+                            ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
+                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
+                          , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
+                .withRecurrenceRule(new RecurrenceRuleParameter()
+                        .withFrequency(new Daily())
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
+        e.setExceptions(null);
+        e.setDateTimeStart(LocalDate.of(2016, 2, 7));
+        e.setExceptions(FXCollections.observableArrayList(new Exceptions<LocalDate>(
+                            LocalDate.of(2016, 2, 10)
+                          , LocalDate.of(2016, 2, 12)
+                          , LocalDate.of(2016, 2, 9)
+                          )));
+        Temporal start = LocalDate.of(2016, 2, 7);
+        List<Temporal> madeDates = e
+                .recurrenceStreamer().stream(start)
+                .limit(5)
+                .collect(Collectors.toList());
+        List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                LocalDate.of(2016, 2, 7)
+              , LocalDate.of(2016, 2, 8)
+              , LocalDate.of(2016, 2, 11)
+              , LocalDate.of(2016, 2, 13)
+              , LocalDate.of(2016, 2, 14)
+                ));
+        assertEquals(expectedDates, madeDates);
     }
     
     @Test (expected = DateTimeException.class)

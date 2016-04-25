@@ -7,6 +7,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
 import jfxtras.labs.icalendarfx.mocks.VEventMock;
 
+@Deprecated
 public class ICalendarParseVEventTest extends ICalendarTestAbstract
 {           
     /** Tests FREQ=YEARLY */

@@ -309,6 +309,14 @@ public class RecurrenceStreamer
         return stream4;
     }
     
+    /**
+     * Produces the recurrence set beginning at DTSTART
+     */ 
+    public Stream<Temporal> stream()
+    {
+        return stream(component.getDateTimeStart().getValue());
+    }
+    
     /** Stream of date/times that indicate the start of the event(s).
      * For a VEvent without RRULE the stream will contain only one date/time element.
      * A VEvent with a RRULE the stream contains more than one date/time element.  It will be infinite 

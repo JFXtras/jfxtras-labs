@@ -33,6 +33,7 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
 /*
  * Tests subset of recurrence set
  */
+@Deprecated
 public class ICalendarDateTest extends ICalendarTestAbstract
 {
     /** tests converting ISO.8601.2004 date-time string to LocalDateTime */

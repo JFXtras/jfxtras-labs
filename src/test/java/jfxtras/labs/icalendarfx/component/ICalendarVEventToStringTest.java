@@ -16,6 +16,7 @@ import jfxtras.labs.icalendarfx.components.VComponentUtilities.VComponentPropert
 import jfxtras.labs.icalendarfx.mocks.VEventMock;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
+@Deprecated
 public class ICalendarVEventToStringTest extends ICalendarTestAbstract
 {
 
