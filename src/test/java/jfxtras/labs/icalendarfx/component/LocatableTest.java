@@ -47,7 +47,7 @@ public class LocatableTest
                     .withPriority(2)
                     .withResources(new Resources("Nettoyeur haute pression")
                             .withLanguage("fr"))
-                    .withDurationProp(Duration.ofMinutes(45))
+                    .withDuration(Duration.ofMinutes(45))
                     .withGeographicPosition("37.386013;-122.082932"),
                 new VTodo()
                     .withDescription("DESCRIPTION:A simple description")
@@ -55,7 +55,7 @@ public class LocatableTest
                     .withPriority(2)
                     .withResources(new Resources("Nettoyeur haute pression")
                             .withLanguage("fr"))
-                    .withDurationProp(Duration.ofMinutes(45))
+                    .withDuration(Duration.ofMinutes(45))
                     .withGeographicPosition("37.386013;-122.082932")
                 );
         

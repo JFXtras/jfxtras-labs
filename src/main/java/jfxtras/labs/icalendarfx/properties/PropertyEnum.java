@@ -529,16 +529,16 @@ public enum PropertyEnum
         public Object getProperty(VComponentNew<?> vComponent)
         {
             VComponentDuration<?> castComponent = (VComponentDuration<?>) vComponent;
-            return castComponent.getDurationProp();
+            return castComponent.getDuration();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentDuration<?> castComponent = (VComponentDuration<?>) vComponent;
-            if (castComponent.getDurationProp() == null)
+            if (castComponent.getDuration() == null)
             {
-                castComponent.setDurationProp(new DurationProp(propertyContent));                                
+                castComponent.setDuration(new DurationProp(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");

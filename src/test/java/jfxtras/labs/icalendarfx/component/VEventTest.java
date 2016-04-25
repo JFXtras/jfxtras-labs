@@ -52,7 +52,7 @@ public class VEventTest
     {
        new VEventNew()
                 .withDateTimeEnd(LocalDate.of(1997, 3, 1))
-                .withDurationProp(Duration.ofMinutes(30));
+                .withDuration(Duration.ofMinutes(30));
     }
     
     @Test (expected = DateTimeException.class)
@@ -60,7 +60,7 @@ public class VEventTest
     public void canCatchBothDurationAndDTEnd2()
     {
        new VEventNew()
-             .withDurationProp(Duration.ofMinutes(30))
+             .withDuration(Duration.ofMinutes(30))
              .withDateTimeEnd(LocalDate.of(1997, 3, 1));
     }
     
@@ -70,9 +70,9 @@ public class VEventTest
         VEventNew builtComponent = new VEventNew()
              .withDateTimeEnd(LocalDate.of(1997, 3, 1));
         assertEquals(LocalDate.of(1997, 3, 1), builtComponent.getDateTimeEnd().getValue());
-        assertNull(builtComponent.getDurationProp());
-        builtComponent.withDateTimeEnd((DateTimeEnd<? extends Temporal>) null).withDurationProp("PT15M");
-        assertEquals(Duration.ofMinutes(15), builtComponent.getDurationProp().getValue());
+        assertNull(builtComponent.getDuration());
+        builtComponent.withDateTimeEnd((DateTimeEnd<? extends Temporal>) null).withDuration("PT15M");
+        assertEquals(Duration.ofMinutes(15), builtComponent.getDuration().getValue());
         assertNull(builtComponent.getDateTimeEnd());
     }
 }

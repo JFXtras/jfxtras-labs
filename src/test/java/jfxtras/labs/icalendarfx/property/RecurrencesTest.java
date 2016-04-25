@@ -114,7 +114,7 @@ public class RecurrencesTest
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withDurationProp(Duration.ofMinutes(60))
+                .withDuration(Duration.ofMinutes(60))
                 .withRecurrences(new Recurrences<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 14, 12, 0)));
         List<Temporal> madeDates = e.recurrenceStreamer()

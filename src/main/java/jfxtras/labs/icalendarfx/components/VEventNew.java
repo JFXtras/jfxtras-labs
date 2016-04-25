@@ -43,13 +43,13 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         return dateTimeEnd;
     }
     private ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEnd;
-    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be put in listener
+    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
      *  after dateTimeEndProperty() is initialized */
     @Override
     public void checkDateTimeEndConsistency()
     {
         VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
-        if ((getDateTimeEnd() != null) && (getDurationProp() != null))
+        if ((getDateTimeEnd() != null) && (getDuration() != null))
         {
             throw new DateTimeException("DURATION and DTEND can't both be set");
         }
@@ -61,7 +61,7 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         ObjectProperty<DurationProp> duration = super.durationProperty();
         duration.addListener((obs) ->
         {
-            if ((getDateTimeEnd() != null) && (getDurationProp() != null))
+            if ((getDateTimeEnd() != null) && (getDuration() != null))
             {
                 throw new DateTimeException("DURATION and DTEND can't both be set");
             }            
@@ -107,12 +107,5 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
     public VEventNew(String contentLines)
     {
         super(contentLines);
-    }
-
-    @Override
-    public void checkDateTimeStartConsistency()
-    {
-        VComponentDisplayable.super.checkDateTimeStartConsistency();
-        checkDateTimeStartConsistency2();
     }
 }

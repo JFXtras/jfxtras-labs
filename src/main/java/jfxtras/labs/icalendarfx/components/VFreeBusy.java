@@ -61,7 +61,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
     @Override
     public void checkDateTimeStartConsistency()
     {
-        checkDateTimeStartConsistency2();
+//        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
     }
 
     @Override

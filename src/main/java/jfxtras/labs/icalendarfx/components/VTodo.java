@@ -12,9 +12,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.PercentComplete;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeCompleted;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeDue;
+import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public class VTodo extends VComponentLocatableBase<VTodo>
+public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentPrimary<VTodo>
 {
     @Override
     public VComponentEnum componentType()
@@ -64,6 +65,14 @@ public class VTodo extends VComponentLocatableBase<VTodo>
         if (dateTimeDue == null)
         {
             dateTimeDue = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_DUE.toString());
+            dateTimeDue.addListener((observable, oldValue, newValue) -> 
+            {
+                if ((getDateTimeDue() != null) && (getDuration() != null))
+                {
+                    throw new DateTimeException("DURATION and DUE can't both be set");
+                }                
+            });
+
         }
         return dateTimeDue;
     }
@@ -73,7 +82,6 @@ public class VTodo extends VComponentLocatableBase<VTodo>
     public void setDateTimeDue(DateTimeDue<? extends Temporal> due) { dateTimeDueProperty().set(due); }
     public void setDateTimeDue(Temporal due)
     {
-        System.out.println("due:" + due);
         if (due instanceof LocalDate)
         {
             setDateTimeDue(new DateTimeDue<LocalDate>((LocalDate) due));            
@@ -93,6 +101,20 @@ public class VTodo extends VComponentLocatableBase<VTodo>
     public VTodo withDateTimeDue(String due) { setDateTimeDue(due); return this; }
     public VTodo withDateTimeDue(DateTimeDue<? extends Temporal> due) { setDateTimeDue(due); return this; }
 
+    /** Ensures DateTimeDue and Duration are not both used. */
+    @Override public ObjectProperty<DurationProp> durationProperty()
+    {
+        ObjectProperty<DurationProp> duration = super.durationProperty();
+        duration.addListener((obs) ->
+        {
+            if ((getDateTimeDue() != null) && (getDuration() != null))
+            {
+                throw new DateTimeException("DURATION and DUE can't both be set");
+            }            
+        });
+        return duration;
+    }
+    
     /**
      * PERCENT-COMPLETE
      * RFC 5545 iCalendar 3.8.1.8. page 88

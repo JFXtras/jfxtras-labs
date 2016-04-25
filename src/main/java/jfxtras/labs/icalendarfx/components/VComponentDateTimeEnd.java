@@ -45,7 +45,7 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
     default T withDateTimeEnd(String dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
     default T withDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
     
-    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be put in listener
+    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
      *  after dateTimeEndProperty() is initialized */
     default void checkDateTimeEndConsistency()
     {
@@ -61,36 +61,17 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
         }
     }
     
-    default void checkDateTimeStartConsistency2()
-    {
-        if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
-        {
-            DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
-            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            if (dateTimeEndType != dateTimeStartType)
-            {
-                throw new DateTimeException("DateTimeEnd DateTimeType (" + dateTimeEndType +
-                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
-            }
-        }
-    }
-
-    
-//    @Override
-//    default void addDateTimeStartConsistencyListener()
-//    {       
-//        dateTimeStartProperty().addListener((observable, oldValue, newValue) -> 
+//    default void checkDateTimeStartConsistency2()
+//    {
+//        if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
 //        {
-//            if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
+//            DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+//            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//            if (dateTimeEndType != dateTimeStartType)
 //            {
-//                DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
-//                DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-//                if (dateTimeEndType != dateTimeStartType)
-//                {
-//                    throw new DateTimeException("DateTimeEnd DateTimeType (" + dateTimeEndType +
-//                            ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
-//                }
+//                throw new DateTimeException("DateTimeEnd DateTimeType (" + dateTimeEndType +
+//                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
 //            }
-//        });
+//        }
 //    }
 }
