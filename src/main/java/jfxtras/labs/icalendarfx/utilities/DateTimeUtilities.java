@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 
+import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
+
 
 /**
  * Temporal date and date-time types supported by iCalendar.
@@ -290,33 +292,29 @@ public final class DateTimeUtilities
     }
     
     /**
-     * Make ISO.8601 string from LocalDate, LocalDateTime or ZonedDateTime Temporal object.
+     * Parse ISO.8601 string into LocalDate, LocalDateTime or ZonedDateTime Temporal object.
      */ 
     public static Temporal temporalFromString(String string)
     {
-        System.out.println("string:" + string);
-        int lastSemiColonIndex = string.lastIndexOf(';');
-        int lastColonIndex = string.lastIndexOf(':');
-        final String string2;
-        if (lastSemiColonIndex > 0)
+        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(string);
+        StringBuilder builder = new StringBuilder(50);
+        String value = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+        if (map.get(ParameterEnum.TIME_ZONE_IDENTIFIER.toString()) != null)
         {
-            string2 = string.substring(lastSemiColonIndex+1);
-        } else if (lastColonIndex > 0)
-        {
-            string2 = string.substring(lastColonIndex+1);
-        } else
-        {
-            string2 = string;
+            if (value.charAt(value.length()-1) != 'Z')
+            {
+                builder.append("[");
+                builder.append(map.get(ParameterEnum.TIME_ZONE_IDENTIFIER.toString()));
+                builder.append("]");
+            }
         }
-        // TODO - REMOVE VALUE PARAMETER - KEEP TZID
-            
-//        String string2 = string.substring(lastColonIndex+1);
+        builder.append(value);
+        String string2 = builder.toString();
 
-        final String form0 = "^(VALUE=DATE:)?[0-9]{8}";
-        final String form1 = "^(VALUE=DATE-TIME:)?[0-9]{8}T([0-9]{6})";
-        final String form2 = "^(VALUE=DATE-TIME:)?[0-9]{8}T([0-9]{6})Z";
+        final String form0 = "^[0-9]{8}";
+        final String form1 = "^[0-9]{8}T([0-9]{6})";
+        final String form2 = "^[0-9]{8}T([0-9]{6})Z";
         final String form3 = "^(\\[.*/.*\\])[0-9]{8}T([0-9]{6})";
-        System.out.println("string2:" + string2 + " " + string.matches(form1));
         if (string2.matches(form0))
         {
             return LocalDate.parse(string2, DateTimeUtilities.LOCAL_DATE_FORMATTER);                                                

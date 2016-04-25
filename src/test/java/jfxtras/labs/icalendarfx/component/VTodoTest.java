@@ -16,14 +16,12 @@ public class VTodoTest
     {
         String string = "DTEND;TZID=America/Los_Angeles:20160307T053000";
         Temporal t = DateTimeUtilities.temporalFromString(string);
-        System.out.println(t);
         VTodo builtComponent = new VTodo()
                 .withDateTimeCompleted("COMPLETED:19960401T150000Z")
                 .withDateTimeDue("TZID=America/Los_Angeles:19960401T050000")
                 .withPercentComplete(35);
         
         String componentName = builtComponent.componentType().toString();
-        System.out.println(builtComponent.toContentLines());
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "COMPLETED:19960401T150000Z" + System.lineSeparator() +
                 "DUE;TZID=America/Los_Angeles:19960401T050000" + System.lineSeparator() +

@@ -17,6 +17,7 @@ import jfxtras.labs.icalendarfx.component.VTimeZoneTest;
 import jfxtras.labs.icalendarfx.component.VTodoTest;
 import jfxtras.labs.icalendarfx.parameter.DelegateesTest;
 import jfxtras.labs.icalendarfx.parameter.DirectoryEntryReferenceTest;
+import jfxtras.labs.icalendarfx.parameter.ParseDateTest;
 import jfxtras.labs.icalendarfx.parameter.ParseParameterTest;
 import jfxtras.labs.icalendarfx.parameter.RecurrenceRuleParameterTest;
 import jfxtras.labs.icalendarfx.property.ActionTest;
@@ -125,7 +126,8 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
         
         // parameter tests
         DelegateesTest.class,
-        DirectoryEntryReferenceTest.class, 
+        DirectoryEntryReferenceTest.class,
+        ParseDateTest.class,
         ParseParameterTest.class,
         RecurrenceRuleParameterTest.class
               
