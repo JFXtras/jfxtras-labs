@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
@@ -19,6 +18,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecurrence;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -266,7 +266,12 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
 //        return stream2;
 //    }
     
-    Stream<Temporal> streamRecurrences(Temporal startTemporal);
+//    Stream<Temporal> streamRecurrences(Temporal startTemporal);
+    /**
+     * Contains methods to produce the recurrence set.
+     */
+    RecurrenceStreamer recurrenceStreamer();
+
     
 //    default Stream<Temporal> streamRecurrences2(Temporal startTemporal)
 //    {

@@ -117,8 +117,8 @@ public class RecurrencesTest
                 .withDurationProp(Duration.ofMinutes(60))
                 .withRecurrences(new Recurrences<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 14, 12, 0)));
-        List<Temporal> madeDates = e
-                .streamRecurrences(e.getDateTimeStart().getValue())
+        List<Temporal> madeDates = e.recurrenceStreamer()
+                .stream(e.getDateTimeStart().getValue())
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
