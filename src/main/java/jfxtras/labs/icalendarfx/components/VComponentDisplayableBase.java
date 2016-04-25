@@ -138,8 +138,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public void setExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions)
     {
         this.exceptions = exceptions;
-        exceptions.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-        checkRecurrencesConsistency(exceptions, null);
+        if (exceptions != null)
+        {
+            exceptions.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
+            checkRecurrencesConsistency(exceptions, null);
+        }
     }
     
     /**
@@ -186,8 +189,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
     {
         this.recurrences = recurrences;
-        recurrences.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-        checkRecurrencesConsistency(recurrences, null);
+        if (recurrences != null)
+        {
+            recurrences.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
+            checkRecurrencesConsistency(recurrences, null);
+        }
     }
 
     /**
