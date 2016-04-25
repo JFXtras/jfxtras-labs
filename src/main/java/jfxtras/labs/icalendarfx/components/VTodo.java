@@ -1,18 +1,127 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.PercentComplete;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeCompleted;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeDue;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public class VTodo extends VComponentLocatableBase<VTodo> implements VTodoInt<VTodo>
+public class VTodo extends VComponentLocatableBase<VTodo>
 {
     @Override
     public VComponentEnum componentType()
     {
         return VComponentEnum.VTODO;
     }
+    
+    /**
+     * COMPLETED: Date-Time Completed
+     * RFC 5545 iCalendar 3.8.2.1 page 94
+     * This property defines the date and time that a to-do was
+     * actually completed.
+     * The value MUST be specified in the UTC time format.
+     * 
+     * Example:
+     * COMPLETED:19960401T150000Z
+     */
+    public ObjectProperty<DateTimeCompleted> dateTimeCompletedProperty()
+    {
+        if (dateTimeCompleted == null)
+        {
+            dateTimeCompleted = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_COMPLETED.toString());
+        }
+        return dateTimeCompleted;
+    }
+    private ObjectProperty<DateTimeCompleted> dateTimeCompleted;
+    public DateTimeCompleted getDateTimeCompleted() { return dateTimeCompletedProperty().get(); }
+    public void setDateTimeCompleted(String completed) { setDateTimeCompleted(new DateTimeCompleted(completed)); }
+    public void setDateTimeCompleted(DateTimeCompleted completed) { dateTimeCompletedProperty().set(completed); }
+    public void setDateTimeCompleted(ZonedDateTime completed) { setDateTimeCompleted(new DateTimeCompleted(completed)); }
+    public VTodo withDateTimeCompleted(ZonedDateTime completed) { setDateTimeCompleted(completed); return  this; }
+    public VTodo withDateTimeCompleted(String completed) { setDateTimeCompleted(completed); return this; }
+    public VTodo withDateTimeCompleted(DateTimeCompleted completed) { setDateTimeCompleted(completed); return this; }
+    
+    /**
+     * DUE: Date-Time Due
+     * RFC 5545 iCalendar 3.8.2.3 page 96
+     * This property defines the date and time that a to-do is
+     * expected to be completed.
+     * the value type of this property MUST be the same as the "DTSTART" property
+     * 
+     * Example:
+     * DUE:TZID=America/Los_Angeles:19970512T090000
+     */
+    public ObjectProperty<DateTimeDue<? extends Temporal>> dateTimeDueProperty()
+    {
+        if (dateTimeDue == null)
+        {
+            dateTimeDue = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_DUE.toString());
+        }
+        return dateTimeDue;
+    }
+    private ObjectProperty<DateTimeDue<? extends Temporal>> dateTimeDue;
+    public DateTimeDue<? extends Temporal> getDateTimeDue() { return dateTimeDueProperty().get(); }
+    public void setDateTimeDue(String due) { setDateTimeDue(DateTimeUtilities.temporalFromString(due)); }
+    public void setDateTimeDue(DateTimeDue<? extends Temporal> due) { dateTimeDueProperty().set(due); }
+    public void setDateTimeDue(Temporal due)
+    {
+        System.out.println("due:" + due);
+        if (due instanceof LocalDate)
+        {
+            setDateTimeDue(new DateTimeDue<LocalDate>((LocalDate) due));            
+        } else if (due instanceof LocalDateTime)
+        {
+            setDateTimeDue(new DateTimeDue<LocalDateTime>((LocalDateTime) due));            
+        } else if (due instanceof ZonedDateTime)
+        {
+            setDateTimeDue(new DateTimeDue<ZonedDateTime>((ZonedDateTime) due));            
+        } else
+        {
+            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+                    + due.getClass().getSimpleName() + " is not supported");
+        }
+    }
+    public VTodo withDateTimeDue(Temporal due) { setDateTimeDue(due); return this; }
+    public VTodo withDateTimeDue(String due) { setDateTimeDue(due); return this; }
+    public VTodo withDateTimeDue(DateTimeDue<? extends Temporal> due) { setDateTimeDue(due); return this; }
+
+    /**
+     * PERCENT-COMPLETE
+     * RFC 5545 iCalendar 3.8.1.8. page 88
+     * 
+     * This property is used by an assignee or delegatee of a
+     * to-do to convey the percent completion of a to-do to the "Organizer".
+     * The property value is a positive integer between 0 and
+     * 100.  A value of "0" indicates the to-do has not yet been started.
+     * A value of "100" indicates that the to-do has been completed.
+     * 
+     * Example:  The following is an example of this property to show 39% completion:
+     * PERCENT-COMPLETE:39
+     */
+    public ObjectProperty<PercentComplete> percentCompleteProperty()
+    {
+        if (percentComplete == null)
+        {
+            percentComplete = new SimpleObjectProperty<>(this, PropertyEnum.PERCENT_COMPLETE.toString());
+        }
+        return percentComplete;
+    }
+    private ObjectProperty<PercentComplete> percentComplete;
+    public PercentComplete getPercentComplete() { return percentCompleteProperty().get(); }
+    public void setPercentComplete(String percentComplete) { setPercentComplete(new PercentComplete(percentComplete)); }
+    public void setPercentComplete(Integer percentComplete) { setPercentComplete(new PercentComplete(percentComplete)); }
+    public void setPercentComplete(PercentComplete percentComplete) { percentCompleteProperty().set(percentComplete); }
+    public VTodo withPercentComplete(PercentComplete percentComplete) { setPercentComplete(percentComplete); return this; }
+    public VTodo withPercentComplete(Integer percentComplete) { setPercentComplete(percentComplete); return this; }
+    public VTodo withPercentComplete(String percentComplete) { PropertyEnum.PERCENT_COMPLETE.parse(this, percentComplete); return this; }
     
     /*
      * CONSTRUCTORS
@@ -22,68 +131,5 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VTodoInt<VT
     public VTodo(String contentLines)
     {
         super(contentLines);
-    }
-
-    @Override
-    public ZonedDateTime getDateTimeCompleted()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<ZonedDateTime> dateTimeCompletedProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setDateTimeCompleted(ZonedDateTime dateTimeCompleted)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Temporal getDateTimeDue()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public ObjectProperty<Temporal> dateTimeDueProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setDateTimeDue(Temporal dateTimeDue)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public int getPercentComplete()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public IntegerProperty percentCompleteProperty()
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
-
-    @Override
-    public void setPercentComplete(int percentComplete)
-    {
-        // TODO Auto-generated method stub
-        
     }
 }

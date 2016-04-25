@@ -1,37 +1,27 @@
 package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
-import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
-import jfxtras.labs.icalendarfx.components.StandardTime;
-import jfxtras.labs.icalendarfx.components.VEventNew;
-import jfxtras.labs.icalendarfx.components.VFreeBusy;
-import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
+import jfxtras.labs.icalendarfx.properties.PropertyBase;
 
 /**
- * COMMENT
- * RFC 5545 iCalendar 3.8.1.4. page 83
+ * PERCENT-COMPLETE
+ * RFC 5545 iCalendar 3.8.1.8. page 88
  * 
- * This property specifies non-processing information intended
- * to provide a comment to the calendar user
+ * This property is used by an assignee or delegatee of a
+ * to-do to convey the percent completion of a to-do to the "Organizer".
+ * The property value is a positive integer between 0 and
+ * 100.  A value of "0" indicates the to-do has not yet been started.
+ * A value of "100" indicates that the to-do has been completed.
  * 
- * Example:
- * COMMENT:The meeting really needs to include both ourselves
- *  and the customer. We can't hold this meeting without them.
- *  As a matter of fact\, the venue for the meeting ought to be at
- *  their site. - - John
+ * Example:  The following is an example of this property to show 39% completion:
+ * PERCENT-COMPLETE:39
  *  
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNew
  * @see VTodo
- * @see VJournal
- * @see VFreeBusy
- * @see StandardTime
- * @see DaylightSavingTime
  */
-public class PercentComplete extends PropertyBaseAltText<String, PercentComplete>
+public class PercentComplete extends PropertyBase<Integer, PercentComplete>
 {
     public PercentComplete(CharSequence contentLine)
     {
@@ -41,5 +31,10 @@ public class PercentComplete extends PropertyBaseAltText<String, PercentComplete
     public PercentComplete(PercentComplete source)
     {
         super(source);
+    }
+    
+    public PercentComplete(Integer value)
+    {
+        super(value);
     }
 }

@@ -102,7 +102,6 @@ public enum ValueType
                 public String toString(T object)
                 {
                     return DateTimeUtilities.temporalToString((LocalDate) object);
-//                    return DateTimeUtilities.LOCAL_DATE_FORMATTER.format((TemporalAccessor) object);
                 }
 
                 @Override

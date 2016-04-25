@@ -26,6 +26,7 @@ import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
@@ -43,6 +44,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.PercentComplete;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
@@ -304,21 +306,29 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VTodo castComponent = (VTodo) vComponent;
+            return castComponent.getDateTimeCompleted();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VTodo castComponent = (VTodo) vComponent;
+            if (castComponent.getDateTimeCompleted() == null)
+            {
+                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
+                castComponent.setDateTimeCompleted(new DateTimeCompleted((ZonedDateTime) t));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
+    // Change management
     DATE_TIME_CREATED ("CREATED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DateTimeCreated.class)
+            DateTimeCreated.class) // property class
     {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
@@ -340,30 +350,49 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
-    }, // Change management
+    },
+    // Date and time
     DATE_TIME_DUE ("DUE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
             Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DateTimeDue.class)
+            DateTimeDue.class) // property class
     {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VTodo castComponent = (VTodo) vComponent;
+            return castComponent.getDateTimeDue();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VTodo castComponent = (VTodo) vComponent;
+            if (castComponent.getDateTimeDue() == null)
+            {
+                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
+                if (t instanceof LocalDate)
+                {
+                    castComponent.setDateTimeDue(new DateTimeDue<LocalDate>((LocalDate) t));                
+                } else if (t instanceof LocalDateTime)
+                {
+                    castComponent.setDateTimeDue(new DateTimeDue<LocalDateTime>((LocalDateTime) t));                
+                    
+                } else if (t instanceof ZonedDateTime)
+                {
+                    castComponent.setDateTimeDue(new DateTimeDue<ZonedDateTime>((ZonedDateTime) t));                                
+                }
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
+    // Date and Time
     DATE_TIME_END ("DTEND", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
             Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            DateTimeEnd.class)
+            DateTimeEnd.class) // property class
     {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
@@ -728,11 +757,12 @@ public enum PropertyEnum
             list.add(new NonStandardProperty(propertyContent));
         }
     },
+    // Relationship
     ORGANIZER ("ORGANIZER", // name
             Arrays.asList(ValueType.CALENDAR_USER_ADDRESS), // valid property value types, first is default
             Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.DIRECTORY_ENTRY_REFERENCE, ParameterEnum.LANGUAGE,
                     ParameterEnum.SENT_BY), // allowed parameters
-            Organizer.class)
+            Organizer.class) // property class
     {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
@@ -747,20 +777,31 @@ public enum PropertyEnum
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             castComponent.setOrganizer(new Organizer(propertyContent));
         }
-    }, // property class
-    PERCENT_COMPLETE ("PERCENT", null, null, null) {
+    },
+    // Descriptive
+    PERCENT_COMPLETE ("PERCENT-COMPLETE", // property name
+            Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            PercentComplete.class) // property class
+    {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VTodo castComponent = (VTodo) vComponent;
+            return castComponent.getPercentComplete();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VTodo castComponent = (VTodo) vComponent;
+            if (castComponent.getPercentComplete() == null)
+            {
+                castComponent.setPercentComplete(new PercentComplete(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Descriptive
