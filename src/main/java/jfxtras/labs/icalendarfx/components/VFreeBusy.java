@@ -127,6 +127,13 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
     }
     
     @Override
+    public boolean isValid()
+    {
+        boolean isDateTimeEndTypeOk = VComponentDateTimeEnd.super.isValid();
+        return super.isValid() && isDateTimeEndTypeOk;
+    }
+    
+    @Override
     public void checkDateTimeStartConsistency()
     {
 //        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();

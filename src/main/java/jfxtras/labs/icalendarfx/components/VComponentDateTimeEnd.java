@@ -61,17 +61,19 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
         }
     }
     
-//    default void checkDateTimeStartConsistency2()
-//    {
-//        if ((getDateTimeEnd() != null) && (getDateTimeStart() != null))
-//        {
-//            DateTimeType dateTimeEndType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
-//            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-//            if (dateTimeEndType != dateTimeStartType)
-//            {
-//                throw new DateTimeException("DateTimeEnd DateTimeType (" + dateTimeEndType +
-//                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
-//            }
-//        }
-//    }
+    @Override
+    default boolean isValid()
+    {
+        final boolean isDateTimeEndMatch;
+        if (getDateTimeEnd() != null)
+        {
+            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+            isDateTimeEndMatch = startType == endType;
+        } else
+        {
+            isDateTimeEndMatch = true;
+        }
+        return isDateTimeEndMatch;
+    }
 }

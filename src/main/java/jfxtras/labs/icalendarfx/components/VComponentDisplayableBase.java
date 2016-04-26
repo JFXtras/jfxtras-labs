@@ -334,9 +334,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
     @Override
     public RecurrenceStreamer recurrenceStreamer() { return streamer; }
-//    @Override
-//    public Stream<Temporal> streamRecurrences(Temporal startTemporal)
-//    {
-//        return streamer.stream(startTemporal);
-//    }
+
+    @Override
+    public boolean isValid()
+    {
+        boolean repeatableIsValid = VComponentDisplayable.super.isValid();
+        return super.isValid() && repeatableIsValid;
+    }
 }

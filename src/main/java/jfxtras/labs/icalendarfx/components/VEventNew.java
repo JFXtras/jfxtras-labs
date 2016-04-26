@@ -178,7 +178,8 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         boolean ok1 = isDateTimeEndPresent && ! isDurationPresent;
         boolean ok2 = ! isDateTimeEndPresent && isDurationPresent;
         boolean isDateTimeEndAndDurationOk = ok1 || ok2;
-        return super.isValid() && isDateTimeStartPresent && isDateTimeEndAndDurationOk;
+        boolean isDateTimeEndTypeOk = VComponentDateTimeEnd.super.isValid();
+        return super.isValid() && isDateTimeStartPresent && isDateTimeEndAndDurationOk && isDateTimeEndTypeOk;
     }
 
 }

@@ -328,12 +328,12 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
     {
         super(contentLines);
     }
+    
     @Override
     public boolean isValid()
     {
         return getTimeZoneIdentifier() != null;
     }
-
 
     @Override
     public TimeZoneURL getTimeZoneURL()

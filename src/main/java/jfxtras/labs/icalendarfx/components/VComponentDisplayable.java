@@ -381,4 +381,31 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
             }
         }        
     }
+    
+    @Override
+    default boolean isValid()
+    {
+        final boolean isExceptionTypeMatch;
+        if (getExceptions() != null)
+        {
+            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            Temporal e1 = getExceptions().get(0).getValue().iterator().next();
+            DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(e1);
+            isExceptionTypeMatch = startType == exceptionType;
+        } else
+        {
+            isExceptionTypeMatch = true;
+        }
+        final boolean isRecurrenceIdTypeMatch;
+        if (getRecurrenceId() != null)
+        {
+            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
+            isRecurrenceIdTypeMatch = startType == recurrenceIdType;
+        } else
+        {
+            isRecurrenceIdTypeMatch = true;
+        }
+        return isExceptionTypeMatch && isRecurrenceIdTypeMatch & VComponentRepeatable.super.isValid();
+    }
 }

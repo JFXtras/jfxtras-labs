@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
 
 //@Deprecated // put into abstract class when done building
-public interface VFreeBusyInt<T> extends VComponentDateTimeEnd<T>
+public interface VFreeBusyInt<T>
 {
     /**
      * FREEBUSY
