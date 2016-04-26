@@ -166,7 +166,7 @@ public class DisplayableTest
             assertEquals(expectedContent, builtComponent.toContentLines());     
             
             builtComponent.setRecurrenceRule("RRULE:FREQ=DAILY;INTERVAL=2");
-            builtComponent.setDateTimeStart("19960301T010000Z");
+            builtComponent.setDateTimeStart(DateTimeStart.parse("19960301T010000Z"));
             List<Temporal> myDates = builtComponent.recurrenceStreamer().stream().limit(6).collect(Collectors.toList());
             assertEquals(expectedDates, myDates);
         }
@@ -240,7 +240,7 @@ public class DisplayableTest
                         .withFrequency(new Daily())
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
         e.setExceptions(null);
-        e.setDateTimeStart(LocalDate.of(2016, 2, 7));
+        e.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(2016, 2, 7)));
         e.setExceptions(FXCollections.observableArrayList(new Exceptions<LocalDate>(
                             LocalDate.of(2016, 2, 10)
                           , LocalDate.of(2016, 2, 12)
@@ -269,7 +269,7 @@ public class DisplayableTest
             .withDateTimeStart(LocalDate.of(1997, 3, 1))
             .withExceptions("EXDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
 //      Platform.runLater(() -> component.setDateTimeStart("20160302T223316Z"));      
-        component.setDateTimeStart("20160302T223316Z"); // invalid
+        component.setDateTimeStart(DateTimeStart.parse("20160302T223316Z")); // invalid
     }
     
     @Test (expected = DateTimeException.class)

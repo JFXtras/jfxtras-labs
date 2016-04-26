@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.misc;
 
 import java.text.DecimalFormat;
+import java.util.Map;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -12,6 +13,7 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
  * REQUEST-STATUS
@@ -33,6 +35,22 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  */
 public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
 {
+//    // Override default text string converter to avoid escaping the semicolon between
+//    // the code, description and exception values
+//    private final static StringConverter<String> CONVERTER = new StringConverter<String>()
+//    {
+//        @Override
+//        public String toString(String object)
+//        {
+//            return object.toString();
+//        }
+//
+//        @Override
+//        public String fromString(String string)
+//        {
+//            return string;
+//        }
+//    };
     /** Hierarchical, numeric return status code
      * 
    +--------+----------------------------------------------------------+
@@ -83,12 +101,12 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
     public void setException(String exception) { this.exception.set(exception); }
     public RequestStatus withException(String exception) { setException(exception); return this; }
     
-    public RequestStatus(CharSequence contentLine)
-    {
-        super(contentLine);
-        setupListeners();
-        updateParts(getValue());
-    }
+//    public RequestStatus(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//        setupListeners();
+//        updateParts(getValue());
+//    }
 
     public RequestStatus(RequestStatus source)
     {
@@ -103,6 +121,22 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
         setupListeners();
     }
     
+    /** Applies string converter only to description and exception parts of the RequestStatus property
+     * This leaves the semicolon delimiters unescaped
+     */
+    @Override
+    protected String valueContent()
+    {
+        StringBuilder builder = new StringBuilder(100);
+        builder.append(DECIMAL_FORMAT.format(getStatusCode()) + ";");
+        builder.append(getConverter().toString(getDescription()));
+        if (getException() != null)
+        {
+            builder.append(";" + getConverter().toString(getException()));
+        }
+        return builder.toString();        
+    }
+
     /*
      * LISTENERS
      * Used to keep statusCode, description and exception synchronized with the property value
@@ -122,13 +156,19 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
         descriptionProperty().removeListener(stringChangeListener);
         exceptionProperty().removeListener(stringChangeListener);
         statusCodeProperty().removeListener(doubleChangeListener);
-        String[] values = newValue.split(";");
-        setStatusCode(Double.parseDouble(values[0]));
-        setDescription(values[1]);
-        if (values.length == 3)
+        
+        int codeIndex = newValue.indexOf(';');
+        setStatusCode(Double.parseDouble(newValue.substring(0, codeIndex)));
+        int descriptionIndex = newValue.indexOf(';',codeIndex+1);
+        if (descriptionIndex > 0)
         {
-            setException(values[2]);
+            setDescription(newValue.substring(codeIndex+1, descriptionIndex));
+            setException(newValue.substring(descriptionIndex+1));
+        } else
+        {
+            setDescription(newValue.substring(codeIndex+1));            
         }
+        
         descriptionProperty().addListener(stringChangeListener);
         exceptionProperty().addListener(stringChangeListener);
         statusCodeProperty().addListener(doubleChangeListener);
@@ -146,9 +186,18 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
         builder.append(getDescription());
         if (getException() != null)
         {
-            builder.append(";" + getException());            
+            builder.append(";" + getException());
         }
         setValue(builder.toString());
         valueProperty().addListener(valueChangeListener);
     }
-}
+    
+    public static RequestStatus parse(String value)
+    {
+        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(value);
+map.entrySet().stream().forEach(System.out::println);
+        RequestStatus requestStatus = new RequestStatus();
+        requestStatus.parseContent(value);
+        return requestStatus;
+    }
+    }

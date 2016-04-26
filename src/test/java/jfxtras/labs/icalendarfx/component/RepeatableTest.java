@@ -43,6 +43,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Monthly;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
@@ -149,7 +150,7 @@ public class RepeatableTest //extends Application
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContentLines());
             
-            builtComponent.setDateTimeStart(LocalDate.of(2016, 4, 13));
+            builtComponent.setDateTimeStart(new DateTimeStart<>(LocalDate.of(2016, 4, 13)));
             List<Temporal> madeDates = builtComponent                    
                     .recurrenceStreamer().stream(builtComponent.getDateTimeStart().getValue())
                     .limit(12)
@@ -176,7 +177,7 @@ public class RepeatableTest //extends Application
             .withDateTimeStart(LocalDate.of(1997, 3, 1))
             .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
 //        Platform.runLater(() -> component.setDateTimeStart("20160302T223316Z"));      
-        component.setDateTimeStart("20160302T223316Z"); // invalid
+        component.setDateTimeStart(DateTimeStart.parse("20160302T223316Z")); // invalid
     }
 
     @Test (expected = DateTimeException.class)
@@ -1199,7 +1200,7 @@ public class RepeatableTest //extends Application
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRuleParameter()
                         .withFrequency(new Daily()));
-        e.setDateTimeStart(LocalDate.of(2015, 11, 9)); // change to whole-day
+        e.setDateTimeStart(new DateTimeStart<>(LocalDate.of(2015, 11, 9))); // change to whole-day
         {
             List<Temporal> madeDates = e
                     .recurrenceStreamer().stream(e.getDateTimeStart().getValue())
@@ -1217,7 +1218,7 @@ public class RepeatableTest //extends Application
         }
         
         // Change back to date/time
-        e.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0)); // change to date/time
+        e.setDateTimeStart(new DateTimeStart<>(LocalDateTime.of(2015, 11, 9, 10, 0))); // change to date/time
         { // start date/time
             List<Temporal> madeDates = e                
                     .recurrenceStreamer().stream(e.getDateTimeStart().getValue())
@@ -1256,7 +1257,7 @@ public class RepeatableTest //extends Application
             assertEquals(expectedDates, madeDates);
         }
         
-        e.setDateTimeStart(LocalDateTime.of(2015, 11, 10, 10, 0)); // change start
+        e.setDateTimeStart(new DateTimeStart<>(LocalDateTime.of(2015, 11, 10, 10, 0))); // change start
         { // make new stream
             List<Temporal> madeDates = e
                     .recurrenceStreamer().stream(LocalDateTime.of(2015, 12, 9, 10, 0))

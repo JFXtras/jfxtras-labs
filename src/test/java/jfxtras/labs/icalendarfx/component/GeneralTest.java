@@ -12,6 +12,9 @@ import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
 public class GeneralTest
 {
@@ -49,9 +52,9 @@ public class GeneralTest
     public void canGetProperties()
     {
         VEventNew builtComponent = new VEventNew()
-                .withAttendees("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com")
-                .withDateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0))
-                .withOrganizer("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com")
+                .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
+                .withDateTimeStart(new DateTimeStart<LocalDateTime>(LocalDateTime.of(2016, 4, 15, 12, 0)))
+                .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
                 .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com");
         VEventNew builtComponent2 = new VEventNew();
         System.out.println("here:" + builtComponent2.getRecurrences());

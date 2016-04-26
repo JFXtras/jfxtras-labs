@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
+import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
 public class VFreeBusyTest
 {
@@ -30,9 +32,9 @@ public class VFreeBusyTest
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
         
-        builtComponent.setDateTimeStamp("20160210T100000Z");
+        builtComponent.setDateTimeStamp(DateTimeStamp.parse("20160210T100000Z"));
         builtComponent.setUniqueIdentifier("66761d56-d248-4c12-a807-350e95abea66");
-        builtComponent.setDateTimeStart(LocalDate.of(2016, 4, 25));
+        builtComponent.setDateTimeStart(new DateTimeStart<>(LocalDate.of(2016, 4, 25)));
         assertTrue(builtComponent.isValid());
     }
 }

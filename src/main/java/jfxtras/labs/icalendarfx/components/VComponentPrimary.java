@@ -66,9 +66,28 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
      */
     ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty();
     default DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStartProperty().get(); }
-    default void setDateTimeStart(String dtStart) { PropertyEnum.DATE_TIME_START.parse(this, dtStart); }
+//    default void setDateTimeStart(String dtStart) { PropertyEnum.DATE_TIME_START.parse(this, dtStart); }
     default void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { dateTimeStartProperty().set(dtStart); }
-    default void setDateTimeStart(Temporal temporal)
+//    default void setDateTimeStart(Temporal temporal)
+//    {
+//        if (temporal instanceof LocalDate)
+//        {
+//            setDateTimeStart(new DateTimeStart<LocalDate>((LocalDate) temporal));            
+//        } else if (temporal instanceof LocalDateTime)
+//        {
+//            setDateTimeStart(new DateTimeStart<LocalDateTime>((LocalDateTime) temporal));            
+//        } else if (temporal instanceof ZonedDateTime)
+//        {
+//            setDateTimeStart(new DateTimeStart<ZonedDateTime>((ZonedDateTime) temporal));            
+//        } else
+//        {
+//            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+//                    + temporal.getClass().getSimpleName() + " is not supported");
+//        }
+//    }
+    default T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
+    default T withDateTimeStart(String dtStart) { setDateTimeStart(DateTimeStart.parse(dtStart)); return (T) this; }
+    default T withDateTimeStart(Temporal temporal)
     {
         if (temporal instanceof LocalDate)
         {
@@ -84,10 +103,8 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
             throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
                     + temporal.getClass().getSimpleName() + " is not supported");
         }
+        return (T) this;
     }
-    default T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
-    default T withDateTimeStart(String dtStart) { setDateTimeStart(dtStart); return (T) this; }
-    default T withDateTimeStart(Temporal temporal) { setDateTimeStart(temporal); return (T) this; }
 
     @Deprecated
     default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };

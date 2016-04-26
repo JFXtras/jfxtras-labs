@@ -180,7 +180,7 @@ public enum PropertyEnum
             {
                 list = castComponent.getAttendees();
             }
-            list.add(new Attendee(propertyContent));
+            list.add(Attendee.parse(propertyContent));
         }
     },
     // Calendar
@@ -472,8 +472,7 @@ public enum PropertyEnum
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             if (castComponent.getDateTimeStamp() == null)
             {
-                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-                castComponent.setDateTimeStamp(new DateTimeStamp((ZonedDateTime) t));                                
+                castComponent.setDateTimeStamp(DateTimeStamp.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -498,18 +497,7 @@ public enum PropertyEnum
             VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
             if (castComponent.getDateTimeStart() == null)
             {
-                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-                if (t instanceof LocalDate)
-                {
-                    castComponent.setDateTimeStart(new DateTimeStart<LocalDate>((LocalDate) t));                
-                } else if (t instanceof LocalDateTime)
-                {
-                    castComponent.setDateTimeStart(new DateTimeStart<LocalDateTime>((LocalDateTime) t));                
-                    
-                } else if (t instanceof ZonedDateTime)
-                {
-                    castComponent.setDateTimeStart(new DateTimeStart<ZonedDateTime>((ZonedDateTime) t));                                
-                }
+                castComponent.setDateTimeStart(DateTimeStart.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -830,7 +818,7 @@ public enum PropertyEnum
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
-            castComponent.setOrganizer(new Organizer(propertyContent));
+            castComponent.setOrganizer(Organizer.parse(propertyContent));
         }
     },
     // Descriptive
@@ -1089,7 +1077,8 @@ public enum PropertyEnum
             {
                 list = castComponent.getRequestStatus();
             }
-            list.add(new RequestStatus(propertyContent));
+            list.add(RequestStatus.parse(propertyContent));
+//            list.add(RequestStatus.parse(propertyContent));
         }
     },
     // Resources

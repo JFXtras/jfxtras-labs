@@ -155,6 +155,6 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     {
         super(value);
     }
-    
-//    public PropertyCalendarUserAddress() { super(); }
+        
+    PropertyBaseCalendarUser() { super(); }
 }

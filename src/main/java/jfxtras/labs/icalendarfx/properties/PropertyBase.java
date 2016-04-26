@@ -70,6 +70,13 @@ public abstract class PropertyBase<T,U> implements Property<T>
     private ObjectProperty<T> value; // initialized in constructor
     @Override
     public void setValue(T value) { this.value.set(value); }
+    /** The propery's value converted by string converted to content string */
+    protected String valueContent()
+    {
+        /* default code below works for all properties with a single value.  Properties with multiple embedded values,
+         * such as RequestStatus, require an overridden method */
+        return (getConverter().toString(getValue()) == null) ? getUnknownValue() : getConverter().toString(getValue());
+    }
 //    public U withValue(T value) { setValue(value); return (U) this; } // in constructor
 
     // class of value.  Used to verify value class is allowed for the property type
@@ -518,11 +525,11 @@ public abstract class PropertyBase<T,U> implements Property<T>
         // add non-standard parameters
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         // add property value
-        String stringValue = (getConverter().toString(getValue()) == null) ? getUnknownValue() : getConverter().toString(getValue());
+        String stringValue = valueContent();
         builder.append(":" + stringValue);
 //        builder.append(":" + valueToString(getValue()));
         return builder.toString();
-    }    
+    }
 
     @Override
     public int hashCode()

@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.net.URI;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -315,8 +317,37 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
     private ObjectProperty<TimeZoneIdentifier> timeZoneIdentifier;
     public TimeZoneIdentifier getTimeZoneIdentifier() { return timeZoneIdentifierProperty().get(); }
     public void setTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { timeZoneIdentifierProperty().set(timeZoneIdentifier); }
+//    public void setTimeZoneIdentifier(String timeZoneIdentifier) { PropertyEnum.TIME_ZONE_IDENTIFIER.parse(this, timeZoneIdentifier); }
     public VTimeZone withTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return this; }
     public VTimeZone withTimeZoneIdentifier(String timeZoneIdentifier) { PropertyEnum.TIME_ZONE_IDENTIFIER.parse(this, timeZoneIdentifier); return this; }
+
+    /**
+     * TZURL
+     * Time Zone URL
+     * RFC 5545, 3.8.3.5, page 106
+     * 
+     * This property provides a means for a "VTIMEZONE" component
+     * to point to a network location that can be used to retrieve an up-
+     * to-date version of itself
+     * 
+     * EXAMPLES:
+     * TZURL:http://timezones.example.org/tz/America-Los_Angeles.ics
+     */
+    public ObjectProperty<TimeZoneURL> timeZoneURLProperty()
+    {
+        if (timeZoneURL == null)
+        {
+            timeZoneURL = new SimpleObjectProperty<>(this, PropertyEnum.TIME_ZONE_IDENTIFIER.toString());
+        }
+        return timeZoneURL;
+    }
+    private ObjectProperty<TimeZoneURL> timeZoneURL;
+    public TimeZoneURL getTimeZoneURL() { return timeZoneURLProperty().get(); }
+    public void setTimeZoneURL(TimeZoneURL timeZoneURL) { timeZoneURLProperty().set(timeZoneURL); }
+//    public void setTimeZoneURL(URI timeZoneURL) { timeZoneURLProperty().set(new TimeZoneURL(timeZoneURL)); }
+    public VTimeZone withTimeZoneURL(TimeZoneURL timeZoneURL) { setTimeZoneURL(timeZoneURL); return this; }
+    public VTimeZone withTimeZoneURL(URI timeZoneURL) { setTimeZoneURL(new TimeZoneURL(timeZoneURL)); return this; }
+    public VTimeZone withTimeZoneURL(String timeZoneURL) { PropertyEnum.TIME_ZONE_URL.parse(this, timeZoneURL); return this; }
 
     
     /*
@@ -333,27 +364,6 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
     public boolean isValid()
     {
         return getTimeZoneIdentifier() != null;
-    }
-
-    @Override
-    public TimeZoneURL getTimeZoneURL()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectProperty<TimeZoneURL> timeZoneURLProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setTimeZoneURL(TimeZoneURL url)
-    {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override

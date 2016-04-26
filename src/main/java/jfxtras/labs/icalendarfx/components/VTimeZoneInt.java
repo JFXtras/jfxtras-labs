@@ -1,8 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
 
 @Deprecated // put into abstract class when done building VTodo
 public interface VTimeZoneInt<T> extends VComponentNew<T>, VComponentLastModified<T>
@@ -37,11 +35,11 @@ public interface VTimeZoneInt<T> extends VComponentNew<T>, VComponentLastModifie
      * 
      * EXAMPLES:
      * TZURL:http://timezones.example.org/tz/America-Los_Angeles.ics
-     */
-    TimeZoneURL getTimeZoneURL();
-    ObjectProperty<TimeZoneURL> timeZoneURLProperty();
-    void setTimeZoneURL(TimeZoneURL url);
-    
+//     */
+//    TimeZoneURL getTimeZoneURL();
+//    ObjectProperty<TimeZoneURL> timeZoneURLProperty();
+//    void setTimeZoneURL(TimeZoneURL url);
+//    
     /**
      * Either StandardTime or DaylightSavingsTime.
      * Both classes have identical methods.

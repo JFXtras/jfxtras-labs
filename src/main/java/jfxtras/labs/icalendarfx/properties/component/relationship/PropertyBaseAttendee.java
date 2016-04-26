@@ -258,4 +258,9 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
     {
         super(source);
     }
+    
+    PropertyBaseAttendee()
+    {
+        super();
+    }
 }

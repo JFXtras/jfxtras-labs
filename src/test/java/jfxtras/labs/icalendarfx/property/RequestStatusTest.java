@@ -12,7 +12,7 @@ public class RequestStatusTest
     public void canParseRequestStatus()
     {
         String content = "REQUEST-STATUS:2.0;Success";
-        RequestStatus madeProperty = new RequestStatus(content);
+        RequestStatus madeProperty = RequestStatus.parse(content);
         assertEquals(content, madeProperty.toContentLine());
         RequestStatus expectedProperty = new RequestStatus()
                 .withStatusCode(2.0)
@@ -28,4 +28,16 @@ public class RequestStatusTest
         assertEquals("ATTENDEE:mailto:jsmith@example.com", madeProperty.getException());
     }
     
+    @Test
+    public void canParseRequestStatus2()
+    {
+        String content = "REQUEST-STATUS:2.8;Success\\, repeating event ignored. Scheduled as a single event.;RRULE:FREQ=WEEKLY\\;INTERVAL=2";
+        RequestStatus madeProperty = RequestStatus.parse(content);
+        assertEquals(content, madeProperty.toContentLine());
+        RequestStatus expectedProperty = new RequestStatus()
+                .withStatusCode(2.8)
+                .withDescription("Success, repeating event ignored. Scheduled as a single event.")
+                .withException("RRULE:FREQ=WEEKLY;INTERVAL=2");
+        assertEquals(expectedProperty, madeProperty);
+    }
 }

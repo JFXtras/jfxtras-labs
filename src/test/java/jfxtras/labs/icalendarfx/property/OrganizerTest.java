@@ -13,8 +13,8 @@ public class OrganizerTest
     public void canParseOrganizer()
     {
         String content = "ORGANIZER;CN=John Smith:mailto:jsmith@example.com";
-        Organizer madeProperty = new Organizer(content);
-        Organizer expectedProperty = new Organizer("mailto:jsmith@example.com")
+        Organizer madeProperty = Organizer.parse(content);
+        Organizer expectedProperty = Organizer.parse("mailto:jsmith@example.com")
                 .withCommonName("John Smith");
         assertEquals(expectedProperty, madeProperty);
         assertEquals(content, expectedProperty.toContentLine());
@@ -24,8 +24,8 @@ public class OrganizerTest
     public void canParseOrganizer2()
     {
         String content = "ORGANIZER;CN=John Smith;DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\";LANGUAGE=en;SENT-BY=\"mailto:sray@example.com\":mailto:jsmith@example.com";
-        Organizer madeProperty = new Organizer(content);
-        Organizer expectedProperty = new Organizer("mailto:jsmith@example.com")
+        Organizer madeProperty = Organizer.parse(content);
+        Organizer expectedProperty = Organizer.parse("mailto:jsmith@example.com")
                 .withCommonName("John Smith")
                 .withDirectoryEntryReference("ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)")
                 .withLanguage("en")

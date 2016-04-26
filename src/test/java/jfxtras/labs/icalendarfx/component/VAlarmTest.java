@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
+import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
 public class VAlarmTest
 {
@@ -19,7 +20,7 @@ public class VAlarmTest
     {        
         VAlarm builtComponent = new VAlarm()
                 .withAction(ActionType.DISPLAY)
-                .withAttendees("mailto:jsmith@example.com")
+                .withAttendees(Attendee.parse("mailto:jsmith@example.com"))
                 .withDuration(Period.ofDays(-2))
                 .withTrigger(Duration.ofMinutes(-15))
                 .withRepeatCount(2);

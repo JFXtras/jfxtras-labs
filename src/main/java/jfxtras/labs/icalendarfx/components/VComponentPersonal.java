@@ -1,13 +1,10 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.net.URI;
-import java.time.ZonedDateTime;
-import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
@@ -38,11 +35,11 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      */
     ObjectProperty<DateTimeStamp> dateTimeStampProperty();
     default DateTimeStamp getDateTimeStamp() { return dateTimeStampProperty().get(); }
-    default void setDateTimeStamp(String dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); }
+//    default void setDateTimeStamp(String dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); }
     default void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStampProperty().set(dtStamp); }
-    default void setDateTimeStamp(ZonedDateTime dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); }
-    default T withDateTimeStamp(ZonedDateTime dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
-    default T withDateTimeStamp(String dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
+//    default void setDateTimeStamp(ZonedDateTime dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); }
+//    default T withDateTimeStamp(ZonedDateTime dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); return (T) this; }
+//    default T withDateTimeStamp(String dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); return (T) this; }
     default T withDateTimeStamp(DateTimeStamp dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
 
     /**
@@ -56,7 +53,7 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     ObjectProperty<Organizer> organizerProperty();
     default Organizer getOrganizer() { return organizerProperty().get(); }
     default void setOrganizer(Organizer organizer) { organizerProperty().set(organizer); }
-    default T withOrganizer(String content) { setOrganizer(new Organizer(content)); return (T) this; }
+//    default T withOrganizer(String content) { setOrganizer(new Organizer(content)); return (T) this; }
     default T withOrganizer(Organizer organizer) { setOrganizer(organizer); return (T) this; }
 
     /**
@@ -74,11 +71,11 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     void setRequestStatus(ObservableList<RequestStatus> properties);
     /** add comma separated requestStatus into separate comment objects */
     default T withRequestStatus(ObservableList<RequestStatus> requestStatus) { setRequestStatus(requestStatus); return (T) this; }
-    default T withRequestStatus(String...requestStatus)
-    {
-        Arrays.stream(requestStatus).forEach(c -> PropertyEnum.REQUEST_STATUS.parse(this, c));
-        return (T) this;
-    }
+//    default T withRequestStatus(String...requestStatus)
+//    {
+//        Arrays.stream(requestStatus).forEach(c -> PropertyEnum.REQUEST_STATUS.parse(this, c));
+//        return (T) this;
+//    }
     default T withRequestStatus(RequestStatus...requestStatus)
     {
         if (getRequestStatus() == null)
