@@ -67,9 +67,15 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
         final boolean isDateTimeEndMatch;
         if (getDateTimeEnd() != null)
         {
-            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
-            isDateTimeEndMatch = startType == endType;
+            if (getDateTimeStart() != null)
+            {
+                DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+                DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+                isDateTimeEndMatch = startType == endType;
+            } else
+            {
+                isDateTimeEndMatch = false;                
+            }
         } else
         {
             isDateTimeEndMatch = true;

@@ -644,15 +644,24 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VFreeBusy castComponent = (VFreeBusy) vComponent;
+            return castComponent.getFreeBusyTime();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VFreeBusy castComponent = (VFreeBusy) vComponent;
+            if (castComponent.getFreeBusyTime() == null)
+            {
+//                Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyContent);
+//                String value = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+//                List<Pair<ZonedDateTime, TemporalAmount>> list = FreeBusyTime.CONVERTER.fromString(value);
+                castComponent.setFreeBusyTime(new FreeBusyTime(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Descriptive

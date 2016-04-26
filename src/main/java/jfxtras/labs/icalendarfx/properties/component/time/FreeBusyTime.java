@@ -14,8 +14,8 @@ import javafx.util.Pair;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.parameters.FreeBusyType;
-import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.FreeBusyType.FreeBusyTypeEnum;
+import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.PropertyFreeBusy;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -49,7 +49,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  */
 public class FreeBusyTime extends PropertyBase<List<Pair<ZonedDateTime, TemporalAmount>>, FreeBusyTime> implements PropertyFreeBusy<List<Pair<ZonedDateTime, TemporalAmount>>>
 {
-    private final static StringConverter<List<Pair<ZonedDateTime, TemporalAmount>>> CONVERTER = new StringConverter<List<Pair<ZonedDateTime, TemporalAmount>>>()
+    public final static StringConverter<List<Pair<ZonedDateTime, TemporalAmount>>> CONVERTER = new StringConverter<List<Pair<ZonedDateTime, TemporalAmount>>>()
     {
         @Override
         public String toString(List<Pair<ZonedDateTime, TemporalAmount>> object)

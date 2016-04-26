@@ -1,10 +1,13 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
+import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
@@ -85,7 +88,7 @@ A "VFREEBUSY" calendar component is a grouping of
  * @author David Bal
  *
  */
-public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFreeBusyInt<VFreeBusy>, VComponentDateTimeEnd<VFreeBusy>
+public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VComponentDateTimeEnd<VFreeBusy>
 {
     @Override
     public VComponentEnum componentType()
@@ -147,6 +150,45 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
     }
     private ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEnd;
     
+    /**
+     * FREEBUSY
+     * Free/Busy Time
+     * RFC 5545, 3.8.2.6, page 100
+     * 
+     * This property defines one or more free or busy time intervals.
+     * 
+     * These time periods can be specified as either a start
+     * and end DATE-TIME or a start DATE-TIME and DURATION.  The date and
+     * time MUST be a UTC time format.  Internally, the values are stored only as 
+     * start DATE-TIME and DURATION.  Any values entered as start and end as both
+     * DATE-TIME are converted to the start DATE-TIME and DURATION.
+     * 
+     * Examples:
+     * FREEBUSY;FBTYPE=BUSY-UNAVAILABLE:19970308T160000Z/PT8H30M
+     * FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H
+     *  ,19970308T230000Z/19970309T000000Z
+     * 
+     * Note: The above example is converted and outputed as the following:
+     * FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H
+     *  ,19970308T230000Z/PT1H
+     */
+    public ObjectProperty<FreeBusyTime> freeBusyTimeProperty()
+    {
+        if (freeBusyTime == null)
+        {
+            freeBusyTime = new SimpleObjectProperty<>(this, PropertyEnum.FREE_BUSY_TIME.toString());
+        }
+        return freeBusyTime;
+    }
+    private ObjectProperty<FreeBusyTime> freeBusyTime;
+    public FreeBusyTime getFreeBusyTime() { return freeBusyTimeProperty().get(); }
+    public void setFreeBusyTime(String freeBusyTime) { setFreeBusyTime(new FreeBusyTime(freeBusyTime)); }
+    public void setFreeBusyTime(List<Pair<ZonedDateTime, TemporalAmount>> freeBusyTime) { setFreeBusyTime(new FreeBusyTime(freeBusyTime)); }
+    public void setFreeBusyTime(FreeBusyTime freeBusyTime) { freeBusyTimeProperty().set(freeBusyTime); }
+    public VFreeBusy withFreeBusyTime(FreeBusyTime freeBusyTime) { setFreeBusyTime(freeBusyTime); return this; }
+    public VFreeBusy withFreeBusyTime(List<Pair<ZonedDateTime, TemporalAmount>> freeBusyTime) { setFreeBusyTime(freeBusyTime); return this; }
+    public VFreeBusy withFreeBusyTime(String freeBusyTime) { PropertyEnum.FREE_BUSY_TIME.parse(this, freeBusyTime); return this; }
+ 
     /*
      * CONSTRUCTORS
      */
@@ -168,19 +210,5 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
     public void checkDateTimeStartConsistency()
     {
 //        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
-    }
-
-    @Override
-    public ObservableList<FreeBusyTime> getFreeBusy()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setFreeBusy(ObservableList<FreeBusyTime> properties)
-    {
-        // TODO Auto-generated method stub
-        
     }
 }
