@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,9 +20,13 @@ public class StandardOrDaylightTimeTest
     {
         List<StandardOrSavings<?>> components = Arrays.asList(
                 new DaylightSavingTime()
-                    .withTimeZoneName("TZNAME;LANGUAGE=fr-CA:HNE"),
+                    .withTimeZoneOffsetFrom(ZoneOffset.ofHours(-4))
+                    .withTimeZoneOffsetTo(ZoneOffset.ofHours(-5))
+                    .withTimeZoneNames("TZNAME;LANGUAGE=fr-CA:HNE"),
                 new StandardTime()
-                    .withTimeZoneName("TZNAME;LANGUAGE=fr-CA:HNE")
+                    .withTimeZoneOffsetFrom(ZoneOffset.ofHours(-4))
+                    .withTimeZoneOffsetTo(ZoneOffset.ofHours(-5))
+                    .withTimeZoneNames("TZNAME;LANGUAGE=fr-CA:HNE")
                 );
         
         for (StandardOrSavings<?> builtComponent : components)
@@ -29,8 +34,10 @@ public class StandardOrDaylightTimeTest
             String componentName = builtComponent.componentType().toString();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "TZNAME;LANGUAGE=fr-CA:HNE" + System.lineSeparator() +
+                    "TZOFFSETFROM:-0400" + System.lineSeparator() +
+                    "TZOFFSETTO:-0500" + System.lineSeparator() +
                     "END:" + componentName;
-                    
+
             StandardOrSavings<?> parsedComponent = builtComponent
                     .getClass()
                     .getConstructor(String.class)

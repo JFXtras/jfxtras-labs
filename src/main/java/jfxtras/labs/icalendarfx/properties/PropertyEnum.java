@@ -1220,21 +1220,24 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
-            return castComponent.getTimeZoneName();
+            StandardOrSavings<?> castProperty = (StandardOrSavings<?>) vComponent;
+            return castProperty.getTimeZoneNames();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
-            if (castComponent.getTimeZoneName() == null)
+            final ObservableList<TimeZoneName> list;
+            if (castComponent.getTimeZoneNames() == null)
             {
-                castComponent.setTimeZoneName(new TimeZoneName(propertyContent));
+                list = FXCollections.observableArrayList();
+                castComponent.setTimeZoneNames(list);
             } else
             {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+                list = castComponent.getTimeZoneNames();
             }
+            list.add(new TimeZoneName(propertyContent));
         }
     },
     // Time Zone
@@ -1246,15 +1249,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            return castComponent.getTimeZoneOffsetFrom();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            if (castComponent.getTimeZoneOffsetFrom() == null)
+            {
+                castComponent.setTimeZoneOffsetFrom(new TimeZoneOffsetFrom(propertyContent));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Time Zone
@@ -1266,15 +1275,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            return castComponent.getTimeZoneOffsetTo();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            if (castComponent.getTimeZoneOffsetTo() == null)
+            {
+                castComponent.setTimeZoneOffsetTo(new TimeZoneOffsetTo(propertyContent));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Time Zone

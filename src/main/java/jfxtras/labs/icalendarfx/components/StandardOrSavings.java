@@ -1,10 +1,15 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.ZoneOffset;
+import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
+import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetFrom;
+import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
 
 /**
  * Either StandardTime or DaylightSavingsTime.
@@ -29,36 +34,61 @@ public interface StandardOrSavings<T> extends VComponentRepeatable<T>
      * TZNAME:EST
      * TZNAME;LANGUAGE=fr-CA:HN
      */
-    ObjectProperty<TimeZoneName> timeZoneNameProperty();
-    default TimeZoneName getTimeZoneName() { return timeZoneNameProperty().get(); }
-    default void setTimeZoneName(TimeZoneName timeZoneName) { timeZoneNameProperty().set(timeZoneName); }
-    default T withTimeZoneName(TimeZoneName timeZoneName) { setTimeZoneName(timeZoneName); return (T) this; }
-    default T withTimeZoneName(String timeZoneName) { PropertyEnum.TIME_ZONE_NAME.parse(this, timeZoneName); return (T) this; }
-  
+    ObservableList<TimeZoneName> getTimeZoneNames();
+    void setTimeZoneNames(ObservableList<TimeZoneName> properties);
+    default T withTimeZoneNames(ObservableList<TimeZoneName> timeZoneNames) { setTimeZoneNames(timeZoneNames); return (T) this; }
+    default T withTimeZoneNames(String...timeZoneNames)
+    {
+        Arrays.stream(timeZoneNames).forEach(c -> PropertyEnum.TIME_ZONE_NAME.parse(this, c));
+        return (T) this;
+    }
+    default T withTimeZoneNames(TimeZoneName...timeZoneNames)
+    {
+        if (getTimeZoneNames() == null)
+        {
+            setTimeZoneNames(FXCollections.observableArrayList(timeZoneNames));
+        } else
+        {
+            getTimeZoneNames().addAll(timeZoneNames);
+        }
+        return (T) this;
+    } 
     
     /**
-     * TZOFFSETFROM: Time Zone Offset From
-     * RFC 5545 iCalendar 3.8.3.3. page 104
-     * This property specifies the offset that is in use prior to
-     * this time zone observance.
+     * TZOFFSETFROM
+     * Time Zone Offset From
+     * RFC 5545, 3.8.3.3, page 104
      * 
-     * Example:
+     * This property specifies the offset that is in use prior to this time zone observance.
+     * 
+     * EXAMPLES:
      * TZOFFSETFROM:-0500
+     * TZOFFSETFROM:+1345
      */
-    ZoneOffset getTimeZoneOffsetFrom();
-    ObjectProperty<ZoneOffset> timeZoneOffsetFromProperty();
-    void setTimeZoneOffsetFrom(ZoneOffset timeZoneOffsetFrom);
+    ObjectProperty<TimeZoneOffsetFrom> timeZoneOffsetFromProperty();
+    default TimeZoneOffsetFrom getTimeZoneOffsetFrom() { return timeZoneOffsetFromProperty().get(); }
+    default void setTimeZoneOffsetFrom(TimeZoneOffsetFrom timeZoneOffsetFrom) { timeZoneOffsetFromProperty().set(timeZoneOffsetFrom); }
+    default void setTimeZoneOffsetFrom(ZoneOffset zoneOffset) { setTimeZoneOffsetFrom(new TimeZoneOffsetFrom(zoneOffset)); }
+    default T withTimeZoneOffsetFrom(TimeZoneOffsetFrom timeZoneOffsetFrom) { setTimeZoneOffsetFrom(timeZoneOffsetFrom); return (T) this; }
+    default T withTimeZoneOffsetFrom(ZoneOffset zoneOffset) { setTimeZoneOffsetFrom(zoneOffset); return (T) this; }
+    default T withTimeZoneOffsetFrom(String timeZoneOffsetFrom) { PropertyEnum.TIME_ZONE_OFFSET_FROM.parse(this, timeZoneOffsetFrom); return (T) this; }
     
     /**
-     * TZOFFSETTO: Time Zone Offset To
-     * RFC 5545 iCalendar 3.8.3.4. page 105
-     * This property specifies the offset that is in use in this
-     * time zone observance.
+     * TZOFFSETTO
+     * Time Zone Offset To
+     * RFC 5545, 3.8.3.4, page 105
      * 
-     * Example:
+     * This property specifies the offset that is in use in this time zone observance
+     * 
+     * EXAMPLES:
      * TZOFFSETTO:-0400
+     * TZOFFSETTO:+1245
      */
-    ZoneOffset getTimeZoneOffsetTo();
-    ObjectProperty<ZoneOffset> timeZoneOffsetToProperty();
-    void setTimeZoneOffsetTo(ZoneOffset timeZoneOffsetTo);    
+    ObjectProperty<TimeZoneOffsetTo> timeZoneOffsetToProperty();
+    default TimeZoneOffsetTo getTimeZoneOffsetTo() { return timeZoneOffsetToProperty().get(); }
+    default void setTimeZoneOffsetTo(TimeZoneOffsetTo timeZoneOffsetTo) { timeZoneOffsetToProperty().set(timeZoneOffsetTo); }
+    default void setTimeZoneOffsetTo(ZoneOffset zoneOffset) { setTimeZoneOffsetTo(new TimeZoneOffsetTo(zoneOffset)); }
+    default T withTimeZoneOffsetTo(TimeZoneOffsetTo timeZoneOffsetTo) { setTimeZoneOffsetTo(timeZoneOffsetTo); return (T) this; }
+    default T withTimeZoneOffsetTo(ZoneOffset zoneOffset) { setTimeZoneOffsetTo(zoneOffset); return (T) this; }
+    default T withTimeZoneOffsetTo(String timeZoneOffsetTo) { PropertyEnum.TIME_ZONE_OFFSET_TO.parse(this, timeZoneOffsetTo); return (T) this; }
 }
