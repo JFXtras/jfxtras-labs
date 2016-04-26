@@ -158,7 +158,6 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
     public VEventNew withTimeTransparency(TimeTransparency timeTransparency) { setTimeTransparency(timeTransparency); return this; }
     public VEventNew withTimeTransparency(TimeTransparencyType timeTransparencyType) { setTimeTransparency(timeTransparencyType); return this; }
     public VEventNew withTimeTransparency(String timeTransparency) { PropertyEnum.TIME_TRANSPARENCY.parse(this, timeTransparency); return this; }
-
     
     /*
      * CONSTRUCTORS
@@ -169,4 +168,17 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
     {
         super(contentLines);
     }
+    
+    @Override
+    public boolean isValid()
+    {
+        boolean isDateTimeStartPresent = getDateTimeStart() != null;
+        boolean isDateTimeEndPresent = getDateTimeEnd() != null;
+        boolean isDurationPresent = getDuration() != null;
+        boolean ok1 = isDateTimeEndPresent && ! isDurationPresent;
+        boolean ok2 = ! isDateTimeEndPresent && isDurationPresent;
+        boolean isDateTimeEndAndDurationOk = ok1 || ok2;
+        return super.isValid() && isDateTimeStartPresent && isDateTimeEndAndDurationOk;
+    }
+
 }

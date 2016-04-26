@@ -122,5 +122,4 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     default T withUniformResourceLocator(String url) { setUniformResourceLocator(new UniformResourceLocator(url)); return (T) this; }
     default T withUniformResourceLocator(URI url) { setUniformResourceLocator(url); return (T) this; }
     default T withUniformResourceLocator(UniformResourceLocator url) { setUniformResourceLocator(url); return (T) this; }
-
 }

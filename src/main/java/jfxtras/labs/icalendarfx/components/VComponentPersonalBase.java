@@ -145,4 +145,12 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     {
         super(contentLines);
     }
+    
+    @Override
+    public boolean isValid()
+    {
+        boolean isDateTimeStampPresent = getDateTimeStamp() != null;
+        boolean isUniqueIdentifier = getUniqueIdentifier() != null;
+        return isDateTimeStampPresent && isUniqueIdentifier;
+    }
 }

@@ -85,6 +85,15 @@ public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<
         super(contentLines);
     }
     
+    @Override
+    public boolean isValid()
+    {
+        boolean isDateTimeStartPresent = getDateTimeStart() != null;
+        boolean isTimeZoneOffsetFromPresent = getTimeZoneOffsetFrom() != null;
+        boolean isTimeZoneOffsetToPresent = getTimeZoneOffsetTo() != null;
+        return isTimeZoneOffsetFromPresent && isTimeZoneOffsetToPresent && isDateTimeStartPresent;
+    }
+    
     // Recurrence streamer - produces recurrence set
     private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
     @Override

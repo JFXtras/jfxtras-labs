@@ -135,5 +135,5 @@ public interface VComponentNew<T>
      * 
      * @return - true if component is valid, false otherwise
      */
-    default boolean isValid() { return true; }
+    boolean isValid();
 }

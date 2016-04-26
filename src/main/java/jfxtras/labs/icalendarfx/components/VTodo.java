@@ -192,4 +192,15 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     {
         super(contentLines);
     }
+    
+    @Override
+    public boolean isValid()
+    {
+        boolean isDuePresent = getDateTimeDue() != null;
+        boolean isDurationPresent = getDuration() != null;
+        boolean ok1 = isDuePresent && ! isDurationPresent;
+        boolean ok2 = ! isDuePresent && isDurationPresent;
+        boolean isDueAndDurationOk = ok1 || ok2;
+        return super.isValid() && isDueAndDurationOk;
+    }
 }
