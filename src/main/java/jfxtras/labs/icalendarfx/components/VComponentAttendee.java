@@ -6,6 +6,14 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
+/**
+ * 
+ * @author David Bal
+ *
+ * @param <T> - concrete subclass
+ * @see VComponentPersonal
+ * @see VAlarm
+ */
 public interface VComponentAttendee<T> extends VComponentNew<T>
 {
     /**

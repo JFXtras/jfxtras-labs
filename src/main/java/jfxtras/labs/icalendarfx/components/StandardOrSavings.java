@@ -12,6 +12,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetFrom
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
 
 /**
+ * Subcomponent of VAlarm
  * Either StandardTime or DaylightSavingsTime.
  * Both classes have identical methods.
  * 

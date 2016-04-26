@@ -14,7 +14,6 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -67,7 +66,7 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
      */
     ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty();
     default DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStartProperty().get(); }
-    default void setDateTimeStart(String dtStart) { setDateTimeStart(DateTimeUtilities.temporalFromString(dtStart)); }
+    default void setDateTimeStart(String dtStart) { PropertyEnum.DATE_TIME_START.parse(this, dtStart); }
     default void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { dateTimeStartProperty().set(dtStart); }
     default void setDateTimeStart(Temporal temporal)
     {

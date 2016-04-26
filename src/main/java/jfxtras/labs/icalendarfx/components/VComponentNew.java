@@ -129,4 +129,11 @@ public interface VComponentNew<T>
      * @return - the component content lines
      */
     CharSequence toContentLines();
+    
+    /**
+     * Checks component to determine if necessary properties are set.
+     * 
+     * @return - true if component is valid, false otherwise
+     */
+    default boolean isValid() { return true; }
 }

@@ -50,7 +50,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
    {
        if (relationship == null)
        {
-           relationship = new SimpleObjectProperty<>(this, ParameterEnum.FORMAT_TYPE.toString());
+           relationship = new SimpleObjectProperty<>(this, ParameterEnum.ALARM_TRIGGER_RELATIONSHIP.toString());
        }
        return relationship;
    }

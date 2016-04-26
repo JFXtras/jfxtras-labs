@@ -6,10 +6,14 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
 /**
  * For single DESCRIPTION property
+ * Note: Not for VJournal - allows multiple descriptions
  * 
  * @author David Bal
  *
- * @param <T>
+ * @param <T> - concrete subclass
+ * @see VEvent
+ * @see VTodoOld
+ * @see VAlarm
  */
 public interface VComponentDescribable2<T> extends VComponentDescribable<T>
 {

@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.properties;
 
 import java.net.URI;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -80,6 +81,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetFrom
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public enum PropertyEnum
 {
@@ -1020,15 +1022,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VAlarm castComponent = (VAlarm) vComponent;
+            return castComponent.getRepeatCount();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VAlarm castComponent = (VAlarm) vComponent;
+            if (castComponent.getRepeatCount() == null)
+            {
+                castComponent.setRepeatCount(new RepeatCount(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Miscellaneous
@@ -1329,15 +1337,34 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VAlarm castComponent = (VAlarm) vComponent;
+            return castComponent.getTrigger();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VAlarm castComponent = (VAlarm) vComponent;
+            if (castComponent.getTrigger() == null)
+            {
+                Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyContent);
+                String valueType = map.get(ParameterEnum.VALUE_DATA_TYPES.toString());
+                String value = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
+                if ((valueType != null) && (valueType.equals(ValueType.DATE_TIME.toString())))
+                { // date-time
+                    ZonedDateTime t = ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
+                    castComponent.setTrigger(new Trigger<ZonedDateTime>(t));    
+                } else if ((valueType == null) || (valueType.equals(ValueType.DURATION)))
+                { // duration
+                    castComponent.setTrigger(new Trigger<Duration>(Duration.parse(value)));
+                } else
+                {
+                    throw new IllegalArgumentException("Unsupported value type:" + valueType);
+                }
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Relationship

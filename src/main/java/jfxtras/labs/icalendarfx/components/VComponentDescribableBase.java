@@ -8,19 +8,18 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
 /**
- * Going to become a superclass of VEvent, VTodo and VJournal
  * 
- * @author david
+ * @author David Bal
  *
- * @param <T>
- * @see VEventNewInt
- * @see VTodoInt
- * Note: not VJournal - allows multiple Summarys
+ * @param <T> - concrete subclass
  * 
- * Note: can't be used for VAlarm
+ * Components
+ * @see VEventNew
+ * @see VTodo
+ * @see VAlarm
+ * @see VJournal
+ * 
  */
-@Deprecated
-
 public abstract class VComponentDescribableBase<T> extends VComponentBase<T> implements VComponentDescribable<T>
 {
     /**
