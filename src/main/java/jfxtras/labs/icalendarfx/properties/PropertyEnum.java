@@ -671,7 +671,7 @@ public enum PropertyEnum
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             if (castComponent.getGeographicPosition() == null)
             {
-                castComponent.setGeographicPosition(new GeographicPosition(propertyContent));                                
+                castComponent.setGeographicPosition(GeographicPosition.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");

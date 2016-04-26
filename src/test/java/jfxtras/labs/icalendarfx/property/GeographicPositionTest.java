@@ -12,7 +12,7 @@ public class GeographicPositionTest
     public void canParseGeographicPosition()
     {
         String content = "GEO:37.386013;-122.082932";
-        GeographicPosition madeProperty = new GeographicPosition(content);
+        GeographicPosition madeProperty = GeographicPosition.parse(content);
         assertEquals(content, madeProperty.toContentLine());
         GeographicPosition expectedProperty = new GeographicPosition()
                 .withLatitude(37.386013)

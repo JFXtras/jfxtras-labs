@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.properties.component.misc;
 
 import java.text.DecimalFormat;
-import java.util.Map;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -13,7 +12,6 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
  * REQUEST-STATUS
@@ -35,22 +33,6 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  */
 public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
 {
-//    // Override default text string converter to avoid escaping the semicolon between
-//    // the code, description and exception values
-//    private final static StringConverter<String> CONVERTER = new StringConverter<String>()
-//    {
-//        @Override
-//        public String toString(String object)
-//        {
-//            return object.toString();
-//        }
-//
-//        @Override
-//        public String fromString(String string)
-//        {
-//            return string;
-//        }
-//    };
     /** Hierarchical, numeric return status code
      * 
    +--------+----------------------------------------------------------+
@@ -136,6 +118,13 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
         }
         return builder.toString();        
     }
+    
+    public static RequestStatus parse(String value)
+    {
+        RequestStatus requestStatus = new RequestStatus();
+        requestStatus.parseContent(value);
+        return requestStatus;
+    }
 
     /*
      * LISTENERS
@@ -191,13 +180,4 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
         setValue(builder.toString());
         valueProperty().addListener(valueChangeListener);
     }
-    
-    public static RequestStatus parse(String value)
-    {
-        Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(value);
-map.entrySet().stream().forEach(System.out::println);
-        RequestStatus requestStatus = new RequestStatus();
-        requestStatus.parseContent(value);
-        return requestStatus;
-    }
-    }
+}

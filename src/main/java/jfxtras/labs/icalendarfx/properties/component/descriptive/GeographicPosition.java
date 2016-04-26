@@ -5,7 +5,6 @@ import java.text.DecimalFormat;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
@@ -32,22 +31,22 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class GeographicPosition extends PropertyBase<String, GeographicPosition>
 {
-    // Override default text string converter to avoid escaping the semicolon between
-    // the latitude and longitude values
-    private final static StringConverter<String> CONVERTER = new StringConverter<String>()
-    {
-        @Override
-        public String toString(String object)
-        {
-            return object.toString();
-        }
-
-        @Override
-        public String fromString(String string)
-        {
-            return string;
-        }
-    };
+//    // Override default text string converter to avoid escaping the semicolon between
+//    // the latitude and longitude values
+//    private final static StringConverter<String> CONVERTER = new StringConverter<String>()
+//    {
+//        @Override
+//        public String toString(String object)
+//        {
+//            return object.toString();
+//        }
+//
+//        @Override
+//        public String fromString(String string)
+//        {
+//            return string;
+//        }
+//    };
     
     public Double getLatitude() { return latitude.get(); }
     ObjectProperty<Double> latitudeProperty() { return latitude; }
@@ -66,14 +65,14 @@ public class GeographicPosition extends PropertyBase<String, GeographicPosition>
      * CONSTRUCTORS
      */
     
-    public GeographicPosition(CharSequence contentLine)
-    {
-        super();
-        setConverter(CONVERTER);
-        parseContent(contentLine);
-        setupListeners();
-        updateParts(getValue());
-    }
+//    public GeographicPosition(CharSequence contentLine)
+//    {
+//        super();
+////        setConverter(CONVERTER);
+//        parseContent(contentLine);
+//        setupListeners();
+//        updateParts(getValue());
+//    }
     
     public GeographicPosition(GeographicPosition source)
     {
@@ -85,8 +84,27 @@ public class GeographicPosition extends PropertyBase<String, GeographicPosition>
     public GeographicPosition()
     {
         super();
-        setConverter(CONVERTER);
+//        setConverter(CONVERTER);
         setupListeners();
+    }
+    
+    /** Applies string converter only to description and exception parts of the RequestStatus property
+     * This leaves the semicolon delimiters unescaped
+     */
+    @Override
+    protected String valueContent()
+    {
+        StringBuilder builder = new StringBuilder(20);
+        builder.append(DECIMAL_FORMAT.format(getLatitude()) + ";");
+        builder.append(DECIMAL_FORMAT.format(getLongitude()));
+        return builder.toString();
+    }
+    
+    public static GeographicPosition parse(String value)
+    {
+        GeographicPosition geographicPosition = new GeographicPosition();
+        geographicPosition.parseContent(value);
+        return geographicPosition;
     }
     
     /*
