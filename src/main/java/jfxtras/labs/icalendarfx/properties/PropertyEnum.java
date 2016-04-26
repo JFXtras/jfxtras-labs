@@ -30,6 +30,7 @@ import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -290,24 +291,38 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
-            return castComponent.getContacts();
+            if (vComponent instanceof VFreeBusy)
+            {// VJournal has one Contact
+                VFreeBusy castComponent = (VFreeBusy) vComponent;
+                return castComponent.getContact();                
+            } else
+            { // Other components have a list of Contacts
+                VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+                return castComponent.getContacts();
+            }
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
-            final ObservableList<Contact> list;
-            if (castComponent.getContacts() == null)
-            {
-                list = FXCollections.observableArrayList();
-                castComponent.setContacts(list);
+            if (vComponent instanceof VFreeBusy)
+            {// VJournal has one Contact
+                VFreeBusy castComponent = (VFreeBusy) vComponent;
+                castComponent.setContact(new Contact(propertyContent));                
             } else
-            {
-                list = castComponent.getContacts();
+            { // Other components have a list of Contacts
+                VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
+                final ObservableList<Contact> list;
+                if (castComponent.getContacts() == null)
+                {
+                    list = FXCollections.observableArrayList();
+                    castComponent.setContacts(list);
+                } else
+                {
+                    list = castComponent.getContacts();
+                }
+                list.add(new Contact(propertyContent));
             }
-            list.add(new Contact(propertyContent));
         }
     },
     // Date and Time

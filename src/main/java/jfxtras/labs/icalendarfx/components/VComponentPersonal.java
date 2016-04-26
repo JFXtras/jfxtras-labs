@@ -103,7 +103,8 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty();
     default UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifierProperty().get(); }
     default void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
-    default T withUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(new UniqueIdentifier(uniqueIdentifier)); return (T) this; }
+    default void setUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(new UniqueIdentifier(uniqueIdentifier)); }
+    default T withUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); return (T) this; }
     default T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); return (T) this; }
 
     /**

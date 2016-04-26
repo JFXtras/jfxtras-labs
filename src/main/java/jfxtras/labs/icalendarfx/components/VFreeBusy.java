@@ -4,9 +4,9 @@ import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
 
@@ -94,6 +94,36 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
     }
     
     /**
+     * CONTACT:
+     * RFC 5545 iCalendar 3.8.4.2. page 109
+     * This property is used to represent contact information or
+     * alternately a reference to contact information associated with the
+     * calendar component.
+     * 
+     * NOTE: This property can only occur once in VFreeBusy (multiple times allowed
+     * for other components)
+     * 
+     * Example:
+     * CONTACT;ALTREP="ldap://example.com:6666/o=ABC%20Industries\,
+     *  c=US???(cn=Jim%20Dolittle)":Jim Dolittle\, ABC Industries\,
+     *  +1-919-555-1234
+     */
+    public ObjectProperty<Contact> contactProperty()
+    {
+        if (contact == null)
+        {
+            contact = new SimpleObjectProperty<>(this, PropertyEnum.CONTACT.toString());
+        }
+        return contact;
+    }
+    private ObjectProperty<Contact> contact;
+    public Contact getContact() { return contactProperty().get(); }
+    public void setContact(String contact) { setContact(new Contact(contact)); }
+    public void setContact(Contact contact) { contactProperty().set(contact); }
+    public VFreeBusy withContact(Contact contact) { setContact(contact); return this; }
+    public VFreeBusy withContact(String contact) { PropertyEnum.CONTACT.parse(this, contact); return this; }
+    
+    /**
      * DTEND
      * Date-Time End (for local-date)
      * RFC 5545, 3.8.2.2, page 95
@@ -111,6 +141,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
         if (dateTimeEnd == null)
         {
             dateTimeEnd = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_END.toString());
+            dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
         return dateTimeEnd;
     }
@@ -148,27 +179,6 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VFre
 
     @Override
     public void setFreeBusy(ObservableList<FreeBusyTime> properties)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public String getContact()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public StringProperty contactProperty()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setContact(String contact)
     {
         // TODO Auto-generated method stub
         

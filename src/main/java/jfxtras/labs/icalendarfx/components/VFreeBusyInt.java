@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
 
@@ -32,19 +31,4 @@ public interface VFreeBusyInt<T>
     ObservableList<FreeBusyTime> getFreeBusy();
     void setFreeBusy(ObservableList<FreeBusyTime> properties);
 
-    
-    /**
-     * CONTACT
-     * RFC 5545 iCalendar 3.8.4.2. page 109
-     * 
-     * This property is used to represent contact information or
-     * alternately a reference to contact information associated with the
-     * calendar component.
-     * 
-     * Example:
-     * CONTACT:Jim Dolittle\, ABC Industries\, +1-919-555-1234
-     */
-    String getContact();
-    StringProperty contactProperty();
-    void setContact(String contact);
 }
