@@ -6,7 +6,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
@@ -21,23 +20,23 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
  * @see VEvent
  * @see VTodoOld
  */
-public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VComponentDuration<T>
+public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VComponentDuration<T>, VComponentDescribable2<T>
 {
-    /**
-     * DESCRIPTION:
-     * RFC 5545 iCalendar 3.8.1.12. page 84
-     * This property provides a more complete description of the
-     * calendar component than that provided by the "SUMMARY" property.
-     * Example:
-     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
-     *  design.\nHappy Face Conference Room. Phoenix design team
-     *  MUST attend this meeting.\nRSVP to team leader.
-     */
-    public ObjectProperty<Description> descriptionProperty();
-    default Description getDescription() { return descriptionProperty().get(); }
-    default void setDescription(Description description) { descriptionProperty().set(description); }
-    default T withDescription(Description description) { setDescription(description); return (T) this; }
-    default T withDescription(String description) { PropertyEnum.DESCRIPTION.parse(this, description); return (T) this; }
+//    /**
+//     * DESCRIPTION:
+//     * RFC 5545 iCalendar 3.8.1.12. page 84
+//     * This property provides a more complete description of the
+//     * calendar component than that provided by the "SUMMARY" property.
+//     * Example:
+//     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
+//     *  design.\nHappy Face Conference Room. Phoenix design team
+//     *  MUST attend this meeting.\nRSVP to team leader.
+//     */
+//    public ObjectProperty<Description> descriptionProperty();
+//    default Description getDescription() { return descriptionProperty().get(); }
+//    default void setDescription(Description description) { descriptionProperty().set(description); }
+//    default T withDescription(Description description) { setDescription(description); return (T) this; }
+//    default T withDescription(String description) { PropertyEnum.DESCRIPTION.parse(this, description); return (T) this; }
 
     /**
      * GEO: Geographic Position

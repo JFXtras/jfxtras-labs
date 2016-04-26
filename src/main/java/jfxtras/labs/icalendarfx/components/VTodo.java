@@ -15,7 +15,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeDue;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentPrimary<VTodo>
+public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentDescribable2<VTodo>
 {
     @Override
     public VComponentEnum componentType()

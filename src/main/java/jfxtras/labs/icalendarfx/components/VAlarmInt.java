@@ -2,26 +2,42 @@ package jfxtras.labs.icalendarfx.components;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.StringProperty;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
 public interface VAlarmInt<T> extends VComponentDescribable<T>, VComponentAttendee<T>, VComponentDuration<T>
 {
-    /**
-     * ACTION
-     * RFC 5545 iCalendar 3.8.6.1 page 132,
-     * This property defines the action to be invoked when an
-     * alarm is triggered.
-     * actionvalue = "AUDIO" / "DISPLAY" / "EMAIL" / iana-token / x-name
-     * 
-     * Example:
-     * ACTION:DISPLAY
-     */
-    String getAction();
-    StringProperty actionProperty();
-    void setAction(String action);
+//    /**
+//     * ACTION
+//     * RFC 5545 iCalendar 3.8.6.1 page 132,
+//     * This property defines the action to be invoked when an
+//     * alarm is triggered.
+//     * actionvalue = "AUDIO" / "DISPLAY" / "EMAIL" / iana-token / x-name
+//     * 
+//     * Example:
+//     * ACTION:DISPLAY
+//     */
+//    String getAction();
+//    StringProperty actionProperty();
+//    void setAction(String action);
+//    
+//    ObjectProperty<Action> actionProperty()
+//    {
+//        if (action == null)
+//        {
+//            action = new SimpleObjectProperty<>(this, PropertyEnum.TIME_TRANSPARENCY.toString());
+//        }
+//        return action;
+//    }
+//    private ObjectProperty<Action> action;
+//    public Action getAction() { return actionProperty().get(); }
+//    public void setAction(String action) { setAction(new Action(action)); }
+//    public void setAction(Action action) { actionProperty().set(action); }
+//    public void setAction(ActionType action) { setAction(new Action(action)); }
+//    public VEventNew withAction(Action action) { setAction(action); return this; }
+//    public VEventNew withAction(ActionType actionType) { setAction(actionType); return this; }
+//    public VEventNew withAction(String action) { PropertyEnum.TIME_TRANSPARENCY.parse(this, action); return this; }
+
     
     /**
      * ATTENDEE: Attendee
@@ -53,19 +69,19 @@ public interface VAlarmInt<T> extends VComponentDescribable<T>, VComponentAttend
 //    void setAttendees(ObservableList<Attendee> properties);
     
     // TODO - PUT IN OWN INTERFACE
-    /**
-     * DESCRIPTION:
-     * RFC 5545 iCalendar 3.8.1.12. page 84
-     * This property provides a more complete description of the
-     * calendar component than that provided by the "SUMMARY" property.
-     * Example:
-     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
-     *  design.\nHappy Face Conference Room. Phoenix design team
-     *  MUST attend this meeting.\nRSVP to team leader.
-     */
-    public ObjectProperty<Description> descriptionProperty();
-    public Description getDescription();
-    public void setDescription(Description description);
+//    /**
+//     * DESCRIPTION:
+//     * RFC 5545 iCalendar 3.8.1.12. page 84
+//     * This property provides a more complete description of the
+//     * calendar component than that provided by the "SUMMARY" property.
+//     * Example:
+//     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
+//     *  design.\nHappy Face Conference Room. Phoenix design team
+//     *  MUST attend this meeting.\nRSVP to team leader.
+//     */
+//    public ObjectProperty<Description> descriptionProperty();
+//    public Description getDescription();
+//    public void setDescription(Description description);
     
 //    /** 
 //     * DURATION

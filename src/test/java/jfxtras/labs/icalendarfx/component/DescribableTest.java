@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
+import jfxtras.labs.icalendarfx.components.VComponentDescribable2;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -33,7 +34,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 public class DescribableTest
 {
     @Test
-    public void canBuildRepeatable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    public void canBuildDescribable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentDescribable<?>> components = Arrays.asList(
                 new VEventNew()
@@ -65,6 +66,34 @@ public class DescribableTest
                     "ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW" + System.lineSeparator() +
                     "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com" + System.lineSeparator() +
                     "SUMMARY;LANGUAGE=en-USA:a test summary" + System.lineSeparator() +
+                    "END:" + componentName;
+                    
+            VComponentDescribable<?> parsedComponent = builtComponent
+                    .getClass()
+                    .getConstructor(String.class)
+                    .newInstance(expectedContent);
+            assertEquals(parsedComponent, builtComponent);
+            assertEquals(expectedContent, builtComponent.toContentLines());            
+        }
+    }
+    
+    @Test
+    public void canBuildDescribable2() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    {
+        List<VComponentDescribable2<?>> components = Arrays.asList(
+                new VEventNew()
+                    .withDescription("Sample description"),
+                new VTodo()
+                    .withDescription("Sample description"),
+                new VAlarm()
+                    .withDescription("Sample description")
+                );
+        
+        for (VComponentDescribable2<?> builtComponent : components)
+        {
+            String componentName = builtComponent.componentType().toString();
+            String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
+                    "DESCRIPTION:Sample description" + System.lineSeparator() +
                     "END:" + componentName;
                     
             VComponentDescribable<?> parsedComponent = builtComponent

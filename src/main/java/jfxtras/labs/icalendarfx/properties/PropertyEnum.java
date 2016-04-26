@@ -15,9 +15,11 @@ import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.StandardOrSavings;
+import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
+import jfxtras.labs.icalendarfx.components.VComponentDescribable2;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentDuration;
 import jfxtras.labs.icalendarfx.components.VComponentLastModified;
@@ -90,15 +92,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VAlarm castComponent = (VAlarm) vComponent;
+            return castComponent.getAction();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VAlarm castComponent = (VAlarm) vComponent;
+            if (castComponent.getAction() == null)
+            {
+                castComponent.setAction(new Action(propertyContent));                                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // property class
@@ -500,31 +508,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            if (vComponent instanceof VComponentLocatable)
-            { // Other components has only one Description
-                VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
-                return castComponent.getDescription();
-            } else
-            { // VJournal has list of Description
+            if (vComponent instanceof VJournal)
+            {// VJournal has list of Description// VJournal has list of Description
                 VJournal castComponent = (VJournal) vComponent;
                 return castComponent.getDescriptions();                
+            } else
+            { // Other components has only one Description
+                VComponentDescribable2<?> castComponent = (VComponentDescribable2<?>) vComponent;
+                return castComponent.getDescription();
             }
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            if (vComponent instanceof VComponentLocatable)
-            { // Other components has only one Description
-                VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
-                if (castComponent.getDescription() == null)
-                {
-                    castComponent.setDescription(new Description(propertyContent));                                
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-                }
-            } else
+            if (vComponent instanceof VJournal)
             { // VJournal has list of Description
                 VJournal castComponent = (VJournal) vComponent;
                 final ObservableList<Description> list;
@@ -537,6 +535,16 @@ public enum PropertyEnum
                     list = castComponent.getDescriptions();
                 }
                 list.add(new Description(propertyContent));
+            } else
+            { // Other components has only one Description
+                VComponentDescribable2<?> castComponent = (VComponentDescribable2<?>) vComponent;
+                if (castComponent.getDescription() == null)
+                {
+                    castComponent.setDescription(new Description(propertyContent));                                
+                } else
+                {
+                    throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+                }
             }
         }
     },

@@ -11,8 +11,8 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
-public class VEventNew extends VComponentLocatableBase<VEventNew> implements VComponentDateTimeEnd<VEventNew>, VComponentDisplayable<VEventNew>
-{    
+public class VEventNew extends VComponentLocatableBase<VEventNew> implements VComponentDateTimeEnd<VEventNew>, VComponentDescribable2<VEventNew>
+{
     @Override
     public VComponentEnum componentType()
     {
