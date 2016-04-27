@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
 /**
@@ -31,6 +30,6 @@ public interface VComponentDescribable2<T> extends VComponentDescribable<T>
     default Description getDescription() { return descriptionProperty().get(); }
     default void setDescription(Description description) { descriptionProperty().set(description); }
     default T withDescription(Description description) { setDescription(description); return (T) this; }
-    default T withDescription(String description) { PropertyEnum.DESCRIPTION.parse(this, description); return (T) this; }
+    default T withDescription(String description) { setDescription(Description.parse(description)); return (T) this; }
 
 }

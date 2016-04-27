@@ -41,13 +41,25 @@ public class LastModified extends PropertyBaseUTC<LastModified>
         super(temporal);
     }
 
-    public LastModified(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public LastModified(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public LastModified(LastModified source)
     {
         super(source);
+    }
+
+    public LastModified()
+    {
+        super();
+    }
+
+    public static LastModified parse(String value)
+    {
+        LastModified property = new LastModified();
+        property.parseContent(value);
+        return property;
     }
 }

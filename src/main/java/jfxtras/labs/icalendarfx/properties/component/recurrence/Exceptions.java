@@ -27,10 +27,10 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  */
 public class Exceptions<T extends Temporal> extends PropertyBaseRecurrence<T, Exceptions<T>>
 {       
-    public Exceptions(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Exceptions(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     @SuppressWarnings("unchecked")
     public Exceptions(T...temporals)
@@ -41,5 +41,28 @@ public class Exceptions<T extends Temporal> extends PropertyBaseRecurrence<T, Ex
     public Exceptions(ObservableSet<T> value)
     {
         super(value);
+    }
+    
+    public Exceptions()
+    {
+        super();
+    }
+
+    /** Parse string to Temporal.  Not type safe.  Implementation must
+     * ensure parameterized type is the same as date-time represented by String parameter */
+    public static <U extends Temporal> Exceptions<U> parse(String value)
+    {
+        Exceptions<U> property = new Exceptions<U>();
+        property.parseContent(value);
+        return property;
+    }
+    
+    /** Parse string with Temporal class Exceptions provided as parameter */
+    public static <U extends Temporal> Exceptions<U> parse(Class<U> clazz, String value)
+    {
+        Exceptions<U> property = new Exceptions<U>();
+        property.parseContent(value);
+        clazz.cast(property.getValue().iterator().next()); // class check
+        return property;
     }
 }

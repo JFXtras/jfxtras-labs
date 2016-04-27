@@ -357,7 +357,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
         // do nothing - override in subclass for functionality
     }
     
-    protected void parseContent(CharSequence contentLine)
+    /** Parse content line into calendar property */
+    public void parseContent(CharSequence contentLine)
     {
 //        setConverter(converter);
         String propertyString = contentLine.toString();

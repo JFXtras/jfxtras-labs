@@ -16,6 +16,7 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * Abstract class for Exceptions and Recurrences
@@ -30,16 +31,24 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends PropertyBaseDateTime<ObservableSet<T>, U>
 {
     private ZoneId zone;
+    private DateTimeType myType;
     private final SetChangeListener<T> recurrenceListener = (SetChangeListener<T>) (SetChangeListener.Change<? extends T> change) ->
     {
         if (change.wasAdded())
         {
             Temporal newTemporal = change.getElementAdded();
+            DateTimeType newType = DateTimeType.of(newTemporal);
+            if (newType != myType)
+            {
+                change.getSet().remove(newTemporal);
+                throw new DateTimeException("Can't add new element of type " + newType + ". New elements must match type of existing elements (" + myType + ")");
+            }
             if (newTemporal instanceof ZonedDateTime)
             {
                 ZoneId myZone = ((ZonedDateTime) newTemporal).getZone();
                 if (! myZone.equals(zone))
                 {
+                    change.getSet().remove(newTemporal);
                     throw new DateTimeException("Can't add new element with ZoneId of " + myZone + ". New elements must match ZoneId of existing elements (" + zone + ")");
                 }
             }
@@ -65,37 +74,43 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
                     .collect(Collectors.toSet()));
         }
     };
-        
+    
+    /*
+     * CONSTRUCTORS
+     */
     public PropertyBaseRecurrence(CharSequence contentLine)
     {
-        super();
-        setConverter(CONVERTER);
+        this();
         parseContent(contentLine);
-        setupListener();
     }
 
     public PropertyBaseRecurrence(ObservableSet<T> value)
     {
-        super();
-        setConverter(CONVERTER);
+        this();
         setValue(value);
-        setupListener();
         if (! isValid())
         {
             throw new IllegalArgumentException("Error in parsing " + value);
         }
     }
     
+    public PropertyBaseRecurrence()
+    {
+        super();
+        setConverter(CONVERTER);
+    }
+
     // Listen to additions to collection to ensure time zone is consistent
     private void setupListener()
     {
         if (! getValue().isEmpty())
         {
             T sampleValue = getValue().iterator().next();
+            myType = DateTimeType.of(sampleValue);
+            getValue().addListener(recurrenceListener);
             if (sampleValue instanceof ZonedDateTime)
             {
                 zone = ((ZonedDateTime) sampleValue).getZone();
-                getValue().addListener(recurrenceListener);
             }
         }
 
@@ -116,7 +131,9 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
                         ". Accepted types are: " + propertyType().allowedValueTypes());                
             }
         }
+        System.out.println("setup listener");
         super.setValue(value);
+        setupListener();
     }
     
     @Override

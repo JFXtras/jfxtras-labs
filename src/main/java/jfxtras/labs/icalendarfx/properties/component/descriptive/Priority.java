@@ -27,10 +27,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class Priority extends PropertyBase<Integer, Priority>
 {
-    public Priority(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Priority(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public Priority(Priority source)
     {
@@ -40,6 +40,11 @@ public class Priority extends PropertyBase<Integer, Priority>
     public Priority(Integer value)
     {
         super(value);
+    }
+    
+    public Priority()
+    {
+        super();
     }
 
     @Override
@@ -56,5 +61,12 @@ public class Priority extends PropertyBase<Integer, Priority>
     public boolean isValid()
     {
         return ((getValue() < 0) || (getValue() > 9)) ? false : super.isValid();
+    }
+
+    public static Priority parse(String propertyContent)
+    {
+        Priority property = new Priority();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

@@ -81,7 +81,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     }
     private ObjectProperty<DateTimeCompleted> dateTimeCompleted;
     public DateTimeCompleted getDateTimeCompleted() { return dateTimeCompletedProperty().get(); }
-    public void setDateTimeCompleted(String completed) { setDateTimeCompleted(new DateTimeCompleted(completed)); }
+    public void setDateTimeCompleted(String completed) { setDateTimeCompleted(DateTimeCompleted.parse(completed)); }
     public void setDateTimeCompleted(DateTimeCompleted completed) { dateTimeCompletedProperty().set(completed); }
     public void setDateTimeCompleted(ZonedDateTime completed) { setDateTimeCompleted(new DateTimeCompleted(completed)); }
     public VTodo withDateTimeCompleted(ZonedDateTime completed) { setDateTimeCompleted(completed); return  this; }
@@ -176,7 +176,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     }
     private ObjectProperty<PercentComplete> percentComplete;
     public PercentComplete getPercentComplete() { return percentCompleteProperty().get(); }
-    public void setPercentComplete(String percentComplete) { setPercentComplete(new PercentComplete(percentComplete)); }
+    public void setPercentComplete(String percentComplete) { setPercentComplete(PercentComplete.parse(percentComplete)); }
     public void setPercentComplete(Integer percentComplete) { setPercentComplete(new PercentComplete(percentComplete)); }
     public void setPercentComplete(PercentComplete percentComplete) { percentCompleteProperty().set(percentComplete); }
     public VTodo withPercentComplete(PercentComplete percentComplete) { setPercentComplete(percentComplete); return this; }

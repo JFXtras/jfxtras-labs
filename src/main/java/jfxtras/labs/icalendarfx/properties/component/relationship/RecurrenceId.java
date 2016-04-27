@@ -82,18 +82,44 @@ public class RecurrenceId<T extends Temporal> extends PropertyBaseDateTime<T, Re
     public RecurrenceId<T> withRange(RangeType value) { setRange(new Range(value)); return this; }
     public RecurrenceId<T> withRange(String content) { setRange(content); return this; }
 
+    /*
+     * CONSTRUCTORS
+     */
    public RecurrenceId(T temporal)
     {
         super(temporal);
     }
 
-    public RecurrenceId(Class<T> clazz, CharSequence contentLine)
-    {
-        super(clazz, contentLine);
-    }
+//    public RecurrenceId(Class<T> clazz, CharSequence contentLine)
+//    {
+//        super(clazz, contentLine);
+//    }
     
     public RecurrenceId(RecurrenceId<T> source)
     {
         super(source);
+    }
+    
+    public RecurrenceId()
+    {
+        super();
+    }
+    
+    /** Parse string to Temporal.  Not type safe.  Implementation must
+     * ensure parameterized type is the same as date-time represented by String parameter */
+    public static <U extends Temporal> RecurrenceId<U> parse(String value)
+    {
+        RecurrenceId<U> property = new RecurrenceId<U>();
+        property.parseContent(value);
+        return property;
+    }
+    
+    /** Parse string with Temporal class explicitly provided as parameter */
+    public static <U extends Temporal> RecurrenceId<U> parse(Class<U> clazz, String value)
+    {
+        RecurrenceId<U> property = new RecurrenceId<U>();
+        property.parseContent(value);
+        clazz.cast(property.getValue()); // class check
+        return property;
     }
 }

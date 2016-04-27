@@ -22,7 +22,7 @@ public class GeneralTest
     public void canEscapeTest()
     {
         String contentLine = "DESCRIPTION:a dog\\nran\\, far\\;\\naway \\\\\\\\1";
-        Description d = new Description(contentLine);
+        Description d = Description.parse(contentLine);
         String expectedValue = "a dog" + System.lineSeparator() +
                                "ran, far;" + System.lineSeparator() +
                                "away \\\\1";

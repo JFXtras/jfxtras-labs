@@ -197,7 +197,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     ObjectProperty<RecurrenceRule> recurrenceRuleProperty();
     default void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
     default void setRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
-    default void setRecurrenceRule(String rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
+    default void setRecurrenceRule(String rrule) { setRecurrenceRule(RecurrenceRule.parse(rrule)); }
     default T withRecurrenceRule(String rrule) { setRecurrenceRule(rrule); return (T) this; }
     default T withRecurrenceRule(RecurrenceRule rrule) { setRecurrenceRule(rrule); return (T) this; }
     default T withRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(rrule); return (T) this; }

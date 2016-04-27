@@ -278,7 +278,7 @@ public class DisplayableTest
         VEventNew component = new VEventNew()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
         ObservableList<Exceptions<? extends Temporal>> exceptions = FXCollections.observableArrayList();
-        exceptions.add(new Exceptions<LocalDateTime>("20160228T093000"));
+        exceptions.add(Exceptions.parse("20160228T093000"));
         component.setExceptions(exceptions); // invalid        
     }
     

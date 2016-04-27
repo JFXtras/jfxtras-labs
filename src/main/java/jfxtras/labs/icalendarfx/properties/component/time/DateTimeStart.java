@@ -50,32 +50,17 @@ public class DateTimeStart<T extends Temporal> extends PropertyBaseDateTime<T,Da
      * ensure parameterized type is the same as date-time represented by String parameter */
     public static <U extends Temporal> DateTimeStart<U> parse(String value)
     {
-        DateTimeStart<U> requestStatus = new DateTimeStart<U>();
-        requestStatus.parseContent(value);
-        return requestStatus;
+        DateTimeStart<U> property = new DateTimeStart<U>();
+        property.parseContent(value);
+        return property;
     }
     
     /** Parse string with Temporal class explicitly provided as parameter */
     public static <U extends Temporal> DateTimeStart<U> parse(Class<U> clazz, String value)
     {
-        DateTimeStart<U> requestStatus = new DateTimeStart<U>();
-        requestStatus.parseContent(value);
-        clazz.cast(requestStatus.getValue()); // class check
-        return requestStatus;
+        DateTimeStart<U> property = new DateTimeStart<U>();
+        property.parseContent(value);
+        clazz.cast(property.getValue()); // class check
+        return property;
     }
-    
-    /** Parse string to Temporal.  Not type safe.  Implementation must
-     * ensure parameterized type is the same as Temporal */
-//    public static <U extends Temporal> DateTimeStart<U> parse(String value)
-//    {
-//        Temporal t = DateTimeUtilities.temporalFromString(value);
-//        return new DateTimeStart<U>((U) t);
-//    }
-    
-//    /** Parse string with Temporal class explicitly provided as parameter */
-//    public static <U extends Temporal> DateTimeStart<U> parse(Class<U> clazz, String value)
-//    {
-//        Temporal t = DateTimeUtilities.temporalFromString(value);
-//        return new DateTimeStart<U>(clazz.cast(t));
-//    }
 }

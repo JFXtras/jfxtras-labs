@@ -20,9 +20,9 @@ public class FreeBusyTimeTest
     public void canParseFreeBusyTime1()
     {
         String content = "FREEBUSY;FBTYPE=BUSY-UNAVAILABLE:19970308T160000Z/PT8H30M";
-        FreeBusyTime madeProperty = new FreeBusyTime(content);
+        FreeBusyTime madeProperty = FreeBusyTime.parse(content);
         assertEquals(content, madeProperty.toContentLine());
-        FreeBusyTime expectedProperty = new FreeBusyTime("19970308T160000Z/PT8H30M")
+        FreeBusyTime expectedProperty = FreeBusyTime.parse("19970308T160000Z/PT8H30M")
                 .withFreeBusyType(FreeBusyTypeEnum.BUSY_UNAVAILABLE);
         assertEquals(expectedProperty, madeProperty);
         Pair<ZonedDateTime, TemporalAmount> expectedValue = new Pair<ZonedDateTime, TemporalAmount>(
@@ -35,9 +35,9 @@ public class FreeBusyTimeTest
     public void canParseFreeBusyTime2()
     {
         String content = "FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/19970309T000000Z";
-        FreeBusyTime madeProperty = new FreeBusyTime(content);
+        FreeBusyTime madeProperty = FreeBusyTime.parse(content);
         assertEquals("FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/PT1H", madeProperty.toContentLine());
-        FreeBusyTime expectedProperty = new FreeBusyTime("19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/19970309T000000Z")
+        FreeBusyTime expectedProperty = FreeBusyTime.parse("19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/19970309T000000Z")
                 .withFreeBusyType(FreeBusyTypeEnum.FREE);
         assertEquals(expectedProperty, madeProperty);
         Pair<ZonedDateTime, TemporalAmount> expectedValue1 = new Pair<ZonedDateTime, TemporalAmount>(

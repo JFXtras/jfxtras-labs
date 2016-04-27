@@ -51,17 +51,17 @@ public class DateTimeEnd<T extends Temporal> extends PropertyBaseDateTime<T, Dat
      * ensure parameterized type is the same as date-time represented by String parameter */
     public static <U extends Temporal> DateTimeEnd<U> parse(String value)
     {
-        DateTimeEnd<U> requestStatus = new DateTimeEnd<U>();
-        requestStatus.parseContent(value);
-        return requestStatus;
+        DateTimeEnd<U> property = new DateTimeEnd<U>();
+        property.parseContent(value);
+        return property;
     }
     
     /** Parse string with Temporal class explicitly provided as parameter */
     public static <U extends Temporal> DateTimeEnd<U> parse(Class<U> clazz, String value)
     {
-        DateTimeEnd<U> requestStatus = new DateTimeEnd<U>();
-        requestStatus.parseContent(value);
-        clazz.cast(requestStatus.getValue()); // class check
-        return requestStatus;
+        DateTimeEnd<U> property = new DateTimeEnd<U>();
+        property.parseContent(value);
+        clazz.cast(property.getValue()); // class check
+        return property;
     }
 }

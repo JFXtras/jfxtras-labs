@@ -22,13 +22,25 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  */
 public class Location extends PropertyBaseAltText<String, Location>
 {    
-    public Location(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Location(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public Location(Location source)
     {
         super(source);
+    }
+
+    public Location()
+    {
+        super();
+    }
+    
+    public static Location parse(String propertyContent)
+    {
+        Location property = new Location();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

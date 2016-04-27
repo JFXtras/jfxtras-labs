@@ -1,9 +1,6 @@
 package jfxtras.labs.icalendarfx.properties;
 
-import java.time.DateTimeException;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -344,8 +341,7 @@ public enum PropertyEnum
             VTodo castComponent = (VTodo) vComponent;
             if (castComponent.getDateTimeCompleted() == null)
             {
-                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-                castComponent.setDateTimeCompleted(new DateTimeCompleted((ZonedDateTime) t));                                
+                castComponent.setDateTimeCompleted(DateTimeCompleted.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -371,8 +367,7 @@ public enum PropertyEnum
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getDateTimeCreated() == null)
             {
-                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-                castComponent.setDateTimeCreated(new DateTimeCreated((ZonedDateTime) t));                                
+                castComponent.setDateTimeCreated(DateTimeCreated.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -398,18 +393,7 @@ public enum PropertyEnum
             VTodo castComponent = (VTodo) vComponent;
             if (castComponent.getDateTimeDue() == null)
             {
-                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-                if (t instanceof LocalDate)
-                {
-                    castComponent.setDateTimeDue(new DateTimeDue<LocalDate>((LocalDate) t));                
-                } else if (t instanceof LocalDateTime)
-                {
-                    castComponent.setDateTimeDue(new DateTimeDue<LocalDateTime>((LocalDateTime) t));                
-                    
-                } else if (t instanceof ZonedDateTime)
-                {
-                    castComponent.setDateTimeDue(new DateTimeDue<ZonedDateTime>((ZonedDateTime) t));                                
-                }
+                castComponent.setDateTimeDue(DateTimeDue.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -435,18 +419,7 @@ public enum PropertyEnum
             VComponentDateTimeEnd<?> castComponent = (VComponentDateTimeEnd<?>) vComponent;
             if (castComponent.getDateTimeEnd() == null)
             {
-                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-                if (t instanceof LocalDate)
-                {
-                    castComponent.setDateTimeEnd(new DateTimeEnd<LocalDate>((LocalDate) t));                
-                } else if (t instanceof LocalDateTime)
-                {
-                    castComponent.setDateTimeEnd(new DateTimeEnd<LocalDateTime>((LocalDateTime) t));                
-                    
-                } else if (t instanceof ZonedDateTime)
-                {
-                    castComponent.setDateTimeEnd(new DateTimeEnd<ZonedDateTime>((ZonedDateTime) t));                                
-                }
+                castComponent.setDateTimeEnd(DateTimeEnd.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -497,8 +470,6 @@ public enum PropertyEnum
             VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
             if (castComponent.getDateTimeStart() == null)
             {
-//                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-//                return new DateTimeStart<U>((U) t);
                 castComponent.setDateTimeStart(DateTimeStart.parse(propertyContent));
             } else
             {
@@ -541,13 +512,13 @@ public enum PropertyEnum
                 {
                     list = castComponent.getDescriptions();
                 }
-                list.add(new Description(propertyContent));
+                list.add(Description.parse(propertyContent));
             } else
             { // Other components has only one Description
                 VComponentDescribable2<?> castComponent = (VComponentDescribable2<?>) vComponent;
                 if (castComponent.getDescription() == null)
                 {
-                    castComponent.setDescription(new Description(propertyContent));                                
+                    castComponent.setDescription(Description.parse(propertyContent));                                
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -574,7 +545,7 @@ public enum PropertyEnum
             VComponentDuration<?> castComponent = (VComponentDuration<?>) vComponent;
             if (castComponent.getDuration() == null)
             {
-                castComponent.setDuration(new DurationProp(propertyContent));                                
+                castComponent.setDuration(DurationProp.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -607,22 +578,7 @@ public enum PropertyEnum
             {
                 list = castComponent.getExceptions();
             }
-            
-            Temporal t = DateTimeUtilities.temporalFromString(propertyContent.split(",")[0]);
-            if (t instanceof LocalDate)
-            {
-                list.add(new Exceptions<LocalDate>(propertyContent));
-            } else if (t instanceof LocalDateTime)
-            {
-                list.add(new Exceptions<LocalDateTime>(propertyContent));
-                
-            } else if (t instanceof ZonedDateTime)
-            {
-                list.add(new Exceptions<ZonedDateTime>(propertyContent));
-            } else
-            {
-                throw new DateTimeException("Unsupported Temporal type: " + t.getClass().getSimpleName());
-            }
+            list.add(Exceptions.parse(propertyContent));
         }
     },
     // Date and Time
@@ -644,10 +600,7 @@ public enum PropertyEnum
             VFreeBusy castComponent = (VFreeBusy) vComponent;
             if (castComponent.getFreeBusyTime() == null)
             {
-//                Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyContent);
-//                String value = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-//                List<Pair<ZonedDateTime, TemporalAmount>> list = FreeBusyTime.CONVERTER.fromString(value);
-                castComponent.setFreeBusyTime(new FreeBusyTime(propertyContent));                                
+                castComponent.setFreeBusyTime(FreeBusyTime.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -673,7 +626,7 @@ public enum PropertyEnum
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             if (castComponent.getGeographicPosition() == null)
             {
-                castComponent.setGeographicPosition(GeographicPosition.parse(propertyContent));                                
+                castComponent.setGeographicPosition(GeographicPosition.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -726,7 +679,7 @@ public enum PropertyEnum
             VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vComponent;
             if (castComponent.getDateTimeLastModified() == null)
             {
-                castComponent.setDateTimeLastModified(new LastModified(propertyContent));
+                castComponent.setDateTimeLastModified(LastModified.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -752,7 +705,7 @@ public enum PropertyEnum
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             if (castComponent.getLocation() == null)
             {
-                castComponent.setLocation(new Location(propertyContent));                                
+                castComponent.setLocation(Location.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -842,7 +795,7 @@ public enum PropertyEnum
             VTodo castComponent = (VTodo) vComponent;
             if (castComponent.getPercentComplete() == null)
             {
-                castComponent.setPercentComplete(new PercentComplete(propertyContent));                                
+                castComponent.setPercentComplete(PercentComplete.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -868,13 +821,13 @@ public enum PropertyEnum
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             if (castComponent.getPriority() == null)
             {
-                castComponent.setPriority(new Priority(propertyContent));                                
+                castComponent.setPriority(Priority.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
-    }, // Descriptive
+    },
     // Calendar
     PRODUCT_IDENTIFIER ("PRODID", null, null, null) {
         @Override
@@ -917,22 +870,7 @@ public enum PropertyEnum
             {
                 list = castComponent.getRecurrences();
             }
-            
-            Temporal t = DateTimeUtilities.temporalFromString(propertyContent.split(",")[0]);
-            if (t instanceof LocalDate)
-            {
-                list.add(new Recurrences<LocalDate>(propertyContent));
-            } else if (t instanceof LocalDateTime)
-            {
-                list.add(new Recurrences<LocalDateTime>(propertyContent));
-                
-            } else if (t instanceof ZonedDateTime)
-            {
-                list.add(new Recurrences<ZonedDateTime>(propertyContent));
-            } else
-            {
-                throw new DateTimeException("Unsupported Temporal type: " + t.getClass().getSimpleName());
-            }
+            list.add(Recurrences.parse(propertyContent));
         }
     },
     // Relationship
@@ -954,18 +892,7 @@ public enum PropertyEnum
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getRecurrenceId() == null)
             {
-                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
-                if (t instanceof LocalDate)
-                {
-                    castComponent.setRecurrenceId(new RecurrenceId<LocalDate>((LocalDate) t));                
-                } else if (t instanceof LocalDateTime)
-                {
-                    castComponent.setRecurrenceId(new RecurrenceId<LocalDateTime>((LocalDateTime) t));                
-                    
-                } else if (t instanceof ZonedDateTime)
-                {
-                    castComponent.setRecurrenceId(new RecurrenceId<ZonedDateTime>((ZonedDateTime) t));                                
-                }
+                castComponent.setRecurrenceId(RecurrenceId.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -991,7 +918,7 @@ public enum PropertyEnum
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             if (castComponent.getRecurrenceRule() == null)
             {
-                castComponent.setRecurrenceRule(new RecurrenceRule(propertyContent));                
+                castComponent.setRecurrenceRule(RecurrenceRule.parse(propertyContent));                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");

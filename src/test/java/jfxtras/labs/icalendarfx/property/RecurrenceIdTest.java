@@ -17,7 +17,7 @@ public class RecurrenceIdTest
     @Test
     public void canParseRecurrenceId1()
     {
-        RecurrenceId<LocalDateTime> property = new RecurrenceId<LocalDateTime>(LocalDateTime.class, "20160322T174422");
+        RecurrenceId<LocalDateTime> property = RecurrenceId.parse(LocalDateTime.class, "20160322T174422");
         String expectedContentLine = "RECURRENCE-ID:20160322T174422";
         String madeContentLine = property.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
@@ -27,7 +27,7 @@ public class RecurrenceIdTest
     @Test
     public void canParseRecurrenceId2()
     {
-        RecurrenceId<LocalDate> property = new RecurrenceId<LocalDate>(LocalDate.class, "20160322");
+        RecurrenceId<LocalDate> property = RecurrenceId.parse(LocalDate.class, "20160322");
         String expectedContentLine = "RECURRENCE-ID;VALUE=DATE:20160322";
         String madeContentLine = property.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);

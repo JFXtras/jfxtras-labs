@@ -23,10 +23,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class PercentComplete extends PropertyBase<Integer, PercentComplete>
 {
-    public PercentComplete(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public PercentComplete(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public PercentComplete(PercentComplete source)
     {
@@ -36,5 +36,17 @@ public class PercentComplete extends PropertyBase<Integer, PercentComplete>
     public PercentComplete(Integer value)
     {
         super(value);
+    }
+
+    public PercentComplete()
+    {
+        super();
+    }
+    
+    public static PercentComplete parse(String propertyContent)
+    {
+        PercentComplete property = new PercentComplete();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

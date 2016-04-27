@@ -15,7 +15,7 @@ public class DateTimeCompletedTest
     @Test
     public void canParseDateTimeCompleted()
     {
-        DateTimeCompleted property = new DateTimeCompleted("COMPLETED:20160322T174422Z");
+        DateTimeCompleted property = DateTimeCompleted.parse("COMPLETED:20160322T174422Z");
         String expectedContentLine = "COMPLETED:20160322T174422Z";
         String madeContentLine = property.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);

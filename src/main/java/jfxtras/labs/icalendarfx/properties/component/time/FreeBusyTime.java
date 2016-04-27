@@ -130,17 +130,30 @@ public class FreeBusyTime extends PropertyBase<List<Pair<ZonedDateTime, Temporal
         super(source);
     }
     
-    public FreeBusyTime(CharSequence contentLine)
-    {
-        super();
-        setConverter(CONVERTER);
-        parseContent(contentLine);
-    }
+//    public FreeBusyTime(CharSequence contentLine)
+//    {
+//        super();
+//        setConverter(CONVERTER);
+//        parseContent(contentLine);
+//    }
 
     public FreeBusyTime(List<Pair<ZonedDateTime, TemporalAmount>> values)
     {
         super();
         setConverter(CONVERTER);
         setValue(values);
+    }
+
+    public FreeBusyTime()
+    {
+        super();
+        setConverter(CONVERTER);
+    }
+    
+    public static FreeBusyTime parse(String propertyContent)
+    {
+        FreeBusyTime property = new FreeBusyTime();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

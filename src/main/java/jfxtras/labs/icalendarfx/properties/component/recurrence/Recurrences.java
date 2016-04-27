@@ -29,10 +29,10 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  */
 public class Recurrences<T extends Temporal> extends PropertyBaseRecurrence<T, Recurrences<T>>
 {       
-    public Recurrences(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Recurrences(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     @SuppressWarnings("unchecked")
     public Recurrences(T...temporals)
@@ -43,5 +43,28 @@ public class Recurrences<T extends Temporal> extends PropertyBaseRecurrence<T, R
     public Recurrences(ObservableSet<T> value)
     {
         super(value);
+    }
+    
+    public Recurrences()
+    {
+        super();
+    }
+
+    /** Parse string to Temporal.  Not type safe.  Implementation must
+     * ensure parameterized type is the same as date-time represented by String parameter */
+    public static <U extends Temporal> Recurrences<U> parse(String value)
+    {
+        Recurrences<U> property = new Recurrences<U>();
+        property.parseContent(value);
+        return property;
+    }
+    
+    /** Parse string with Temporal class Exceptions provided as parameter */
+    public static <U extends Temporal> Recurrences<U> parse(Class<U> clazz, String value)
+    {
+        Recurrences<U> property = new Recurrences<U>();
+        property.parseContent(value);
+        clazz.cast(property.getValue().iterator().next()); // class check
+        return property;
     }
 }

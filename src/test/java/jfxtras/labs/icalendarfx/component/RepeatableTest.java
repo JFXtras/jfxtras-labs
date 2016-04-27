@@ -186,7 +186,7 @@ public class RepeatableTest //extends Application
         VEventNew component = new VEventNew()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
         ObservableList<Recurrences<? extends Temporal>> recurrences = FXCollections.observableArrayList();
-        recurrences.add(new Recurrences<LocalDateTime>("20160228T093000"));
+        recurrences.add(Recurrences.parse(LocalDateTime.class, "20160228T093000"));
         component.setRecurrences(recurrences); // invalid        
     }
 

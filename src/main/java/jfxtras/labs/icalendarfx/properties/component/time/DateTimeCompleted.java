@@ -28,13 +28,25 @@ public class DateTimeCompleted extends PropertyBaseUTC<DateTimeCompleted>
         super(temporal);
     }
 
-    public DateTimeCompleted(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public DateTimeCompleted(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public DateTimeCompleted(DateTimeCompleted source)
     {
         super(source);
+    }
+    
+    public DateTimeCompleted()
+    {
+        super();
+    }
+
+    public static DateTimeCompleted parse(String value)
+    {
+        DateTimeCompleted property = new DateTimeCompleted();
+        property.parseContent(value);
+        return property;
     }
 }

@@ -31,12 +31,12 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  * @see VTodo
  * @see VAlarm
  */
-public class DurationProp extends PropertyBaseLanguage<TemporalAmount,DurationProp>
+public class DurationProp extends PropertyBaseLanguage<TemporalAmount, DurationProp>
 {
-    public DurationProp(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public DurationProp(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     public DurationProp(TemporalAmount value)
     {
@@ -46,5 +46,17 @@ public class DurationProp extends PropertyBaseLanguage<TemporalAmount,DurationPr
     public DurationProp(DurationProp source)
     {
         super(source);
+    }
+    
+    public DurationProp()
+    {
+        super();
+    }
+
+    public static DurationProp parse(String propertyContent)
+    {
+        DurationProp property = new DurationProp();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

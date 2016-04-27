@@ -30,13 +30,25 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  */
 public class Description extends PropertyBaseAltText<String,Description>
 {
-    public Description(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Description(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     public Description(Description source)
     {
         super(source);
+    }
+
+    public Description()
+    {
+        super();
+    }
+    
+    public static Description parse(String propertyContent)
+    {
+        Description property = new Description();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

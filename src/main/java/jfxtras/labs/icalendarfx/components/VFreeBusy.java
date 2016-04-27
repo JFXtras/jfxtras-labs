@@ -182,7 +182,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     }
     private ObjectProperty<FreeBusyTime> freeBusyTime;
     public FreeBusyTime getFreeBusyTime() { return freeBusyTimeProperty().get(); }
-    public void setFreeBusyTime(String freeBusyTime) { setFreeBusyTime(new FreeBusyTime(freeBusyTime)); }
+    public void setFreeBusyTime(String freeBusyTime) { setFreeBusyTime(FreeBusyTime.parse(freeBusyTime)); }
     public void setFreeBusyTime(List<Pair<ZonedDateTime, TemporalAmount>> freeBusyTime) { setFreeBusyTime(new FreeBusyTime(freeBusyTime)); }
     public void setFreeBusyTime(FreeBusyTime freeBusyTime) { freeBusyTimeProperty().set(freeBusyTime); }
     public VFreeBusy withFreeBusyTime(FreeBusyTime freeBusyTime) { setFreeBusyTime(freeBusyTime); return this; }

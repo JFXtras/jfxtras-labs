@@ -34,13 +34,25 @@ public class DateTimeCreated extends PropertyBaseUTC<DateTimeCreated>
         super(temporal);
     }
 
-    public DateTimeCreated(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public DateTimeCreated(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public DateTimeCreated(DateTimeCreated source)
     {
         super(source);
+    }
+    
+    public DateTimeCreated()
+    {
+        super();
+    }
+
+    public static DateTimeCreated parse(String value)
+    {
+        DateTimeCreated property = new DateTimeCreated();
+        property.parseContent(value);
+        return property;
     }
 }

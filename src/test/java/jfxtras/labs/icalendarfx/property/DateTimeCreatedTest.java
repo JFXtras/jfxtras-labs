@@ -17,7 +17,7 @@ public class DateTimeCreatedTest
     public void canParseDateTimeCreated()
     {
         String expectedContentLine = "CREATED:19960329T133000Z";
-        DateTimeCreated property = new DateTimeCreated(expectedContentLine);
+        DateTimeCreated property = DateTimeCreated.parse(expectedContentLine);
         String madeContentLine = property.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(1996, 3, 29, 13, 30), ZoneId.of("Z")), property.getValue());
@@ -26,20 +26,20 @@ public class DateTimeCreatedTest
     @Test (expected=ClassCastException.class)
     public void canCatchWrongDateTimeFormat1()
     {
-        new DateTimeCreated("CREATED:19960329T133000");
+        DateTimeCreated.parse("CREATED:19960329T133000");
     }
     
     @Test (expected=ClassCastException.class)
     public void canCatchWrongDateTimeFormat2()
     {
-        new DateTimeCreated("CREATED:19960329");
+        DateTimeCreated.parse("CREATED:19960329");
     }
     
     @Test (expected=DateTimeException.class)
     public void canCatchWrongDateTimeFormat3()
     {
         String expectedContentLine = "CREATED:19960329T133000Z";
-        DateTimeCreated property = new DateTimeCreated(expectedContentLine);
+        DateTimeCreated property = DateTimeCreated.parse(expectedContentLine);
         property.setValue(ZonedDateTime.of(LocalDateTime.of(1996, 3, 29, 13, 30), ZoneId.of("America/Los_Angeles")));
     }
 }

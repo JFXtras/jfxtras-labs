@@ -30,13 +30,36 @@ public class DateTimeDue<T extends Temporal> extends PropertyBaseDateTime<T, Dat
         super(temporal);
     }
 
-    public DateTimeDue(Class<T> clazz, CharSequence contentLine)
-    {
-        super(clazz, contentLine);
-    }
+//    public DateTimeDue(Class<T> clazz, CharSequence contentLine)
+//    {
+//        super(clazz, contentLine);
+//    }
     
     public DateTimeDue(DateTimeDue<T> source)
     {
         super(source);
+    }
+    
+    public DateTimeDue()
+    {
+        super();
+    }
+
+    /** Parse string to Temporal.  Not type safe.  Implementation must
+     * ensure parameterized type is the same as date-time represented by String parameter */
+    public static <U extends Temporal> DateTimeDue<U> parse(String value)
+    {
+        DateTimeDue<U> property = new DateTimeDue<U>();
+        property.parseContent(value);
+        return property;
+    }
+    
+    /** Parse string with Temporal class explicitly provided as parameter */
+    public static <U extends Temporal> DateTimeDue<U> parse(Class<U> clazz, String value)
+    {
+        DateTimeDue<U> property = new DateTimeDue<U>();
+        property.parseContent(value);
+        clazz.cast(property.getValue()); // class check
+        return property;
     }
 }

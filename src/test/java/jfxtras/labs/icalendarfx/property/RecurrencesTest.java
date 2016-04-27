@@ -78,7 +78,7 @@ public class RecurrencesTest
     public void canParseRecurrences2()
     {
         String content = "RDATE;TZID=America/Los_Angeles:19960402T010000";
-        Recurrences<ZonedDateTime> madeProperty = new Recurrences<ZonedDateTime>(content);
+        Recurrences<ZonedDateTime> madeProperty = Recurrences.parse(ZonedDateTime.class, content);
         madeProperty.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("America/Los_Angeles")));
         madeProperty.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("America/Los_Angeles")));
         assertEquals(content + ",19960403T010000,19960404T010000", madeProperty.toContentLine());

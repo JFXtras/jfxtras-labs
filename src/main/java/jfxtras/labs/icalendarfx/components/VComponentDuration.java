@@ -26,8 +26,9 @@ public interface VComponentDuration<T> extends VComponentNew<T>
     ObjectProperty<DurationProp> durationProperty();
     default DurationProp getDuration() { return durationProperty().get(); }
     default void setDuration(DurationProp duration) { durationProperty().set(duration); }
+    default void setDuration(String content) { setDuration(DurationProp.parse(content)); }
     default void setDuration(TemporalAmount amount) { setDuration(new DurationProp(amount)); }
     default T withDuration(TemporalAmount amount) { setDuration(amount); return (T) this; }
-    default T withDuration(String amount) { setDuration(new DurationProp(amount)); return (T) this; }
+    default T withDuration(String content) { setDuration(content); return (T) this; }
     default T withDuration(DurationProp duration) { setDuration(duration); return (T) this; }
 }

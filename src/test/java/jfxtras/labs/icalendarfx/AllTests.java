@@ -41,7 +41,7 @@ import jfxtras.labs.icalendarfx.property.IANATest;
 import jfxtras.labs.icalendarfx.property.LocationTest;
 import jfxtras.labs.icalendarfx.property.NonStandardTest;
 import jfxtras.labs.icalendarfx.property.OrganizerTest;
-import jfxtras.labs.icalendarfx.property.ParsePropertyTest;
+import jfxtras.labs.icalendarfx.property.PriorityTest;
 import jfxtras.labs.icalendarfx.property.RecurrenceIdTest;
 import jfxtras.labs.icalendarfx.property.RecurrenceRuleTest;
 import jfxtras.labs.icalendarfx.property.RecurrencesTest;
@@ -106,7 +106,7 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
         LocationTest.class,
         NonStandardTest.class,
         OrganizerTest.class,
-        ParsePropertyTest.class,
+        PriorityTest.class,
         RecurrenceIdTest.class,
         RecurrenceRuleTest.class,
         RecurrencesTest.class,
