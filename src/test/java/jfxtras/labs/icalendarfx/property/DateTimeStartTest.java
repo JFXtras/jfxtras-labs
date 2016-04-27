@@ -2,8 +2,10 @@ package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -105,5 +107,11 @@ public class DateTimeStartTest
     public void canCatchWrongTemporalType()
     {
         DateTimeStart.parse(LocalDate.class, "DTSTART;TZID=America/Los_Angeles:20160306T043000");
+    }
+    
+    @Test (expected=DateTimeException.class)
+    public void canCatchWrongType()
+    {
+        new DateTimeStart<>(LocalTime.of(5, 10));        
     }
 }

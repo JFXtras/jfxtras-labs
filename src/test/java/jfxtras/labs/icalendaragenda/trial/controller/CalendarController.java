@@ -140,7 +140,7 @@ public class CalendarController
                 .withDateTimeStart(LocalDateTime.of(endDate.minusDays(1), LocalTime.of(15, 45)))
 //                .withDescription(new Description("Split Description"))
                 .withDescription("Split Description")
-                .withSummary(new Summary("Split"))
+                .withSummary(Summary.parse("Split"))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
             agenda.vComponents().add(vEventSplit);
         
@@ -154,7 +154,7 @@ public class CalendarController
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(15), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")).withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
-                .withSummary(new Summary("WeeklyZoned Ends"))
+                .withSummary(Summary.parse("WeeklyZoned Ends"))
                 .withUniqueIdentifier("20150110T080000-1@jfxtras.org");
             agenda.vComponents().add(vEventZonedUntil);
         
@@ -167,7 +167,7 @@ public class CalendarController
             .withRRule(new RecurrenceRuleParameter()
                     .withFrequency(new Weekly()
                             .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
-            .withSummary(new Summary("WeeklyZoned Infinite"))
+            .withSummary(Summary.parse("WeeklyZoned Infinite"))
             .withUniqueIdentifier("20150110T080000-2@jfxtras.org");
         agenda.vComponents().add(vEventZonedInfinite);
         
@@ -177,7 +177,7 @@ public class CalendarController
                 .withDateTimeEnd(startDate.plusDays(1))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDescription("LocalDate Description")
-                .withSummary(new Summary("LocalDate"))
+                .withSummary(Summary.parse("LocalDate"))
                 .withUniqueIdentifier("20150110T080000-3@jfxtras.org")
                 .withRRule(new RecurrenceRuleParameter()
                         .withFrequency(new Daily()
@@ -190,7 +190,7 @@ public class CalendarController
                 .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(13, 0)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDescription("LocalDateTime Daily Description")
-                .withSummary(new Summary("LocalDateTime Daily"))
+                .withSummary(Summary.parse("LocalDateTime Daily"))
                 .withUniqueIdentifier("20150110T080000-4@jfxtras.org")
                 .withRRule(new RecurrenceRuleParameter()
                         .withFrequency(new Daily()));
@@ -202,7 +202,7 @@ public class CalendarController
                 .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(15, 0)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDescription("Monthly Description")
-                .withSummary(new Summary("Monthly"))
+                .withSummary(Summary.parse("Monthly"))
                 .withUniqueIdentifier("20150110T080000-5@jfxtras.org")
                 .withRRule(new RecurrenceRuleParameter()
                         .withFrequency(new Monthly()));
@@ -216,7 +216,7 @@ public class CalendarController
                 .withDateTimeEnd(startDate.plusDays(3))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDescription("Monthly Ordinal Description " + dayOfWeek + "#" + ordinalWeekNumber + " in month")
-                .withSummary(new Summary("Monthly Ordinal"))
+                .withSummary(Summary.parse("Monthly Ordinal"))
                 .withUniqueIdentifier("20150110T080000-6@jfxtras.org")
                 .withRRule(new RecurrenceRuleParameter()
                         .withFrequency(new Monthly()

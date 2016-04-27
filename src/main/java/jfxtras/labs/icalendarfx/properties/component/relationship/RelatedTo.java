@@ -59,13 +59,25 @@ public class RelatedTo extends PropertyBase<String, RelatedTo> implements Proper
     public RelatedTo withRelationship(RelationshipType value) { setRelationship(new Relationship(value)); return this; }
     public RelatedTo withRelationship(String content) { setRelationship(content); return this; }
     
-    public RelatedTo(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public RelatedTo(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     public RelatedTo(UniqueIdentifier source)
     {
         super(source);
+    }
+    
+    public RelatedTo()
+    {
+        super();
+    }
+    
+    public static RelatedTo parse(String propertyContent)
+    {
+        RelatedTo property = new RelatedTo();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

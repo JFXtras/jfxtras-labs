@@ -12,9 +12,9 @@ public class ResourcesTest
     public void canParseResources()
     {
         String content = "RESOURCES:EASEL,PROJECTOR,VCR";
-        Resources madeProperty = new Resources(content);
+        Resources madeProperty = Resources.parse(content);
         assertEquals(content, madeProperty.toContentLine());
-        Resources expectedProperty = new Resources("RESOURCES:EASEL,PROJECTOR,VCR");
+        Resources expectedProperty = Resources.parse("RESOURCES:EASEL,PROJECTOR,VCR");
         assertEquals(expectedProperty, madeProperty);
         assertEquals(3, madeProperty.getValue().size());
     }
@@ -23,7 +23,7 @@ public class ResourcesTest
     public void canParseResources2()
     {
         String content = "RESOURCES;ALTREP=\"http://xyzcorp.com/conf-rooms/f123.vcf\";LANGUAGE=fr:Nettoyeur haute pression";
-        Resources madeProperty = new Resources(content);
+        Resources madeProperty = Resources.parse(content);
         assertEquals(content, madeProperty.toContentLine());
         Resources expectedProperty = new Resources("Nettoyeur haute pression")
                 .withAlternateText("http://xyzcorp.com/conf-rooms/f123.vcf")

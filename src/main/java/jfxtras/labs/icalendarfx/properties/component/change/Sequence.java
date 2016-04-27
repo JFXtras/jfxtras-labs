@@ -30,10 +30,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class Sequence extends PropertyBase<Integer, Sequence>
 {
-    public Sequence(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Sequence(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     public Sequence(Integer value)
     {
@@ -60,5 +60,12 @@ public class Sequence extends PropertyBase<Integer, Sequence>
         {
             throw new IllegalArgumentException(propertyType() + " must be greater than or equal to zero");
         }
+    }
+
+    public static Sequence parse(String propertyContent)
+    {
+        Sequence property = new Sequence();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

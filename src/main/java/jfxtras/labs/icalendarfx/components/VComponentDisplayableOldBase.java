@@ -549,7 +549,7 @@ public abstract class VComponentDisplayableOldBase<I, T> implements VComponent<I
     public Summary getSummary() { return summary.get(); }
     @Override
     public void setSummary(Summary summary) { this.summary.set(summary); }
-    public void setSummary(String summary) { this.summary.set(new Summary(summary)); }
+    public void setSummary(String summary) { this.summary.set(Summary.parse(summary)); }
     public T withSummary(Summary summary) { setSummary(summary); return (T) this; }
     public T withSummary(String summary) { setSummary(summary); return (T) this; }
     

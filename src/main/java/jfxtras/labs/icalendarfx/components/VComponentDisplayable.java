@@ -298,7 +298,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObjectProperty<Sequence> sequenceProperty();
     default Sequence getSequence() { return sequenceProperty().get(); }
-    default void setSequence(String sequence) { setSequence(new Sequence(sequence)); }
+    default void setSequence(String sequence) { setSequence(Sequence.parse(sequence)); }
     default void setSequence(Integer sequence) { setSequence(new Sequence(sequence)); }
     default void setSequence(Sequence sequence) { sequenceProperty().set(sequence); }
     default T withSequence(Sequence sequence) { setSequence(sequence); return (T) this; }
@@ -317,7 +317,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObjectProperty<Status> statusProperty();
     default Status getStatus() { return statusProperty().get(); }
-    default void setStatus(String status) { setStatus(new Status(status)); }
+    default void setStatus(String status) { setStatus(Status.parse(status)); }
     default void setStatus(Status status) { statusProperty().set(status); }
     default void setStatus(StatusType status) { setStatus(new Status(status)); }
     default T withStatus(Status status) { setStatus(status); return (T) this; }

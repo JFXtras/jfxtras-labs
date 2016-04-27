@@ -44,7 +44,7 @@ public class Categories extends PropertyBaseLanguage<List<String>, Categories>
         @Override
         public List<String> fromString(String string)
         {
-            return Arrays.stream(string.replace("\\,", "~~").split(","))
+            return Arrays.stream(string.replace("\\,", "~~").split(",")) // change comma escape sequence to avoid splitting by it
                     .map(s -> s.replace("~~", "\\,"))
                     .map(v -> (String) ValueType.TEXT.getConverter().fromString(v)) // unescape special characters
                     .collect(Collectors.toList());
@@ -60,15 +60,15 @@ public class Categories extends PropertyBaseLanguage<List<String>, Categories>
     
     public Categories(List<String> values)
     {
-        super();
-        setConverter(CONVERTER);
+        this();
         setValue(values);
     }
     
+    /** Constructor with varargs of property values 
+     * Note: Do not use to parse the content line.  Use static parse method instead.*/
     public Categories(String...values)
     {
-        super();
-        setConverter(CONVERTER);
+        this();
         setValue(new ArrayList<>(Arrays.asList(values)));
     }
     

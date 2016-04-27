@@ -25,10 +25,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  */
 public class Summary extends PropertyBaseAltText<String, Summary>
 {
-    public Summary(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Summary(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     public Summary(Summary source)
     {
@@ -38,5 +38,12 @@ public class Summary extends PropertyBaseAltText<String, Summary>
     public Summary()
     {
         super();
+    }
+
+    public static Summary parse(String propertyContent)
+    {
+        Summary property = new Summary();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

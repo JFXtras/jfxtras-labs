@@ -762,7 +762,7 @@ public final class VComponentUtilities
                 {
                     if (vComponent.getSummary() == null)
                     {
-                        vComponent.setSummary(new Summary(propertyLine));
+                        vComponent.setSummary(Summary.parse(propertyLine));
                     } else
                     {
                         throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    

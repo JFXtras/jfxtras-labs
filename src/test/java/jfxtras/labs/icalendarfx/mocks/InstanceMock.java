@@ -39,7 +39,7 @@ public class InstanceMock
         }
     }
     public InstanceMock withSummary(Summary summary) { setSummary(summary); return this; }
-    public InstanceMock withSummary(String text) { setSummary(new Summary(text)); return this; }
+    public InstanceMock withSummary(String text) { setSummary(Summary.parse(text)); return this; }
     
     public static boolean isEqualTo(InstanceMock i1, InstanceMock i2)
     {

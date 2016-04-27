@@ -22,6 +22,14 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * Contains the following properties:
  * Non-Standard Properties, IANA Properties
  * 
+ * Each property contains the following methods:
+ * Getter for iCalendar property
+ * Getter for JavaFX property
+ * Setter for iCalendar property
+ * Setter for iCalendar's properties' encapsulated object (omitted if object is a String - Strings are parsed)
+ * Setter for iCalendar String content (parsed into new iCalendar object)
+ * Also contains chaining "with" methods matching the two or three setters.
+ * 
  * @author David Bal
  *
  * @param <T> - implementation class
@@ -108,42 +116,6 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     VComponentBase(String contentLines)
     {
         parseContent(contentLines);
-//        Integer counter = 0;
-////        Iterator<String> i = Arrays.asList(contentLines.split(System.lineSeparator())).iterator();
-//        Iterator<String> i = unfoldLines(contentLines).iterator();
-//        while (i.hasNext())
-//        {
-//            String line = i.next();
-//            List<Integer> indices = new ArrayList<>();
-//            indices.add(line.indexOf(':'));
-//            indices.add(line.indexOf(';'));
-//            int nameEndIndex = indices
-//                    .stream()
-//                    .filter(v -> v > 0)
-//                    .min(Comparator.naturalOrder())
-//                    .get();
-//            String propertyName = line.substring(0, nameEndIndex);
-//            if (! (propertyName.equals("BEGIN") || propertyName.equals("END")))
-//            {
-//                propertySortOrder.put(propertyName, counter++);
-//                PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
-//                
-//                // parse property
-//                if (propertyType != null)
-//                {
-//                    propertyType.parse(this, line);
-//                } else if (propertyName.substring(0, PropertyEnum.NON_STANDARD.toString().length()).equals(PropertyEnum.NON_STANDARD.toString()))
-//                {
-//                    PropertyEnum.NON_STANDARD.parse(this, line);
-//                } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(propertyName))
-//                {
-//                    PropertyEnum.IANA_PROPERTY.parse(this, line);
-//                } else
-//                {
-//                    // ignores unknown properties - change if other behavior desired
-//                }
-//            }
-//        }
     }
 
     /** Parse content lines into calendar component */

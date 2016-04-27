@@ -45,8 +45,8 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyUtilities.FrequencyEnum;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -1133,7 +1133,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
 
        VEventImpl v1 = (VEventImpl) agenda.vComponents().get(1);
        VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1()
-               .withSummary(new Summary("new summary"))
+               .withSummary(Summary.parse("new summary"))
                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
                .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0))
                .withRelatedTo("20150110T080000-0@jfxtras.org")
@@ -1190,7 +1190,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         assertTrue(VEventImpl.isEqualTo(expectedV0, v0));
 
         VEventImpl expectedV1 = ICalendarStaticVEvents.getDaily1()
-                .withSummary(new Summary("new summary"))
+                .withSummary(Summary.parse("new summary"))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0))
                 .withDateTimeStamp(v1.getDateTimeStamp()) // time stamp is time-based so copy it to guarantee equality.

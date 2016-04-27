@@ -12,9 +12,9 @@ public class SummaryTest
     public void canParseSummary1()
     {
         String content = "SUMMARY:TEST SUMMARY";
-        Summary madeProperty = new Summary(content);
+        Summary madeProperty = Summary.parse(content);
         assertEquals(content, madeProperty.toContentLine());
-        Summary expectedProperty = new Summary("TEST SUMMARY");
+        Summary expectedProperty = Summary.parse("TEST SUMMARY");
         assertEquals(expectedProperty, madeProperty);
         assertEquals("TEST SUMMARY", madeProperty.getValue());
     }
@@ -23,9 +23,9 @@ public class SummaryTest
     public void canParseSummary2()
     {
         String content = "SUMMARY;ALTREP=\"cid:part1.0001@example.org\";LANGUAGE=en:Department Party";
-        Summary madeProperty = new Summary(content);
+        Summary madeProperty = Summary.parse(content);
         assertEquals(content, madeProperty.toContentLine());
-        Summary expectedProperty = new Summary("Department Party")
+        Summary expectedProperty = Summary.parse("Department Party")
                 .withAlternateText("cid:part1.0001@example.org")
                 .withLanguage("en");
         assertEquals(expectedProperty, madeProperty);
@@ -35,9 +35,9 @@ public class SummaryTest
     public void canParseSummary3()
     {
         String content = "sUmmARY;lanGUAGE=en:TEST SUMMARY";
-        Summary madeProperty = new Summary(content);
+        Summary madeProperty = Summary.parse(content);
         assertEquals("SUMMARY;LANGUAGE=en:TEST SUMMARY", madeProperty.toContentLine());
-        Summary expectedProperty = new Summary("TEST SUMMARY")
+        Summary expectedProperty = Summary.parse("TEST SUMMARY")
                 .withLanguage("en");
         assertEquals(expectedProperty, madeProperty);
     }

@@ -46,17 +46,17 @@ public class DescribableTest
                 new VTodo()
                     .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"),
                             Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
-                    .withSummary(new Summary("a test summary")
+                    .withSummary(Summary.parse("a test summary")
                             .withLanguage("en-USA")),
                 new VJournal()
                     .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"),
                             Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
-                    .withSummary(new Summary("a test summary")
+                    .withSummary(Summary.parse("a test summary")
                             .withLanguage("en-USA")),
                 new VAlarm()
                     .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"),
                             Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
-                    .withSummary(new Summary("a test summary")
+                    .withSummary(Summary.parse("a test summary")
                             .withLanguage("en-USA"))
                 );
         

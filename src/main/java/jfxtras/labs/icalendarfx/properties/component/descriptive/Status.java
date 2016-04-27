@@ -43,17 +43,15 @@ public class Status extends PropertyBase<StatusType, Status>
         }
     };
     
-    public Status(CharSequence contentLine)
-    {
-        super();
-        setConverter(CONVERTER);
-        parseContent(contentLine);
-    }
+//    public Status(CharSequence contentLine)
+//    {
+//        this();
+//        parseContent(contentLine);
+//    }
     
     public Status(StatusType value)
     {
-        super();
-        setConverter(CONVERTER);
+        this();
         setValue(value);
     }
     
@@ -62,6 +60,18 @@ public class Status extends PropertyBase<StatusType, Status>
         super(source);
     }
     
+    public Status()
+    {
+        super();
+        setConverter(CONVERTER);
+    }
+    
+    public static Status parse(String propertyContent)
+    {
+        Status property = new Status();
+        property.parseContent(propertyContent);
+        return property;
+    }
     public enum StatusType
     {
         TENTATIVE ("TENTATIVE"),

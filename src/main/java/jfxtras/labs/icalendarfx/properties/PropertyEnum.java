@@ -951,7 +951,7 @@ public enum PropertyEnum
             {
                 list = castComponent.getRelatedTo();
             }
-            list.add(new RelatedTo(propertyContent));
+            list.add(RelatedTo.parse(propertyContent));
         }
     },
     // Alarm
@@ -1007,10 +1007,9 @@ public enum PropertyEnum
                 list = castComponent.getRequestStatus();
             }
             list.add(RequestStatus.parse(propertyContent));
-//            list.add(RequestStatus.parse(propertyContent));
         }
     },
-    // Resources
+    // Descriptive
     RESOURCES ("RESOURCES", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -1036,10 +1035,10 @@ public enum PropertyEnum
             {
                 list = castComponent.getResources();
             }
-            list.add(new Resources(propertyContent));
+            list.add(Resources.parse(propertyContent));
         }
     },
-    // Descriptive
+    // Change management
     SEQUENCE ("SEQUENCE", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -1058,13 +1057,14 @@ public enum PropertyEnum
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getSequence() == null)
             {
-                castComponent.setSequence(new Sequence(propertyContent));                                
+                castComponent.setSequence(Sequence.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
-    }, // Change management
+    },
+    // Descriptive
     STATUS ("STATUS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -1083,14 +1083,14 @@ public enum PropertyEnum
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getStatus() == null)
             {
-                castComponent.setStatus(new Status(propertyContent));                                
+                castComponent.setStatus(Status.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
     },
-    // descriptive
+    // Descriptive
     SUMMARY ("SUMMARY", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
             Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE,
@@ -1110,7 +1110,7 @@ public enum PropertyEnum
             VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
             if (castComponent.getSummary() == null)
             {
-                castComponent.setSummary(new Summary(propertyContent));
+                castComponent.setSummary(Summary.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");

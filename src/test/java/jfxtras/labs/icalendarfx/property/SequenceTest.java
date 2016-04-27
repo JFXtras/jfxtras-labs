@@ -12,7 +12,7 @@ public class SequenceTest
     public void canParseSequenceCount()
     {
         String expectedContent = "SEQUENCE:0";
-        Sequence madeProperty = new Sequence(expectedContent);
+        Sequence madeProperty = Sequence.parse(expectedContent);
         assertEquals(expectedContent, madeProperty.toContentLine());
         assertEquals((Integer) 0, madeProperty.getValue());
     }
