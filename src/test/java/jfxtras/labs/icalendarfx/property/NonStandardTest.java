@@ -16,9 +16,9 @@ public class NonStandardTest
     public void canParseNonStandard1()
     {
         String content = "X-MYPROP;VALUE=BOOLEAN:FALSE";
-        NonStandardProperty madeProperty = new NonStandardProperty(content);
+        NonStandardProperty madeProperty = NonStandardProperty.parse(content);
         assertEquals(content, madeProperty.toContentLine());
-        NonStandardProperty expectedProperty = new NonStandardProperty("FALSE")
+        NonStandardProperty expectedProperty = NonStandardProperty.parse("FALSE")
                 .withPropertyName("X-MYPROP")
                 .withValueParameter(ValueType.BOOLEAN);
         assertEquals(expectedProperty, madeProperty);
@@ -30,10 +30,10 @@ public class NonStandardTest
     {
         // MAINTAIN ORDER OF PROPERTIES?
         String content = "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au";
-        NonStandardProperty madeProperty = new NonStandardProperty(content);
+        NonStandardProperty madeProperty = NonStandardProperty.parse(content);
 //        System.out.println(madeProperty.toContentLine());
         assertEquals(content, madeProperty.toContentLine());
-        NonStandardProperty expectedProperty = new NonStandardProperty("http://www.example.org/mysubj.au")
+        NonStandardProperty expectedProperty = NonStandardProperty.parse("http://www.example.org/mysubj.au")
                 .withFormatType("audio/basic")
                 .withValueParameter(ValueType.UNIFORM_RESOURCE_IDENTIFIER);
 //        System.out.println(expectedProperty.toContentLine());

@@ -31,23 +31,6 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class GeographicPosition extends PropertyBase<String, GeographicPosition>
 {
-//    // Override default text string converter to avoid escaping the semicolon between
-//    // the latitude and longitude values
-//    private final static StringConverter<String> CONVERTER = new StringConverter<String>()
-//    {
-//        @Override
-//        public String toString(String object)
-//        {
-//            return object.toString();
-//        }
-//
-//        @Override
-//        public String fromString(String string)
-//        {
-//            return string;
-//        }
-//    };
-    
     public Double getLatitude() { return latitude.get(); }
     ObjectProperty<Double> latitudeProperty() { return latitude; }
     private ObjectProperty<Double> latitude = new SimpleObjectProperty<Double>(this, "statcode");

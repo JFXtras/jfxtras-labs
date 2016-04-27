@@ -52,7 +52,7 @@ public class GeneralPropertyTest
     public void canChangeValueType()
     {
         String content = "X-MYPROP:1";
-        NonStandardProperty madeProperty = new NonStandardProperty(content);
+        NonStandardProperty madeProperty = NonStandardProperty.parse(content);
         madeProperty.valueParameterProperty().set(new ValueParameter(ValueType.INTEGER));
         assertEquals(1, madeProperty.getValue());
     }

@@ -12,9 +12,9 @@ public class IANATest
     public void canParseIANA1()
     {
         String content = "TESTPROP2:CASUAL";
-        IANAProperty madeProperty = new IANAProperty(content);
+        IANAProperty madeProperty = IANAProperty.parse(content);
         assertEquals(content, madeProperty.toContentLine());
-        IANAProperty expectedProperty = new IANAProperty("CASUAL")
+        IANAProperty expectedProperty = IANAProperty.parse("CASUAL")
                 .withPropertyName("TESTPROP2");
         assertEquals(expectedProperty, madeProperty);
         assertEquals("CASUAL", madeProperty.getValue());
@@ -24,12 +24,13 @@ public class IANATest
     public void canParseIANA2()
     {
         String content = "TESTPROP2;VALUE=INTEGER:12";
-        IANAProperty madeProperty = new IANAProperty(content);
+        IANAProperty madeProperty = IANAProperty.parse(content);
         assertEquals(content, madeProperty.toContentLine());
         IANAProperty expectedProperty = new IANAProperty(12)
                 .withPropertyName("TESTPROP2")
                 .withValueParameter("INTEGER");
         assertEquals(expectedProperty, madeProperty);
         assertEquals(12, madeProperty.getValue());
+        assertEquals("TESTPROP2", madeProperty.getPropertyName());
     }
 }

@@ -358,7 +358,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     
     protected void parseContent(CharSequence contentLine)
     {
-        setConverter(converter);
+//        setConverter(converter);
         String propertyString = contentLine.toString();
         
         // test line, make changes if necessary

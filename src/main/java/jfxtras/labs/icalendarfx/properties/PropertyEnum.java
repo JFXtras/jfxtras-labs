@@ -702,7 +702,7 @@ public enum PropertyEnum
             {
                 list = vComponent.getIANAProperties();
             }
-            list.add(new IANAProperty(propertyContent));
+            list.add(IANAProperty.parse(propertyContent));
         }
     },
     // Change management
@@ -797,7 +797,7 @@ public enum PropertyEnum
             {
                 list = vComponent.getNonStandardProperties();
             }
-            list.add(new NonStandardProperty(propertyContent));
+            list.add(NonStandardProperty.parse(propertyContent));
         }
     },
     // Relationship

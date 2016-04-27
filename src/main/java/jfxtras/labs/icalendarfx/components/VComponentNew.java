@@ -48,15 +48,15 @@ public interface VComponentNew<T>
      */
     ObservableList<NonStandardProperty> getNonStandardProperties();
     void setNonStandardProperties(ObservableList<NonStandardProperty> properties);
-    default T withNonStandardProperty(String...nonStandardProps)
-    {
-        if (getNonStandardProperties() == null)
-        {
-            setNonStandardProperties(FXCollections.observableArrayList());
-        }
-        Arrays.stream(nonStandardProps).forEach(c -> PropertyEnum.NON_STANDARD.parse(this, c));
-        return (T) this;
-    }
+//    default T withNonStandardProperty(String...nonStandardProps)
+//    {
+//        if (getNonStandardProperties() == null)
+//        {
+//            setNonStandardProperties(FXCollections.observableArrayList());
+//        }
+//        Arrays.stream(nonStandardProps).forEach(c -> PropertyEnum.NON_STANDARD.parse(this, c));
+//        return (T) this;
+//    }
     default T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return (T) this; }
     default T withNonStandardProperty(NonStandardProperty...nonStandardProps)
     {

@@ -31,10 +31,10 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  */
 public class NonStandardProperty extends UnknownProperty<Object, NonStandardProperty>
 {
-    public NonStandardProperty(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public NonStandardProperty(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public NonStandardProperty(Object value)
     {
@@ -46,6 +46,11 @@ public class NonStandardProperty extends UnknownProperty<Object, NonStandardProp
         super(source);
     }
     
+    NonStandardProperty()
+    {
+        super();
+    }
+    
     @Override
     public boolean isValid()
     {
@@ -54,5 +59,12 @@ public class NonStandardProperty extends UnknownProperty<Object, NonStandardProp
             return false;
         }
         return super.isValid();
+    }
+    
+    public static NonStandardProperty parse(String value)
+    {
+        NonStandardProperty property = new NonStandardProperty();
+        property.parseContent(value);
+        return property;
     }
 }

@@ -45,37 +45,37 @@ public class BaseTest
     {
         List<VComponentBase<?>> components = Arrays.asList(
                 new VEventNew()
-                    .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
-                    .withIANAProperty("TESTPROP2:CASUAL")
-                    .withNonStandardProperty("X-TEST-OBJ:testid"),
+                    .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
+                    .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
+                    .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VTodo()
-                    .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
-                    .withIANAProperty("TESTPROP2:CASUAL")
-                    .withNonStandardProperty("X-TEST-OBJ:testid"),
+                    .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
+                    .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
+                    .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VJournal()
-                    .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
-                    .withIANAProperty("TESTPROP2:CASUAL")
-                    .withNonStandardProperty("X-TEST-OBJ:testid"),
+                    .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
+                    .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
+                    .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VFreeBusy()
-                    .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
-                    .withIANAProperty("TESTPROP2:CASUAL")
-                    .withNonStandardProperty("X-TEST-OBJ:testid"),
+                    .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
+                    .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
+                    .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VAlarm()
-                    .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
-                    .withIANAProperty("TESTPROP2:CASUAL")
-                    .withNonStandardProperty("X-TEST-OBJ:testid"),
+                    .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
+                    .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
+                    .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new VTimeZone()
-                    .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
-                    .withIANAProperty("TESTPROP2:CASUAL")
-                    .withNonStandardProperty("X-TEST-OBJ:testid"),
+                    .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
+                    .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
+                    .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new DaylightSavingTime()
-                    .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
-                    .withIANAProperty("TESTPROP2:CASUAL")
-                    .withNonStandardProperty("X-TEST-OBJ:testid"),
+                    .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
+                    .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
+                    .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid")),
                 new StandardTime()
-                    .withNonStandardProperty("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au")
-                    .withIANAProperty("TESTPROP2:CASUAL")
-                    .withNonStandardProperty("X-TEST-OBJ:testid")
+                    .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
+                    .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
+                    .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid"))
                 );
         
         for (VComponentBase<?> builtComponent : components)
@@ -91,7 +91,6 @@ public class BaseTest
                     "TESTPROP2:CASUAL" + System.lineSeparator() +
                     "X-TEST-OBJ:testid" + System.lineSeparator() +
                     "END:" + componentName;
-                    
             VComponentBase<?> parsedComponent = builtComponent
                     .getClass()
                     .getConstructor(String.class)

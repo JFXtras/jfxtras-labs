@@ -298,20 +298,21 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     
     public UnknownProperty(CharSequence contentLine)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        // Unknown properties MUST use the default converter for the set value type (or TEXT if no value type is set)
         super(contentLine);
     }
     
     public UnknownProperty(T value)
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        // Unknown properties MUST use the default converter for the set value type (or TEXT if no value type is set)
         super(value);
     }
     
     public UnknownProperty(UnknownProperty<T,U> source)
     {
         super(source);
+    }
+    
+    UnknownProperty()
+    {
+        super();
     }
 }
