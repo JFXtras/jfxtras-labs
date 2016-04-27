@@ -9,6 +9,7 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
 
 /**
@@ -35,22 +36,27 @@ public class Categories extends PropertyBaseLanguage<List<String>, Categories>
         @Override
         public String toString(List<String> object)
         {
-            return object.stream().collect(Collectors.joining(","));
+            return object.stream()
+                    .map(v -> ValueType.TEXT.getConverter().toString(v)) // escape special characters
+                    .collect(Collectors.joining(","));
         }
 
         @Override
         public List<String> fromString(String string)
         {
-            return Arrays.stream(string.split(",")).collect(Collectors.toList());
+            return Arrays.stream(string.replace("\\,", "~~").split(","))
+                    .map(s -> s.replace("~~", "\\,"))
+                    .map(v -> (String) ValueType.TEXT.getConverter().fromString(v)) // unescape special characters
+                    .collect(Collectors.toList());
         }
     };
     
-    public Categories(CharSequence contentLine)
-    {
-        super();
-        setConverter(CONVERTER);
-        parseContent(contentLine);
-    }
+//    public Categories(CharSequence contentLine)
+//    {
+//        super();
+//        setConverter(CONVERTER);
+//        parseContent(contentLine);
+//    }
     
     public Categories(List<String> values)
     {
@@ -69,5 +75,18 @@ public class Categories extends PropertyBaseLanguage<List<String>, Categories>
     public Categories(Categories source)
     {
         super(source);
+    }
+    
+    public Categories()
+    {
+        super();
+        setConverter(CONVERTER);
+    }
+
+    public static Categories parse(String propertyContent)
+    {
+        Categories property = new Categories();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

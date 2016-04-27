@@ -56,4 +56,17 @@ public class GeneralPropertyTest
         madeProperty.valueParameterProperty().set(new ValueParameter(ValueType.INTEGER));
         assertEquals(1, madeProperty.getValue());
     }
+    
+    @Test
+    public void canEscapeSpecialCharacters()
+    {
+        String content = "the dog, frog; ran \\ far\naway\\;";
+        String contentEscaped = "the dog\\, frog\\; ran \\\\ far\\naway\\\\\\;";
+        String content2 = (String) ValueType.TEXT.getConverter().fromString(contentEscaped);
+        String contentEscaped2 = ValueType.TEXT.getConverter().toString(content);
+        System.out.println(content2);
+        System.out.println(contentEscaped2);
+        assertEquals(content2, content);
+        assertEquals(contentEscaped2, contentEscaped);
+    }
 }

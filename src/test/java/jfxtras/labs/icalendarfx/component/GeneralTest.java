@@ -70,7 +70,7 @@ public class GeneralTest
                 "CLASS:PUBLIC" + System.lineSeparator() +
                 "CLASS:PRIVATE" + System.lineSeparator() + // not allowed
                 "END:" + componentName;
-        new VEventNew(content);
+        VEventNew.parse(content);
     }
     
     @Test
@@ -80,7 +80,7 @@ public class GeneralTest
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "CLASS:PUBLIC" + System.lineSeparator() +
                 "END:" + componentName;
-        VEventNew madeComponent = new VEventNew(content);
+        VEventNew madeComponent = VEventNew.parse(content);
         madeComponent.setClassification("PRIVATE");
         assertEquals(ClassificationType.PRIVATE, madeComponent.getClassification().getValue());
     }

@@ -45,11 +45,11 @@ public class Attendee extends PropertyBaseAttendee<URI, Attendee>
     
     Attendee() { }
 
-    public static Attendee parse(String value)
+    public static Attendee parse(String propertyContent)
     {
-        Attendee attendee = new Attendee();
-        attendee.parseContent(value);
-        URI.class.cast(attendee.getValue()); // ensure value class type matches parameterized type
-        return attendee;
+        Attendee property = new Attendee();
+        property.parseContent(propertyContent);
+        URI.class.cast(property.getValue()); // ensure value class type matches parameterized type
+        return property;
     }
 }

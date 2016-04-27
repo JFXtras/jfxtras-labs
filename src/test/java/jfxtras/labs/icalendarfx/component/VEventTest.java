@@ -41,7 +41,7 @@ public class VEventTest
                 "TRANSP:OPAQUE" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VEventNew madeComponent = new VEventNew(content);
+        VEventNew madeComponent = VEventNew.parse(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContentLines());
     }

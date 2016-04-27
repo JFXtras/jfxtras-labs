@@ -224,7 +224,7 @@ public enum PropertyEnum
             {
                 list = castComponent.getCategories();
             }
-            list.add(new Categories(propertyContent));
+            list.add(Categories.parse(propertyContent));
         }
     },
     // descriptive

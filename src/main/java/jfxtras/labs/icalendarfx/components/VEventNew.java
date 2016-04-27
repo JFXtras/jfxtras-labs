@@ -163,11 +163,12 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
      * CONSTRUCTORS
      */
     public VEventNew() { }
-    
-    public VEventNew(String contentLines)
-    {
-        super(contentLines);
-    }
+
+//    @Deprecated
+//    public VEventNew(String contentLines)
+//    {
+//        super(contentLines);
+//    }
     
     @Override
     public boolean isValid()
@@ -182,4 +183,11 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         return super.isValid() && isDateTimeStartPresent && isDateTimeEndAndDurationOk && isDateTimeEndTypeOk;
     }
 
+    /** Parse content lines into calendar component object */
+    public static VEventNew parse(String contentLines)
+    {
+        VEventNew component = new VEventNew();
+        component.parseContent(contentLines);
+        return component;
+    }
 }

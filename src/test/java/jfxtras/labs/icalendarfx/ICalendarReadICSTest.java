@@ -17,7 +17,7 @@ public class ICalendarReadICSTest
     public void canReadYahooICS()
     {
         VCalendar vCalendar = new VCalendar()
-                .withVEventCallback((s) -> new VEventNew(s));
+                .withVEventCallback((s) -> VEventNew.parse(s));
         
         String fileName = "Yahoo_Sample_Calendar.ics";
         URL url = getClass().getResource(fileName);
