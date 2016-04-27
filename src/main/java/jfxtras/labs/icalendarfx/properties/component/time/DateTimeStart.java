@@ -1,16 +1,11 @@
 package jfxtras.labs.icalendarfx.properties.component.time;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * DTSTART
@@ -36,32 +31,51 @@ public class DateTimeStart<T extends Temporal> extends PropertyBaseDateTime<T,Da
         super(temporal);
     }
 
-    public DateTimeStart(Class<T> clazz, CharSequence contentLine)
-    {
-        super(clazz, contentLine);
-    }
+//    public DateTimeStart(Class<T> clazz, CharSequence contentLine)
+//    {
+//        super(clazz, contentLine);
+//    }
     
     public DateTimeStart(DateTimeStart<T> source)
     {
         super(source);
     }
-    
-    public static DateTimeStart<? extends Temporal> parse(String value)
+
+    public DateTimeStart()
     {
-        Temporal t = DateTimeUtilities.temporalFromString(value);
-        if (t instanceof LocalDate)
-        {
-            return new DateTimeStart<LocalDate>((LocalDate) t);                
-        } else if (t instanceof LocalDateTime)
-        {
-            return new DateTimeStart<LocalDateTime>((LocalDateTime) t);                
-            
-        } else if (t instanceof ZonedDateTime)
-        {
-            return new DateTimeStart<ZonedDateTime>((ZonedDateTime) t);                                
-        } else
-        {
-            throw new DateTimeException("Can't parse:" + value);
-        }
+        super();
     }
+
+    /** Parse string to Temporal.  Not type safe.  Implementation must
+     * ensure parameterized type is the same as date-time represented by String parameter */
+    public static <U extends Temporal> DateTimeStart<U> parse(String value)
+    {
+        DateTimeStart<U> requestStatus = new DateTimeStart<U>();
+        requestStatus.parseContent(value);
+        return requestStatus;
+    }
+    
+    /** Parse string with Temporal class explicitly provided as parameter */
+    public static <U extends Temporal> DateTimeStart<U> parse(Class<U> clazz, String value)
+    {
+        DateTimeStart<U> requestStatus = new DateTimeStart<U>();
+        requestStatus.parseContent(value);
+        clazz.cast(requestStatus.getValue()); // class check
+        return requestStatus;
+    }
+    
+    /** Parse string to Temporal.  Not type safe.  Implementation must
+     * ensure parameterized type is the same as Temporal */
+//    public static <U extends Temporal> DateTimeStart<U> parse(String value)
+//    {
+//        Temporal t = DateTimeUtilities.temporalFromString(value);
+//        return new DateTimeStart<U>((U) t);
+//    }
+    
+//    /** Parse string with Temporal class explicitly provided as parameter */
+//    public static <U extends Temporal> DateTimeStart<U> parse(Class<U> clazz, String value)
+//    {
+//        Temporal t = DateTimeUtilities.temporalFromString(value);
+//        return new DateTimeStart<U>(clazz.cast(t));
+//    }
 }

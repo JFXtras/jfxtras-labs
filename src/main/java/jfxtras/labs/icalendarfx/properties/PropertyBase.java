@@ -70,6 +70,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
     private ObjectProperty<T> value; // initialized in constructor
     @Override
     public void setValue(T value) { this.value.set(value); }
+    public U withValue(T value) { setValue(value); return (U) this; } // in constructor
+
     /** The propery's value converted by string converted to content string */
     protected String valueContent()
     {
@@ -77,7 +79,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
          * such as RequestStatus, require an overridden method */
         return (getConverter().toString(getValue()) == null) ? getUnknownValue() : getConverter().toString(getValue());
     }
-//    public U withValue(T value) { setValue(value); return (U) this; } // in constructor
 
     // class of value.  Used to verify value class is allowed for the property type
     private Class<T> valueClass;
@@ -431,7 +432,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
 //        System.out.println("propertyValueString:" + getPropertyValueString());
         T value = getConverter().fromString(getPropertyValueString());
-//        System.out.println("value class:" + value.getClass());
+//        System.out.println("value class:" + value.getClass() + " " + isCustomConverter());
         if (value == null)
         {
             setUnknownValue(propertyValueString);

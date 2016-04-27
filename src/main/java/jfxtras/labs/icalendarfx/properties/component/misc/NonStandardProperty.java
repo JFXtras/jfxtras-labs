@@ -46,7 +46,7 @@ public class NonStandardProperty extends UnknownProperty<Object, NonStandardProp
         super(source);
     }
     
-    NonStandardProperty()
+    public NonStandardProperty()
     {
         super();
     }

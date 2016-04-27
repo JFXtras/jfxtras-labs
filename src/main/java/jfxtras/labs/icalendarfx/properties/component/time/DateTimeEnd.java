@@ -32,13 +32,36 @@ public class DateTimeEnd<T extends Temporal> extends PropertyBaseDateTime<T, Dat
         super(temporal);
     }
 
-    public DateTimeEnd(Class<T> clazz, CharSequence contentLine)
-    {
-        super(clazz, contentLine);
-    }
+//    public DateTimeEnd(Class<T> clazz, CharSequence contentLine)
+//    {
+//        super(clazz, contentLine);
+//    }
     
     public DateTimeEnd(DateTimeEnd<T> source)
     {
         super(source);
+    }
+    
+    public DateTimeEnd()
+    {
+        super();
+    }
+    
+    /** Parse string to Temporal.  Not type safe.  Implementation must
+     * ensure parameterized type is the same as date-time represented by String parameter */
+    public static <U extends Temporal> DateTimeEnd<U> parse(String value)
+    {
+        DateTimeEnd<U> requestStatus = new DateTimeEnd<U>();
+        requestStatus.parseContent(value);
+        return requestStatus;
+    }
+    
+    /** Parse string with Temporal class explicitly provided as parameter */
+    public static <U extends Temporal> DateTimeEnd<U> parse(Class<U> clazz, String value)
+    {
+        DateTimeEnd<U> requestStatus = new DateTimeEnd<U>();
+        requestStatus.parseContent(value);
+        clazz.cast(requestStatus.getValue()); // class check
+        return requestStatus;
     }
 }

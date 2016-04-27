@@ -42,13 +42,6 @@ public class Action extends PropertyBase<ActionType, Action>
         }
     };
     
-    public Action(CharSequence contentLine)
-    {
-        super();
-        setConverter(CONVERTER);
-        parseContent(contentLine);
-    }
-    
     public Action(ActionType type)
     {
         super();
@@ -59,6 +52,19 @@ public class Action extends PropertyBase<ActionType, Action>
     public Action(Action source)
     {
         super(source);
+    }
+
+    public Action()
+    {
+        super();
+        setConverter(CONVERTER);
+    }
+    
+    public static Action parse(String value)
+    {
+        Action property = new Action();
+        property.parseContent(value);
+        return property;
     }
     
     public enum ActionType

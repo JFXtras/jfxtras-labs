@@ -127,6 +127,11 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
 //       clazz.cast(getValue()); // ensure value class type matches parameterized type
    }
    
+   Attachment()
+   {
+       super();
+   }
+   
    @Override
    protected void setConverterByClass(Class<T> clazz)
    {
@@ -184,4 +189,11 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
        }
        return true && super.isValid();
    }
+   
+    public static <U> Attachment<U> parse(String string)
+    {
+        Attachment<U> property = new Attachment<U>();
+        property.parseContent(string);
+        return property;
+    }
 }

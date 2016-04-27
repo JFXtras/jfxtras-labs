@@ -10,8 +10,9 @@ import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.parameters.ValueType;
+import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship;
 import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship.AlarmTriggerRelationshipType;
+import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
 
 public class TriggerTest
@@ -20,7 +21,7 @@ public class TriggerTest
     public void canParseTrigger1()
     {
         String expectedContent = "TRIGGER:-PT15M";
-        Trigger<Duration> madeProperty = new Trigger<Duration>(Duration.class, expectedContent);
+        Trigger<Duration> madeProperty = Trigger.parse(expectedContent);
         assertEquals(expectedContent, madeProperty.toContentLine());
         assertEquals(Duration.ofMinutes(-15), madeProperty.getValue());
     }
@@ -29,7 +30,7 @@ public class TriggerTest
     public void canBuildTrigger1()
     {
         Trigger<Duration> madeProperty = new Trigger<Duration>(Duration.ofMinutes(5))
-                .withAlarmTrigger(AlarmTriggerRelationshipType.END);
+                .withAlarmTrigger(new AlarmTriggerRelationship(AlarmTriggerRelationshipType.END));
         String expectedContent = "TRIGGER;RELATED=END:PT5M";
         assertEquals(expectedContent, madeProperty.toContentLine());
         assertEquals(Duration.ofMinutes(5), madeProperty.getValue());
@@ -45,11 +46,21 @@ public class TriggerTest
         assertEquals(expectedContent, madeProperty.toContentLine());
     }
     
+    @Test
+    public void canParseTrigger2()
+    {
+        String expectedContent = "TRIGGER;VALUE=DATE-TIME:20160306T043000Z";
+        Trigger<ZonedDateTime> madeProperty = Trigger.parse(ZonedDateTime.class, expectedContent);
+        assertEquals(expectedContent, madeProperty.toContentLine());
+        ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
+        assertEquals(d, madeProperty.getValue());
+    }
+    
     @Test (expected=IllegalArgumentException.class)
     public void canCatchInvalidTypeChange()
     {
         new Trigger<Duration>(Duration.ofMinutes(5))
-                .withAlarmTrigger(AlarmTriggerRelationshipType.END)
+                .withAlarmTrigger(new AlarmTriggerRelationship(AlarmTriggerRelationshipType.END))
                 .withValueParameter(ValueType.DATE_TIME); // invalid type
     }
     
@@ -58,7 +69,7 @@ public class TriggerTest
     {
         ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
         new Trigger<ZonedDateTime>(d)
-                .withAlarmTrigger(AlarmTriggerRelationshipType.END); // not allowed for DATE-TIME value type
+                .withAlarmTrigger(new AlarmTriggerRelationship(AlarmTriggerRelationshipType.END)); // not allowed for DATE-TIME value type
     }    
     
     @Test (expected=DateTimeException.class)
@@ -71,18 +82,18 @@ public class TriggerTest
     @Test (expected=IllegalArgumentException.class)
     public void canCatchInvalidParameterizedType()
     {
-        new Trigger<>(Integer.class, "123"); // only TemporalAmount and ZonedDateTime accepted
+        Trigger.parse(Integer.class, "123"); // only TemporalAmount and ZonedDateTime accepted
     }
     
     @Test (expected=DateTimeException.class)
     public void canCatchTypeContentMismatch()
     {
-        new Trigger<>(ZonedDateTime.class, "TRIGGER;RELATED=END:PT5M");
+        Trigger.parse(ZonedDateTime.class, "TRIGGER;RELATED=END:PT5M");
     }
     
     @Test (expected=DateTimeException.class)
     public void canCatchTypeContentMismatch2()
     {
-        new Trigger<>(Duration.class, "TRIGGER;VALUE=DATE-TIME:20160306T043000Z");
+        Trigger.parse(Duration.class, "TRIGGER;VALUE=DATE-TIME:20160306T043000Z");
     }
 }

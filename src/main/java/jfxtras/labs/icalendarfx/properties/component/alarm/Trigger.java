@@ -9,7 +9,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship;
-import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship.AlarmTriggerRelationshipType;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
@@ -70,16 +69,15 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
            }
        }
    }
-   public void setAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(new AlarmTriggerRelationship(type)); } 
+//   public void setAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(new AlarmTriggerRelationship(type)); } 
    public Trigger<T> withAlarmTrigger(AlarmTriggerRelationship format) { setAlarmTrigger(format); return this; }
-   public Trigger<T> withAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(type); return this; }
-   public Trigger<T> withAlarmTrigger(String format) { setAlarmTrigger(new AlarmTriggerRelationship(format)); return this; }
+//   public Trigger<T> withAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(type); return this; }
+//   public Trigger<T> withAlarmTrigger(String format) { setAlarmTrigger(new AlarmTriggerRelationship(format)); return this; }
 
-   
-    public Trigger(Class<T> clazz, CharSequence contentLine)
-    {
-        super(clazz, contentLine);
-    }
+//    public Trigger(Class<T> clazz, CharSequence contentLine)
+//    {
+//        super(clazz, contentLine);
+//    }
     
     public Trigger(Trigger<T> source)
     {
@@ -89,6 +87,11 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
     public Trigger(T value)
     {
         super(value);
+    }
+    
+    public Trigger()
+    {
+        super();
     }
     
     @Override
@@ -144,5 +147,24 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
             }
         }
         return true && super.isValid();
-    }        
+    }
+    
+    /** Parse string to Temporal.  Not type safe.  Implementation must
+     * ensure parameterized type is the same as date-time represented by String parameter */
+    public static <U> Trigger<U> parse(String value)
+    {
+        Trigger<U> property = new Trigger<U>();
+        property.parseContent(value);
+        return property;
+    }
+    
+    /** Parse string with Temporal class explicitly provided as parameter */
+    public static <U> Trigger<U> parse(Class<U> clazz, String value)
+    {
+        Trigger<U> property = new Trigger<U>();
+        property.setConverterByClass(clazz);
+        property.parseContent(value);
+        clazz.cast(property.getValue()); // class check
+        return property;
+    }
 }

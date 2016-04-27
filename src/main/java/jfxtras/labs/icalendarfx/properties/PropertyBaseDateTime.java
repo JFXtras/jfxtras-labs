@@ -80,6 +80,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
         super(temporal);
     }
 
+    @Deprecated
     public PropertyBaseDateTime(Class<T> clazz, CharSequence contentLine)
     {
         super(contentLine);

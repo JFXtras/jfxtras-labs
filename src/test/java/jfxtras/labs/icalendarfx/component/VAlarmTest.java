@@ -10,7 +10,9 @@ import java.time.Period;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.properties.component.alarm.Action;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
+import jfxtras.labs.icalendarfx.properties.component.alarm.RepeatCount;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
 public class VAlarmTest
@@ -19,11 +21,11 @@ public class VAlarmTest
     public void canBuildVAlarm()
     {        
         VAlarm builtComponent = new VAlarm()
-                .withAction(ActionType.DISPLAY)
+                .withAction(new Action(ActionType.DISPLAY))
                 .withAttendees(Attendee.parse("mailto:jsmith@example.com"))
                 .withDuration(Period.ofDays(-2))
                 .withTrigger(Duration.ofMinutes(-15))
-                .withRepeatCount(2);
+                .withRepeatCount(new RepeatCount(2));
         String componentName = builtComponent.componentType().toString();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
@@ -45,12 +47,12 @@ public class VAlarmTest
     {
         VAlarm builtComponent = new VAlarm();
         assertFalse(builtComponent.isValid());
-        builtComponent.setAction(ActionType.DISPLAY);
+        builtComponent.setAction(Action.parse("DISPLAY"));
         builtComponent.setTrigger(Duration.ofMinutes(-15));
         assertTrue(builtComponent.isValid());
         builtComponent.setDuration(Period.ofDays(-2));
         assertFalse(builtComponent.isValid());
-        builtComponent.setRepeatCount(2);
+        builtComponent.setRepeatCount(new RepeatCount(2));
         assertTrue(builtComponent.isValid());
     }
 }

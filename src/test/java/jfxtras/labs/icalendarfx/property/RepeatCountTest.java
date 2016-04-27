@@ -12,7 +12,7 @@ public class RepeatCountTest
     public void canParseRepeatCount()
     {
         String expectedContent = "REPEAT:0";
-        RepeatCount madeProperty = new RepeatCount(expectedContent);
+        RepeatCount madeProperty = RepeatCount.parse(expectedContent);
         assertEquals(expectedContent, madeProperty.toContentLine());
         assertEquals((Integer) 0, madeProperty.getValue());
     }

@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.properties;
 
-import java.net.URI;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -105,7 +104,7 @@ public enum PropertyEnum
             VAlarm castComponent = (VAlarm) vComponent;
             if (castComponent.getAction() == null)
             {
-                castComponent.setAction(new Action(propertyContent));                                
+                castComponent.setAction(Action.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -140,14 +139,15 @@ public enum PropertyEnum
                 list = castComponent.getAttachments();
             }
 
-            boolean isBinary = propertyContent.toUpperCase().contains("VALUE=BINARY");
-            if (isBinary)
-            {
-                list.add(new Attachment<String>(String.class, propertyContent));
-            } else
-            {
-                list.add(new Attachment<URI>(URI.class, propertyContent));
-            }
+            list.add(Attachment.parse(propertyContent));
+//            boolean isBinary = propertyContent.toUpperCase().contains("VALUE=BINARY");
+//            if (isBinary)
+//            {
+//                list.add(new Attachment<String>(String.class, propertyContent));
+//            } else
+//            {
+//                list.add(new Attachment<URI>(URI.class, propertyContent));
+//            }
         }
     },
 
@@ -497,6 +497,8 @@ public enum PropertyEnum
             VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
             if (castComponent.getDateTimeStart() == null)
             {
+//                Temporal t = DateTimeUtilities.temporalFromString(propertyContent);
+//                return new DateTimeStart<U>((U) t);
                 castComponent.setDateTimeStart(DateTimeStart.parse(propertyContent));
             } else
             {
@@ -1044,7 +1046,7 @@ public enum PropertyEnum
             VAlarm castComponent = (VAlarm) vComponent;
             if (castComponent.getRepeatCount() == null)
             {
-                castComponent.setRepeatCount(new RepeatCount(propertyContent));                                
+                castComponent.setRepeatCount(RepeatCount.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");

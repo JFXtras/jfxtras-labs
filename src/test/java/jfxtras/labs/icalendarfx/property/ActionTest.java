@@ -13,7 +13,7 @@ public class ActionTest
     @Test
     public void canParseAction()
     {
-        Action madeProperty = new Action("ACTION:AUDIO");
+        Action madeProperty = Action.parse("ACTION:AUDIO");
         String expectedContent = "ACTION:AUDIO";
         assertEquals(expectedContent, madeProperty.toContentLine());
         assertEquals(ActionType.AUDIO, madeProperty.getValue());
@@ -31,7 +31,7 @@ public class ActionTest
     @Test
     public void canParseAction3()
     {
-        Action madeProperty = new Action("DANCE");
+        Action madeProperty = Action.parse("DANCE");
         String expectedContent = "ACTION:DANCE";
         assertEquals(expectedContent, madeProperty.toContentLine());
         assertEquals(ActionType.UNKNOWN, madeProperty.getValue());
@@ -40,7 +40,7 @@ public class ActionTest
     @Test
     public void canParseAction4()
     {
-        Action madeProperty = new Action("EMAIL");
+        Action madeProperty = Action.parse("EMAIL");
         String expectedContent = "ACTION:EMAIL";
         assertEquals(expectedContent, madeProperty.toContentLine());
         assertEquals(ActionType.EMAIL, madeProperty.getValue());

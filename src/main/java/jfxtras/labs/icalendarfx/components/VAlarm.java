@@ -8,7 +8,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action;
-import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
 import jfxtras.labs.icalendarfx.properties.component.alarm.RepeatCount;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
@@ -159,12 +158,12 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     }
     private ObjectProperty<Action> action;
     public Action getAction() { return actionProperty().get(); }
-    public void setAction(String action) { setAction(new Action(action)); }
+//    public void setAction(String action) { setAction(new Action(action)); }
     public void setAction(Action action) { actionProperty().set(action); }
-    public void setAction(ActionType action) { setAction(new Action(action)); }
+//    public void setAction(ActionType action) { setAction(new Action(action)); }
     public VAlarm withAction(Action action) { setAction(action); return this; }
-    public VAlarm withAction(ActionType actionType) { setAction(actionType); return this; }
-    public VAlarm withAction(String action) { PropertyEnum.ACTION.parse(this, action); return this; }
+//    public VAlarm withAction(ActionType actionType) { setAction(actionType); return this; }
+//    public VAlarm withAction(String action) { PropertyEnum.ACTION.parse(this, action); return this; }
     
     /**
      * ATTENDEE: Attendee
@@ -251,12 +250,12 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     }
     private ObjectProperty<RepeatCount> repeatCount;
     public RepeatCount getRepeatCount() { return repeatCountProperty().get(); }
-    public void setRepeatCount(String repeatCount) { setRepeatCount(new RepeatCount(repeatCount)); }
+//    public void setRepeatCount(String repeatCount) { setRepeatCount(new RepeatCount(repeatCount)); }
     public void setRepeatCount(RepeatCount repeatCount) { repeatCountProperty().set(repeatCount); }
-    public void setRepeatCount(int repeatCount) { setRepeatCount(new RepeatCount(repeatCount)); }
+//    public void setRepeatCount(int repeatCount) { setRepeatCount(new RepeatCount(repeatCount)); }
     public VAlarm withRepeatCount(RepeatCount repeatCount) { setRepeatCount(repeatCount); return this; }
-    public VAlarm withRepeatCount(int repeatCount) { setRepeatCount(repeatCount); return this; }
-    public VAlarm withRepeatCount(String repeatCount) { PropertyEnum.REPEAT_COUNT.parse(this, repeatCount); return this; }
+//    public VAlarm withRepeatCount(int repeatCount) { setRepeatCount(repeatCount); return this; }
+//    public VAlarm withRepeatCount(String repeatCount) { PropertyEnum.REPEAT_COUNT.parse(this, repeatCount); return this; }
     
     /**
      * TRIGGER

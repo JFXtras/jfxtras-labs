@@ -38,23 +38,24 @@ public class DescribableTest
     {
         List<VComponentDescribable<?>> components = Arrays.asList(
                 new VEventNew()
-                    .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
-                            "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
-                    .withSummary(new Summary("a test summary")
+                    .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"),
+                            Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
+                    .withSummary(new Summary()
+                            .withValue("a test summary")
                             .withLanguage("en-USA")),
                 new VTodo()
-                    .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
-                            "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
+                    .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"),
+                            Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
                     .withSummary(new Summary("a test summary")
                             .withLanguage("en-USA")),
                 new VJournal()
-                    .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
-                            "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
+                    .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"),
+                            Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
                     .withSummary(new Summary("a test summary")
                             .withLanguage("en-USA")),
                 new VAlarm()
-                    .withAttachments("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW",
-                            "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
+                    .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"),
+                            Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
                     .withSummary(new Summary("a test summary")
                             .withLanguage("en-USA"))
                 );
@@ -67,7 +68,7 @@ public class DescribableTest
                     "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com" + System.lineSeparator() +
                     "SUMMARY;LANGUAGE=en-USA:a test summary" + System.lineSeparator() +
                     "END:" + componentName;
-                    
+
             VComponentDescribable<?> parsedComponent = builtComponent
                     .getClass()
                     .getConstructor(String.class)

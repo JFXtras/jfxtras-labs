@@ -25,10 +25,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class RepeatCount extends PropertyBase<Integer, RepeatCount>
 {
-    public RepeatCount(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public RepeatCount(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     public RepeatCount(Integer value)
     {
@@ -43,6 +43,13 @@ public class RepeatCount extends PropertyBase<Integer, RepeatCount>
     public RepeatCount()
     {
         super(0); // default is 0
+    }
+    
+    public static RepeatCount parse(String value)
+    {
+        RepeatCount property = new RepeatCount();
+        property.parseContent(value);
+        return property;
     }
     
     @Override

@@ -34,4 +34,9 @@ public class Summary extends PropertyBaseAltText<String, Summary>
     {
         super(source);
     }
+    
+    public Summary()
+    {
+        super();
+    }
 }

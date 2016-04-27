@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.util.Arrays;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,11 +32,11 @@ public interface VComponentDescribable<T> extends VComponentNew<T>
     void setAttachments(ObservableList<Attachment<?>> properties);
     /** add comma separated attachments into separate comment objects */
     default T withAttachments(ObservableList<Attachment<?>> attachments) { setAttachments(attachments); return (T) this; }
-    default T withAttachments(String...attachments)
-    {
-        Arrays.stream(attachments).forEach(c -> PropertyEnum.ATTACHMENT.parse(this, c));
-        return (T) this;
-    }
+//    default T withAttachments(String...attachments)
+//    {
+//        Arrays.stream(attachments).forEach(c -> PropertyEnum.ATTACHMENT.parse(this, c));
+//        return (T) this;
+//    }
     default T withAttachments(Attachment<?>...attachments)
     {
         if (getAttachments() == null)

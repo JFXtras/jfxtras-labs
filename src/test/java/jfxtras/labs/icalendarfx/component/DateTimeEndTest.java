@@ -36,9 +36,9 @@ public class DateTimeEndTest
     {
         List<VComponentDateTimeEnd<?>> components = Arrays.asList(
                 new VEventNew()
-                        .withDateTimeEnd("20160306T080000Z"),
+                        .withDateTimeEnd(DateTimeEnd.parse("20160306T080000Z")),
                 new VFreeBusy()
-                        .withDateTimeEnd("20160306T080000Z")
+                        .withDateTimeEnd(DateTimeEnd.parse("20160306T080000Z"))
                 );
         
         for (VComponentDateTimeEnd<?> builtComponent : components)

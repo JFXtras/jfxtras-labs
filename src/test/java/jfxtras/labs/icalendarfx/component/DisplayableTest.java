@@ -83,7 +83,7 @@ public class DisplayableTest
                     .withRecurrences("RDATE:19960302T010000Z,19960304T010000Z")
                     .withRecurrenceRule("RRULE:FREQ=DAILY")
                     .withDateTimeLastModified("20160306T080000Z")
-                    .withAttachments("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
+                    .withAttachments(Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
                     .withDateTimeCreated("20160420T080000Z")
                     .withCategories("group03","group04","group05")
                     .withCategories("group06")
@@ -100,7 +100,7 @@ public class DisplayableTest
                     .withRecurrences("RDATE:19960302T010000Z,19960304T010000Z")
                     .withRecurrenceRule("RRULE:FREQ=DAILY")
                     .withDateTimeLastModified("20160306T080000Z")
-                    .withAttachments("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
+                    .withAttachments(Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
                     .withDateTimeCreated("20160420T080000Z")
                     .withCategories("group03","group04","group05")
                     .withCategories("group06")
@@ -117,7 +117,7 @@ public class DisplayableTest
                     .withRecurrences("RDATE:19960302T010000Z,19960304T010000Z")
                     .withRecurrenceRule("RRULE:FREQ=DAILY")
                     .withDateTimeLastModified("20160306T080000Z")
-                    .withAttachments("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com")
+                    .withAttachments(Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
                     .withDateTimeCreated("20160420T080000Z")
                     .withCategories("group03","group04","group05")
                     .withCategories("group06")
@@ -166,7 +166,7 @@ public class DisplayableTest
             assertEquals(expectedContent, builtComponent.toContentLines());     
             
             builtComponent.setRecurrenceRule("RRULE:FREQ=DAILY;INTERVAL=2");
-            builtComponent.setDateTimeStart(DateTimeStart.parse("19960301T010000Z"));
+            builtComponent.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "19960301T010000Z"));
             List<Temporal> myDates = builtComponent.recurrenceStreamer().stream().limit(6).collect(Collectors.toList());
             assertEquals(expectedDates, myDates);
         }
@@ -269,7 +269,7 @@ public class DisplayableTest
             .withDateTimeStart(LocalDate.of(1997, 3, 1))
             .withExceptions("EXDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
 //      Platform.runLater(() -> component.setDateTimeStart("20160302T223316Z"));      
-        component.setDateTimeStart(DateTimeStart.parse("20160302T223316Z")); // invalid
+        component.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "20160302T223316Z")); // invalid
     }
     
     @Test (expected = DateTimeException.class)

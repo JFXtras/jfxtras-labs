@@ -40,12 +40,7 @@ public class IANAProperty extends UnknownProperty<Object, IANAProperty>
 {
     public static final List<String> REGISTERED_IANA_PROPERTY_NAMES = 
             Arrays.asList("TESTPROP1", "TESTPROP2");
-    
-//    public IANAProperty(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//    }
-//    
+      
     public IANAProperty(Object value)
     {
         super(value);
@@ -56,7 +51,7 @@ public class IANAProperty extends UnknownProperty<Object, IANAProperty>
         super(source);
     }
     
-    IANAProperty()
+    public IANAProperty()
     {
         super();
     }

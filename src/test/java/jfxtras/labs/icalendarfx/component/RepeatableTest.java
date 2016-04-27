@@ -177,7 +177,7 @@ public class RepeatableTest //extends Application
             .withDateTimeStart(LocalDate.of(1997, 3, 1))
             .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
 //        Platform.runLater(() -> component.setDateTimeStart("20160302T223316Z"));      
-        component.setDateTimeStart(DateTimeStart.parse("20160302T223316Z")); // invalid
+        component.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "20160302T223316Z")); // invalid
     }
 
     @Test (expected = DateTimeException.class)

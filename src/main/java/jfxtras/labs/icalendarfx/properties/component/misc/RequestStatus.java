@@ -121,9 +121,9 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
     
     public static RequestStatus parse(String value)
     {
-        RequestStatus requestStatus = new RequestStatus();
-        requestStatus.parseContent(value);
-        return requestStatus;
+        RequestStatus property = new RequestStatus();
+        property.parseContent(value);
+        return property;
     }
 
     /*
