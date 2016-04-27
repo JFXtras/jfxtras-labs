@@ -25,7 +25,6 @@ import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeT
  * The property can be specified in following components:
  * @see VEventNew
  */
-    // TODO - REMOVE UNKNOWN AS VALUE - MAKE PROPER WITH REAL UNKNOWN WORK BEFORE DELETING CODE
 public class TimeTransparency extends PropertyBase<TimeTransparencyType,TimeTransparency>
 {
     private final static StringConverter<TimeTransparencyType> CONVERTER = new StringConverter<TimeTransparencyType>()
@@ -33,11 +32,6 @@ public class TimeTransparency extends PropertyBase<TimeTransparencyType,TimeTran
         @Override
         public String toString(TimeTransparencyType object)
         {
-            if (object == TimeTransparencyType.UNKNOWN)
-            {
-                // null means value is unknown and non-converted string in PropertyBase unknownValue should be used instead
-                return null;
-            }
             return object.toString();
         }
 
@@ -48,13 +42,13 @@ public class TimeTransparency extends PropertyBase<TimeTransparencyType,TimeTran
         }
     };
 
-    public TimeTransparency(CharSequence contentLine)
-    {
-        super();
-        setConverter(CONVERTER);
-        parseContent(contentLine);
-        
-    }
+//    public TimeTransparency(CharSequence contentLine)
+//    {
+//        super();
+//        setConverter(CONVERTER);
+//        parseContent(contentLine);
+//        
+//    }
     
     public TimeTransparency(TimeTransparencyType value)
     {
@@ -75,11 +69,18 @@ public class TimeTransparency extends PropertyBase<TimeTransparencyType,TimeTran
         setValue(TimeTransparencyType.OPAQUE); // default value
     }
     
+    public static TimeTransparency parse(String propertyContent)
+    {
+        TimeTransparency property = new TimeTransparency();
+        property.parseContent(propertyContent);
+        return property;
+    }
+    
     public enum TimeTransparencyType
     {
         OPAQUE,
-        TRANSPARENT,
-        UNKNOWN;
+        TRANSPARENT;
+//        UNKNOWN;
         
         private static Map<String, TimeTransparencyType> enumFromNameMap = makeEnumFromNameMap();
         private static Map<String, TimeTransparencyType> makeEnumFromNameMap()
@@ -96,7 +97,11 @@ public class TimeTransparency extends PropertyBase<TimeTransparencyType,TimeTran
         public static TimeTransparencyType enumFromName(String propertyName)
         {
             TimeTransparencyType type = enumFromNameMap.get(propertyName.toUpperCase());
-            return (type == null) ? UNKNOWN : type;
+            if (type == null)
+            {
+                throw new IllegalArgumentException(propertyName + " is not a vaild TimeTransparencyType");
+            }
+            return type;
         }
     }
 }

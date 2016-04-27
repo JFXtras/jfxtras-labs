@@ -1136,7 +1136,7 @@ public enum PropertyEnum
             VEventNew castComponent = (VEventNew) vComponent;
             if (castComponent.getTimeTransparency() == null)
             {
-                castComponent.setTimeTransparency(new TimeTransparency(propertyContent));                                
+                castComponent.setTimeTransparency(TimeTransparency.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");

@@ -152,7 +152,7 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
     }
     private ObjectProperty<TimeTransparency> timeTransparency;
     public TimeTransparency getTimeTransparency() { return timeTransparencyProperty().get(); }
-    public void setTimeTransparency(String timeTransparency) { setTimeTransparency(new TimeTransparency(timeTransparency)); }
+    public void setTimeTransparency(String timeTransparency) { setTimeTransparency(TimeTransparency.parse(timeTransparency)); }
     public void setTimeTransparency(TimeTransparency timeTransparency) { timeTransparencyProperty().set(timeTransparency); }
     public void setTimeTransparency(TimeTransparencyType timeTransparency) { setTimeTransparency(new TimeTransparency(timeTransparency)); }
     public VEventNew withTimeTransparency(TimeTransparency timeTransparency) { setTimeTransparency(timeTransparency); return this; }

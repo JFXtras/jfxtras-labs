@@ -13,7 +13,7 @@ public class TimeTransparencyTest
     public void canParseStatus()
     {
         String content = "TRANSP:TRANSPARENT";
-        TimeTransparency madeProperty = new TimeTransparency(content);
+        TimeTransparency madeProperty = TimeTransparency.parse(content);
         assertEquals(content, madeProperty.toContentLine());
         TimeTransparency expectedProperty = new TimeTransparency(TimeTransparencyType.TRANSPARENT);
         assertEquals(expectedProperty, madeProperty);
@@ -23,11 +23,9 @@ public class TimeTransparencyTest
     @Test
     public void canParseStatus2()
     {
-        String content = "TRANSP:TRANSPARENT2";
-        TimeTransparency madeProperty = new TimeTransparency(content);
+        String content = "TRANSP:OPAQUE";
+        TimeTransparency madeProperty = new TimeTransparency();
         assertEquals(content, madeProperty.toContentLine());
-//        TimeTransparency expectedProperty = new TimeTransparency(TransparencyType.TRANSPARENT);
-//        assertEquals(expectedProperty, madeProperty);
-        assertEquals(TimeTransparencyType.UNKNOWN, madeProperty.getValue());
+        assertEquals(TimeTransparencyType.OPAQUE, madeProperty.getValue());
     }
 }
