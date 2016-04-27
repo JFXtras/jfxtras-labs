@@ -42,12 +42,12 @@ public class Classification extends PropertyBase<ClassificationType, Classificat
         }
     };
     
-    public Classification(CharSequence contentLine)
-    {
-        super();
-        setConverter(CONVERTER);
-        parseContent(contentLine);
-    }
+//    public Classification(CharSequence contentLine)
+//    {
+//        super();
+//        setConverter(CONVERTER);
+//        parseContent(contentLine);
+//    }
     
     public Classification(ClassificationType type)
     {
@@ -85,5 +85,12 @@ public class Classification extends PropertyBase<ClassificationType, Classificat
                 return UNKNOWN;
             }
         }
+    }
+
+    public static Classification parse(String propertyContent)
+    {
+        Classification property = new Classification();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

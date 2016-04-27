@@ -165,10 +165,10 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
     public VEventNew() { }
 
 //    @Deprecated
-//    public VEventNew(String contentLines)
-//    {
-//        super(contentLines);
-//    }
+    public VEventNew(String contentLines)
+    {
+        super(contentLines);
+    }
     
     @Override
     public boolean isValid()

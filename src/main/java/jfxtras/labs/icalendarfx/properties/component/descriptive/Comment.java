@@ -33,13 +33,25 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  */
 public class Comment extends PropertyBaseAltText<String, Comment>
 {
-    public Comment(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Comment(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public Comment(Comment source)
     {
         super(source);
+    }
+
+    public Comment()
+    {
+        super();
+    }
+    
+    public static Comment parse(String propertyContent)
+    {
+        Comment property = new Comment();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

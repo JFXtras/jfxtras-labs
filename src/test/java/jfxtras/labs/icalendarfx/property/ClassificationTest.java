@@ -12,7 +12,7 @@ public class ClassificationTest
     @Test
     public void canParseClassification()
     {
-        Classification madeProperty = new Classification("CLASS:PUBLIC");
+        Classification madeProperty = new Classification(ClassificationType.PUBLIC);
         String expectedContent = "CLASS:PUBLIC";
         assertEquals(expectedContent, madeProperty.toContentLine());
     }
@@ -20,7 +20,7 @@ public class ClassificationTest
     @Test
     public void canParseClassification2()
     {
-        Classification madeProperty = new Classification("CLASS:CUSTOM");
+        Classification madeProperty = Classification.parse("CLASS:CUSTOM");
         String expectedContent = "CLASS:CUSTOM";
         assertEquals(expectedContent, madeProperty.toContentLine());
         assertEquals(ClassificationType.UNKNOWN, madeProperty.getValue());

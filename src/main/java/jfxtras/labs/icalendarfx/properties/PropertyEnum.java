@@ -246,7 +246,7 @@ public enum PropertyEnum
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getClassification() == null)
             {
-                castComponent.setClassification(new Classification(propertyContent));                                
+                castComponent.setClassification(Classification.parse(propertyContent));                                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -279,7 +279,7 @@ public enum PropertyEnum
             {
                 list = castComponent.getComments();
             }
-            list.add(new Comment(propertyContent));
+            list.add(Comment.parse(propertyContent));
         }
     },
     // Relationship
@@ -308,7 +308,7 @@ public enum PropertyEnum
             if (vComponent instanceof VFreeBusy)
             {// VJournal has one Contact
                 VFreeBusy castComponent = (VFreeBusy) vComponent;
-                castComponent.setContact(new Contact(propertyContent));                
+                castComponent.setContact(Contact.parse(propertyContent));                
             } else
             { // Other components have a list of Contacts
                 VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
@@ -321,7 +321,7 @@ public enum PropertyEnum
                 {
                     list = castComponent.getContacts();
                 }
-                list.add(new Contact(propertyContent));
+                list.add(Contact.parse(propertyContent));
             }
         }
     },

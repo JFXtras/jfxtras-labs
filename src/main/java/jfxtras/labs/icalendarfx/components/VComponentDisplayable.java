@@ -80,7 +80,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObjectProperty<Classification> classificationProperty();
     default Classification getClassification() { return classificationProperty().get(); }
-    default void setClassification(String classification) { setClassification(new Classification(classification)); }
+    default void setClassification(String classification) { setClassification(Classification.parse(classification)); }
     default void setClassification(Classification classification) { classificationProperty().set(classification); }
     default void setClassification(ClassificationType classification) { setClassification(new Classification(classification)); }
     default T withClassification(Classification classification) { setClassification(classification); return (T) this; }

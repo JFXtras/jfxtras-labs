@@ -147,7 +147,7 @@ public final class VComponentUtilities
             public void parseAndSetProperty(VComponent<?> vComponent, String propertyLine)
             {
                 // TODO - need way to handle multiple comments - use list of Comments?
-                vComponent.setComment(new Comment(propertyLine));
+                vComponent.setComment(Comment.parse(propertyLine));
             }
 
             @Override

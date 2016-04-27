@@ -121,7 +121,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     }
     private ObjectProperty<Contact> contact;
     public Contact getContact() { return contactProperty().get(); }
-    public void setContact(String contact) { setContact(new Contact(contact)); }
+    public void setContact(String contact) { setContact(Contact.parse(contact)); }
     public void setContact(Contact contact) { contactProperty().set(contact); }
     public VFreeBusy withContact(Contact contact) { setContact(contact); return this; }
     public VFreeBusy withContact(String contact) { PropertyEnum.CONTACT.parse(this, contact); return this; }

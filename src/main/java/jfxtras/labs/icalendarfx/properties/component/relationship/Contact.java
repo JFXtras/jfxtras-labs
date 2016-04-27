@@ -25,13 +25,25 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  */
 public class Contact extends PropertyBaseAltText<String, Contact>
 {   
-    public Contact(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Contact(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public Contact(Contact source)
     {
         super(source);
+    }
+
+    public Contact()
+    {
+        super();
+    }
+    
+    public static Contact parse(String propertyContent)
+    {
+        Contact property = new Contact();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

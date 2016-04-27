@@ -147,7 +147,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     }
 
     /** Parse content lines into calendar component */
-    void parseContent(String contentLines)
+    public void parseContent(String contentLines)
     {
         Integer counter = 0;
 //      Iterator<String> i = Arrays.asList(contentLines.split(System.lineSeparator())).iterator();

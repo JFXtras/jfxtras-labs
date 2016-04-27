@@ -91,10 +91,16 @@ public class BaseTest
                     "TESTPROP2:CASUAL" + System.lineSeparator() +
                     "X-TEST-OBJ:testid" + System.lineSeparator() +
                     "END:" + componentName;
+//            VComponentBase<?> parsedComponent = builtComponent
+//                    .getClass()
+//                    .getConstructor(String.class)
+//                    .newInstance(expectedContent);
             VComponentBase<?> parsedComponent = builtComponent
                     .getClass()
-                    .getConstructor(String.class)
-                    .newInstance(expectedContent);
+                    .newInstance();
+            parsedComponent.parseContent(expectedContent);
+//            parsedComponent.parse
+
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContentLines());            
         }
