@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
@@ -256,7 +257,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
  * @author David Bal
  *
  */
-public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt<VTimeZone>
+public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLastModified<VTimeZone>
 {
     @Override
     public VComponentEnum componentType()
@@ -264,6 +265,32 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
         return VComponentEnum.VTIMEZONE;
     }
  
+    /** 
+     * VALARM
+     * Alarm Component
+     * RFC 5545 iCalendar 3.6.6. page 71
+     * 
+     * Provide a grouping of component properties that define an alarm.
+     * 
+     * The "VALARM" calendar component MUST only appear within either a
+     * "VEVENT" or "VTODO" calendar component.
+     */
+    public ObservableList<StandardOrDaylight<?>> getStandardOrDaylight() { return standardOrDaylight; }
+    private ObservableList<StandardOrDaylight<?>> standardOrDaylight;
+    public void setStandardOrDaylight(ObservableList<StandardOrDaylight<?>> standardOrDaylight) { this.standardOrDaylight = standardOrDaylight; }
+    public VTimeZone withVAlarms(ObservableList<StandardOrDaylight<?>> standardOrDaylight) { setStandardOrDaylight(standardOrDaylight); return this; }
+    public VTimeZone withVAlarms(StandardOrDaylight<?>...standardOrDaylight)
+    {
+        if (getStandardOrDaylight() == null)
+        {
+            setStandardOrDaylight(FXCollections.observableArrayList(standardOrDaylight));
+        } else
+        {
+            getStandardOrDaylight().addAll(standardOrDaylight);
+        }
+        return this;
+    }
+    
     /**
     * LAST-MODIFIED
     * RFC 5545, 3.8.7.3, page 138
@@ -317,7 +344,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
     private ObjectProperty<TimeZoneIdentifier> timeZoneIdentifier;
     public TimeZoneIdentifier getTimeZoneIdentifier() { return timeZoneIdentifierProperty().get(); }
     public void setTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { timeZoneIdentifierProperty().set(timeZoneIdentifier); }
-//    public void setTimeZoneIdentifier(String timeZoneIdentifier) { PropertyEnum.TIME_ZONE_IDENTIFIER.parse(this, timeZoneIdentifier); }
+    public void setTimeZoneIdentifier(String timeZoneIdentifier) { setTimeZoneIdentifier(TimeZoneIdentifier.parse(timeZoneIdentifier)); }
     public VTimeZone withTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return this; }
     public VTimeZone withTimeZoneIdentifier(String timeZoneIdentifier) { PropertyEnum.TIME_ZONE_IDENTIFIER.parse(this, timeZoneIdentifier); return this; }
 
@@ -344,7 +371,8 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
     private ObjectProperty<TimeZoneURL> timeZoneURL;
     public TimeZoneURL getTimeZoneURL() { return timeZoneURLProperty().get(); }
     public void setTimeZoneURL(TimeZoneURL timeZoneURL) { timeZoneURLProperty().set(timeZoneURL); }
-//    public void setTimeZoneURL(URI timeZoneURL) { timeZoneURLProperty().set(new TimeZoneURL(timeZoneURL)); }
+    public void setTimeZoneURL(String timeZoneURL) { setTimeZoneURL(TimeZoneURL.parse(timeZoneURL)); }
+    public void setTimeZoneURL(URI timeZoneURL) { timeZoneURLProperty().set(new TimeZoneURL(timeZoneURL)); }
     public VTimeZone withTimeZoneURL(TimeZoneURL timeZoneURL) { setTimeZoneURL(timeZoneURL); return this; }
     public VTimeZone withTimeZoneURL(URI timeZoneURL) { setTimeZoneURL(new TimeZoneURL(timeZoneURL)); return this; }
     public VTimeZone withTimeZoneURL(String timeZoneURL) { PropertyEnum.TIME_ZONE_URL.parse(this, timeZoneURL); return this; }
@@ -366,17 +394,46 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VTimeZoneInt
         return getTimeZoneIdentifier() != null;
     }
 
+    /** include Standard and Daylight sub-components in content lines */
     @Override
-    public ObservableList<StandardOrSavings> getStandardOrSavingsTime()
+    void appendMiddleContentLines(StringBuilder builder)
     {
-        // TODO Auto-generated method stub
-        return null;
+        super.appendMiddleContentLines(builder);
+        if (getStandardOrDaylight() != null)
+        {
+            getStandardOrDaylight().stream().forEach(a -> builder.append(a.toContentLines() + System.lineSeparator()));
+        }
+    }
+    
+    /** parse Standard and Daylight sub-components */
+    @Override
+    void parseSubComponents(VComponentEnum subcomponentType, String contentLines)
+    {
+        if (subcomponentType == VComponentEnum.STANDARD || subcomponentType == VComponentEnum.DAYLIGHT)
+        {
+            final ObservableList<StandardOrDaylight<?>> list;
+            if (getStandardOrDaylight() == null)
+            {
+                list = FXCollections.observableArrayList();
+                setStandardOrDaylight(list);
+            } else
+            {
+                list = getStandardOrDaylight();
+            }
+            StandardOrDaylight<?> subcomponent = (subcomponentType == VComponentEnum.STANDARD) ? StandardTime.parse(contentLines) : DaylightSavingTime.parse(contentLines);
+            list.add(subcomponent);
+        } else
+        {
+            throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponentType +
+                    " found inside " + componentType() + " component");
+        }
     }
 
-    @Override
-    public void setStandardOrSavingsTime(ObservableList<StandardOrSavings> properties)
+    /** Parse content lines into calendar component object */
+    public static VTimeZone parse(String contentLines)
     {
-        // TODO Auto-generated method stub
-        
+        VTimeZone component = new VTimeZone();
+        component.parseContent(contentLines);
+        return component;
     }
 }

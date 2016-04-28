@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
-public class StandardTime extends StandardOrSavingsBase<StandardTime>
+public class StandardTime extends StandardOrDaylightBase<StandardTime>
 {
     @Override
     public VComponentEnum componentType()
@@ -16,5 +16,13 @@ public class StandardTime extends StandardOrSavingsBase<StandardTime>
     public StandardTime(String contentLines)
     {
         super(contentLines);
+    }
+
+    /** Parse content lines into calendar component object */
+    public static StandardTime parse(String contentLines)
+    {
+        StandardTime component = new StandardTime();
+        component.parseContent(contentLines);
+        return component;
     }
 }

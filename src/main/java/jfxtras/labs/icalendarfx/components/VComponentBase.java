@@ -122,42 +122,68 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     public void parseContent(String contentLines)
     {
         Integer counter = 0;
-//      Iterator<String> i = Arrays.asList(contentLines.split(System.lineSeparator())).iterator();
-      Iterator<String> i = unfoldLines(contentLines).iterator();
-      while (i.hasNext())
-      {
-          String line = i.next();
-          List<Integer> indices = new ArrayList<>();
-          indices.add(line.indexOf(':'));
-          indices.add(line.indexOf(';'));
-          int nameEndIndex = indices
+        Iterator<String> i = unfoldLines(contentLines).iterator();
+        while (i.hasNext())
+        {
+            String line = i.next();
+            List<Integer> indices = new ArrayList<>();
+            indices.add(line.indexOf(':'));
+            indices.add(line.indexOf(';'));
+            int nameEndIndex = indices
                   .stream()
                   .filter(v -> v > 0)
                   .min(Comparator.naturalOrder())
                   .get();
-          String propertyName = line.substring(0, nameEndIndex);
-          if (! (propertyName.equals("BEGIN") || propertyName.equals("END")))
-          {
-              propertySortOrder.put(propertyName, counter++);
-              PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
+            String propertyName = line.substring(0, nameEndIndex);
+            
+            // Parse subcomponent
+            boolean isParentComponent = line.substring(nameEndIndex+1).equals(componentType().toString());
+            if (propertyName.equals("BEGIN") && ! isParentComponent)
+            {
+//                System.out.println(line.substring(nameEndIndex+1));
+                VComponentEnum subcomponentType = VComponentEnum.valueOf(line.substring(nameEndIndex+1));
+                StringBuilder subcomponentContentBuilder = new StringBuilder(200);
+                subcomponentContentBuilder.append(line + System.lineSeparator());
+                boolean isEndFound = false;
+                do
+                {
+                    String subLine = i.next();
+                    subcomponentContentBuilder.append(subLine + System.lineSeparator());
+                    isEndFound = subLine.subSequence(0, 3).equals("END");
+                } while (! isEndFound);
+//                System.out.println(subcomponentContentBuilder.toString());
+                parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
+                
+            // parse properties
+            } else if (! propertyName.equals("END"))
+            {
+                propertySortOrder.put(propertyName, counter++);
+                PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
               
-              // parse property
-              if (propertyType != null)
-              {
-                  propertyType.parse(this, line);
-              } else if (propertyName.substring(0, PropertyEnum.NON_STANDARD.toString().length()).equals(PropertyEnum.NON_STANDARD.toString()))
-              {
-                  PropertyEnum.NON_STANDARD.parse(this, line);
-              } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(propertyName))
-              {
-                  PropertyEnum.IANA_PROPERTY.parse(this, line);
-              } else
-              {
-                  // ignores unknown properties - change if other behavior desired
-              }
-          }
-      }
+                // parse property
+                if (propertyType != null)
+                {
+                    propertyType.parse(this, line);
+                } else if (propertyName.substring(0, PropertyEnum.NON_STANDARD.toString().length()).equals(PropertyEnum.NON_STANDARD.toString()))
+                {
+                    PropertyEnum.NON_STANDARD.parse(this, line);
+                } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(propertyName))
+                {
+                    PropertyEnum.IANA_PROPERTY.parse(this, line);
+                } else
+                {
+                    // ignores unknown properties - change if other behavior desired
+                }
+            }
+        }
     }
+    
+    /**
+     * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
+     * @param subcomponentType 
+     * @param string 
+     */
+    void parseSubComponents(VComponentEnum subcomponentType, String subcomponentcontentLines) { }
 
     @Override
     public int hashCode()
@@ -212,8 +238,15 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     @Override
     public String toContentLines()
     {
-//        System.out.println("prop num:" + properties().size());
-        // make map of property name/content
+        StringBuilder builder = new StringBuilder(400);
+        builder.append(firstContentLine + System.lineSeparator());
+        appendMiddleContentLines(builder);
+        builder.append(lastContentLine);
+        return builder.toString();
+    }
+
+    void appendMiddleContentLines(StringBuilder builder)
+    {
         Map<String, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
         properties().stream()
                 .map(e -> e.getProperty(this))
@@ -243,9 +276,6 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                         list.add(property.toContentLine());
                     }
                 });
-
-        StringBuilder builder = new StringBuilder(400);
-        builder.append(firstContentLine + System.lineSeparator());
         
         // restore property sort order if properties were parsed from content
         propertyNameContentMap.entrySet().stream()
@@ -262,9 +292,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                     p.getValue().stream()
                             .forEach(s -> builder.append(foldLine(s) + System.lineSeparator()));
                 });
-
-        builder.append(lastContentLine);
-        return builder.toString();
+//        return builder;
     }
     private final String firstContentLine = "BEGIN:" + componentType().toString();
     private final String lastContentLine = "END:" + componentType().toString();
@@ -399,5 +427,4 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
         String myString = p1.substring(0, endIndex);
         return (myString.equals(PropertyEnum.DATE_TIME_START.toString())) ? -1 : 1;
     };
-    
 }

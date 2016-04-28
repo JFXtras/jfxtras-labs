@@ -195,7 +195,7 @@ public final class DateTimeUtilities
     public static Temporal parse(String temporalPropertyLine)
     {
         Map<String, String> parameterMap = ICalendarUtilities.propertyLineToParameterMap(temporalPropertyLine);
-        System.out.println("parameterMap:" + parameterMap);
+//        System.out.println("parameterMap:" + parameterMap);
         return Arrays.stream(DateTimeType.values())
                 .map(d -> d.parse(parameterMap))
                 .filter(d -> d != null)

@@ -19,7 +19,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
  * @author David Bal
  *
  */
-public interface StandardOrSavings<T> extends VComponentRepeatable<T>
+public interface StandardOrDaylight<T> extends VComponentRepeatable<T>
 {
     /**
      * TZNAME

@@ -15,7 +15,7 @@ public class TimeZoneURLTest
     public void canParseTimeZoneURL() throws URISyntaxException
     {
         String content = "TZURL:http://timezones.example.org/tz/America-Los_Angeles.ics";
-        TimeZoneURL property = new TimeZoneURL(content);
+        TimeZoneURL property = TimeZoneURL.parse(content);
         String madeContentLine = property.toContentLine();
         assertEquals(content, madeContentLine);
         assertEquals(new URI("http://timezones.example.org/tz/America-Los_Angeles.ics"), property.getValue());

@@ -116,4 +116,26 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
         }
         return (T) this;
     }
+    
+    /** 
+     * VALARM
+     * Alarm Component
+     * RFC 5545 iCalendar 3.6.6. page 71
+     * 
+     * Provide a grouping of component properties that define an alarm.
+     */
+    ObservableList<VAlarm> getVAlarms();
+    void setVAlarms(ObservableList<VAlarm> properties);
+    default T withVAlarms(ObservableList<VAlarm> vAlarms) { setVAlarms(vAlarms); return (T) this; }
+    default T withVAlarms(VAlarm...vAlarms)
+    {
+        if (getVAlarms() == null)
+        {
+            setVAlarms(FXCollections.observableArrayList(vAlarms));
+        } else
+        {
+            getVAlarms().addAll(vAlarms);
+        }
+        return (T) this;
+    }
 }

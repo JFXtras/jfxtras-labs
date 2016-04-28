@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action;
+import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
 import jfxtras.labs.icalendarfx.properties.component.alarm.RepeatCount;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
@@ -158,12 +159,12 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     }
     private ObjectProperty<Action> action;
     public Action getAction() { return actionProperty().get(); }
-//    public void setAction(String action) { setAction(new Action(action)); }
+    public void setAction(String action) { setAction(Action.parse(action)); }
     public void setAction(Action action) { actionProperty().set(action); }
-//    public void setAction(ActionType action) { setAction(new Action(action)); }
+    public void setAction(ActionType action) { setAction(new Action(action)); }
     public VAlarm withAction(Action action) { setAction(action); return this; }
-//    public VAlarm withAction(ActionType actionType) { setAction(actionType); return this; }
-//    public VAlarm withAction(String action) { PropertyEnum.ACTION.parse(this, action); return this; }
+    public VAlarm withAction(ActionType actionType) { setAction(actionType); return this; }
+    public VAlarm withAction(String action) { PropertyEnum.ACTION.parse(this, action); return this; }
     
     /**
      * ATTENDEE: Attendee
@@ -314,5 +315,13 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         boolean isNeitherNull = ! isDurationNull && ! isRepeatNull;
         boolean isDurationAndRepeatOK = isBothNull || isNeitherNull;
         return isActionPresent && isTriggerPresent && isDurationAndRepeatOK;
+    }
+
+    /** Parse content lines into calendar component object */
+    public static VAlarm parse(String contentLines)
+    {
+        VAlarm component = new VAlarm();
+        component.parseContent(contentLines);
+        return component;
     }
 }

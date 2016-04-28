@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -48,7 +49,19 @@ public class LocatableTest
                     .withResources(new Resources("Nettoyeur haute pression")
                             .withLanguage("fr"))
                     .withDuration(Duration.ofMinutes(45))
-                    .withGeographicPosition("37.386013;-122.082932"),
+                    .withGeographicPosition("37.386013;-122.082932")
+                    .withVAlarms(VAlarm.parse("BEGIN:VALARM" + System.lineSeparator() +
+                                     "ACTION:DISPLAY" + System.lineSeparator() +
+                                     "DESCRIPTION:Test alarm" + System.lineSeparator() +
+                                     "TRIGGER;RELATED=START:-PT30M" + System.lineSeparator() +
+                                     "END:VALARM"),
+                                 VAlarm.parse("BEGIN:VALARM" + System.lineSeparator() +
+                                     "TRIGGER;VALUE=DATE-TIME:19970317T133000Z" + System.lineSeparator() +
+                                     "REPEAT:4" + System.lineSeparator() +
+                                     "DURATION:PT15M" + System.lineSeparator() +
+                                     "ACTION:AUDIO" + System.lineSeparator() +
+                                     "ATTACH;FMTTYPE=audio/basic:ftp://example.com/pub/sounds/bell-01.aud" + System.lineSeparator() +
+                                     "END:VALARM")),
                 new VTodo()
                     .withDescription("DESCRIPTION:A simple description")
                     .withLocation("Antarctica")
@@ -57,6 +70,18 @@ public class LocatableTest
                             .withLanguage("fr"))
                     .withDuration(Duration.ofMinutes(45))
                     .withGeographicPosition("37.386013;-122.082932")
+                    .withVAlarms(VAlarm.parse("BEGIN:VALARM" + System.lineSeparator() +
+                            "ACTION:DISPLAY" + System.lineSeparator() +
+                            "DESCRIPTION:Test alarm" + System.lineSeparator() +
+                            "TRIGGER;RELATED=START:-PT30M" + System.lineSeparator() +
+                            "END:VALARM"),
+                        VAlarm.parse("BEGIN:VALARM" + System.lineSeparator() +
+                            "TRIGGER;VALUE=DATE-TIME:19970317T133000Z" + System.lineSeparator() +
+                            "REPEAT:4" + System.lineSeparator() +
+                            "DURATION:PT15M" + System.lineSeparator() +
+                            "ACTION:AUDIO" + System.lineSeparator() +
+                            "ATTACH;FMTTYPE=audio/basic:ftp://example.com/pub/sounds/bell-01.aud" + System.lineSeparator() +
+                            "END:VALARM"))
                 );
         
         for (VComponentLocatable<?> builtComponent : components)
@@ -69,6 +94,18 @@ public class LocatableTest
                     "LOCATION:Antarctica" + System.lineSeparator() +
                     "PRIORITY:2" + System.lineSeparator() +
                     "RESOURCES;LANGUAGE=fr:Nettoyeur haute pression" + System.lineSeparator() +
+                    "BEGIN:VALARM" + System.lineSeparator() +
+                    "ACTION:DISPLAY" + System.lineSeparator() +
+                    "DESCRIPTION:Test alarm" + System.lineSeparator() +
+                    "TRIGGER;RELATED=START:-PT30M" + System.lineSeparator() +
+                    "END:VALARM" + System.lineSeparator() +
+                    "BEGIN:VALARM" + System.lineSeparator() +
+                    "TRIGGER;VALUE=DATE-TIME:19970317T133000Z" + System.lineSeparator() +
+                    "REPEAT:4" + System.lineSeparator() +
+                    "DURATION:PT15M" + System.lineSeparator() +
+                    "ACTION:AUDIO" + System.lineSeparator() +
+                    "ATTACH;FMTTYPE=audio/basic:ftp://example.com/pub/sounds/bell-01.aud" + System.lineSeparator() +
+                    "END:VALARM" + System.lineSeparator() +
                     "END:" + componentName;
                     
             VComponentLocatable<?> parsedComponent = builtComponent

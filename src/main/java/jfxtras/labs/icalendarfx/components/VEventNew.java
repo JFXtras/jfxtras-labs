@@ -72,7 +72,8 @@ import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeT
  * @author David Bal
  *
  */
-public class VEventNew extends VComponentLocatableBase<VEventNew> implements VComponentDateTimeEnd<VEventNew>, VComponentDescribable2<VEventNew>
+public class VEventNew extends VComponentLocatableBase<VEventNew> implements VComponentDateTimeEnd<VEventNew>,
+    VComponentDescribable2<VEventNew>
 {
     @Override
     public VComponentEnum componentType()

@@ -48,15 +48,15 @@ public interface VComponentNew<T>
      */
     ObservableList<NonStandardProperty> getNonStandardProperties();
     void setNonStandardProperties(ObservableList<NonStandardProperty> properties);
-//    default T withNonStandardProperty(String...nonStandardProps)
-//    {
-//        if (getNonStandardProperties() == null)
-//        {
-//            setNonStandardProperties(FXCollections.observableArrayList());
-//        }
-//        Arrays.stream(nonStandardProps).forEach(c -> PropertyEnum.NON_STANDARD.parse(this, c));
-//        return (T) this;
-//    }
+    default T withNonStandardProperty(String...nonStandardProps)
+    {
+        if (getNonStandardProperties() == null)
+        {
+            setNonStandardProperties(FXCollections.observableArrayList());
+        }
+        Arrays.stream(nonStandardProps).forEach(c -> PropertyEnum.NON_STANDARD.parse(this, c));
+        return (T) this;
+    }
     default T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return (T) this; }
     default T withNonStandardProperty(NonStandardProperty...nonStandardProps)
     {
@@ -136,4 +136,18 @@ public interface VComponentNew<T>
      * @return - true if component is valid, false otherwise
      */
     boolean isValid();
+    
+    /** Indicates the calendar component is top-level and can be a member of the VCalendar directly.
+     * Components not implementing this interface, such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
+     * must be embedded inside other components.
+     * 
+     * @author David Bal
+     *
+     */
+    
+    @Deprecated // maybe there is a better way to mark main components
+    public interface VComponentMain
+    {
+        
+    }
 }

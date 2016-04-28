@@ -787,7 +787,5 @@ public interface VComponent<I>
        
        @Override
        public String toString() { return super.toString() + " " + start + " to " + end; }
-       
    }
-
 }

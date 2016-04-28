@@ -9,7 +9,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetFrom;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
 
-public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<T> implements StandardOrSavings<T>
+public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase<T> implements StandardOrDaylight<T>
 {
     /**
      * TZNAME
@@ -78,9 +78,9 @@ public abstract class StandardOrSavingsBase<T> extends VComponentRepeatableBase<
     /*
      * CONSTRUCTORS
      */
-    public StandardOrSavingsBase() { }
+    public StandardOrDaylightBase() { }
     
-    public StandardOrSavingsBase(String contentLines)
+    public StandardOrDaylightBase(String contentLines)
     {
         super(contentLines);
     }

@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
-import jfxtras.labs.icalendarfx.components.StandardOrSavings;
+import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 
 public class StandardOrDaylightTimeTest
@@ -18,7 +18,7 @@ public class StandardOrDaylightTimeTest
     @Test
     public void canBuildStandardOrDaylight() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
-        List<StandardOrSavings<?>> components = Arrays.asList(
+        List<StandardOrDaylight<?>> components = Arrays.asList(
                 new DaylightSavingTime()
                     .withTimeZoneOffsetFrom(ZoneOffset.ofHours(-4))
                     .withTimeZoneOffsetTo(ZoneOffset.ofHours(-5))
@@ -29,7 +29,7 @@ public class StandardOrDaylightTimeTest
                     .withTimeZoneNames("TZNAME;LANGUAGE=fr-CA:HNE")
                 );
         
-        for (StandardOrSavings<?> builtComponent : components)
+        for (StandardOrDaylight<?> builtComponent : components)
         {
             String componentName = builtComponent.componentType().toString();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
@@ -38,7 +38,7 @@ public class StandardOrDaylightTimeTest
                     "TZOFFSETTO:-0500" + System.lineSeparator() +
                     "END:" + componentName;
 
-            StandardOrSavings<?> parsedComponent = builtComponent
+            StandardOrDaylight<?> parsedComponent = builtComponent
                     .getClass()
                     .getConstructor(String.class)
                     .newInstance(expectedContent);

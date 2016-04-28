@@ -108,6 +108,8 @@ public interface Property<T>
      */
     CharSequence toContentLine();
     
+    /** Parse content line into calendar property */
+    public void parseContent(CharSequence contentLine);
     
     /**
      * tests if property's value and parameters are valid

@@ -22,10 +22,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class TimeZoneURL extends PropertyBase<URI,TimeZoneURL>
 {
-    public TimeZoneURL(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public TimeZoneURL(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public TimeZoneURL(TimeZoneURL source)
     {
@@ -35,5 +35,17 @@ public class TimeZoneURL extends PropertyBase<URI,TimeZoneURL>
     public TimeZoneURL(URI value)
     {
         super(value);
+    }
+    
+    public TimeZoneURL()
+    {
+        super();
+    }
+
+    public static TimeZoneURL parse(String propertyContent)
+    {
+        TimeZoneURL property = new TimeZoneURL();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

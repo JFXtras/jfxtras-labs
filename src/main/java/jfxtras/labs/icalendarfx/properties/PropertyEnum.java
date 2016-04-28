@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.components.StandardOrSavings;
+import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
@@ -1174,14 +1174,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            StandardOrSavings<?> castProperty = (StandardOrSavings<?>) vComponent;
+            StandardOrDaylight<?> castProperty = (StandardOrDaylight<?>) vComponent;
             return castProperty.getTimeZoneNames();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             final ObservableList<TimeZoneName> list;
             if (castComponent.getTimeZoneNames() == null)
             {
@@ -1203,14 +1203,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             return castComponent.getTimeZoneOffsetFrom();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             if (castComponent.getTimeZoneOffsetFrom() == null)
             {
                 castComponent.setTimeZoneOffsetFrom(TimeZoneOffsetFrom.parse(propertyContent));
@@ -1229,14 +1229,14 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             return castComponent.getTimeZoneOffsetTo();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
+            StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             if (castComponent.getTimeZoneOffsetTo() == null)
             {
                 castComponent.setTimeZoneOffsetTo(TimeZoneOffsetTo.parse(propertyContent));
@@ -1255,15 +1255,21 @@ public enum PropertyEnum
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VTimeZone castComponent = (VTimeZone) vComponent;
+            return castComponent.getTimeZoneURL();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            // TODO Auto-generated method stub
-            
+            VTimeZone castComponent = (VTimeZone) vComponent;
+            if (castComponent.getTimeZoneURL() == null)
+            {
+                castComponent.setTimeZoneURL(TimeZoneURL.parse(propertyContent));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Alarm
@@ -1418,6 +1424,7 @@ public enum PropertyEnum
     }
     
     private Class<? extends Property> myClass;
+    public Class<? extends Property> getPropertyClass() { return myClass; }
 
     @Override
     public String toString() { return name; }

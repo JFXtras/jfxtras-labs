@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.components;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
@@ -129,6 +130,22 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     private ObservableList<Resources> resources;
     @Override
     public void setResources(ObservableList<Resources> resources) { this.resources = resources; }
+
+    /** 
+     * VALARM
+     * Alarm Component
+     * RFC 5545 iCalendar 3.6.6. page 71
+     * 
+     * Provide a grouping of component properties that define an alarm.
+     * 
+     * The "VALARM" calendar component MUST only appear within either a
+     * "VEVENT" or "VTODO" calendar component.
+     */
+    @Override
+    public ObservableList<VAlarm> getVAlarms() { return vAlarms; }
+    private ObservableList<VAlarm> vAlarms;
+    @Override
+    public void setVAlarms(ObservableList<VAlarm> vAlarms) { this.vAlarms = vAlarms; }
     
     /*
      * CONSTRUCTORS
@@ -138,5 +155,39 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     public VComponentLocatableBase(String contentLines)
     {
         super(contentLines);
+    }
+    
+    /** Include VAlarm sub-components in content lines */
+    @Override
+    void appendMiddleContentLines(StringBuilder builder)
+    {
+        super.appendMiddleContentLines(builder);
+        if (getVAlarms() != null)
+        {
+            getVAlarms().stream().forEach(a -> builder.append(a.toContentLines() + System.lineSeparator()));
+        }
+    }
+    
+    /** parse VAlarms */
+    @Override
+    void parseSubComponents(VComponentEnum subcomponentType, String contentLines)
+    {
+        if (subcomponentType == VComponentEnum.VALARM)
+        {
+            final ObservableList<VAlarm> list;
+            if (getVAlarms() == null)
+            {
+                list = FXCollections.observableArrayList();
+                setVAlarms(list);
+            } else
+            {
+                list = getVAlarms();
+            }
+            list.add(VAlarm.parse(contentLines));
+        } else
+        {
+            throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponentType +
+                    " found inside " + componentType() + " component");
+        }
     }
 }
