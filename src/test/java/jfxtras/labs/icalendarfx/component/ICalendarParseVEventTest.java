@@ -1,14 +1,13 @@
 package jfxtras.labs.icalendarfx.component;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.ICalendarTestAbstract;
-import jfxtras.labs.icalendarfx.mocks.VEventMock;
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
+import jfxtras.labs.icalendarfx.components.VEventNew;
 
-@Deprecated
-public class ICalendarParseVEventTest extends ICalendarTestAbstract
+public class ICalendarParseVEventTest extends ICalendarTestAbstract2
 {           
     /** Tests FREQ=YEARLY */
     @Test
@@ -26,10 +25,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                               + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventMock vEvent = VEventMock.parse(vEventString);
-        System.out.println(vEvent);
-        VEventMock expectedVEvent = getYearly1();
-        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+        VEventNew vEvent = VEventNew.parse(vEventString);
+        VEventNew expectedVEvent = getYearly1();
+        assertEquals(expectedVEvent, vEvent);
     }
 
     @Test
@@ -42,10 +40,10 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                               + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventMock vEvent = VEventMock.parse(vEventString);
+        VEventNew vEvent = VEventNew.parse(vEventString);
         System.out.println(vEvent);
-        VEventMock expectedVEvent = getDaily3();
-        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+        VEventNew expectedVEvent = getDaily3();
+        assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
@@ -61,9 +59,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                               + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventMock vEvent = VEventMock.parse(vEventString);
-        VEventMock expectedVEvent = getDaily3();
-        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+        VEventNew vEvent = VEventNew.parse(vEventString);
+        VEventNew expectedVEvent = getDaily3();
+        assertEquals(expectedVEvent, vEvent);
     }
         
     @Test
@@ -81,10 +79,10 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                               + "SUMMARY:DailyUTC Summary" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventMock vEvent = VEventMock.parse(vEventString);
+        VEventNew vEvent = VEventNew.parse(vEventString);
         System.out.println("text:" + vEvent);
-        VEventMock expectedVEvent = getDailyUTC();
-        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+        VEventNew expectedVEvent = getDailyUTC();
+        assertEquals(expectedVEvent, vEvent);
     }
     
     /** Tests FREQ=YEARLY */
@@ -102,9 +100,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                 + "SUMMARY:Daily2 Summary" + System.lineSeparator()
                 + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
-        VEventMock vEvent = VEventMock.parse(vEventString);
-        VEventMock expectedVEvent = getDailyWithException1();
-        assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+        VEventNew vEvent = VEventNew.parse(vEventString);
+        VEventNew expectedVEvent = getDailyWithException1();
+        assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
@@ -116,9 +114,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
                           + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
-    VEventMock vEvent = VEventMock.parse(vEventString);
-    VEventMock expectedVEvent = getWholeDayDaily1();
-    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+    VEventNew vEvent = VEventNew.parse(vEventString);
+    VEventNew expectedVEvent = getWholeDayDaily1();
+    assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
@@ -138,9 +136,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
             + "SUMMARY:test1" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventMock vEvent = VEventMock.parse(vEventString);
-    VEventMock expectedVEvent = getGoogleIndividual();
-    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+    VEventNew vEvent = VEventNew.parse(vEventString);
+    VEventNew expectedVEvent = getGoogleIndividual();
+    assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
@@ -161,9 +159,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
             + "SUMMARY:test2" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventMock vEvent = VEventMock.parse(vEventString);
-    VEventMock expectedVEvent = getGoogleRepeatable();
-    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+    VEventNew vEvent = VEventNew.parse(vEventString);
+    VEventNew expectedVEvent = getGoogleRepeatable();
+    assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
@@ -187,9 +185,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
             + "SUMMARY:test3" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventMock vEvent = VEventMock.parse(vEventString);
-    VEventMock expectedVEvent = getGoogleWithExDates();
-    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+    VEventNew vEvent = VEventNew.parse(vEventString);
+    VEventNew expectedVEvent = getGoogleWithExceptions();
+    assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
@@ -210,9 +208,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
             + "SUMMARY:test4" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventMock vEvent = VEventMock.parse(vEventString);
-    VEventMock expectedVEvent = getGoogleRepeatablePart1();
-    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+    VEventNew vEvent = VEventNew.parse(vEventString);
+    VEventNew expectedVEvent = getGoogleRepeatablePart1();
+    assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
@@ -233,9 +231,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
             + "SUMMARY:test5" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventMock vEvent = VEventMock.parse(vEventString);
-    VEventMock expectedVEvent = getGoogleRepeatablePart2();
-    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+    VEventNew vEvent = VEventNew.parse(vEventString);
+    VEventNew expectedVEvent = getGoogleRepeatablePart2();
+    assertEquals(expectedVEvent, vEvent);
     }
     
     @Test
@@ -256,8 +254,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract
             + "SUMMARY:test6" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventMock vEvent = VEventMock.parse(vEventString);
-    VEventMock expectedVEvent = getGoogleRepeatablePart3();
-    assertTrue(VEventMock.isEqualTo(expectedVEvent, vEvent));
+    VEventNew vEvent = VEventNew.parse(vEventString);
+    VEventNew expectedVEvent = getGoogleRepeatablePart3();
+    assertEquals(expectedVEvent, vEvent);
     }
 }

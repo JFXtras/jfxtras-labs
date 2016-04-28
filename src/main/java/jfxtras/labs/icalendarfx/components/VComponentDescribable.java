@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.util.Arrays;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,13 +32,12 @@ public interface VComponentDescribable<T> extends VComponentNew<T>
      */
     ObservableList<Attachment<?>> getAttachments();
     void setAttachments(ObservableList<Attachment<?>> properties);
-    /** add comma separated attachments into separate comment objects */
     default T withAttachments(ObservableList<Attachment<?>> attachments) { setAttachments(attachments); return (T) this; }
-//    default T withAttachments(String...attachments)
-//    {
-//        Arrays.stream(attachments).forEach(c -> PropertyEnum.ATTACHMENT.parse(this, c));
-//        return (T) this;
-//    }
+    default T withAttachments(String...attachments)
+    {
+        Arrays.stream(attachments).forEach(c -> PropertyEnum.ATTACHMENT.parse(this, c));
+        return (T) this;
+    }
     default T withAttachments(Attachment<?>...attachments)
     {
         if (getAttachments() == null)
@@ -58,7 +59,28 @@ public interface VComponentDescribable<T> extends VComponentNew<T>
      * */
     ObjectProperty<Summary> summaryProperty();
     default Summary getSummary() { return summaryProperty().get(); }
+    default void setSummary(String summary) { setSummary(Summary.parse(summary)); }
     default void setSummary(Summary summary) { summaryProperty().set(summary); }
-    default T withSummary(Summary summary) { setSummary(summary); return (T) this; }
-    default T withSummary(String summary) { PropertyEnum.SUMMARY.parse(this, summary); return (T) this; }
+    default T withSummary(Summary summary)
+    {
+        if (getSummary() == null)
+        {
+            setSummary(summary);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withSummary(String summary)
+    {
+        if (getSummary() == null)
+        {
+            setSummary(summary);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 }

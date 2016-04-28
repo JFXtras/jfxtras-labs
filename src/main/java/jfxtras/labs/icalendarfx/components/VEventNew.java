@@ -171,6 +171,11 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         super(contentLines);
     }
     
+    public VEventNew(VEventNew source)
+    {
+//        super(source);
+    }
+
     @Override
     public boolean isValid()
     {

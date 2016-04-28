@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.WeakHashMap;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -257,8 +257,10 @@ public abstract class PropertyBase<T,U> implements Property<T>
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
      * a specific parameter order (e.g. unit testing).
      */
-    public Map<Parameter<?>, Integer> parameterSortOrder() { return parameterSortOrder; }
-    final private Map<Parameter<?>, Integer> parameterSortOrder = new WeakHashMap<>();
+    public Map<ParameterEnum, Integer> parameterSortOrder() { return parameterSortOrder; }
+    final private Map<ParameterEnum, Integer> parameterSortOrder = new HashMap<>();
+//    public Map<Parameter<?>, Integer> parameterSortOrder() { return parameterSortOrder; }
+//    final private Map<Parameter<?>, Integer> parameterSortOrder = new WeakHashMap<>();
     private Integer parameterCounter = 0;
     
     // property value
@@ -420,7 +422,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
                     if (propertyType().allowedParameters().contains(p))
                     {
                         p.parse(this, e.getValue());
-                        parameterSortOrder().put(p.getParameter(this), parameterCounter++);
+                        parameterSortOrder().put(p, parameterCounter++);
+//                        parameterSortOrder().put(p.getParameter(this), parameterCounter++);
                     } else
                     {
                         throw new IllegalArgumentException("Parameter " + p + " not allowed for property " + propertyType());
@@ -503,12 +506,14 @@ public abstract class PropertyBase<T,U> implements Property<T>
         }
         
         // PARAMETERS
-        Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
-        parameters().stream().forEach(p -> parameterNameContentMap.put(p.getParameter(this), p.getParameter(this).toContent()));
+//        Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
+//        parameters().stream().forEach(p -> parameterNameContentMap.put(p.getParameter(this), p.getParameter(this).toContent()));
+        Map<ParameterEnum, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
+        parameters().stream().forEach(p -> parameterNameContentMap.put(p, p.getParameter(this).toContent()));
         
         // restore parameter sort order if parameters were parsed from content
         parameterNameContentMap.entrySet().stream()
-                .sorted((Comparator<? super Entry<Parameter<?>, CharSequence>>) (e1, e2) -> 
+                .sorted((Comparator<? super Entry<ParameterEnum, CharSequence>>) (e1, e2) -> 
                 {
                     Integer s1 = parameterSortOrder.get(e1.getKey());
                     Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;

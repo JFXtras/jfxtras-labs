@@ -44,10 +44,10 @@ public class DateTimeStamp extends PropertyBaseUTC<DateTimeStamp>
         super(temporal);
     }
 
-    public DateTimeStamp(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public DateTimeStamp(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public DateTimeStamp(DateTimeStamp source)
     {

@@ -41,6 +41,10 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
     default T withComments(ObservableList<Comment> comments) { setComments(comments); return (T) this; }
     default T withComments(String...comments)
     {
+        if (getComments() == null)
+        {
+            setComments(FXCollections.observableArrayList());
+        }
         Arrays.stream(comments).forEach(c -> PropertyEnum.COMMENT.parse(this, c));
         return (T) this;
     }
@@ -63,13 +67,42 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
      */
     ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty();
     default DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStartProperty().get(); }
-    default void setDateTimeStart(String dtStart) { DateTimeStart.parse(dtStart); }
+    default void setDateTimeStart(String dtStart) { setDateTimeStart(DateTimeStart.parse(dtStart)); }
     default void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { dateTimeStartProperty().set(dtStart); }
     default void setDateTimeStart(Temporal temporal) { setDateTimeStart(new DateTimeStart<>(temporal)); }
-    default T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { setDateTimeStart(dtStart); return (T) this; }
-    default T withDateTimeStart(String dtStart) { setDateTimeStart(DateTimeStart.parse(dtStart)); return (T) this; }
-    default T withDateTimeStart(Temporal temporal) { setDateTimeStart(temporal); return (T) this; }
-
+    default T withDateTimeStart(DateTimeStart<? extends Temporal> dtStart)
+    {
+        if (getDateTimeStart() == null)
+        {
+            setDateTimeStart(dtStart);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDateTimeStart(String dtStart)
+    {
+        if (getDateTimeStart() == null)
+        {
+            setDateTimeStart(dtStart);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDateTimeStart(Temporal dtStart)
+    {
+        if (getDateTimeStart() == null)
+        {
+            setDateTimeStart(dtStart);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 
     @Deprecated
     default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };

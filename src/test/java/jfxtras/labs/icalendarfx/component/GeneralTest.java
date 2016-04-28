@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
@@ -83,5 +84,38 @@ public class GeneralTest
         VEventNew madeComponent = VEventNew.parse(content);
         madeComponent.setClassification("PRIVATE");
         assertEquals(ClassificationType.PRIVATE, madeComponent.getClassification().getValue());
+    }
+    
+    @Test
+    public void canSetPropertyOrder()
+    {
+        String contentLines = "BEGIN:VEVENT" + System.lineSeparator()
+                + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
+                + "DTSTART:20151109T100000Z" + System.lineSeparator()
+                + "DTEND:20151109T110000Z" + System.lineSeparator()
+                + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                + "CATEGORIES:group03" + System.lineSeparator()
+                + "SUMMARY:DailyUTC Summary" + System.lineSeparator()
+                + "DESCRIPTION:DailyUTC Description" + System.lineSeparator()
+                + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z" + System.lineSeparator()
+                + "END:VEVENT";
+        VEventNew builtComponent = VEventNew.parse(contentLines);
+        builtComponent.setDescription((Description) null);
+        builtComponent.getCategories().add(Categories.parse("group05"));
+        builtComponent.setClassification(ClassificationType.PRIVATE);
+        builtComponent.setDateTimeStart("20151109T110000Z");
+        
+        String contentLines2 = "BEGIN:VEVENT" + System.lineSeparator()
+                + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
+                + "DTSTART:20151109T110000Z" + System.lineSeparator()
+                + "DTEND:20151109T110000Z" + System.lineSeparator()
+                + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                + "CATEGORIES:group03" + System.lineSeparator()
+                + "CATEGORIES:group05" + System.lineSeparator()
+                + "SUMMARY:DailyUTC Summary" + System.lineSeparator()
+                + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z" + System.lineSeparator()
+                + "CLASS:PRIVATE" + System.lineSeparator()
+                + "END:VEVENT";
+        assertEquals(contentLines2, builtComponent.toContentLines());
     }
 }

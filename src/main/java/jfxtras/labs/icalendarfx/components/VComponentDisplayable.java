@@ -52,8 +52,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default T withCategories(ObservableList<Categories> categories) { setCategories(categories); return (T) this; }
     default T withCategories(String...categories)
     {
-        String commaSeparatedList = Arrays.stream(categories).collect(Collectors.joining(","));
-        PropertyEnum.CATEGORIES.parse(this, commaSeparatedList);
+        Arrays.stream(categories).forEach(c -> PropertyEnum.CATEGORIES.parse(this, c));
         return (T) this;
     }
     default T withCategories(Categories...categories)
@@ -83,9 +82,39 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default void setClassification(String classification) { setClassification(Classification.parse(classification)); }
     default void setClassification(Classification classification) { classificationProperty().set(classification); }
     default void setClassification(ClassificationType classification) { setClassification(new Classification(classification)); }
-    default T withClassification(Classification classification) { setClassification(classification); return (T) this; }
-    default T withClassification(ClassificationType classificationType) { setClassification(classificationType); return (T) this; }
-    default T withClassification(String classification) { PropertyEnum.CLASSIFICATION.parse(this, classification); return (T) this; }
+    default T withClassification(Classification classification)
+    {
+        if (getClassification() == null)
+        {
+            setClassification(classification);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withClassification(ClassificationType classification)
+    {
+        if (getClassification() == null)
+        {
+            setClassification(classification);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withClassification(String classification)
+    {
+        if (getClassification() == null)
+        {
+            setClassification(classification);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /**
      * CONTACT:
@@ -133,10 +162,40 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default DateTimeCreated getDateTimeCreated() { return dateTimeCreatedProperty().get(); }
     default void setDateTimeCreated(String dtCreated) { setDateTimeCreated(DateTimeCreated.parse(dtCreated)); }
     default void setDateTimeCreated(DateTimeCreated dtCreated) { dateTimeCreatedProperty().set(dtCreated); }
-    default void setDateTimeCreated(ZonedDateTime zonedDateTime) { setDateTimeCreated(new DateTimeCreated(zonedDateTime)); }
-    default T withDateTimeCreated(ZonedDateTime zonedDateTime) { setDateTimeCreated(zonedDateTime); return (T) this; }
-    default T withDateTimeCreated(String dtCreated) { setDateTimeCreated(dtCreated); return (T) this; }
-    default T withDateTimeCreated(DateTimeCreated dtCreated) { setDateTimeCreated(dtCreated); return (T) this; }
+    default void setDateTimeCreated(ZonedDateTime dtCreated) { setDateTimeCreated(new DateTimeCreated(dtCreated)); }
+    default T withDateTimeCreated(ZonedDateTime dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(dtCreated);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDateTimeCreated(String dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(dtCreated);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDateTimeCreated(DateTimeCreated dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(dtCreated);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /**
      * EXDATE: Exception Date-Times
@@ -162,30 +221,27 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     }
     default T withExceptions(Temporal...exceptions)
     {
-        if (exceptions.length > 0)
+        final ObservableList<Exceptions<? extends Temporal>> list;
+        if (getExceptions() == null)
         {
-            final ObservableList<Exceptions<? extends Temporal>> list;
-            if (getExceptions() == null)
-            {
-                list = FXCollections.observableArrayList();
-                setExceptions(list);
-            } else
-            {
-                list = getExceptions();
-            }
-            
-            Temporal t = exceptions[0];
-            if (t instanceof LocalDate)
-            {
-                Set<LocalDate> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
-                getExceptions().add(new Exceptions<LocalDate>(FXCollections.observableSet(exceptions2)));
-            } else if (t instanceof LocalDateTime)
-            {
-                getExceptions().add(new Exceptions<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) exceptions)));
-            } else if (t instanceof ZonedDateTime)
-            {
-                getExceptions().add(new Exceptions<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) exceptions)));
-            }
+            list = FXCollections.observableArrayList();
+            setExceptions(list);
+        } else
+        {
+            list = getExceptions();
+        }
+        // below code ensures all exceptions are of the same Temporal class
+        Temporal t = exceptions[0];
+        if (t instanceof LocalDate)
+        {
+            Set<LocalDate> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
+            getExceptions().add(new Exceptions<LocalDate>(FXCollections.observableSet(exceptions2)));
+        } else if (t instanceof LocalDateTime)
+        {
+            getExceptions().add(new Exceptions<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) exceptions)));
+        } else if (t instanceof ZonedDateTime)
+        {
+            getExceptions().add(new Exceptions<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) exceptions)));
         }
         return (T) this;
     }
@@ -213,27 +269,52 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObjectProperty<RecurrenceId<? extends Temporal>> recurrenceIdProperty();
     default RecurrenceId<? extends Temporal> getRecurrenceId() { return recurrenceIdProperty().get(); }
-    default void setRecurrenceId(RecurrenceId<? extends Temporal> dtStart) { recurrenceIdProperty().set(dtStart); }
+    default void setRecurrenceId(RecurrenceId<? extends Temporal> recurrenceId) { recurrenceIdProperty().set(recurrenceId); }
+    default void setRecurrenceId(String recurrenceId) { setRecurrenceId(RecurrenceId.parse(recurrenceId)); }
     default void setRecurrenceId(Temporal temporal)
     {
-        if (temporal instanceof LocalDate)
+        if ((temporal instanceof LocalDate) || (temporal instanceof LocalDateTime) || (temporal instanceof ZonedDateTime))
         {
-            setRecurrenceId(new RecurrenceId<LocalDate>((LocalDate) temporal));            
-        } else if (temporal instanceof LocalDateTime)
-        {
-            setRecurrenceId(new RecurrenceId<LocalDateTime>((LocalDateTime) temporal));            
-        } else if (temporal instanceof ZonedDateTime)
-        {
-            setRecurrenceId(new RecurrenceId<ZonedDateTime>((ZonedDateTime) temporal));            
+            setRecurrenceId(new RecurrenceId<Temporal>(temporal));
         } else
         {
             throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
                     + temporal.getClass().getSimpleName() + " is not supported");
         }
     }
-    default T withRecurrenceId(RecurrenceId<? extends Temporal> dtStart) { setRecurrenceId(dtStart); return (T) this; }
-    default T withRecurrenceId(String dtStart) { return withRecurrenceId(DateTimeUtilities.temporalFromString(dtStart)); }
-    default T withRecurrenceId(Temporal temporal) { setRecurrenceId(temporal); return (T) this; }
+    default T withRecurrenceId(RecurrenceId<? extends Temporal> recurrenceId)
+    {
+        if (getRecurrenceId() == null)
+        {
+            setRecurrenceId(recurrenceId);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withRecurrenceId(String recurrenceId)
+    {
+        if (getRecurrenceId() == null)
+        {
+            setRecurrenceId(recurrenceId);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withRecurrenceId(Temporal recurrenceId)
+    {
+        if (getRecurrenceId() == null)
+        {
+            setRecurrenceId(recurrenceId);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     /** Ensures RecurrenceId has same date-time type as DateTimeStart.  Should be put in listener
      *  after recurrenceIdProperty() is initialized */
     default void checkRecurrenceIdConsistency()
@@ -301,10 +382,39 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default void setSequence(String sequence) { setSequence(Sequence.parse(sequence)); }
     default void setSequence(Integer sequence) { setSequence(new Sequence(sequence)); }
     default void setSequence(Sequence sequence) { sequenceProperty().set(sequence); }
-    default T withSequence(Sequence sequence) { setSequence(sequence); return (T) this; }
-    default T withSequence(Integer sequence) { setSequence(sequence); return (T) this; }
-    default T withSequence(String sequence) { PropertyEnum.SEQUENCE.parse(this, sequence); return (T) this; }
-
+    default T withSequence(Sequence sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(sequence);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withSequence(Integer sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(sequence);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withSequence(String sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(sequence);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /**
      * STATUS
@@ -320,10 +430,40 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default void setStatus(String status) { setStatus(Status.parse(status)); }
     default void setStatus(Status status) { statusProperty().set(status); }
     default void setStatus(StatusType status) { setStatus(new Status(status)); }
-    default T withStatus(Status status) { setStatus(status); return (T) this; }
-    default T withStatus(StatusType statusType) { setStatus(statusType); return (T) this; }
-    default T withStatus(String status) { PropertyEnum.STATUS.parse(this, status); return (T) this; }
-
+    default T withStatus(Status status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(status);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withStatus(StatusType status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(status);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withStatus(String status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(status);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    
     @Override
     default void checkDateTimeStartConsistency()
     {

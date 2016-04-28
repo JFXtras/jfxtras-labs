@@ -308,4 +308,11 @@ public class DisplayableTest
         builtComponent.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(1997, 3, 1)));
         builtComponent.setRecurrenceId(new RecurrenceId<LocalDateTime>(LocalDateTime.of(2016, 3, 6, 8, 0)));
     }
+    
+    @Test (expected = ClassCastException.class)
+    public void canCatchWrongExceptionType1()
+    {
+        new VEventNew().withExceptions(LocalDate.of(2016, 4, 27),
+                LocalDateTime.of(2016, 4, 27, 12, 0));
+    }
 }

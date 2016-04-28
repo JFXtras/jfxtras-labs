@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
+import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable2;
@@ -769,7 +770,13 @@ public enum PropertyEnum
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
-            castComponent.setOrganizer(Organizer.parse(propertyContent));
+            if (castComponent.getOrganizer() == null)
+            {
+                castComponent.setOrganizer(Organizer.parse(propertyContent));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
     },
     // Descriptive
@@ -1459,6 +1466,6 @@ public enum PropertyEnum
      */
     /** Returns either Property<?> or List<Property<?>> */
     abstract public Object getProperty(VComponentNew<?> vComponent);
-    /** Parses string and sets property */
+    /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
     abstract public void parse(VComponentNew<?> vComponent, String propertyContent);
 }

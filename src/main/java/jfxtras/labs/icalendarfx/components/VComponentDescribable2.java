@@ -28,8 +28,28 @@ public interface VComponentDescribable2<T> extends VComponentDescribable<T>
      */
     public ObjectProperty<Description> descriptionProperty();
     default Description getDescription() { return descriptionProperty().get(); }
+    default void setDescription(String description) { setDescription(Description.parse(description)); }
     default void setDescription(Description description) { descriptionProperty().set(description); }
-    default T withDescription(Description description) { setDescription(description); return (T) this; }
-    default T withDescription(String description) { setDescription(Description.parse(description)); return (T) this; }
-
+    default T withDescription(Description description)
+    {
+        if (getDescription() == null)
+        {
+            setDescription(description);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDescription(String description)
+    {
+        if (getDescription() == null)
+        {
+            setDescription(description);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 }

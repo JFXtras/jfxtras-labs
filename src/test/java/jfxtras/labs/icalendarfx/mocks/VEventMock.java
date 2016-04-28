@@ -20,6 +20,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
+@Deprecated
 public class VEventMock extends VEvent<InstanceMock, VEventMock>
 {
     private final static Callback<StartEndRange, InstanceMock> NEW_INSTANCE = (p) ->

@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import java.time.temporal.TemporalAmount;
 
 import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 /**
@@ -26,9 +27,9 @@ public interface VComponentDuration<T> extends VComponentNew<T>
     ObjectProperty<DurationProp> durationProperty();
     default DurationProp getDuration() { return durationProperty().get(); }
     default void setDuration(DurationProp duration) { durationProperty().set(duration); }
-    default void setDuration(String content) { setDuration(DurationProp.parse(content)); }
-    default void setDuration(TemporalAmount amount) { setDuration(new DurationProp(amount)); }
-    default T withDuration(TemporalAmount amount) { setDuration(amount); return (T) this; }
-    default T withDuration(String content) { setDuration(content); return (T) this; }
+    default void setDuration(String duration) { setDuration(DurationProp.parse(duration)); }
+    default void setDuration(TemporalAmount duration) { setDuration(new DurationProp(duration)); }
+    default T withDuration(TemporalAmount duration) { setDuration(duration); return (T) this; }
+    default T withDuration(String duration) { PropertyEnum.DURATION.parse(this, duration); return (T) this; }
     default T withDuration(DurationProp duration) { setDuration(duration); return (T) this; }
 }

@@ -88,7 +88,7 @@ public class PersonalTest
                     "UID:19960401T080045Z-4000F192713-0052@example.com" + System.lineSeparator() +
                     "URL:http://example.com/pub/calendars/jsmith/mytime.ics" + System.lineSeparator() +
                     "END:" + componentName;
-                    
+                    System.out.println(builtComponent.componentType());
             VComponentPersonal<?> parsedComponent = builtComponent
                     .getClass()
                     .getConstructor(String.class)

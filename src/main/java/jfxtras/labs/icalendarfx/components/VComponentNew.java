@@ -145,7 +145,17 @@ public interface VComponentNew<T>
      *
      */
     
-    @Deprecated // maybe there is a better way to mark main components
+//    /** check if properties that are allowed only once are already set.  Should be called before every
+//     *  chaining "with" method sets the property (for ones that can only occur once) */
+//    default void alreadySetCheck(Object obj)
+//    {
+//        if (obj != null)
+//        {
+//            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+//        }
+//    }
+    
+    @Deprecated // maybe there is a better way to mark main components (as opposed to sub-components)
     public interface VComponentMain
     {
         

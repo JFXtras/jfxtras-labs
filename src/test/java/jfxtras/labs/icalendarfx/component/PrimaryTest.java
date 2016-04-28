@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,4 +85,13 @@ public class PrimaryTest
             assertEquals(expectedContent, builtComponent.toContentLines());            
         }
     }
+    
+    @Test  (expected = IllegalArgumentException.class)
+    public void canCatchAlreadySet()
+    {
+        new VEventNew()
+                .withDateTimeStart("20160306T080000")
+                .withDateTimeStart(LocalDateTime.of(2016, 3, 6, 8, 0));
+    }
+
 }

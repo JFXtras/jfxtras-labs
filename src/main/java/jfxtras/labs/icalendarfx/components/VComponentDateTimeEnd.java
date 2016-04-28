@@ -22,7 +22,7 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
      */
     ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty();
     default DateTimeEnd<? extends Temporal> getDateTimeEnd() { return dateTimeEndProperty().get(); }
-    default void setDateTimeEnd(String dtEnd) { setDateTimeEnd(DateTimeUtilities.temporalFromString(dtEnd)); }
+    default void setDateTimeEnd(String dtEnd) { setDateTimeEnd(DateTimeEnd.parse(dtEnd)); }
     default void setDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd) { dateTimeEndProperty().set(dtEnd); }
     default void setDateTimeEnd(Temporal temporal)
     {
@@ -41,9 +41,39 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
                     + temporal.getClass().getSimpleName() + " is not supported");
         }
     }
-    default T withDateTimeEnd(Temporal temporal) { setDateTimeEnd(temporal); return (T) this; }
-    default T withDateTimeEnd(String dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
-    default T withDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
+    default T withDateTimeEnd(Temporal dtEnd)
+    {
+        if (getDateTimeEnd() == null)
+        {
+            setDateTimeEnd(dtEnd);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDateTimeEnd(String dtEnd)
+    {
+        if (getDateTimeEnd() == null)
+        {
+            setDateTimeEnd(dtEnd);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd)
+    {
+        if (getDateTimeEnd() == null)
+        {
+            setDateTimeEnd(dtEnd);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
      *  after dateTimeEndProperty() is initialized */

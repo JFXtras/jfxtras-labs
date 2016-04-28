@@ -27,9 +27,6 @@ public class DescriptionTest
         Description expectedDescription = Description.parse("Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management")
                 .withAlternateText("CID:part3.msg.970415T083000@example.com")
                 .withLanguage("en");
-        
-        expectedDescription.parameterSortOrder().put(expectedDescription.getAlternateText(), 0);
-        expectedDescription.parameterSortOrder().put(expectedDescription.getLanguage(), 1);
         assertEquals(expectedDescription, madeDescription);
         assertEquals(contentLine, expectedDescription.toContentLine());
     }

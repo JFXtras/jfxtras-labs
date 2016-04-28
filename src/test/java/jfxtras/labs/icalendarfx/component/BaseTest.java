@@ -81,21 +81,24 @@ public class BaseTest
         for (VComponentBase<?> builtComponent : components)
         {
             // reorders properties to match expectedContent
-            NonStandardProperty p0 = builtComponent.getNonStandardProperties()
-                    .stream()
-                    .filter(p -> p.getPropertyName().equals("X-ABC-MMSUBJ"))
-                    .findFirst()
-                    .get();
-            IANAProperty p1 = builtComponent.getIANAProperties().get(0);
-            NonStandardProperty p2 = builtComponent.getNonStandardProperties()
-                    .stream()
-                    .filter(p -> p.getPropertyName().equals("X-TEST-OBJ"))
-                    .findFirst()
-                    .get();
-
-            builtComponent.propertySortOrder().put(p0, 0);
-            builtComponent.propertySortOrder().put(p1, 1);
-            builtComponent.propertySortOrder().put(p2, 2);
+            builtComponent.propertySortOrder().put("X-ABC-MMSUBJ", 0);
+            builtComponent.propertySortOrder().put("TESTPROP2", 1);
+            builtComponent.propertySortOrder().put("X-TEST-OBJ", 2);
+//            NonStandardProperty p0 = builtComponent.getNonStandardProperties()
+//                    .stream()
+//                    .filter(p -> p.getPropertyName().equals("X-ABC-MMSUBJ"))
+//                    .findFirst()
+//                    .get();
+//            IANAProperty p1 = builtComponent.getIANAProperties().get(0);
+//            NonStandardProperty p2 = builtComponent.getNonStandardProperties()
+//                    .stream()
+//                    .filter(p -> p.getPropertyName().equals("X-TEST-OBJ"))
+//                    .findFirst()
+//                    .get();
+//
+//            builtComponent.propertySortOrder().put(p0, 0);
+//            builtComponent.propertySortOrder().put(p1, 1);
+//            builtComponent.propertySortOrder().put(p2, 2);
             String componentName = builtComponent.componentType().toString();
             
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +

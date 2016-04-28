@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.WeakHashMap;
 
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.Property;
@@ -105,8 +105,10 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * alphabetical) Generally, this map shouldn't be modified.  Only modify it when you want
      * to force a specific property order (e.g. unit testing).
      */
-    public Map<Property<?>, Integer> propertySortOrder() { return propertySortOrder; }
-    final private Map<Property<?>, Integer> propertySortOrder = new WeakHashMap<>();
+    public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
+    final private Map<String, Integer> propertySortOrder = new HashMap<>();
+//    public Map<Property<?>, Integer> propertySortOrder() { return propertySortOrder; }
+//    final private Map<Property<?>, Integer> propertySortOrder = new WeakHashMap<>();
     
     /*
      * CONSTRUCTORS
@@ -165,17 +167,18 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
                 if (propertyType != null)
                 {
+                    propertySortOrder.put(propertyName, counter++);
                     propertyType.parse(this, line);
-                    Object obj = propertyType.getProperty(this);
-                    if (obj instanceof List)
-                    {
-                        List<Property<?>> list = (List<Property<?>>) obj;
-                        Property<?> property = list.get(list.size()-1);
-                        propertySortOrder.put(property, counter++);
-                    } else if (obj instanceof Property)
-                    {
-                        propertySortOrder.put((Property<?>) obj, counter++);                    
-                    }
+//                    Object obj = propertyType.getProperty(this);
+//                    if (obj instanceof List)
+//                    {
+//                        List<Property<?>> list = (List<Property<?>>) obj;
+//                        Property<?> property = list.get(list.size()-1);
+//                        propertySortOrder.put(property, counter++);
+//                    } else if (obj instanceof Property)
+//                    {
+//                        propertySortOrder.put((Property<?>) obj, counter++);                    
+//                    }
                 }
             }
         }
@@ -250,7 +253,8 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
 
     void appendMiddleContentLines(StringBuilder builder)
     {
-        Map<Property<?>, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
+//        Map<Property<?>, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
+        Map<String, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
         properties().stream()
                 .map(e -> e.getProperty(this))
                 .flatMap(prop -> 
@@ -272,17 +276,18 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                     if (propertyNameContentMap.get(property.getPropertyName()) == null)
                     { // make new list for new entry
                         List<CharSequence> list = new ArrayList<>(Arrays.asList(property.toContentLine()));
-                        propertyNameContentMap.put(property, list);
+                        propertyNameContentMap.put(property.getPropertyName(), list);
                     } else
                     { // add properties to existing list for existing entry
-                        List<CharSequence> list = propertyNameContentMap.get(property);
+                        List<CharSequence> list = propertyNameContentMap.get(property.getPropertyName());
                         list.add(property.toContentLine());
                     }
                 });
         
         // restore property sort order if properties were parsed from content
         propertyNameContentMap.entrySet().stream()
-                .sorted((Comparator<? super Entry<Property<?>, List<CharSequence>>>) (e1, e2) -> 
+//                .sorted((Comparator<? super Entry<Property<?>, List<CharSequence>>>) (e1, e2) -> 
+                .sorted((Comparator<? super Entry<String, List<CharSequence>>>) (e1, e2) -> 
                 {
                     Integer s1 = propertySortOrder.get(e1.getKey());
                     Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;

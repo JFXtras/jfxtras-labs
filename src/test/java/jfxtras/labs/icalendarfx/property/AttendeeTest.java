@@ -142,15 +142,15 @@ public class AttendeeTest
                 .withParticipationRole(ParticipationRoleType.CHAIR)
                 .withParticipationStatus(ParticipationStatusType.DECLINED)
                 .withSentBy("mailto:sray@example.com");
-        expectedProperty.parameterSortOrder().put(expectedProperty.getCommonName(), 0);
-        expectedProperty.parameterSortOrder().put(expectedProperty.getCalendarUser(), 1);
-        expectedProperty.parameterSortOrder().put(expectedProperty.getDelegatees(), 2);
-        expectedProperty.parameterSortOrder().put(expectedProperty.getDelegators(), 3);
-        expectedProperty.parameterSortOrder().put(expectedProperty.getGroupMembership(), 4);
-        expectedProperty.parameterSortOrder().put(expectedProperty.getParticipationRole(), 5);
-        expectedProperty.parameterSortOrder().put(expectedProperty.getParticipationStatus(), 6);
-        expectedProperty.parameterSortOrder().put(expectedProperty.getRSVP(), 7);
-        expectedProperty.parameterSortOrder().put(expectedProperty.getSentBy(), 8);
+//        expectedProperty.parameterSortOrder().put(expectedProperty.getCommonName(), 0);
+//        expectedProperty.parameterSortOrder().put(expectedProperty.getCalendarUser(), 1);
+//        expectedProperty.parameterSortOrder().put(expectedProperty.getDelegatees(), 2);
+//        expectedProperty.parameterSortOrder().put(expectedProperty.getDelegators(), 3);
+//        expectedProperty.parameterSortOrder().put(expectedProperty.getGroupMembership(), 4);
+//        expectedProperty.parameterSortOrder().put(expectedProperty.getParticipationRole(), 5);
+//        expectedProperty.parameterSortOrder().put(expectedProperty.getParticipationStatus(), 6);
+//        expectedProperty.parameterSortOrder().put(expectedProperty.getRSVP(), 7);
+//        expectedProperty.parameterSortOrder().put(expectedProperty.getSentBy(), 8);
         assertEquals(expectedProperty, madeProperty);
         assertEquals(content, expectedProperty.toContentLine());
     }
