@@ -15,7 +15,7 @@ public class TimeZoneOffsetTest
     public void canParseTimeZoneOffsetFrom()
     {
         String content = "TZOFFSETFROM:-0500";
-        TimeZoneOffsetFrom madeProperty = new TimeZoneOffsetFrom(content);
+        TimeZoneOffsetFrom madeProperty = TimeZoneOffsetFrom.parse(content);
         assertEquals(content, madeProperty.toContentLine());
         TimeZoneOffsetFrom expectedProperty = new TimeZoneOffsetFrom(ZoneOffset.of("-05:00"));
         assertEquals(expectedProperty, madeProperty);
@@ -25,7 +25,7 @@ public class TimeZoneOffsetTest
     public void canParseTimeZoneOffsetTo()
     {
         String content = "TZOFFSETTO:+0000";
-        TimeZoneOffsetTo madeProperty = new TimeZoneOffsetTo(content);
+        TimeZoneOffsetTo madeProperty = TimeZoneOffsetTo.parse(content);
         assertEquals(content, madeProperty.toContentLine());
         TimeZoneOffsetTo expectedProperty = new TimeZoneOffsetTo(ZoneOffset.of("+00:00"));
         assertEquals(expectedProperty, madeProperty);

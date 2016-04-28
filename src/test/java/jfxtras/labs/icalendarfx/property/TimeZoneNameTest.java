@@ -12,9 +12,10 @@ public class TimeZoneNameTest
     public void canParseTimeZoneName()
     {
         String content = "TZNAME;LANGUAGE=fr-CA:HNE";
-        TimeZoneName madeProperty = new TimeZoneName(content);
+        TimeZoneName madeProperty = TimeZoneName.parse(content);
         assertEquals(content, madeProperty.toContentLine());
-        TimeZoneName expectedProperty = new TimeZoneName("HNE")
+        TimeZoneName expectedProperty = new TimeZoneName()
+                .withValue("HNE")
                 .withLanguage("fr-CA");
         assertEquals(expectedProperty, madeProperty);
         assertEquals("HNE", madeProperty.getValue());

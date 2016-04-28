@@ -50,12 +50,11 @@ public class TimeZoneIdentifier extends PropertyBase<ZoneId, TimeZoneIdentifier>
         }
     };
 
-    public TimeZoneIdentifier(CharSequence contentLine)
-    {
-        super();
-        setConverter(CONVERTER);
-        parseContent(contentLine);
-    }
+//    public TimeZoneIdentifier(CharSequence contentLine)
+//    {
+//        this();
+//        parseContent(contentLine);
+//    }
     
     public TimeZoneIdentifier(TimeZoneIdentifier source)
     {
@@ -64,9 +63,21 @@ public class TimeZoneIdentifier extends PropertyBase<ZoneId, TimeZoneIdentifier>
     
     public TimeZoneIdentifier(ZoneId value)
     {
+        this();
+        setValue(value);
+    }
+
+    public TimeZoneIdentifier()
+    {
         super();
         setConverter(CONVERTER);
-        setValue(value);
+    }
+    
+    public static TimeZoneIdentifier parse(String propertyContent)
+    {
+        TimeZoneIdentifier property = new TimeZoneIdentifier();
+        property.parseContent(propertyContent);
+        return property;
     }
     
     @Override
@@ -74,7 +85,7 @@ public class TimeZoneIdentifier extends PropertyBase<ZoneId, TimeZoneIdentifier>
     {
         boolean isNonGlobalOK = (getValue() != null);
         boolean isGloballyUniqueOK = ((getUnknownValue() != null) && (getUnknownValue().charAt(0) == '/'));
-        System.out.println("time zone isValid:" + propertyType() + " " + getValueParameter());
+//        System.out.println("time zone isValid:" + propertyType() + " " + getValueParameter());
         boolean isValueTypeOK = (getValueParameter() != null) ? propertyType().allowedValueTypes().contains(getValueParameter().getValue()) : true;
 //        System.out.println("TimeZoneIdentifier isValid:" + isNonGlobalOK + " " + isGloballyUniqueOK + " " + isValueTypeOK);
         return (isNonGlobalOK || isGloballyUniqueOK) && isValueTypeOK;

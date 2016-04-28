@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendarfx.properties;
 
-import java.time.Duration;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,8 +75,6 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetFrom;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public enum PropertyEnum
 {
@@ -1162,7 +1158,7 @@ public enum PropertyEnum
             VTimeZone castComponent = (VTimeZone) vComponent;
             if (castComponent.getTimeZoneIdentifier() == null)
             {
-                castComponent.setTimeZoneIdentifier(new TimeZoneIdentifier(propertyContent));
+                castComponent.setTimeZoneIdentifier(TimeZoneIdentifier.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -1195,7 +1191,7 @@ public enum PropertyEnum
             {
                 list = castComponent.getTimeZoneNames();
             }
-            list.add(new TimeZoneName(propertyContent));
+            list.add(TimeZoneName.parse(propertyContent));
         }
     },
     // Time Zone
@@ -1217,7 +1213,7 @@ public enum PropertyEnum
             StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
             if (castComponent.getTimeZoneOffsetFrom() == null)
             {
-                castComponent.setTimeZoneOffsetFrom(new TimeZoneOffsetFrom(propertyContent));
+                castComponent.setTimeZoneOffsetFrom(TimeZoneOffsetFrom.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -1243,7 +1239,7 @@ public enum PropertyEnum
             StandardOrSavings<?> castComponent = (StandardOrSavings<?>) vComponent;
             if (castComponent.getTimeZoneOffsetTo() == null)
             {
-                castComponent.setTimeZoneOffsetTo(new TimeZoneOffsetTo(propertyContent));
+                castComponent.setTimeZoneOffsetTo(TimeZoneOffsetTo.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -1289,20 +1285,7 @@ public enum PropertyEnum
             VAlarm castComponent = (VAlarm) vComponent;
             if (castComponent.getTrigger() == null)
             {
-                Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyContent);
-                String valueType = map.get(ParameterEnum.VALUE_DATA_TYPES.toString());
-                String value = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-                if ((valueType != null) && (valueType.equals(ValueType.DATE_TIME.toString())))
-                { // date-time
-                    ZonedDateTime t = ZonedDateTime.parse(value, DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER);
-                    castComponent.setTrigger(new Trigger<ZonedDateTime>(t));    
-                } else if ((valueType == null) || (valueType.equals(ValueType.DURATION)))
-                { // duration
-                    castComponent.setTrigger(new Trigger<Duration>(Duration.parse(value)));
-                } else
-                {
-                    throw new IllegalArgumentException("Unsupported value type:" + valueType);
-                }
+                castComponent.setTrigger(Trigger.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -1328,7 +1311,7 @@ public enum PropertyEnum
             VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             if (castComponent.getUniqueIdentifier() == null)
             {
-                castComponent.setUniqueIdentifier(new UniqueIdentifier(propertyContent));
+                castComponent.setUniqueIdentifier(UniqueIdentifier.parse(propertyContent));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -1351,7 +1334,7 @@ public enum PropertyEnum
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
-            castComponent.setUniformResourceLocator(new UniformResourceLocator(propertyContent));
+            castComponent.setUniformResourceLocator(UniformResourceLocator.parse(propertyContent));
         }
     }, // Relationship
     VERSION ("VERSION", Arrays.asList(ValueType.TEXT), null, null) {

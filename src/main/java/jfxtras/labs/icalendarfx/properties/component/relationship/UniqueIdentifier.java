@@ -46,13 +46,25 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class UniqueIdentifier extends PropertyBase<String, UniqueIdentifier>
 {
-    public UniqueIdentifier(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public UniqueIdentifier(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     public UniqueIdentifier(UniqueIdentifier source)
     {
         super(source);
+    }
+    
+    public UniqueIdentifier()
+    {
+        super();
+    }
+
+    public static UniqueIdentifier parse(String propertyContent)
+    {
+        UniqueIdentifier property = new UniqueIdentifier();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

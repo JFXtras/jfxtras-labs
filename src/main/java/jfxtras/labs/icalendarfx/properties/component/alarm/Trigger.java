@@ -69,15 +69,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
            }
        }
    }
-//   public void setAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(new AlarmTriggerRelationship(type)); } 
    public Trigger<T> withAlarmTrigger(AlarmTriggerRelationship format) { setAlarmTrigger(format); return this; }
-//   public Trigger<T> withAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(type); return this; }
-//   public Trigger<T> withAlarmTrigger(String format) { setAlarmTrigger(new AlarmTriggerRelationship(format)); return this; }
-
-//    public Trigger(Class<T> clazz, CharSequence contentLine)
-//    {
-//        super(clazz, contentLine);
-//    }
     
     public Trigger(Trigger<T> source)
     {

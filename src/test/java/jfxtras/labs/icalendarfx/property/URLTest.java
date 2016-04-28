@@ -15,11 +15,9 @@ public class URLTest
     public void canParseUniformResourceLocator() throws URISyntaxException
     {
         String expectedContentLine = "URL:http://example.com/pub/calendars/jsmith/mytime.ics";
-        UniformResourceLocator property = new UniformResourceLocator(expectedContentLine);
+        UniformResourceLocator property = UniformResourceLocator.parse(expectedContentLine);
         String madeContentLine = property.toContentLine();
         assertEquals(expectedContentLine, madeContentLine);
-        System.out.println(property.getValue().getClass());
-
         assertEquals(new URI("http://example.com/pub/calendars/jsmith/mytime.ics"), property.getValue());
     }
 }

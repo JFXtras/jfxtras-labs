@@ -103,7 +103,7 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty();
     default UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifierProperty().get(); }
     default void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
-    default void setUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(new UniqueIdentifier(uniqueIdentifier)); }
+    default void setUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(UniqueIdentifier.parse(uniqueIdentifier)); }
     default T withUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); return (T) this; }
     default T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); return (T) this; }
 
@@ -120,7 +120,7 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     default UniformResourceLocator getUniformResourceLocator() { return uniformResourceLocatorProperty().get(); }
     default void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
     default void setUniformResourceLocator(URI url) { setUniformResourceLocator(new UniformResourceLocator(url)); };
-    default T withUniformResourceLocator(String url) { setUniformResourceLocator(new UniformResourceLocator(url)); return (T) this; }
+    default T withUniformResourceLocator(String url) { setUniformResourceLocator(UniformResourceLocator.parse(url)); return (T) this; }
     default T withUniformResourceLocator(URI url) { setUniformResourceLocator(url); return (T) this; }
     default T withUniformResourceLocator(UniformResourceLocator url) { setUniformResourceLocator(url); return (T) this; }
 }

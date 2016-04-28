@@ -27,11 +27,11 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class UniformResourceLocator extends PropertyBase<URI,UniformResourceLocator>
 {
-    public UniformResourceLocator(String contentLine)
-    {
-        super(contentLine);
-        URI.class.cast(getValue()); // ensure value class type matches parameterized type
-    }
+//    public UniformResourceLocator(String contentLine)
+//    {
+//        super(contentLine);
+//        URI.class.cast(getValue()); // ensure value class type matches parameterized type
+//    }
     
     public UniformResourceLocator(URI value)
     {
@@ -41,5 +41,17 @@ public class UniformResourceLocator extends PropertyBase<URI,UniformResourceLoca
     public UniformResourceLocator(UniformResourceLocator source)
     {
         super(source);
+    }
+    
+    public UniformResourceLocator()
+    {
+        super();
+    }
+
+    public static UniformResourceLocator parse(String propertyContent)
+    {
+        UniformResourceLocator property = new UniformResourceLocator();
+        property.parseContent(propertyContent);
+        return property;
     }
 }

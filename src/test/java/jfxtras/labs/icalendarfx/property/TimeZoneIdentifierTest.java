@@ -16,7 +16,7 @@ public class TimeZoneIdentifierTest
     public void canParseTimeZoneIdentifier1()
     {
         String content = "TZID:America/Los_Angeles";
-        TimeZoneIdentifier madeProperty = new TimeZoneIdentifier(content);
+        TimeZoneIdentifier madeProperty = TimeZoneIdentifier.parse(content);
         assertEquals(content, madeProperty.toContentLine());
         TimeZoneIdentifier expectedProperty = new TimeZoneIdentifier(ZoneId.of("America/Los_Angeles"));
 //        Class<? extends ZoneId> c = ZoneId.of("America/Los_Angeles").getClass();
@@ -28,7 +28,7 @@ public class TimeZoneIdentifierTest
     public void canParseTimeZoneIdentifier2()
     {
         String content = "TZID;VALUE=TEXT:America/Los_Angeles";
-        TimeZoneIdentifier madeProperty = new TimeZoneIdentifier(content);
+        TimeZoneIdentifier madeProperty = TimeZoneIdentifier.parse(content);
         assertEquals(content, madeProperty.toContentLine());
         TimeZoneIdentifier expectedProperty = new TimeZoneIdentifier(ZoneId.of("America/Los_Angeles"))
                 .withValueParameter(ValueType.TEXT);
@@ -39,9 +39,9 @@ public class TimeZoneIdentifierTest
     public void canParseTimeZoneIdentifier3()
     {
         String content = "TZID:/US-New_York-New_York";
-        TimeZoneIdentifier madeProperty = new TimeZoneIdentifier(content);
+        TimeZoneIdentifier madeProperty = TimeZoneIdentifier.parse(content);
         assertEquals(content, madeProperty.toContentLine());
-        TimeZoneIdentifier expectedProperty = new TimeZoneIdentifier("/US-New_York-New_York");
+        TimeZoneIdentifier expectedProperty = TimeZoneIdentifier.parse("/US-New_York-New_York");
         assertEquals(expectedProperty, madeProperty);
         assertNull(expectedProperty.getValue());
     }

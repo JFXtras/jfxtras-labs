@@ -29,4 +29,9 @@ public abstract class PropertyBaseZoneOffset<U> extends PropertyBase<ZoneOffset,
     {
         super(value);
     }
+
+    public PropertyBaseZoneOffset()
+    {
+        super();
+    }
 }

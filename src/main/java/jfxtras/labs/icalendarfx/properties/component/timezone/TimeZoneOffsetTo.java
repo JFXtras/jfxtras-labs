@@ -21,10 +21,10 @@ import jfxtras.labs.icalendarfx.components.StandardTime;
  */
 public class TimeZoneOffsetTo extends PropertyBaseZoneOffset<TimeZoneOffsetTo>
 {    
-    public TimeZoneOffsetTo(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public TimeZoneOffsetTo(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public TimeZoneOffsetTo(TimeZoneOffsetTo source)
     {
@@ -34,5 +34,17 @@ public class TimeZoneOffsetTo extends PropertyBaseZoneOffset<TimeZoneOffsetTo>
     public TimeZoneOffsetTo(ZoneOffset value)
     {
         super(value);
+    }
+    
+    public TimeZoneOffsetTo()
+    {
+        super();
+    }
+
+    public static TimeZoneOffsetTo parse(String propertyContent)
+    {
+        TimeZoneOffsetTo property = new TimeZoneOffsetTo();
+        property.parseContent(propertyContent);
+        return property;
     }
 }
