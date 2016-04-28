@@ -277,19 +277,19 @@ public enum ParameterEnum
             
         }
     },
-    PARTICIPATION_STATUS ("PARTSTAT", Participation.class) {
+    PARTICIPATION_STATUS ("PARTSTAT", ParticipationStatus.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
-            castProperty.setParticipation(new Participation(content));
+            castProperty.setParticipationStatus(new ParticipationStatus(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
-            return castProperty.getParticipation();
+            return castProperty.getParticipationStatus();
         }
 
         @Override

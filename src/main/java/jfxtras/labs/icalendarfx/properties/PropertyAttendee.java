@@ -5,7 +5,7 @@ import jfxtras.labs.icalendarfx.parameters.CalendarUser;
 import jfxtras.labs.icalendarfx.parameters.Delegatees;
 import jfxtras.labs.icalendarfx.parameters.Delegators;
 import jfxtras.labs.icalendarfx.parameters.GroupMembership;
-import jfxtras.labs.icalendarfx.parameters.Participation;
+import jfxtras.labs.icalendarfx.parameters.ParticipationStatus;
 import jfxtras.labs.icalendarfx.parameters.ParticipationRole;
 import jfxtras.labs.icalendarfx.parameters.RSVP;
 import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseAttendee;
@@ -108,9 +108,9 @@ public interface PropertyAttendee<U> extends PropertyCalendarUser<U>
      * Example:
      * ATTENDEE;PARTSTAT=DECLINED:mailto:jsmith@example.com
      */
-    Participation getParticipation();
-    ObjectProperty<Participation> participationProperty();
-    void setParticipation(Participation participation); 
+    ParticipationStatus getParticipationStatus();
+    ObjectProperty<ParticipationStatus> participationStatusProperty();
+    void setParticipationStatus(ParticipationStatus participation); 
 
     /**
      * ROLE

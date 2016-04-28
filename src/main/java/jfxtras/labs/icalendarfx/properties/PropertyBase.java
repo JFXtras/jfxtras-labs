@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.WeakHashMap;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -251,14 +251,14 @@ public abstract class PropertyBase<T,U> implements Property<T>
     }
     
     /** 
-     * Parameter sort order map.  Key is parameter name.  Follows sort order of parsed content.
+     * Parameter sort order map.  Key is parameter, value is order.  Follows sort order of parsed content.
      * If a parameter is not present in the map, it is put at the end of the sorted ones in
-     * the order appearing in {@link #ParameterEnum}
+     * the order appearing in {@link #ParameterEnum} (should be alphabetical)
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
      * a specific parameter order (e.g. unit testing).
      */
-    public Map<ParameterEnum, Integer> parameterSortOrder() { return parameterSortOrder; }
-    final private Map<ParameterEnum, Integer> parameterSortOrder = new HashMap<>();
+    public Map<Parameter<?>, Integer> parameterSortOrder() { return parameterSortOrder; }
+    final private Map<Parameter<?>, Integer> parameterSortOrder = new WeakHashMap<>();
     private Integer parameterCounter = 0;
     
     // property value
@@ -358,6 +358,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     }
     
     /** Parse content line into calendar property */
+    @Override
     public void parseContent(CharSequence contentLine)
     {
 //        setConverter(converter);
@@ -413,12 +414,13 @@ public abstract class PropertyBase<T,U> implements Property<T>
             .forEach(e ->
             {
                 ParameterEnum p = ParameterEnum.enumFromName(e.getKey());
-                parameterSortOrder().put(p, parameterCounter++);
+//                parameterSortOrder().put(p, parameterCounter++);
                 if (p != null)
                 {
                     if (propertyType().allowedParameters().contains(p))
                     {
                         p.parse(this, e.getValue());
+                        parameterSortOrder().put(p.getParameter(this), parameterCounter++);
                     } else
                     {
                         throw new IllegalArgumentException("Parameter " + p + " not allowed for property " + propertyType());
@@ -501,19 +503,16 @@ public abstract class PropertyBase<T,U> implements Property<T>
         }
         
         // PARAMETERS
-        Map<String, CharSequence> parameterNameContentMap = parameters().stream()
-                .collect(Collectors.toMap(p -> p.toString(),
-                                          p -> p.getParameter(this).toContent()));
+        Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
+        parameters().stream().forEach(p -> parameterNameContentMap.put(p.getParameter(this), p.getParameter(this).toContent()));
         
         // restore parameter sort order if parameters were parsed from content
         parameterNameContentMap.entrySet().stream()
-                .sorted((Comparator<? super Entry<String, CharSequence>>) (e1, e2) -> 
+                .sorted((Comparator<? super Entry<Parameter<?>, CharSequence>>) (e1, e2) -> 
                 {
-                    ParameterEnum p1 = ParameterEnum.enumFromName(e1.getKey());
-                    Integer s1 = parameterSortOrder.get(p1);
+                    Integer s1 = parameterSortOrder.get(e1.getKey());
                     Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
-                    ParameterEnum p2 = ParameterEnum.enumFromName(e2.getKey());
-                    Integer s2 = parameterSortOrder.get(p2);
+                    Integer s2 = parameterSortOrder.get(e2.getKey());
                     Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
 //                    System.out.println("s12:" + sort1 + " " + sort2);
                     return sort1.compareTo(sort2);

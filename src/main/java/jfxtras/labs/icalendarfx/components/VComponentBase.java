@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.WeakHashMap;
 
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.Property;
@@ -97,14 +97,16 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     }
 
     /** 
-     * Property sort order map.  Key is property name.  Follows sort order of parsed content.
-     * If a property is not present in the map, it is put at the end of the sorted ones in
-     * the order appearing in {@link #PropertyEnum} <br>
-     * Generally, this map shouldn't be modified.  Only modify it when you want to force
-     * a specific property order (e.g. unit testing).
+     * Property sort order map.  Key is property, value is the order.  The map is automatically
+     * populated when parsing the content lines to preserve the existing property order.
+     * 
+     * When producing the content lines, if a property is not present in the map, it is put at
+     * the end of the sorted ones in the order appearing in {@link #PropertyEnum} (should be
+     * alphabetical) Generally, this map shouldn't be modified.  Only modify it when you want
+     * to force a specific property order (e.g. unit testing).
      */
-    public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
-    final private Map<String, Integer> propertySortOrder = new HashMap<>();
+    public Map<Property<?>, Integer> propertySortOrder() { return propertySortOrder; }
+    final private Map<Property<?>, Integer> propertySortOrder = new WeakHashMap<>();
     
     /*
      * CONSTRUCTORS
@@ -137,42 +139,43 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
             String propertyName = line.substring(0, nameEndIndex);
             
             // Parse subcomponent
-            boolean isParentComponent = line.substring(nameEndIndex+1).equals(componentType().toString());
-            if (propertyName.equals("BEGIN") && ! isParentComponent)
+            if (propertyName.equals("BEGIN"))
             {
-//                System.out.println(line.substring(nameEndIndex+1));
-                VComponentEnum subcomponentType = VComponentEnum.valueOf(line.substring(nameEndIndex+1));
-                StringBuilder subcomponentContentBuilder = new StringBuilder(200);
-                subcomponentContentBuilder.append(line + System.lineSeparator());
-                boolean isEndFound = false;
-                do
+                boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentType().toString());
+                if  (! isMainComponent)
                 {
-                    String subLine = i.next();
-                    subcomponentContentBuilder.append(subLine + System.lineSeparator());
-                    isEndFound = subLine.subSequence(0, 3).equals("END");
-                } while (! isEndFound);
-//                System.out.println(subcomponentContentBuilder.toString());
-                parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
+                    VComponentEnum subcomponentType = VComponentEnum.valueOf(line.substring(nameEndIndex+1));
+                    StringBuilder subcomponentContentBuilder = new StringBuilder(200);
+                    subcomponentContentBuilder.append(line + System.lineSeparator());
+                    boolean isEndFound = false;
+                    do
+                    {
+                        String subLine = i.next();
+                        subcomponentContentBuilder.append(subLine + System.lineSeparator());
+                        isEndFound = subLine.subSequence(0, 3).equals("END");
+                    } while (! isEndFound);
+                    parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
+                }
                 
             // parse properties
             } else if (! propertyName.equals("END"))
             {
-                propertySortOrder.put(propertyName, counter++);
-                PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
-              
                 // parse property
+                // ignores unknown properties
+                PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
                 if (propertyType != null)
                 {
                     propertyType.parse(this, line);
-                } else if (propertyName.substring(0, PropertyEnum.NON_STANDARD.toString().length()).equals(PropertyEnum.NON_STANDARD.toString()))
-                {
-                    PropertyEnum.NON_STANDARD.parse(this, line);
-                } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(propertyName))
-                {
-                    PropertyEnum.IANA_PROPERTY.parse(this, line);
-                } else
-                {
-                    // ignores unknown properties - change if other behavior desired
+                    Object obj = propertyType.getProperty(this);
+                    if (obj instanceof List)
+                    {
+                        List<Property<?>> list = (List<Property<?>>) obj;
+                        Property<?> property = list.get(list.size()-1);
+                        propertySortOrder.put(property, counter++);
+                    } else if (obj instanceof Property)
+                    {
+                        propertySortOrder.put((Property<?>) obj, counter++);                    
+                    }
                 }
             }
         }
@@ -247,15 +250,15 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
 
     void appendMiddleContentLines(StringBuilder builder)
     {
-        Map<String, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
+        Map<Property<?>, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
         properties().stream()
                 .map(e -> e.getProperty(this))
                 .flatMap(prop -> 
                 {
-                    if (prop instanceof Property<?>)
+                    if (prop instanceof Property)
                     {
                         return Arrays.asList((Property<?>) prop).stream();
-                    } else if (prop instanceof List<?>)
+                    } else if (prop instanceof List)
                     {
                         return ((List<? extends Property<?>>) prop).stream();
                     } else
@@ -269,17 +272,17 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                     if (propertyNameContentMap.get(property.getPropertyName()) == null)
                     { // make new list for new entry
                         List<CharSequence> list = new ArrayList<>(Arrays.asList(property.toContentLine()));
-                        propertyNameContentMap.put(property.getPropertyName(), list);
+                        propertyNameContentMap.put(property, list);
                     } else
                     { // add properties to existing list for existing entry
-                        List<CharSequence> list = propertyNameContentMap.get(property.getPropertyName());
+                        List<CharSequence> list = propertyNameContentMap.get(property);
                         list.add(property.toContentLine());
                     }
                 });
         
         // restore property sort order if properties were parsed from content
         propertyNameContentMap.entrySet().stream()
-                .sorted((Comparator<? super Entry<String, List<CharSequence>>>) (e1, e2) -> 
+                .sorted((Comparator<? super Entry<Property<?>, List<CharSequence>>>) (e1, e2) -> 
                 {
                     Integer s1 = propertySortOrder.get(e1.getKey());
                     Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;

@@ -1397,7 +1397,18 @@ public enum PropertyEnum
     }
     public static PropertyEnum enumFromName(String propertyName)
     {
-        return enumFromNameMap.get(propertyName);
+        final PropertyEnum prop;
+        if (propertyName.substring(0, PropertyEnum.NON_STANDARD.toString().length()).equals(PropertyEnum.NON_STANDARD.toString()))
+        {
+            prop = PropertyEnum.NON_STANDARD;
+        } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(propertyName))
+        {
+            prop = PropertyEnum.IANA_PROPERTY;            
+        } else
+        {
+            prop = enumFromNameMap.get(propertyName);   
+        }
+        return prop;
     }
     
     // Map to match up class to enum

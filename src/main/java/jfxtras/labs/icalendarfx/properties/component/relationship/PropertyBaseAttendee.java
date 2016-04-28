@@ -11,8 +11,8 @@ import jfxtras.labs.icalendarfx.parameters.Delegatees;
 import jfxtras.labs.icalendarfx.parameters.Delegators;
 import jfxtras.labs.icalendarfx.parameters.GroupMembership;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
-import jfxtras.labs.icalendarfx.parameters.Participation;
-import jfxtras.labs.icalendarfx.parameters.Participation.ParticipationStatus;
+import jfxtras.labs.icalendarfx.parameters.ParticipationStatus;
+import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStatusType;
 import jfxtras.labs.icalendarfx.parameters.ParticipationRole;
 import jfxtras.labs.icalendarfx.parameters.ParticipationRole.ParticipationRoleType;
 import jfxtras.labs.icalendarfx.parameters.RSVP;
@@ -193,23 +193,23 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
      * ATTENDEE;PARTSTAT=DECLINED:mailto:jsmith@example.com
      */
     @Override
-    public Participation getParticipation() { return (participation != null) ? participation.get() : null; }
+    public ParticipationStatus getParticipationStatus() { return (participationStatus != null) ? participationStatus.get() : null; }
     @Override
-    public ObjectProperty<Participation> participationProperty()
+    public ObjectProperty<ParticipationStatus> participationStatusProperty()
     {
-        if (participation == null)
+        if (participationStatus == null)
         {
-            participation = new SimpleObjectProperty<>(this, ParameterEnum.PARTICIPATION_STATUS.toString());
+            participationStatus = new SimpleObjectProperty<>(this, ParameterEnum.PARTICIPATION_STATUS.toString());
         }
-        return participation;
+        return participationStatus;
     }
-    private ObjectProperty<Participation> participation;
+    private ObjectProperty<ParticipationStatus> participationStatus;
     @Override
-    public void setParticipation(Participation participation) { participationProperty().set(participation); }
-    public void setParticipation(String content) { setParticipation(new Participation(content)); }
-    public U withParticipation(Participation type) { setParticipation(type); return (U) this; }
-    public U withParticipation(ParticipationStatus type) { setParticipation(new Participation(type)); return (U) this; }
-    public U withParticipation(String content) { setParticipation(content); return (U) this; }  
+    public void setParticipationStatus(ParticipationStatus participation) { participationStatusProperty().set(participation); }
+    public void setParticipationStatus(String content) { setParticipationStatus(new ParticipationStatus(content)); }
+    public U withParticipationStatus(ParticipationStatus type) { setParticipationStatus(type); return (U) this; }
+    public U withParticipationStatus(ParticipationStatusType type) { setParticipationStatus(new ParticipationStatus(type)); return (U) this; }
+    public U withParticipationStatus(String content) { setParticipationStatus(content); return (U) this; }  
 
     /**
      * ROLE

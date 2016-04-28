@@ -10,9 +10,8 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.parameters.CalendarUser.CalendarUserType;
 import jfxtras.labs.icalendarfx.parameters.GroupMembership;
-import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
-import jfxtras.labs.icalendarfx.parameters.Participation.ParticipationStatus;
 import jfxtras.labs.icalendarfx.parameters.ParticipationRole.ParticipationRoleType;
+import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStatusType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
 public class AttendeeTest
@@ -112,7 +111,7 @@ public class AttendeeTest
         String content = "ATTENDEE;PARTSTAT=DECLINED:mailto:jsmith@example.com";
         Attendee madeProperty = Attendee.parse(content);
         Attendee expectedProperty = Attendee.parse("mailto:jsmith@example.com")
-                .withParticipation(ParticipationStatus.DECLINED);
+                .withParticipationStatus(ParticipationStatusType.DECLINED);
         assertEquals(expectedProperty, madeProperty);
         assertEquals(content, expectedProperty.toContentLine());
     }
@@ -141,17 +140,17 @@ public class AttendeeTest
                 .withDelegatees("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"")
                 .withRSVP(true)
                 .withParticipationRole(ParticipationRoleType.CHAIR)
-                .withParticipation(ParticipationStatus.DECLINED)
+                .withParticipationStatus(ParticipationStatusType.DECLINED)
                 .withSentBy("mailto:sray@example.com");
-        expectedProperty.parameterSortOrder().put(ParameterEnum.COMMON_NAME, 0);
-        expectedProperty.parameterSortOrder().put(ParameterEnum.CALENDAR_USER_TYPE, 1);
-        expectedProperty.parameterSortOrder().put(ParameterEnum.DELEGATEES, 2);
-        expectedProperty.parameterSortOrder().put(ParameterEnum.DELEGATORS, 3);
-        expectedProperty.parameterSortOrder().put(ParameterEnum.GROUP_OR_LIST_MEMBERSHIP, 4);
-        expectedProperty.parameterSortOrder().put(ParameterEnum.PARTICIPATION_ROLE, 5);
-        expectedProperty.parameterSortOrder().put(ParameterEnum.PARTICIPATION_STATUS, 6);
-        expectedProperty.parameterSortOrder().put(ParameterEnum.RSVP_EXPECTATION, 7);
-        expectedProperty.parameterSortOrder().put(ParameterEnum.SENT_BY, 8);
+        expectedProperty.parameterSortOrder().put(expectedProperty.getCommonName(), 0);
+        expectedProperty.parameterSortOrder().put(expectedProperty.getCalendarUser(), 1);
+        expectedProperty.parameterSortOrder().put(expectedProperty.getDelegatees(), 2);
+        expectedProperty.parameterSortOrder().put(expectedProperty.getDelegators(), 3);
+        expectedProperty.parameterSortOrder().put(expectedProperty.getGroupMembership(), 4);
+        expectedProperty.parameterSortOrder().put(expectedProperty.getParticipationRole(), 5);
+        expectedProperty.parameterSortOrder().put(expectedProperty.getParticipationStatus(), 6);
+        expectedProperty.parameterSortOrder().put(expectedProperty.getRSVP(), 7);
+        expectedProperty.parameterSortOrder().put(expectedProperty.getSentBy(), 8);
         assertEquals(expectedProperty, madeProperty);
         assertEquals(content, expectedProperty.toContentLine());
     }

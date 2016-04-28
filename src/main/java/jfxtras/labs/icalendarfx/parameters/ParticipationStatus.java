@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.parameters;
 import java.util.HashMap;
 import java.util.Map;
 
-import jfxtras.labs.icalendarfx.parameters.Participation.ParticipationStatus;
+import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStatusType;
 
 /**
  * PARTSTAT
@@ -18,31 +18,31 @@ import jfxtras.labs.icalendarfx.parameters.Participation.ParticipationStatus;
  * @author David Bal
  *
  */
-public class Participation extends ParameterBase<Participation, ParticipationStatus>
+public class ParticipationStatus extends ParameterBase<ParticipationStatus, ParticipationStatusType>
 {
     private String unknownValue; // contains exact string for unknown value
 
     /** Set NEEDS-ACTION as default value */
-    public Participation()
+    public ParticipationStatus()
     {
-        super(ParticipationStatus.NEEDS_ACTION); // default value
+        super(ParticipationStatusType.NEEDS_ACTION); // default value
     }
   
-    public Participation(ParticipationStatus value)
+    public ParticipationStatus(ParticipationStatusType value)
     {
         super(value);
     }
     
-    public Participation(String content)
+    public ParticipationStatus(String content)
     {
-        super(ParticipationStatus.enumFromName(content));
-        if (getValue() == ParticipationStatus.UNKNOWN)
+        super(ParticipationStatusType.enumFromName(content));
+        if (getValue() == ParticipationStatusType.UNKNOWN)
         {
             unknownValue = content;
         }
     }
 
-    public Participation(Participation source)
+    public ParticipationStatus(ParticipationStatus source)
     {
         super(source);
     }
@@ -50,12 +50,12 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
     @Override
     public String toContent()
     {
-        String value = (getValue() == ParticipationStatus.UNKNOWN) ? unknownValue : getValue().toString();
+        String value = (getValue() == ParticipationStatusType.UNKNOWN) ? unknownValue : getValue().toString();
         String parameterName = myParameterEnum().toString();
         return ";" + parameterName + "=" + value;
     }
 
-    public enum ParticipationStatus
+    public enum ParticipationStatusType
     {
         NEEDS_ACTION ("NEEDS-ACTION"),  // VEvent, VTodo, VJournal - DEFAULT VALUE
         ACCEPTED ("ACCEPTED"),          // VEvent, VTodo, VJournal
@@ -66,11 +66,11 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
         DELEGATED ("DELEGATED"),        // VEvent, VTodo
         UNKNOWN ("UNKNOWN");
         
-        private static Map<String, ParticipationStatus> enumFromNameMap = makeEnumFromNameMap();
-        private static Map<String, ParticipationStatus> makeEnumFromNameMap()
+        private static Map<String, ParticipationStatusType> enumFromNameMap = makeEnumFromNameMap();
+        private static Map<String, ParticipationStatusType> makeEnumFromNameMap()
         {
-            Map<String, ParticipationStatus> map = new HashMap<>();
-            ParticipationStatus[] values = ParticipationStatus.values();
+            Map<String, ParticipationStatusType> map = new HashMap<>();
+            ParticipationStatusType[] values = ParticipationStatusType.values();
             for (int i=0; i<values.length; i++)
             {
                 map.put(values[i].toString(), values[i]);
@@ -78,15 +78,15 @@ public class Participation extends ParameterBase<Participation, ParticipationSta
             return map;
         }
         /** get enum from name */
-        public static ParticipationStatus enumFromName(String propertyName)
+        public static ParticipationStatusType enumFromName(String propertyName)
         {
-            ParticipationStatus type = enumFromNameMap.get(propertyName.toUpperCase());
+            ParticipationStatusType type = enumFromNameMap.get(propertyName.toUpperCase());
             return (type == null) ? UNKNOWN : type;
         }
         
         private String name;
         @Override public String toString() { return name; }
-        ParticipationStatus(String name)
+        ParticipationStatusType(String name)
         {
             this.name = name;
         }
