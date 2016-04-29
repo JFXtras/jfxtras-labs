@@ -316,6 +316,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
      * 
      * @param contentLine - property text string
      */
+    @Deprecated // use parse method instead
     public PropertyBase(CharSequence contentLine)
     {
         this();

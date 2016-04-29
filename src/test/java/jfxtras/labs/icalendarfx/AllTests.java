@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import jfxtras.labs.icalendarfx.component.BaseTest;
 import jfxtras.labs.icalendarfx.component.GeneralTest;
+import jfxtras.labs.icalendarfx.component.ComponentCopyTest;
 import jfxtras.labs.icalendarfx.component.PersonalTest;
 import jfxtras.labs.icalendarfx.component.PrimaryTest;
 import jfxtras.labs.icalendarfx.component.StandardOrDaylightTimeTest;
@@ -61,7 +62,7 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
-                ICalendarCopyTest.class,
+                ComponentCopyTest.class,
                 ICalendarDateTest.class,
                 ICalendarDeleteTest.class,
                 ICalendarEditTest.class,

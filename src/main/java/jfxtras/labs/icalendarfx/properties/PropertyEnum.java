@@ -275,6 +275,19 @@ public enum PropertyEnum
             }
             list.add(Comment.parse(propertyContent));
         }
+        
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentPrimary<?> castSource = (VComponentPrimary<?>) source;
+            VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
+            Comment[] collect = castSource.getComments()
+                    .stream()
+                    .map(c -> new Comment(c))
+                    .toArray(size -> new Comment[size]);
+            ObservableList<Comment> properties = FXCollections.observableArrayList(collect);
+            castDestination.setComments(properties);
+        }
     },
     // Relationship
     CONTACT ("CONTACT", // property name
@@ -472,6 +485,15 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentPrimary<?> castSource = (VComponentPrimary<?>) source;
+            VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
+            DateTimeStart<? extends Temporal> property = new DateTimeStart<>(castSource.getDateTimeStart());
+            castDestination.setDateTimeStart(property);
         }
     },
     // Descriptive
@@ -1466,6 +1488,13 @@ public enum PropertyEnum
      */
     /** Returns either Property<?> or List<Property<?>> */
     abstract public Object getProperty(VComponentNew<?> vComponent);
+
+//    /** Sets the associated property with the value parameter */
+//    public void setProperty(VComponentNew<?> vComponent, Object value) { } ;
+
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
     abstract public void parse(VComponentNew<?> vComponent, String propertyContent);
+
+    /** copies the associated property from the source component to the destination component */
+    public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination) {}
 }

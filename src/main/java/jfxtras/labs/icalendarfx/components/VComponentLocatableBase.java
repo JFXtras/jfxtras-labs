@@ -147,6 +147,16 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     @Override
     public void setVAlarms(ObservableList<VAlarm> vAlarms) { this.vAlarms = vAlarms; }
     
+    static void copyVAlarms(VComponentLocatable<?> source, VComponentLocatable<?> destination)
+    {
+        VAlarm[] collect = source.getVAlarms()
+                .stream()
+                .map(c -> new VAlarm(c))
+                .toArray(size -> new VAlarm[size]);
+        ObservableList<VAlarm> properties = FXCollections.observableArrayList(collect);
+        destination.setVAlarms(properties);
+    }
+    
     /*
      * CONSTRUCTORS
      */

@@ -168,12 +168,18 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
 //    @Deprecated
     public VEventNew(String contentLines)
     {
-        super(contentLines);
+        parseContent(contentLines);
+//        super(contentLines);
     }
     
+    /** Copy constructor */
     public VEventNew(VEventNew source)
     {
-//        super(source);
+        this();
+        VComponentBase.copyProperties(source, this);
+        VComponentLocatableBase.copyVAlarms(source, this);
+//        source.getVAlarms().stream().forEach(a -> this.getVAlarms().copyProperty(source, this));
+//        this.copyComponent2(source);
     }
 
     @Override
