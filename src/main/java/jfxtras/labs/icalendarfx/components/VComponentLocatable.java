@@ -22,22 +22,6 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
  */
 public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VComponentDuration<T>, VComponentDescribable2<T>
 {
-//    /**
-//     * DESCRIPTION:
-//     * RFC 5545 iCalendar 3.8.1.12. page 84
-//     * This property provides a more complete description of the
-//     * calendar component than that provided by the "SUMMARY" property.
-//     * Example:
-//     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
-//     *  design.\nHappy Face Conference Room. Phoenix design team
-//     *  MUST attend this meeting.\nRSVP to team leader.
-//     */
-//    public ObjectProperty<Description> descriptionProperty();
-//    default Description getDescription() { return descriptionProperty().get(); }
-//    default void setDescription(Description description) { descriptionProperty().set(description); }
-//    default T withDescription(Description description) { setDescription(description); return (T) this; }
-//    default T withDescription(String description) { PropertyEnum.DESCRIPTION.parse(this, description); return (T) this; }
-
     /**
      * GEO: Geographic Position
      * RFC 5545 iCalendar 3.8.1.6 page 85, 3.3.6 page 85
@@ -53,8 +37,41 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     public ObjectProperty<GeographicPosition> geographicPositionProperty();
     default GeographicPosition getGeographicPosition() { return geographicPositionProperty().get(); }
     default void setGeographicPosition(GeographicPosition geographicPosition) { geographicPositionProperty().set(geographicPosition); }
-    default T withGeographicPosition(GeographicPosition geographicPosition) { setGeographicPosition(geographicPosition); return (T) this; }
-    default T withGeographicPosition(String geographicPosition) { PropertyEnum.GEOGRAPHIC_POSITION.parse(this, geographicPosition); return (T) this; }
+    default void setGeographicPosition(String geographicPosition) { setGeographicPosition(GeographicPosition.parse(geographicPosition)); }
+    default void setGeographicPosition(double latitude, double longitude) { setGeographicPosition(new GeographicPosition(latitude, longitude)); }
+    default T withGeographicPosition(GeographicPosition geographicPosition)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(geographicPosition);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withGeographicPosition(String geographicPosition)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(geographicPosition);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withGeographicPosition(double latitude, double longitude)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(latitude, longitude);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /**
      * LOCATION:
@@ -67,9 +84,30 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     public ObjectProperty<Location> locationProperty();
     default Location getLocation() { return locationProperty().get(); }
     default void setLocation(Location location) { locationProperty().set(location); }
-    default T withLocation(Location location) { setLocation(location); return (T) this; }
-    default T withLocation(String location) { PropertyEnum.LOCATION.parse(this, location); return (T) this; }
-    
+    default void setLocation(String location) { setLocation(Location.parse(location)); }
+    default T withLocation(Location location)
+    {
+        if (getLocation() == null)
+        {
+            setLocation(location);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withLocation(String location)
+    {
+        if (getLocation() == null)
+        {
+            setLocation(location);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+
     /**
      * PRIORITY
      * RFC 5545 iCalendar 3.8.1.6 page 85, 3.3.6 page 85
@@ -82,10 +120,41 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     public ObjectProperty<Priority> priorityProperty();
     default Priority getPriority() { return priorityProperty().get(); }
     default void setPriority(Priority priority) { priorityProperty().set(priority); }
-    default void setPriority(int priority) { priorityProperty().set(new Priority(priority)); }
-    default T withPriority(Priority priority) { setPriority(priority); return (T) this; }
-    default T withPriority(String priority) { PropertyEnum.PRIORITY.parse(this, priority); return (T) this; }
-    default T withPriority(int priority) { setPriority(priority); return (T) this; }
+    default void setPriority(String priority) { setPriority(Priority.parse(priority)); }
+    default void setPriority(int priority) { setPriority(new Priority(priority)); }
+    default T withPriority(Priority priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(priority);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withPriority(String priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(priority);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withPriority(int priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(priority);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /**
      * RESOURCES:
@@ -123,6 +192,7 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
      * RFC 5545 iCalendar 3.6.6. page 71
      * 
      * Provide a grouping of component properties that define an alarm.
+     * MUST be contained inside a VEVENT or VTODO component
      */
     ObservableList<VAlarm> getVAlarms();
     void setVAlarms(ObservableList<VAlarm> properties);

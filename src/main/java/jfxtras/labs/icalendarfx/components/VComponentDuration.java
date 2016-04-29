@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.components;
 import java.time.temporal.TemporalAmount;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 /**
@@ -29,7 +28,38 @@ public interface VComponentDuration<T> extends VComponentNew<T>
     default void setDuration(DurationProp duration) { durationProperty().set(duration); }
     default void setDuration(String duration) { setDuration(DurationProp.parse(duration)); }
     default void setDuration(TemporalAmount duration) { setDuration(new DurationProp(duration)); }
-    default T withDuration(TemporalAmount duration) { setDuration(duration); return (T) this; }
-    default T withDuration(String duration) { PropertyEnum.DURATION.parse(this, duration); return (T) this; }
-    default T withDuration(DurationProp duration) { setDuration(duration); return (T) this; }
+    default T withDuration(TemporalAmount duration)
+    {
+        if (getDuration() == null)
+        {
+            setDuration(duration);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDuration(String duration)
+    {
+        if (getDuration() == null)
+        {
+            setDuration(duration);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+
+    default T withDuration(DurationProp duration)
+    {
+        if (getDuration() == null)
+        {
+            setDuration(duration);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 }

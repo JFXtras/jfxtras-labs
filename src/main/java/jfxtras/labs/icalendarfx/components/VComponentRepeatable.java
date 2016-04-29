@@ -198,9 +198,39 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     default void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
     default void setRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
     default void setRecurrenceRule(String rrule) { setRecurrenceRule(RecurrenceRule.parse(rrule)); }
-    default T withRecurrenceRule(String rrule) { PropertyEnum.RECURRENCE_RULE.parse(this, rrule); return (T) this; }
-    default T withRecurrenceRule(RecurrenceRule rrule) { setRecurrenceRule(rrule); return (T) this; }
-    default T withRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(rrule); return (T) this; }
+    default T withRecurrenceRule(String rrule)
+    {
+        if (getRecurrenceRule() == null)
+        {
+            setRecurrenceRule(rrule);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withRecurrenceRule(RecurrenceRule rrule)
+    {
+        if (getRecurrenceRule() == null)
+        {
+            setRecurrenceRule(rrule);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withRecurrenceRule(RecurrenceRuleParameter rrule)
+    {
+        if (getRecurrenceRule() == null)
+        {
+            setRecurrenceRule(rrule);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /** Stream of dates or date-times that indicate the series of start date-times of the event(s).
      * iCalendar calls this series the recurrence set.

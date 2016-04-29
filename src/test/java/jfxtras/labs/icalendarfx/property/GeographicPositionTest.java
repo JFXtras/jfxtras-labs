@@ -22,4 +22,17 @@ public class GeographicPositionTest
         assertEquals(content, madeProperty.toContentLine());
         assertEquals(content, expectedProperty.toContentLine());
     }
+    
+    @Test
+    public void canBuildGeographicPosition()
+    {
+        Double latitude = 37.386013;
+        Double longitude = -122.082932;
+        GeographicPosition property = new GeographicPosition(latitude, longitude);
+        String content = "GEO:37.386013;-122.082932";
+        assertEquals(content, property.toContentLine());
+        assertEquals(latitude, property.getLatitude());
+        assertEquals(longitude, property.getLongitude());
+    }
+
 }

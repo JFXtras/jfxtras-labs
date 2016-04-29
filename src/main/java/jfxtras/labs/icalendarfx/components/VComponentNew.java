@@ -50,10 +50,6 @@ public interface VComponentNew<T>
     void setNonStandardProperties(ObservableList<NonStandardProperty> properties);
     default T withNonStandardProperty(String...nonStandardProps)
     {
-        if (getNonStandardProperties() == null)
-        {
-            setNonStandardProperties(FXCollections.observableArrayList());
-        }
         Arrays.stream(nonStandardProps).forEach(c -> PropertyEnum.NON_STANDARD.parse(this, c));
         return (T) this;
     }
@@ -80,13 +76,8 @@ public interface VComponentNew<T>
      */
     ObservableList<IANAProperty> getIANAProperties();
     void setIANAProperties(ObservableList<IANAProperty> properties);
-    /** add comma separated ianaProps into separate comment objects */
     default T withIANAProperty(String...ianaProps)
     {
-        if (getIANAProperties() == null)
-        {
-            setIANAProperties(FXCollections.observableArrayList());
-        }
         Arrays.stream(ianaProps).forEach(c -> PropertyEnum.IANA_PROPERTY.parse(this, c));
         return (T) this;
     }
@@ -144,17 +135,6 @@ public interface VComponentNew<T>
      * @author David Bal
      *
      */
-    
-//    /** check if properties that are allowed only once are already set.  Should be called before every
-//     *  chaining "with" method sets the property (for ones that can only occur once) */
-//    default void alreadySetCheck(Object obj)
-//    {
-//        if (obj != null)
-//        {
-//            throw new IllegalArgumentException("Property can only occur once in the calendar component");
-//        }
-//    }
-    
     @Deprecated // maybe there is a better way to mark main components (as opposed to sub-components)
     public interface VComponentMain
     {

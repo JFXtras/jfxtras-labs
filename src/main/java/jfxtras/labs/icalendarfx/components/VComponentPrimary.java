@@ -41,10 +41,6 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
     default T withComments(ObservableList<Comment> comments) { setComments(comments); return (T) this; }
     default T withComments(String...comments)
     {
-        if (getComments() == null)
-        {
-            setComments(FXCollections.observableArrayList());
-        }
         Arrays.stream(comments).forEach(c -> PropertyEnum.COMMENT.parse(this, c));
         return (T) this;
     }
@@ -119,6 +115,5 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
     /** If subclass has date-time properties (e.g. DTEND) that must be consistent with DTSTART
      * add a listener to dateTimeStartProperty() here to check for consistency
      */
-//    default void addDateTimeStartConsistencyListener() { };
     void checkDateTimeStartConsistency();
 }

@@ -41,9 +41,39 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     default void setDateTimeStamp(String dtStamp) { setDateTimeStamp(DateTimeStamp.parse(dtStamp)); }
     default void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStampProperty().set(dtStamp); }
     default void setDateTimeStamp(ZonedDateTime dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); }
-    default T withDateTimeStamp(ZonedDateTime dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); return (T) this; }
-    default T withDateTimeStamp(String dtStamp) { PropertyEnum.DATE_TIME_STAMP.parse(this, dtStamp); return (T) this; }
-    default T withDateTimeStamp(DateTimeStamp dtStamp) { setDateTimeStamp(dtStamp); return (T) this; }
+    default T withDateTimeStamp(ZonedDateTime dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(dtStamp);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDateTimeStamp(String dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(dtStamp);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withDateTimeStamp(DateTimeStamp dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(dtStamp);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 
     /**
      * ORGANIZER: Organizer
@@ -56,9 +86,30 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     ObjectProperty<Organizer> organizerProperty();
     default Organizer getOrganizer() { return organizerProperty().get(); }
     default void setOrganizer(Organizer organizer) { organizerProperty().set(organizer); }
-    default T withOrganizer(String organizer) { PropertyEnum.ORGANIZER.parse(this, organizer); return (T) this; }
-    default T withOrganizer(Organizer organizer) { setOrganizer(organizer); return (T) this; }
-
+    default void setOrganizer(String organizer) { setOrganizer(Organizer.parse(organizer)); }
+    default T withOrganizer(String organizer)
+    {
+        if (getOrganizer() == null)
+        {
+            setOrganizer(organizer);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withOrganizer(Organizer organizer)
+    {
+        if (getOrganizer() == null)
+        {
+            setOrganizer(organizer);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    
     /**
      * REQUEST-STATUS: Request Status
      * RFC 5545 iCalendar 3.8.8.3 page 141
@@ -104,9 +155,29 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     default UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifierProperty().get(); }
     default void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
     default void setUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(UniqueIdentifier.parse(uniqueIdentifier)); }
-    default T withUniqueIdentifier(String uniqueIdentifier) { PropertyEnum.UNIQUE_IDENTIFIER.parse(this, uniqueIdentifier); return (T) this; }
-    default T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { setUniqueIdentifier(uniqueIdentifier); return (T) this; }
-
+    default T withUniqueIdentifier(String uniqueIdentifier)
+    {
+        if (getUniqueIdentifier() == null)
+        {
+            setUniqueIdentifier(uniqueIdentifier);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withUniqueIdentifier(UniqueIdentifier uniqueIdentifier)
+    {
+        if (getUniqueIdentifier() == null)
+        {
+            setUniqueIdentifier(uniqueIdentifier);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    
     /**
      * URL: Uniform Resource Locator
      * RFC 5545 iCalendar 3.8.4.6 page 116
@@ -119,8 +190,39 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     ObjectProperty<UniformResourceLocator> uniformResourceLocatorProperty();
     default UniformResourceLocator getUniformResourceLocator() { return uniformResourceLocatorProperty().get(); }
     default void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
+    default void setUniformResourceLocator(String url) { setUniformResourceLocator(UniformResourceLocator.parse(url)); };
     default void setUniformResourceLocator(URI url) { setUniformResourceLocator(new UniformResourceLocator(url)); };
-    default T withUniformResourceLocator(String url) { PropertyEnum.UNIFORM_RESOURCE_LOCATOR.parse(this, url); return (T) this; }
-    default T withUniformResourceLocator(URI url) { setUniformResourceLocator(url); return (T) this; }
-    default T withUniformResourceLocator(UniformResourceLocator url) { setUniformResourceLocator(url); return (T) this; }
+    default T withUniformResourceLocator(String url)
+    {
+        if (getUniformResourceLocator() == null)
+        {
+            setUniformResourceLocator(url);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withUniformResourceLocator(URI url)
+    {
+        if (getUniformResourceLocator() == null)
+        {
+            setUniformResourceLocator(url);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
+    default T withUniformResourceLocator(UniformResourceLocator url)
+    {
+        if (getUniformResourceLocator() == null)
+        {
+            setUniformResourceLocator(url);
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
 }

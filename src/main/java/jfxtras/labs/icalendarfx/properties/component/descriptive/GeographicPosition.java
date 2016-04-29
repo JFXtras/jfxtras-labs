@@ -33,14 +33,14 @@ public class GeographicPosition extends PropertyBase<String, GeographicPosition>
 {
     public Double getLatitude() { return latitude.get(); }
     ObjectProperty<Double> latitudeProperty() { return latitude; }
-    private ObjectProperty<Double> latitude = new SimpleObjectProperty<Double>(this, "statcode");
+    private ObjectProperty<Double> latitude = new SimpleObjectProperty<Double>(this, "latitude");
     public void setLatitude(Double latitude) { this.latitude.set(latitude); }
     public GeographicPosition withLatitude(Double latitude) { setLatitude(latitude); return this; }
     private final static DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.######");
 
     public Double getLongitude() { return longitude.get(); }
     ObjectProperty<Double> longitudeProperty() { return longitude; }
-    private ObjectProperty<Double> longitude = new SimpleObjectProperty<Double>(this, "statcode");
+    private ObjectProperty<Double> longitude = new SimpleObjectProperty<Double>(this, "longitude");
     public void setLongitude(Double longitude) { this.longitude.set(longitude); }
     public GeographicPosition withLongitude(Double longitude) { setLongitude(longitude); return this; }
 
@@ -64,10 +64,17 @@ public class GeographicPosition extends PropertyBase<String, GeographicPosition>
         updateParts(getValue());
     }
     
+    public GeographicPosition(double latitude, double longitude)
+    {
+        super();
+        setupListeners();
+        setLatitude(latitude);
+        setLongitude(longitude);
+    }
+    
     public GeographicPosition()
     {
         super();
-//        setConverter(CONVERTER);
         setupListeners();
     }
     
