@@ -332,12 +332,10 @@ public abstract class PropertyBase<T,U> implements Property<T>
     }
 
     // copy constructor
-    public PropertyBase(Property<T> source)
+    public PropertyBase(PropertyBase<T,U> source)
     {
         this();
-        setConverter(source.getConverter());
-        copyParametersFrom(source);
-        setValue(source.getValue());
+        copyPropertyFrom(source);
     }
     
     // constructor with only value parameter
@@ -354,9 +352,10 @@ public abstract class PropertyBase<T,U> implements Property<T>
 //        destination.setValue(source.getValue());
 //    }
     
-    protected void copyParametersFrom(Property<T> source)
+    public void copyPropertyFrom(PropertyBase<T,U> source)
     {
         setConverter(source.getConverter());
+        parameterSortOrder().putAll(source.parameterSortOrder());
         source.parameters().forEach(p -> p.copyParameter(source, this));
         setValue(source.getValue());
     }

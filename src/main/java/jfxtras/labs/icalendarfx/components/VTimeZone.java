@@ -437,9 +437,9 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     
     /** copy STANDARD and DAYLIGHT subcomponents */
     @Override
-    public void copyPropertiesFrom(VComponentNew<?> source)
+    public void copyComponentFrom(VComponentBase<?> source)
     {
-        super.copyPropertiesFrom(source);
+        super.copyComponentFrom(source);
         VTimeZone castSource = (VTimeZone) source;
         if (castSource.getStandardOrDaylight() != null)
         {

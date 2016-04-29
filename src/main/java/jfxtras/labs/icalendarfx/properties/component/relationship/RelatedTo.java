@@ -64,7 +64,7 @@ public class RelatedTo extends PropertyBase<String, RelatedTo> implements Proper
 //        super(contentLine);
 //    }
 
-    public RelatedTo(UniqueIdentifier source)
+    public RelatedTo(RelatedTo source)
     {
         super(source);
     }

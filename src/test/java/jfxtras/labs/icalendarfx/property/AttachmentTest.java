@@ -78,9 +78,10 @@ public class AttachmentTest
     public void canCopyAttachement() throws URISyntaxException
     {
         String contentLine = "ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW";
-        Attachment<String> expectedProperty = new Attachment<String>(String.class, contentLine);
-        Attachment<String> madeProperty = new Attachment<String>(expectedProperty);
-        assertEquals(expectedProperty, madeProperty);
-        assertFalse(expectedProperty == madeProperty);
+        Attachment<String> property1 = new Attachment<String>(String.class, contentLine);
+        Attachment<String> property2 = new Attachment<String>(property1);
+        System.out.println(property2.toContentLine());
+        assertEquals(property1, property2);
+        assertFalse(property1 == property2);
     }
 }

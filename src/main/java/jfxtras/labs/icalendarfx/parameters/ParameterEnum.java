@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.parameters;
 
 import java.time.ZoneId;
-import java.time.temporal.Temporal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,10 +62,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
+            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
+            CommonName parameter = new CommonName(castSource.getCommonName());
+            castDestination.setCommonName(parameter);
         }
     },
     // in property ATTENDEE
@@ -86,10 +87,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            CalendarUser parameter = new CalendarUser(castSource.getCalendarUser());
+            castDestination.setCalendarUser(parameter);
         }
     },
     // in property ATTENDEE
@@ -109,10 +112,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            Delegators parameter = new Delegators(castSource.getDelegators());
+            castDestination.setDelegators(parameter);
         }
     },
     // in property ATTENDEE
@@ -132,10 +137,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            Delegatees parameter = new Delegatees(castSource.getDelegatees());
+            castDestination.setDelegatees(parameter);
         }
     },
     // in properties ATTENDEE, ORGANIZER
@@ -155,10 +162,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
+            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
+            DirectoryEntryReference parameter = new DirectoryEntryReference(castSource.getDirectoryEntryReference());
+            castDestination.setDirectoryEntryReference(parameter);
         }
     },
     // in property ATTACHMENT
@@ -166,7 +175,6 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-//            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
             PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
             castProperty.setEncoding(new Encoding(content));
         }
@@ -174,16 +182,17 @@ public enum ParameterEnum
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-//            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
             PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
             return castProperty.getEncoding();
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) destination;
-            castProperty.setEncoding(new Encoding((Encoding) sourceParameter)); 
+            PropertyAttachment<?> castSource = (PropertyAttachment<?>) source;
+            PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
+            Encoding parameter = new Encoding(castSource.getEncoding());
+            castDestination.setEncoding(parameter);
         }
     },
     // in property ATTACHMENT
@@ -191,7 +200,6 @@ public enum ParameterEnum
         @Override
         public void parse(Property<?> property, String content)
         {
-//            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
             PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
             castProperty.setFormatType(new FormatType(content));
         }
@@ -199,16 +207,17 @@ public enum ParameterEnum
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-//            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
             PropertyAttachment<?> castProperty = (PropertyAttachment<?>) parent;
             return castProperty.getFormatType();
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            PropertyAttachment<?> castProperty = (PropertyAttachment<?>) destination;
-            castProperty.setFormatType(new FormatType((FormatType) sourceParameter)); 
+            PropertyAttachment<?> castSource = (PropertyAttachment<?>) source;
+            PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
+            FormatType parameter = new FormatType(castSource.getFormatType());
+            castDestination.setFormatType(parameter);
         }
     },
     // in property FREEBUSY
@@ -228,10 +237,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyFreeBusy<?> castSource = (PropertyFreeBusy<?>) source;
+            PropertyFreeBusy<?> castDestination = (PropertyFreeBusy<?>) destination;
+            FreeBusyType parameter = new FreeBusyType(castSource.getFreeBusyType());
+            castDestination.setFreeBusyType(parameter);
         }
     },
     // in properties CATEGORIES, COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES, TZNAME
@@ -275,10 +286,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            GroupMembership parameter = new GroupMembership(castSource.getGroupMembership());
+            castDestination.setGroupMembership(parameter);
         }
     },
     PARTICIPATION_STATUS ("PARTSTAT", ParticipationStatus.class) {
@@ -297,10 +310,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            ParticipationStatus parameter = new ParticipationStatus(castSource.getParticipationStatus());
+            castDestination.setParticipationStatus(parameter);
         }
     },
     RECURRENCE_IDENTIFIER_RANGE ("RANGE", Range.class) {
@@ -319,10 +334,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyRecurrenceID<?> castSource = (PropertyRecurrenceID<?>) source;
+            PropertyRecurrenceID<?> castDestination = (PropertyRecurrenceID<?>) destination;
+            Range parameter = new Range(castSource.getRange());
+            castDestination.setRange(parameter);
         }
     },
     ALARM_TRIGGER_RELATIONSHIP ("RELATED", AlarmTriggerRelationship.class) {
@@ -341,10 +358,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyAlarmTrigger<?> castSource = (PropertyAlarmTrigger<?>) source;
+            PropertyAlarmTrigger<?> castDestination = (PropertyAlarmTrigger<?>) destination;
+            AlarmTriggerRelationship parameter = new AlarmTriggerRelationship(castSource.getAlarmTrigger());
+            castDestination.setAlarmTrigger(parameter);
         }
     },
     RELATIONSHIP_TYPE ("RELTYPE", Relationship.class) {
@@ -355,7 +374,6 @@ public enum ParameterEnum
             castProperty.setRelationship(new Relationship(content));
         }
 
-
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
@@ -364,10 +382,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyRelationship<?> castSource = (PropertyRelationship<?>) source;
+            PropertyRelationship<?> castDestination = (PropertyRelationship<?>) destination;
+            Relationship parameter = new Relationship(castSource.getRelationship());
+            castDestination.setRelationship(parameter);
         }
     },
     PARTICIPATION_ROLE ("ROLE", ParticipationRole.class) {
@@ -386,10 +406,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) destination;
-            castProperty.setParticipationRole(new ParticipationRole((ParticipationRole) sourceParameter));
+            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            ParticipationRole parameter = new ParticipationRole(castSource.getParticipationRole());
+            castDestination.setParticipationRole(parameter);
         }
     },
     RSVP_EXPECTATION ("RSVP", RSVP.class) {
@@ -408,10 +430,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) destination;
-            castProperty.setRSVP(new RSVP((RSVP) sourceParameter));
+            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            RSVP parameter = new RSVP(castSource.getRSVP());
+            castDestination.setRSVP(parameter);
         }
     },
     SENT_BY ("SENT-BY", SentBy.class) {
@@ -430,33 +454,37 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) destination;
-            castProperty.setSentBy(new SentBy((SentBy) sourceParameter));
+            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
+            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
+            SentBy parameter = new SentBy(castSource.getSentBy());
+            castDestination.setSentBy(parameter);
         }
     },
     TIME_ZONE_IDENTIFIER ("TZID", TimeZoneIdentifierParameter.class) {
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyDateTime<? extends Temporal> castProperty = (PropertyDateTime<? extends Temporal>) property;
+            PropertyDateTime<?> castProperty = (PropertyDateTime<?>) property;
             castProperty.setTimeZoneIdentifier(new TimeZoneIdentifierParameter(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyDateTime<? extends Temporal> castProperty = (PropertyDateTime<? extends Temporal>) parent;
+            PropertyDateTime<?> castProperty = (PropertyDateTime<?>) parent;
             TimeZoneIdentifierParameter parameter = castProperty.getTimeZoneIdentifier();
             return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            PropertyDateTime<? extends Temporal> castProperty = (PropertyDateTime<? extends Temporal>) destination;
-            castProperty.setTimeZoneIdentifier(new TimeZoneIdentifierParameter((TimeZoneIdentifierParameter) sourceParameter));
+            PropertyDateTime<?> castSource = (PropertyDateTime<?>) source;
+            PropertyDateTime<?> castDestination = (PropertyDateTime<?>) destination;
+            TimeZoneIdentifierParameter parameter = new TimeZoneIdentifierParameter(castSource.getTimeZoneIdentifier());
+            castDestination.setTimeZoneIdentifier(parameter);
         }
     },
     VALUE_DATA_TYPES ("VALUE", ValueParameter.class) {
@@ -480,13 +508,6 @@ public enum ParameterEnum
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) parent;
             return castProperty.getValueParameter();
-        }
-
-        @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
-        {
-            PropertyBase<?,?> castProperty = (PropertyBase<?,?>) destination;
-            castProperty.setValueParameter(new ValueParameter((ValueParameter) sourceParameter)); 
         }
 
         @Override
@@ -580,9 +601,6 @@ public enum ParameterEnum
     
     /** Returns associated Property<?> or List<Property<?>> */
     abstract public Parameter<?> getParameter(Property<?> parent);
-
-    @Deprecated
-    public void copyTo(Parameter<?> sourceParameter, Property<?> destination) {};
     
     /** copies the associated parameter from the source property to the destination property */
     public void copyParameter(Property<?>  source, Property<?> destination) {}

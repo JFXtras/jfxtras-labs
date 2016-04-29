@@ -126,8 +126,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     public VComponentBase(VComponentBase<T> source)
     {
         this();
-        copyPropertiesFrom(source);
-        propertySortOrder().putAll(source.propertySortOrder());
+        copyComponentFrom(source);
     }
 
     /** Parse content lines into calendar component */
@@ -199,9 +198,10 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
 //    }
     
     /** Copy properties and subcomponents from source into this component */
-    public void copyPropertiesFrom(VComponentNew<?> source)
+    public void copyComponentFrom(VComponentBase<?> source)
     {
         source.properties().forEach(p -> p.copyProperty(source, this));
+        propertySortOrder().putAll(source.propertySortOrder());
     }
     
     /**

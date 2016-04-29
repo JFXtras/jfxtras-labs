@@ -103,7 +103,7 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
     public PropertyBaseRecurrence( PropertyBaseRecurrence<T, U> source)
     {
         this();
-        copyParametersFrom(source);
+        copyPropertyFrom(source);
 //        PropertyBase.copyProperty(source, this);
         // TODO - MAKE COPY PROPERTY STATIC? - EXTRACT FROM COPY CONSTRUCTOR IN BASE
 //        super(source);
