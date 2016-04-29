@@ -161,18 +161,6 @@ public enum PropertyEnum
             Attachment<?>[] propertyArray = castSource.getAttachments()
                     .stream()
                     .map(c -> new Attachment<>(c))
-//                    { // copy each property
-//                        if (c.getValue() instanceof URI)
-//                        {
-//                            return new Attachment<URI>((Attachment<URI>) c);
-//                        } else if (c.getValue() instanceof String)
-//                        {
-//                            return new Attachment<>(c);                            
-//                        } else
-//                        {
-//                            throw new IllegalArgumentException("Unsupported value type:" + c.getClass());
-//                        }
-//                    })
                     .toArray(size -> new Attachment<?>[size]);
             ObservableList<Attachment<?>> properties = FXCollections.observableArrayList(propertyArray);
             castDestination.setAttachments(properties);
@@ -816,8 +804,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VFreeBusy castSource = (VFreeBusy) source;
+            VFreeBusy castDestination = (VFreeBusy) destination;
+            FreeBusyTime property = new FreeBusyTime(castSource.getFreeBusyTime());
+            castDestination.setFreeBusyTime(property);
         }
     },
     // Descriptive
@@ -849,8 +839,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
+            VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
+            GeographicPosition property = new GeographicPosition(castSource.getGeographicPosition());
+            castDestination.setGeographicPosition(property);
         }
     },
     // Miscellaneous
@@ -883,8 +875,12 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            IANAProperty[] propertyArray = source.getIANAProperties()
+                    .stream()
+                    .map(c -> new IANAProperty(c)) // copy each property
+                    .toArray(size -> new IANAProperty[size]);
+            ObservableList<IANAProperty> properties = FXCollections.observableArrayList(propertyArray);
+            destination.setIANAProperties(properties);
         }
     },
     // Change management
@@ -916,8 +912,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLastModified<?> castSource = (VComponentLastModified<?>) source;
+            VComponentLastModified<?> castDestination = (VComponentLastModified<?>) destination;
+            LastModified property = new LastModified(castSource.getDateTimeLastModified());
+            castDestination.setDateTimeLastModified(property);
         }
     },
     // Descriptive
@@ -949,8 +947,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
+            VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
+            Location property = new Location(castSource.getLocation());
+            castDestination.setLocation(property);
         }
     },
     // Calendar
@@ -1006,8 +1006,12 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            NonStandardProperty[] propertyArray = source.getIANAProperties()
+                    .stream()
+                    .map(c -> new NonStandardProperty(c)) // copy each property
+                    .toArray(size -> new NonStandardProperty[size]);
+            ObservableList<NonStandardProperty> properties = FXCollections.observableArrayList(propertyArray);
+            destination.setNonStandardProperties(properties);
         }
     },
     // Relationship
@@ -1040,8 +1044,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
+            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            Organizer property = new Organizer(castSource.getOrganizer());
+            castDestination.setOrganizer(property);
         }
     },
     // Descriptive
@@ -1073,8 +1079,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VTodo castSource = (VTodo) source;
+            VTodo castDestination = (VTodo) destination;
+            PercentComplete property = new PercentComplete(castSource.getPercentComplete());
+            castDestination.setPercentComplete(property);
         }
     },
     // Descriptive
@@ -1106,8 +1114,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
+            VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
+            Priority property = new Priority(castSource.getPriority());
+            castDestination.setPriority(property);
         }
     },
     // Calendar
@@ -1165,8 +1175,14 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
+            VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
+            Recurrences<?>[] propertyArray = castSource.getRecurrences()
+                    .stream()
+                    .map(c -> new Recurrences<>(c)) // copy each property
+                    .toArray(size -> new Recurrences[size]);
+            ObservableList<Recurrences<?>> properties = FXCollections.observableArrayList(propertyArray);
+            castDestination.setRecurrences(properties);
         }
     },
     // Relationship
@@ -1198,8 +1214,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
+            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            RecurrenceId<? extends Temporal> property = new RecurrenceId<>(castSource.getRecurrenceId());
+            castDestination.setRecurrenceId(property);
         }
     },
     // Recurrence
@@ -1231,8 +1249,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
+            VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
+            RecurrenceRule property = new RecurrenceRule(castSource.getRecurrenceRule());
+            castDestination.setRecurrenceRule(property);
         }
     },
     // Relationship
@@ -1267,8 +1287,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
+            VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
+            RecurrenceRule property = new RecurrenceRule(castSource.getRecurrenceRule());
+            castDestination.setRecurrenceRule(property);
         }
     },
     // Alarm
@@ -1300,8 +1322,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VAlarm castSource = (VAlarm) source;
+            VAlarm castDestination = (VAlarm) destination;
+            RepeatCount property = new RepeatCount(castSource.getRepeatCount());
+            castDestination.setRepeatCount(property);
         }
     },
     // Miscellaneous
@@ -1336,8 +1360,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VAlarm castSource = (VAlarm) source;
+            VAlarm castDestination = (VAlarm) destination;
+            RepeatCount property = new RepeatCount(castSource.getRepeatCount());
+            castDestination.setRepeatCount(property);
         }
     },
     // Descriptive
@@ -1372,8 +1398,14 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
+            VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
+            Resources[] propertyArray = castSource.getResources()
+                    .stream()
+                    .map(c -> new Resources(c)) // copy each property
+                    .toArray(size -> new Resources[size]);
+            ObservableList<Resources> properties = FXCollections.observableArrayList(propertyArray);
+            castDestination.setResources(properties);
         }
     },
     // Change management
@@ -1405,8 +1437,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
+            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            Sequence property = new Sequence(castSource.getSequence());
+            castDestination.setSequence(property);
         }
     },
     // Descriptive
@@ -1438,8 +1472,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
+            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            Status property = new Status(castSource.getStatus());
+            castDestination.setStatus(property);
         }
     },
     // Descriptive
@@ -1472,8 +1508,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentDescribable<?> castSource = (VComponentDescribable<?>) source;
+            VComponentDescribable<?> castDestination = (VComponentDescribable<?>) destination;
+            Summary property = new Summary(castSource.getSummary());
+            castDestination.setSummary(property);
         }
     },
     // Date and Time
@@ -1505,8 +1543,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VEventNew castSource = (VEventNew) source;
+            VEventNew castDestination = (VEventNew) destination;
+            TimeTransparency property = new TimeTransparency(castSource.getTimeTransparency());
+            castDestination.setTimeTransparency(property);
         }
     },
     // Time Zone
@@ -1538,8 +1578,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VTimeZone castSource = (VTimeZone) source;
+            VTimeZone castDestination = (VTimeZone) destination;
+            TimeZoneIdentifier property = new TimeZoneIdentifier(castSource.getTimeZoneIdentifier());
+            castDestination.setTimeZoneIdentifier(property);
         }
     },
     // Time Zone
@@ -1574,8 +1616,14 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            StandardOrDaylight<?> castSource = (StandardOrDaylight<?>) source;
+            StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
+            TimeZoneName[] propertyArray = castSource.getTimeZoneNames()
+                    .stream()
+                    .map(c -> new TimeZoneName(c)) // copy each property
+                    .toArray(size -> new TimeZoneName[size]);
+            ObservableList<TimeZoneName> properties = FXCollections.observableArrayList(propertyArray);
+            castDestination.setTimeZoneNames(properties);
         }
     },
     // Time Zone
@@ -1607,8 +1655,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            StandardOrDaylight<?> castSource = (StandardOrDaylight<?>) source;
+            StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
+            TimeZoneOffsetFrom property = new TimeZoneOffsetFrom(castSource.getTimeZoneOffsetFrom());
+            castDestination.setTimeZoneOffsetFrom(property);
         }
     },
     // Time Zone
@@ -1640,8 +1690,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            StandardOrDaylight<?> castSource = (StandardOrDaylight<?>) source;
+            StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
+            TimeZoneOffsetTo property = new TimeZoneOffsetTo(castSource.getTimeZoneOffsetTo());
+            castDestination.setTimeZoneOffsetTo(property);
         }
     },
     // Time Zone
@@ -1673,8 +1725,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VTimeZone castSource = (VTimeZone) source;
+            VTimeZone castDestination = (VTimeZone) destination;
+            TimeZoneURL property = new TimeZoneURL(castSource.getTimeZoneURL());
+            castDestination.setTimeZoneURL(property);
         }
     },
     // Alarm
@@ -1706,8 +1760,10 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VAlarm castSource = (VAlarm) source;
+            VAlarm castDestination = (VAlarm) destination;
+            Trigger<?> property = new Trigger<>(castSource.getTrigger());
+            castDestination.setTrigger(property);
         }
     },
     // Relationship
@@ -1739,10 +1795,13 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
+            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            UniqueIdentifier property = new UniqueIdentifier(castSource.getUniqueIdentifier());
+            castDestination.setUniqueIdentifier(property);
         }
     },
+    // Relationship
     UNIFORM_RESOURCE_LOCATOR ("URL", // property name
             Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
             Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
@@ -1765,10 +1824,13 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
+            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            UniformResourceLocator property = new UniformResourceLocator(castSource.getUniformResourceLocator());
+            castDestination.setUniformResourceLocator(property);
         }
-    }, // Relationship
+    },
+    // Calendar
     VERSION ("VERSION", Arrays.asList(ValueType.TEXT), null, null) {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
@@ -1790,7 +1852,7 @@ public enum PropertyEnum
             // TODO Auto-generated method stub
             
         }
-    }; // Calendar
+    };
     
     // Map to match up name to enum List
     @Deprecated // go back to one name per proprety

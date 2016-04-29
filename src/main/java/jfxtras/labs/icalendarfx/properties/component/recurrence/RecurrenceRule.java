@@ -42,6 +42,11 @@ public class RecurrenceRule extends PropertyBase<RecurrenceRuleParameter, Recurr
         super();
     }
 
+    public RecurrenceRule(RecurrenceRule source)
+    {
+        super(source);
+    }
+
     public static RecurrenceRule parse(String propertyContent)
     {
         RecurrenceRule property = new RecurrenceRule();
