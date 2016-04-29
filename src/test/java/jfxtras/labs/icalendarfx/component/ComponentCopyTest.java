@@ -2,11 +2,13 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
+import java.time.LocalDateTime;
+
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
 import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 
 public class ComponentCopyTest extends ICalendarTestAbstract2
 {
@@ -22,11 +24,17 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
     }
     
     @Test
-    @Ignore // not implemented yet
+//    @Ignore // not implemented yet
     public void canCopyVEvent2()
     {
-        VEventNew vevent = getWeekly3();
-        VEventNew veventCopy = new VEventNew(vevent);
-        assertEquals(vevent, veventCopy);
+        VEventNew component1 = getWeekly3()
+                .withExceptions(new Exceptions<>(
+                LocalDateTime.of(2016, 2, 10, 12, 30)
+              , LocalDateTime.of(2016, 2, 12, 12, 30)
+              , LocalDateTime.of(2016, 2, 9, 12, 30) ));
+        VEventNew component2 = new VEventNew(component1);
+        System.out.println(component1.toContentLines());
+        System.out.println(component2.toContentLines());
+        assertEquals(component1, component2);
     }
 }

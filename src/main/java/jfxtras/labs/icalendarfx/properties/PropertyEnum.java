@@ -104,6 +104,15 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VAlarm castSource = (VAlarm) source;
+            VAlarm castDestination = (VAlarm) destination;
+            Action property = new Action(castSource.getAction());
+            castDestination.setAction(property);
+        }
     },
     // property class
     ATTACHMENT ("ATTACH" // property name
@@ -143,6 +152,31 @@ public enum PropertyEnum
 //                list.add(new Attachment<URI>(URI.class, propertyContent));
 //            }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentDescribable<?> castSource = (VComponentDescribable<?>) source;
+            VComponentDescribable<?> castDestination = (VComponentDescribable<?>) destination;
+            Attachment<?>[] propertyArray = castSource.getAttachments()
+                    .stream()
+                    .map(c -> new Attachment<>(c))
+//                    { // copy each property
+//                        if (c.getValue() instanceof URI)
+//                        {
+//                            return new Attachment<URI>((Attachment<URI>) c);
+//                        } else if (c.getValue() instanceof String)
+//                        {
+//                            return new Attachment<>(c);                            
+//                        } else
+//                        {
+//                            throw new IllegalArgumentException("Unsupported value type:" + c.getClass());
+//                        }
+//                    })
+                    .toArray(size -> new Attachment<?>[size]);
+            ObservableList<Attachment<?>> properties = FXCollections.observableArrayList(propertyArray);
+            castDestination.setAttachments(properties);
+        }
     },
 
     ATTENDEE ("ATTENDEE"    // property name
@@ -176,6 +210,19 @@ public enum PropertyEnum
             }
             list.add(Attendee.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentAttendee<?> castSource = (VComponentAttendee<?>) source;
+            VComponentAttendee<?> castDestination = (VComponentAttendee<?>) destination;
+            Attendee[] propertyArray = castSource.getAttendees()
+                    .stream()
+                    .map(c -> new Attendee(c)) // copy each property
+                    .toArray(size -> new Attendee[size]);
+            ObservableList<Attendee> properties = FXCollections.observableArrayList(propertyArray);
+            castDestination.setAttendees(properties);
+        }
     },
     // Calendar
     CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class) {
@@ -188,6 +235,13 @@ public enum PropertyEnum
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
             // TODO Auto-generated method stub
             
@@ -220,6 +274,19 @@ public enum PropertyEnum
             }
             list.add(Categories.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
+            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            Categories[] propertyArray = castSource.getCategories()
+                    .stream()
+                    .map(c -> new Categories(c)) // copy each property
+                    .toArray(size -> new Categories[size]);
+            ObservableList<Categories> properties = FXCollections.observableArrayList(propertyArray);
+            castDestination.setCategories(properties);
+        }
     },
     // descriptive
     CLASSIFICATION ("CLASS", // property name
@@ -245,6 +312,15 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
+            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            Classification property = new Classification(castSource.getClassification());
+            castDestination.setClassification(property);
         }
     },
     // Descriptive
@@ -281,11 +357,11 @@ public enum PropertyEnum
         {
             VComponentPrimary<?> castSource = (VComponentPrimary<?>) source;
             VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
-            Comment[] collect = castSource.getComments()
+            Comment[] propertyArray = castSource.getComments()
                     .stream()
-                    .map(c -> new Comment(c))
+                    .map(c -> new Comment(c)) // copy each property
                     .toArray(size -> new Comment[size]);
-            ObservableList<Comment> properties = FXCollections.observableArrayList(collect);
+            ObservableList<Comment> properties = FXCollections.observableArrayList(propertyArray);
             castDestination.setComments(properties);
         }
     },
@@ -331,6 +407,28 @@ public enum PropertyEnum
                 list.add(Contact.parse(propertyContent));
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            if (source instanceof VFreeBusy)
+            { // VFreeBusy has one Contact
+                VFreeBusy castSource = (VFreeBusy) source;
+                VFreeBusy castDestination = (VFreeBusy) destination;
+                Contact property = new Contact(castSource.getContact());
+                castDestination.setContact(property);
+            } else
+            { // Other components have a list of Contacts
+                VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
+                VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+                Contact[] propertyArray = castSource.getContacts()
+                        .stream()
+                        .map(c -> new Contact(c)) // copy each property
+                        .toArray(size -> new Contact[size]);
+                ObservableList<Contact> list = FXCollections.observableArrayList(propertyArray);
+                castDestination.setContacts(list);
+            }
+        }
     },
     // Date and Time
     DATE_TIME_COMPLETED ("COMPLETED", // property name
@@ -356,6 +454,15 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VTodo castSource = (VTodo) source;
+            VTodo castDestination = (VTodo) destination;
+            DateTimeCompleted property = new DateTimeCompleted(castSource.getDateTimeCompleted());
+            castDestination.setDateTimeCompleted(property);
         }
     },
     // Change management
@@ -383,6 +490,15 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
+            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            DateTimeCreated property = new DateTimeCreated(castSource.getDateTimeCreated());
+            castDestination.setDateTimeCreated(property);
+        }
     },
     // Date and time
     DATE_TIME_DUE ("DUE", // property name
@@ -408,6 +524,15 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VTodo castSource = (VTodo) source;
+            VTodo castDestination = (VTodo) destination;
+            DateTimeDue<? extends Temporal> property = new DateTimeDue<>(castSource.getDateTimeDue());
+            castDestination.setDateTimeDue(property);
         }
     },
     // Date and Time
@@ -435,6 +560,15 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentDateTimeEnd<?> castSource = (VComponentDateTimeEnd<?>) source;
+            VComponentDateTimeEnd<?> castDestination = (VComponentDateTimeEnd<?>) destination;
+            DateTimeEnd<? extends Temporal> property = new DateTimeEnd<>(castSource.getDateTimeEnd());
+            castDestination.setDateTimeEnd(property);
+        }
     },
     // Change management
     DATE_TIME_STAMP ("DTSTAMP", // property name
@@ -460,6 +594,15 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
+            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            DateTimeStamp property = new DateTimeStamp(castSource.getDateTimeStamp());
+            castDestination.setDateTimeStamp(property);
         }
     },
     DATE_TIME_START ("DTSTART", // property name
@@ -506,11 +649,11 @@ public enum PropertyEnum
         public Object getProperty(VComponentNew<?> vComponent)
         {
             if (vComponent instanceof VJournal)
-            {// VJournal has list of Description// VJournal has list of Description
+            {// VJournal has list of Descriptions
                 VJournal castComponent = (VJournal) vComponent;
                 return castComponent.getDescriptions();                
             } else
-            { // Other components has only one Description
+            { // Other components have only one Description
                 VComponentDescribable2<?> castComponent = (VComponentDescribable2<?>) vComponent;
                 return castComponent.getDescription();
             }
@@ -520,7 +663,7 @@ public enum PropertyEnum
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             if (vComponent instanceof VJournal)
-            { // VJournal has list of Description
+            { // VJournal has list of Descriptions
                 VJournal castComponent = (VJournal) vComponent;
                 final ObservableList<Description> list;
                 if (castComponent.getDescriptions() == null)
@@ -533,7 +676,7 @@ public enum PropertyEnum
                 }
                 list.add(Description.parse(propertyContent));
             } else
-            { // Other components has only one Description
+            { // Other components have only one Description
                 VComponentDescribable2<?> castComponent = (VComponentDescribable2<?>) vComponent;
                 if (castComponent.getDescription() == null)
                 {
@@ -542,6 +685,28 @@ public enum PropertyEnum
                 {
                     throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
                 }
+            }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            if (source instanceof VJournal)
+            { // VJournal has list of Descriptions
+                VJournal castSource = (VJournal) source;
+                VJournal castDestination = (VJournal) destination;
+                Description[] propertyArray = castSource.getDescriptions()
+                        .stream()
+                        .map(c -> new Description(c)) // copy each property
+                        .toArray(size -> new Description[size]);
+                ObservableList<Description> list = FXCollections.observableArrayList(propertyArray);
+                castDestination.setDescriptions(list);
+            } else
+            { // Other components have only one Description              
+                VComponentDescribable2<?> castSource = (VComponentDescribable2<?>) source;
+                VComponentDescribable2<?> castDestination = (VComponentDescribable2<?>) destination;
+                Description property = new Description(castSource.getDescription());
+                castDestination.setDescription(property);
             }
         }
     },
@@ -569,6 +734,15 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentDuration<?> castSource = (VComponentDuration<?>) source;
+            VComponentDuration<?> castDestination = (VComponentDuration<?>) destination;
+            DurationProp property = new DurationProp(castSource.getDuration());
+            castDestination.setDuration(property);
         }
     },
     // Recurrence
@@ -599,6 +773,19 @@ public enum PropertyEnum
             }
             list.add(Exceptions.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
+            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            Exceptions<?>[] propertyArray = castSource.getExceptions()
+                    .stream()
+                    .map(c -> new Exceptions<>(c)) // copy each property
+                    .toArray(size -> new Exceptions[size]);
+            ObservableList<Exceptions<?>> properties = FXCollections.observableArrayList(propertyArray);
+            castDestination.setExceptions(properties);
+        }
     },
     // Date and Time
     FREE_BUSY_TIME ("FREEBUSY", // property name
@@ -625,6 +812,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Descriptive
     GEOGRAPHIC_POSITION ("GEO", // property name
@@ -650,6 +844,13 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Miscellaneous
@@ -678,6 +879,13 @@ public enum PropertyEnum
             }
             list.add(IANAProperty.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Change management
     LAST_MODIFIED ("LAST-MODIFIED", // property name
@@ -703,6 +911,13 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Descriptive
@@ -730,6 +945,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Calendar
     METHOD ("METHOD", null, null, null) {
@@ -742,6 +964,13 @@ public enum PropertyEnum
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
             // TODO Auto-generated method stub
             
@@ -773,6 +1002,13 @@ public enum PropertyEnum
             }
             list.add(NonStandardProperty.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Relationship
     ORGANIZER ("ORGANIZER", // name
@@ -800,6 +1036,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Descriptive
     PERCENT_COMPLETE ("PERCENT-COMPLETE", // property name
@@ -825,6 +1068,13 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Descriptive
@@ -852,6 +1102,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Calendar
     PRODUCT_IDENTIFIER ("PRODID", null, null, null) {
@@ -864,6 +1121,13 @@ public enum PropertyEnum
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
             // TODO Auto-generated method stub
             
@@ -897,6 +1161,13 @@ public enum PropertyEnum
             }
             list.add(Recurrences.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Relationship
     RECURRENCE_IDENTIFIER ("RECURRENCE-ID", // property name
@@ -923,6 +1194,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Recurrence
     RECURRENCE_RULE ("RRULE", // property name
@@ -948,6 +1226,13 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Relationship
@@ -978,6 +1263,13 @@ public enum PropertyEnum
             }
             list.add(RelatedTo.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Alarm
     REPEAT_COUNT ("REPEAT", // property name
@@ -1003,6 +1295,13 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Miscellaneous
@@ -1033,6 +1332,13 @@ public enum PropertyEnum
             }
             list.add(RequestStatus.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Descriptive
     RESOURCES ("RESOURCES", // property name
@@ -1062,6 +1368,13 @@ public enum PropertyEnum
             }
             list.add(Resources.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Change management
     SEQUENCE ("SEQUENCE", // property name
@@ -1088,6 +1401,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Descriptive
     STATUS ("STATUS", // property name
@@ -1113,6 +1433,13 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Descriptive
@@ -1141,6 +1468,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Date and Time
     TIME_TRANSPARENCY ("TRANSP", // property name
@@ -1167,6 +1501,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Time Zone
     TIME_ZONE_IDENTIFIER ("TZID", // property name
@@ -1192,6 +1533,13 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Time Zone
@@ -1222,6 +1570,13 @@ public enum PropertyEnum
             }
             list.add(TimeZoneName.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Time Zone
     TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", // property name
@@ -1247,6 +1602,13 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Time Zone
@@ -1274,6 +1636,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Time Zone
     TIME_ZONE_URL ("TZURL", // property name
@@ -1299,6 +1668,13 @@ public enum PropertyEnum
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
         }
     },
     // Alarm
@@ -1326,6 +1702,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     // Relationship
     UNIQUE_IDENTIFIER ("UID", // property name
@@ -1352,6 +1735,13 @@ public enum PropertyEnum
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     },
     UNIFORM_RESOURCE_LOCATOR ("URL", // property name
             Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
@@ -1371,6 +1761,13 @@ public enum PropertyEnum
             VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             castComponent.setUniformResourceLocator(UniformResourceLocator.parse(propertyContent));
         }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     }, // Relationship
     VERSION ("VERSION", Arrays.asList(ValueType.TEXT), null, null) {
         @Override
@@ -1382,6 +1779,13 @@ public enum PropertyEnum
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
             // TODO Auto-generated method stub
             
@@ -1489,12 +1893,9 @@ public enum PropertyEnum
     /** Returns associated Property<?> or List<Property<?>> */
     abstract public Object getProperty(VComponentNew<?> vComponent);
 
-//    /** Sets the associated property with the value parameter */
-//    public void setProperty(VComponentNew<?> vComponent, Object value) { } ;
-
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
     abstract public void parse(VComponentNew<?> vComponent, String propertyContent);
 
     /** copies the associated property from the source component to the destination component */
-    public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination) {}
+    abstract public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination);
 }

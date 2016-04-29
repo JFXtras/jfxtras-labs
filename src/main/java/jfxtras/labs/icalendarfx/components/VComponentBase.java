@@ -191,13 +191,8 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
         }
     }
     
-//    /** used by copy constructors for concrete subclasses */
-//    static void copyComponent(VComponentNew<?> source, VComponentNew<?> destination)
-//    {
-//        source.properties().stream().forEach(p -> p.copyProperty(source, destination));
-//    }
-    
-    /** Copy properties and subcomponents from source into this component */
+    /** Copy properties and subcomponents from source into this component,
+     * essentially making a copy of source */
     public void copyComponentFrom(VComponentBase<?> source)
     {
         source.properties().forEach(p -> p.copyProperty(source, this));

@@ -344,14 +344,9 @@ public abstract class PropertyBase<T,U> implements Property<T>
         this();
         setValue(value);
     }
-    
-//    public static <V> void copyProperty(Property<V> source, Property<V> destination)
-//    {
-//        destination.setConverter(source.getConverter());
-//        source.parameters().forEach(p -> p.copyParameter(source, destination));
-//        destination.setValue(source.getValue());
-//    }
-    
+
+    /** Copy parameters and value from source into this property,
+     *  essentially making a copy of source */    
     public void copyPropertyFrom(PropertyBase<T,U> source)
     {
         setConverter(source.getConverter());
