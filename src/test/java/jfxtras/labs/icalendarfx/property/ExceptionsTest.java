@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -95,4 +96,15 @@ public class ExceptionsTest
         e.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 5, 1, 0), ZoneId.of("America/New_York")));
         assertEquals(2, e.getValue().size());
     }
+    
+    @Test
+    public void canCopyExceptions()
+    {
+        String content = "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z";
+        Exceptions<ZonedDateTime> property1 = Exceptions.parse(content);
+        Exceptions<ZonedDateTime> property2 = new Exceptions<>(property1);
+        assertEquals(property1, property2);
+        assertFalse(property1 == property2);
+    }
+
 }

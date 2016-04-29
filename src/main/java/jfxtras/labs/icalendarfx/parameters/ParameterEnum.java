@@ -38,10 +38,12 @@ public enum ParameterEnum
         }
 
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyBaseAltText<?,?> castSource = (PropertyBaseAltText<?,?>) source;
+            PropertyBaseAltText<?,?> castDestination = (PropertyBaseAltText<?,?>) destination;
+            AlternateText parameter = new AlternateText(castSource.getAlternateText());
+            castDestination.setAlternateText(parameter);
         }
     },
     // in properties ATTENDEE, ORGANIZER
@@ -247,12 +249,14 @@ public enum ParameterEnum
             PropertyBaseLanguage<?,?> castProperty = (PropertyBaseLanguage<?,?>) parent;
             return castProperty.getLanguage();
         }
-
+        
         @Override
-        public void copyTo(Parameter<?> sourceParameter, Property<?> destination)
+        public void copyParameter(Property<?> source, Property<?> destination)
         {
-            // TODO Auto-generated method stub
-            
+            PropertyBaseLanguage<?,?> castSource = (PropertyBaseLanguage<?,?>) source;
+            PropertyBaseLanguage<?,?> castDestination = (PropertyBaseLanguage<?,?>) destination;
+            Language parameter = new Language(castSource.getLanguage());
+            castDestination.setLanguage(parameter);
         }
     },
     GROUP_OR_LIST_MEMBERSHIP ("MEMBER", GroupMembership.class) {
@@ -484,6 +488,15 @@ public enum ParameterEnum
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) destination;
             castProperty.setValueParameter(new ValueParameter((ValueParameter) sourceParameter)); 
         }
+
+        @Override
+        public void copyParameter(Property<?> source, Property<?> destination)
+        {
+            PropertyBase<?,?> castSource = (PropertyBase<?,?>) source;
+            PropertyBase<?,?> castDestination = (PropertyBase<?,?>) destination;
+            ValueParameter parameter = new ValueParameter(castSource.getValueParameter());
+            castDestination.setValueParameter(parameter);
+        }
     };
     
     // Map to match up name to enum
@@ -562,10 +575,15 @@ public enum ParameterEnum
     /*
      * ABSTRACT METHODS
      */
-    /** Parse content string into parameter value type U */
+    /** Parses string and sets parameter.  Called by {@link PropertyBase#parseContent()} */
     abstract public void parse(Property<?> property, String content);
     
+    /** Returns associated Property<?> or List<Property<?>> */
     abstract public Parameter<?> getParameter(Property<?> parent);
 
-    abstract public void copyTo(Parameter<?> sourceParameter, Property<?> destination);
+    @Deprecated
+    public void copyTo(Parameter<?> sourceParameter, Property<?> destination) {};
+    
+    /** copies the associated parameter from the source property to the destination property */
+    public void copyParameter(Property<?>  source, Property<?> destination) {}
 }

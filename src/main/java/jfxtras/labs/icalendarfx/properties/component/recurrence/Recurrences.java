@@ -39,7 +39,12 @@ public class Recurrences<T extends Temporal> extends PropertyBaseRecurrence<T, R
     {
         super(FXCollections.observableSet(temporals));
     }
-
+    
+    public Recurrences(Recurrences<T> source)
+    {
+        super(source);
+    }
+    
     public Recurrences(ObservableSet<T> value)
     {
         super(value);

@@ -307,8 +307,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     /** Copy constructor */
     public VAlarm(VAlarm source)
     {
-        this();
-        VComponentBase.copyProperties(source, this);
+        super(source);
     }
 
     @Override

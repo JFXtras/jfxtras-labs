@@ -167,6 +167,11 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         super(contentLines);
     }
     
+    public VComponentLocatableBase(VComponentLocatableBase<T> source)
+    {
+        super(source);
+    }
+
     /** Include VAlarm sub-components in content lines */
     @Override
     void appendMiddleContentLines(StringBuilder builder)
@@ -198,6 +203,22 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         {
             throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponentType +
                     " found inside " + componentType() + " component");
+        }
+    }
+    
+    /** copy VAlarms */
+    @Override
+    public void copyPropertiesFrom(VComponentNew<?> source)
+    {
+        super.copyPropertiesFrom(source);
+        VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
+        if (castSource.getVAlarms() != null)
+        {
+            if (getVAlarms() == null)
+            {
+                setVAlarms(FXCollections.observableArrayList());
+            }
+            castSource.getVAlarms().forEach(a -> this.getVAlarms().add(new VAlarm(a)));            
         }
     }
 }

@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
@@ -31,14 +32,14 @@ public class SummaryTest
         assertEquals(expectedProperty, madeProperty);
     }
     
-    @Test // can handle lowercase in property and parameter name
-    public void canParseSummary3()
+    @Test
+    public void canCopySummary()
     {
-        String content = "sUmmARY;lanGUAGE=en:TEST SUMMARY";
-        Summary madeProperty = Summary.parse(content);
-        assertEquals("SUMMARY;LANGUAGE=en:TEST SUMMARY", madeProperty.toContentLine());
-        Summary expectedProperty = Summary.parse("TEST SUMMARY")
-                .withLanguage("en");
-        assertEquals(expectedProperty, madeProperty);
+        String content = "SUMMARY;ALTREP=\"cid:part1.0001@example.org\";LANGUAGE=en:Department Party";
+        Summary property1 = Summary.parse(content);
+        Summary property2 = new Summary(property1);
+        System.out.println(property2.toContentLine());
+        assertEquals(property2, property1);
+        assertFalse(property2 == property1);
     }
 }

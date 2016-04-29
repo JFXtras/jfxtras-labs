@@ -265,15 +265,16 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
         return VComponentEnum.VTIMEZONE;
     }
  
-    /** 
-     * VALARM
-     * Alarm Component
-     * RFC 5545 iCalendar 3.6.6. page 71
+    /**
+     * STANDARD or DAYLIGHT
+     * Subcomponent of VAlarm
+     * Either StandardTime or DaylightSavingsTime.
+     * Both classes have identical methods.
      * 
-     * Provide a grouping of component properties that define an alarm.
-     * 
-     * The "VALARM" calendar component MUST only appear within either a
-     * "VEVENT" or "VTODO" calendar component.
+     * @author David Bal
+     * @see DaylightSavingTime
+     * @see StandardTime
+     *
      */
     public ObservableList<StandardOrDaylight<?>> getStandardOrDaylight() { return standardOrDaylight; }
     private ObservableList<StandardOrDaylight<?>> standardOrDaylight;
@@ -388,6 +389,11 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
         super(contentLines);
     }
     
+    public VTimeZone(VTimeZone source)
+    {
+        super(source);
+    }
+    
     @Override
     public boolean isValid()
     {
@@ -426,6 +432,36 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
         {
             throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponentType +
                     " found inside " + componentType() + " component");
+        }
+    }
+    
+    /** copy STANDARD and DAYLIGHT subcomponents */
+    @Override
+    public void copyPropertiesFrom(VComponentNew<?> source)
+    {
+        super.copyPropertiesFrom(source);
+        VTimeZone castSource = (VTimeZone) source;
+        if (castSource.getStandardOrDaylight() != null)
+        {
+            if (getStandardOrDaylight() == null)
+            {
+                setStandardOrDaylight(FXCollections.observableArrayList());
+            }
+            castSource.getStandardOrDaylight().forEach(a -> 
+            {
+                final StandardOrDaylight<?> newComponent;
+                if (a instanceof StandardTime)
+                {
+                    newComponent = new StandardTime((StandardTime) a);
+                } else if (a instanceof DaylightSavingTime)
+                {
+                    newComponent = new DaylightSavingTime((DaylightSavingTime) a);                    
+                } else
+                {
+                    throw new IllegalArgumentException("Unsupported time zone subcomponent class:" + a.getClass());
+                }
+                getStandardOrDaylight().add(newComponent);
+            });
         }
     }
 

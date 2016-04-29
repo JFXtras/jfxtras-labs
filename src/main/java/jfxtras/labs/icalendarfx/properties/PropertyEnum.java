@@ -1486,7 +1486,7 @@ public enum PropertyEnum
     /*
      * ABSTRACT METHODS
      */
-    /** Returns either Property<?> or List<Property<?>> */
+    /** Returns associated Property<?> or List<Property<?>> */
     abstract public Object getProperty(VComponentNew<?> vComponent);
 
 //    /** Sets the associated property with the value parameter */

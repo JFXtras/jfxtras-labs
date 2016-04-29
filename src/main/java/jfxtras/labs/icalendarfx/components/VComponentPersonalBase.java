@@ -146,6 +146,11 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         super(contentLines);
     }
     
+    public VComponentPersonalBase(VComponentPersonalBase<T> source)
+    {
+        super(source);
+    }
+
     @Override
     public boolean isValid()
     {

@@ -18,6 +18,11 @@ public class StandardTime extends StandardOrDaylightBase<StandardTime>
         super(contentLines);
     }
 
+    public StandardTime(StandardTime source)
+    {
+        // TODO Auto-generated constructor stub
+    }
+
     /** Parse content lines into calendar component object */
     public static StandardTime parse(String contentLines)
     {

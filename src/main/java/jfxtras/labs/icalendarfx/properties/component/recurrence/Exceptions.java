@@ -37,6 +37,11 @@ public class Exceptions<T extends Temporal> extends PropertyBaseRecurrence<T, Ex
     {
         super(FXCollections.observableSet(temporals));
     }
+
+    public Exceptions(Exceptions<T> source)
+    {
+        super(source);
+    }
     
     public Exceptions(ObservableSet<T> value)
     {

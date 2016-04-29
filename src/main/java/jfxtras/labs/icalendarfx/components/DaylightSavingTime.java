@@ -19,6 +19,11 @@ public class DaylightSavingTime extends StandardOrDaylightBase<DaylightSavingTim
         super(contentLines);
     }
 
+    public DaylightSavingTime(DaylightSavingTime a)
+    {
+        // TODO Auto-generated constructor stub
+    }
+
     /** Parse content lines into calendar component object */
     public static DaylightSavingTime parse(String contentLines)
     {

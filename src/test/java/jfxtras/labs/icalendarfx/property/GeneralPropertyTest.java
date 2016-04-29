@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -64,9 +65,18 @@ public class GeneralPropertyTest
         String contentEscaped = "the dog\\, frog\\; ran \\\\ far\\naway\\\\\\;";
         String content2 = (String) ValueType.TEXT.getConverter().fromString(contentEscaped);
         String contentEscaped2 = ValueType.TEXT.getConverter().toString(content);
-        System.out.println(content2);
-        System.out.println(contentEscaped2);
         assertEquals(content2, content);
         assertEquals(contentEscaped2, contentEscaped);
+    }
+    
+    @Test // can handle lowercase in property and parameter name
+    public void canHandleLowercase()
+    {
+        String content = "sUmmARY;lanGUAGE=en:TEST SUMMARY";
+        Summary madeProperty = Summary.parse(content);
+        assertEquals("SUMMARY;LANGUAGE=en:TEST SUMMARY", madeProperty.toContentLine());
+        Summary expectedProperty = Summary.parse("TEST SUMMARY")
+                .withLanguage("en");
+        assertEquals(expectedProperty, madeProperty);
     }
 }

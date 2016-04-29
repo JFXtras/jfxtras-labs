@@ -330,6 +330,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         super(contentLines);
     }
     
+    public VComponentDisplayableBase(VComponentDisplayableBase<T> source)
+    {
+        super(source);
+    }
+    
     // Recurrence streamer - produces recurrence set
     private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
     @Override

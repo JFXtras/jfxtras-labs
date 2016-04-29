@@ -122,6 +122,14 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
         parseContent(contentLines);
     }
     
+    /** Copy constructor */
+    public VComponentBase(VComponentBase<T> source)
+    {
+        this();
+        copyPropertiesFrom(source);
+        propertySortOrder().putAll(source.propertySortOrder());
+    }
+
     /** Parse content lines into calendar component */
     public void parseContent(String contentLines)
     {
@@ -184,15 +192,16 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
         }
     }
     
-    /** used by copy constructors for concrete subclasses */
-    static void copyProperties(VComponentNew<?> source, VComponentNew<?> destination)
-    {
-        source.properties().stream().forEach(p -> p.copyProperty(source, destination));
-    }
+//    /** used by copy constructors for concrete subclasses */
+//    static void copyComponent(VComponentNew<?> source, VComponentNew<?> destination)
+//    {
+//        source.properties().stream().forEach(p -> p.copyProperty(source, destination));
+//    }
     
-    void copyComponent2(VComponentNew<?> source)
+    /** Copy properties and subcomponents from source into this component */
+    public void copyPropertiesFrom(VComponentNew<?> source)
     {
-        source.properties().stream().forEach(p -> p.copyProperty(source, this));
+        source.properties().forEach(p -> p.copyProperty(source, this));
     }
     
     /**

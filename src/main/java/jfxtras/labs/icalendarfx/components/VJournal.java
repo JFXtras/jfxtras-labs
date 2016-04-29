@@ -73,6 +73,12 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
     {
         super(contentLines);
     }
+    
+    /** Copy constructor */
+    public VJournal(VJournal source)
+    {
+        super(source);
+    }
 
     /**
      * DESCRIPTION:

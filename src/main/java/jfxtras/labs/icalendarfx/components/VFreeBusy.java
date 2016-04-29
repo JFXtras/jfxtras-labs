@@ -199,6 +199,12 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
         super(contentLines);
     }
     
+    /** Copy constructor */
+    public VFreeBusy(VFreeBusy source)
+    {
+        super(source);
+    }
+    
     @Override
     public boolean isValid()
     {

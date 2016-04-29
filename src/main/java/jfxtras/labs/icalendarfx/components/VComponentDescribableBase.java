@@ -71,4 +71,9 @@ public abstract class VComponentDescribableBase<T> extends VComponentBase<T> imp
     {
         super(contentLines);
     }
+
+    public VComponentDescribableBase(VComponentDescribableBase<T> source)
+    {
+        super(source);
+    }
 }

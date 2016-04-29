@@ -100,6 +100,15 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
         setConverter(CONVERTER);
     }
 
+    public PropertyBaseRecurrence( PropertyBaseRecurrence<T, U> source)
+    {
+        this();
+        copyParametersFrom(source);
+//        PropertyBase.copyProperty(source, this);
+        // TODO - MAKE COPY PROPERTY STATIC? - EXTRACT FROM COPY CONSTRUCTOR IN BASE
+//        super(source);
+    }
+
     // Listen to additions to collection to ensure time zone is consistent
     private void setupListener()
     {
@@ -131,7 +140,6 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
                         ". Accepted types are: " + propertyType().allowedValueTypes());                
             }
         }
-        System.out.println("setup listener");
         super.setValue(value);
         setupListener();
     }

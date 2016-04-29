@@ -193,6 +193,11 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         super(contentLines);
     }
     
+    public VTodo(VTodo source)
+    {
+        super(source);
+    }
+    
     @Override
     public boolean isValid()
     {

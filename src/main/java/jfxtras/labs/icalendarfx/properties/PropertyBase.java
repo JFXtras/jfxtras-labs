@@ -336,14 +336,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     {
         this();
         setConverter(source.getConverter());
-//        isCustomConverter = source.isCustomConverter;
-        Iterator<ParameterEnum> i = source.parameters().stream().iterator();
-        while (i.hasNext())
-        {
-            ParameterEnum sourceParameterType = i.next();
-            Parameter<?> sourceParameter = sourceParameterType.getParameter(source);
-            sourceParameterType.copyTo(sourceParameter, this);
-        }
+        copyParametersFrom(source);
         setValue(source.getValue());
     }
     
@@ -352,6 +345,20 @@ public abstract class PropertyBase<T,U> implements Property<T>
     {
         this();
         setValue(value);
+    }
+    
+//    public static <V> void copyProperty(Property<V> source, Property<V> destination)
+//    {
+//        destination.setConverter(source.getConverter());
+//        source.parameters().forEach(p -> p.copyParameter(source, destination));
+//        destination.setValue(source.getValue());
+//    }
+    
+    protected void copyParametersFrom(Property<T> source)
+    {
+        setConverter(source.getConverter());
+        source.parameters().forEach(p -> p.copyParameter(source, this));
+        setValue(source.getValue());
     }
 
     // Set converter when using constructor with class parameter

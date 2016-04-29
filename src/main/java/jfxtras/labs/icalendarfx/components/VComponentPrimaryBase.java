@@ -66,4 +66,9 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
     {
         super(contentLines);
     }
+
+    public VComponentPrimaryBase(VComponentPrimaryBase<T> source)
+    {
+        super(source);
+    }
 }
