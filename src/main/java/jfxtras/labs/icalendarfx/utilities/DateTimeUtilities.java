@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -270,7 +271,7 @@ public final class DateTimeUtilities
         {
             ZonedDateTime value = (ZonedDateTime) temporal;
             ZoneId z = value.getZone();
-            if (z.equals(ZoneId.of("Z")))
+            if (z.normalized().equals(ZoneOffset.UTC))
             {
                 return DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(value);
             } else
@@ -314,7 +315,7 @@ public final class DateTimeUtilities
         final String form0 = "^[0-9]{8}";
         final String form1 = "^[0-9]{8}T([0-9]{6})";
         final String form2 = "^[0-9]{8}T([0-9]{6})Z";
-        final String form3 = "^(\\[.*/.*\\])[0-9]{8}T([0-9]{6})";
+        final String form3 = "^(\\[.*/.*\\])[0-9]{8}T([0-9]{6}Z?)";
         if (string2.matches(form0))
         {
             return LocalDate.parse(string2, DateTimeUtilities.LOCAL_DATE_FORMATTER);                                                

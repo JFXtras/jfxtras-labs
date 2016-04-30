@@ -476,6 +476,7 @@ public enum ParameterEnum
             PropertyDateTime<?> castProperty = (PropertyDateTime<?>) parent;
             TimeZoneIdentifierParameter parameter = castProperty.getTimeZoneIdentifier();
             return ((parameter == null) || (parameter.getValue().equals(ZoneId.of("Z")))) ? null : parameter;
+//            return parameter;
         }
 
         @Override
