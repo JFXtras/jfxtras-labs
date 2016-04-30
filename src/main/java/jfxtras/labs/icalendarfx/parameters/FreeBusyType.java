@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.parameters;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jfxtras.labs.icalendarfx.parameters.FreeBusyType.FreeBusyTypeEnum;
@@ -46,6 +48,7 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
     public FreeBusyType(FreeBusyType source)
     {
         super(source);
+        unknownValue = source.unknownValue;
     }
     
     @Override
@@ -58,23 +61,21 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
     
     public enum FreeBusyTypeEnum
     {
-        FREE ("FREE"), // the time interval is free for scheduling
-        BUSY ("BUSY"), // the time interval is busy because one or more events have been scheduled for that interval - THE DEFAULT
-        BUSY_UNAVAILABLE ("BUSY-UNAVAILABLE"), // the time interval is busy and that the interval can not be scheduled
-        BUSY_TENTATIVE ("BUSY-TENTATIVE"), // the time interval is busy because one or more events have been tentatively scheduled for that interval
-        UNKNOWN ("UNKNOWN");
+        FREE (Arrays.asList("FREE")), // the time interval is free for scheduling
+        BUSY (Arrays.asList("BUSY")), // the time interval is busy because one or more events have been scheduled for that interval - THE DEFAULT
+        BUSY_UNAVAILABLE (Arrays.asList("BUSY-UNAVAILABLE", "BUSY_UNAVAILABLE")), // the time interval is busy and that the interval can not be scheduled
+        BUSY_TENTATIVE (Arrays.asList("BUSY-TENTATIVE", "BUSY_TENTATIVE")), // the time interval is busy because one or more events have been tentatively scheduled for that interval
+        UNKNOWN (Arrays.asList("UNKNOWN"));
 
         private static Map<String, FreeBusyTypeEnum> enumFromNameMap = makeEnumFromNameMap();
         private static Map<String, FreeBusyTypeEnum> makeEnumFromNameMap()
-        {
+        { // map with multiple names for each type
             Map<String, FreeBusyTypeEnum> map = new HashMap<>();
-            FreeBusyTypeEnum[] values = FreeBusyTypeEnum.values();
-            for (int i=0; i<values.length; i++)
-            {
-                map.put(values[i].toString(), values[i]);
-            }
+            Arrays.stream(FreeBusyTypeEnum.values())
+                    .forEach(r -> r.names.stream().forEach(n -> map.put(n, r)));
             return map;
         }
+        
         /** get enum from name */
         public static FreeBusyTypeEnum enumFromName(String propertyName)
         {
@@ -82,11 +83,11 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
             return (type == null) ? UNKNOWN : type;
         }
         
-        private String name;
-        @Override public String toString() { return name; }
-        FreeBusyTypeEnum(String name)
+        private List<String> names;
+        @Override public String toString() { return names.get(0); } // name at index 0 is the correct name from RFC 5545
+        FreeBusyTypeEnum(List<String> names)
         {
-            this.name = name;
+            this.names = names;
         }
     }
 }

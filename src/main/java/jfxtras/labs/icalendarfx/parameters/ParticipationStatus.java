@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.parameters;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStatusType;
@@ -45,6 +47,7 @@ public class ParticipationStatus extends ParameterBase<ParticipationStatus, Part
     public ParticipationStatus(ParticipationStatus source)
     {
         super(source);
+        unknownValue = source.unknownValue;
     }
     
     @Override
@@ -57,26 +60,24 @@ public class ParticipationStatus extends ParameterBase<ParticipationStatus, Part
 
     public enum ParticipationStatusType
     {
-        NEEDS_ACTION ("NEEDS-ACTION"),  // VEvent, VTodo, VJournal - DEFAULT VALUE
-        ACCEPTED ("ACCEPTED"),          // VEvent, VTodo, VJournal
-        COMPLETED ("COMPLETED"),        // VTodo
-        DECLINED ("DECLINED"),          // VEvent, VTodo, VJournal
-        IN_PROCESS ("IN-PROCESS"),      // VTodo
-        TENTATIVE ("TENTATIVE"),        // VEvent, VTodo
-        DELEGATED ("DELEGATED"),        // VEvent, VTodo
-        UNKNOWN ("UNKNOWN");
+        NEEDS_ACTION (Arrays.asList("NEEDS-ACTION", "NEEDS_ACTION")),  // VEvent, VTodo, VJournal - DEFAULT VALUE
+        ACCEPTED (Arrays.asList("ACCEPTED")),          // VEvent, VTodo, VJournal
+        COMPLETED (Arrays.asList("COMPLETED")),        // VTodo
+        DECLINED (Arrays.asList("DECLINED")),          // VEvent, VTodo, VJournal
+        IN_PROCESS (Arrays.asList("IN-PROCESS", "IN_PROCESS")),      // VTodo
+        TENTATIVE (Arrays.asList("TENTATIVE")),        // VEvent, VTodo
+        DELEGATED (Arrays.asList("DELEGATED")),        // VEvent, VTodo
+        UNKNOWN (Arrays.asList("UNKNOWN"));
         
         private static Map<String, ParticipationStatusType> enumFromNameMap = makeEnumFromNameMap();
         private static Map<String, ParticipationStatusType> makeEnumFromNameMap()
-        {
+        { // map with multiple names for each type
             Map<String, ParticipationStatusType> map = new HashMap<>();
-            ParticipationStatusType[] values = ParticipationStatusType.values();
-            for (int i=0; i<values.length; i++)
-            {
-                map.put(values[i].toString(), values[i]);
-            }
+            Arrays.stream(ParticipationStatusType.values())
+                    .forEach(r -> r.names.stream().forEach(n -> map.put(n, r)));
             return map;
         }
+
         /** get enum from name */
         public static ParticipationStatusType enumFromName(String propertyName)
         {
@@ -84,11 +85,11 @@ public class ParticipationStatus extends ParameterBase<ParticipationStatus, Part
             return (type == null) ? UNKNOWN : type;
         }
         
-        private String name;
-        @Override public String toString() { return name; }
-        ParticipationStatusType(String name)
+        private List<String> names;
+        @Override public String toString() { return names.get(0); } // name at index 0 is the correct name from RFC 5545
+        ParticipationStatusType(List<String> names)
         {
-            this.name = name;
+            this.names = names;
         }
     }
 }

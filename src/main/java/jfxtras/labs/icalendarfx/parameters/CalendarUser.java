@@ -44,6 +44,7 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
     public CalendarUser(CalendarUser source)
     {
         super(source);
+        unknownValue = source.unknownValue;
     }
     
     @Override

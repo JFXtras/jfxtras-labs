@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.parameters;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jfxtras.labs.icalendarfx.parameters.ParticipationRole.ParticipationRoleType;
@@ -44,6 +46,7 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
     public ParticipationRole(ParticipationRole source)
     {
         super(source);
+        unknownValue = source.unknownValue;
     }
     
     @Override
@@ -56,21 +59,18 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
     
     public enum ParticipationRoleType
     {
-        CHAIR ("CHAIR"),
-        REQUIRED_PARTICIPANT ("REQ-PARTICIPANT"),
-        OPTIONAL_PARTICIPANT ("OPT-PARTICIPANT"),
-        NON_PARTICIPANT ("NON-PARTICIPANT"),
-        UNKNOWN ("UNKNOWN");
+        CHAIR (Arrays.asList("CHAIR")),
+        REQUIRED_PARTICIPANT (Arrays.asList("REQ-PARTICIPANT", "REQ_PARTICIPANT")), // Yahoo calendar uses underscore
+        OPTIONAL_PARTICIPANT (Arrays.asList("OPT-PARTICIPANT", "OPT_PARTICIPANT")),
+        NON_PARTICIPANT (Arrays.asList("NON-PARTICIPANT", "NON_PARTICIPANT")),
+        UNKNOWN (Arrays.asList("UNKNOWN"));
         
         private static Map<String, ParticipationRoleType> enumFromNameMap = makeEnumFromNameMap();
         private static Map<String, ParticipationRoleType> makeEnumFromNameMap()
-        {
+        { // map with multiple names for each type
             Map<String, ParticipationRoleType> map = new HashMap<>();
-            ParticipationRoleType[] values = ParticipationRoleType.values();
-            for (int i=0; i<values.length; i++)
-            {
-                map.put(values[i].toString(), values[i]);
-            }
+            Arrays.stream(ParticipationRoleType.values())
+                    .forEach(r -> r.names.stream().forEach(n -> map.put(n, r)));
             return map;
         }
         /** get enum from name */
@@ -80,11 +80,11 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
             return (type == null) ? UNKNOWN : type;
         }
         
-        private String name;
-        @Override public String toString() { return name; }
-        ParticipationRoleType(String name)
+        private List<String> names;
+        @Override public String toString() { return names.get(0); } // name at index 0 is the correct name from RFC 5545
+        ParticipationRoleType(List<String> names)
         {
-            this.name = name;
+            this.names = names;
         }
     }
 }

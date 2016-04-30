@@ -43,6 +43,7 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
     public Relationship(Relationship source)
     {
         super(source);
+        unknownValue = source.unknownValue;
     }
     
     @Override
