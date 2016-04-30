@@ -1006,7 +1006,7 @@ public enum PropertyEnum
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            NonStandardProperty[] propertyArray = source.getIANAProperties()
+            NonStandardProperty[] propertyArray = source.getNonStandardProperties()
                     .stream()
                     .map(c -> new NonStandardProperty(c)) // copy each property
                     .toArray(size -> new NonStandardProperty[size]);

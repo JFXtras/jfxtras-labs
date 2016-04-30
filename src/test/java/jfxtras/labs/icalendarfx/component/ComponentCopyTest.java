@@ -58,15 +58,14 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
        "RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,TU,FR" + System.lineSeparator() +
        "X-YAHOO-YID:daviddbal" + System.lineSeparator() +
        "TRANSP:OPAQUE" + System.lineSeparator() +
-       "STATUS:CONFIRMED" + System.lineSeparator() +
+//       "STATUS:CONFIRMED" + System.lineSeparator() +
        "X-YAHOO-USER-STATUS:BUSY" + System.lineSeparator() +
        "X-YAHOO-EVENT-STATUS:BUSY" + System.lineSeparator() +
        "END:VEVENT";
         VEventNew component1 = VEventNew.parse(content);
         VEventNew component2 = new VEventNew(component1);
-        System.out.println(component1.toContentLines());
-        System.out.println(component2.toContentLines());
         assertEquals(component1, component2);
+        assertEquals(component1.toContentLines(), component2.toContentLines());
     }
 
 }

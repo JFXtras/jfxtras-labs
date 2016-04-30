@@ -352,6 +352,10 @@ public abstract class PropertyBase<T,U> implements Property<T>
         setConverter(source.getConverter());
         parameterSortOrder().putAll(source.parameterSortOrder());
         source.parameters().forEach(p -> p.copyParameter(source, this));
+        if (source.propertyType().equals(PropertyEnum.NON_STANDARD) || source.propertyType().equals(PropertyEnum.IANA_PROPERTY))
+        {
+            setPropertyName(source.getPropertyName());
+        }
         setValue(source.getValue());
     }
 
