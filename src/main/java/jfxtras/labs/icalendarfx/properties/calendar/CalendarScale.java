@@ -43,5 +43,12 @@ public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale
     public enum CalendarScaleType
     {
         GREGORIAN;
+    }
+
+    public static CalendarScale parse(String string)
+    {
+        CalendarScale property = new CalendarScale();
+        property.parseContent(string);
+        return property;
     }    
 }

@@ -165,7 +165,7 @@ public final class VCalendarUtilities
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                vCalendar.vEvents().add( vCalendar.getMakeVEventCallback().call(value) );
+//                vCalendar.vEvents().add( vCalendar.getMakeVEventCallback().call(value) );
             }
 
             @Override
@@ -210,7 +210,7 @@ public final class VCalendarUtilities
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                vCalendar.vJournals().add( vCalendar.getMakeVJournalCallback().call(value) );
+//                vCalendar.vJournals().add( vCalendar.getMakeVJournalCallback().call(value) );
             }
 
             @Override
@@ -236,7 +236,7 @@ public final class VCalendarUtilities
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                vCalendar.vTodos().add( vCalendar.getMakeVTodoCallback().call(value) );
+//                vCalendar.vTodos().add( vCalendar.getMakeVTodoCallback().call(value) );
             }
 
             @Override
