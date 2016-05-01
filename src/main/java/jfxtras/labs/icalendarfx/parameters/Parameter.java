@@ -33,6 +33,17 @@ public interface Parameter<T> extends Comparable<Parameter<T>>
     /** Set the value of this parameter */  
     void setValue(T value);
     
+    
+    /**
+     * Returns the enumerated type for the parameter as it would appear in the iCalendar content line
+     * Examples:
+     * VALUE
+     * TZID
+     * 
+     * @return - the parameter type
+     */
+    ParameterEnum parameterType();
+    
     /**
      * return parameter name-value pair string separated by an "="
      * for example:

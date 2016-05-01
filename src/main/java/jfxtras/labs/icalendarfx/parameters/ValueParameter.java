@@ -40,7 +40,7 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
     public String toContent()
     {
         String value = (getValue() == ValueType.UNKNOWN) ? unknownValue : getValue().toString();
-        String parameterName = myParameterEnum().toString();
+        String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
     }
 }

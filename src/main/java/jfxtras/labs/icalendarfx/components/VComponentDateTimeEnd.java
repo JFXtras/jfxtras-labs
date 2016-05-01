@@ -21,7 +21,7 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
     ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty();
-    default DateTimeEnd<? extends Temporal> getDateTimeEnd() { return dateTimeEndProperty().get(); }
+    DateTimeEnd<? extends Temporal> getDateTimeEnd();
     default void setDateTimeEnd(String dtEnd) { setDateTimeEnd(DateTimeEnd.parse(dtEnd)); }
     default void setDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd) { dateTimeEndProperty().set(dtEnd); }
     default void setDateTimeEnd(Temporal temporal)

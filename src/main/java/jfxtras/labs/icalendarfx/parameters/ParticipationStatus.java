@@ -54,7 +54,7 @@ public class ParticipationStatus extends ParameterBase<ParticipationStatus, Part
     public String toContent()
     {
         String value = (getValue() == ParticipationStatusType.UNKNOWN) ? unknownValue : getValue().toString();
-        String parameterName = myParameterEnum().toString();
+        String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
     }
 

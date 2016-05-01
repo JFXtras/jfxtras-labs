@@ -101,7 +101,7 @@ public interface VComponentNew<T>
      * List of all properties enums found in component.
      * The list is unmodifiable.
      * 
-     * @return - the list of properties
+     * @return - the list of properties enums
      */
     List<PropertyEnum> propertyEnums();
     /**

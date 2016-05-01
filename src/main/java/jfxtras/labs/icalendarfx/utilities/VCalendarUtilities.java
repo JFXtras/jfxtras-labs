@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.VCalendar;
 
+@Deprecated
 public final class VCalendarUtilities
 {
     private VCalendarUtilities() { }

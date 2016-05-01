@@ -53,7 +53,7 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
     public String toContent()
     {
         String value = (getValue() == ParticipationRoleType.UNKNOWN) ? unknownValue : getValue().toString();
-        String parameterName = myParameterEnum().toString();
+        String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
     }
     

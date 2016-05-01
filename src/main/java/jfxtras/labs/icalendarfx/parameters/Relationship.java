@@ -50,7 +50,7 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
     public String toContent()
     {
         String value = (getValue() == RelationshipType.UNKNOWN) ? unknownValue : getValue().toString();
-        String parameterName = myParameterEnum().toString();
+        String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
     }
     

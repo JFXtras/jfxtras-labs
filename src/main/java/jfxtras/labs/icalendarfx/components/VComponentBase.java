@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
@@ -132,7 +131,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     /** Parse content lines into calendar component */
     public void parseContent(String contentLines)
     {
-        Integer counter = 0;
+        Integer propertyCounter = 0;
         Iterator<String> i = unfoldLines(contentLines).iterator();
         while (i.hasNext())
         {
@@ -174,18 +173,9 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
                 if (propertyType != null)
                 {
-                    propertySortOrder.put(propertyName, counter++);
+                    propertySortOrder.put(propertyName, propertyCounter);
+                    propertyCounter =+ 100; // add 100 to allow insertions in between
                     propertyType.parse(this, line);
-//                    Object obj = propertyType.getProperty(this);
-//                    if (obj instanceof List)
-//                    {
-//                        List<Property<?>> list = (List<Property<?>>) obj;
-//                        Property<?> property = list.get(list.size()-1);
-//                        propertySortOrder.put(property, counter++);
-//                    } else if (obj instanceof Property)
-//                    {
-//                        propertySortOrder.put((Property<?>) obj, counter++);                    
-//                    }
                 }
             }
         }
@@ -268,25 +258,15 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
 
     void appendMiddleContentLines(StringBuilder builder)
     {
-//        Map<Property<?>, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
+        /* map of property name/content
+         * 
+         * Note: key is property name and not Property reference because I want all properties
+         * with same name, even non-standard and IANA properties, to have same sort order.  The non-
+         * standard properties with different names should be sorted together, not lumped with all
+         * non-standard properties.
+         */
         Map<String, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
-        propertyEnums().stream()
-                .map(e -> e.getProperty(this))
-                .flatMap(prop -> 
-                {
-                    if (prop instanceof Property)
-                    {
-                        return Arrays.asList((Property<?>) prop).stream();
-                    } else if (prop instanceof List)
-                    {
-                        return ((List<? extends Property<?>>) prop).stream();
-                    } else
-                    {
-                        throw new IllegalArgumentException("Invalid property type:" + prop.getClass());
-                    }
-                })
-                .filter(property -> property != null)
-                .forEach(property -> 
+        properties().forEach(property -> 
                 {
                     if (propertyNameContentMap.get(property.getPropertyName()) == null)
                     { // make new list for new entry
@@ -301,12 +281,11 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
         
         // restore property sort order if properties were parsed from content
         propertyNameContentMap.entrySet().stream()
-//                .sorted((Comparator<? super Entry<Property<?>, List<CharSequence>>>) (e1, e2) -> 
                 .sorted((Comparator<? super Entry<String, List<CharSequence>>>) (e1, e2) -> 
                 {
-                    Integer s1 = propertySortOrder.get(e1.getKey());
+                    Integer s1 = propertySortOrder().get(e1.getKey());
                     Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
-                    Integer s2 = propertySortOrder.get(e2.getKey());
+                    Integer s2 = propertySortOrder().get(e2.getKey());
                     Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
                     return sort1.compareTo(sort2);
                 })
@@ -315,7 +294,6 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                     p.getValue().stream()
                             .forEach(s -> builder.append(foldLine(s) + System.lineSeparator()));
                 });
-//        return builder;
     }
     private final String firstContentLine = "BEGIN:" + componentType().toString();
     private final String lastContentLine = "END:" + componentType().toString();

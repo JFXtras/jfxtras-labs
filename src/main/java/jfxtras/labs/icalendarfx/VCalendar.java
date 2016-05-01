@@ -1,13 +1,24 @@
 package jfxtras.labs.icalendarfx;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponentEnum;
+import jfxtras.labs.icalendarfx.components.VComponentNew;
+import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -18,6 +29,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
+import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 
 /**
  * iCalendar Object
@@ -38,7 +50,6 @@ public class VCalendar
     // version of this project, not associated with the iCalendar specification version
     private static String myVersion = "1.0";
     public static final ProductIdentifier DEFAULT_PRODUCT_IDENTIFIER = ProductIdentifier.parse("-////JFxtras////iCalendarFx " + myVersion + "////EN");
-//    public static final CalendarScale DEFAULT_CALENDAR_SCALE = CalendarScale.parse("GREGORIAN");
     public static final Version DEFAULT_ICALENDAR_SPECIFICATION_VERSION = Version.parse("2.0");
     
     /*
@@ -200,12 +211,6 @@ public class VCalendar
     /*
      * Calendar Components
      */
-    
-    public List<VComponent<?>> components()
-    {
-        // TODO - use enum?  generate here?
-        return null;
-    }
 
     /** 
      * VEVENT: RFC 5545 iCalendar 3.6.1. page 52
@@ -277,18 +282,18 @@ public class VCalendar
      * 
      * @see VFreeBusy
      */
-    public ObservableList<VFreeBusy> getVFreeBusys() { return vFreeBusys; }
+    public ObservableList<VFreeBusy> getVFreeBusies() { return vFreeBusys; }
     private ObservableList<VFreeBusy> vFreeBusys = FXCollections.observableArrayList();
     public void setVFreeBusys(ObservableList<VFreeBusy> vFreeBusys) { this.vFreeBusys = vFreeBusys; }
     public VCalendar withVFreeBusy(ObservableList<VFreeBusy> vFreeBusys) { setVFreeBusys(vFreeBusys); return this; }
     public VCalendar withVFreeBusy(String...vFreeBusys)
     {
-        Arrays.stream(vFreeBusys).forEach(c -> getVFreeBusys().add(VFreeBusy.parse(c)));
+        Arrays.stream(vFreeBusys).forEach(c -> getVFreeBusies().add(VFreeBusy.parse(c)));
         return this;
     }
     public VCalendar withVFreeBusys(VFreeBusy...vFreeBusys)
     {
-        getVFreeBusys().addAll(vFreeBusys);
+        getVFreeBusies().addAll(vFreeBusys);
         return this;
     }
 
@@ -300,8 +305,8 @@ public class VCalendar
     public ObservableList<VTimeZone> getVTimeZones() { return vTimeZones; }
     private ObservableList<VTimeZone> vTimeZones = FXCollections.observableArrayList();
     public void setVTimeZones(ObservableList<VTimeZone> vTimeZones) { this.vTimeZones = vTimeZones; }
-    public VCalendar withVTimeZone(ObservableList<VTimeZone> vTimeZones) { setVTimeZones(vTimeZones); return this; }
-    public VCalendar withVTimeZone(String...vTimeZones)
+    public VCalendar withVTimeZones(ObservableList<VTimeZone> vTimeZones) { setVTimeZones(vTimeZones); return this; }
+    public VCalendar withVTimeZones(String...vTimeZones)
     {
         Arrays.stream(vTimeZones).forEach(c -> getVTimeZones().add(VTimeZone.parse(c)));
         return this;
@@ -324,11 +329,94 @@ public class VCalendar
         // TODO Auto-generated method stub        
     }
 
-    public void toContentLines()
+    /*
+     * OTHER METHODS
+     */
+    
+    /**
+     * List of all components found in calendar object.
+     * The list is unmodifiable.
+     * 
+     * @return - the list of components
+     */
+    public List<VComponentNew<?>> components()
     {
-        // TODO Auto-generated method stub
-        
+        List<VComponentNew<?>> allComponents = new ArrayList<>();
+        Iterator<VComponentEnum> i = Arrays.stream(VComponentEnum.values()).iterator();
+        while (i.hasNext())
+        {
+            VComponentEnum componentType = i.next();
+            List<? extends VComponentNew<?>> myComponents = componentType.getComponents(this);
+            if (myComponents != null)
+            {
+                allComponents.addAll(myComponents);
+            }
+        }
+        return Collections.unmodifiableList(allComponents);
     }
+    
+    /** 
+     * Component sort order map.  Key is component, value is order.  Follows sort order of parsed content.
+     * If a parameter is not present in the map, it is put at the end of the sorted by
+     * DTSTAMP.  If DTSTAMP is not present, the component is put on top.
+     * Generally, this map shouldn't be modified.  Only modify it when you want to force
+     * a specific parameter order (e.g. unit testing).
+     */
+    public Map<VComponentNew<?>, Long> componentSortOrder() { return componentSortOrder; }
+    final private Map<VComponentNew<?>, Long> componentSortOrder = new HashMap<>();
+    
+    
+    /** Parse content lines into calendar object */
+    public String toContentLines()
+    {
+        List<VComponentNew<?>> components = components(); // make local to avoid multiple list creation events
+        StringBuilder builder = new StringBuilder(components.size()*300);
+        builder.append(firstContentLine + System.lineSeparator());
+
+        Map<VComponentNew<?>, CharSequence> componentContentMap = new LinkedHashMap<>();
+        components.forEach(component -> componentContentMap.put(component, component.toContentLines()));
+        
+        // restore component sort order if components were parsed from content
+        componentContentMap.entrySet().stream()
+                .sorted((Comparator<? super Entry<VComponentNew<?>, CharSequence>>) (e1, e2) -> 
+                {
+                    final Long s1Initial = componentSortOrder().get(e1.getKey());
+                    final Long s2Initial = componentSortOrder().get(e2.getKey());
+                    final Long s1Final = finalSortOrder(s1Initial, e1.getKey());
+                    final Long s2Final = finalSortOrder(s2Initial, e2.getKey());
+                    return s1Final.compareTo(s2Final);
+                })
+                .forEach(p -> 
+                {
+                    builder.append(p.getValue() + System.lineSeparator());
+                });
+        
+        builder.append(lastContentLine);
+        return builder.toString();
+
+    }
+    private Long finalSortOrder(Long initialSort, VComponentNew<?> c)
+    {
+        final Long s1Final;
+        if (initialSort == null)
+        {
+            if (c instanceof VComponentPersonal)
+            { // sort by DTSTAMP
+                DateTimeStamp dateTimeStamp = ((VComponentPersonal<?>) c).getDateTimeStamp();
+                s1Final = (dateTimeStamp != null) ? dateTimeStamp.getValue().toInstant().toEpochMilli() : 0L; // shouldn't even be 0, DTSTAMP is REQUIRED
+            } else
+            {
+                s1Final = 0L; // no DTSTAMP sort order value is zero
+            }
+        } else
+        {
+            s1Final = initialSort - Long.MIN_VALUE; // make sorted values use negative values
+        }
+        return s1Final;
+    }
+    private final String firstContentLine = "BEGIN:VCALENDAR";
+    private final String lastContentLine = "END:VCALENDAR";
+
 
     /** Parse content lines into calendar object */
     public static VCalendar parse(String contentLines)

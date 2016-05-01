@@ -22,10 +22,7 @@ import javafx.beans.property.SimpleObjectProperty;
  * @param <U> - implemented subclass
  */
 public class ParameterBase<U,T> implements Parameter<T>
-{
-    private final ParameterEnum myParameterEnum;
-    ParameterEnum myParameterEnum() { return myParameterEnum; }
-    
+{    
     @Override
     public T getValue() { return value.get(); }
     @Override
@@ -51,8 +48,17 @@ public class ParameterBase<U,T> implements Parameter<T>
         {
             value = addDoubleQuotesIfNecessary(getValue().toString());
         }
-        return (getValue() != null) ? ";" + myParameterEnum().toString() + "=" + value : null;
+        return (getValue() != null) ? ";" + parameterType().toString() + "=" + value : null;
     }
+    
+    /**
+     * PARAMETER TYPE
+     * 
+     *  The enumerated type of the parameter.
+     */
+    @Override
+    public ParameterEnum parameterType() { return parameterType; }
+    final private ParameterEnum parameterType;
 
     @Override
     public String toString()
@@ -89,8 +95,8 @@ public class ParameterBase<U,T> implements Parameter<T>
      */
     ParameterBase()
     {
-        myParameterEnum = ParameterEnum.enumFromClass(getClass());
-        value = new SimpleObjectProperty<>(this, myParameterEnum.toString());
+        parameterType = ParameterEnum.enumFromClass(getClass());
+        value = new SimpleObjectProperty<>(this, parameterType.toString());
     }
 
     ParameterBase(T value)

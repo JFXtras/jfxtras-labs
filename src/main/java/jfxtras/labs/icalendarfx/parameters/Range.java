@@ -46,7 +46,7 @@ public class Range extends ParameterBase<Range, RangeType>
     @Override
     public String toContent()
     {
-        String parameterName = myParameterEnum().toString();
+        String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + getValue().toString();
     }
     

@@ -104,6 +104,8 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
         }
         return dateTimeEnd;
     }
+    @Override
+    public DateTimeEnd<? extends Temporal> getDateTimeEnd() { return (dateTimeEnd == null) ? null : dateTimeEndProperty().get(); }
     private ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEnd;
     /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
      *  after dateTimeEndProperty() is initialized */

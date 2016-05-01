@@ -148,6 +148,8 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
         }
         return dateTimeEnd;
     }
+    @Override
+    public DateTimeEnd<? extends Temporal> getDateTimeEnd() { return (dateTimeEnd == null) ? null : dateTimeEndProperty().get(); }
     private ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEnd;
     
     /**

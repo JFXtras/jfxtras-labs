@@ -1,10 +1,13 @@
 package jfxtras.labs.icalendarfx.properties;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 
@@ -66,13 +69,13 @@ public interface Property<T>
     ObservableList<Object> otherParameters();
     
     /**
-     * Returns the enum for the property as it would appear in the iCalendar content line
+     * Returns the enumerated type for the property as it would appear in the iCalendar content line
      * Examples:
      * DESCRIPTION
      * UID
      * PRODID
      * 
-     * @return - the property enum
+     * @return - the property type
      */
     PropertyEnum propertyType();
 
@@ -97,9 +100,26 @@ public interface Property<T>
     void setConverter(StringConverter<T> converter);
     
     /**
-     * List of parameters contained in the property
+     * List of all parameter enums found in property.
+     * The list is unmodifiable.
+     * 
+     * @return - the list of parameter enums
      */
-    List<ParameterEnum> parameters();
+    List<ParameterEnum> parameterEnums();
+    
+    /**
+     * List of all properties found in component.
+     * The list is unmodifiable.
+     * 
+     * @return - the list of parameters
+     */
+    default List<Parameter<?>> parameters()
+    {
+        return Collections.unmodifiableList(
+                parameterEnums().stream()
+                    .map(e -> e.getParameter(this))
+                    .collect(Collectors.toList()));
+    }
     
     /**
      * Converts the property's value to a string for the content line

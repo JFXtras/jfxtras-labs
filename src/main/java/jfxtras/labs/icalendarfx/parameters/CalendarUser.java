@@ -51,7 +51,7 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
     public String toContent()
     {
         String value = (getValue() == CalendarUserType.UNKNOWN) ? unknownValue : getValue().toString();
-        String parameterName = myParameterEnum().toString();
+        String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
     }
     

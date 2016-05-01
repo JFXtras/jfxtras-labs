@@ -144,7 +144,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     /**
      * PROPERTY TYPE
      * 
-     *  The type of the property from the enum of all properties.
+     *  The enumerated type of the property.
      */
     @Override
     public PropertyEnum propertyType() { return propertyType; }
@@ -232,9 +232,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
     private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
     public U withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (U) this; }
 
-    // TODO CAN I CACHE THE LIST? - UPDATE ONLY WHEN NEW PARAMETER CHANGE OCCURS?
     @Override
-    public List<ParameterEnum> parameters()
+    public List<ParameterEnum> parameterEnums()
     {
         List<ParameterEnum> populatedParameters = new ArrayList<>();
         Iterator<ParameterEnum> i = propertyType().allowedParameters().stream().iterator();
@@ -351,7 +350,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     {
         setConverter(source.getConverter());
         parameterSortOrder().putAll(source.parameterSortOrder());
-        source.parameters().forEach(p -> p.copyParameter(source, this));
+        source.parameterEnums().forEach(p -> p.copyParameter(source, this));
         if (source.propertyType().equals(PropertyEnum.NON_STANDARD) || source.propertyType().equals(PropertyEnum.IANA_PROPERTY))
         {
             setPropertyName(source.getPropertyName());
@@ -428,7 +427,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
                     if (propertyType().allowedParameters().contains(p))
                     {
                         p.parse(this, e.getValue());
-                        parameterSortOrder().put(p, parameterCounter++);
+                        parameterSortOrder().put(p, parameterCounter);
+                        parameterCounter =+ 100; // add 100 to allow insertions in between
 //                        parameterSortOrder().put(p.getParameter(this), parameterCounter++);
                     } else
                     {
@@ -512,20 +512,17 @@ public abstract class PropertyBase<T,U> implements Property<T>
         }
         
         // PARAMETERS
-//        Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
-//        parameters().stream().forEach(p -> parameterNameContentMap.put(p.getParameter(this), p.getParameter(this).toContent()));
-        Map<ParameterEnum, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
-        parameters().stream().forEach(p -> parameterNameContentMap.put(p, p.getParameter(this).toContent()));
+        Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
+        parameters().forEach(p -> parameterNameContentMap.put(p, p.toContent()));
         
         // restore parameter sort order if parameters were parsed from content
         parameterNameContentMap.entrySet().stream()
-                .sorted((Comparator<? super Entry<ParameterEnum, CharSequence>>) (e1, e2) -> 
+                .sorted((Comparator<? super Entry<Parameter<?>, CharSequence>>) (e1, e2) -> 
                 {
-                    Integer s1 = parameterSortOrder.get(e1.getKey());
+                    Integer s1 = parameterSortOrder().get(e1.getKey().parameterType());
                     Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
-                    Integer s2 = parameterSortOrder.get(e2.getKey());
+                    Integer s2 = parameterSortOrder().get(e2.getKey().parameterType());
                     Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
-//                    System.out.println("s12:" + sort1 + " " + sort2);
                     return sort1.compareTo(sort2);
                 })
                 .forEach(p -> 
@@ -533,13 +530,11 @@ public abstract class PropertyBase<T,U> implements Property<T>
                     builder.append(p.getValue());
                 });
         
-//        parameters().stream().forEach(p -> builder.append(p.getParameter(this).toContent()));
-        // add non-standard parameters
+        // add non-standard parameters - sort order doesn't apply to non-standard parameters
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         // add property value
         String stringValue = valueContent();
         builder.append(":" + stringValue);
-//        builder.append(":" + valueToString(getValue()));
         return builder.toString();
     }
 
@@ -548,7 +543,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     {
         int hash = 7;
         hash = (31 * hash) + getValue().hashCode();
-        Iterator<ParameterEnum> i = parameters().iterator();
+        Iterator<ParameterEnum> i = parameterEnums().iterator();
         while (i.hasNext())
         {
             Parameter<?> parameter = i.next().getParameter(this);
@@ -570,8 +565,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
         
         final boolean parametersEquals;
-        List<ParameterEnum> parameters = parameters(); // make parameters local to avoid creating list multiple times
-        List<ParameterEnum> testParameters = testObj.parameters(); // make parameters local to avoid creating list multiple times
+        List<ParameterEnum> parameters = parameterEnums(); // make parameters local to avoid creating list multiple times
+        List<ParameterEnum> testParameters = testObj.parameterEnums(); // make parameters local to avoid creating list multiple times
         if (parameters.size() == testParameters.size())
         {
             Iterator<ParameterEnum> i1 = parameters.iterator();
