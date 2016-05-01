@@ -32,6 +32,9 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
+import jfxtras.labs.icalendarfx.properties.calendar.Method;
+import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
+import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action;
 import jfxtras.labs.icalendarfx.properties.component.alarm.RepeatCount;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
@@ -213,7 +216,11 @@ public enum PropertyEnum
         }
     },
     // Calendar
-    CALENDAR_SCALE ("CALSCALE", null, null, CalendarScale.class) {
+    CALENDAR_SCALE ("CALSCALE", // property name
+            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            CalendarScale.class) // property class
+    {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
@@ -954,7 +961,11 @@ public enum PropertyEnum
         }
     },
     // Calendar
-    METHOD ("METHOD", null, null, null) {
+    METHOD ("METHOD", // property name
+            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Method.class) // property class
+    {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
@@ -1121,7 +1132,11 @@ public enum PropertyEnum
         }
     },
     // Calendar
-    PRODUCT_IDENTIFIER ("PRODID", null, null, null) {
+    PRODUCT_IDENTIFIER ("PRODID", // property name
+            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            ProductIdentifier.class) // property class
+    {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
@@ -1831,7 +1846,11 @@ public enum PropertyEnum
         }
     },
     // Calendar
-    VERSION ("VERSION", Arrays.asList(ValueType.TEXT), null, null) {
+    VERSION ("VERSION", // property name
+            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
+            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Version.class) // property class
+    {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {

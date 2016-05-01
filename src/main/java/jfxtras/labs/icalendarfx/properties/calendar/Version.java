@@ -38,4 +38,11 @@ public class Version extends PropertyBase<String, Version>
         // null as argument for string converter causes default converter from ValueType to be used
         super("2.0");
     }
+    
+    public static Version parse(String string)
+    {
+        Version property = new Version();
+        property.parseContent(string);
+        return property;
+    }
 }

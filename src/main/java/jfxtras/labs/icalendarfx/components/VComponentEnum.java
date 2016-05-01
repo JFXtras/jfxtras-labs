@@ -52,6 +52,7 @@ public enum VComponentEnum
             PropertyEnum.DATE_TIME_END, PropertyEnum.DATE_TIME_STAMP, PropertyEnum.DATE_TIME_START,
             PropertyEnum.FREE_BUSY_TIME, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.ORGANIZER,
             PropertyEnum.REQUEST_STATUS, PropertyEnum.UNIQUE_IDENTIFIER, PropertyEnum.UNIFORM_RESOURCE_LOCATOR));
+//    CALENDAR_SCALE (null);
 
     private List<PropertyEnum> allowedProperties;
     public List<PropertyEnum> allowedProperties() { return allowedProperties; }
@@ -60,4 +61,10 @@ public enum VComponentEnum
     {
         this.allowedProperties = allowedProperties;
     }
+
+//    public void parse(VCalendar vCalendar, String content)
+//    {
+//        // TODO Auto-generated method stub
+//        
+//    }
 }

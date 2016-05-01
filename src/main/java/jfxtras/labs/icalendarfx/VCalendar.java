@@ -1,74 +1,48 @@
 package jfxtras.labs.icalendarfx;
 
+import java.util.Arrays;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.components.VTodoOld;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
-import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities;
-import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities.VCalendarComponent;
+import jfxtras.labs.icalendarfx.properties.calendar.Method;
+import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
+import jfxtras.labs.icalendarfx.properties.calendar.Version;
 
 /**
- * API Based on
- * Internet Calendaring and Scheduling Core Object Specification
- *                            (iCalendar) RFC5545
- *
- * Parent calendaring and scheduling core object.
- * It contains two required properties, one optional property,
- * and collections of calendar components.
+ * iCalendar Object
+ * RFC 5545, 3.4, page 50
  * 
- *        calprops   = *(
-                  ;
-                  ; The following are REQUIRED,
-                  ; but MUST NOT occur more than once.
-                  ;
-                  prodid / version /
-                  ;
-                  ; The following are OPTIONAL,
-                  ; but MUST NOT occur more than once.
-                  ;
-                  calscale / method /
-                  ;
-                  ; The following are OPTIONAL,
-                  ; and MAY occur more than once.
-                  ;
-                  x-prop / iana-prop
-                  ;
-                  )
-
-       component  = 1*(eventc / todoc / journalc / freebusyc /
-                    timezonec / iana-comp / x-comp)
-
-       iana-comp  = "BEGIN" ":" iana-token CRLF
-                    1*contentline
-                    "END" ":" iana-token CRLF
-
-       x-comp     = "BEGIN" ":" x-name CRLF
-                    1*contentline
-                    "END" ":" x-name CRLF
+ * Parent calendar object represents a collection of calendaring and scheduling information 
  * 
  * @author David Bal
  *
- * @see VCalendarUtilities
+ * @see VEventNew
+ * @see VTodo
+ * @see VJournal
+ * @see VFreeBusy
+ * @see VTimeZone
  */
 public class VCalendar
 {
     // version of this project, not associated with the iCalendar specification version
-    private static String version = "1.0";
-    public static final String DEFAULT_PRODUCT_IDENTIFIER = "iCalendarFx " + version;
+    private static String myVersion = "1.0";
+    public static final ProductIdentifier DEFAULT_PRODUCT_IDENTIFIER = ProductIdentifier.parse("-////JFxtras////iCalendarFx " + myVersion + "////EN");
     public static final CalendarScale DEFAULT_CALENDAR_SCALE = CalendarScale.parse("GREGORIAN");
-    public static final String DEFAULT_ICALENDAR_SPECIFICATION_VERSION = "2.0";
+    public static final Version DEFAULT_ICALENDAR_SPECIFICATION_VERSION = Version.parse("2.0");
+    
+    /*
+     * Calendar properties
+     */
     
     /**
      *  CALSCALE: RFC 5545 iCalendar 3.7.1. page 76
@@ -102,8 +76,17 @@ public class VCalendar
     public void setCalendarScale(String calendarScale) { setCalendarScale(CalendarScale.parse(calendarScale)); }
     public void setCalendarScale(CalendarScale calendarScale) { calendarScaleProperty().set(calendarScale); }
     public VCalendar withCalendarScale(CalendarScale calendarScale) { setCalendarScale(calendarScale); return this; }
-    public VCalendar withCalendarScale(String calendarScale) { PropertyEnum.CALENDAR_SCALE.parse(this, calendarScale); return this; }
-    // TODO - MOVE PARSE TO VCalendarComponent - rename to enum?
+    public VCalendar withCalendarScale(String calendarScale)
+    {
+        if (getCalendarScale() == null)
+        {
+            setCalendarScale(calendarScale);
+        } else
+        {
+            throw new IllegalArgumentException(PropertyEnum.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
+        }
+        return this;
+    }
 
     /**
      * METHOD: RFC 5545 iCalendar 3.7.2. page 77
@@ -113,12 +96,30 @@ public class VCalendar
      * Example:
      * METHOD:REQUEST
      * */
-    public StringProperty objectMethodProperty() { return objectMethod; }
-    final private StringProperty objectMethod = new SimpleStringProperty(this, VCalendarComponent.OBJECT_METHOD.toString());
-    public String getObjectMethod() { return objectMethod.get(); }
-    public void setObjectMethod(String value) { objectMethod.set(value); }
-    public VCalendar withObjectMethod(String s) { setObjectMethod(s); return this; }
-
+    ObjectProperty<Method> methodProperty()
+    {
+        if (method == null)
+        {
+            method = new SimpleObjectProperty<Method>(this, PropertyEnum.METHOD.toString());
+        }
+        return method;
+    }
+    public Method getMethod() { return methodProperty().get(); }
+    private ObjectProperty<Method> method;
+    public void setMethod(String method) { setMethod(Method.parse(method)); }
+    public void setMethod(Method method) { methodProperty().set(method); }
+    public VCalendar withMethod(Method method) { setMethod(method); return this; }
+    public VCalendar withMethod(String method)
+    {
+        if (getMethod() == null)
+        {
+            setMethod(method);
+        } else
+        {
+            throw new IllegalArgumentException(PropertyEnum.METHOD.toString() + " can only occur once in a calendar component");
+        }
+        return this;
+    }
     
     /**
      * PRODID: RFC 5545 iCalendar 3.7.3. page 78
@@ -130,11 +131,30 @@ public class VCalendar
      * Example:
      * PRODID:-//JFxtras//JFXtras iCalendar 1.0//EN
      * */
-    public StringProperty productIdentifierProperty() { return productIdentifier; }
-    final private StringProperty productIdentifier = new SimpleStringProperty(this, VCalendarComponent.PRODUCT_IDENTIFIER.toString(), DEFAULT_PRODUCT_IDENTIFIER);
-    public String getProductIdentifier() { return productIdentifier.get(); }
-    public void setProductIdentifier(String value) { productIdentifier.set(value); }
-    public VCalendar withProductIdentifier(String s) { setProductIdentifier(s); return this; }
+    ObjectProperty<ProductIdentifier> productIdentifierProperty()
+    {
+        if (productIdentifier == null)
+        {
+            productIdentifier = new SimpleObjectProperty<ProductIdentifier>(this, PropertyEnum.PRODUCT_IDENTIFIER.toString(), DEFAULT_PRODUCT_IDENTIFIER);
+        }
+        return productIdentifier;
+    }
+    public ProductIdentifier getProductIdentifier() { return productIdentifierProperty().get(); }
+    private ObjectProperty<ProductIdentifier> productIdentifier;
+    public void setProductIdentifier(String productIdentifier) { setProductIdentifier(ProductIdentifier.parse(productIdentifier)); }
+    public void setProductIdentifier(ProductIdentifier productIdentifier) { productIdentifierProperty().set(productIdentifier); }
+    public VCalendar withProductIdentifier(ProductIdentifier productIdentifier) { setProductIdentifier(productIdentifier); return this; }
+    public VCalendar withProductIdentifier(String productIdentifier)
+    {
+        if (getProductIdentifier() == null)
+        {
+            setProductIdentifier(productIdentifier);
+        } else
+        {
+            throw new IllegalArgumentException(PropertyEnum.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
+        }
+        return this;
+    }
     
     /**
      *  VERSION: RFC 5545 iCalendar 3.7.4. page 79
@@ -148,14 +168,33 @@ public class VCalendar
      * Example:
      * VERSION:2.0
      * */
-    public StringProperty iCalendarSpecificationVersionProperty() { return iCalendarSpecificationVersion; }
-    final private StringProperty iCalendarSpecificationVersion = new SimpleStringProperty(this, VCalendarComponent.ICALENDAR_SPECIFICATION_VERSION.toString(), DEFAULT_ICALENDAR_SPECIFICATION_VERSION);
-    public String getICalendarSpecificationVersion() { return iCalendarSpecificationVersion.get(); }
-    public void setICalendarSpecificationVersion(String value) { iCalendarSpecificationVersion.set(value); }
-    public VCalendar withICalendarSpecificationVersion(String s) { setICalendarSpecificationVersion(s); return this; }
+    ObjectProperty<Version> versionProperty()
+    {
+        if (version == null)
+        {
+            version = new SimpleObjectProperty<Version>(this, PropertyEnum.VERSION.toString(), DEFAULT_ICALENDAR_SPECIFICATION_VERSION);
+        }
+        return version;
+    }
+    public Version getVersion() { return versionProperty().get(); }
+    private ObjectProperty<Version> version;
+    public void setVersion(String version) { setVersion(Version.parse(version)); }
+    public void setVersion(Version version) { versionProperty().set(version); }
+    public VCalendar withVersion(Version version) { setVersion(version); return this; }
+    public VCalendar withVersion(String version)
+    {
+        if (getVersion() == null)
+        {
+            setVersion(version);
+        } else
+        {
+            throw new IllegalArgumentException(PropertyEnum.VERSION.toString() + " can only occur once in a calendar component");
+        }
+        return this;
+    }
 
     /*
-     * VCOMPONENTS
+     * Calendar Components
      */
 
     /** 
@@ -163,11 +202,22 @@ public class VCalendar
      * 
      * A grouping of component properties that describe an event.
      * 
-     * @see VComponent
-     * @see VEvent
      */
-    public ObservableList<VEventNew> vEvents() { return vEvents; }
+    public ObservableList<VEventNew> getVEvents() { return vEvents; }
     private ObservableList<VEventNew> vEvents = FXCollections.observableArrayList();
+    public void setVEvents(ObservableList<VEventNew> vEvents) { this.vEvents = vEvents; }
+    public VCalendar withVEventNew(ObservableList<VEventNew> vEvents) { setVEvents(vEvents); return this; }
+    public VCalendar withVEventNew(String...vEvents)
+    {
+        Arrays.stream(vEvents).forEach(c -> getVEvents().add(VEventNew.parse(c)));
+        return this;
+    }
+    public VCalendar withVEvents(VEventNew...vEvents)
+    {
+        getVEvents().addAll(vEvents);
+        return this;
+    }
+
 
 //    /** 
 //     * VEVENT Callback
@@ -187,8 +237,6 @@ public class VCalendar
      * 
      * A grouping of component properties that describe a task that needs to be completed.
      * 
-     * @see VComponent
-     * @see VTodoOld
      */
     public ObservableList<VTodo> vTodos() { return vTodos; }
     private ObservableList<VTodo> vTodos = FXCollections.observableArrayList();

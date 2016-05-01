@@ -30,4 +30,16 @@ public class Method extends PropertyBase<String, Method>
     {
         super(source);
     }
+    
+    public Method()
+    {
+       super();
+    }
+    
+    public static Method parse(String string)
+    {
+        Method property = new Method();
+        property.parseContent(string);
+        return property;
+    } 
 }

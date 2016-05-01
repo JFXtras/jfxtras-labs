@@ -113,14 +113,14 @@ public final class VCalendarUtilities
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                if (vCalendar.getObjectMethod() == null)
-                {
-                    vCalendar.setObjectMethod(value);
-                } else
-                {
-                    System.out.println("method:" + vCalendar.getObjectMethod() + "e");
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
-                }
+//                if (vCalendar.getObjectMethod() == null)
+//                {
+//                    vCalendar.setObjectMethod(value);
+//                } else
+//                {
+//                    System.out.println("method:" + vCalendar.getObjectMethod() + "e");
+//                    throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
+//                }
             }
 
             @Override
@@ -178,13 +178,13 @@ public final class VCalendarUtilities
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                if ((vCalendar.getICalendarSpecificationVersion() == VCalendar.DEFAULT_ICALENDAR_SPECIFICATION_VERSION) || (vCalendar.getICalendarSpecificationVersion() == null))
-                {
-                    vCalendar.setICalendarSpecificationVersion(value);
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
-                }
+//                if ((vCalendar.getICalendarSpecificationVersion() == VCalendar.DEFAULT_ICALENDAR_SPECIFICATION_VERSION) || (vCalendar.getICalendarSpecificationVersion() == null))
+//                {
+//                    vCalendar.setICalendarSpecificationVersion(value);
+//                } else
+//                {
+//                    throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
+//                }
             }
 
             @Override
