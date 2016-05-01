@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.components.VCalendarElement;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentEnum;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
@@ -49,8 +51,10 @@ public class VCalendar
 {
     // version of this project, not associated with the iCalendar specification version
     private static String myVersion = "1.0";
-    public static final ProductIdentifier DEFAULT_PRODUCT_IDENTIFIER = ProductIdentifier.parse("-////JFxtras////iCalendarFx " + myVersion + "////EN");
-    public static final Version DEFAULT_ICALENDAR_SPECIFICATION_VERSION = Version.parse("2.0");
+    public static final String DEFAULT_PRODUCT_IDENTIFIER = ("-//JFxtras//iCalendarFx " + myVersion + "//EN");
+//    public static final ProductIdentifier DEFAULT_PRODUCT_IDENTIFIER = ProductIdentifier.parse("-////JFxtras////iCalendarFx " + myVersion + "////EN");
+//    public static final Version DEFAULT_ICALENDAR_SPECIFICATION_VERSION = Version.parse("2.0");
+    public static final String DEFAULT_ICALENDAR_SPECIFICATION_VERSION = ("2.0");
     
     /*
      * Calendar properties
@@ -80,14 +84,21 @@ public class VCalendar
         }
         return calendarScale;
     }
-    public CalendarScale getCalendarScale()
-    {
-        return (calendarScale == null) ? null : calendarScaleProperty().get();
-    }
+    public CalendarScale getCalendarScale() { return (calendarScale == null) ? null : calendarScaleProperty().get(); }
     private ObjectProperty<CalendarScale> calendarScale;
     public void setCalendarScale(String calendarScale) { setCalendarScale(CalendarScale.parse(calendarScale)); }
     public void setCalendarScale(CalendarScale calendarScale) { calendarScaleProperty().set(calendarScale); }
-    public VCalendar withCalendarScale(CalendarScale calendarScale) { setCalendarScale(calendarScale); return this; }
+    public VCalendar withCalendarScale(CalendarScale calendarScale)
+    {
+        if (getCalendarScale() == null)
+        {
+            setCalendarScale(calendarScale);
+        } else
+        {
+            throw new IllegalArgumentException(PropertyEnum.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
+        }
+        return this;
+    }
     public VCalendar withCalendarScale(String calendarScale)
     {
         if (getCalendarScale() == null)
@@ -116,14 +127,21 @@ public class VCalendar
         }
         return method;
     }
-    public Method getMethod()
-    {
-        return (method == null) ? null : methodProperty().get();
-    }
+    public Method getMethod() { return (method == null) ? null : methodProperty().get(); }
     private ObjectProperty<Method> method;
     public void setMethod(String method) { setMethod(Method.parse(method)); }
     public void setMethod(Method method) { methodProperty().set(method); }
-    public VCalendar withMethod(Method method) { setMethod(method); return this; }
+    public VCalendar withMethod(Method method)
+    {
+        if (getMethod() == null)
+        {
+            setMethod(method);
+        } else
+        {
+            throw new IllegalArgumentException(PropertyEnum.METHOD.toString() + " can only occur once in a calendar component");
+        }
+        return this;
+    }
     public VCalendar withMethod(String method)
     {
         if (getMethod() == null)
@@ -150,15 +168,25 @@ public class VCalendar
     {
         if (productIdentifier == null)
         {
-            productIdentifier = new SimpleObjectProperty<ProductIdentifier>(this, PropertyEnum.PRODUCT_IDENTIFIER.toString(), DEFAULT_PRODUCT_IDENTIFIER);
+            productIdentifier = new SimpleObjectProperty<ProductIdentifier>(this, PropertyEnum.PRODUCT_IDENTIFIER.toString());
         }
         return productIdentifier;
     }
-    public ProductIdentifier getProductIdentifier() { return productIdentifierProperty().get(); }
+    public ProductIdentifier getProductIdentifier() { return (productIdentifier == null) ? null : productIdentifierProperty().get(); }
     private ObjectProperty<ProductIdentifier> productIdentifier;
     public void setProductIdentifier(String productIdentifier) { setProductIdentifier(ProductIdentifier.parse(productIdentifier)); }
     public void setProductIdentifier(ProductIdentifier productIdentifier) { productIdentifierProperty().set(productIdentifier); }
-    public VCalendar withProductIdentifier(ProductIdentifier productIdentifier) { setProductIdentifier(productIdentifier); return this; }
+    public VCalendar withProductIdentifier(ProductIdentifier productIdentifier)
+    {
+        if (getProductIdentifier() == null)
+        {
+            setProductIdentifier(productIdentifier);
+        } else
+        {
+            throw new IllegalArgumentException(PropertyEnum.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
+        }
+        return this;
+    }
     public VCalendar withProductIdentifier(String productIdentifier)
     {
         if (getProductIdentifier() == null)
@@ -187,15 +215,25 @@ public class VCalendar
     {
         if (version == null)
         {
-            version = new SimpleObjectProperty<Version>(this, PropertyEnum.VERSION.toString(), DEFAULT_ICALENDAR_SPECIFICATION_VERSION);
+            version = new SimpleObjectProperty<Version>(this, PropertyEnum.VERSION.toString());
         }
         return version;
     }
-    public Version getVersion() { return versionProperty().get(); }
+    public Version getVersion() { return (version == null) ? null : versionProperty().get(); }
     private ObjectProperty<Version> version;
     public void setVersion(String version) { setVersion(Version.parse(version)); }
     public void setVersion(Version version) { versionProperty().set(version); }
-    public VCalendar withVersion(Version version) { setVersion(version); return this; }
+    public VCalendar withVersion(Version version)
+    {
+        if (getVersion() == null)
+        {
+            setVersion(version);
+        } else
+        {
+            throw new IllegalArgumentException(PropertyEnum.VERSION.toString() + " can only occur once in a calendar component");
+        }
+        return this;
+    }
     public VCalendar withVersion(String version)
     {
         if (getVersion() == null)
@@ -362,23 +400,42 @@ public class VCalendar
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
      * a specific parameter order (e.g. unit testing).
      */
-    public Map<VComponentNew<?>, Long> componentSortOrder() { return componentSortOrder; }
-    final private Map<VComponentNew<?>, Long> componentSortOrder = new HashMap<>();
+    public Map<VCalendarElement, Long> componentSortOrder() { return componentSortOrder; }
+    final private Map<VCalendarElement, Long> componentSortOrder = new HashMap<>();
     
     
     /** Parse content lines into calendar object */
     public String toContentLines()
     {
-        List<VComponentNew<?>> components = components(); // make local to avoid multiple list creation events
-        StringBuilder builder = new StringBuilder(components.size()*300);
+        List<VCalendarElement> elements = new ArrayList<VCalendarElement>();
+        // Ordered PRODID, VERSION, CALSCALE and METHOD unless componentSortOrder specifies other values
+        if (getProductIdentifier() != null)
+        {
+            elements.add(getProductIdentifier());
+        }
+        if (getVersion() != null)
+        {
+            elements.add(getVersion());
+        }
+        if (getCalendarScale() != null)
+        {
+            elements.add(getCalendarScale());
+        }
+        if (getMethod() != null)
+        {
+            elements.add(getMethod());
+        }
+        elements.addAll((Collection<? extends VCalendarElement>) components());
+
+        StringBuilder builder = new StringBuilder(elements.size()*300);
         builder.append(firstContentLine + System.lineSeparator());
 
-        Map<VComponentNew<?>, CharSequence> componentContentMap = new LinkedHashMap<>();
-        components.forEach(component -> componentContentMap.put(component, component.toContentLines()));
+        Map<VCalendarElement, CharSequence> elementContentMap = new LinkedHashMap<>();
+        elements.forEach(element -> elementContentMap.put(element, element.toContentLines()));
         
         // restore component sort order if components were parsed from content
-        componentContentMap.entrySet().stream()
-                .sorted((Comparator<? super Entry<VComponentNew<?>, CharSequence>>) (e1, e2) -> 
+        elementContentMap.entrySet().stream()
+                .sorted((Comparator<? super Entry<VCalendarElement, CharSequence>>) (e1, e2) -> 
                 {
                     final Long s1Initial = componentSortOrder().get(e1.getKey());
                     final Long s2Initial = componentSortOrder().get(e2.getKey());
@@ -393,35 +450,167 @@ public class VCalendar
         
         builder.append(lastContentLine);
         return builder.toString();
-
     }
-    private Long finalSortOrder(Long initialSort, VComponentNew<?> c)
+    private Long finalSortOrder(Long initialSort, VCalendarElement element)
     {
         final Long s1Final;
         if (initialSort == null)
         {
-            if (c instanceof VComponentPersonal)
+            if (element instanceof VComponentPersonal)
             { // sort by DTSTAMP
-                DateTimeStamp dateTimeStamp = ((VComponentPersonal<?>) c).getDateTimeStamp();
+                DateTimeStamp dateTimeStamp = ((VComponentPersonal<?>) element).getDateTimeStamp();
                 s1Final = (dateTimeStamp != null) ? dateTimeStamp.getValue().toInstant().toEpochMilli() : 0L; // shouldn't even be 0, DTSTAMP is REQUIRED
             } else
             {
-                s1Final = 0L; // no DTSTAMP sort order value is zero
+                s1Final = 0L; // no DTSTAMP sort order value is zero, keep natural order of elements
             }
         } else
         {
-            s1Final = initialSort - Long.MIN_VALUE; // make sorted values use negative values
+            /* make sorted values use negative values to ensure following order
+             * 1 - Elements with sort order
+             * 2 - Elements with no DTSTAMP (i.e. VTimeZone and calendar properties including PRODID, VERSION, CALSCALE and PUBLISH)
+             * 3 - Elements with DTSTAMP, in chronological order
+             */
+            s1Final = initialSort - Long.MIN_VALUE;
         }
         return s1Final;
     }
     private final String firstContentLine = "BEGIN:VCALENDAR";
     private final String lastContentLine = "END:VCALENDAR";
 
+    
 
     /** Parse content lines into calendar object */
     public static VCalendar parse(String contentLines)
     {
+//        Integer componentCounter = 0;
+//        Iterator<String> i = unfoldLines(contentLines).iterator();
+//        while (i.hasNext())
+//        {
+//            String line = i.next();
+//            List<Integer> indices = new ArrayList<>();
+//            indices.add(line.indexOf(':'));
+//            indices.add(line.indexOf(';'));
+//            int nameEndIndex = indices
+//                  .stream()
+//                  .filter(v -> v > 0)
+//                  .min(Comparator.naturalOrder())
+//                  .get();
+//            String propertyName = line.substring(0, nameEndIndex);
+//            
+//            // Parse subcomponent
+//            if (propertyName.equals("BEGIN"))
+//            {
+//                boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentType().toString());
+//                if  (! isMainComponent)
+//                {
+//                    VComponentEnum subcomponentType = VComponentEnum.valueOf(line.substring(nameEndIndex+1));
+//                    StringBuilder subcomponentContentBuilder = new StringBuilder(200);
+//                    subcomponentContentBuilder.append(line + System.lineSeparator());
+//                    boolean isEndFound = false;
+//                    do
+//                    {
+//                        String subLine = i.next();
+//                        subcomponentContentBuilder.append(subLine + System.lineSeparator());
+//                        isEndFound = subLine.subSequence(0, 3).equals("END");
+//                    } while (! isEndFound);
+//                    parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
+//                }
+//                
+//            // parse properties
+//            } else if (! propertyName.equals("END"))
+//            {
+//                // parse property
+//                // ignores unknown properties
+//                PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
+//                if (propertyType != null)
+//                {
+//                    propertySortOrder.put(propertyName, componentCounter);
+//                    componentCounter =+ 100; // add 100 to allow insertions in between
+//                    propertyType.parse(this, line);
+//                }
+//            }
+//        }
+        
         return null;
         // TODO Auto-generated method stub
     }
+    
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((calendarScale == null) ? 0 : calendarScale.hashCode());
+        result = prime * result + ((method == null) ? 0 : method.hashCode());
+        result = prime * result + ((productIdentifier == null) ? 0 : productIdentifier.hashCode());
+        result = prime * result + ((vEvents == null) ? 0 : vEvents.hashCode());
+        result = prime * result + ((vFreeBusys == null) ? 0 : vFreeBusys.hashCode());
+        result = prime * result + ((vJournals == null) ? 0 : vJournals.hashCode());
+        result = prime * result + ((vTimeZones == null) ? 0 : vTimeZones.hashCode());
+        result = prime * result + ((vTodos == null) ? 0 : vTodos.hashCode());
+        return result;
+    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        VCalendar other = (VCalendar) obj;
+        if (calendarScale == null)
+        {
+            if (other.calendarScale != null)
+                return false;
+        } else if (!calendarScale.equals(other.calendarScale))
+            return false;
+        if (method == null)
+        {
+            if (other.method != null)
+                return false;
+        } else if (!method.equals(other.method))
+            return false;
+        if (productIdentifier == null)
+        {
+            if (other.productIdentifier != null)
+                return false;
+        } else if (!productIdentifier.equals(other.productIdentifier))
+            return false;
+        if (vEvents == null)
+        {
+            if (other.vEvents != null)
+                return false;
+        } else if (!vEvents.equals(other.vEvents))
+            return false;
+        if (vFreeBusys == null)
+        {
+            if (other.vFreeBusys != null)
+                return false;
+        } else if (!vFreeBusys.equals(other.vFreeBusys))
+            return false;
+        if (vJournals == null)
+        {
+            if (other.vJournals != null)
+                return false;
+        } else if (!vJournals.equals(other.vJournals))
+            return false;
+        if (vTimeZones == null)
+        {
+            if (other.vTimeZones != null)
+                return false;
+        } else if (!vTimeZones.equals(other.vTimeZones))
+            return false;
+        if (vTodos == null)
+        {
+            if (other.vTodos != null)
+                return false;
+        } else if (!vTodos.equals(other.vTodos))
+            return false;
+        return true;
+    }
+    
 }

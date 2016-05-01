@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
  * @see VJournalInt
  * @see VFreeBusy
  */
-public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentAttendee<T>
+public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentAttendee<T>, VCalendarElement
 { 
     /**
      * DTSTAMP: Date-Time Stamp

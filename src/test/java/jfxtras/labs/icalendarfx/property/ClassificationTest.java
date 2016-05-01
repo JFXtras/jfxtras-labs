@@ -14,7 +14,7 @@ public class ClassificationTest
     {
         Classification madeProperty = new Classification(ClassificationType.PUBLIC);
         String expectedContent = "CLASS:PUBLIC";
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLines());
     }
     
     @Test
@@ -22,7 +22,7 @@ public class ClassificationTest
     {
         Classification madeProperty = Classification.parse("CLASS:CUSTOM");
         String expectedContent = "CLASS:CUSTOM";
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLines());
         assertEquals(ClassificationType.UNKNOWN, madeProperty.getValue());
     }
 }

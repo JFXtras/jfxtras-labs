@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.calendar;
 
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 
 /**
@@ -20,12 +21,12 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * @see VCalendar
  */
-public class ProductIdentifier extends PropertyBase<String, ProductIdentifier>
-{
-    public ProductIdentifier(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+public class ProductIdentifier extends PropertyBase<String, ProductIdentifier> implements VCalendarElement
+{    
+//    public ProductIdentifier(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public ProductIdentifier(ProductIdentifier source)
     {
@@ -34,7 +35,7 @@ public class ProductIdentifier extends PropertyBase<String, ProductIdentifier>
 
     public ProductIdentifier()
     {
-        super();
+        super(VCalendar.DEFAULT_PRODUCT_IDENTIFIER);
     }
     
     public static ProductIdentifier parse(String string)

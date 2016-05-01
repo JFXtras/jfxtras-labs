@@ -13,14 +13,14 @@ public class GeographicPositionTest
     {
         String content = "GEO:37.386013;-122.082932";
         GeographicPosition madeProperty = GeographicPosition.parse(content);
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
         GeographicPosition expectedProperty = new GeographicPosition()
                 .withLatitude(37.386013)
                 .withLongitude(-122.082932);
 
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, madeProperty.toContentLine());
-        assertEquals(content, expectedProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContentLines());
     }
     
     @Test
@@ -30,7 +30,7 @@ public class GeographicPositionTest
         Double longitude = -122.082932;
         GeographicPosition property = new GeographicPosition(latitude, longitude);
         String content = "GEO:37.386013;-122.082932";
-        assertEquals(content, property.toContentLine());
+        assertEquals(content, property.toContentLines());
         assertEquals(latitude, property.getLatitude());
         assertEquals(longitude, property.getLongitude());
     }

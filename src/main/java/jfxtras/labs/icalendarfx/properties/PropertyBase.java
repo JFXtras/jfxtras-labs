@@ -428,7 +428,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
                     {
                         p.parse(this, e.getValue());
                         parameterSortOrder().put(p, parameterCounter);
-                        parameterCounter =+ 100; // add 100 to allow insertions in between
+                        parameterCounter += 100; // add 100 to allow insertions in between
 //                        parameterSortOrder().put(p.getParameter(this), parameterCounter++);
                     } else
                     {
@@ -499,7 +499,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
      * @return - the content line
      */
     @Override
-    public String toContentLine()
+    public String toContentLines()
     {
         // property name
         StringBuilder builder = new StringBuilder(50);
@@ -596,6 +596,6 @@ public abstract class PropertyBase<T,U> implements Property<T>
     @Override
     public String toString()
     {
-        return super.toString() + "," + toContentLine();
+        return super.toString() + "," + toContentLines();
     }
 }

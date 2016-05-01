@@ -17,7 +17,7 @@ public class DateTimeCompletedTest
     {
         DateTimeCompleted property = DateTimeCompleted.parse("COMPLETED:20160322T174422Z");
         String expectedContentLine = "COMPLETED:20160322T174422Z";
-        String madeContentLine = property.toContentLine();
+        String madeContentLine = property.toContentLines();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(2016, 3, 22, 17, 44, 22), ZoneId.of("Z")), property.getValue());
     }

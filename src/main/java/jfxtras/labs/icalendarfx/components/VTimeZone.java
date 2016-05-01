@@ -257,7 +257,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
  * @author David Bal
  *
  */
-public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLastModified<VTimeZone>
+public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLastModified<VTimeZone>, VCalendarElement
 {
     @Override
     public VComponentEnum componentType()

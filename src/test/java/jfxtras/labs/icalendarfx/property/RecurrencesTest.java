@@ -71,7 +71,7 @@ public class RecurrencesTest
                 LocalDateTime.of(2015, 11, 12, 10, 0)
                 , LocalDateTime.of(2015, 11, 14, 12, 0) );
         assertEquals(expectedDates, property.getValue());
-        assertEquals("RDATE:20151112T100000,20151114T120000", property.toContentLine());
+        assertEquals("RDATE:20151112T100000,20151114T120000", property.toContentLines());
     }
     
     @Test
@@ -81,7 +81,7 @@ public class RecurrencesTest
         Recurrences<ZonedDateTime> madeProperty = Recurrences.parse(ZonedDateTime.class, content);
         madeProperty.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("America/Los_Angeles")));
         madeProperty.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("America/Los_Angeles")));
-        assertEquals(content + ",19960403T010000,19960404T010000", madeProperty.toContentLine());
+        assertEquals(content + ",19960403T010000,19960404T010000", madeProperty.toContentLines());
         Recurrences<ZonedDateTime> expectedProperty = new Recurrences<ZonedDateTime>(FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("America/Los_Angeles")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("America/Los_Angeles")),
@@ -105,7 +105,7 @@ public class RecurrencesTest
                 LocalDate.of(1997, 7, 4),
                 LocalDate.of(1997, 9, 4)
                 );        
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
     }
     
     /** Tests VEvent with RDATE VEvent */

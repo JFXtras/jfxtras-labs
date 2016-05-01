@@ -14,7 +14,7 @@ public class StatusTest
     {
         String content = "STATUS:NEEDS-ACTION";
         Status madeProperty = Status.parse(content);
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
         Status expectedProperty = Status.parse("NEEDS-ACTION");
         assertEquals(expectedProperty, madeProperty);
         assertEquals(madeProperty.getValue(), StatusType.NEEDS_ACTION);

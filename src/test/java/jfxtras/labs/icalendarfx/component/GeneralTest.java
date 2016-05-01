@@ -29,7 +29,7 @@ public class GeneralTest
                                "ran, far;" + System.lineSeparator() +
                                "away \\\\1";
         assertEquals(expectedValue, d.getValue());
-        assertEquals(contentLine, d.toContentLine());
+        assertEquals(contentLine, d.toContentLines());
     }
 
     

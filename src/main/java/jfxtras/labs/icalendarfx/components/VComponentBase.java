@@ -174,7 +174,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 if (propertyType != null)
                 {
                     propertySortOrder.put(propertyName, propertyCounter);
-                    propertyCounter =+ 100; // add 100 to allow insertions in between
+                    propertyCounter += 100; // add 100 to allow insertions in between
                     propertyType.parse(this, line);
                 }
             }
@@ -270,12 +270,12 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 {
                     if (propertyNameContentMap.get(property.getPropertyName()) == null)
                     { // make new list for new entry
-                        List<CharSequence> list = new ArrayList<>(Arrays.asList(property.toContentLine()));
+                        List<CharSequence> list = new ArrayList<>(Arrays.asList(property.toContentLines()));
                         propertyNameContentMap.put(property.getPropertyName(), list);
                     } else
                     { // add properties to existing list for existing entry
                         List<CharSequence> list = propertyNameContentMap.get(property.getPropertyName());
-                        list.add(property.toContentLine());
+                        list.add(property.toContentLines());
                     }
                 });
         

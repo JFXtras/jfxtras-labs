@@ -13,7 +13,7 @@ public class IANATest
     {
         String content = "TESTPROP2:CASUAL";
         IANAProperty madeProperty = IANAProperty.parse(content);
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
         IANAProperty expectedProperty = IANAProperty.parse("CASUAL")
                 .withPropertyName("TESTPROP2");
         assertEquals(expectedProperty, madeProperty);
@@ -25,7 +25,7 @@ public class IANATest
     {
         String content = "TESTPROP2;VALUE=INTEGER:12";
         IANAProperty madeProperty = IANAProperty.parse(content);
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
         IANAProperty expectedProperty = new IANAProperty(12)
                 .withPropertyName("TESTPROP2")
                 .withValueParameter("INTEGER");

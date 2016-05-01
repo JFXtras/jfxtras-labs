@@ -19,7 +19,7 @@ public class RecurrenceIdTest
     {
         RecurrenceId<LocalDateTime> property = RecurrenceId.parse(LocalDateTime.class, "20160322T174422");
         String expectedContentLine = "RECURRENCE-ID:20160322T174422";
-        String madeContentLine = property.toContentLine();
+        String madeContentLine = property.toContentLines();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(LocalDateTime.of(2016, 3, 22, 17, 44, 22), property.getValue());
     }
@@ -29,7 +29,7 @@ public class RecurrenceIdTest
     {
         RecurrenceId<LocalDate> property = RecurrenceId.parse(LocalDate.class, "20160322");
         String expectedContentLine = "RECURRENCE-ID;VALUE=DATE:20160322";
-        String madeContentLine = property.toContentLine();
+        String madeContentLine = property.toContentLines();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(LocalDate.of(2016, 3, 22), property.getValue());
     }
@@ -39,7 +39,7 @@ public class RecurrenceIdTest
     {
         RecurrenceId<ZonedDateTime> property = new RecurrenceId<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
         String expectedContentLine = "RECURRENCE-ID;TZID=America/Los_Angeles:20160306T043000";
-        String madeContentLine = property.toContentLine();
+        String madeContentLine = property.toContentLines();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")), property.getValue());
     }
@@ -50,7 +50,7 @@ public class RecurrenceIdTest
         RecurrenceId<ZonedDateTime> property = new RecurrenceId<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z")))
                 .withRange(RangeType.THIS_AND_FUTURE);
         String expectedContentLine = "RECURRENCE-ID;RANGE=THISANDFUTURE:20160306T043000Z";
-        String madeContentLine = property.toContentLine();
+        String madeContentLine = property.toContentLines();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z")), property.getValue());
     }

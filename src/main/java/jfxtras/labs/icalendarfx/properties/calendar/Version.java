@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.calendar;
 
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 
 /**
@@ -20,7 +21,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * @see VCalendar
  */
-public class Version extends PropertyBase<String, Version>
+public class Version extends PropertyBase<String, Version> implements VCalendarElement
 {
     public Version(CharSequence contentLine)
     {
@@ -35,8 +36,7 @@ public class Version extends PropertyBase<String, Version>
     /** Set version to default value of 2.0 */
     public Version()
     {
-        // null as argument for string converter causes default converter from ValueType to be used
-        super("2.0");
+        super(VCalendar.DEFAULT_ICALENDAR_SPECIFICATION_VERSION);
     }
     
     public static Version parse(String string)

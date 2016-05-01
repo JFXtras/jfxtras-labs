@@ -17,7 +17,7 @@ public class DateTimeStampTest
     {
         String expectedContentLine = "DTSTAMP:19971210T080000Z";
         DateTimeStamp property = DateTimeStamp.parse(expectedContentLine);
-        String madeContentLine = property.toContentLine();
+        String madeContentLine = property.toContentLines();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(1997, 12, 10, 8, 0), ZoneId.of("Z")), property.getValue());
     }

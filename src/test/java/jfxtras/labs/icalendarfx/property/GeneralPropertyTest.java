@@ -74,7 +74,7 @@ public class GeneralPropertyTest
     {
         String content = "sUmmARY;lanGUAGE=en:TEST SUMMARY";
         Summary madeProperty = Summary.parse(content);
-        assertEquals("SUMMARY;LANGUAGE=en:TEST SUMMARY", madeProperty.toContentLine());
+        assertEquals("SUMMARY;LANGUAGE=en:TEST SUMMARY", madeProperty.toContentLines());
         Summary expectedProperty = Summary.parse("TEST SUMMARY")
                 .withLanguage("en");
         assertEquals(expectedProperty, madeProperty);

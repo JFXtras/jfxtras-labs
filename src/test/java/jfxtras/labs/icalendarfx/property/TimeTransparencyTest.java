@@ -14,7 +14,7 @@ public class TimeTransparencyTest
     {
         String content = "TRANSP:TRANSPARENT";
         TimeTransparency madeProperty = TimeTransparency.parse(content);
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
         TimeTransparency expectedProperty = new TimeTransparency(TimeTransparencyType.TRANSPARENT);
         assertEquals(expectedProperty, madeProperty);
         assertEquals(TimeTransparencyType.TRANSPARENT, madeProperty.getValue());
@@ -25,7 +25,7 @@ public class TimeTransparencyTest
     {
         String content = "TRANSP:OPAQUE";
         TimeTransparency madeProperty = new TimeTransparency();
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
         assertEquals(TimeTransparencyType.OPAQUE, madeProperty.getValue());
     }
 }

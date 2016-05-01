@@ -131,7 +131,7 @@ public enum RRuleEnum
             {
                 if (rrule.getCount() == RecurrenceRuleParameter.INITIAL_COUNT)
                 {
-                    System.out.println("until:" + value + " " + DateTimeUtilities.parse(value));
+//                    System.out.println("until:" + value + " " + DateTimeUtilities.parse(value));
                     rrule.setUntil(DateTimeUtilities.parse(value));                    
                 } else
                 {

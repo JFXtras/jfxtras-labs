@@ -14,7 +14,7 @@ public class RelatedToTest
     {
         String expectedContent = "RELATED-TO:jsmith.part7.19960817T083000.xyzMail@example.com";
         RelatedTo madeProperty = RelatedTo.parse(expectedContent);
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLines());
         RelatedTo expectedProperty = RelatedTo.parse("jsmith.part7.19960817T083000.xyzMail@example.com");
         assertEquals(expectedProperty, madeProperty);
     }
@@ -24,7 +24,7 @@ public class RelatedToTest
     {
         String expectedContent = "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com";
         RelatedTo madeProperty = RelatedTo.parse(expectedContent);
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLines());
         RelatedTo expectedProperty = RelatedTo.parse("19960401-080045-4000F192713@example.com")
                 .withRelationship(RelationshipType.SIBLING);
         assertEquals(expectedProperty, madeProperty);
@@ -36,7 +36,7 @@ public class RelatedToTest
     {
         String expectedContent = "RELATED-TO;RELTYPE=CUSTOM RELATIONSHIP:fc3577e0-8155-4fa2-a085-a15bdc50a5b4";
         RelatedTo madeProperty = RelatedTo.parse(expectedContent);
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLines());
         RelatedTo expectedProperty = RelatedTo.parse("fc3577e0-8155-4fa2-a085-a15bdc50a5b4")
                 .withRelationship("CUSTOM RELATIONSHIP");
         assertEquals(expectedProperty, madeProperty);

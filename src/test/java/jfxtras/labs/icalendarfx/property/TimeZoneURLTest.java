@@ -16,7 +16,7 @@ public class TimeZoneURLTest
     {
         String content = "TZURL:http://timezones.example.org/tz/America-Los_Angeles.ics";
         TimeZoneURL property = TimeZoneURL.parse(content);
-        String madeContentLine = property.toContentLine();
+        String madeContentLine = property.toContentLines();
         assertEquals(content, madeContentLine);
         assertEquals(new URI("http://timezones.example.org/tz/America-Los_Angeles.ics"), property.getValue());
     }

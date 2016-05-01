@@ -6,6 +6,9 @@ import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
+import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
+import jfxtras.labs.icalendarfx.properties.calendar.Version;
 
 public class GeneralCalendarTest extends ICalendarTestAbstract2
 {
@@ -72,6 +75,10 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
         
         VCalendar c = new VCalendar()
                 .withVEvents(getYearly1())
+                .withCalendarScale(new CalendarScale())
+                .withCalendarScale(new CalendarScale())
+                .withVersion(new Version())
+                .withProductIdentifier(new ProductIdentifier())
                 .withVTimeZones(vTimeZone)
                 .withVTodos(new VTodo()
                         .withDateTimeCompleted("COMPLETED:19960401T150000Z")

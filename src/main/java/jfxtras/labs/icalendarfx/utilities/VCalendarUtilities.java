@@ -134,13 +134,13 @@ public final class VCalendarUtilities
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                if ((vCalendar.getProductIdentifier() == VCalendar.DEFAULT_PRODUCT_IDENTIFIER) || (vCalendar.getProductIdentifier() == null))
-                {
-                    vCalendar.setProductIdentifier(value);
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
-                }
+//                if ((vCalendar.getProductIdentifier() == VCalendar.DEFAULT_PRODUCT_IDENTIFIER) || (vCalendar.getProductIdentifier() == null))
+//                {
+//                    vCalendar.setProductIdentifier(value);
+//                } else
+//                {
+//                    throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
+//                }
             }
 
             @Override

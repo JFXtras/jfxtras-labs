@@ -30,7 +30,7 @@ public class ExceptionsTest
     {
         String content = "EXDATE:20151112T100000,20151115T100000";
         Exceptions<LocalDateTime> madeProperty = Exceptions.parse(LocalDateTime.class, content);
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
         Exceptions<LocalDateTime> expectedProperty = new Exceptions<LocalDateTime>(FXCollections.observableSet(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0)));
         assertEquals(expectedProperty, madeProperty);
         
@@ -44,7 +44,7 @@ public class ExceptionsTest
     {
         String content = "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z";
         Exceptions<ZonedDateTime> madeProperty = Exceptions.parse(content);
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
         ObservableSet<ZonedDateTime> observableSet = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("Z")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("Z")),
@@ -67,7 +67,7 @@ public class ExceptionsTest
     {
         String content = "EXDATE;VALUE=DATE:20160402";
         Exceptions<LocalDate> madeProperty = Exceptions.parse(LocalDate.class, content);
-        assertEquals(content, madeProperty.toContentLine());
+        assertEquals(content, madeProperty.toContentLines());
         Exceptions<LocalDate> expectedProperty = new Exceptions<LocalDate>(FXCollections.observableSet(
                 LocalDate.of(2016, 4, 2) ));
         assertEquals(expectedProperty, madeProperty);

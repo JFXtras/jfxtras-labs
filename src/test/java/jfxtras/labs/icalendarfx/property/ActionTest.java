@@ -15,7 +15,7 @@ public class ActionTest
     {
         Action madeProperty = Action.parse("ACTION:AUDIO");
         String expectedContent = "ACTION:AUDIO";
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLines());
         assertEquals(ActionType.AUDIO, madeProperty.getValue());
     }
     
@@ -24,7 +24,7 @@ public class ActionTest
     {
         Action madeProperty = new Action(ActionType.DISPLAY);
         String expectedContent = "ACTION:DISPLAY";
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLines());
         assertEquals(ActionType.DISPLAY, madeProperty.getValue());
     }
     
@@ -33,7 +33,7 @@ public class ActionTest
     {
         Action madeProperty = Action.parse("DANCE");
         String expectedContent = "ACTION:DANCE";
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLines());
         assertEquals(ActionType.UNKNOWN, madeProperty.getValue());
     }
     
@@ -42,7 +42,7 @@ public class ActionTest
     {
         Action madeProperty = Action.parse("EMAIL");
         String expectedContent = "ACTION:EMAIL";
-        assertEquals(expectedContent, madeProperty.toContentLine());
+        assertEquals(expectedContent, madeProperty.toContentLines());
         assertEquals(ActionType.EMAIL, madeProperty.getValue());
         Action copiedProperty = new Action(madeProperty);
         assertEquals(madeProperty, copiedProperty);

@@ -194,9 +194,9 @@ public class DisplayableTest
                 ));
         assertEquals(expectedDates, madeDates);
         String expectedContent = "EXDATE:20151112T100000,20151115T100000";
-        assertEquals(expectedContent, e.getExceptions().get(0).toContentLine());
+        assertEquals(expectedContent, e.getExceptions().get(0).toContentLines());
         String expectedContent2 = "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6";
-        assertEquals(expectedContent2, e.getRecurrenceRule().toContentLine());
+        assertEquals(expectedContent2, e.getRecurrenceRule().toContentLines());
     }
     
     // Google test

@@ -168,15 +168,26 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
-            return null;
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return object.toString();
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) new Double(Double.parseDouble(string));
+                }
+            };
         }
     },
     INTEGER ("INTEGER", Arrays.asList(Integer.class)) {
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
             return new StringConverter<T>()
             {
                 @Override
@@ -197,8 +208,20 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
-            return null;
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return object.toString();
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) string;
+                }
+            };
         }
     },
     RECURRENCE_RULE ("RECUR", Arrays.asList(RecurrenceRuleParameter.class)) {
@@ -324,7 +347,6 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
             return new StringConverter<T>()
             {
                 @Override
@@ -345,8 +367,20 @@ public enum ValueType
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
-            return null;
+            return new StringConverter<T>()
+            {
+                @Override
+                public String toString(T object)
+                {
+                    return object.toString();
+                }
+
+                @Override
+                public T fromString(String string)
+                {
+                    return (T) string;
+                }
+            };
         }
     };
     final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
