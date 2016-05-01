@@ -12,7 +12,7 @@ public class DaylightSavingTime extends StandardOrDaylightBase<DaylightSavingTim
     /*
      * CONSTRUCTORS
      */
-    public DaylightSavingTime() { }
+    public DaylightSavingTime() { super(); }
     
     public DaylightSavingTime(String contentLines)
     {

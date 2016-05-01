@@ -86,7 +86,7 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
     /*
      * CONSTRUCTORS
      */
-    public StandardOrDaylightBase() { }
+    public StandardOrDaylightBase() { super(); }
     
     public StandardOrDaylightBase(String contentLines)
     {

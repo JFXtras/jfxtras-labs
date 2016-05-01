@@ -94,13 +94,13 @@ public final class VCalendarUtilities
             @Override
             public void parseAndSetProperty(VCalendar vCalendar, String value)
             {
-                if ((vCalendar.getCalendarScale() == VCalendar.DEFAULT_CALENDAR_SCALE) || (vCalendar.getCalendarScale() == null))
-                {
-                    vCalendar.setCalendarScale(value);
-                } else
-                {
-                    throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
-                }
+//                if ((vCalendar.getCalendarScale() == VCalendar.DEFAULT_CALENDAR_SCALE) || (vCalendar.getCalendarScale() == null))
+//                {
+//                    vCalendar.setCalendarScale(value);
+//                } else
+//                {
+//                    throw new IllegalArgumentException(toString() + " can only appear once in calendar");                    
+//                }
             }
 
             @Override

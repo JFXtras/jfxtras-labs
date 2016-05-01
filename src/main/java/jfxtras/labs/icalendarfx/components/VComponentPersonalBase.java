@@ -139,7 +139,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     /*
      * CONSTRUCTORS
      */
-    VComponentPersonalBase() { }
+    VComponentPersonalBase() { super(); }
     
     VComponentPersonalBase(String contentLines)
     {

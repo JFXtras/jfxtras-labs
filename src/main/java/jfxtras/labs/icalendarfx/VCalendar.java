@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -37,7 +38,7 @@ public class VCalendar
     // version of this project, not associated with the iCalendar specification version
     private static String myVersion = "1.0";
     public static final ProductIdentifier DEFAULT_PRODUCT_IDENTIFIER = ProductIdentifier.parse("-////JFxtras////iCalendarFx " + myVersion + "////EN");
-    public static final CalendarScale DEFAULT_CALENDAR_SCALE = CalendarScale.parse("GREGORIAN");
+//    public static final CalendarScale DEFAULT_CALENDAR_SCALE = CalendarScale.parse("GREGORIAN");
     public static final Version DEFAULT_ICALENDAR_SPECIFICATION_VERSION = Version.parse("2.0");
     
     /*
@@ -64,13 +65,13 @@ public class VCalendar
     {
         if (calendarScale == null)
         {
-            calendarScale = new SimpleObjectProperty<CalendarScale>(this, PropertyEnum.CALENDAR_SCALE.toString(), DEFAULT_CALENDAR_SCALE);
+            calendarScale = new SimpleObjectProperty<CalendarScale>(this, PropertyEnum.CALENDAR_SCALE.toString());
         }
         return calendarScale;
     }
     public CalendarScale getCalendarScale()
     {
-        return (calendarScale == null) ? DEFAULT_CALENDAR_SCALE : calendarScaleProperty().get();
+        return (calendarScale == null) ? null : calendarScaleProperty().get();
     }
     private ObjectProperty<CalendarScale> calendarScale;
     public void setCalendarScale(String calendarScale) { setCalendarScale(CalendarScale.parse(calendarScale)); }
@@ -104,7 +105,10 @@ public class VCalendar
         }
         return method;
     }
-    public Method getMethod() { return methodProperty().get(); }
+    public Method getMethod()
+    {
+        return (method == null) ? null : methodProperty().get();
+    }
     private ObjectProperty<Method> method;
     public void setMethod(String method) { setMethod(Method.parse(method)); }
     public void setMethod(Method method) { methodProperty().set(method); }
@@ -196,6 +200,12 @@ public class VCalendar
     /*
      * Calendar Components
      */
+    
+    public List<VComponent<?>> components()
+    {
+        // TODO - use enum?  generate here?
+        return null;
+    }
 
     /** 
      * VEVENT: RFC 5545 iCalendar 3.6.1. page 52
@@ -217,41 +227,28 @@ public class VCalendar
         getVEvents().addAll(vEvents);
         return this;
     }
-
-
-//    /** 
-//     * VEVENT Callback
-//     * Callback to make a VEvent from a string.  This defines how the specific VEvent implementation
-//     * creates VEvent objects
-//     * 
-//     * For example, the following callback is used in the test cases with the VEvent implementation VEventMock:
-//     * (s) -> VEventMock.parse(s)
-//     *  */
-//    public  Callback<String, VEventNew> getMakeVEventCallback() { return makeVEventCallback; }
-//    private Callback<String, VEventNew> makeVEventCallback;
-//    public void setMakeVEventCallback(Callback<String, VEventNew> callback) { makeVEventCallback = callback; }
-//    public VCalendar withVEventCallback(Callback<String, VEventNew> callback) { setMakeVEventCallback(callback); return this; }
-    
+  
     /** 
      * VTODO: RFC 5545 iCalendar 3.6.2. page 55
      * 
      * A grouping of component properties that describe a task that needs to be completed.
      * 
      */
-    public ObservableList<VTodo> vTodos() { return vTodos; }
+    public ObservableList<VTodo> getVTodos() { return vTodos; }
     private ObservableList<VTodo> vTodos = FXCollections.observableArrayList();
-
-    /**
-     * VTODO Callback
-     * Callback to make a VTodo from a string.  This defines how the specific VTodo implementation
-     * creates VTodo objects
-     * 
-     *  */
-//    public  Callback<String, VTodo> getMakeVTodoCallback() { return makeVTodoCallback; }
-//    private Callback<String, VTodo> makeVTodoCallback;
-//    public void setMakeVTodoCallback(Callback<String, VTodo> callback) { makeVTodoCallback = callback; }
-//    public VCalendar withVTodoCallback(Callback<String, VTodo> callback) { setMakeVTodoCallback(callback); return this; }
-    
+    public void setVTodos(ObservableList<VTodo> vTodos) { this.vTodos = vTodos; }
+    public VCalendar withVTodo(ObservableList<VTodo> vTodos) { setVTodos(vTodos); return this; }
+    public VCalendar withVTodo(String...vTodos)
+    {
+        Arrays.stream(vTodos).forEach(c -> getVTodos().add(VTodo.parse(c)));
+        return this;
+    }
+    public VCalendar withVTodos(VTodo...vTodos)
+    {
+        getVTodos().addAll(vTodos);
+        return this;
+    }
+ 
     /** 
      * VJOURNAL: RFC 5545 iCalendar 3.6.3. page 57
      * 
@@ -260,34 +257,83 @@ public class VCalendar
      * @see VComponent
      * @see VJournal
      */
-    public ObservableList<VJournal> vJournals() { return vJournals; }
+    public ObservableList<VJournal> getVJournals() { return vJournals; }
     private ObservableList<VJournal> vJournals = FXCollections.observableArrayList();
+    public void setVJournals(ObservableList<VJournal> vJournals) { this.vJournals = vJournals; }
+    public VCalendar withVJournal(ObservableList<VJournal> vJournals) { setVJournals(vJournals); return this; }
+    public VCalendar withVJournal(String...vJournals)
+    {
+        Arrays.stream(vJournals).forEach(c -> getVJournals().add(VJournal.parse(c)));
+        return this;
+    }
+    public VCalendar withVJournals(VJournal...vJournals)
+    {
+        getVJournals().addAll(vJournals);
+        return this;
+    }
 
-//    /** 
-//     * VJOURNAL callback
-//     * Callback to make a VJournal from a string.  This defines how the specific VJournal implementation
-//     * creates VJournal objects
-//     * 
-//     *  */
-//    public  Callback<String, VJournal> getMakeVJournalCallback() { return makeVJournalCallback; }
-//    private Callback<String, VJournal> makeVJournalCallback;
-//    public void setMakeVJournalCallback(Callback<String, VJournal> callback) { makeVJournalCallback = callback; }
-//    public VCalendar withVJournalCallback(Callback<String, VJournal> callback) { setMakeVJournalCallback(callback); return this; }
-    
     /** 
      * VFREEBUSY: RFC 5545 iCalendar 3.6.4. page 59
      * 
      * @see VFreeBusy
      */
-    public ObservableList<VFreeBusy> vFreeBusyList() { return vFreeBusyList; }
-    private ObservableList<VFreeBusy> vFreeBusyList = FXCollections.observableArrayList();
+    public ObservableList<VFreeBusy> getVFreeBusys() { return vFreeBusys; }
+    private ObservableList<VFreeBusy> vFreeBusys = FXCollections.observableArrayList();
+    public void setVFreeBusys(ObservableList<VFreeBusy> vFreeBusys) { this.vFreeBusys = vFreeBusys; }
+    public VCalendar withVFreeBusy(ObservableList<VFreeBusy> vFreeBusys) { setVFreeBusys(vFreeBusys); return this; }
+    public VCalendar withVFreeBusy(String...vFreeBusys)
+    {
+        Arrays.stream(vFreeBusys).forEach(c -> getVFreeBusys().add(VFreeBusy.parse(c)));
+        return this;
+    }
+    public VCalendar withVFreeBusys(VFreeBusy...vFreeBusys)
+    {
+        getVFreeBusys().addAll(vFreeBusys);
+        return this;
+    }
 
     /** 
      * VTIMEZONE: RFC 5545 iCalendar 3.6.5. page 62
      * 
      * @see VTimeZoneOld
      */
-    public ObservableList<VTimeZone> vTimeZones() { return vTimeZones; }
+    public ObservableList<VTimeZone> getVTimeZones() { return vTimeZones; }
     private ObservableList<VTimeZone> vTimeZones = FXCollections.observableArrayList();
+    public void setVTimeZones(ObservableList<VTimeZone> vTimeZones) { this.vTimeZones = vTimeZones; }
+    public VCalendar withVTimeZone(ObservableList<VTimeZone> vTimeZones) { setVTimeZones(vTimeZones); return this; }
+    public VCalendar withVTimeZone(String...vTimeZones)
+    {
+        Arrays.stream(vTimeZones).forEach(c -> getVTimeZones().add(VTimeZone.parse(c)));
+        return this;
+    }
+    public VCalendar withVTimeZones(VTimeZone...vTimeZones)
+    {
+        getVTimeZones().addAll(vTimeZones);
+        return this;
+    }
+    
+    /*
+     * CONSTRUCTORS
+     */
+    
+    public VCalendar() {  }
+  
+    /** Copy constructor */
+    public VCalendar(VCalendar source)
+    {
+        // TODO Auto-generated method stub        
+    }
 
+    public void toContentLines()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /** Parse content lines into calendar object */
+    public static VCalendar parse(String contentLines)
+    {
+        return null;
+        // TODO Auto-generated method stub
+    }
 }

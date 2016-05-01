@@ -382,7 +382,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     /*
      * CONSTRUCTORS
      */
-    public VTimeZone() { }
+    public VTimeZone() { super(); }
     
     public VTimeZone(String contentLines)
     {

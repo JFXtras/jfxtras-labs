@@ -67,7 +67,7 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
     /*
      * CONSTRUCTORS
      */
-    public VJournal() { }
+    public VJournal() { super(); }
     
     public VJournal(String contentLines)
     {
@@ -111,5 +111,13 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
             getDescriptions().addAll(descriptions);
         }
         return this;
+    }
+    
+    /** Parse content lines into calendar component object */
+    public static VJournal parse(String contentLines)
+    {
+        VJournal component = new VJournal();
+        component.parseContent(contentLines);
+        return component;
     }
 }

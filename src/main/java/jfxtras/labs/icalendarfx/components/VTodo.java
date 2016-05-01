@@ -186,7 +186,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     /*
      * CONSTRUCTORS
      */
-    public VTodo() { }
+    public VTodo() { super(); }
     
     public VTodo(String contentLines)
     {
@@ -207,5 +207,13 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         boolean ok2 = ! isDuePresent && isDurationPresent;
         boolean isDueAndDurationOk = ok1 || ok2;
         return super.isValid() && isDueAndDurationOk;
+    }
+    
+    /** Parse content lines into calendar component object */
+    public static VTodo parse(String contentLines)
+    {
+        VTodo component = new VTodo();
+        component.parseContent(contentLines);
+        return component;
     }
 }

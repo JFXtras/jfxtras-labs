@@ -163,13 +163,12 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
     /*
      * CONSTRUCTORS
      */
-    public VEventNew() { }
+    public VEventNew() { super(); }
 
 //    @Deprecated
     public VEventNew(String contentLines)
     {
-        parseContent(contentLines);
-//        super(contentLines);
+        super(contentLines);
     }
     
     /** Copy constructor */

@@ -78,7 +78,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * @return - the list of properties
      */
     @Override
-    public List<PropertyEnum> properties()
+    public List<PropertyEnum> propertyEnums()
     {
         List<PropertyEnum> populatedProperties = new ArrayList<>();
 //        System.out.println("componentType():" + componentType());
@@ -195,7 +195,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * essentially making a copy of source */
     public void copyComponentFrom(VComponentBase<?> source)
     {
-        source.properties().forEach(p -> p.copyProperty(source, this));
+        source.propertyEnums().forEach(p -> p.copyProperty(source, this));
         propertySortOrder().putAll(source.propertySortOrder());
     }
     
@@ -210,7 +210,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     public int hashCode()
     {
         int hash = 7;
-        Iterator<PropertyEnum> i = properties().iterator();
+        Iterator<PropertyEnum> i = propertyEnums().iterator();
         while (i.hasNext())
         {
             Object property = i.next().getProperty(this);
@@ -229,8 +229,8 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
         VComponentBase<?> testObj = (VComponentBase<?>) obj;
         
         final boolean propertiesEquals;
-        List<PropertyEnum> properties = properties(); // make properties local to avoid creating list multiple times
-        List<PropertyEnum> testProperties = testObj.properties(); // make properties local to avoid creating list multiple times
+        List<PropertyEnum> properties = propertyEnums(); // make properties local to avoid creating list multiple times
+        List<PropertyEnum> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
 //        System.out.println("equals:" + this + " " + testObj);
         if (properties.size() == testProperties.size())
         {
@@ -270,7 +270,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     {
 //        Map<Property<?>, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
         Map<String, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
-        properties().stream()
+        propertyEnums().stream()
                 .map(e -> e.getProperty(this))
                 .flatMap(prop -> 
                 {

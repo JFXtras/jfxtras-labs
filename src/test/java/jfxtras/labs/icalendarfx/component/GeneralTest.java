@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
@@ -56,11 +57,19 @@ public class GeneralTest
                 .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
                 .withDateTimeStart(new DateTimeStart<LocalDateTime>(LocalDateTime.of(2016, 4, 15, 12, 0)))
                 .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
+                .withAttendees(Attendee.parse("ATTENDEE;PARTSTAT=DECLINED:mailto:jsmith@example.com"))
                 .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com");
-        VEventNew builtComponent2 = new VEventNew();
-        System.out.println("here:" + builtComponent2.getRecurrences());
-        List<PropertyEnum> expectedProperties = Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.DATE_TIME_START, PropertyEnum.ORGANIZER, PropertyEnum.UNIQUE_IDENTIFIER);
+        List<PropertyEnum> expectedPropertyEnums = Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.DATE_TIME_START, PropertyEnum.ORGANIZER, PropertyEnum.UNIQUE_IDENTIFIER);
+        assertEquals(expectedPropertyEnums, builtComponent.propertyEnums());
+        List<Property<?>> expectedProperties = Arrays.asList(
+                builtComponent.getAttendees().get(0),
+                builtComponent.getAttendees().get(1),
+                builtComponent.getDateTimeStart(),
+                builtComponent.getOrganizer(),
+                builtComponent.getUniqueIdentifier()
+                );
         assertEquals(expectedProperties, builtComponent.properties());
+//        builtComponent.properties().stream().forEach(p -> System.out.println(p.toContentLine()));
     }
     
     @Test (expected = IllegalArgumentException.class)

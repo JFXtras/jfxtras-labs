@@ -46,7 +46,8 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
      * start date/times of the repeating events.
      * Can contain either a LocalDate (DATE) or LocalDateTime (DATE-TIME)
      */
-    @Override public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty()
+    @Override
+    public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty()
     {
         if (dateTimeStart == null)
         {
@@ -55,12 +56,14 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         }
         return dateTimeStart;
     }
+    @Override
+    public DateTimeStart<? extends Temporal> getDateTimeStart() { return (dateTimeStart == null) ? null : dateTimeStartProperty().get(); }
     private ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStart;
 
     /*
      * CONSTRUCTORS
      */
-    VComponentPrimaryBase() { }
+    VComponentPrimaryBase() { super(); }
     
     VComponentPrimaryBase(String contentLines)
     {

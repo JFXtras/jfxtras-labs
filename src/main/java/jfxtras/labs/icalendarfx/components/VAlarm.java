@@ -297,7 +297,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     /*
      * CONSTRUCTORS
      */
-    public VAlarm() { }
+    public VAlarm() { super(); }
     
     public VAlarm(String contentLines)
     {

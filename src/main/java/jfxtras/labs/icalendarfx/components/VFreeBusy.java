@@ -192,7 +192,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     /*
      * CONSTRUCTORS
      */
-    public VFreeBusy() { }
+    public VFreeBusy() { super(); }
     
     public VFreeBusy(String contentLines)
     {
@@ -216,5 +216,13 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     public void checkDateTimeStartConsistency()
     {
 //        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
+    }
+    
+    /** Parse content lines into calendar component object */
+    public static VFreeBusy parse(String contentLines)
+    {
+        VFreeBusy component = new VFreeBusy();
+        component.parseContent(contentLines);
+        return component;
     }
 }

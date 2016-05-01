@@ -160,7 +160,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     /*
      * CONSTRUCTORS
      */
-    public VComponentLocatableBase() { }
+    public VComponentLocatableBase() { super(); }
     
     public VComponentLocatableBase(String contentLines)
     {

@@ -323,7 +323,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     /*
      * CONSTRUCTORS
      */
-    public VComponentDisplayableBase() { }
+    public VComponentDisplayableBase() { super(); }
     
     public VComponentDisplayableBase(String contentLines)
     {

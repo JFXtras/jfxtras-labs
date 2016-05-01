@@ -1,10 +1,13 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
@@ -95,12 +98,38 @@ public interface VComponentNew<T>
     }
 
     /**
+     * List of all properties enums found in component.
+     * The list is unmodifiable.
+     * 
+     * @return - the list of properties
+     */
+    List<PropertyEnum> propertyEnums();
+    /**
      * List of all properties found in component.
      * The list is unmodifiable.
      * 
      * @return - the list of properties
      */
-    List<PropertyEnum> properties();
+
+    default List<Property<?>> properties()
+    {
+        return Collections.unmodifiableList(
+                propertyEnums().stream().flatMap(e ->
+        {
+            Object obj = e.getProperty(this);
+            if (obj instanceof Property)
+            {
+                return Arrays.asList((Property<?>) obj).stream();
+            } else if (obj instanceof List)
+            {
+                return ((List<Property<?>>) obj).stream();
+            } else
+            {
+                throw new RuntimeException("Unsupported property type:" + obj.getClass());
+            }
+        })
+        .collect(Collectors.toList()));
+    }
     
 
     /**
