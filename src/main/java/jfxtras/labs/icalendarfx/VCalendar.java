@@ -483,7 +483,7 @@ public class VCalendar
     public void parseContent(String content)
     {
         Long componentCounter = 0L;
-        List<String> contentLines = unfoldLines(content);
+        List<String> contentLines = ICalendarUtilities.unfoldLines(content);
 //        Iterator<String> i = unfoldLines(contentLines).iterator();
 //        while (i.hasNext())
         if (! contentLines.get(0).equals("BEGIN:VCALENDAR"))
@@ -511,29 +511,21 @@ public class VCalendar
                     myLines.add(line);
                 } while (! line.equals(endLine));
                 
-                CalendarElement vComponentType = CalendarElement.valueOf(componentName);
-                VCalendarElement element = vComponentType.parse(this, myLines);
+                CalendarElement elementType = CalendarElement.valueOf(componentName);
+                VCalendarElement element = elementType.parse(this, myLines);
                 elementSortOrder().put(element, componentCounter);
                 componentCounter += 100;
                 
-            // parse calendar properties
+            // parse calendar properties (ignores unknown properties)
             } else //if (! propertyName.equals("END"))
             {
-                // parse property
-                // ignores unknown properties
-                System.out.println("property:" + propertyName);
-                CalendarElement vComponentType = CalendarElement.valueOf(propertyName);
-                VCalendarElement element = vComponentType.parse(this, Arrays.asList(line));
-                elementSortOrder().put(element, componentCounter);
-                componentCounter += 100;
-
-
-//                if (propertyType != null)
-//                {
-//                    propertySortOrder.put(propertyName, componentCounter);
-//                    componentCounter =+ 100; // add 100 to allow insertions in between
-//                    propertyType.parse(this, line);
-//                }
+                CalendarElement elementType = CalendarElement.valueOf(propertyName);
+                if (elementType != null)
+                {
+                    VCalendarElement element = elementType.parse(this, Arrays.asList(line));
+                    elementSortOrder().put(element, componentCounter);
+                    componentCounter += 100;
+                }
             }
         }
         
@@ -618,128 +610,7 @@ public class VCalendar
 //        return true;
 //    }
     
-    /**
-     * Starting with lines-separated list of content lines, the lines are unwrapped and 
-     * converted into a list of property name and property value list wrapped in a Pair.
-     * DTSTART property is put on top, if present.
-     * 
-     * This method unwraps multi-line content lines as defined in iCalendar RFC5545 3.1, page 9
-     * 
-     * For example:
-     * string is
-     * BEGIN:VEVENT
-     * SUMMARY:test1
-     * DTSTART;TZID=Etc/GMT:20160306T080000Z
-     * DTEND;TZID=Etc/GMT:20160306T093000Z
-     * RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
-     * ORGANIZER;CN=David Bal;SENT-BY="mailto:ddbal1@yahoo.com":mailto:ddbal1@yaho
-     *  o.com
-     * UID:fc3577e0-8155-4fa2-a085-a15bdc50a5b4
-     * DTSTAMP:20160313T053147Z
-     * END:VEVENT
-     *  
-     *  results in list
-     *  Element 1, BEGIN:VEVENT
-     *  Element 2, SUMMARY:test1
-     *  Element 3, DTSTART;TZID=Etc/GMT:20160306T080000Z
-     *  Element 4, DTEND;TZID=Etc/GMT:20160306T093000Z
-     *  Element 5, RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
-     *  Element 5, ORGANIZER;CN=David Bal;SENT-BY="mailto:ddbal1@yahoo.com":mailto:ddbal1@yahoo.com
-     *  Element 6, UID:fc3577e0-8155-4fa2-a085-a15bdc50a5b4
-     *  Element 7, DTSTAMP:20160313T053147Z
-     *  Element 8, END:VEVENT
-     *  
-     *  Note: the list of Pair<String,String> is used instead of a Map<String,String> because some properties
-     *  can appear more than once resulting in duplicate key values.
-     *  
-     * @param componentString
-     * @return
-     */
-    // TODO - MOVE THIS TO A UTILITY CLASS
-//    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
-//    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', 'n'};
-    private static List<String> unfoldLines(String componentString)
-    {
-        List<String> propertyLines = new ArrayList<>();
-        String storedLine = "";
-        Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
-        while (lineIterator.hasNext())
-        {
-            // unwrap lines by storing previous line, adding to it if next is a continuation
-            // when no more continuation lines are found loop back and start with last storedLine
-            String startLine;
-            if (storedLine.isEmpty())
-            {
-                startLine = lineIterator.next();
-            } else
-            {
-                startLine = storedLine;
-                storedLine = "";
-            }
-            StringBuilder builder = new StringBuilder(startLine);
-            while (lineIterator.hasNext())
-            {
-                String anotherLine = lineIterator.next();
-                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-                { // unwrap anotherLine into line
-                    builder.append(anotherLine.substring(1, anotherLine.length()));
-                } else
-                {
-                    storedLine = anotherLine; // save for next iteration
-                    break;  // no continuation line, exit while loop
-                }
-            }
-            String line = builder.toString();
-            propertyLines.add(line);
-        }
-//        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
-        return propertyLines;
-    }
-    
-    /**
-     * Folds lines at character 75 into multiple lines.  Follows rules in
-     * RFC 5545, 3.1 Content Lines, page 9.
-     * A space is added to the first character of the subsequent lines.
-     * doesn't break lines at escape characters
-     * 
-     * @param line - content line
-     * @return - folded content line
-     */
-    private static CharSequence foldLine(CharSequence line)
-    {
-        // first position is 0
-        final int maxLineLength = 75;
-        if (line.length() <= maxLineLength)
-        {
-            return line;
-        } else
-        {
-            StringBuilder builder = new StringBuilder(line.length()+20);
-            int leadingSpaceAdjustment = 0;
-            String leadingSpace = "";
-            int startIndex = 0;
-            while (startIndex < line.length())
-            {
-                int endIndex = Math.min(startIndex+maxLineLength-leadingSpaceAdjustment, line.length());
-                if (endIndex < line.length())
-                {
-                    // ensure escaped characters are not broken up
-                    if (line.charAt(endIndex-1) == '\\')
-                    {
-                        endIndex = endIndex-1; 
-                    }
-                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex) + System.lineSeparator());
-                } else
-                {                    
-                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex));
-                }
-                startIndex = endIndex;
-                leadingSpaceAdjustment = 1;
-                leadingSpace = " ";
-            }
-            return builder;
-        }
-    }
+
     public static VCalendar parse(String contentLines)
     {
         VCalendar c = new VCalendar();

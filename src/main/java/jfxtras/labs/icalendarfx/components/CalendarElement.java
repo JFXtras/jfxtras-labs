@@ -319,8 +319,12 @@ public enum CalendarElement
     }
     
     private String name;
+    @Override
+    public String toString() { return name; }
+    
     private List<ComponentElement> allowedProperties;
     public List<ComponentElement> allowedProperties() { return allowedProperties; }
+
     private boolean isCalendarElement;
     public boolean isCalendarElement() { return isCalendarElement; }
     

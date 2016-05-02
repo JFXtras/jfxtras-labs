@@ -430,7 +430,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
             list.add(subcomponent);
         } else
         {
-            throw new IllegalArgumentException("Unspoorted subcomponent type:" + subcomponentType +
+            throw new IllegalArgumentException("Unsuported subcomponent type:" + subcomponentType +
                     " found inside " + componentType() + " component");
         }
     }

@@ -132,11 +132,11 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     /** Parse content lines into calendar component */
     public void parseContent(String contentLines)
     {
-        parseContent(Arrays.asList(contentLines.split(System.lineSeparator())));
+//        parseContent(Arrays.asList(contentLines.split(System.lineSeparator())));
+        parseContent(ICalendarUtilities.unfoldLines(contentLines));
     }
     
-    /** Parse content lines into calendar component */
-    // TODO - MAYBE I WANT TO COMBINE THIS WITH ABOVE METHOD? - THIS MAY NOT BE USED
+    /** Parse component from list of unfolded lines */
     public void parseContent(List<String> contentLines)
     {
         Integer propertyCounter = 0;
@@ -147,14 +147,6 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
 //        while (i.hasNext())
         {
             String line = contentLines.get(index);
-//            List<Integer> indices = new ArrayList<>();
-//            indices.add(line.indexOf(':'));
-//            indices.add(line.indexOf(';'));
-//            int nameEndIndex = indices
-//                  .stream()
-//                  .filter(v -> v > 0)
-//                  .min(Comparator.naturalOrder())
-//                  .get();
             int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
             String propertyName = line.substring(0, nameEndIndex);
             
@@ -164,7 +156,9 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentType().toString());
                 if  (! isMainComponent)
                 {
-                    CalendarElement subcomponentType = CalendarElement.valueOf(line.substring(nameEndIndex+1));
+//                    CalendarElement subcomponentType = CalendarElement.valueOf(line.substring(nameEndIndex+1));
+                    CalendarElement subcomponentType = CalendarElement.enumFromName(line.substring(nameEndIndex+1));
+                    System.out.println("subcomponentType:" + subcomponentType + " " + line.substring(nameEndIndex+1));
                     StringBuilder subcomponentContentBuilder = new StringBuilder(200);
                     subcomponentContentBuilder.append(line + System.lineSeparator());
                     boolean isEndFound = false;
@@ -305,7 +299,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 .forEach(p -> 
                 {
                     p.getValue().stream()
-                            .forEach(s -> builder.append(foldLine(s) + System.lineSeparator()));
+                            .forEach(s -> builder.append(ICalendarUtilities.foldLine(s) + System.lineSeparator()));
                 });
     }
     private final String firstContentLine = "BEGIN:" + componentType().toString();
@@ -349,93 +343,93 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * @param componentString
      * @return
      */
-    // TODO - MOVE THIS TO A UTILITY CLASS
-//    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
-//    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', 'n'};
-    @Deprecated
-    private static List<String> unfoldLines(String componentString)
-    {
-        List<String> propertyLines = new ArrayList<>();
-        String storedLine = "";
-        Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
-        while (lineIterator.hasNext())
-        {
-            // unwrap lines by storing previous line, adding to it if next is a continuation
-            // when no more continuation lines are found loop back and start with last storedLine
-            String startLine;
-            if (storedLine.isEmpty())
-            {
-                startLine = lineIterator.next();
-            } else
-            {
-                startLine = storedLine;
-                storedLine = "";
-            }
-            StringBuilder builder = new StringBuilder(startLine);
-            while (lineIterator.hasNext())
-            {
-                String anotherLine = lineIterator.next();
-                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-                { // unwrap anotherLine into line
-                    builder.append(anotherLine.substring(1, anotherLine.length()));
-                } else
-                {
-                    storedLine = anotherLine; // save for next iteration
-                    break;  // no continuation line, exit while loop
-                }
-            }
-            String line = builder.toString();
-            propertyLines.add(line);
-        }
-//        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
-        return propertyLines;
-    }
-    
-    /**
-     * Folds lines at character 75 into multiple lines.  Follows rules in
-     * RFC 5545, 3.1 Content Lines, page 9.
-     * A space is added to the first character of the subsequent lines.
-     * doesn't break lines at escape characters
-     * 
-     * @param line - content line
-     * @return - folded content line
-     */
-    @Deprecated
-    private static CharSequence foldLine(CharSequence line)
-    {
-        // first position is 0
-        final int maxLineLength = 75;
-        if (line.length() <= maxLineLength)
-        {
-            return line;
-        } else
-        {
-            StringBuilder builder = new StringBuilder(line.length()+20);
-            int leadingSpaceAdjustment = 0;
-            String leadingSpace = "";
-            int startIndex = 0;
-            while (startIndex < line.length())
-            {
-                int endIndex = Math.min(startIndex+maxLineLength-leadingSpaceAdjustment, line.length());
-                if (endIndex < line.length())
-                {
-                    // ensure escaped characters are not broken up
-                    if (line.charAt(endIndex-1) == '\\')
-                    {
-                        endIndex = endIndex-1; 
-                    }
-                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex) + System.lineSeparator());
-                } else
-                {                    
-                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex));
-                }
-                startIndex = endIndex;
-                leadingSpaceAdjustment = 1;
-                leadingSpace = " ";
-            }
-            return builder;
-        }
-    }
+//    // TODO - MOVE THIS TO A UTILITY CLASS
+////    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
+////    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', 'n'};
+//    @Deprecated
+//    private static List<String> unfoldLines(String componentString)
+//    {
+//        List<String> propertyLines = new ArrayList<>();
+//        String storedLine = "";
+//        Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
+//        while (lineIterator.hasNext())
+//        {
+//            // unwrap lines by storing previous line, adding to it if next is a continuation
+//            // when no more continuation lines are found loop back and start with last storedLine
+//            String startLine;
+//            if (storedLine.isEmpty())
+//            {
+//                startLine = lineIterator.next();
+//            } else
+//            {
+//                startLine = storedLine;
+//                storedLine = "";
+//            }
+//            StringBuilder builder = new StringBuilder(startLine);
+//            while (lineIterator.hasNext())
+//            {
+//                String anotherLine = lineIterator.next();
+//                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+//                { // unwrap anotherLine into line
+//                    builder.append(anotherLine.substring(1, anotherLine.length()));
+//                } else
+//                {
+//                    storedLine = anotherLine; // save for next iteration
+//                    break;  // no continuation line, exit while loop
+//                }
+//            }
+//            String line = builder.toString();
+//            propertyLines.add(line);
+//        }
+////        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
+//        return propertyLines;
+//    }
+//    
+//    /**
+//     * Folds lines at character 75 into multiple lines.  Follows rules in
+//     * RFC 5545, 3.1 Content Lines, page 9.
+//     * A space is added to the first character of the subsequent lines.
+//     * doesn't break lines at escape characters
+//     * 
+//     * @param line - content line
+//     * @return - folded content line
+//     */
+//    @Deprecated
+//    private static CharSequence foldLine(CharSequence line)
+//    {
+//        // first position is 0
+//        final int maxLineLength = 75;
+//        if (line.length() <= maxLineLength)
+//        {
+//            return line;
+//        } else
+//        {
+//            StringBuilder builder = new StringBuilder(line.length()+20);
+//            int leadingSpaceAdjustment = 0;
+//            String leadingSpace = "";
+//            int startIndex = 0;
+//            while (startIndex < line.length())
+//            {
+//                int endIndex = Math.min(startIndex+maxLineLength-leadingSpaceAdjustment, line.length());
+//                if (endIndex < line.length())
+//                {
+//                    // ensure escaped characters are not broken up
+//                    if (line.charAt(endIndex-1) == '\\')
+//                    {
+//                        endIndex = endIndex-1; 
+//                    }
+//                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex) + System.lineSeparator());
+//                } else
+//                {                    
+//                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex));
+//                }
+//                startIndex = endIndex;
+//                leadingSpaceAdjustment = 1;
+//                leadingSpace = " ";
+//            }
+//            return builder;
+//        }
+//    }
     
     final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
     {
