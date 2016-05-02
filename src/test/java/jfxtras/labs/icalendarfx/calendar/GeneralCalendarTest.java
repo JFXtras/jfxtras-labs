@@ -13,7 +13,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.Version;
 public class GeneralCalendarTest extends ICalendarTestAbstract2
 {
     @Test
-    public void canEscapeTest()
+    public void canBuildVCalendar()
     {
         String contentLine = "DESCRIPTION:a dog\\nran\\, far\\;\\naway \\\\\\\\1";
         
@@ -87,4 +87,24 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
                 .withVEvents(getMonthly6());
         System.out.println(c.toContentLines());
     }
+    
+    @Test
+    public void canParseVCalendar()
+    {
+        String content = 
+       "BEGIN:VCALENDAR" + System.lineSeparator() +
+       "VERSION:2.0" + System.lineSeparator() +
+       "PRODID:-//hacksw/handcal//NONSGML v1.0//EN" + System.lineSeparator() +
+       "BEGIN:VEVENT" + System.lineSeparator() +
+       "UID:19970610T172345Z-AF23B2@example.com" + System.lineSeparator() +
+       "DTSTAMP:19970610T172345Z" + System.lineSeparator() +
+       "DTSTART:19970714T170000Z" + System.lineSeparator() +
+       "DTEND:19970715T040000Z" + System.lineSeparator() +
+       "SUMMARY:Bastille Day Party" + System.lineSeparator() +
+       "END:VEVENT" + System.lineSeparator() +
+       "END:VCALENDAR";
+        VCalendar vCalendar = VCalendar.parse(content);
+        System.out.println(vCalendar.toContentLines());
+    }
+
 }

@@ -246,6 +246,30 @@ public final class ICalendarUtilities
         }
     }
     
+    public static int getPropertyNameIndex(String propertyLine)
+    {
+        if ((propertyLine == null) || propertyLine.isEmpty())
+        {
+            return 0;
+        }
+        int propertyNameEnd;
+        for (propertyNameEnd=0; propertyNameEnd<propertyLine.length(); propertyNameEnd++)
+        {
+            if ((propertyLine.charAt(propertyNameEnd) == ';') || (propertyLine.charAt(propertyNameEnd) == ':'))
+            {
+                break;
+            }
+        }
+        if (propertyNameEnd < propertyLine.length())
+        {
+            return propertyNameEnd;
+//            return propertyLine.substring(0, propertyNameEnd);
+        } else
+        {
+            throw new IllegalArgumentException("Illegal property line.  No value after name:" + propertyLine);
+        }
+    }
+    
     /**
      * Converts property line into a property-parameter/value map
      * For example:
@@ -470,6 +494,20 @@ public final class ICalendarUtilities
         }
         return new Pair<String,String>(propertyName, value);
     }
+    
+//    public static getPropertyName(String line)
+//    {
+//        String line = lines.get(index);
+//        List<Integer> indices = new ArrayList<>();
+//        indices.add(line.indexOf(':'));
+//        indices.add(line.indexOf(';'));
+//        int nameEndIndex = indices
+//              .stream()
+//              .filter(v -> v > 0)
+//              .min(Comparator.naturalOrder())
+//              .get();
+//        return line.substring(0, nameEndIndex);
+//    }
     
     /*
      * MAKE STRING METHODS

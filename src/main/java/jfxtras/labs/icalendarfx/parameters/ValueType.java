@@ -25,7 +25,8 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public enum ValueType
 {
-    BINARY ("BINARY", Arrays.asList(String.class)) {
+    BINARY ("BINARY", Arrays.asList(String.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -45,7 +46,8 @@ public enum ValueType
             };
         }
     },
-    BOOLEAN ("BOOLEAN", Arrays.asList(Boolean.class)) {
+    BOOLEAN ("BOOLEAN", Arrays.asList(Boolean.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -65,7 +67,8 @@ public enum ValueType
             };
         }
     }, 
-    CALENDAR_USER_ADDRESS ("CAL-ADDRESS", Arrays.asList(URI.class)) {
+    CALENDAR_USER_ADDRESS ("CAL-ADDRESS", Arrays.asList(URI.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -92,7 +95,8 @@ public enum ValueType
             };
         }
     },
-    DATE ("DATE", Arrays.asList(LocalDate.class)) {
+    DATE ("DATE", Arrays.asList(LocalDate.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -112,7 +116,8 @@ public enum ValueType
             };
         }
     },
-    DATE_TIME ("DATE-TIME", Arrays.asList(LocalDateTime.class, ZonedDateTime.class)) {
+    DATE_TIME ("DATE-TIME", Arrays.asList(LocalDateTime.class, ZonedDateTime.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -132,7 +137,8 @@ public enum ValueType
             };
         }
     },
-    DURATION ("DURATION", Arrays.asList(Duration.class, Period.class)) {
+    DURATION ("DURATION", Arrays.asList(Duration.class, Period.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -164,7 +170,8 @@ public enum ValueType
             };
         }
     }, // Based on ISO.8601.2004 (but Y and M for years and months is not supported by iCalendar)
-    FLOAT ("FLOAT", Arrays.asList(Double.class)) {
+    FLOAT ("FLOAT", Arrays.asList(Double.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -184,7 +191,8 @@ public enum ValueType
             };
         }
     },
-    INTEGER ("INTEGER", Arrays.asList(Integer.class)) {
+    INTEGER ("INTEGER", Arrays.asList(Integer.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -204,7 +212,8 @@ public enum ValueType
             };
         }
     },
-    PERIOD ("PERIOD", Arrays.asList(List.class)) {
+    PERIOD ("PERIOD", Arrays.asList(List.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -224,7 +233,8 @@ public enum ValueType
             };
         }
     },
-    RECURRENCE_RULE ("RECUR", Arrays.asList(RecurrenceRuleParameter.class)) {
+    RECURRENCE_RULE ("RECUR", Arrays.asList(RecurrenceRuleParameter.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -251,7 +261,8 @@ public enum ValueType
      * For example, the value type for TimeZoneIdentifier is TEXT, but the Java object is
      * ZoneId.  A different converter is required to make the conversion to ZoneId.
     */
-    TEXT ("TEXT", Arrays.asList(String.class, ZoneId.class)) {
+    TEXT ("TEXT", Arrays.asList(String.class, ZoneId.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -308,15 +319,16 @@ public enum ValueType
             };
         }
     },
-    TIME ("TIME", Arrays.asList(LocalTime.class)) {
+    TIME ("TIME", Arrays.asList(LocalTime.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
-            // TODO Auto-generated method stub
-            return null;
+            throw new RuntimeException("not implemented");
         }
     },
-    UNIFORM_RESOURCE_IDENTIFIER ("URI", Arrays.asList(URI.class)) {
+    UNIFORM_RESOURCE_IDENTIFIER ("URI", Arrays.asList(URI.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -343,7 +355,8 @@ public enum ValueType
             };
         }
     },
-    UTC_OFFSET ("UTC-OFFSET", Arrays.asList(ZoneOffset.class)) {
+    UTC_OFFSET ("UTC-OFFSET", Arrays.asList(ZoneOffset.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {
@@ -363,7 +376,8 @@ public enum ValueType
             };
         }
     },
-    UNKNOWN ("UNKNOWN", Arrays.asList(Object.class)) {
+    UNKNOWN ("UNKNOWN", Arrays.asList(Object.class))
+    {
         @Override
         public <T> StringConverter<T> getConverter()
         {

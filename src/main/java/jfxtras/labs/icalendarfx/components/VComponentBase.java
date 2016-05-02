@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
  * iCalendar component
@@ -80,7 +81,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     public List<PropertyEnum> propertyEnums()
     {
         List<PropertyEnum> populatedProperties = new ArrayList<>();
-//        System.out.println("componentType():" + componentType());
+        System.out.println("componentType():" + componentType().allowedProperties());
         Iterator<PropertyEnum> i = componentType().allowedProperties().stream().iterator();
         while (i.hasNext())
         {
@@ -131,19 +132,30 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     /** Parse content lines into calendar component */
     public void parseContent(String contentLines)
     {
+        parseContent(Arrays.asList(contentLines.split(System.lineSeparator())));
+    }
+    
+    /** Parse content lines into calendar component */
+    // TODO - MAYBE I WANT TO COMBINE THIS WITH ABOVE METHOD? - THIS MAY NOT BE USED
+    public void parseContent(List<String> contentLines)
+    {
         Integer propertyCounter = 0;
-        Iterator<String> i = unfoldLines(contentLines).iterator();
-        while (i.hasNext())
+//        Iterator<String> i = unfoldLines(contentLines).iterator();
+        // TODO - WHERE SHOULD UNFOLDING OCCUR? - HERE?
+//        for (String line : contentLines)
+        for (int index=0; index<contentLines.size(); index++)
+//        while (i.hasNext())
         {
-            String line = i.next();
-            List<Integer> indices = new ArrayList<>();
-            indices.add(line.indexOf(':'));
-            indices.add(line.indexOf(';'));
-            int nameEndIndex = indices
-                  .stream()
-                  .filter(v -> v > 0)
-                  .min(Comparator.naturalOrder())
-                  .get();
+            String line = contentLines.get(index);
+//            List<Integer> indices = new ArrayList<>();
+//            indices.add(line.indexOf(':'));
+//            indices.add(line.indexOf(';'));
+//            int nameEndIndex = indices
+//                  .stream()
+//                  .filter(v -> v > 0)
+//                  .min(Comparator.naturalOrder())
+//                  .get();
+            int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
             String propertyName = line.substring(0, nameEndIndex);
             
             // Parse subcomponent
@@ -158,7 +170,8 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                     boolean isEndFound = false;
                     do
                     {
-                        String subLine = i.next();
+                        String subLine = contentLines.get(++index);
+//                        String subLine = i.next();
                         subcomponentContentBuilder.append(subLine + System.lineSeparator());
                         isEndFound = subLine.subSequence(0, 3).equals("END");
                     } while (! isEndFound);
@@ -339,6 +352,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     // TODO - MOVE THIS TO A UTILITY CLASS
 //    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
 //    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', 'n'};
+    @Deprecated
     private static List<String> unfoldLines(String componentString)
     {
         List<String> propertyLines = new ArrayList<>();
@@ -386,6 +400,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * @param line - content line
      * @return - folded content line
      */
+    @Deprecated
     private static CharSequence foldLine(CharSequence line)
     {
         // first position is 0
