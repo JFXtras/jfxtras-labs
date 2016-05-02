@@ -401,8 +401,8 @@ public class VCalendar
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
      * a specific parameter order (e.g. unit testing).
      */
-    public Map<VCalendarElement, Long> componentSortOrder() { return componentSortOrder; }
-    final private Map<VCalendarElement, Long> componentSortOrder = new HashMap<>();
+    public Map<VCalendarElement, Long> elementSortOrder() { return elementSortOrder; }
+    final private Map<VCalendarElement, Long> elementSortOrder = new HashMap<>();
     
     
     /** Parse content lines into calendar object */
@@ -439,8 +439,8 @@ public class VCalendar
         elementContentMap.entrySet().stream()
                 .sorted((Comparator<? super Entry<VCalendarElement, CharSequence>>) (e1, e2) -> 
                 {
-                    final Long s1Initial = componentSortOrder().get(e1.getKey());
-                    final Long s2Initial = componentSortOrder().get(e2.getKey());
+                    final Long s1Initial = elementSortOrder().get(e1.getKey());
+                    final Long s2Initial = elementSortOrder().get(e2.getKey());
                     final Long s1Final = finalSortOrder(s1Initial, e1.getKey());
                     final Long s2Final = finalSortOrder(s2Initial, e2.getKey());
                     return s1Final.compareTo(s2Final);
@@ -481,7 +481,7 @@ public class VCalendar
     private final String lastContentLine = "END:VCALENDAR";
 
     /** Parse content lines into calendar object */
-    public VCalendar parseContent(String content)
+    public void parseContent(String content)
     {
         Long componentCounter = 0L;
         List<String> contentLines = unfoldLines(content);
@@ -493,17 +493,7 @@ public class VCalendar
         }
         for (int index=1; index<contentLines.size(); index++)
         {
-//            String line = i.next();
             String line = contentLines.get(index);
-//            List<Integer> indices = new ArrayList<>();
-//            indices.add(line.indexOf(':'));
-//            indices.add(line.indexOf(';'));
-//            int nameEndIndex = indices
-//                  .stream()
-//                  .filter(v -> v > 0)
-//                  .min(Comparator.naturalOrder())
-//                  .get();
-//            String propertyName = line.substring(0, nameEndIndex);
             int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
             String propertyName = line.substring(0, nameEndIndex);
             
@@ -518,21 +508,27 @@ public class VCalendar
                 {
                     index++;
                     line = contentLines.get(index);
-                    System.out.println("line:" + line + " " + endLine + " " + index);
+//                    System.out.println("line:" + line + " " + endLine + " " + index);
                     myLines.add(line);
                 } while (! line.equals(endLine));
                 
                 VComponentEnum vComponentType = VComponentEnum.valueOf(componentName);
-                vComponentType.parse(this, myLines);
-                componentSortOrder().put(vComponentType.getElement(), componentCounter);
+                VCalendarElement element = vComponentType.parse(this, myLines);
+                elementSortOrder().put(element, componentCounter);
                 componentCounter += 100;
                 
             // parse calendar properties
-            } //else if (! propertyName.equals("END"))
+            } else //if (! propertyName.equals("END"))
             {
                 // parse property
                 // ignores unknown properties
                 System.out.println("property:" + propertyName);
+                VComponentEnum vComponentType = VComponentEnum.valueOf(propertyName);
+                VCalendarElement element = vComponentType.parse(this, Arrays.asList(line));
+                elementSortOrder().put(element, componentCounter);
+                componentCounter += 100;
+
+
                 PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
 //                if (propertyType != null)
 //                {
@@ -543,86 +539,86 @@ public class VCalendar
             }
         }
         
-        return null;
+//        return null;
         // TODO Auto-generated method stub
     }
     
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((calendarScale == null) ? 0 : calendarScale.hashCode());
-        result = prime * result + ((method == null) ? 0 : method.hashCode());
-        result = prime * result + ((productIdentifier == null) ? 0 : productIdentifier.hashCode());
-        result = prime * result + ((vEvents == null) ? 0 : vEvents.hashCode());
-        result = prime * result + ((vFreeBusys == null) ? 0 : vFreeBusys.hashCode());
-        result = prime * result + ((vJournals == null) ? 0 : vJournals.hashCode());
-        result = prime * result + ((vTimeZones == null) ? 0 : vTimeZones.hashCode());
-        result = prime * result + ((vTodos == null) ? 0 : vTodos.hashCode());
-        return result;
-    }
+//    @Override
+//    public int hashCode()
+//    {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ((calendarScale == null) ? 0 : calendarScale.hashCode());
+//        result = prime * result + ((method == null) ? 0 : method.hashCode());
+//        result = prime * result + ((productIdentifier == null) ? 0 : productIdentifier.hashCode());
+//        result = prime * result + ((vEvents == null) ? 0 : vEvents.hashCode());
+//        result = prime * result + ((vFreeBusys == null) ? 0 : vFreeBusys.hashCode());
+//        result = prime * result + ((vJournals == null) ? 0 : vJournals.hashCode());
+//        result = prime * result + ((vTimeZones == null) ? 0 : vTimeZones.hashCode());
+//        result = prime * result + ((vTodos == null) ? 0 : vTodos.hashCode());
+//        return result;
+//    }
     
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        VCalendar other = (VCalendar) obj;
-        if (calendarScale == null)
-        {
-            if (other.calendarScale != null)
-                return false;
-        } else if (!calendarScale.equals(other.calendarScale))
-            return false;
-        if (method == null)
-        {
-            if (other.method != null)
-                return false;
-        } else if (!method.equals(other.method))
-            return false;
-        if (productIdentifier == null)
-        {
-            if (other.productIdentifier != null)
-                return false;
-        } else if (!productIdentifier.equals(other.productIdentifier))
-            return false;
-        if (vEvents == null)
-        {
-            if (other.vEvents != null)
-                return false;
-        } else if (!vEvents.equals(other.vEvents))
-            return false;
-        if (vFreeBusys == null)
-        {
-            if (other.vFreeBusys != null)
-                return false;
-        } else if (!vFreeBusys.equals(other.vFreeBusys))
-            return false;
-        if (vJournals == null)
-        {
-            if (other.vJournals != null)
-                return false;
-        } else if (!vJournals.equals(other.vJournals))
-            return false;
-        if (vTimeZones == null)
-        {
-            if (other.vTimeZones != null)
-                return false;
-        } else if (!vTimeZones.equals(other.vTimeZones))
-            return false;
-        if (vTodos == null)
-        {
-            if (other.vTodos != null)
-                return false;
-        } else if (!vTodos.equals(other.vTodos))
-            return false;
-        return true;
-    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        VCalendar other = (VCalendar) obj;
+//        if (calendarScale == null)
+//        {
+//            if (other.calendarScale != null)
+//                return false;
+//        } else if (!calendarScale.equals(other.calendarScale))
+//            return false;
+//        if (method == null)
+//        {
+//            if (other.method != null)
+//                return false;
+//        } else if (!method.equals(other.method))
+//            return false;
+//        if (productIdentifier == null)
+//        {
+//            if (other.productIdentifier != null)
+//                return false;
+//        } else if (!productIdentifier.equals(other.productIdentifier))
+//            return false;
+//        if (vEvents == null)
+//        {
+//            if (other.vEvents != null)
+//                return false;
+//        } else if (!vEvents.equals(other.vEvents))
+//            return false;
+//        if (vFreeBusys == null)
+//        {
+//            if (other.vFreeBusys != null)
+//                return false;
+//        } else if (!vFreeBusys.equals(other.vFreeBusys))
+//            return false;
+//        if (vJournals == null)
+//        {
+//            if (other.vJournals != null)
+//                return false;
+//        } else if (!vJournals.equals(other.vJournals))
+//            return false;
+//        if (vTimeZones == null)
+//        {
+//            if (other.vTimeZones != null)
+//                return false;
+//        } else if (!vTimeZones.equals(other.vTimeZones))
+//            return false;
+//        if (vTodos == null)
+//        {
+//            if (other.vTodos != null)
+//                return false;
+//        } else if (!vTodos.equals(other.vTodos))
+//            return false;
+//        return true;
+//    }
     
     /**
      * Starting with lines-separated list of content lines, the lines are unwrapped and 

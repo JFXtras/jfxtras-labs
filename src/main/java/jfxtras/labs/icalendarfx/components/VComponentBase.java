@@ -81,7 +81,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     public List<PropertyEnum> propertyEnums()
     {
         List<PropertyEnum> populatedProperties = new ArrayList<>();
-        System.out.println("componentType():" + componentType().allowedProperties());
+//        System.out.println("componentType():" + componentType().allowedProperties());
         Iterator<PropertyEnum> i = componentType().allowedProperties().stream().iterator();
         while (i.hasNext())
         {

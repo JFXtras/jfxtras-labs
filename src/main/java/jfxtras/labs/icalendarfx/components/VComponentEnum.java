@@ -5,6 +5,8 @@ import java.util.List;
 
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
+import jfxtras.labs.icalendarfx.properties.calendar.Version;
 
 public enum VComponentEnum
 {
@@ -24,18 +26,18 @@ public enum VComponentEnum
         @Override
         public List<? extends VComponentNew<?>> getComponents(VCalendar vCalendar)
         {
-            // TODO Auto-generated method stub
-            return null;
+            return vCalendar.getVEvents();
         }
 
         @Override
-        public void parse(VCalendar vCalendar, List<String> contentLines)
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             VEventNew e = new VEventNew();
             e.parseContent(contentLines);
-            System.out.println("newv:" + contentLines);
             vCalendar.getVEvents().add(e);
+            return e;
         }
+
     },
     VTODO (Arrays.asList(PropertyEnum.ATTACHMENT, PropertyEnum.ATTENDEE, PropertyEnum.CATEGORIES,
             PropertyEnum.CLASSIFICATION, PropertyEnum.COMMENT, PropertyEnum.CONTACT, PropertyEnum.DATE_TIME_COMPLETED,
@@ -52,16 +54,16 @@ public enum VComponentEnum
         @Override
         public List<? extends VComponentNew<?>> getComponents(VCalendar vCalendar)
         {
+            return vCalendar.getVTodos();
+        }
+
+        @Override
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        {
             // TODO Auto-generated method stub
             return null;
         }
 
-        @Override
-        public void parse(VCalendar vCalendar, List<String> contentLines)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     },
     VJOURNAL (Arrays.asList(PropertyEnum.ATTACHMENT, PropertyEnum.ATTENDEE, PropertyEnum.CATEGORIES,
             PropertyEnum.CLASSIFICATION, PropertyEnum.COMMENT, PropertyEnum.CONTACT, PropertyEnum.DATE_TIME_CREATED,
@@ -80,11 +82,12 @@ public enum VComponentEnum
         }
 
         @Override
-        public void parse(VCalendar vCalendar, List<String> contentLines)
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             // TODO Auto-generated method stub
-            
+            return null;
         }
+
     },
     VTIMEZONE (Arrays.asList(PropertyEnum.IANA_PROPERTY, PropertyEnum.LAST_MODIFIED, PropertyEnum.NON_STANDARD,
             PropertyEnum.TIME_ZONE_IDENTIFIER, PropertyEnum.TIME_ZONE_URL),
@@ -97,11 +100,12 @@ public enum VComponentEnum
         }
 
         @Override
-        public void parse(VCalendar vCalendar, List<String> contentLines)
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             // TODO Auto-generated method stub
-            
+            return null;
         }
+
     },
     VFREEBUSY (Arrays.asList(PropertyEnum.ATTENDEE, PropertyEnum.COMMENT, PropertyEnum.CONTACT,
             PropertyEnum.DATE_TIME_END, PropertyEnum.DATE_TIME_STAMP, PropertyEnum.DATE_TIME_START,
@@ -116,10 +120,10 @@ public enum VComponentEnum
         }
 
         @Override
-        public void parse(VCalendar vCalendar, List<String> contentLines)
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             // TODO Auto-generated method stub
-            
+            return null;
         }
     },
     DAYLIGHT (Arrays.asList(PropertyEnum.COMMENT, PropertyEnum.DATE_TIME_START,
@@ -135,11 +139,12 @@ public enum VComponentEnum
         }
 
         @Override
-        public void parse(VCalendar vCalendar, List<String> contentLines)
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             // TODO Auto-generated method stub
-            
+            return null;
         }
+
     },
     STANDARD (Arrays.asList(PropertyEnum.COMMENT, PropertyEnum.DATE_TIME_START,
             PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.RECURRENCE_DATE_TIMES,
@@ -154,11 +159,12 @@ public enum VComponentEnum
         }
 
         @Override
-        public void parse(VCalendar vCalendar, List<String> contentLines)
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             // TODO Auto-generated method stub
-            
+            return null;
         }
+
     },
     VALARM (Arrays.asList(PropertyEnum.ACTION, PropertyEnum.ATTACHMENT, PropertyEnum.ATTENDEE, PropertyEnum.DESCRIPTION,
             PropertyEnum.DURATION, PropertyEnum.IANA_PROPERTY, PropertyEnum.NON_STANDARD, PropertyEnum.REPEAT_COUNT,
@@ -172,10 +178,61 @@ public enum VComponentEnum
         }
 
         @Override
-        public void parse(VCalendar vCalendar, List<String> contentLines)
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             // TODO Auto-generated method stub
-            
+            return null;
+        }
+
+    },
+    PRODID (null, true)
+    {
+        @Override
+        public List<? extends VComponentNew<?>> getComponents(VCalendar vCalendar)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        {
+            final String line;
+            if (contentLines.size() == 1)
+            {
+                line = contentLines.get(0);
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only have one line of content");
+            }
+            ProductIdentifier prodid = ProductIdentifier.parse(line);
+            vCalendar.setProductIdentifier(prodid);
+            return prodid;
+        }
+    },
+    VERSION (null, true)
+    {
+        @Override
+        public List<? extends VComponentNew<?>> getComponents(VCalendar vCalendar)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        {
+            final String line;
+            if (contentLines.size() == 1)
+            {
+                line = contentLines.get(0);
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only have one line of content");
+            }
+            Version version = Version.parse(line);
+            vCalendar.setVersion(version);
+            return version;
         }
     };
 //
@@ -197,19 +254,19 @@ public enum VComponentEnum
     abstract public List<? extends VComponentNew<?>> getComponents(VCalendar vCalendar);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
-    abstract public void parse(VCalendar vCalendar, List<String> contentLines);
+    abstract public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines);
 //    {
 //        // TODO Auto-generated method stub
 //        
 //    }
 
-    public VCalendarElement getElement()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
+//    public Object getElement(VCalendar vCalendar) { return null; }
+//    {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
 
-//    public void parse(VCalendar vCalendar, String content)
+//    public VCalendarElement parse(VCalendar vCalendar, String content)
 //    {
 //        // TODO Auto-generated method stub
 //        

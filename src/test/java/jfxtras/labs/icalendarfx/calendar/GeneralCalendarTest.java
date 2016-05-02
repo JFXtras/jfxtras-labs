@@ -105,6 +105,7 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
        "END:VCALENDAR";
         VCalendar vCalendar = VCalendar.parse(content);
         System.out.println(vCalendar.toContentLines());
+        System.out.println(vCalendar.getVEvents().size());
     }
 
 }
