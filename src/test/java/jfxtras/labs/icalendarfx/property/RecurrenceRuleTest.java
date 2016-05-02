@@ -21,7 +21,7 @@ public class RecurrenceRuleTest
     {
         String content = "RRULE:FREQ=YEARLY;BYMONTH=1,2";
         RecurrenceRule madeProperty = RecurrenceRule.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         RecurrenceRule expectedProperty = new RecurrenceRule(
                 new RecurrenceRuleParameter()
                 .withFrequency(new Yearly()

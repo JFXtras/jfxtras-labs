@@ -13,14 +13,14 @@ public class RequestStatusTest
     {
         String content = "REQUEST-STATUS:2.0;Success";
         RequestStatus madeProperty = RequestStatus.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         RequestStatus expectedProperty = new RequestStatus()
                 .withStatusCode(2.0)
                 .withDescription("Success");
         assertEquals(expectedProperty, madeProperty);
         
         madeProperty.setStatusCode(2.81);
-        assertEquals("REQUEST-STATUS:2.81;Success", madeProperty.toContentLines());
+        assertEquals("REQUEST-STATUS:2.81;Success", madeProperty.toContent());
         
         madeProperty.setValue("3.7;Invalid calendar user;ATTENDEE:mailto:jsmith@example.com");
         assertEquals((Double) 3.7, madeProperty.getStatusCode());
@@ -33,7 +33,7 @@ public class RequestStatusTest
     {
         String content = "REQUEST-STATUS:2.8;Success\\, repeating event ignored. Scheduled as a single event.;RRULE:FREQ=WEEKLY\\;INTERVAL=2";
         RequestStatus madeProperty = RequestStatus.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         RequestStatus expectedProperty = new RequestStatus()
                 .withStatusCode(2.8)
                 .withDescription("Success, repeating event ignored. Scheduled as a single event.")

@@ -18,7 +18,7 @@ public class DateTimeCreatedTest
     {
         String expectedContentLine = "CREATED:19960329T133000Z";
         DateTimeCreated property = DateTimeCreated.parse(expectedContentLine);
-        String madeContentLine = property.toContentLines();
+        String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(1996, 3, 29, 13, 30), ZoneId.of("Z")), property.getValue());
     }

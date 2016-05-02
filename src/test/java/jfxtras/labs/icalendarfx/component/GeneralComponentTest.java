@@ -29,7 +29,7 @@ public class GeneralComponentTest
                                "ran, far;" + System.lineSeparator() +
                                "away \\\\1";
         assertEquals(expectedValue, d.getValue());
-        assertEquals(contentLine, d.toContentLines());
+        assertEquals(contentLine, d.toContent());
     }
 
     
@@ -46,7 +46,7 @@ public class GeneralComponentTest
                                  " ploys about 850 people in the city\\, and more than 1\\,000 in nearly 30 oth" + System.lineSeparator() +
                                  " er offices around the world." + System.lineSeparator() +
                                  "END:" + componentName;
-        assertEquals(expectedContent, builtComponent.toContentLines());
+        assertEquals(expectedContent, builtComponent.toContent());
         assertEquals(line, builtComponent.getComments().get(0).getValue());
     }
     
@@ -125,6 +125,6 @@ public class GeneralComponentTest
                 + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z" + System.lineSeparator()
                 + "CLASS:PRIVATE" + System.lineSeparator()
                 + "END:VEVENT";
-        assertEquals(contentLines2, builtComponent.toContentLines());
+        assertEquals(contentLines2, builtComponent.toContent());
     }
 }

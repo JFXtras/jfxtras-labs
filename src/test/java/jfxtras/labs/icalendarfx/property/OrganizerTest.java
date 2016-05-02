@@ -16,7 +16,7 @@ public class OrganizerTest
         Organizer expectedProperty = Organizer.parse("mailto:jsmith@example.com")
                 .withCommonName("John Smith");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test
@@ -33,7 +33,7 @@ public class OrganizerTest
 //        expectedProperty.parameterSortOrder().put(ParameterEnum.DIRECTORY_ENTRY_REFERENCE, 1);
 //        expectedProperty.parameterSortOrder().put(ParameterEnum.LANGUAGE, 2);
 //        expectedProperty.parameterSortOrder().put(ParameterEnum.SENT_BY, 3);
-        System.out.println(expectedProperty.toContentLines());
+        System.out.println(expectedProperty.toContent());
 //        assertEquals(expectedProperty, madeProperty);
 //        assertEquals(content, expectedProperty.toContentLine());
     }

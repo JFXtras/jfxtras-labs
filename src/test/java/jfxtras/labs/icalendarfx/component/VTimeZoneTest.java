@@ -26,7 +26,7 @@ public class VTimeZoneTest
                 .getConstructor(String.class)
                 .newInstance(expectedContent);
         assertEquals(parsedComponent, builtComponent);
-        assertEquals(expectedContent, builtComponent.toContentLines());            
+        assertEquals(expectedContent, builtComponent.toContent());            
     }
     
     @Test
@@ -87,6 +87,6 @@ public class VTimeZoneTest
             "END:STANDARD" + System.lineSeparator() +
             "END:VTIMEZONE";
         VTimeZone component = VTimeZone.parse(expectedContent);
-        System.out.println(component.toContentLines());
+        System.out.println(component.toContent());
     }
 }

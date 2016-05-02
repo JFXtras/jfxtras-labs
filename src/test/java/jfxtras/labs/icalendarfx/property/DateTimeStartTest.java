@@ -21,7 +21,7 @@ public class DateTimeStartTest
     {
         DateTimeStart<LocalDateTime> dateTimeStart =  DateTimeStart.parse(LocalDateTime.class, "20160322T174422");
         String expectedContentLine = "DTSTART:20160322T174422";
-        String madeContentLine = dateTimeStart.toContentLines();
+        String madeContentLine = dateTimeStart.toContent();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(LocalDateTime.of(2016, 3, 22, 17, 44, 22), dateTimeStart.getValue());
     }
@@ -31,12 +31,12 @@ public class DateTimeStartTest
     {
         DateTimeStart<LocalDate> dateTimeStart = DateTimeStart.parse(LocalDate.class, "DTSTART;VALUE=DATE:20160322");
         String expectedContentLine = "DTSTART;VALUE=DATE:20160322";
-        String madeContentLine = dateTimeStart.toContentLines();
+        String madeContentLine = dateTimeStart.toContent();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(LocalDate.of(2016, 3, 22), dateTimeStart.getValue());
         DateTimeStart<LocalDate> dateTimeStart2 = new DateTimeStart<>(LocalDate.of(2016, 3, 22));
         assertEquals(dateTimeStart, dateTimeStart2);
-        assertEquals(dateTimeStart.toContentLines(), dateTimeStart2.toContentLines());
+        assertEquals(dateTimeStart.toContent(), dateTimeStart2.toContent());
     }
     
     @Test
@@ -44,7 +44,7 @@ public class DateTimeStartTest
     {
         DateTimeStart<ZonedDateTime> dateTimeStart = DateTimeStart.parse(ZonedDateTime.class, "DTSTART;TZID=America/Los_Angeles:20160306T043000");
         String expectedContentLine = "DTSTART;TZID=America/Los_Angeles:20160306T043000";
-        String madeContentLine = dateTimeStart.toContentLines();
+        String madeContentLine = dateTimeStart.toContent();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")), dateTimeStart.getValue());
     }
@@ -58,7 +58,7 @@ public class DateTimeStartTest
         String expectedContentLine = "DTSTART;TZID=America/Los_Angeles;VALUE=DATE-TIME:20160306T043000";
         DateTimeStart<ZonedDateTime> expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
         assertEquals(expectedDateTimeStart, dateTimeStart);
-        String madeContentLine = dateTimeStart.toContentLines();
+        String madeContentLine = dateTimeStart.toContent();
         assertEquals(expectedContentLine, madeContentLine);
     }
 
@@ -86,7 +86,7 @@ public class DateTimeStartTest
         DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z")));
         String expectedContentLine = "DTSTART:20160306T043000Z";
         DateTimeStart<ZonedDateTime> expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
-        assertEquals(expectedContentLine, dateTimeStart.toContentLines());
+        assertEquals(expectedContentLine, dateTimeStart.toContent());
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
     
@@ -96,7 +96,7 @@ public class DateTimeStartTest
         DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 6, 0), ZoneId.of("Etc/GMT")));
         String expectedContentLine = "DTSTART;TZID=Etc/GMT:20160306T060000Z";
         DateTimeStart<ZonedDateTime> expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
-        assertEquals(expectedContentLine, dateTimeStart.toContentLines());
+        assertEquals(expectedContentLine, dateTimeStart.toContent());
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
 
@@ -106,7 +106,7 @@ public class DateTimeStartTest
         DateTimeStart<LocalDateTime> dateTimeStart = new DateTimeStart<LocalDateTime> (LocalDateTime.of(2016, 3, 6, 4, 30));
         String expectedContentLine = "DTSTART:20160306T043000";
         DateTimeStart<LocalDateTime>  expectedDateTimeStart = DateTimeStart.parse(expectedContentLine);
-        assertEquals(expectedContentLine, dateTimeStart.toContentLines());
+        assertEquals(expectedContentLine, dateTimeStart.toContent());
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
     

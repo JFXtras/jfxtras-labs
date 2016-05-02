@@ -163,7 +163,7 @@ public class DisplayableTest
                     .getConstructor(String.class)
                     .newInstance(expectedContent);
             assertEquals(parsedComponent, builtComponent);
-            assertEquals(expectedContent, builtComponent.toContentLines());     
+            assertEquals(expectedContent, builtComponent.toContent());     
             
             builtComponent.setRecurrenceRule("RRULE:FREQ=DAILY;INTERVAL=2");
             builtComponent.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "19960301T010000Z"));
@@ -194,9 +194,9 @@ public class DisplayableTest
                 ));
         assertEquals(expectedDates, madeDates);
         String expectedContent = "EXDATE:20151112T100000,20151115T100000";
-        assertEquals(expectedContent, e.getExceptions().get(0).toContentLines());
+        assertEquals(expectedContent, e.getExceptions().get(0).toContent());
         String expectedContent2 = "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6";
-        assertEquals(expectedContent2, e.getRecurrenceRule().toContentLines());
+        assertEquals(expectedContent2, e.getRecurrenceRule().toContent());
     }
     
     // Google test

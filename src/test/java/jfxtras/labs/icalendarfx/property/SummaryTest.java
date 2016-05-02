@@ -14,7 +14,7 @@ public class SummaryTest
     {
         String content = "SUMMARY:TEST SUMMARY";
         Summary madeProperty = Summary.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         Summary expectedProperty = Summary.parse("TEST SUMMARY");
         assertEquals(expectedProperty, madeProperty);
         assertEquals("TEST SUMMARY", madeProperty.getValue());
@@ -25,7 +25,7 @@ public class SummaryTest
     {
         String content = "SUMMARY;ALTREP=\"cid:part1.0001@example.org\";LANGUAGE=en:Department Party";
         Summary madeProperty = Summary.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         Summary expectedProperty = Summary.parse("Department Party")
                 .withAlternateText("cid:part1.0001@example.org")
                 .withLanguage("en");
@@ -38,7 +38,7 @@ public class SummaryTest
         String content = "SUMMARY;ALTREP=\"cid:part1.0001@example.org\";LANGUAGE=en:Department Party";
         Summary property1 = Summary.parse(content);
         Summary property2 = new Summary(property1);
-        System.out.println(property2.toContentLines());
+        System.out.println(property2.toContent());
         assertEquals(property2, property1);
         assertFalse(property2 == property1);
     }

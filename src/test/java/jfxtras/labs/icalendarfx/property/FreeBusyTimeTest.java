@@ -21,7 +21,7 @@ public class FreeBusyTimeTest
     {
         String content = "FREEBUSY;FBTYPE=BUSY-UNAVAILABLE:19970308T160000Z/PT8H30M";
         FreeBusyTime madeProperty = FreeBusyTime.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         FreeBusyTime expectedProperty = FreeBusyTime.parse("19970308T160000Z/PT8H30M")
                 .withFreeBusyType(FreeBusyTypeEnum.BUSY_UNAVAILABLE);
         assertEquals(expectedProperty, madeProperty);
@@ -36,7 +36,7 @@ public class FreeBusyTimeTest
     {
         String content = "FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/19970309T000000Z";
         FreeBusyTime madeProperty = FreeBusyTime.parse(content);
-        assertEquals("FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/PT1H", madeProperty.toContentLines());
+        assertEquals("FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/PT1H", madeProperty.toContent());
         FreeBusyTime expectedProperty = FreeBusyTime.parse("19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/19970309T000000Z")
                 .withFreeBusyType(FreeBusyTypeEnum.FREE);
         assertEquals(expectedProperty, madeProperty);

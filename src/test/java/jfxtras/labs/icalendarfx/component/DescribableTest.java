@@ -74,7 +74,7 @@ public class DescribableTest
                     .getConstructor(String.class)
                     .newInstance(expectedContent);
             assertEquals(parsedComponent, builtComponent);
-            assertEquals(expectedContent, builtComponent.toContentLines());            
+            assertEquals(expectedContent, builtComponent.toContent());            
         }
     }
     
@@ -102,7 +102,7 @@ public class DescribableTest
                     .getConstructor(String.class)
                     .newInstance(expectedContent);
             assertEquals(parsedComponent, builtComponent);
-            assertEquals(expectedContent, builtComponent.toContentLines());            
+            assertEquals(expectedContent, builtComponent.toContent());            
         }
     }
 }

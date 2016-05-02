@@ -43,7 +43,7 @@ public class VEventTest
                 
         VEventNew madeComponent = VEventNew.parse(content);
         assertEquals(madeComponent, builtComponent);
-        assertEquals(content, builtComponent.toContentLines());
+        assertEquals(content, builtComponent.toContent());
     }
         
     @Test (expected = DateTimeException.class)

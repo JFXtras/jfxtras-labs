@@ -24,13 +24,35 @@ public class GeneralPropertyTest
         expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Project XYZ Review Meeting will include the following agenda items: (a) Market Overview\\, (b) Finances\\, (c) Project Management");
         expectedMap.put("ALTREP", "\"CID:part3.msg.970415T083000@example.com\"");
         expectedMap.put("LANGUAGE", "en");
+        assertEquals(expectedMap, valueMap);
+    }
+    
+    @Test
+    public void canMakeParameterMap2()
+    {
+        String contentLine = "DESCRIPTION:";
+        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(contentLine));
+        SortedMap<String, String> expectedMap = new TreeMap<>();
+        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "");
         expectedMap.entrySet().stream().forEach(System.out::println);
         valueMap.entrySet().stream().forEach(System.out::println);
         assertEquals(expectedMap, valueMap);
     }
     
     @Test
-    public void canParseSummaryProperty()
+    public void canMakeParameterMap3()
+    {
+        String contentLine = ":";
+        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(contentLine));
+        SortedMap<String, String> expectedMap = new TreeMap<>();
+        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "");
+        expectedMap.entrySet().stream().forEach(System.out::println);
+        valueMap.entrySet().stream().forEach(System.out::println);
+        assertEquals(expectedMap, valueMap);
+    }
+    
+    @Test
+    public void canMakeParameterMap4()
     {
         String expectedContent = "SUMMARY:Department Party";
         SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(expectedContent));
@@ -40,12 +62,34 @@ public class GeneralPropertyTest
     }
     
     @Test
-    public void canParseSummaryProperty2()
+    public void canMakeParameterMap5()
     {
         String s = "Department Party";
         SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
         SortedMap<String, String> expectedMap = new TreeMap<>();
         expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "Department Party");
+        assertEquals(expectedMap, valueMap);
+    }
+    
+    @Test
+    public void canMakeParameterMap6()
+    {
+        String s = ";LANGUAGE=en:TEST SUMMARY";
+        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
+        SortedMap<String, String> expectedMap = new TreeMap<>();
+        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "TEST SUMMARY");
+        expectedMap.put("LANGUAGE", "en");
+        assertEquals(expectedMap, valueMap);
+    }
+    
+    @Test
+    public void canMakeParameterMap7()
+    {
+        String s = "LANGUAGE=en:TEST SUMMARY";
+        SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(s));
+        SortedMap<String, String> expectedMap = new TreeMap<>();
+        expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "TEST SUMMARY");
+        expectedMap.put("LANGUAGE", "en");
         assertEquals(expectedMap, valueMap);
     }
     
@@ -74,7 +118,7 @@ public class GeneralPropertyTest
     {
         String content = "sUmmARY;lanGUAGE=en:TEST SUMMARY";
         Summary madeProperty = Summary.parse(content);
-        assertEquals("SUMMARY;LANGUAGE=en:TEST SUMMARY", madeProperty.toContentLines());
+        assertEquals("SUMMARY;LANGUAGE=en:TEST SUMMARY", madeProperty.toContent());
         Summary expectedProperty = Summary.parse("TEST SUMMARY")
                 .withLanguage("en");
         assertEquals(expectedProperty, madeProperty);

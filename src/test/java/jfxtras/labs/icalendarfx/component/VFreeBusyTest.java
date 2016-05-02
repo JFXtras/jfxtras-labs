@@ -30,7 +30,7 @@ public class VFreeBusyTest
         
         VFreeBusy madeComponent = new VFreeBusy(content);
         assertEquals(madeComponent, builtComponent);
-        assertEquals(content, builtComponent.toContentLines());
+        assertEquals(content, builtComponent.toContent());
         
         builtComponent.setDateTimeStamp(DateTimeStamp.parse("20160210T100000Z"));
         builtComponent.setUniqueIdentifier("66761d56-d248-4c12-a807-350e95abea66");

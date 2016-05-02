@@ -20,7 +20,7 @@ public class AttachmentTest
     {
         Attachment<URI> property = new Attachment<URI>(URI.class, "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com");
         String expectedContentLine = "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com";
-        String madeContentLine = property.toContentLines();
+        String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);
     }
     
@@ -42,7 +42,7 @@ public class AttachmentTest
     {
         Attachment<URI> property = new Attachment<URI>(URI.class, "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com");
         String expectedContentLine = "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com";
-        String madeContentLine = property.toContentLines();
+        String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);
     }
     
@@ -54,7 +54,7 @@ public class AttachmentTest
         Attachment<URI> expectedProperty = new Attachment<URI>(URI.class, "ftp://example.com/pub/reports/r-960812.ps")
                 .withFormatType("application/postscript");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(contentLine, expectedProperty.toContentLines());
+        assertEquals(contentLine, expectedProperty.toContent());
     }
     
     @Test
@@ -71,7 +71,7 @@ public class AttachmentTest
         expectedProperty.parameterSortOrder().put(ParameterType.VALUE_DATA_TYPES, 2);
 
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(contentLine, expectedProperty.toContentLines());
+        assertEquals(contentLine, expectedProperty.toContent());
     }
     
     @Test
@@ -80,7 +80,7 @@ public class AttachmentTest
         String contentLine = "ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW";
         Attachment<String> property1 = new Attachment<String>(String.class, contentLine);
         Attachment<String> property2 = new Attachment<String>(property1);
-        System.out.println(property2.toContentLines());
+        System.out.println(property2.toContent());
         assertEquals(property1, property2);
         assertFalse(property1 == property2);
     }

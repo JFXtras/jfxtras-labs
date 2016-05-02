@@ -42,7 +42,7 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract2
     public void yearly1ToString()
     {
         VEventNew e = getYearly1();
-        String madeString = e.toContentLines();
+        String madeString = e.toContent();
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                               + "CATEGORIES:group13" + System.lineSeparator()
                               + "CREATED:20151109T082900Z" + System.lineSeparator()
@@ -65,7 +65,7 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract2
     {
 
     VEventNew e = getMonthly5();
-    String madeString = e.toContentLines();
+    String madeString = e.toContent();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTSTAMP:19970901T083000Z" + System.lineSeparator()
                           + "DTSTART:19970613T100000" + System.lineSeparator()
@@ -82,7 +82,7 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract2
     {
 
     VEventNew e = getMonthly6();
-    String madeString = e.toContentLines();
+    String madeString = e.toContent();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
                           + "DTSTART:20151103T100000" + System.lineSeparator()
@@ -98,7 +98,7 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract2
     public void daily6ToString()
     {
     VEventNew e = getDaily6();
-    String madeString = e.toContentLines();
+    String madeString = e.toContent();
     ZonedDateTime until = ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
         .withZoneSameInstant(ZoneId.of("Z")); // depends on time zone, so can't be hard coded
     String untilString = DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(until);
@@ -119,7 +119,7 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract2
     public void dailyUTCToString()
     {
     VEventNew e = getDailyUTC();
-    String madeString = e.toContentLines();
+    String madeString = e.toContent();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                         + "CATEGORIES:group03" + System.lineSeparator()
                         + "DESCRIPTION:DailyUTC Description" + System.lineSeparator()
@@ -140,7 +140,7 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract2
     {
     VEventNew e = getDailyWithException1();
 //    e.setExDatesOnOneLine(true);
-    String madeString = e.toContentLines();
+    String madeString = e.toContent();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "CATEGORIES:group03" + System.lineSeparator()
                           + "DESCRIPTION:Daily2 Description" + System.lineSeparator()
@@ -168,7 +168,7 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract2
     public void canConvertWholeDay2()
     {
     VEventNew vEvent = getWholeDayDaily1();
-    String madeString = vEvent.toContentLines();
+    String madeString = vEvent.toContent();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "DTEND;VALUE=DATE:20151112" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
@@ -182,7 +182,7 @@ public class ICalendarVEventToStringTest extends ICalendarTestAbstract2
     public void canConvertWholeDay3()
     {
     VEventNew vEvent = getWholeDayDaily3();
-    String madeString = vEvent.toContentLines();
+    String madeString = vEvent.toContent();
     String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                           + "CATEGORIES:group06" + System.lineSeparator()
                           + "DTEND;VALUE=DATE:20151111" + System.lineSeparator()

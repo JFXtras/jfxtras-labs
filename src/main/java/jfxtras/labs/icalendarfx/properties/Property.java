@@ -126,7 +126,7 @@ public interface Property<T>
      * 
      * @return - string representation of property value consistent with iCalendar standards
      */
-    CharSequence toContentLines();
+    CharSequence toContent();
     
     /** Parse content line into calendar property */
     public void parseContent(CharSequence contentLine);

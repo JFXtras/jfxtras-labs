@@ -15,7 +15,7 @@ public class DescriptionTest
     {
         Description description = Description.parse("this is a simple description without parameters");
         String expectedContentLine = "DESCRIPTION:this is a simple description without parameters";
-        String madeContentLine = description.toContentLines();
+        String madeContentLine = description.toContent();
         assertEquals(expectedContentLine, madeContentLine);
     }
     
@@ -28,7 +28,7 @@ public class DescriptionTest
                 .withAlternateText("CID:part3.msg.970415T083000@example.com")
                 .withLanguage("en");
         assertEquals(expectedDescription, madeDescription);
-        assertEquals(contentLine, expectedDescription.toContentLines());
+        assertEquals(contentLine, expectedDescription.toContent());
     }
     
     @Test
@@ -39,6 +39,19 @@ public class DescriptionTest
         Description expectedDescription = Description.parse("Example description")
                 .withOtherParameters("MYPARAMETER=some value", "PARAMETER2=other value");
         assertEquals(expectedDescription, madeDescription);
-        assertEquals("DESCRIPTION;MYPARAMETER=some value;PARAMETER2=other value:Example description", expectedDescription.toContentLines());
+        assertEquals("DESCRIPTION;MYPARAMETER=some value;PARAMETER2=other value:Example description", expectedDescription.toContent());
+    }
+    
+    @Test
+    public void canParseEmptyDescription()
+    {
+        String contentLine = "DESCRIPTION:";
+        Description madeDescription = Description.parse(contentLine);
+        madeDescription.toContent();
+        System.out.println(madeDescription.getValue());
+//        Description expectedDescription = new Description()
+//                .withValue("");
+//        assertEquals(expectedDescription, madeDescription);
+//        assertEquals("DESCRIPTION:", expectedDescription.toContent());
     }
 }

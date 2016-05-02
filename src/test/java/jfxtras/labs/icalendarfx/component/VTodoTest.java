@@ -30,7 +30,7 @@ public class VTodoTest
                 
         VTodo madeComponent = new VTodo(content);
         assertEquals(madeComponent, builtComponent);
-        assertEquals(content, builtComponent.toContentLines());
+        assertEquals(content, builtComponent.toContent());
     }
     
     @Test (expected = DateTimeException.class)

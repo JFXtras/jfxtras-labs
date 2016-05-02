@@ -64,9 +64,9 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
         VEventNew component1 = VEventNew.parse(content);
         VEventNew component2 = new VEventNew(component1);
         assertEquals(component1, component2);
-        assertEquals(component1.toContentLines(), component2.toContentLines());
-        System.out.println(component2.toContentLines());
-        assertEquals(content, component2.toContentLines());
+        assertEquals(component1.toContent(), component2.toContent());
+        System.out.println(component2.toContent());
+        assertEquals(content, component2.toContent());
     }
 
     @Test
@@ -124,7 +124,7 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
         VEventNew component1 = VEventNew.parse(content);
         VEventNew component2 = new VEventNew(component1);
         assertEquals(component1, component2);
-        assertEquals(component1.toContentLines(), component2.toContentLines());
+        assertEquals(component1.toContent(), component2.toContent());
 //        assertEquals(content, component2.toContentLines());
     }
 }

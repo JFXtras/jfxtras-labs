@@ -16,7 +16,7 @@ public class DurationTest
     {
         String content = "DURATION:PT15M";
         DurationProp madeProperty = DurationProp.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         DurationProp expectedProperty = DurationProp.parse("DURATION:PT15M");
         assertEquals(expectedProperty, madeProperty);
         assertEquals(Duration.ofMinutes(15), madeProperty.getValue());
@@ -27,7 +27,7 @@ public class DurationTest
     {
         String content = "DURATION:P2D";
         DurationProp madeProperty = DurationProp.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         DurationProp expectedProperty = DurationProp.parse("DURATION:P2D");
         assertEquals(expectedProperty, madeProperty);
         assertEquals(Period.ofDays(2), madeProperty.getValue());

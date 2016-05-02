@@ -43,7 +43,7 @@ public class StandardOrDaylightTimeTest
                     .getConstructor(String.class)
                     .newInstance(expectedContent);
             assertEquals(parsedComponent, builtComponent);
-            assertEquals(expectedContent, builtComponent.toContentLines());            
+            assertEquals(expectedContent, builtComponent.toContent());            
         }
     }
 }

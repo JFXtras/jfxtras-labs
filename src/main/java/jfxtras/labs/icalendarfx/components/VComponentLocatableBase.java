@@ -179,7 +179,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         super.appendMiddleContentLines(builder);
         if (getVAlarms() != null)
         {
-            getVAlarms().stream().forEach(a -> builder.append(a.toContentLines() + System.lineSeparator()));
+            getVAlarms().stream().forEach(a -> builder.append(a.toContent() + System.lineSeparator()));
         }
     }
     

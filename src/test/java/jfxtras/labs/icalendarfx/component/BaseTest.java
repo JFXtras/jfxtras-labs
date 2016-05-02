@@ -101,7 +101,7 @@ public class BaseTest
             parsedComponent.parseContent(expectedContent);
 
             assertEquals(parsedComponent, builtComponent);
-            assertEquals(expectedContent, builtComponent.toContentLines());            
+            assertEquals(expectedContent, builtComponent.toContent());            
         }
     }
 }

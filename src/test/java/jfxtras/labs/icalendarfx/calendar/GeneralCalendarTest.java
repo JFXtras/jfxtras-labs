@@ -1,10 +1,11 @@
 package jfxtras.labs.icalendarfx.calendar;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
@@ -83,7 +84,7 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
                         .withDateTimeDue("TZID=America/Los_Angeles:19960401T050000")
                         .withPercentComplete(35))
                 .withVEvents(getMonthly6());
-        System.out.println(c.toContentLines());
+        System.out.println(c.toContent());
     }
     
     @Test
@@ -125,9 +126,10 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
        "END:VEVENT" + System.lineSeparator() +
        "END:VCALENDAR";
         VCalendar vCalendar = VCalendar.parse(content);
+        assertEquals(content, vCalendar.toContent());
 //        System.out.println(vCalendar.toContentLines());
-        VEventNew e = vCalendar.getVEvents().get(1);
-        e.getNonStandardProperties().stream().forEach(System.out::println);
+//        VEventNew e = vCalendar.getVEvents().get(1);
+//        e.getNonStandardProperties().stream().forEach(System.out::println);
     }
 
 }

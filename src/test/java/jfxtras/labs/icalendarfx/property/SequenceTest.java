@@ -13,7 +13,7 @@ public class SequenceTest
     {
         String expectedContent = "SEQUENCE:0";
         Sequence madeProperty = Sequence.parse(expectedContent);
-        assertEquals(expectedContent, madeProperty.toContentLines());
+        assertEquals(expectedContent, madeProperty.toContent());
         assertEquals((Integer) 0, madeProperty.getValue());
     }
     
@@ -22,7 +22,7 @@ public class SequenceTest
     {
         Sequence madeProperty = new Sequence(2);
         String expectedContent = "SEQUENCE:2";
-        assertEquals(expectedContent, madeProperty.toContentLines());
+        assertEquals(expectedContent, madeProperty.toContent());
         assertEquals((Integer) 2, madeProperty.getValue());
     }
 }

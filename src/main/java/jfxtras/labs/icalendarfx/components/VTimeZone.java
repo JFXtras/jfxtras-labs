@@ -407,7 +407,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
         super.appendMiddleContentLines(builder);
         if (getStandardOrDaylight() != null)
         {
-            getStandardOrDaylight().stream().forEach(a -> builder.append(a.toContentLines() + System.lineSeparator()));
+            getStandardOrDaylight().stream().forEach(a -> builder.append(a.toContent() + System.lineSeparator()));
         }
     }
     

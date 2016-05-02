@@ -17,7 +17,7 @@ public class LastModifiedTest
     {
         String expectedContentLine = "LAST-MODIFIED:19960817T133000Z";
         LastModified property = LastModified.parse(expectedContentLine);
-        String madeContentLine = property.toContentLines();
+        String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(1996, 8, 17, 13, 30), ZoneId.of("Z")), property.getValue());
     }

@@ -64,7 +64,7 @@ public class DaylightSavingsTimeTest
                 
         DaylightSavingTime madeComponent = new DaylightSavingTime(content);
         assertEquals(madeComponent, builtComponent);
-        assertEquals(content, builtComponent.toContentLines());
+        assertEquals(content, builtComponent.toContent());
     }
     
     @Test
@@ -97,7 +97,7 @@ public class DaylightSavingsTimeTest
                 "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
                 "END:" + componentName;
         
-        assertEquals(content2, builtComponent.toContentLines());
+        assertEquals(content2, builtComponent.toContent());
     }
     
     @Test (expected = DateTimeException.class)

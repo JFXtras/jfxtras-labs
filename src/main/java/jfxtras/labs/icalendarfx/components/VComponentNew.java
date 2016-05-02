@@ -148,7 +148,7 @@ public interface VComponentNew<T>
      * 
      * @return - the component content lines
      */
-    CharSequence toContentLines();
+    CharSequence toContent();
     
     /**
      * Checks component to determine if necessary properties are set.

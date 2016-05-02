@@ -113,7 +113,7 @@ public class LocatableTest
                     .getConstructor(String.class)
                     .newInstance(expectedContent);
             assertEquals(parsedComponent, builtComponent);
-            assertEquals(expectedContent, builtComponent.toContentLines());            
+            assertEquals(expectedContent, builtComponent.toContent());            
         }
     }
 }

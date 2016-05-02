@@ -17,7 +17,7 @@ public class NonStandardTest
     {
         String content = "X-MYPROP;VALUE=BOOLEAN:FALSE";
         NonStandardProperty madeProperty = NonStandardProperty.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         NonStandardProperty expectedProperty = NonStandardProperty.parse("FALSE")
                 .withPropertyName("X-MYPROP")
                 .withValueParameter(ValueType.BOOLEAN);
@@ -28,15 +28,13 @@ public class NonStandardTest
     @Test
     public void canParseNonStandard2() throws URISyntaxException
     {
-        // MAINTAIN ORDER OF PROPERTIES?
         String content = "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au";
         NonStandardProperty madeProperty = NonStandardProperty.parse(content);
-//        System.out.println(madeProperty.toContentLine());
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         NonStandardProperty expectedProperty = NonStandardProperty.parse("http://www.example.org/mysubj.au")
                 .withFormatType("audio/basic")
-                .withValueParameter(ValueType.UNIFORM_RESOURCE_IDENTIFIER);
-//        System.out.println(expectedProperty.toContentLine());
+                .withValueParameter(ValueType.UNIFORM_RESOURCE_IDENTIFIER)
+                .withPropertyName("X-ABC-MMSUBJ");
 
         assertEquals(expectedProperty, madeProperty);
         assertEquals(ValueType.UNIFORM_RESOURCE_IDENTIFIER, madeProperty.getValueParameter().getValue());

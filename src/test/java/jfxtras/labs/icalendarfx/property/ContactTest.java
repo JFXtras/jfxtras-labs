@@ -17,7 +17,7 @@ public class ContactTest
     {
         String content = "CONTACT;LANGUAGE=en-US;ALTREP=\"CID:part3.msg970930T083000SILVER@example.com\":Jim Dolittle\\, ABC Industries\\, +1-919-555-1234";
         Contact madeProperty = Contact.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         Contact expectedProperty = new Contact()
                 .withValue("Jim Dolittle, ABC Industries, +1-919-555-1234")
                 .withAlternateText(new URI("CID:part3.msg970930T083000SILVER@example.com"))
@@ -25,6 +25,6 @@ public class ContactTest
         expectedProperty.parameterSortOrder().put(ParameterType.LANGUAGE, 0);
         expectedProperty.parameterSortOrder().put(ParameterType.ALTERNATE_TEXT_REPRESENTATION, 1);
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
 }

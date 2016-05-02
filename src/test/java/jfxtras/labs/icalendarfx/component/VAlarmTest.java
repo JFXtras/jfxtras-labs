@@ -38,7 +38,7 @@ public class VAlarmTest
                 
         VAlarm madeComponent = new VAlarm(content);
         assertEquals(madeComponent, builtComponent);
-        assertEquals(content, builtComponent.toContentLines());
+        assertEquals(content, builtComponent.toContent());
         assertTrue(builtComponent.isValid());
     }
     

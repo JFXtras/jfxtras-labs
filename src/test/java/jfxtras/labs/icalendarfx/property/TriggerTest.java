@@ -22,7 +22,7 @@ public class TriggerTest
     {
         String expectedContent = "TRIGGER:-PT15M";
         Trigger<Duration> madeProperty = Trigger.parse(expectedContent);
-        assertEquals(expectedContent, madeProperty.toContentLines());
+        assertEquals(expectedContent, madeProperty.toContent());
         assertEquals(Duration.ofMinutes(-15), madeProperty.getValue());
     }
     
@@ -32,7 +32,7 @@ public class TriggerTest
         Trigger<Duration> madeProperty = new Trigger<Duration>(Duration.ofMinutes(5))
                 .withAlarmTrigger(new AlarmTriggerRelationship(AlarmTriggerRelationshipType.END));
         String expectedContent = "TRIGGER;RELATED=END:PT5M";
-        assertEquals(expectedContent, madeProperty.toContentLines());
+        assertEquals(expectedContent, madeProperty.toContent());
         assertEquals(Duration.ofMinutes(5), madeProperty.getValue());
         assertEquals(AlarmTriggerRelationshipType.END, madeProperty.getAlarmTrigger().getValue());
     }
@@ -43,7 +43,7 @@ public class TriggerTest
         ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
         Trigger<ZonedDateTime> madeProperty = new Trigger<ZonedDateTime>(d);
         String expectedContent = "TRIGGER;VALUE=DATE-TIME:20160306T043000Z";
-        assertEquals(expectedContent, madeProperty.toContentLines());
+        assertEquals(expectedContent, madeProperty.toContent());
     }
     
     @Test
@@ -51,7 +51,7 @@ public class TriggerTest
     {
         String expectedContent = "TRIGGER;VALUE=DATE-TIME:20160306T043000Z";
         Trigger<ZonedDateTime> madeProperty = Trigger.parse(ZonedDateTime.class, expectedContent);
-        assertEquals(expectedContent, madeProperty.toContentLines());
+        assertEquals(expectedContent, madeProperty.toContent());
         ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
         assertEquals(d, madeProperty.getValue());
     }

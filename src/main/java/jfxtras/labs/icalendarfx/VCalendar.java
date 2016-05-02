@@ -405,7 +405,7 @@ public class VCalendar
     
     
     /** Parse content lines into calendar object */
-    public String toContentLines()
+    public String toContent()
     {
         List<VCalendarElement> elements = new ArrayList<VCalendarElement>();
         // Add calendar properties
@@ -432,7 +432,7 @@ public class VCalendar
         builder.append(firstContentLine + System.lineSeparator());
 
         Map<VCalendarElement, CharSequence> elementContentMap = new LinkedHashMap<>();
-        elements.forEach(element -> elementContentMap.put(element, element.toContentLines()));
+        elements.forEach(element -> elementContentMap.put(element, element.toContent()));
         
         // restore component sort order if components were parsed from content
         elementContentMap.entrySet().stream()

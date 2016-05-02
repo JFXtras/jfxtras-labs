@@ -13,7 +13,7 @@ public class CategoriesTest
     {
         Categories property = new Categories("group03","g,roup\\;p");
         String expectedContent = "CATEGORIES:group03,g\\,roup\\\\\\;p";
-        assertEquals(expectedContent, property.toContentLines());
+        assertEquals(expectedContent, property.toContent());
         Categories property2 = Categories.parse(expectedContent);
         assertEquals(property, property2);
     }
@@ -23,7 +23,7 @@ public class CategoriesTest
     {
         Categories property = Categories.parse("CATEGORIES:group03,group04,group05");
         String expectedSummary = "CATEGORIES:group03,group04,group05";
-        assertEquals(expectedSummary, property.toContentLines());
+        assertEquals(expectedSummary, property.toContent());
         assertEquals(3, property.getValue().size());        
     }
     
@@ -32,7 +32,7 @@ public class CategoriesTest
     {
         Categories property = Categories.parse("group03,group04,group05");
         String expectedSummary = "CATEGORIES:group03,group04,group05";
-        assertEquals(expectedSummary, property.toContentLines());
+        assertEquals(expectedSummary, property.toContent());
         assertEquals(3, property.getValue().size());        
     }
 }

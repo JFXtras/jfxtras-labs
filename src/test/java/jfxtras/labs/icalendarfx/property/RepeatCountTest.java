@@ -13,7 +13,7 @@ public class RepeatCountTest
     {
         String expectedContent = "REPEAT:0";
         RepeatCount madeProperty = RepeatCount.parse(expectedContent);
-        assertEquals(expectedContent, madeProperty.toContentLines());
+        assertEquals(expectedContent, madeProperty.toContent());
         assertEquals((Integer) 0, madeProperty.getValue());
     }
     
@@ -22,7 +22,7 @@ public class RepeatCountTest
     {
         RepeatCount madeProperty = new RepeatCount(2);
         String expectedContent = "REPEAT:2";
-        assertEquals(expectedContent, madeProperty.toContentLines());
+        assertEquals(expectedContent, madeProperty.toContent());
         assertEquals((Integer) 2, madeProperty.getValue());
     }
 }

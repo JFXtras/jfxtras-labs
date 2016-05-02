@@ -13,7 +13,7 @@ public class TimeZoneNameTest
     {
         String content = "TZNAME;LANGUAGE=fr-CA:HNE";
         TimeZoneName madeProperty = TimeZoneName.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         TimeZoneName expectedProperty = new TimeZoneName()
                 .withValue("HNE")
                 .withLanguage("fr-CA");

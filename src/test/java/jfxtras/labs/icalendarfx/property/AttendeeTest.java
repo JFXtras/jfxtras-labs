@@ -23,7 +23,7 @@ public class AttendeeTest
         Attendee madeProperty = Attendee.parse(content);
         Attendee expectedProperty = Attendee.parse("mailto:joecool@example.com").withGroupMembership("\"mailto:DEV-GROUP@example.com\"");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
 
     @Test
@@ -36,7 +36,7 @@ public class AttendeeTest
                         new GroupMembership(
                                 Arrays.asList(new URI("mailto:projectA@example.com"), new URI("mailto:projectB@example.com"))));
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test
@@ -47,7 +47,7 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:jsmith@example.com")
                 .withCommonName("John Smith");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals("ATTENDEE;CN=John Smith:mailto:jsmith@example.com", expectedProperty.toContentLines()); // quotes should be removed from common name
+        assertEquals("ATTENDEE;CN=John Smith:mailto:jsmith@example.com", expectedProperty.toContent()); // quotes should be removed from common name
     }
     
     @Test
@@ -58,7 +58,7 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:ietf-calsch@example.org")
                 .withCalendarUser(CalendarUserType.GROUP);
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test
@@ -69,7 +69,7 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:jdoe@example.com")
                 .withDelegators("mailto:jsmith@example.com");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test
@@ -80,7 +80,7 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:jsmith@example.com")
                 .withDelegatees("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test
@@ -91,7 +91,7 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:jsmith@example.com")
                 .withRSVP(true);
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test
@@ -102,7 +102,7 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:mrbig@example.com")
                 .withParticipationRole(ParticipationRoleType.CHAIR);
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test
@@ -113,7 +113,7 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:jsmith@example.com")
                 .withParticipationStatus(ParticipationStatusType.DECLINED);
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test
@@ -124,7 +124,7 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:jsmith@example.com")
                 .withSentBy("mailto:sray@example.com");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test
@@ -146,7 +146,7 @@ public class AttendeeTest
         assertEquals(ParticipationStatusType.DECLINED, madeProperty.getParticipationStatus().getValue());
         assertEquals(CalendarUserType.GROUP, madeProperty.getCalendarUser().getValue());
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
     }
     
     @Test // test non-standard ROLE
@@ -157,7 +157,7 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:mrbig@example.com")
                 .withParticipationRole("GRAND POOBAH");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContentLines());
+        assertEquals(content, expectedProperty.toContent());
         assertEquals(madeProperty.getParticipationRole().getValue(), ParticipationRoleType.UNKNOWN);
     }
 }

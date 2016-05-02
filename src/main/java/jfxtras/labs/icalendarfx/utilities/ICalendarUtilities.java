@@ -139,23 +139,36 @@ public final class ICalendarUtilities
        {
            if ((propertyLine.charAt(parameterStart) == ';') || (propertyLine.charAt(parameterStart) == ':'))
            {
-               parameterStart++;
                break;
            } else if (propertyLine.charAt(parameterStart) == '=') // propertyLine doesn't contain the property name, start searching for parameters at beginning
            {
-               parameterStart = 0;
+               parameterStart = -1;
                break;
            }
        }
-
-       char firstCharacter;
+       
+       // make adjustments before processing
+       char firstCharacter;      
        if (parameterStart == propertyLine.length())
-       {
+       { // contains no property name, only value
            parameterStart = 0; // reset to front of line because it only contains a value
            firstCharacter = ':';
+       } else if (parameterStart == propertyLine.length()-1)
+       { // contains only property name, has no value, return empty value 
+           parameterMap.put(PROPERTY_VALUE_KEY, "");
+           return parameterMap;
+       } else if (parameterStart < 0)
+       { // doesn't contain the property name, but has parameters
+           firstCharacter = ';';
+           parameterStart = 0;
+       } else if (parameterStart == 0)
+       { // has parameter or value at start (first character is a ';' or ':')
+           firstCharacter = propertyLine.charAt(parameterStart);
+           parameterStart = 1;
        } else
-       {
-           firstCharacter = (parameterStart == 0) ? ';' : propertyLine.charAt(parameterStart-1);
+       { // contains a property name and parameters and/or value
+           firstCharacter = propertyLine.charAt(parameterStart);
+           parameterStart++;
        }
        
        // find parameters
@@ -269,7 +282,8 @@ public final class ICalendarUtilities
 //            return propertyLine.substring(0, propertyNameEnd);
         } else
         {
-            throw new IllegalArgumentException("Illegal property line.  No value after name:" + propertyLine);
+            return -1; // no name
+//            throw new IllegalArgumentException("Illegal property line.  No value after name:" + propertyLine);
         }
     }
     

@@ -16,7 +16,7 @@ public class LocationTest
     {
         String content = "LOCATION:Conference Room - F123\\, Bldg. 002";
         Location madeProperty = Location.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         Location expectedProperty = Location.parse("Conference Room - F123\\, Bldg. 002");
         assertEquals(expectedProperty, madeProperty);
         assertEquals("Conference Room - F123, Bldg. 002", madeProperty.getValue());
@@ -27,7 +27,7 @@ public class LocationTest
     {
         String content = "LOCATION;ALTREP=\"http://xyzcorp.com/conf-rooms/f123.vcf\";LANGUAGE=en-US:Conference Room - F123\\, Bldg. 00";
         Location madeProperty = Location.parse(content);
-        assertEquals(content, madeProperty.toContentLines());
+        assertEquals(content, madeProperty.toContent());
         Location expectedProperty = Location.parse("Conference Room - F123\\, Bldg. 00")
                 .withAlternateText(new URI("http://xyzcorp.com/conf-rooms/f123.vcf"))
                 .withLanguage("en-US");

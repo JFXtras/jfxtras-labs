@@ -24,6 +24,6 @@ public class VJournalTest
                 
         VJournal madeComponent = new VJournal(content);
         assertEquals(madeComponent, builtComponent);
-        assertEquals(content, builtComponent.toContentLines());
+        assertEquals(content, builtComponent.toContent());
     }
 }
