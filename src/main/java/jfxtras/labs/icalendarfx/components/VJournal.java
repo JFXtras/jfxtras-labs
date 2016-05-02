@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
 /**
@@ -59,9 +59,9 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 public class VJournal extends VComponentDisplayableBase<VJournal>
 {
     @Override
-    public VComponentEnum componentType()
+    public CalendarElement componentType()
     {
-        return VComponentEnum.VJOURNAL;
+        return CalendarElement.VJOURNAL;
     }
     
     /*
@@ -98,7 +98,7 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
     public VJournal withDescriptions(ObservableList<Description> descriptions) { setDescriptions(descriptions); return this; }
     public VJournal withDescriptions(String...descriptions)
     {
-        Arrays.stream(descriptions).forEach(c -> PropertyEnum.DESCRIPTION.parse(this, c));
+        Arrays.stream(descriptions).forEach(c -> ComponentElement.DESCRIPTION.parse(this, c));
         return this;
     }
     public VJournal withDescriptions(Description...descriptions)

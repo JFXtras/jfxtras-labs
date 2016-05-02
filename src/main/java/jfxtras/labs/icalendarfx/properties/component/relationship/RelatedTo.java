@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
+import jfxtras.labs.icalendarfx.parameters.PropertyElement;
 import jfxtras.labs.icalendarfx.parameters.Relationship;
 import jfxtras.labs.icalendarfx.parameters.Relationship.RelationshipType;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
@@ -47,7 +47,7 @@ public class RelatedTo extends PropertyBase<String, RelatedTo> implements Proper
     {
         if (relationship == null)
         {
-            relationship = new SimpleObjectProperty<>(this, ParameterEnum.RELATIONSHIP_TYPE.toString());
+            relationship = new SimpleObjectProperty<>(this, PropertyElement.RELATIONSHIP_TYPE.toString());
         }
         return relationship;
     }

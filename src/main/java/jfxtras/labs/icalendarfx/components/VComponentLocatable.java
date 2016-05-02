@@ -5,7 +5,7 @@ import java.util.Arrays;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
@@ -171,7 +171,7 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     default T withResources(ObservableList<Resources> resources) { setResources(resources); return (T) this; }
     default T withResources(String...resources)
     {
-        Arrays.stream(resources).forEach(c -> PropertyEnum.RESOURCES.parse(this, c));
+        Arrays.stream(resources).forEach(c -> ComponentElement.RESOURCES.parse(this, c));
         return (T) this;
     }
     default T withResources(Resources...resources)

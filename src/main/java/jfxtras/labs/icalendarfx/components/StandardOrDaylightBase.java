@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetFrom;
@@ -55,7 +55,7 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
     {
         if (timeZoneOffsetFrom == null)
         {
-            timeZoneOffsetFrom = new SimpleObjectProperty<>(this, PropertyEnum.TIME_ZONE_OFFSET_FROM.toString());
+            timeZoneOffsetFrom = new SimpleObjectProperty<>(this, ComponentElement.TIME_ZONE_OFFSET_FROM.toString());
         }
         return timeZoneOffsetFrom;
     }
@@ -77,7 +77,7 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
     {
         if (timeZoneOffsetTo == null)
         {
-            timeZoneOffsetTo = new SimpleObjectProperty<>(this, PropertyEnum.TIME_ZONE_OFFSET_TO.toString());
+            timeZoneOffsetTo = new SimpleObjectProperty<>(this, ComponentElement.TIME_ZONE_OFFSET_TO.toString());
         }
         return timeZoneOffsetTo;
     }

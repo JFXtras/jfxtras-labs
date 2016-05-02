@@ -29,12 +29,8 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
+import jfxtras.labs.icalendarfx.parameters.PropertyElement;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
-import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
-import jfxtras.labs.icalendarfx.properties.calendar.Method;
-import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
-import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action;
 import jfxtras.labs.icalendarfx.properties.component.alarm.RepeatCount;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Trigger;
@@ -80,12 +76,12 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetFrom
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
 
-public enum PropertyEnum
+public enum ComponentElement
 {
     // Alarm
     ACTION ("ACTION", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Action.class) // property class
     {
         @Override
@@ -120,7 +116,7 @@ public enum PropertyEnum
     // property class
     ATTACHMENT ("ATTACH" // property name
             , Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER, ValueType.BINARY) // valid property value types, first is default
-            , Arrays.asList(ParameterEnum.FORMAT_TYPE, ParameterEnum.INLINE_ENCODING, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
+            , Arrays.asList(PropertyElement.FORMAT_TYPE, PropertyElement.INLINE_ENCODING, PropertyElement.VALUE_DATA_TYPES) // allowed parameters
             , Attachment.class)
     {
         @Override
@@ -172,11 +168,11 @@ public enum PropertyEnum
 
     ATTENDEE ("ATTENDEE"    // property name
             , Arrays.asList(ValueType.CALENDAR_USER_ADDRESS) // valid property value types, first is default
-            , Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.CALENDAR_USER_TYPE, ParameterEnum.DELEGATEES,
-                    ParameterEnum.DELEGATORS, ParameterEnum.DIRECTORY_ENTRY_REFERENCE,
-                    ParameterEnum.GROUP_OR_LIST_MEMBERSHIP, ParameterEnum.LANGUAGE, ParameterEnum.PARTICIPATION_ROLE,
-                    ParameterEnum.PARTICIPATION_STATUS, ParameterEnum.RSVP_EXPECTATION, ParameterEnum.SENT_BY,
-                    ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
+            , Arrays.asList(PropertyElement.COMMON_NAME, PropertyElement.CALENDAR_USER_TYPE, PropertyElement.DELEGATEES,
+                    PropertyElement.DELEGATORS, PropertyElement.DIRECTORY_ENTRY_REFERENCE,
+                    PropertyElement.GROUP_OR_LIST_MEMBERSHIP, PropertyElement.LANGUAGE, PropertyElement.PARTICIPATION_ROLE,
+                    PropertyElement.PARTICIPATION_STATUS, PropertyElement.RSVP_EXPECTATION, PropertyElement.SENT_BY,
+                    PropertyElement.VALUE_DATA_TYPES) // allowed parameters
             , Attendee.class) // property class
     {
         @Override
@@ -215,36 +211,9 @@ public enum PropertyEnum
             castDestination.setAttendees(properties);
         }
     },
-    // Calendar
-    CALENDAR_SCALE ("CALSCALE", // property name
-            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            CalendarScale.class) // property class
-    {
-        @Override
-        public Object getProperty(VComponentNew<?> vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void parse(VComponentNew<?> vComponent, String propertyContent)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-    },
     CATEGORIES ("CATEGORIES" // property name
             , Arrays.asList(ValueType.TEXT) // valid property value types, first is default
-            , Arrays.asList(ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES) // allowed parameters
+            , Arrays.asList(PropertyElement.LANGUAGE, PropertyElement.VALUE_DATA_TYPES) // allowed parameters
             , Categories.class) // property class
     {
         @Override
@@ -286,7 +255,7 @@ public enum PropertyEnum
     // descriptive
     CLASSIFICATION ("CLASS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Classification.class) // property class
     {
         @Override
@@ -321,7 +290,7 @@ public enum PropertyEnum
     // Descriptive
     COMMENT ("COMMENT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.ALTERNATE_TEXT_REPRESENTATION, PropertyElement.LANGUAGE, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Comment.class)
     {
         @Override
@@ -363,7 +332,7 @@ public enum PropertyEnum
     // Relationship
     CONTACT ("CONTACT", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.ALTERNATE_TEXT_REPRESENTATION, PropertyElement.LANGUAGE, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Contact.class)
     {
         @Override
@@ -428,7 +397,7 @@ public enum PropertyEnum
     // Date and Time
     DATE_TIME_COMPLETED ("COMPLETED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             DateTimeCompleted.class) // property class
     {
         @Override
@@ -463,7 +432,7 @@ public enum PropertyEnum
     // Change management
     DATE_TIME_CREATED ("CREATED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             DateTimeCreated.class) // property class
     {
         @Override
@@ -498,7 +467,7 @@ public enum PropertyEnum
     // Date and time
     DATE_TIME_DUE ("DUE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.TIME_ZONE_IDENTIFIER, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             DateTimeDue.class) // property class
     {
         @Override
@@ -533,7 +502,7 @@ public enum PropertyEnum
     // Date and Time
     DATE_TIME_END ("DTEND", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.TIME_ZONE_IDENTIFIER, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             DateTimeEnd.class) // property class
     {
         @Override
@@ -568,7 +537,7 @@ public enum PropertyEnum
     // Change management
     DATE_TIME_STAMP ("DTSTAMP", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             DateTimeStamp.class) // property class
     {
         @Override
@@ -602,7 +571,7 @@ public enum PropertyEnum
     },
     DATE_TIME_START ("DTSTART", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.TIME_ZONE_IDENTIFIER, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             DateTimeStart.class) // property class
     {
         @Override
@@ -637,7 +606,7 @@ public enum PropertyEnum
     // Descriptive
     DESCRIPTION ("DESCRIPTION",
             Arrays.asList(ValueType.TEXT),
-            Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE),
+            Arrays.asList(PropertyElement.ALTERNATE_TEXT_REPRESENTATION, PropertyElement.LANGUAGE),
             Description.class)
     {
         @Override
@@ -708,7 +677,7 @@ public enum PropertyEnum
     // Date and Time
     DURATION ("DURATION", // property name
             Arrays.asList(ValueType.DURATION), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             DurationProp.class)
     {
         @Override
@@ -743,7 +712,7 @@ public enum PropertyEnum
     // Recurrence
     EXCEPTION_DATE_TIMES ("EXDATE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.TIME_ZONE_IDENTIFIER, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Exceptions.class)
     {
         @Override
@@ -785,7 +754,7 @@ public enum PropertyEnum
     // Date and Time
     FREE_BUSY_TIME ("FREEBUSY", // property name
             Arrays.asList(ValueType.PERIOD), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.FREE_BUSY_TIME_TYPE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.FREE_BUSY_TIME_TYPE, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             FreeBusyTime.class)
     {
         @Override
@@ -820,7 +789,7 @@ public enum PropertyEnum
     // Descriptive
     GEOGRAPHIC_POSITION ("GEO", // property name
             Arrays.asList(ValueType.TEXT), // In GeographicPosition there are two doubles for latitude and longitude
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             GeographicPosition.class)
     {
         @Override
@@ -855,7 +824,7 @@ public enum PropertyEnum
     // Miscellaneous
     IANA_PROPERTY (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.get(0), /** property name (one in list of valid names at {@link #IANAProperty} */
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default (any value allowed)
-            Arrays.asList(ParameterEnum.values()), // all parameters allowed
+            Arrays.asList(PropertyElement.values()), // all parameters allowed
             IANAProperty.class) // property class
     {
         @Override
@@ -893,7 +862,7 @@ public enum PropertyEnum
     // Change management
     LAST_MODIFIED ("LAST-MODIFIED", // property name
             Arrays.asList(ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             LastModified.class) // property class
     {
         @Override
@@ -928,7 +897,7 @@ public enum PropertyEnum
     // Descriptive
     LOCATION ("LOCATION", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.ALTERNATE_TEXT_REPRESENTATION, PropertyElement.LANGUAGE, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Location.class) // property class
     {
         @Override
@@ -960,37 +929,10 @@ public enum PropertyEnum
             castDestination.setLocation(property);
         }
     },
-    // Calendar
-    METHOD ("METHOD", // property name
-            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Method.class) // property class
-    {
-        @Override
-        public Object getProperty(VComponentNew<?> vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void parse(VComponentNew<?> vComponent, String propertyContent)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-    },
     // Miscellaneous
     NON_STANDARD ("X-", // property name (begins with X- prefix)
             Arrays.asList(ValueType.values()), // valid property value types, first is default (any value allowed)
-            Arrays.asList(ParameterEnum.values()), // all parameters allowed
+            Arrays.asList(PropertyElement.values()), // all parameters allowed
             NonStandardProperty.class) // property class
     {
         @Override
@@ -1028,8 +970,8 @@ public enum PropertyEnum
     // Relationship
     ORGANIZER ("ORGANIZER", // name
             Arrays.asList(ValueType.CALENDAR_USER_ADDRESS), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.COMMON_NAME, ParameterEnum.DIRECTORY_ENTRY_REFERENCE, ParameterEnum.LANGUAGE,
-                    ParameterEnum.SENT_BY), // allowed parameters
+            Arrays.asList(PropertyElement.COMMON_NAME, PropertyElement.DIRECTORY_ENTRY_REFERENCE, PropertyElement.LANGUAGE,
+                    PropertyElement.SENT_BY), // allowed parameters
             Organizer.class) // property class
     {
         @Override
@@ -1064,7 +1006,7 @@ public enum PropertyEnum
     // Descriptive
     PERCENT_COMPLETE ("PERCENT-COMPLETE", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             PercentComplete.class) // property class
     {
         @Override
@@ -1099,7 +1041,7 @@ public enum PropertyEnum
     // Descriptive
     PRIORITY ("PRIORITY", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Priority.class) // property class
     {
         @Override
@@ -1131,37 +1073,10 @@ public enum PropertyEnum
             castDestination.setPriority(property);
         }
     },
-    // Calendar
-    PRODUCT_IDENTIFIER ("PRODID", // property name
-            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            ProductIdentifier.class) // property class
-    {
-        @Override
-        public Object getProperty(VComponentNew<?> vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void parse(VComponentNew<?> vComponent, String propertyContent)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-    },
     // Recurrence
     RECURRENCE_DATE_TIMES ("RDATE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE, ValueType.PERIOD), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.TIME_ZONE_IDENTIFIER, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Recurrences.class)
     {
         @Override
@@ -1203,7 +1118,7 @@ public enum PropertyEnum
     // Relationship
     RECURRENCE_IDENTIFIER ("RECURRENCE-ID", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.RECURRENCE_IDENTIFIER_RANGE, ParameterEnum.TIME_ZONE_IDENTIFIER, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.RECURRENCE_IDENTIFIER_RANGE, PropertyElement.TIME_ZONE_IDENTIFIER, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             RecurrenceId.class) // property class
     {
         @Override
@@ -1238,7 +1153,7 @@ public enum PropertyEnum
     // Recurrence
     RECURRENCE_RULE ("RRULE", // property name
             Arrays.asList(ValueType.RECURRENCE_RULE), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             RecurrenceRule.class) // property class
     {
         @Override
@@ -1273,7 +1188,7 @@ public enum PropertyEnum
     // Relationship
     RELATED_TO ("RELATED-TO", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.RELATIONSHIP_TYPE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.RELATIONSHIP_TYPE, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             RelatedTo.class) // property class
     {
         @Override
@@ -1311,7 +1226,7 @@ public enum PropertyEnum
     // Alarm
     REPEAT_COUNT ("REPEAT", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             RepeatCount.class) // property class
     {
         @Override
@@ -1346,7 +1261,7 @@ public enum PropertyEnum
     // Miscellaneous
     REQUEST_STATUS ("REQUEST-STATUS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.LANGUAGE, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             RequestStatus.class)
     {
         @Override
@@ -1384,7 +1299,7 @@ public enum PropertyEnum
     // Descriptive
     RESOURCES ("RESOURCES", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.ALTERNATE_TEXT_REPRESENTATION, PropertyElement.LANGUAGE, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Resources.class) // property class
     {
         @Override
@@ -1426,7 +1341,7 @@ public enum PropertyEnum
     // Change management
     SEQUENCE ("SEQUENCE", // property name
             Arrays.asList(ValueType.INTEGER), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Sequence.class) // property class
     {
         @Override
@@ -1461,7 +1376,7 @@ public enum PropertyEnum
     // Descriptive
     STATUS ("STATUS", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Status.class) // property class
     {
         @Override
@@ -1496,8 +1411,8 @@ public enum PropertyEnum
     // Descriptive
     SUMMARY ("SUMMARY", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.ALTERNATE_TEXT_REPRESENTATION, ParameterEnum.LANGUAGE,
-                    ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.ALTERNATE_TEXT_REPRESENTATION, PropertyElement.LANGUAGE,
+                    PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Summary.class) // property class
     {
         @Override
@@ -1532,7 +1447,7 @@ public enum PropertyEnum
     // Date and Time
     TIME_TRANSPARENCY ("TRANSP", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             TimeTransparency.class) // property class
     {
         @Override
@@ -1567,7 +1482,7 @@ public enum PropertyEnum
     // Time Zone
     TIME_ZONE_IDENTIFIER ("TZID", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             TimeZoneIdentifier.class) // property class
     {
         @Override
@@ -1602,7 +1517,7 @@ public enum PropertyEnum
     // Time Zone
     TIME_ZONE_NAME ("TZNAME", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.LANGUAGE, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.LANGUAGE, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             TimeZoneName.class) // property class
     {
         @Override
@@ -1644,7 +1559,7 @@ public enum PropertyEnum
     // Time Zone
     TIME_ZONE_OFFSET_FROM ("TZOFFSETFROM", // property name
             Arrays.asList(ValueType.UTC_OFFSET), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             TimeZoneOffsetFrom.class) // property class
     {
         @Override
@@ -1679,7 +1594,7 @@ public enum PropertyEnum
     // Time Zone
     TIME_ZONE_OFFSET_TO ("TZOFFSETTO", // property name
             Arrays.asList(ValueType.UTC_OFFSET), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             TimeZoneOffsetTo.class) // property class
     {
         @Override
@@ -1714,7 +1629,7 @@ public enum PropertyEnum
     // Time Zone
     TIME_ZONE_URL ("TZURL", // property name
             Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             TimeZoneURL.class) // property class
     {
         @Override
@@ -1749,7 +1664,7 @@ public enum PropertyEnum
     // Alarm
     TRIGGER ("TRIGGER", // property name
             Arrays.asList(ValueType.DURATION, ValueType.DATE_TIME), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.ALARM_TRIGGER_RELATIONSHIP, ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.ALARM_TRIGGER_RELATIONSHIP, PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             Trigger.class) // property class
     {
         @Override
@@ -1784,7 +1699,7 @@ public enum PropertyEnum
     // Relationship
     UNIQUE_IDENTIFIER ("UID", // property name
             Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             UniqueIdentifier.class) // property class
     {
         @Override
@@ -1819,7 +1734,7 @@ public enum PropertyEnum
     // Relationship
     UNIFORM_RESOURCE_LOCATOR ("URL", // property name
             Arrays.asList(ValueType.UNIFORM_RESOURCE_IDENTIFIER), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
+            Arrays.asList(PropertyElement.VALUE_DATA_TYPES), // allowed parameters
             UniformResourceLocator.class) // property class
     {
         @Override
@@ -1844,42 +1759,15 @@ public enum PropertyEnum
             UniformResourceLocator property = new UniformResourceLocator(castSource.getUniformResourceLocator());
             castDestination.setUniformResourceLocator(property);
         }
-    },
-    // Calendar
-    VERSION ("VERSION", // property name
-            Arrays.asList(ValueType.TEXT), // valid property value types, first is default
-            Arrays.asList(ParameterEnum.VALUE_DATA_TYPES), // allowed parameters
-            Version.class) // property class
-    {
-        @Override
-        public Object getProperty(VComponentNew<?> vComponent)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void parse(VComponentNew<?> vComponent, String propertyContent)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
-        {
-            // TODO Auto-generated method stub
-            
-        }
     };
     
     // Map to match up name to enum List
     @Deprecated // go back to one name per proprety
-    private static Map<String, List<PropertyEnum>> enumListFromNameMap = makeEnumListFromNameMap();
-    private static Map<String, List<PropertyEnum>> makeEnumListFromNameMap()
+    private static Map<String, List<ComponentElement>> enumListFromNameMap = makeEnumListFromNameMap();
+    private static Map<String, List<ComponentElement>> makeEnumListFromNameMap()
     {
-        Map<String, List<PropertyEnum>> map = new HashMap<>();
-        Arrays.stream(PropertyEnum.values())
+        Map<String, List<ComponentElement>> map = new HashMap<>();
+        Arrays.stream(ComponentElement.values())
         .forEach(e ->
         {
             if (map.get(e.toString()) == null)
@@ -1893,31 +1781,31 @@ public enum PropertyEnum
         return map;
     }
     @Deprecated // go back to one name per proprety
-    public static List<PropertyEnum> enumListFromName(String propertyName)
+    public static List<ComponentElement> enumListFromName(String propertyName)
     {
         return enumListFromNameMap.get(propertyName.toUpperCase());
     }
     
-    private static Map<String, PropertyEnum> enumFromNameMap = makeEnumFromNameMap();
-    private static Map<String, PropertyEnum> makeEnumFromNameMap()
+    private static Map<String, ComponentElement> enumFromNameMap = makeEnumFromNameMap();
+    private static Map<String, ComponentElement> makeEnumFromNameMap()
     {
-        Map<String, PropertyEnum> map = new HashMap<>();
-        PropertyEnum[] values = PropertyEnum.values();
+        Map<String, ComponentElement> map = new HashMap<>();
+        ComponentElement[] values = ComponentElement.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].toString(), values[i]);
         }
         return map;
     }
-    public static PropertyEnum enumFromName(String propertyName)
+    public static ComponentElement enumFromName(String propertyName)
     {
-        final PropertyEnum prop;
-        if (propertyName.substring(0, PropertyEnum.NON_STANDARD.toString().length()).equals(PropertyEnum.NON_STANDARD.toString()))
+        final ComponentElement prop;
+        if (propertyName.substring(0, ComponentElement.NON_STANDARD.toString().length()).equals(ComponentElement.NON_STANDARD.toString()))
         {
-            prop = PropertyEnum.NON_STANDARD;
+            prop = ComponentElement.NON_STANDARD;
         } else if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(propertyName))
         {
-            prop = PropertyEnum.IANA_PROPERTY;            
+            prop = ComponentElement.IANA_PROPERTY;            
         } else
         {
             prop = enumFromNameMap.get(propertyName);   
@@ -1926,11 +1814,11 @@ public enum PropertyEnum
     }
     
     // Map to match up class to enum
-    private static Map<Class<? extends Property>, PropertyEnum> enumFromClassMap = makeEnumFromClassMap();
-    private static Map<Class<? extends Property>, PropertyEnum> makeEnumFromClassMap()
+    private static Map<Class<? extends Property>, ComponentElement> enumFromClassMap = makeEnumFromClassMap();
+    private static Map<Class<? extends Property>, ComponentElement> makeEnumFromClassMap()
     {
-        Map<Class<? extends Property>, PropertyEnum> map = new HashMap<>();
-        PropertyEnum[] values = PropertyEnum.values();
+        Map<Class<? extends Property>, ComponentElement> map = new HashMap<>();
+        ComponentElement[] values = ComponentElement.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].myClass, values[i]);
@@ -1938,12 +1826,12 @@ public enum PropertyEnum
         return map;
     }
     /** get enum from map */
-    public static PropertyEnum enumFromClass(Class<? extends Property> myClass)
+    public static ComponentElement enumFromClass(Class<? extends Property> myClass)
     {
-        PropertyEnum p = enumFromClassMap.get(myClass);
+        ComponentElement p = enumFromClassMap.get(myClass);
         if (p == null)
         {
-            throw new IllegalArgumentException(PropertyEnum.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
+            throw new IllegalArgumentException(ComponentElement.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
         }
         return p;
     }
@@ -1958,10 +1846,10 @@ public enum PropertyEnum
     private List<ValueType> valueTypes;
     public List<ValueType> allowedValueTypes() { return valueTypes; }
 
-    private List<ParameterEnum> allowedParameters;
-    public List<ParameterEnum> allowedParameters() { return allowedParameters; }
+    private List<PropertyElement> allowedParameters;
+    public List<PropertyElement> allowedParameters() { return allowedParameters; }
     
-    PropertyEnum(String name, List<ValueType> valueTypes, List<ParameterEnum> allowedParameters, Class<? extends Property> myClass)
+    ComponentElement(String name, List<ValueType> valueTypes, List<PropertyElement> allowedParameters, Class<? extends Property> myClass)
     {
         this.allowedParameters = allowedParameters;
         this.name = name;

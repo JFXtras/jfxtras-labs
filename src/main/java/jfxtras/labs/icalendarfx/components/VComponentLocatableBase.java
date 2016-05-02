@@ -4,7 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -32,7 +32,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (description == null)
         {
-            description = new SimpleObjectProperty<>(this, PropertyEnum.DESCRIPTION.toString());
+            description = new SimpleObjectProperty<>(this, ComponentElement.DESCRIPTION.toString());
         }
         return description;
     }
@@ -50,7 +50,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (duration == null)
         {
-            duration = new SimpleObjectProperty<>(this, PropertyEnum.DURATION.toString());
+            duration = new SimpleObjectProperty<>(this, ComponentElement.DURATION.toString());
         }
         return duration;
     }
@@ -72,7 +72,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (geographicPosition == null)
         {
-            geographicPosition = new SimpleObjectProperty<>(this, PropertyEnum.GEOGRAPHIC_POSITION.toString());
+            geographicPosition = new SimpleObjectProperty<>(this, ComponentElement.GEOGRAPHIC_POSITION.toString());
         }
         return geographicPosition;
     }
@@ -90,7 +90,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (location == null)
         {
-            location = new SimpleObjectProperty<>(this, PropertyEnum.LOCATION.toString());
+            location = new SimpleObjectProperty<>(this, ComponentElement.LOCATION.toString());
         }
         return location;
     }
@@ -109,7 +109,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (priority == null)
         {
-            priority = new SimpleObjectProperty<>(this, PropertyEnum.PRIORITY.toString());
+            priority = new SimpleObjectProperty<>(this, ComponentElement.PRIORITY.toString());
         }
         return priority;
     }
@@ -185,9 +185,9 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     
     /** parse VAlarms */
     @Override
-    void parseSubComponents(VComponentEnum subcomponentType, String contentLines)
+    void parseSubComponents(CalendarElement subcomponentType, String contentLines)
     {
-        if (subcomponentType == VComponentEnum.VALARM)
+        if (subcomponentType == CalendarElement.VALARM)
         {
             final ObservableList<VAlarm> list;
             if (getVAlarms() == null)

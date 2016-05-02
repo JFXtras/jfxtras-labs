@@ -6,7 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.parameters.AlternateText;
-import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
+import jfxtras.labs.icalendarfx.parameters.PropertyElement;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -69,7 +69,7 @@ public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U>
     {
         if (alternateText == null)
         {
-            alternateText = new SimpleObjectProperty<>(this, ParameterEnum.ALTERNATE_TEXT_REPRESENTATION.toString());
+            alternateText = new SimpleObjectProperty<>(this, PropertyElement.ALTERNATE_TEXT_REPRESENTATION.toString());
         }
         return alternateText;
     }

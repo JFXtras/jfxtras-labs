@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.parameters.ParameterEnum;
+import jfxtras.labs.icalendarfx.parameters.PropertyElement;
 import jfxtras.labs.icalendarfx.parameters.Range;
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
@@ -64,7 +64,7 @@ public class RecurrenceId<T extends Temporal> extends PropertyBaseDateTime<T, Re
     {
         if (range == null)
         {
-            range = new SimpleObjectProperty<>(this, ParameterEnum.RECURRENCE_IDENTIFIER_RANGE.toString());
+            range = new SimpleObjectProperty<>(this, PropertyElement.RECURRENCE_IDENTIFIER_RANGE.toString());
         }
         return range;
     }

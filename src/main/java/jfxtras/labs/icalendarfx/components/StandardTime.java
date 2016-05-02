@@ -3,9 +3,9 @@ package jfxtras.labs.icalendarfx.components;
 public class StandardTime extends StandardOrDaylightBase<StandardTime>
 {
     @Override
-    public VComponentEnum componentType()
+    public CalendarElement componentType()
     {
-        return VComponentEnum.STANDARD;
+        return CalendarElement.STANDARD_TIME;
     }
     
     /*

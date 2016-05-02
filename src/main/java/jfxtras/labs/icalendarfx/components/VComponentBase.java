@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -78,14 +78,14 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * @return - the list of properties
      */
     @Override
-    public List<PropertyEnum> propertyEnums()
+    public List<ComponentElement> propertyEnums()
     {
-        List<PropertyEnum> populatedProperties = new ArrayList<>();
+        List<ComponentElement> populatedProperties = new ArrayList<>();
 //        System.out.println("componentType():" + componentType().allowedProperties());
-        Iterator<PropertyEnum> i = componentType().allowedProperties().stream().iterator();
+        Iterator<ComponentElement> i = componentType().allowedProperties().stream().iterator();
         while (i.hasNext())
         {
-            PropertyEnum propertyType = i.next();
+            ComponentElement propertyType = i.next();
             Object property = propertyType.getProperty(this);
 //            System.out.println("props:" + propertyType + " " + property );
             if (property != null)
@@ -164,7 +164,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentType().toString());
                 if  (! isMainComponent)
                 {
-                    VComponentEnum subcomponentType = VComponentEnum.valueOf(line.substring(nameEndIndex+1));
+                    CalendarElement subcomponentType = CalendarElement.valueOf(line.substring(nameEndIndex+1));
                     StringBuilder subcomponentContentBuilder = new StringBuilder(200);
                     subcomponentContentBuilder.append(line + System.lineSeparator());
                     boolean isEndFound = false;
@@ -183,7 +183,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
             {
                 // parse property
                 // ignores unknown properties
-                PropertyEnum propertyType = PropertyEnum.enumFromName(propertyName);
+                ComponentElement propertyType = ComponentElement.enumFromName(propertyName);
                 if (propertyType != null)
                 {
                     propertySortOrder.put(propertyName, propertyCounter);
@@ -207,13 +207,13 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * @param subcomponentType 
      * @param string 
      */
-    void parseSubComponents(VComponentEnum subcomponentType, String subcomponentcontentLines) { }
+    void parseSubComponents(CalendarElement subcomponentType, String subcomponentcontentLines) { }
 
     @Override
     public int hashCode()
     {
         int hash = 7;
-        Iterator<PropertyEnum> i = propertyEnums().iterator();
+        Iterator<ComponentElement> i = propertyEnums().iterator();
         while (i.hasNext())
         {
             Object property = i.next().getProperty(this);
@@ -232,13 +232,13 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
         VComponentBase<?> testObj = (VComponentBase<?>) obj;
         
         final boolean propertiesEquals;
-        List<PropertyEnum> properties = propertyEnums(); // make properties local to avoid creating list multiple times
-        List<PropertyEnum> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
+        List<ComponentElement> properties = propertyEnums(); // make properties local to avoid creating list multiple times
+        List<ComponentElement> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
 //        System.out.println("equals:" + this + " " + testObj);
         if (properties.size() == testProperties.size())
         {
-            Iterator<PropertyEnum> i1 = properties.iterator();
-            Iterator<PropertyEnum> i2 = testProperties.iterator();
+            Iterator<ComponentElement> i1 = properties.iterator();
+            Iterator<ComponentElement> i2 = testProperties.iterator();
             boolean isFailure = false;
             while (i1.hasNext())
             {
@@ -439,8 +439,8 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     
     final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
     {
-        int endIndex = PropertyEnum.DATE_TIME_START.toString().length();
+        int endIndex = ComponentElement.DATE_TIME_START.toString().length();
         String myString = p1.substring(0, endIndex);
-        return (myString.equals(PropertyEnum.DATE_TIME_START.toString())) ? -1 : 1;
+        return (myString.equals(ComponentElement.DATE_TIME_START.toString())) ? -1 : 1;
     };
 }

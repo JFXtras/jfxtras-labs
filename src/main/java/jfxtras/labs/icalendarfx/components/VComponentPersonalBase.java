@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
@@ -52,7 +52,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     {
         if (dateTimeStamp == null)
         {
-            dateTimeStamp = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_STAMP.toString());
+            dateTimeStamp = new SimpleObjectProperty<>(this, ComponentElement.DATE_TIME_STAMP.toString());
         }
         return dateTimeStamp;
     }
@@ -71,7 +71,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     {
         if (organizer == null)
         {
-            organizer = new SimpleObjectProperty<Organizer>(this, PropertyEnum.ORGANIZER.toString());
+            organizer = new SimpleObjectProperty<Organizer>(this, ComponentElement.ORGANIZER.toString());
         }
         return organizer;
     }
@@ -110,7 +110,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     {
         if (uniqueIdentifier == null)
         {
-            uniqueIdentifier = new SimpleObjectProperty<>(this, PropertyEnum.UNIQUE_IDENTIFIER.toString());
+            uniqueIdentifier = new SimpleObjectProperty<>(this, ComponentElement.UNIQUE_IDENTIFIER.toString());
         }
         return uniqueIdentifier;
     }
@@ -130,7 +130,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     {
         if (uniformResourceLocator == null)
         {
-            uniformResourceLocator = new SimpleObjectProperty<>(this, PropertyEnum.UNIFORM_RESOURCE_LOCATOR.toString());
+            uniformResourceLocator = new SimpleObjectProperty<>(this, ComponentElement.UNIFORM_RESOURCE_LOCATOR.toString());
         }
         return uniformResourceLocator;
     }

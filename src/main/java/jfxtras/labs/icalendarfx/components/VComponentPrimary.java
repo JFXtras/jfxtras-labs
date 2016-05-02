@@ -8,7 +8,7 @@ import java.util.Arrays;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -41,7 +41,7 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
     default T withComments(ObservableList<Comment> comments) { setComments(comments); return (T) this; }
     default T withComments(String...comments)
     {
-        Arrays.stream(comments).forEach(c -> PropertyEnum.COMMENT.parse(this, c));
+        Arrays.stream(comments).forEach(c -> ComponentElement.COMMENT.parse(this, c));
         return (T) this;
     }
     default T withComments(Comment...comments)

@@ -4,9 +4,9 @@ package jfxtras.labs.icalendarfx.components;
 public class DaylightSavingTime extends StandardOrDaylightBase<DaylightSavingTime>
 {
     @Override
-    public VComponentEnum componentType()
+    public CalendarElement componentType()
     {
-        return VComponentEnum.DAYLIGHT;
+        return CalendarElement.DAYLIGHT_SAVING_TIME;
     }
     
     /*

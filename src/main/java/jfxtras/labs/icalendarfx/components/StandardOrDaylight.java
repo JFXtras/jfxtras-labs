@@ -6,7 +6,7 @@ import java.util.Arrays;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetFrom;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
@@ -40,7 +40,7 @@ public interface StandardOrDaylight<T> extends VComponentRepeatable<T>
     default T withTimeZoneNames(ObservableList<TimeZoneName> timeZoneNames) { setTimeZoneNames(timeZoneNames); return (T) this; }
     default T withTimeZoneNames(String...timeZoneNames)
     {
-        Arrays.stream(timeZoneNames).forEach(c -> PropertyEnum.TIME_ZONE_NAME.parse(this, c));
+        Arrays.stream(timeZoneNames).forEach(c -> ComponentElement.TIME_ZONE_NAME.parse(this, c));
         return (T) this;
     }
     default T withTimeZoneNames(TimeZoneName...timeZoneNames)
@@ -72,7 +72,7 @@ public interface StandardOrDaylight<T> extends VComponentRepeatable<T>
     default void setTimeZoneOffsetFrom(ZoneOffset zoneOffset) { setTimeZoneOffsetFrom(new TimeZoneOffsetFrom(zoneOffset)); }
     default T withTimeZoneOffsetFrom(TimeZoneOffsetFrom timeZoneOffsetFrom) { setTimeZoneOffsetFrom(timeZoneOffsetFrom); return (T) this; }
     default T withTimeZoneOffsetFrom(ZoneOffset zoneOffset) { setTimeZoneOffsetFrom(zoneOffset); return (T) this; }
-    default T withTimeZoneOffsetFrom(String timeZoneOffsetFrom) { PropertyEnum.TIME_ZONE_OFFSET_FROM.parse(this, timeZoneOffsetFrom); return (T) this; }
+    default T withTimeZoneOffsetFrom(String timeZoneOffsetFrom) { ComponentElement.TIME_ZONE_OFFSET_FROM.parse(this, timeZoneOffsetFrom); return (T) this; }
     
     /**
      * TZOFFSETTO
@@ -91,5 +91,5 @@ public interface StandardOrDaylight<T> extends VComponentRepeatable<T>
     default void setTimeZoneOffsetTo(ZoneOffset zoneOffset) { setTimeZoneOffsetTo(new TimeZoneOffsetTo(zoneOffset)); }
     default T withTimeZoneOffsetTo(TimeZoneOffsetTo timeZoneOffsetTo) { setTimeZoneOffsetTo(timeZoneOffsetTo); return (T) this; }
     default T withTimeZoneOffsetTo(ZoneOffset zoneOffset) { setTimeZoneOffsetTo(zoneOffset); return (T) this; }
-    default T withTimeZoneOffsetTo(String timeZoneOffsetTo) { PropertyEnum.TIME_ZONE_OFFSET_TO.parse(this, timeZoneOffsetTo); return (T) this; }
+    default T withTimeZoneOffsetTo(String timeZoneOffsetTo) { ComponentElement.TIME_ZONE_OFFSET_TO.parse(this, timeZoneOffsetTo); return (T) this; }
 }

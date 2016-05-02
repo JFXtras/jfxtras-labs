@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
@@ -52,7 +52,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default T withCategories(ObservableList<Categories> categories) { setCategories(categories); return (T) this; }
     default T withCategories(String...categories)
     {
-        Arrays.stream(categories).forEach(c -> PropertyEnum.CATEGORIES.parse(this, c));
+        Arrays.stream(categories).forEach(c -> ComponentElement.CATEGORIES.parse(this, c));
         return (T) this;
     }
     default T withCategories(Categories...categories)
@@ -133,7 +133,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default T withContacts(ObservableList<Contact> contacts) { setContacts(contacts); return (T) this; }
     default T withContacts(String...contacts)
     {
-        Arrays.stream(contacts).forEach(c -> PropertyEnum.CONTACT.parse(this, c));
+        Arrays.stream(contacts).forEach(c -> ComponentElement.CONTACT.parse(this, c));
         return (T) this;
     }
     default T withContacts(Contact...contacts)
@@ -216,7 +216,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     }
     default T withExceptions(String...exceptions)
     {
-        Arrays.stream(exceptions).forEach(s -> PropertyEnum.EXCEPTION_DATE_TIMES.parse(this, s));   
+        Arrays.stream(exceptions).forEach(s -> ComponentElement.EXCEPTION_DATE_TIMES.parse(this, s));   
         return (T) this;
     }
     default T withExceptions(Temporal...exceptions)
@@ -347,7 +347,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default T withRelatedTo(ObservableList<RelatedTo> relatedTo) { setRelatedTo(relatedTo); return (T) this; }
     default T withRelatedTo(String...relatedTo)
     {
-        Arrays.stream(relatedTo).forEach(c -> PropertyEnum.RELATED_TO.parse(this, c));
+        Arrays.stream(relatedTo).forEach(c -> ComponentElement.RELATED_TO.parse(this, c));
         return (T) this;
     }
     default T withRelatedTo(RelatedTo...relatedTo)

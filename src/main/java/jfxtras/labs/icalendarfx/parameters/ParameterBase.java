@@ -57,8 +57,8 @@ public class ParameterBase<U,T> implements Parameter<T>
      *  The enumerated type of the parameter.
      */
     @Override
-    public ParameterEnum parameterType() { return parameterType; }
-    final private ParameterEnum parameterType;
+    public PropertyElement parameterType() { return parameterType; }
+    final private PropertyElement parameterType;
 
     @Override
     public String toString()
@@ -95,7 +95,7 @@ public class ParameterBase<U,T> implements Parameter<T>
      */
     ParameterBase()
     {
-        parameterType = ParameterEnum.enumFromClass(getClass());
+        parameterType = PropertyElement.enumFromClass(getClass());
         value = new SimpleObjectProperty<>(this, parameterType.toString());
     }
 

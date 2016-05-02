@@ -5,7 +5,7 @@ import java.time.temporal.Temporal;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
@@ -51,7 +51,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
     {
         if (dateTimeStart == null)
         {
-            dateTimeStart = new SimpleObjectProperty<>(this, PropertyEnum.DATE_TIME_START.toString());
+            dateTimeStart = new SimpleObjectProperty<>(this, ComponentElement.DATE_TIME_START.toString());
             dateTimeStartProperty().addListener((observable, oldValue, newValue) -> checkDateTimeStartConsistency() );
         }
         return dateTimeStart;

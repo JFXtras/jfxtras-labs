@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.Property;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
@@ -39,7 +39,7 @@ public interface VComponentNew<T>
      * 
      * @return - the component enum
      */
-    VComponentEnum componentType();
+    CalendarElement componentType();
     
     /**
      * 3.8.8.2.  Non-Standard Properties
@@ -53,7 +53,7 @@ public interface VComponentNew<T>
     void setNonStandardProperties(ObservableList<NonStandardProperty> properties);
     default T withNonStandardProperty(String...nonStandardProps)
     {
-        Arrays.stream(nonStandardProps).forEach(c -> PropertyEnum.NON_STANDARD.parse(this, c));
+        Arrays.stream(nonStandardProps).forEach(c -> ComponentElement.NON_STANDARD.parse(this, c));
         return (T) this;
     }
     default T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return (T) this; }
@@ -81,7 +81,7 @@ public interface VComponentNew<T>
     void setIANAProperties(ObservableList<IANAProperty> properties);
     default T withIANAProperty(String...ianaProps)
     {
-        Arrays.stream(ianaProps).forEach(c -> PropertyEnum.IANA_PROPERTY.parse(this, c));
+        Arrays.stream(ianaProps).forEach(c -> ComponentElement.IANA_PROPERTY.parse(this, c));
         return (T) this;
     }
     default T withIANAProperty(ObservableList<IANAProperty> ianaProps) { setIANAProperties(ianaProps); return (T) this; }
@@ -103,7 +103,7 @@ public interface VComponentNew<T>
      * 
      * @return - the list of properties enums
      */
-    List<PropertyEnum> propertyEnums();
+    List<ComponentElement> propertyEnums();
     /**
      * List of all properties found in component.
      * The list is unmodifiable.

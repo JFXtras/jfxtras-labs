@@ -18,7 +18,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
 import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
 import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseCalendarUser;
 
-public enum ParameterEnum
+public enum PropertyElement
 {
     // in properties COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES
     ALTERNATE_TEXT_REPRESENTATION ("ALTREP", AlternateText.class) {
@@ -522,28 +522,28 @@ public enum ParameterEnum
     };
     
     // Map to match up name to enum
-    private static Map<String, ParameterEnum> enumFromNameMap = makeEnumFromNameMap();
-    private static Map<String, ParameterEnum> makeEnumFromNameMap()
+    private static Map<String, PropertyElement> enumFromNameMap = makeEnumFromNameMap();
+    private static Map<String, PropertyElement> makeEnumFromNameMap()
     {
-        Map<String, ParameterEnum> map = new HashMap<>();
-        ParameterEnum[] values = ParameterEnum.values();
+        Map<String, PropertyElement> map = new HashMap<>();
+        PropertyElement[] values = PropertyElement.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].toString(), values[i]);
         }
         return map;
     }
-    public static ParameterEnum enumFromName(String propertyName)
+    public static PropertyElement enumFromName(String propertyName)
     {
         return enumFromNameMap.get(propertyName.toUpperCase());
     }
     
     // Map to match up class to enum
-    private static Map<Class<? extends Parameter<?>>, ParameterEnum> enumFromClassMap = makeEnumFromClassMap();
-    private static Map<Class<? extends Parameter<?>>, ParameterEnum> makeEnumFromClassMap()
+    private static Map<Class<? extends Parameter<?>>, PropertyElement> enumFromClassMap = makeEnumFromClassMap();
+    private static Map<Class<? extends Parameter<?>>, PropertyElement> makeEnumFromClassMap()
     {
-        Map<Class<? extends Parameter<?>>, ParameterEnum> map = new HashMap<>();
-        ParameterEnum[] values = ParameterEnum.values();
+        Map<Class<? extends Parameter<?>>, PropertyElement> map = new HashMap<>();
+        PropertyElement[] values = PropertyElement.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].myClass, values[i]);
@@ -551,12 +551,12 @@ public enum ParameterEnum
         return map;
     }
     /** get enum from map */
-    public static ParameterEnum enumFromClass(Class<? extends Parameter> myClass)
+    public static PropertyElement enumFromClass(Class<? extends Parameter> myClass)
     {
-        ParameterEnum p = enumFromClassMap.get(myClass);
+        PropertyElement p = enumFromClassMap.get(myClass);
         if (p == null)
         {
-            throw new IllegalArgumentException(ParameterEnum.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
+            throw new IllegalArgumentException(PropertyElement.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
         }
         return p;
     }
@@ -565,7 +565,7 @@ public enum ParameterEnum
     private Class<? extends Parameter<?>> myClass;
     @Override  public String toString() { return name; }
 //    private Class<? extends Property> propertyClasses[];
-    ParameterEnum(String name, Class<? extends Parameter<?>> myClass)
+    PropertyElement(String name, Class<? extends Parameter<?>> myClass)
     {
         this.name = name;
         this.myClass = myClass;

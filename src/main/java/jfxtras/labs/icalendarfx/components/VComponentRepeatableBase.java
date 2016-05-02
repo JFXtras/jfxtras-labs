@@ -5,7 +5,7 @@ import java.time.temporal.Temporal;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 /**
@@ -57,7 +57,7 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
     {
         if (recurrenceRule == null)
         {
-            recurrenceRule = new SimpleObjectProperty<>(this, PropertyEnum.UNIQUE_IDENTIFIER.toString());
+            recurrenceRule = new SimpleObjectProperty<>(this, ComponentElement.UNIQUE_IDENTIFIER.toString());
         }
         return recurrenceRule;
     }

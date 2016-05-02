@@ -6,7 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneIdentifier;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
@@ -260,9 +260,9 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
 public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLastModified<VTimeZone>, VCalendarElement
 {
     @Override
-    public VComponentEnum componentType()
+    public CalendarElement componentType()
     {
-        return VComponentEnum.VTIMEZONE;
+        return CalendarElement.VTIMEZONE;
     }
  
     /**
@@ -313,7 +313,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     {
         if (lastModified == null)
         {
-            lastModified = new SimpleObjectProperty<>(this, PropertyEnum.LAST_MODIFIED.toString());
+            lastModified = new SimpleObjectProperty<>(this, ComponentElement.LAST_MODIFIED.toString());
         }
         return lastModified;
     }
@@ -338,7 +338,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     {
         if (timeZoneIdentifier == null)
         {
-            timeZoneIdentifier = new SimpleObjectProperty<>(this, PropertyEnum.TIME_ZONE_IDENTIFIER.toString());
+            timeZoneIdentifier = new SimpleObjectProperty<>(this, ComponentElement.TIME_ZONE_IDENTIFIER.toString());
         }
         return timeZoneIdentifier;
     }
@@ -347,7 +347,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     public void setTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { timeZoneIdentifierProperty().set(timeZoneIdentifier); }
     public void setTimeZoneIdentifier(String timeZoneIdentifier) { setTimeZoneIdentifier(TimeZoneIdentifier.parse(timeZoneIdentifier)); }
     public VTimeZone withTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return this; }
-    public VTimeZone withTimeZoneIdentifier(String timeZoneIdentifier) { PropertyEnum.TIME_ZONE_IDENTIFIER.parse(this, timeZoneIdentifier); return this; }
+    public VTimeZone withTimeZoneIdentifier(String timeZoneIdentifier) { ComponentElement.TIME_ZONE_IDENTIFIER.parse(this, timeZoneIdentifier); return this; }
 
     /**
      * TZURL
@@ -365,7 +365,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     {
         if (timeZoneURL == null)
         {
-            timeZoneURL = new SimpleObjectProperty<>(this, PropertyEnum.TIME_ZONE_IDENTIFIER.toString());
+            timeZoneURL = new SimpleObjectProperty<>(this, ComponentElement.TIME_ZONE_IDENTIFIER.toString());
         }
         return timeZoneURL;
     }
@@ -376,7 +376,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     public void setTimeZoneURL(URI timeZoneURL) { timeZoneURLProperty().set(new TimeZoneURL(timeZoneURL)); }
     public VTimeZone withTimeZoneURL(TimeZoneURL timeZoneURL) { setTimeZoneURL(timeZoneURL); return this; }
     public VTimeZone withTimeZoneURL(URI timeZoneURL) { setTimeZoneURL(new TimeZoneURL(timeZoneURL)); return this; }
-    public VTimeZone withTimeZoneURL(String timeZoneURL) { PropertyEnum.TIME_ZONE_URL.parse(this, timeZoneURL); return this; }
+    public VTimeZone withTimeZoneURL(String timeZoneURL) { ComponentElement.TIME_ZONE_URL.parse(this, timeZoneURL); return this; }
 
     
     /*
@@ -413,9 +413,9 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     
     /** parse Standard and Daylight sub-components */
     @Override
-    void parseSubComponents(VComponentEnum subcomponentType, String contentLines)
+    void parseSubComponents(CalendarElement subcomponentType, String contentLines)
     {
-        if (subcomponentType == VComponentEnum.STANDARD || subcomponentType == VComponentEnum.DAYLIGHT)
+        if (subcomponentType == CalendarElement.STANDARD_TIME || subcomponentType == CalendarElement.DAYLIGHT_SAVING_TIME)
         {
             final ObservableList<StandardOrDaylight<?>> list;
             if (getStandardOrDaylight() == null)
@@ -426,7 +426,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
             {
                 list = getStandardOrDaylight();
             }
-            StandardOrDaylight<?> subcomponent = (subcomponentType == VComponentEnum.STANDARD) ? StandardTime.parse(contentLines) : DaylightSavingTime.parse(contentLines);
+            StandardOrDaylight<?> subcomponent = (subcomponentType == CalendarElement.STANDARD_TIME) ? StandardTime.parse(contentLines) : DaylightSavingTime.parse(contentLines);
             list.add(subcomponent);
         } else
         {

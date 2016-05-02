@@ -5,7 +5,7 @@ import java.util.Arrays;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyEnum;
+import jfxtras.labs.icalendarfx.properties.ComponentElement;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
@@ -35,7 +35,7 @@ public interface VComponentDescribable<T> extends VComponentNew<T>
     default T withAttachments(ObservableList<Attachment<?>> attachments) { setAttachments(attachments); return (T) this; }
     default T withAttachments(String...attachments)
     {
-        Arrays.stream(attachments).forEach(c -> PropertyEnum.ATTACHMENT.parse(this, c));
+        Arrays.stream(attachments).forEach(c -> ComponentElement.ATTACHMENT.parse(this, c));
         return (T) this;
     }
     default T withAttachments(Attachment<?>...attachments)
