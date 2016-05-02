@@ -8,14 +8,14 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
-import jfxtras.labs.icalendarfx.parameters.PropertyElement;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 
 /**
  * top-level interface for all iCalendar properties
  * 
  * @author David Bal
- * @see ComponentElement - enum of all supported Properties
+ * @see PropertyType - enum of all supported Properties
  * @see PropertyBase
  *
  * @param <T> - type of value stored in Property
@@ -77,7 +77,7 @@ public interface Property<T>
      * 
      * @return - the property type
      */
-    ComponentElement propertyType();
+    PropertyType propertyType();
 
     /**
      * Get the property's value string converter.  There is a default converter in ValueType associated
@@ -105,7 +105,7 @@ public interface Property<T>
      * 
      * @return - the list of parameter enums
      */
-    List<PropertyElement> parameterEnums();
+    List<ParameterType> parameterEnums();
     
     /**
      * List of all properties found in component.

@@ -6,7 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneIdentifier;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
@@ -313,7 +313,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     {
         if (lastModified == null)
         {
-            lastModified = new SimpleObjectProperty<>(this, ComponentElement.LAST_MODIFIED.toString());
+            lastModified = new SimpleObjectProperty<>(this, PropertyType.LAST_MODIFIED.toString());
         }
         return lastModified;
     }
@@ -338,7 +338,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     {
         if (timeZoneIdentifier == null)
         {
-            timeZoneIdentifier = new SimpleObjectProperty<>(this, ComponentElement.TIME_ZONE_IDENTIFIER.toString());
+            timeZoneIdentifier = new SimpleObjectProperty<>(this, PropertyType.TIME_ZONE_IDENTIFIER.toString());
         }
         return timeZoneIdentifier;
     }
@@ -347,7 +347,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     public void setTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { timeZoneIdentifierProperty().set(timeZoneIdentifier); }
     public void setTimeZoneIdentifier(String timeZoneIdentifier) { setTimeZoneIdentifier(TimeZoneIdentifier.parse(timeZoneIdentifier)); }
     public VTimeZone withTimeZoneIdentifier(TimeZoneIdentifier timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return this; }
-    public VTimeZone withTimeZoneIdentifier(String timeZoneIdentifier) { ComponentElement.TIME_ZONE_IDENTIFIER.parse(this, timeZoneIdentifier); return this; }
+    public VTimeZone withTimeZoneIdentifier(String timeZoneIdentifier) { PropertyType.TIME_ZONE_IDENTIFIER.parse(this, timeZoneIdentifier); return this; }
 
     /**
      * TZURL
@@ -365,7 +365,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     {
         if (timeZoneURL == null)
         {
-            timeZoneURL = new SimpleObjectProperty<>(this, ComponentElement.TIME_ZONE_IDENTIFIER.toString());
+            timeZoneURL = new SimpleObjectProperty<>(this, PropertyType.TIME_ZONE_IDENTIFIER.toString());
         }
         return timeZoneURL;
     }
@@ -376,7 +376,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     public void setTimeZoneURL(URI timeZoneURL) { timeZoneURLProperty().set(new TimeZoneURL(timeZoneURL)); }
     public VTimeZone withTimeZoneURL(TimeZoneURL timeZoneURL) { setTimeZoneURL(timeZoneURL); return this; }
     public VTimeZone withTimeZoneURL(URI timeZoneURL) { setTimeZoneURL(new TimeZoneURL(timeZoneURL)); return this; }
-    public VTimeZone withTimeZoneURL(String timeZoneURL) { ComponentElement.TIME_ZONE_URL.parse(this, timeZoneURL); return this; }
+    public VTimeZone withTimeZoneURL(String timeZoneURL) { PropertyType.TIME_ZONE_URL.parse(this, timeZoneURL); return this; }
 
     
     /*

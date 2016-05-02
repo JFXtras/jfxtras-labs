@@ -484,8 +484,6 @@ public class VCalendar
     {
         Long componentCounter = 0L;
         List<String> contentLines = ICalendarUtilities.unfoldLines(content);
-//        Iterator<String> i = unfoldLines(contentLines).iterator();
-//        while (i.hasNext())
         if (! contentLines.get(0).equals("BEGIN:VCALENDAR"))
         {
             throw new IllegalArgumentException("Content lines must begin with BEGIN:VCALENDAR");
@@ -507,7 +505,6 @@ public class VCalendar
                 {
                     index++;
                     line = contentLines.get(index);
-//                    System.out.println("line:" + line + " " + endLine + " " + index);
                     myLines.add(line);
                 } while (! line.equals(endLine));
                 
@@ -517,9 +514,9 @@ public class VCalendar
                 componentCounter += 100;
                 
             // parse calendar properties (ignores unknown properties)
-            } else //if (! propertyName.equals("END"))
+            } else
             {
-                CalendarElement elementType = CalendarElement.valueOf(propertyName);
+                CalendarElement elementType = CalendarElement.enumFromName(propertyName);
                 if (elementType != null)
                 {
                     VCalendarElement element = elementType.parse(this, Arrays.asList(line));
@@ -528,87 +525,84 @@ public class VCalendar
                 }
             }
         }
-        
-//        return null;
-        // TODO Auto-generated method stub
     }
     
-//    @Override
-//    public int hashCode()
-//    {
-//        final int prime = 31;
-//        int result = 1;
-//        result = prime * result + ((calendarScale == null) ? 0 : calendarScale.hashCode());
-//        result = prime * result + ((method == null) ? 0 : method.hashCode());
-//        result = prime * result + ((productIdentifier == null) ? 0 : productIdentifier.hashCode());
-//        result = prime * result + ((vEvents == null) ? 0 : vEvents.hashCode());
-//        result = prime * result + ((vFreeBusys == null) ? 0 : vFreeBusys.hashCode());
-//        result = prime * result + ((vJournals == null) ? 0 : vJournals.hashCode());
-//        result = prime * result + ((vTimeZones == null) ? 0 : vTimeZones.hashCode());
-//        result = prime * result + ((vTodos == null) ? 0 : vTodos.hashCode());
-//        return result;
-//    }
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((calendarScale == null) ? 0 : calendarScale.hashCode());
+        result = prime * result + ((method == null) ? 0 : method.hashCode());
+        result = prime * result + ((productIdentifier == null) ? 0 : productIdentifier.hashCode());
+        result = prime * result + ((vEvents == null) ? 0 : vEvents.hashCode());
+        result = prime * result + ((vFreeBusys == null) ? 0 : vFreeBusys.hashCode());
+        result = prime * result + ((vJournals == null) ? 0 : vJournals.hashCode());
+        result = prime * result + ((vTimeZones == null) ? 0 : vTimeZones.hashCode());
+        result = prime * result + ((vTodos == null) ? 0 : vTodos.hashCode());
+        return result;
+    }
     
-//    @Override
-//    public boolean equals(Object obj)
-//    {
-//        if (this == obj)
-//            return true;
-//        if (obj == null)
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//        VCalendar other = (VCalendar) obj;
-//        if (calendarScale == null)
-//        {
-//            if (other.calendarScale != null)
-//                return false;
-//        } else if (!calendarScale.equals(other.calendarScale))
-//            return false;
-//        if (method == null)
-//        {
-//            if (other.method != null)
-//                return false;
-//        } else if (!method.equals(other.method))
-//            return false;
-//        if (productIdentifier == null)
-//        {
-//            if (other.productIdentifier != null)
-//                return false;
-//        } else if (!productIdentifier.equals(other.productIdentifier))
-//            return false;
-//        if (vEvents == null)
-//        {
-//            if (other.vEvents != null)
-//                return false;
-//        } else if (!vEvents.equals(other.vEvents))
-//            return false;
-//        if (vFreeBusys == null)
-//        {
-//            if (other.vFreeBusys != null)
-//                return false;
-//        } else if (!vFreeBusys.equals(other.vFreeBusys))
-//            return false;
-//        if (vJournals == null)
-//        {
-//            if (other.vJournals != null)
-//                return false;
-//        } else if (!vJournals.equals(other.vJournals))
-//            return false;
-//        if (vTimeZones == null)
-//        {
-//            if (other.vTimeZones != null)
-//                return false;
-//        } else if (!vTimeZones.equals(other.vTimeZones))
-//            return false;
-//        if (vTodos == null)
-//        {
-//            if (other.vTodos != null)
-//                return false;
-//        } else if (!vTodos.equals(other.vTodos))
-//            return false;
-//        return true;
-//    }
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        VCalendar other = (VCalendar) obj;
+        if (calendarScale == null)
+        {
+            if (other.calendarScale != null)
+                return false;
+        } else if (!calendarScale.equals(other.calendarScale))
+            return false;
+        if (method == null)
+        {
+            if (other.method != null)
+                return false;
+        } else if (!method.equals(other.method))
+            return false;
+        if (productIdentifier == null)
+        {
+            if (other.productIdentifier != null)
+                return false;
+        } else if (!productIdentifier.equals(other.productIdentifier))
+            return false;
+        if (vEvents == null)
+        {
+            if (other.vEvents != null)
+                return false;
+        } else if (!vEvents.equals(other.vEvents))
+            return false;
+        if (vFreeBusys == null)
+        {
+            if (other.vFreeBusys != null)
+                return false;
+        } else if (!vFreeBusys.equals(other.vFreeBusys))
+            return false;
+        if (vJournals == null)
+        {
+            if (other.vJournals != null)
+                return false;
+        } else if (!vJournals.equals(other.vJournals))
+            return false;
+        if (vTimeZones == null)
+        {
+            if (other.vTimeZones != null)
+                return false;
+        } else if (!vTimeZones.equals(other.vTimeZones))
+            return false;
+        if (vTodos == null)
+        {
+            if (other.vTodos != null)
+                return false;
+        } else if (!vTodos.equals(other.vTodos))
+            return false;
+        return true;
+    }
     
 
     public static VCalendar parse(String contentLines)

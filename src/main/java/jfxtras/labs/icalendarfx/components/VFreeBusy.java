@@ -8,7 +8,7 @@ import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
@@ -115,7 +115,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     {
         if (contact == null)
         {
-            contact = new SimpleObjectProperty<>(this, ComponentElement.CONTACT.toString());
+            contact = new SimpleObjectProperty<>(this, PropertyType.CONTACT.toString());
         }
         return contact;
     }
@@ -124,7 +124,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     public void setContact(String contact) { setContact(Contact.parse(contact)); }
     public void setContact(Contact contact) { contactProperty().set(contact); }
     public VFreeBusy withContact(Contact contact) { setContact(contact); return this; }
-    public VFreeBusy withContact(String contact) { ComponentElement.CONTACT.parse(this, contact); return this; }
+    public VFreeBusy withContact(String contact) { PropertyType.CONTACT.parse(this, contact); return this; }
     
     /**
      * DTEND
@@ -143,7 +143,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     {
         if (dateTimeEnd == null)
         {
-            dateTimeEnd = new SimpleObjectProperty<>(this, ComponentElement.DATE_TIME_END.toString());
+            dateTimeEnd = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_END.toString());
             dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
         return dateTimeEnd;
@@ -178,7 +178,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     {
         if (freeBusyTime == null)
         {
-            freeBusyTime = new SimpleObjectProperty<>(this, ComponentElement.FREE_BUSY_TIME.toString());
+            freeBusyTime = new SimpleObjectProperty<>(this, PropertyType.FREE_BUSY_TIME.toString());
         }
         return freeBusyTime;
     }
@@ -189,7 +189,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     public void setFreeBusyTime(FreeBusyTime freeBusyTime) { freeBusyTimeProperty().set(freeBusyTime); }
     public VFreeBusy withFreeBusyTime(FreeBusyTime freeBusyTime) { setFreeBusyTime(freeBusyTime); return this; }
     public VFreeBusy withFreeBusyTime(List<Pair<ZonedDateTime, TemporalAmount>> freeBusyTime) { setFreeBusyTime(freeBusyTime); return this; }
-    public VFreeBusy withFreeBusyTime(String freeBusyTime) { ComponentElement.FREE_BUSY_TIME.parse(this, freeBusyTime); return this; }
+    public VFreeBusy withFreeBusyTime(String freeBusyTime) { PropertyType.FREE_BUSY_TIME.parse(this, freeBusyTime); return this; }
  
     /*
      * CONSTRUCTORS

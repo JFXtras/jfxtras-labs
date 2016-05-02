@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
@@ -15,8 +16,6 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
     @Test
     public void canBuildVCalendar()
     {
-        String contentLine = "DESCRIPTION:a dog\\nran\\, far\\;\\naway \\\\\\\\1";
-        
         String expectedContent = 
                 "BEGIN:VTIMEZONE" + System.lineSeparator() +
                 "TZID:America/New_York" + System.lineSeparator() +
@@ -76,7 +75,6 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
         VCalendar c = new VCalendar()
                 .withVEvents(getYearly1())
                 .withCalendarScale(new CalendarScale())
-                .withCalendarScale(new CalendarScale())
                 .withVersion(new Version())
                 .withProductIdentifier(new ProductIdentifier())
                 .withVTimeZones(vTimeZone)
@@ -102,10 +100,34 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
        "DTEND:19970715T040000Z" + System.lineSeparator() +
        "SUMMARY:Bastille Day Party" + System.lineSeparator() +
        "END:VEVENT" + System.lineSeparator() +
+       "BEGIN:VEVENT" + System.lineSeparator() +
+       "SUMMARY:New Event" + System.lineSeparator() +
+       "CLASS:PUBLIC" + System.lineSeparator() +
+       "DTSTART;TZID=Etc/GMT:20150902T133000Z" + System.lineSeparator() +
+       "DTEND;TZID=Etc/GMT:20150902T180000Z" + System.lineSeparator() +
+       "PRIORITY:0" + System.lineSeparator() +
+       "SEQUENCE:1" + System.lineSeparator() +
+       "STATUS:CANCELLED" + System.lineSeparator() +
+       "UID:dc654e79-cc85-449c-a1b2-71b2d20b80df" + System.lineSeparator() +
+       "RECURRENCE-ID;TZID=Etc/GMT:20150902T133000Z" + System.lineSeparator() +
+       "DTSTAMP:20150831T053218Z" + System.lineSeparator() +
+       "ORGANIZER;CN=David Bal;SENT-BY=\"mailto:ddbal1@yahoo.com\":mailto:ddbal1@yaho" + System.lineSeparator() +
+       " o.com" + System.lineSeparator() +
+       "X-YAHOO-YID:testuser" + System.lineSeparator() +
+       "TRANSP:OPAQUE" + System.lineSeparator() +
+       "X-YAHOO-USER-STATUS:BUSY" + System.lineSeparator() +
+       "X-YAHOO-EVENT-STATUS:BUSY" + System.lineSeparator() +
+       "BEGIN:VALARM" + System.lineSeparator() +
+       "ACTION:DISPLAY" + System.lineSeparator() +
+       "DESCRIPTION:" + System.lineSeparator() +
+       "TRIGGER;RELATED=START:-PT30M" + System.lineSeparator() +
+       "END:VALARM" + System.lineSeparator() +
+       "END:VEVENT" + System.lineSeparator() +
        "END:VCALENDAR";
         VCalendar vCalendar = VCalendar.parse(content);
-        System.out.println(vCalendar.toContentLines());
-        System.out.println(vCalendar.getVEvents().size());
+//        System.out.println(vCalendar.toContentLines());
+        VEventNew e = vCalendar.getVEvents().get(1);
+        e.getNonStandardProperties().stream().forEach(System.out::println);
     }
 
 }

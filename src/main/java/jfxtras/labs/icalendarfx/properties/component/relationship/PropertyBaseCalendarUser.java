@@ -6,7 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.parameters.CommonName;
 import jfxtras.labs.icalendarfx.parameters.DirectoryEntryReference;
-import jfxtras.labs.icalendarfx.parameters.PropertyElement;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.SentBy;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
 import jfxtras.labs.icalendarfx.properties.PropertyCalendarUser;
@@ -52,7 +52,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     {
         if (commonName == null)
         {
-            commonName = new SimpleObjectProperty<>(this, PropertyElement.COMMON_NAME.toString());
+            commonName = new SimpleObjectProperty<>(this, ParameterType.COMMON_NAME.toString());
         }
         return commonName;
     }
@@ -82,7 +82,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     {
         if (directoryEntryReference == null)
         {
-            directoryEntryReference = new SimpleObjectProperty<>(this, PropertyElement.COMMON_NAME.toString());
+            directoryEntryReference = new SimpleObjectProperty<>(this, ParameterType.COMMON_NAME.toString());
         }
         return directoryEntryReference;
     }
@@ -118,7 +118,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     {
         if (sentBy == null)
         {
-            sentBy = new SimpleObjectProperty<>(this, PropertyElement.SENT_BY.toString());
+            sentBy = new SimpleObjectProperty<>(this, ParameterType.SENT_BY.toString());
         }
         return sentBy;
     }

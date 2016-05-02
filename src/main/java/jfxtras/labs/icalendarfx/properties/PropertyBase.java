@@ -19,7 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
-import jfxtras.labs.icalendarfx.parameters.PropertyElement;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
@@ -116,7 +116,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     /** Set the name of the property.  Only allowed for non-standard and IANA properties */
     public void setPropertyName(String name)
     {
-        if (propertyType().equals(ComponentElement.NON_STANDARD))
+        if (propertyType().equals(PropertyType.NON_STANDARD))
         {
             if (name.substring(0, 2).toUpperCase().equals("X-"))
             {
@@ -125,7 +125,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
             {
                 throw new RuntimeException("Non-standard properties must begin with X-");                
             }
-        } else if (propertyType().equals(ComponentElement.IANA_PROPERTY))
+        } else if (propertyType().equals(PropertyType.IANA_PROPERTY))
         {
             if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(name))
             {
@@ -147,8 +147,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
      *  The enumerated type of the property.
      */
     @Override
-    public ComponentElement propertyType() { return propertyType; }
-    final private ComponentElement propertyType;
+    public PropertyType propertyType() { return propertyType; }
+    final private PropertyType propertyType;
     
     /*
      * Unknown values
@@ -174,7 +174,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     public ValueParameter getValueParameter() { return valueType.get(); }
     @Override
     public ObjectProperty<ValueParameter> valueParameterProperty() { return valueType; }
-    private ObjectProperty<ValueParameter> valueType = new SimpleObjectProperty<>(this, PropertyElement.VALUE_DATA_TYPES.toString());
+    private ObjectProperty<ValueParameter> valueType = new SimpleObjectProperty<>(this, ParameterType.VALUE_DATA_TYPES.toString());
     @Override
     public void setValueParameter(ValueParameter valueType)
     {
@@ -233,13 +233,13 @@ public abstract class PropertyBase<T,U> implements Property<T>
     public U withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (U) this; }
 
     @Override
-    public List<PropertyElement> parameterEnums()
+    public List<ParameterType> parameterEnums()
     {
-        List<PropertyElement> populatedParameters = new ArrayList<>();
-        Iterator<PropertyElement> i = propertyType().allowedParameters().stream().iterator();
+        List<ParameterType> populatedParameters = new ArrayList<>();
+        Iterator<ParameterType> i = propertyType().allowedParameters().stream().iterator();
         while (i.hasNext())
         {
-            PropertyElement parameterType = i.next();
+            ParameterType parameterType = i.next();
             Parameter<?> parameter = parameterType.getParameter(this);
             if (parameter != null)
             {
@@ -256,8 +256,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
      * a specific parameter order (e.g. unit testing).
      */
-    public Map<PropertyElement, Integer> parameterSortOrder() { return parameterSortOrder; }
-    final private Map<PropertyElement, Integer> parameterSortOrder = new HashMap<>();
+    public Map<ParameterType, Integer> parameterSortOrder() { return parameterSortOrder; }
+    final private Map<ParameterType, Integer> parameterSortOrder = new HashMap<>();
 //    public Map<Parameter<?>, Integer> parameterSortOrder() { return parameterSortOrder; }
 //    final private Map<Parameter<?>, Integer> parameterSortOrder = new WeakHashMap<>();
     private Integer parameterCounter = 0;
@@ -295,7 +295,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     
     protected PropertyBase()
     {
-        propertyType = ComponentElement.enumFromClass(getClass());
+        propertyType = PropertyType.enumFromClass(getClass());
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
         ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
         defaultConverter = defaultValueType.getConverter();
@@ -351,7 +351,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         setConverter(source.getConverter());
         parameterSortOrder().putAll(source.parameterSortOrder());
         source.parameterEnums().forEach(p -> p.copyParameter(source, this));
-        if (source.propertyType().equals(ComponentElement.NON_STANDARD) || source.propertyType().equals(ComponentElement.IANA_PROPERTY))
+        if (source.propertyType().equals(PropertyType.NON_STANDARD) || source.propertyType().equals(PropertyType.IANA_PROPERTY))
         {
             setPropertyName(source.getPropertyName());
         }
@@ -385,8 +385,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
             int endNameIndex = hasPropertyName.get();
             String propertyName = (endNameIndex > 0) ? propertyString.subSequence(0, endNameIndex).toString().toUpperCase() : null;
             boolean isMatch = propertyName.equals(propertyType.toString());
-            boolean isNonStandard = propertyName.substring(0, ComponentElement.NON_STANDARD.toString().length()).equals(ComponentElement.NON_STANDARD.toString());
-            boolean isIANA = propertyType.equals(ComponentElement.IANA_PROPERTY);
+            boolean isNonStandard = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
+            boolean isIANA = propertyType.equals(PropertyType.IANA_PROPERTY);
             if (isMatch || isNonStandard || isIANA)
             {
                 if (isNonStandard || isIANA)
@@ -396,7 +396,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
                 propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
             } else
             {
-                if (ComponentElement.enumFromName(propertyName) == null)
+                if (PropertyType.enumFromName(propertyName) == null)
                 {
                     propertyValue = ":" + propertyString; // doesn't match a known property name, assume its all a property value
                 } else
@@ -420,7 +420,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
             .filter(e -> ! (e.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
             .forEach(e ->
             {
-                PropertyElement p = PropertyElement.enumFromName(e.getKey());
+                ParameterType p = ParameterType.enumFromName(e.getKey());
 //                parameterSortOrder().put(p, parameterCounter++);
                 if (p != null)
                 {
@@ -483,7 +483,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     {
         boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value);
         boolean isUnknownType = value.equals(ValueType.UNKNOWN);
-        boolean isNonStandardProperty = propertyType().equals(ComponentElement.NON_STANDARD) || propertyType().equals(ComponentElement.IANA_PROPERTY);
+        boolean isNonStandardProperty = propertyType().equals(PropertyType.NON_STANDARD) || propertyType().equals(PropertyType.IANA_PROPERTY);
 //        System.out.println("parameter valid:" + isValueTypeOK + " " + isUnknownType + " " + isNonStandardProperty);
         return (isValueTypeOK || isUnknownType || isNonStandardProperty);
     }
@@ -538,20 +538,20 @@ public abstract class PropertyBase<T,U> implements Property<T>
         return builder.toString();
     }
 
-    @Override
-    public int hashCode()
-    {
-        int hash = 7;
-        hash = (31 * hash) + getValue().hashCode();
-        Iterator<PropertyElement> i = parameterEnums().iterator();
-        while (i.hasNext())
-        {
-            Parameter<?> parameter = i.next().getParameter(this);
-            hash = (31 * hash) + parameter.getValue().hashCode();
-        }
-        return hash;
-    }
-
+//    @Override
+//    public int hashCode()
+//    {
+//        int hash = 7;
+//        hash = (31 * hash) + getValue().hashCode();
+//        Iterator<ParameterType> i = parameterEnums().iterator();
+//        while (i.hasNext())
+//        {
+//            Parameter<?> parameter = i.next().getParameter(this);
+//            hash = (31 * hash) + parameter.getValue().hashCode();
+//        }
+//        return hash;
+//    }
+//
     @Override
     public boolean equals(Object obj)
     {
@@ -565,12 +565,12 @@ public abstract class PropertyBase<T,U> implements Property<T>
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
         
         final boolean parametersEquals;
-        List<PropertyElement> parameters = parameterEnums(); // make parameters local to avoid creating list multiple times
-        List<PropertyElement> testParameters = testObj.parameterEnums(); // make parameters local to avoid creating list multiple times
+        List<ParameterType> parameters = parameterEnums(); // make parameters local to avoid creating list multiple times
+        List<ParameterType> testParameters = testObj.parameterEnums(); // make parameters local to avoid creating list multiple times
         if (parameters.size() == testParameters.size())
         {
-            Iterator<PropertyElement> i1 = parameters.iterator();
-            Iterator<PropertyElement> i2 = testParameters.iterator();
+            Iterator<ParameterType> i1 = parameters.iterator();
+            Iterator<ParameterType> i2 = testParameters.iterator();
             boolean isFailure = false;
             while (i1.hasNext())
             {
@@ -598,4 +598,71 @@ public abstract class PropertyBase<T,U> implements Property<T>
     {
         return super.toString() + "," + toContentLines();
     }
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int hash = 1;
+        hash = prime * hash + ((converter == null) ? 0 : converter.hashCode());
+        hash = prime * hash + ((otherParameters == null) ? 0 : otherParameters.hashCode());
+        hash = prime * hash + ((propertyName == null) ? 0 : propertyName.hashCode());
+        hash = prime * hash + ((propertyValueString == null) ? 0 : propertyValueString.hashCode());
+        hash = prime * hash + ((unknownValue == null) ? 0 : unknownValue.hashCode());
+        hash = prime * hash + ((value == null) ? 0 : value.hashCode());
+        Iterator<ParameterType> i = parameterEnums().iterator();
+        while (i.hasNext())
+        {
+            Parameter<?> parameter = i.next().getParameter(this);
+            hash = (31 * hash) + parameter.getValue().hashCode();
+        }
+        return hash;
+    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        PropertyBase other = (PropertyBase) obj;
+//        if (converter == null)
+//        {
+//            if (other.converter != null)
+//                return false;
+//        } else if (!converter.equals(other.converter))
+//            return false;
+//        if (otherParameters == null)
+//        {
+//            if (other.otherParameters != null)
+//                return false;
+//        } else if (!otherParameters.equals(other.otherParameters))
+//            return false;
+//        if (propertyName == null)
+//        {
+//            if (other.propertyName != null)
+//                return false;
+//        } else if (!propertyName.equals(other.propertyName))
+//            return false;
+//        if (propertyValueString == null)
+//        {
+//            if (other.propertyValueString != null)
+//                return false;
+//        } else if (!propertyValueString.equals(other.propertyValueString))
+//            return false;
+//        if (unknownValue == null)
+//        {
+//            if (other.unknownValue != null)
+//                return false;
+//        } else if (!unknownValue.equals(other.unknownValue))
+//            return false;
+//        if (value == null)
+//        {
+//            if (other.value != null)
+//                return false;
+//        } else if (!value.equals(other.value))
+//            return false;
+//        return true;
+//    }
 }

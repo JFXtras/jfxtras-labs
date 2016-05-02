@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.properties.Property;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
@@ -18,7 +18,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
-public class GeneralTest
+public class GeneralComponentTest
 {
     @Test
     public void canEscapeTest()
@@ -59,7 +59,7 @@ public class GeneralTest
                 .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
                 .withAttendees(Attendee.parse("ATTENDEE;PARTSTAT=DECLINED:mailto:jsmith@example.com"))
                 .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com");
-        List<ComponentElement> expectedPropertyEnums = Arrays.asList(ComponentElement.ATTENDEE, ComponentElement.DATE_TIME_START, ComponentElement.ORGANIZER, ComponentElement.UNIQUE_IDENTIFIER);
+        List<PropertyType> expectedPropertyEnums = Arrays.asList(PropertyType.ATTENDEE, PropertyType.DATE_TIME_START, PropertyType.ORGANIZER, PropertyType.UNIQUE_IDENTIFIER);
         assertEquals(expectedPropertyEnums, builtComponent.propertyEnums());
         List<Property<?>> expectedProperties = Arrays.asList(
                 builtComponent.getAttendees().get(0),

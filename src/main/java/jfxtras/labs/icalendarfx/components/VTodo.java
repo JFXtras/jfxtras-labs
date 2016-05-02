@@ -8,7 +8,7 @@ import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.PercentComplete;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeCompleted;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeDue;
@@ -75,7 +75,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     {
         if (dateTimeCompleted == null)
         {
-            dateTimeCompleted = new SimpleObjectProperty<>(this, ComponentElement.DATE_TIME_COMPLETED.toString());
+            dateTimeCompleted = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_COMPLETED.toString());
         }
         return dateTimeCompleted;
     }
@@ -102,7 +102,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     {
         if (dateTimeDue == null)
         {
-            dateTimeDue = new SimpleObjectProperty<>(this, ComponentElement.DATE_TIME_DUE.toString());
+            dateTimeDue = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_DUE.toString());
             dateTimeDue.addListener((observable, oldValue, newValue) -> 
             {
                 if ((getDateTimeDue() != null) && (getDuration() != null))
@@ -170,7 +170,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     {
         if (percentComplete == null)
         {
-            percentComplete = new SimpleObjectProperty<>(this, ComponentElement.PERCENT_COMPLETE.toString());
+            percentComplete = new SimpleObjectProperty<>(this, PropertyType.PERCENT_COMPLETE.toString());
         }
         return percentComplete;
     }
@@ -181,7 +181,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     public void setPercentComplete(PercentComplete percentComplete) { percentCompleteProperty().set(percentComplete); }
     public VTodo withPercentComplete(PercentComplete percentComplete) { setPercentComplete(percentComplete); return this; }
     public VTodo withPercentComplete(Integer percentComplete) { setPercentComplete(percentComplete); return this; }
-    public VTodo withPercentComplete(String percentComplete) { ComponentElement.PERCENT_COMPLETE.parse(this, percentComplete); return this; }
+    public VTodo withPercentComplete(String percentComplete) { PropertyType.PERCENT_COMPLETE.parse(this, percentComplete); return this; }
     
     /*
      * CONSTRUCTORS

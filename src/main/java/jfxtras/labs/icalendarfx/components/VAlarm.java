@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
 import jfxtras.labs.icalendarfx.properties.component.alarm.RepeatCount;
@@ -153,7 +153,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     {
         if (action == null)
         {
-            action = new SimpleObjectProperty<>(this, ComponentElement.ACTION.toString());
+            action = new SimpleObjectProperty<>(this, PropertyType.ACTION.toString());
         }
         return action;
     }
@@ -164,7 +164,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     public void setAction(ActionType action) { setAction(new Action(action)); }
     public VAlarm withAction(Action action) { setAction(action); return this; }
     public VAlarm withAction(ActionType actionType) { setAction(actionType); return this; }
-    public VAlarm withAction(String action) { ComponentElement.ACTION.parse(this, action); return this; }
+    public VAlarm withAction(String action) { PropertyType.ACTION.parse(this, action); return this; }
     
     /**
      * ATTENDEE: Attendee
@@ -201,7 +201,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     {
         if (description == null)
         {
-            description = new SimpleObjectProperty<>(this, ComponentElement.DESCRIPTION.toString());
+            description = new SimpleObjectProperty<>(this, PropertyType.DESCRIPTION.toString());
         }
         return description;
     }
@@ -219,7 +219,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     {
         if (duration == null)
         {
-            duration = new SimpleObjectProperty<>(this, ComponentElement.DURATION.toString());
+            duration = new SimpleObjectProperty<>(this, PropertyType.DURATION.toString());
         }
         return duration;
     }
@@ -245,7 +245,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     {
         if (repeatCount == null)
         {
-            repeatCount = new SimpleObjectProperty<>(this, ComponentElement.ACTION.toString());
+            repeatCount = new SimpleObjectProperty<>(this, PropertyType.ACTION.toString());
         }
         return repeatCount;
     }
@@ -278,13 +278,13 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     {
         if (trigger == null)
         {
-            trigger = new SimpleObjectProperty<>(this, ComponentElement.ACTION.toString());
+            trigger = new SimpleObjectProperty<>(this, PropertyType.ACTION.toString());
         }
         return trigger;
     }
     private ObjectProperty<Trigger<?>> trigger;
     public Trigger<?> getTrigger() { return triggerProperty().get(); }
-    public void setTrigger(String trigger) { ComponentElement.TRIGGER.parse(this, trigger); }
+    public void setTrigger(String trigger) { PropertyType.TRIGGER.parse(this, trigger); }
     public void setTrigger(Trigger<?> trigger) { triggerProperty().set(trigger); }
     public void setTrigger(Duration trigger) { setTrigger(new Trigger<Duration>(trigger)); }
     public void setTrigger(ZonedDateTime trigger) { setTrigger(new Trigger<ZonedDateTime>(trigger)); }

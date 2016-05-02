@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.Property;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
@@ -53,7 +53,7 @@ public interface VComponentNew<T>
     void setNonStandardProperties(ObservableList<NonStandardProperty> properties);
     default T withNonStandardProperty(String...nonStandardProps)
     {
-        Arrays.stream(nonStandardProps).forEach(c -> ComponentElement.NON_STANDARD.parse(this, c));
+        Arrays.stream(nonStandardProps).forEach(c -> PropertyType.NON_STANDARD.parse(this, c));
         return (T) this;
     }
     default T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return (T) this; }
@@ -81,7 +81,7 @@ public interface VComponentNew<T>
     void setIANAProperties(ObservableList<IANAProperty> properties);
     default T withIANAProperty(String...ianaProps)
     {
-        Arrays.stream(ianaProps).forEach(c -> ComponentElement.IANA_PROPERTY.parse(this, c));
+        Arrays.stream(ianaProps).forEach(c -> PropertyType.IANA_PROPERTY.parse(this, c));
         return (T) this;
     }
     default T withIANAProperty(ObservableList<IANAProperty> ianaProps) { setIANAProperties(ianaProps); return (T) this; }
@@ -103,7 +103,7 @@ public interface VComponentNew<T>
      * 
      * @return - the list of properties enums
      */
-    List<ComponentElement> propertyEnums();
+    List<PropertyType> propertyEnums();
     /**
      * List of all properties found in component.
      * The list is unmodifiable.

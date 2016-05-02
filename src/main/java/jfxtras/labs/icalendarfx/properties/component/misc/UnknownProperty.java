@@ -12,7 +12,7 @@ import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
 import jfxtras.labs.icalendarfx.parameters.FreeBusyType;
 import jfxtras.labs.icalendarfx.parameters.FreeBusyType.FreeBusyTypeEnum;
-import jfxtras.labs.icalendarfx.parameters.PropertyElement;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.Range;
 import jfxtras.labs.icalendarfx.parameters.Range.RangeType;
 import jfxtras.labs.icalendarfx.parameters.Relationship;
@@ -79,7 +79,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (alternateText == null)
         {
-            alternateText = new SimpleObjectProperty<>(this, PropertyElement.ALTERNATE_TEXT_REPRESENTATION.toString());
+            alternateText = new SimpleObjectProperty<>(this, ParameterType.ALTERNATE_TEXT_REPRESENTATION.toString());
         }
         return alternateText;
     }
@@ -109,7 +109,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (encoding == null)
         {
-            encoding = new SimpleObjectProperty<>(this, PropertyElement.INLINE_ENCODING.toString());
+            encoding = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
         }
         return encoding;
     }
@@ -141,7 +141,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (freeBusyType == null)
         {
-            freeBusyType = new SimpleObjectProperty<>(this, PropertyElement.INLINE_ENCODING.toString());
+            freeBusyType = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
         }
         return freeBusyType;
     }
@@ -165,7 +165,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (formatType == null)
         {
-            formatType = new SimpleObjectProperty<>(this, PropertyElement.FORMAT_TYPE.toString());
+            formatType = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
         }
         return formatType;
     }
@@ -197,7 +197,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (range == null)
         {
-            range = new SimpleObjectProperty<>(this, PropertyElement.RECURRENCE_IDENTIFIER_RANGE.toString());
+            range = new SimpleObjectProperty<>(this, ParameterType.RECURRENCE_IDENTIFIER_RANGE.toString());
         }
         return range;
     }
@@ -222,7 +222,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (AlarmTrigger == null)
         {
-            AlarmTrigger = new SimpleObjectProperty<>(this, PropertyElement.FORMAT_TYPE.toString());
+            AlarmTrigger = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
         }
         return AlarmTrigger;
     }
@@ -253,7 +253,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (relationship == null)
         {
-            relationship = new SimpleObjectProperty<>(this, PropertyElement.RELATIONSHIP_TYPE.toString());
+            relationship = new SimpleObjectProperty<>(this, ParameterType.RELATIONSHIP_TYPE.toString());
         }
         return relationship;
     }
@@ -281,7 +281,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     {
         if (timeZoneIdentifier == null)
         {
-            timeZoneIdentifier = new SimpleObjectProperty<>(this, PropertyElement.TIME_ZONE_IDENTIFIER.toString());
+            timeZoneIdentifier = new SimpleObjectProperty<>(this, ParameterType.TIME_ZONE_IDENTIFIER.toString());
         }
         return timeZoneIdentifier;
     }
@@ -290,7 +290,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { timeZoneIdentifierProperty().set(timeZoneIdentifier); }
     public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value)); }
     public U withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (U) this; }
-    public U withTimeZoneIdentifier(String content) { PropertyElement.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
+    public U withTimeZoneIdentifier(String content) { ParameterType.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
 
     /*
      * CONSTRUCTORS

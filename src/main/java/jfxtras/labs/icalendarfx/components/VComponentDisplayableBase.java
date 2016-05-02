@@ -5,7 +5,7 @@ import java.time.temporal.Temporal;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
@@ -74,7 +74,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         if (classification == null)
         {
-            classification = new SimpleObjectProperty<>(this, ComponentElement.CLASSIFICATION.toString());
+            classification = new SimpleObjectProperty<>(this, PropertyType.CLASSIFICATION.toString());
         }
         return classification;
     }
@@ -113,7 +113,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         if (dateTimeCreated == null)
         {
-            dateTimeCreated = new SimpleObjectProperty<>(this, ComponentElement.DATE_TIME_CREATED.toString());
+            dateTimeCreated = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_CREATED.toString());
         }
         return dateTimeCreated;
     }
@@ -165,7 +165,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         if (lastModified == null)
         {
-            lastModified = new SimpleObjectProperty<>(this, ComponentElement.LAST_MODIFIED.toString());
+            lastModified = new SimpleObjectProperty<>(this, PropertyType.LAST_MODIFIED.toString());
         }
         return lastModified;
     }
@@ -209,7 +209,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         if (recurrenceId == null)
         {
-            recurrenceId = new SimpleObjectProperty<>(this, ComponentElement.RECURRENCE_IDENTIFIER.toString());
+            recurrenceId = new SimpleObjectProperty<>(this, PropertyType.RECURRENCE_IDENTIFIER.toString());
             recurrenceId.addListener((observable, oldValue, newValue) -> checkRecurrenceIdConsistency());
         }
         return recurrenceId;
@@ -248,7 +248,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         if (recurrenceRule == null)
         {
-            recurrenceRule = new SimpleObjectProperty<>(this, ComponentElement.UNIQUE_IDENTIFIER.toString());
+            recurrenceRule = new SimpleObjectProperty<>(this, PropertyType.UNIQUE_IDENTIFIER.toString());
         }
         return recurrenceRule;
     }
@@ -274,7 +274,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         if (sequence == null)
         {
-            sequence = new SimpleObjectProperty<>(this, ComponentElement.SEQUENCE.toString());
+            sequence = new SimpleObjectProperty<>(this, PropertyType.SEQUENCE.toString());
         }
         return sequence;
     }
@@ -293,7 +293,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         if (summary == null)
         {
-            summary = new SimpleObjectProperty<>(this, ComponentElement.SUMMARY.toString());
+            summary = new SimpleObjectProperty<>(this, PropertyType.SUMMARY.toString());
         }
         return summary;
     }
@@ -313,7 +313,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         if (status == null)
         {
-            status = new SimpleObjectProperty<>(this, ComponentElement.STATUS.toString());
+            status = new SimpleObjectProperty<>(this, PropertyType.STATUS.toString());
         }
         return status;
     }

@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
@@ -56,7 +56,7 @@ public abstract class VComponentDescribableBase<T> extends VComponentBase<T> imp
     {
         if (summary == null)
         {
-            summary = new SimpleObjectProperty<>(this, ComponentElement.SUMMARY.toString());
+            summary = new SimpleObjectProperty<>(this, PropertyType.SUMMARY.toString());
         }
         return summary;
     }

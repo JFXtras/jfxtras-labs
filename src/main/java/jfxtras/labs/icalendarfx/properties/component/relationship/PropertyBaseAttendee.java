@@ -10,7 +10,7 @@ import jfxtras.labs.icalendarfx.parameters.CalendarUser.CalendarUserType;
 import jfxtras.labs.icalendarfx.parameters.Delegatees;
 import jfxtras.labs.icalendarfx.parameters.Delegators;
 import jfxtras.labs.icalendarfx.parameters.GroupMembership;
-import jfxtras.labs.icalendarfx.parameters.PropertyElement;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ParticipationStatus;
 import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStatusType;
 import jfxtras.labs.icalendarfx.parameters.ParticipationRole;
@@ -47,7 +47,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
     {
         if (calendarUser == null)
         {
-            calendarUser = new SimpleObjectProperty<>(this, PropertyElement.CALENDAR_USER_TYPE.toString());
+            calendarUser = new SimpleObjectProperty<>(this, ParameterType.CALENDAR_USER_TYPE.toString());
         }
         return calendarUser;
     }
@@ -78,7 +78,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
     {
         if (delegators == null)
         {
-            delegators = new SimpleObjectProperty<>(this, PropertyElement.DELEGATORS.toString());
+            delegators = new SimpleObjectProperty<>(this, ParameterType.DELEGATORS.toString());
         }
         return delegators;
     }
@@ -110,7 +110,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
     {
         if (delegatees == null)
         {
-            delegatees = new SimpleObjectProperty<>(this, PropertyElement.DELEGATEES.toString());
+            delegatees = new SimpleObjectProperty<>(this, ParameterType.DELEGATEES.toString());
         }
         return delegatees;
     }
@@ -141,7 +141,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
     {
         if (groupMembership == null)
         {
-            groupMembership = new SimpleObjectProperty<>(this, PropertyElement.GROUP_OR_LIST_MEMBERSHIP.toString());
+            groupMembership = new SimpleObjectProperty<>(this, ParameterType.GROUP_OR_LIST_MEMBERSHIP.toString());
         }
         return groupMembership;
     }
@@ -170,7 +170,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
     {
         if (rsvp == null)
         {
-            rsvp = new SimpleObjectProperty<>(this, PropertyElement.RSVP_EXPECTATION.toString());
+            rsvp = new SimpleObjectProperty<>(this, ParameterType.RSVP_EXPECTATION.toString());
         }
         return rsvp;
     }
@@ -199,7 +199,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
     {
         if (participationStatus == null)
         {
-            participationStatus = new SimpleObjectProperty<>(this, PropertyElement.PARTICIPATION_STATUS.toString());
+            participationStatus = new SimpleObjectProperty<>(this, ParameterType.PARTICIPATION_STATUS.toString());
         }
         return participationStatus;
     }
@@ -228,7 +228,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
     {
         if (participationRole == null)
         {
-            participationRole = new SimpleObjectProperty<>(this, PropertyElement.PARTICIPATION_ROLE.toString());
+            participationRole = new SimpleObjectProperty<>(this, ParameterType.PARTICIPATION_ROLE.toString());
         }
         return participationRole;
     }

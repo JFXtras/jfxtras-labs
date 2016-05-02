@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 
 /**
@@ -44,7 +44,7 @@ public interface VComponentAttendee<T> extends VComponentNew<T>
     }
     default T withAttendees(String...attendees)
     {
-        Arrays.stream(attendees).forEach(c -> ComponentElement.ATTENDEE.parse(this, c));
+        Arrays.stream(attendees).forEach(c -> PropertyType.ATTENDEE.parse(this, c));
         return (T) this;
     }
 }

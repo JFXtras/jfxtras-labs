@@ -9,7 +9,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.parameters.AlarmTriggerRelationship;
-import jfxtras.labs.icalendarfx.parameters.PropertyElement;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
@@ -49,7 +49,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
    {
        if (relationship == null)
        {
-           relationship = new SimpleObjectProperty<>(this, PropertyElement.ALARM_TRIGGER_RELATIONSHIP.toString());
+           relationship = new SimpleObjectProperty<>(this, ParameterType.ALARM_TRIGGER_RELATIONSHIP.toString());
        }
        return relationship;
    }

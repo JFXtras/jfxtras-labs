@@ -42,7 +42,7 @@ public interface Parameter<T> extends Comparable<Parameter<T>>
      * 
      * @return - the parameter type
      */
-    PropertyElement parameterType();
+    ParameterType parameterType();
     
     /**
      * return parameter name-value pair string separated by an "="

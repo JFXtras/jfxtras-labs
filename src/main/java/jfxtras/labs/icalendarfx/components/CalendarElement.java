@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
@@ -16,16 +16,16 @@ public enum CalendarElement
 {
     // MAIN COMPONENTS
     VEVENT ("VEVENT",
-            Arrays.asList(ComponentElement.ATTACHMENT, ComponentElement.ATTENDEE, ComponentElement.CATEGORIES,
-            ComponentElement.CLASSIFICATION, ComponentElement.COMMENT, ComponentElement.CONTACT, ComponentElement.DATE_TIME_CREATED,
-            ComponentElement.DATE_TIME_END, ComponentElement.DATE_TIME_STAMP, ComponentElement.DATE_TIME_START,
-            ComponentElement.DESCRIPTION, ComponentElement.DURATION, ComponentElement.EXCEPTION_DATE_TIMES,
-            ComponentElement.GEOGRAPHIC_POSITION, ComponentElement.IANA_PROPERTY, ComponentElement.LAST_MODIFIED,
-            ComponentElement.LOCATION, ComponentElement.NON_STANDARD, ComponentElement.ORGANIZER, ComponentElement.PRIORITY,
-            ComponentElement.RECURRENCE_DATE_TIMES, ComponentElement.RECURRENCE_IDENTIFIER, ComponentElement.RELATED_TO,
-            ComponentElement.RECURRENCE_RULE, ComponentElement.REQUEST_STATUS,  ComponentElement.RESOURCES, ComponentElement.SEQUENCE,
-            ComponentElement.STATUS, ComponentElement.SUMMARY, ComponentElement.TIME_TRANSPARENCY, ComponentElement.UNIQUE_IDENTIFIER,
-            ComponentElement.UNIFORM_RESOURCE_LOCATOR),
+            Arrays.asList(PropertyType.ATTACHMENT, PropertyType.ATTENDEE, PropertyType.CATEGORIES,
+            PropertyType.CLASSIFICATION, PropertyType.COMMENT, PropertyType.CONTACT, PropertyType.DATE_TIME_CREATED,
+            PropertyType.DATE_TIME_END, PropertyType.DATE_TIME_STAMP, PropertyType.DATE_TIME_START,
+            PropertyType.DESCRIPTION, PropertyType.DURATION, PropertyType.EXCEPTION_DATE_TIMES,
+            PropertyType.GEOGRAPHIC_POSITION, PropertyType.IANA_PROPERTY, PropertyType.LAST_MODIFIED,
+            PropertyType.LOCATION, PropertyType.NON_STANDARD, PropertyType.ORGANIZER, PropertyType.PRIORITY,
+            PropertyType.RECURRENCE_DATE_TIMES, PropertyType.RECURRENCE_IDENTIFIER, PropertyType.RELATED_TO,
+            PropertyType.RECURRENCE_RULE, PropertyType.REQUEST_STATUS,  PropertyType.RESOURCES, PropertyType.SEQUENCE,
+            PropertyType.STATUS, PropertyType.SUMMARY, PropertyType.TIME_TRANSPARENCY, PropertyType.UNIQUE_IDENTIFIER,
+            PropertyType.UNIFORM_RESOURCE_LOCATOR),
             true)
     {
 
@@ -46,16 +46,16 @@ public enum CalendarElement
 
     },
     VTODO ("VTODO",
-            Arrays.asList(ComponentElement.ATTACHMENT, ComponentElement.ATTENDEE, ComponentElement.CATEGORIES,
-            ComponentElement.CLASSIFICATION, ComponentElement.COMMENT, ComponentElement.CONTACT, ComponentElement.DATE_TIME_COMPLETED,
-            ComponentElement.DATE_TIME_CREATED, ComponentElement.DATE_TIME_DUE, ComponentElement.DATE_TIME_STAMP,
-            ComponentElement.DATE_TIME_START, ComponentElement.DESCRIPTION, ComponentElement.DURATION,
-            ComponentElement.EXCEPTION_DATE_TIMES, ComponentElement.GEOGRAPHIC_POSITION, ComponentElement.IANA_PROPERTY,
-            ComponentElement.LAST_MODIFIED, ComponentElement.LOCATION,  ComponentElement.NON_STANDARD, ComponentElement.ORGANIZER,
-            ComponentElement.PERCENT_COMPLETE, ComponentElement.PRIORITY, ComponentElement.RECURRENCE_DATE_TIMES,
-            ComponentElement.RECURRENCE_IDENTIFIER, ComponentElement.RELATED_TO, ComponentElement.RECURRENCE_RULE,
-            ComponentElement.REQUEST_STATUS, ComponentElement.RESOURCES, ComponentElement.SEQUENCE, ComponentElement.STATUS,
-            ComponentElement.SUMMARY, ComponentElement.UNIQUE_IDENTIFIER, ComponentElement.UNIFORM_RESOURCE_LOCATOR),
+            Arrays.asList(PropertyType.ATTACHMENT, PropertyType.ATTENDEE, PropertyType.CATEGORIES,
+            PropertyType.CLASSIFICATION, PropertyType.COMMENT, PropertyType.CONTACT, PropertyType.DATE_TIME_COMPLETED,
+            PropertyType.DATE_TIME_CREATED, PropertyType.DATE_TIME_DUE, PropertyType.DATE_TIME_STAMP,
+            PropertyType.DATE_TIME_START, PropertyType.DESCRIPTION, PropertyType.DURATION,
+            PropertyType.EXCEPTION_DATE_TIMES, PropertyType.GEOGRAPHIC_POSITION, PropertyType.IANA_PROPERTY,
+            PropertyType.LAST_MODIFIED, PropertyType.LOCATION,  PropertyType.NON_STANDARD, PropertyType.ORGANIZER,
+            PropertyType.PERCENT_COMPLETE, PropertyType.PRIORITY, PropertyType.RECURRENCE_DATE_TIMES,
+            PropertyType.RECURRENCE_IDENTIFIER, PropertyType.RELATED_TO, PropertyType.RECURRENCE_RULE,
+            PropertyType.REQUEST_STATUS, PropertyType.RESOURCES, PropertyType.SEQUENCE, PropertyType.STATUS,
+            PropertyType.SUMMARY, PropertyType.UNIQUE_IDENTIFIER, PropertyType.UNIFORM_RESOURCE_LOCATOR),
             true)
     {
         @Override
@@ -73,14 +73,14 @@ public enum CalendarElement
 
     },
     VJOURNAL ("VJOURNAL",
-            Arrays.asList(ComponentElement.ATTACHMENT, ComponentElement.ATTENDEE, ComponentElement.CATEGORIES,
-            ComponentElement.CLASSIFICATION, ComponentElement.COMMENT, ComponentElement.CONTACT, ComponentElement.DATE_TIME_CREATED,
-            ComponentElement.DATE_TIME_STAMP, ComponentElement.DATE_TIME_START, ComponentElement.DESCRIPTION,
-            ComponentElement.EXCEPTION_DATE_TIMES, ComponentElement.IANA_PROPERTY, ComponentElement.LAST_MODIFIED,
-            ComponentElement.NON_STANDARD, ComponentElement.ORGANIZER, ComponentElement.RECURRENCE_DATE_TIMES,
-            ComponentElement.RECURRENCE_IDENTIFIER, ComponentElement.RELATED_TO, ComponentElement.RECURRENCE_RULE, 
-            ComponentElement.REQUEST_STATUS, ComponentElement.SEQUENCE, ComponentElement.STATUS, ComponentElement.SUMMARY,
-            ComponentElement.UNIQUE_IDENTIFIER, ComponentElement.UNIFORM_RESOURCE_LOCATOR),
+            Arrays.asList(PropertyType.ATTACHMENT, PropertyType.ATTENDEE, PropertyType.CATEGORIES,
+            PropertyType.CLASSIFICATION, PropertyType.COMMENT, PropertyType.CONTACT, PropertyType.DATE_TIME_CREATED,
+            PropertyType.DATE_TIME_STAMP, PropertyType.DATE_TIME_START, PropertyType.DESCRIPTION,
+            PropertyType.EXCEPTION_DATE_TIMES, PropertyType.IANA_PROPERTY, PropertyType.LAST_MODIFIED,
+            PropertyType.NON_STANDARD, PropertyType.ORGANIZER, PropertyType.RECURRENCE_DATE_TIMES,
+            PropertyType.RECURRENCE_IDENTIFIER, PropertyType.RELATED_TO, PropertyType.RECURRENCE_RULE, 
+            PropertyType.REQUEST_STATUS, PropertyType.SEQUENCE, PropertyType.STATUS, PropertyType.SUMMARY,
+            PropertyType.UNIQUE_IDENTIFIER, PropertyType.UNIFORM_RESOURCE_LOCATOR),
             true)
     {
         @Override
@@ -98,8 +98,8 @@ public enum CalendarElement
 
     },
     VTIMEZONE ("VTIMEZONE",
-            Arrays.asList(ComponentElement.IANA_PROPERTY, ComponentElement.LAST_MODIFIED, ComponentElement.NON_STANDARD,
-            ComponentElement.TIME_ZONE_IDENTIFIER, ComponentElement.TIME_ZONE_URL),
+            Arrays.asList(PropertyType.IANA_PROPERTY, PropertyType.LAST_MODIFIED, PropertyType.NON_STANDARD,
+            PropertyType.TIME_ZONE_IDENTIFIER, PropertyType.TIME_ZONE_URL),
             true)
     {
         @Override
@@ -117,10 +117,10 @@ public enum CalendarElement
 
     },
     VFREEBUSY ("VFREEBUSY",
-            Arrays.asList(ComponentElement.ATTENDEE, ComponentElement.COMMENT, ComponentElement.CONTACT,
-            ComponentElement.DATE_TIME_END, ComponentElement.DATE_TIME_STAMP, ComponentElement.DATE_TIME_START,
-            ComponentElement.FREE_BUSY_TIME, ComponentElement.IANA_PROPERTY, ComponentElement.NON_STANDARD, ComponentElement.ORGANIZER,
-            ComponentElement.REQUEST_STATUS, ComponentElement.UNIQUE_IDENTIFIER, ComponentElement.UNIFORM_RESOURCE_LOCATOR),
+            Arrays.asList(PropertyType.ATTENDEE, PropertyType.COMMENT, PropertyType.CONTACT,
+            PropertyType.DATE_TIME_END, PropertyType.DATE_TIME_STAMP, PropertyType.DATE_TIME_START,
+            PropertyType.FREE_BUSY_TIME, PropertyType.IANA_PROPERTY, PropertyType.NON_STANDARD, PropertyType.ORGANIZER,
+            PropertyType.REQUEST_STATUS, PropertyType.UNIQUE_IDENTIFIER, PropertyType.UNIFORM_RESOURCE_LOCATOR),
             true)
     {
         @Override
@@ -138,10 +138,10 @@ public enum CalendarElement
     },
     // NON-MAIN COMPONENTS - MUST BE NESTED IN A MAIN COMPONENT
     DAYLIGHT_SAVING_TIME ("DAYLIGHT",
-            Arrays.asList(ComponentElement.COMMENT, ComponentElement.DATE_TIME_START,
-            ComponentElement.IANA_PROPERTY, ComponentElement.NON_STANDARD, ComponentElement.RECURRENCE_DATE_TIMES,
-            ComponentElement.RECURRENCE_RULE, ComponentElement.TIME_ZONE_NAME, ComponentElement.TIME_ZONE_OFFSET_FROM,
-            ComponentElement.TIME_ZONE_OFFSET_TO),
+            Arrays.asList(PropertyType.COMMENT, PropertyType.DATE_TIME_START,
+            PropertyType.IANA_PROPERTY, PropertyType.NON_STANDARD, PropertyType.RECURRENCE_DATE_TIMES,
+            PropertyType.RECURRENCE_RULE, PropertyType.TIME_ZONE_NAME, PropertyType.TIME_ZONE_OFFSET_FROM,
+            PropertyType.TIME_ZONE_OFFSET_TO),
             false)
     {
         @Override
@@ -159,10 +159,10 @@ public enum CalendarElement
 
     },
     STANDARD_TIME ("STANDARD",
-            Arrays.asList(ComponentElement.COMMENT, ComponentElement.DATE_TIME_START,
-            ComponentElement.IANA_PROPERTY, ComponentElement.NON_STANDARD, ComponentElement.RECURRENCE_DATE_TIMES,
-            ComponentElement.RECURRENCE_RULE, ComponentElement.TIME_ZONE_NAME, ComponentElement.TIME_ZONE_OFFSET_FROM,
-            ComponentElement.TIME_ZONE_OFFSET_TO),
+            Arrays.asList(PropertyType.COMMENT, PropertyType.DATE_TIME_START,
+            PropertyType.IANA_PROPERTY, PropertyType.NON_STANDARD, PropertyType.RECURRENCE_DATE_TIMES,
+            PropertyType.RECURRENCE_RULE, PropertyType.TIME_ZONE_NAME, PropertyType.TIME_ZONE_OFFSET_FROM,
+            PropertyType.TIME_ZONE_OFFSET_TO),
             false)
     {
         @Override
@@ -180,9 +180,9 @@ public enum CalendarElement
 
     },
     VALARM ("VALARM",
-            Arrays.asList(ComponentElement.ACTION, ComponentElement.ATTACHMENT, ComponentElement.ATTENDEE, ComponentElement.DESCRIPTION,
-            ComponentElement.DURATION, ComponentElement.IANA_PROPERTY, ComponentElement.NON_STANDARD, ComponentElement.REPEAT_COUNT,
-            ComponentElement.SUMMARY, ComponentElement.TRIGGER),
+            Arrays.asList(PropertyType.ACTION, PropertyType.ATTACHMENT, PropertyType.ATTENDEE, PropertyType.DESCRIPTION,
+            PropertyType.DURATION, PropertyType.IANA_PROPERTY, PropertyType.NON_STANDARD, PropertyType.REPEAT_COUNT,
+            PropertyType.SUMMARY, PropertyType.TRIGGER),
             false)
     {
         @Override
@@ -200,7 +200,7 @@ public enum CalendarElement
 
     },
     // CALENDAR PROPERTIES
-    CALENDAR_SCALE ("CALSCALE", null, true)
+    CALENDAR_SCALE (PropertyType.CALENDAR_SCALE.toString(), null, true)
     {
         @Override
         public List<? extends VComponentNew<?>> getComponents(VCalendar vCalendar)
@@ -225,7 +225,7 @@ public enum CalendarElement
             return property;
         }
     },
-    METHOD ("METHOD", null, true)
+    METHOD (PropertyType.METHOD.toString(), null, true)
     {
         @Override
         public List<? extends VComponentNew<?>> getComponents(VCalendar vCalendar)
@@ -250,7 +250,7 @@ public enum CalendarElement
             return property;
         }
     },
-    PRODUCT_IDENTIFIER ("PRODID", null, true)
+    PRODUCT_IDENTIFIER (PropertyType.PRODUCT_IDENTIFIER.toString(), null, true)
     {
         @Override
         public List<? extends VComponentNew<?>> getComponents(VCalendar vCalendar)
@@ -275,7 +275,7 @@ public enum CalendarElement
             return property;
         }
     },
-    VERSION ("VERSION", null, true)
+    VERSION (PropertyType.VERSION.toString(), null, true)
     {
         @Override
         public List<? extends VComponentNew<?>> getComponents(VCalendar vCalendar)
@@ -322,13 +322,13 @@ public enum CalendarElement
     @Override
     public String toString() { return name; }
     
-    private List<ComponentElement> allowedProperties;
-    public List<ComponentElement> allowedProperties() { return allowedProperties; }
+    private List<PropertyType> allowedProperties;
+    public List<PropertyType> allowedProperties() { return allowedProperties; }
 
     private boolean isCalendarElement;
     public boolean isCalendarElement() { return isCalendarElement; }
     
-    CalendarElement(String name, List<ComponentElement> allowedProperties, boolean isCalendarElement)
+    CalendarElement(String name, List<PropertyType> allowedProperties, boolean isCalendarElement)
     {
         this.name = name;
         this.allowedProperties = allowedProperties;

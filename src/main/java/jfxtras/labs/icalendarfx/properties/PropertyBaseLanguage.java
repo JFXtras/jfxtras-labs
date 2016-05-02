@@ -3,7 +3,7 @@ package jfxtras.labs.icalendarfx.properties;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.parameters.Language;
-import jfxtras.labs.icalendarfx.parameters.PropertyElement;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 
@@ -36,7 +36,7 @@ public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implem
     {
         if (language == null)
         {
-            language = new SimpleObjectProperty<>(this, PropertyElement.LANGUAGE.toString());
+            language = new SimpleObjectProperty<>(this, ParameterType.LANGUAGE.toString());
         }
         return language;
     }
@@ -45,7 +45,7 @@ public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implem
     public void setLanguage(Language language) { languageProperty().set(language); }
     public void setLanguage(String value) { setLanguage(new Language(value)); }
     public U withLanguage(Language language) { setLanguage(language); return (U) this; }
-    public U withLanguage(String content) { PropertyElement.LANGUAGE.parse(this, content); return (U) this; }    
+    public U withLanguage(String content) { ParameterType.LANGUAGE.parse(this, content); return (U) this; }    
     
     /*
      * CONSTRUCTORS

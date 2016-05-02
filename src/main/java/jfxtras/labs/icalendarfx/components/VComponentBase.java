@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -78,14 +78,14 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * @return - the list of properties
      */
     @Override
-    public List<ComponentElement> propertyEnums()
+    public List<PropertyType> propertyEnums()
     {
-        List<ComponentElement> populatedProperties = new ArrayList<>();
+        List<PropertyType> populatedProperties = new ArrayList<>();
 //        System.out.println("componentType():" + componentType().allowedProperties());
-        Iterator<ComponentElement> i = componentType().allowedProperties().stream().iterator();
+        Iterator<PropertyType> i = componentType().allowedProperties().stream().iterator();
         while (i.hasNext())
         {
-            ComponentElement propertyType = i.next();
+            PropertyType propertyType = i.next();
             Object property = propertyType.getProperty(this);
 //            System.out.println("props:" + propertyType + " " + property );
             if (property != null)
@@ -140,11 +140,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     public void parseContent(List<String> contentLines)
     {
         Integer propertyCounter = 0;
-//        Iterator<String> i = unfoldLines(contentLines).iterator();
-        // TODO - WHERE SHOULD UNFOLDING OCCUR? - HERE?
-//        for (String line : contentLines)
         for (int index=0; index<contentLines.size(); index++)
-//        while (i.hasNext())
         {
             String line = contentLines.get(index);
             int nameEndIndex = ICalendarUtilities.getPropertyNameIndex(line);
@@ -156,33 +152,32 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentType().toString());
                 if  (! isMainComponent)
                 {
-//                    CalendarElement subcomponentType = CalendarElement.valueOf(line.substring(nameEndIndex+1));
                     CalendarElement subcomponentType = CalendarElement.enumFromName(line.substring(nameEndIndex+1));
-                    System.out.println("subcomponentType:" + subcomponentType + " " + line.substring(nameEndIndex+1));
                     StringBuilder subcomponentContentBuilder = new StringBuilder(200);
                     subcomponentContentBuilder.append(line + System.lineSeparator());
                     boolean isEndFound = false;
                     do
                     {
                         String subLine = contentLines.get(++index);
-//                        String subLine = i.next();
                         subcomponentContentBuilder.append(subLine + System.lineSeparator());
                         isEndFound = subLine.subSequence(0, 3).equals("END");
                     } while (! isEndFound);
                     parseSubComponents(subcomponentType, subcomponentContentBuilder.toString());
                 }
                 
-            // parse properties
+            // parse properties - ignore unknown properties
             } else if (! propertyName.equals("END"))
             {
-                // parse property
-                // ignores unknown properties
-                ComponentElement propertyType = ComponentElement.enumFromName(propertyName);
+                PropertyType propertyType = PropertyType.enumFromName(propertyName);
                 if (propertyType != null)
                 {
                     propertySortOrder.put(propertyName, propertyCounter);
                     propertyCounter += 100; // add 100 to allow insertions in between
                     propertyType.parse(this, line);
+                } else
+                {
+                    // TODO - check IANA properties and X- properties
+                    System.out.println("unknown prop:" );
                 }
             }
         }
@@ -207,7 +202,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     public int hashCode()
     {
         int hash = 7;
-        Iterator<ComponentElement> i = propertyEnums().iterator();
+        Iterator<PropertyType> i = propertyEnums().iterator();
         while (i.hasNext())
         {
             Object property = i.next().getProperty(this);
@@ -226,13 +221,13 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
         VComponentBase<?> testObj = (VComponentBase<?>) obj;
         
         final boolean propertiesEquals;
-        List<ComponentElement> properties = propertyEnums(); // make properties local to avoid creating list multiple times
-        List<ComponentElement> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
+        List<PropertyType> properties = propertyEnums(); // make properties local to avoid creating list multiple times
+        List<PropertyType> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
 //        System.out.println("equals:" + this + " " + testObj);
         if (properties.size() == testProperties.size())
         {
-            Iterator<ComponentElement> i1 = properties.iterator();
-            Iterator<ComponentElement> i2 = testProperties.iterator();
+            Iterator<PropertyType> i1 = properties.iterator();
+            Iterator<PropertyType> i2 = testProperties.iterator();
             boolean isFailure = false;
             while (i1.hasNext())
             {
@@ -306,135 +301,11 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     private final String lastContentLine = "END:" + componentType().toString();
 
 
-    /**
-     * Starting with lines-separated list of content lines, the lines are unwrapped and 
-     * converted into a list of property name and property value list wrapped in a Pair.
-     * DTSTART property is put on top, if present.
-     * 
-     * This method unwraps multi-line content lines as defined in iCalendar RFC5545 3.1, page 9
-     * 
-     * For example:
-     * string is
-     * BEGIN:VEVENT
-     * SUMMARY:test1
-     * DTSTART;TZID=Etc/GMT:20160306T080000Z
-     * DTEND;TZID=Etc/GMT:20160306T093000Z
-     * RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
-     * ORGANIZER;CN=David Bal;SENT-BY="mailto:ddbal1@yahoo.com":mailto:ddbal1@yaho
-     *  o.com
-     * UID:fc3577e0-8155-4fa2-a085-a15bdc50a5b4
-     * DTSTAMP:20160313T053147Z
-     * END:VEVENT
-     *  
-     *  results in list
-     *  Element 1, BEGIN:VEVENT
-     *  Element 2, SUMMARY:test1
-     *  Element 3, DTSTART;TZID=Etc/GMT:20160306T080000Z
-     *  Element 4, DTEND;TZID=Etc/GMT:20160306T093000Z
-     *  Element 5, RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
-     *  Element 5, ORGANIZER;CN=David Bal;SENT-BY="mailto:ddbal1@yahoo.com":mailto:ddbal1@yahoo.com
-     *  Element 6, UID:fc3577e0-8155-4fa2-a085-a15bdc50a5b4
-     *  Element 7, DTSTAMP:20160313T053147Z
-     *  Element 8, END:VEVENT
-     *  
-     *  Note: the list of Pair<String,String> is used instead of a Map<String,String> because some properties
-     *  can appear more than once resulting in duplicate key values.
-     *  
-     * @param componentString
-     * @return
-     */
-//    // TODO - MOVE THIS TO A UTILITY CLASS
-////    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
-////    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', 'n'};
-//    @Deprecated
-//    private static List<String> unfoldLines(String componentString)
-//    {
-//        List<String> propertyLines = new ArrayList<>();
-//        String storedLine = "";
-//        Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
-//        while (lineIterator.hasNext())
-//        {
-//            // unwrap lines by storing previous line, adding to it if next is a continuation
-//            // when no more continuation lines are found loop back and start with last storedLine
-//            String startLine;
-//            if (storedLine.isEmpty())
-//            {
-//                startLine = lineIterator.next();
-//            } else
-//            {
-//                startLine = storedLine;
-//                storedLine = "";
-//            }
-//            StringBuilder builder = new StringBuilder(startLine);
-//            while (lineIterator.hasNext())
-//            {
-//                String anotherLine = lineIterator.next();
-//                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-//                { // unwrap anotherLine into line
-//                    builder.append(anotherLine.substring(1, anotherLine.length()));
-//                } else
-//                {
-//                    storedLine = anotherLine; // save for next iteration
-//                    break;  // no continuation line, exit while loop
-//                }
-//            }
-//            String line = builder.toString();
-//            propertyLines.add(line);
-//        }
-////        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list (so I can get its Temporal type)
-//        return propertyLines;
-//    }
-//    
-//    /**
-//     * Folds lines at character 75 into multiple lines.  Follows rules in
-//     * RFC 5545, 3.1 Content Lines, page 9.
-//     * A space is added to the first character of the subsequent lines.
-//     * doesn't break lines at escape characters
-//     * 
-//     * @param line - content line
-//     * @return - folded content line
-//     */
-//    @Deprecated
-//    private static CharSequence foldLine(CharSequence line)
-//    {
-//        // first position is 0
-//        final int maxLineLength = 75;
-//        if (line.length() <= maxLineLength)
-//        {
-//            return line;
-//        } else
-//        {
-//            StringBuilder builder = new StringBuilder(line.length()+20);
-//            int leadingSpaceAdjustment = 0;
-//            String leadingSpace = "";
-//            int startIndex = 0;
-//            while (startIndex < line.length())
-//            {
-//                int endIndex = Math.min(startIndex+maxLineLength-leadingSpaceAdjustment, line.length());
-//                if (endIndex < line.length())
-//                {
-//                    // ensure escaped characters are not broken up
-//                    if (line.charAt(endIndex-1) == '\\')
-//                    {
-//                        endIndex = endIndex-1; 
-//                    }
-//                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex) + System.lineSeparator());
-//                } else
-//                {                    
-//                    builder.append(leadingSpace + line.subSequence(startIndex, endIndex));
-//                }
-//                startIndex = endIndex;
-//                leadingSpaceAdjustment = 1;
-//                leadingSpace = " ";
-//            }
-//            return builder;
-//        }
-//    }
-    
+    @Deprecated // may not use - delete if that is the case
     final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
     {
-        int endIndex = ComponentElement.DATE_TIME_START.toString().length();
+        int endIndex = PropertyType.DATE_TIME_START.toString().length();
         String myString = p1.substring(0, endIndex);
-        return (myString.equals(ComponentElement.DATE_TIME_START.toString())) ? -1 : 1;
+        return (myString.equals(PropertyType.DATE_TIME_START.toString())) ? -1 : 1;
     };
 }

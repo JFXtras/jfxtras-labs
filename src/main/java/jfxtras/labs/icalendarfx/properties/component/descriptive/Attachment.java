@@ -11,7 +11,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.Encoding;
 import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
-import jfxtras.labs.icalendarfx.parameters.PropertyElement;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.PropertyAttachment;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
@@ -50,7 +50,7 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
    {
        if (formatType == null)
        {
-           formatType = new SimpleObjectProperty<>(this, PropertyElement.FORMAT_TYPE.toString());
+           formatType = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
        }
        return formatType;
    }
@@ -84,7 +84,7 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
    {
        if (encoding == null)
        {
-           encoding = new SimpleObjectProperty<>(this, PropertyElement.INLINE_ENCODING.toString());
+           encoding = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
        }
        return encoding;
    }

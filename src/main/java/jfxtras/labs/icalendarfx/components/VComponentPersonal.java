@@ -7,7 +7,7 @@ import java.util.Arrays;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
@@ -127,7 +127,7 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     default T withRequestStatus(ObservableList<RequestStatus> requestStatus) { setRequestStatus(requestStatus); return (T) this; }
     default T withRequestStatus(String...requestStatus)
     {
-        Arrays.stream(requestStatus).forEach(c -> ComponentElement.REQUEST_STATUS.parse(this, c));
+        Arrays.stream(requestStatus).forEach(c -> PropertyType.REQUEST_STATUS.parse(this, c));
         return (T) this;
     }
     default T withRequestStatus(RequestStatus...requestStatus)

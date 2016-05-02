@@ -4,7 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -32,7 +32,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (description == null)
         {
-            description = new SimpleObjectProperty<>(this, ComponentElement.DESCRIPTION.toString());
+            description = new SimpleObjectProperty<>(this, PropertyType.DESCRIPTION.toString());
         }
         return description;
     }
@@ -50,7 +50,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (duration == null)
         {
-            duration = new SimpleObjectProperty<>(this, ComponentElement.DURATION.toString());
+            duration = new SimpleObjectProperty<>(this, PropertyType.DURATION.toString());
         }
         return duration;
     }
@@ -72,7 +72,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (geographicPosition == null)
         {
-            geographicPosition = new SimpleObjectProperty<>(this, ComponentElement.GEOGRAPHIC_POSITION.toString());
+            geographicPosition = new SimpleObjectProperty<>(this, PropertyType.GEOGRAPHIC_POSITION.toString());
         }
         return geographicPosition;
     }
@@ -90,7 +90,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (location == null)
         {
-            location = new SimpleObjectProperty<>(this, ComponentElement.LOCATION.toString());
+            location = new SimpleObjectProperty<>(this, PropertyType.LOCATION.toString());
         }
         return location;
     }
@@ -109,7 +109,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (priority == null)
         {
-            priority = new SimpleObjectProperty<>(this, ComponentElement.PRIORITY.toString());
+            priority = new SimpleObjectProperty<>(this, PropertyType.PRIORITY.toString());
         }
         return priority;
     }

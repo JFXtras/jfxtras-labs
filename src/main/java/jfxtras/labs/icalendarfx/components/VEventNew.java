@@ -5,7 +5,7 @@ import java.time.temporal.Temporal;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
@@ -99,7 +99,7 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
     {
         if (dateTimeEnd == null)
         {
-            dateTimeEnd = new SimpleObjectProperty<>(this, ComponentElement.DATE_TIME_END.toString());
+            dateTimeEnd = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_END.toString());
             dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
         return dateTimeEnd;
@@ -149,7 +149,7 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
     {
         if (timeTransparency == null)
         {
-            timeTransparency = new SimpleObjectProperty<>(this, ComponentElement.TIME_TRANSPARENCY.toString());
+            timeTransparency = new SimpleObjectProperty<>(this, PropertyType.TIME_TRANSPARENCY.toString());
         }
         return timeTransparency;
     }
@@ -160,7 +160,7 @@ public class VEventNew extends VComponentLocatableBase<VEventNew> implements VCo
     public void setTimeTransparency(TimeTransparencyType timeTransparency) { setTimeTransparency(new TimeTransparency(timeTransparency)); }
     public VEventNew withTimeTransparency(TimeTransparency timeTransparency) { setTimeTransparency(timeTransparency); return this; }
     public VEventNew withTimeTransparency(TimeTransparencyType timeTransparencyType) { setTimeTransparency(timeTransparencyType); return this; }
-    public VEventNew withTimeTransparency(String timeTransparency) { ComponentElement.TIME_TRANSPARENCY.parse(this, timeTransparency); return this; }
+    public VEventNew withTimeTransparency(String timeTransparency) { PropertyType.TIME_TRANSPARENCY.parse(this, timeTransparency); return this; }
     
     /*
      * CONSTRUCTORS

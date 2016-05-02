@@ -15,7 +15,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.ComponentElement;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecurrence;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
@@ -57,7 +57,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     }
     default T withRecurrences(String...recurrences)
     {
-        Arrays.stream(recurrences).forEach(s -> ComponentElement.RECURRENCE_DATE_TIMES.parse(this, s));   
+        Arrays.stream(recurrences).forEach(s -> PropertyType.RECURRENCE_DATE_TIMES.parse(this, s));   
         return (T) this;
     }
     default T withRecurrences(Temporal...recurrences)
