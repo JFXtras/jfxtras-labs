@@ -18,7 +18,7 @@ public enum RRuleEnum
 {
     FREQUENCY ("FREQ") { // FREQUENCY needs to be first
         @Override
-        public void setValue(RecurrenceRuleParameter rrule, String value)
+        public void setValue(RecurrenceRuleElement rrule, String value)
         {
             if (rrule.getFrequency() == null)
             {
@@ -30,27 +30,27 @@ public enum RRuleEnum
         }
 
         @Override
-        public String toParameterString(RecurrenceRuleParameter rrule)
+        public String toParameterString(RecurrenceRuleElement rrule)
         {
             return toString() + "=" + rrule.getFrequency().toString();
         }
 
         @Override
-        public void copyProperty(RecurrenceRuleParameter source, RecurrenceRuleParameter destination)
+        public void copyProperty(RecurrenceRuleElement source, RecurrenceRuleElement destination)
         {
             Frequency copiedFrequency = source.getFrequency().frequencyType().newInstance(source.getFrequency()); // copy frequency
             destination.setFrequency(copiedFrequency);
         }
 
         @Override
-        public boolean isPropertyEqual(RecurrenceRuleParameter r1, RecurrenceRuleParameter r2)
+        public boolean isPropertyEqual(RecurrenceRuleElement r1, RecurrenceRuleElement r2)
         {
             return r1.getFrequency().equals(r2.getFrequency());
         }
     },
     INTERVAL ("INTERVAL") { // TODO - SHOULD THIS GO UNDER FREQUENCY??? HOW? ITS THE ONLY PARAMETER THERE
         @Override
-        public void setValue(RecurrenceRuleParameter rrule, String value)
+        public void setValue(RecurrenceRuleElement rrule, String value)
         {
             if (rrule.getFrequency() != null)
             {
@@ -68,29 +68,29 @@ public enum RRuleEnum
         }
 
         @Override
-        public String toParameterString(RecurrenceRuleParameter rrule)
+        public String toParameterString(RecurrenceRuleElement rrule)
         {
             Integer interval = rrule.getFrequency().getInterval();
             return (interval > 1) ? toString() + "=" + interval.toString(): null; // 1 is default interval, therefore only output interval > 1
         }
 
         @Override
-        public void copyProperty(RecurrenceRuleParameter source, RecurrenceRuleParameter destination)
+        public void copyProperty(RecurrenceRuleElement source, RecurrenceRuleElement destination)
         {
             destination.getFrequency().setInterval(source.getFrequency().getInterval());
         }
 
         @Override
-        public boolean isPropertyEqual(RecurrenceRuleParameter r1, RecurrenceRuleParameter r2)
+        public boolean isPropertyEqual(RecurrenceRuleElement r1, RecurrenceRuleElement r2)
         {
             return r1.getFrequency().getInterval().equals(r2.getFrequency().getInterval());
         }
     },
     COUNT ("COUNT") {
         @Override
-        public void setValue(RecurrenceRuleParameter rrule, String value)
+        public void setValue(RecurrenceRuleElement rrule, String value)
         {
-            if (rrule.getCount() == RecurrenceRuleParameter.INITIAL_COUNT)
+            if (rrule.getCount() == RecurrenceRuleElement.INITIAL_COUNT)
             {
                 if (rrule.getUntil() == null)
                 {
@@ -106,30 +106,30 @@ public enum RRuleEnum
         }
 
         @Override
-        public String toParameterString(RecurrenceRuleParameter rrule)
+        public String toParameterString(RecurrenceRuleElement rrule)
         {
-            return (rrule.getCount() == RecurrenceRuleParameter.INITIAL_COUNT) ? null : toString() + "=" + rrule.getCount();
+            return (rrule.getCount() == RecurrenceRuleElement.INITIAL_COUNT) ? null : toString() + "=" + rrule.getCount();
         }
 
         @Override
-        public void copyProperty(RecurrenceRuleParameter source, RecurrenceRuleParameter destination)
+        public void copyProperty(RecurrenceRuleElement source, RecurrenceRuleElement destination)
         {
             destination.setCount(source.getCount());
         }
 
         @Override
-        public boolean isPropertyEqual(RecurrenceRuleParameter r1, RecurrenceRuleParameter r2)
+        public boolean isPropertyEqual(RecurrenceRuleElement r1, RecurrenceRuleElement r2)
         {
             return r1.getCount().equals(r2.getCount());
         }
     },
     UNTIL ("UNTIL") {
         @Override
-        public void setValue(RecurrenceRuleParameter rrule, String value)
+        public void setValue(RecurrenceRuleElement rrule, String value)
         {
             if (rrule.getUntil() == null)
             {
-                if (rrule.getCount() == RecurrenceRuleParameter.INITIAL_COUNT)
+                if (rrule.getCount() == RecurrenceRuleElement.INITIAL_COUNT)
                 {
 //                    System.out.println("until:" + value + " " + DateTimeUtilities.parse(value));
                     rrule.setUntil(DateTimeUtilities.parse(value));                    
@@ -144,13 +144,13 @@ public enum RRuleEnum
         }
 
         @Override
-        public String toParameterString(RecurrenceRuleParameter rrule)
+        public String toParameterString(RecurrenceRuleElement rrule)
         {
             return (rrule.getUntil() == null) ? null : toString() + "=" + DateTimeUtilities.temporalToString(rrule.getUntil());
         }
 
         @Override
-        public void copyProperty(RecurrenceRuleParameter source, RecurrenceRuleParameter destination)
+        public void copyProperty(RecurrenceRuleElement source, RecurrenceRuleElement destination)
         {
             if (source.getUntil() != null)
             {
@@ -159,7 +159,7 @@ public enum RRuleEnum
         }
 
         @Override
-        public boolean isPropertyEqual(RecurrenceRuleParameter r1, RecurrenceRuleParameter r2)
+        public boolean isPropertyEqual(RecurrenceRuleElement r1, RecurrenceRuleElement r2)
         {
             return (r1.getUntil() == null) ? (r2.getUntil() == null) : r1.getUntil().equals(r2.getUntil());
         }
@@ -167,27 +167,27 @@ public enum RRuleEnum
     WEEK_START ("WKST") { // TODO - THIS PROPERTY MAY BE BEST HANDLED BY LOCALE - NOT PROCESSED NOW
         // TODO - SUPPOSE TO COME AFTER BYRULES
         @Override
-        public void setValue(RecurrenceRuleParameter rrule, String value)
+        public void setValue(RecurrenceRuleElement rrule, String value)
         {
             throw new RuntimeException("not supported");
         }
 
         @Override
-        public String toParameterString(RecurrenceRuleParameter rrule)
+        public String toParameterString(RecurrenceRuleElement rrule)
         {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public void copyProperty(RecurrenceRuleParameter source, RecurrenceRuleParameter destination)
+        public void copyProperty(RecurrenceRuleElement source, RecurrenceRuleElement destination)
         {
             // TODO Auto-generated method stub
             
         }
 
         @Override
-        public boolean isPropertyEqual(RecurrenceRuleParameter r1, RecurrenceRuleParameter r2)
+        public boolean isPropertyEqual(RecurrenceRuleElement r1, RecurrenceRuleElement r2)
         {
             // TODO Auto-generated method stub
             return true;
@@ -227,15 +227,15 @@ public enum RRuleEnum
 //    public int sortOrder() { return sortOrder; }
     
     /** sets parameter value */
-    public abstract void setValue(RecurrenceRuleParameter rrule, String value);
+    public abstract void setValue(RecurrenceRuleElement rrule, String value);
     
     /** makes content line (RFC 5545 3.1) from a RRuleProperty property  */
-    public abstract String toParameterString(RecurrenceRuleParameter rrule);
+    public abstract String toParameterString(RecurrenceRuleElement rrule);
     
     /** Copies property value from source to destination */
-    public abstract void copyProperty(RecurrenceRuleParameter source, RecurrenceRuleParameter destination);
+    public abstract void copyProperty(RecurrenceRuleElement source, RecurrenceRuleElement destination);
     
     /** Checks is corresponding property is equal between r1 and r2 */
-    public abstract boolean isPropertyEqual(RecurrenceRuleParameter r1, RecurrenceRuleParameter r2);
+    public abstract boolean isPropertyEqual(RecurrenceRuleElement r1, RecurrenceRuleElement r2);
         
 }

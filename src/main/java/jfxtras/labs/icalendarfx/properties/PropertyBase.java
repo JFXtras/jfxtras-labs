@@ -441,7 +441,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
 
         // save property value        
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-        System.out.println("propertyValueString:" + getPropertyValueString());
+//        System.out.println("propertyValueString:" + getPropertyValueString());
         T value = getConverter().fromString(getPropertyValueString());
 //        System.out.println("value class:" + value.getClass() + " " + isCustomConverter());
         if (value == null)
@@ -509,7 +509,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         {
             builder.append(propertyName);
         }
-        System.out.println("builder1:" + builder.toString());
+
         // PARAMETERS
         Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
         parameters().forEach(p -> parameterNameContentMap.put(p, p.toContent()));
@@ -532,10 +532,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
         // add non-standard parameters - sort order doesn't apply to non-standard parameters
         otherParameters().stream().forEach(p -> builder.append(";" + p));
         // add property value
-        System.out.println("builder2:" + builder.toString());
         String stringValue = valueContent();
         builder.append(":" + stringValue);
-        System.out.println("builder3:" + builder.toString());
 
         return builder.toString();
     }

@@ -33,7 +33,7 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
@@ -90,31 +90,31 @@ public class RepeatableTest //extends Application
                 new VEventNew()
                     .withRecurrences("RDATE;VALUE=DATE:20160504,20160508,20160509")
                     .withRecurrences(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
-                    .withRecurrenceRule(new RecurrenceRuleParameter()
+                    .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(4))),
                 new VTodo()
                     .withRecurrences("RDATE;VALUE=DATE:20160504,20160508,20160509")
                     .withRecurrences(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
-                    .withRecurrenceRule(new RecurrenceRuleParameter()
+                    .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(4))),
                 new VJournal()
                     .withRecurrences("RDATE;VALUE=DATE:20160504,20160508,20160509")
                     .withRecurrences(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
-                    .withRecurrenceRule(new RecurrenceRuleParameter()
+                    .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(4))),
                 new DaylightSavingTime()
                     .withRecurrences("RDATE;VALUE=DATE:20160504,20160508,20160509")
                     .withRecurrences(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
-                    .withRecurrenceRule(new RecurrenceRuleParameter()
+                    .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(4))),
                 new StandardTime()
                     .withRecurrences("RDATE;VALUE=DATE:20160504,20160508,20160509")
                     .withRecurrences(LocalDate.of(2016, 4, 15), LocalDate.of(2016, 4, 16), LocalDate.of(2016, 4, 17))
-                    .withRecurrenceRule(new RecurrenceRuleParameter()
+                    .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(4)))
                 );
@@ -212,7 +212,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()));
         List<Temporal> madeDates = e
                 .recurrenceStreamer().stream(e.getDateTimeStart().getValue())
@@ -236,7 +236,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByDay(DayOfWeek.FRIDAY))));
         List<Temporal> madeDates = e
@@ -261,7 +261,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByDay(DayOfWeek.THURSDAY)
                                            , new ByMonth(Month.JUNE, Month.JULY, Month.AUGUST))));
@@ -302,7 +302,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByMonth(Month.JANUARY, Month.FEBRUARY))));
         List<Temporal> madeDates = e
@@ -327,7 +327,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByMonth(Month.NOVEMBER)
                                            , new ByMonthDay(10))));
@@ -355,7 +355,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withInterval(4)
                                 .withByRules(new ByMonth(Month.NOVEMBER)
@@ -384,7 +384,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 20)))));
         List<Temporal> madeDates = e
@@ -409,7 +409,7 @@ public class RepeatableTest //extends Application
 //        Locale.setDefault(Locale.FRANCE); // has Monday as first day of week system.  US is Sunday which causes an error.
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByWeekNumber(20).withWeekStart(DayOfWeek.MONDAY)
                                            , new ByDay(DayOfWeek.MONDAY))));
@@ -436,7 +436,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()));
         List<Temporal> madeDates = e
                 .recurrenceStreamer().stream(e.getDateTimeStart().getValue())
@@ -460,7 +460,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByMonthDay()
                                         .withDaysOfMonth(-2)))); // repeats 2nd to last day of month
@@ -486,7 +486,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
         List<Temporal> madeDates = e
@@ -516,7 +516,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.SATURDAY, -1))))); // last Saturday in month
         List<Temporal> madeDates = e
@@ -541,7 +541,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(1997, 6, 13, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(DayOfWeek.FRIDAY), new ByMonthDay(13))));
         List<Temporal> madeDates = e
@@ -559,7 +559,7 @@ public class RepeatableTest //extends Application
         assertEquals(expectedDates, madeDates);
         String expectedContent = "RRULE:FREQ=MONTHLY;BYMONTHDAY=13;BYDAY=FR";
         assertEquals(expectedContent, e.getRecurrenceRule().toContent());
-        RecurrenceRuleParameter r = new RecurrenceRuleParameter("FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13");
+        RecurrenceRuleElement r = new RecurrenceRuleElement("FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13");
         assertEquals(r, e.getRecurrenceRule().getValue()); // verify order of parameters doesn't matter
     }
     
@@ -569,7 +569,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 3, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByMonth(Month.NOVEMBER, Month.DECEMBER)
                                            , new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -603,7 +603,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()));
         List<Temporal> madeDates = e
                 .recurrenceStreamer().stream(e.getDateTimeStart().getValue())
@@ -627,7 +627,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -658,7 +658,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
             .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0))
-            .withRecurrenceRule(new RecurrenceRuleParameter()
+            .withRecurrenceRule(new RecurrenceRuleElement()
                     .withFrequency(new Weekly()
                             .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
         List<Temporal> madeDates = e
@@ -683,7 +683,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
@@ -714,7 +714,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
             .withDateTimeStart(LocalDateTime.of(2016, 1, 3, 5, 0))
-            .withRecurrenceRule(new RecurrenceRuleParameter()
+            .withRecurrenceRule(new RecurrenceRuleElement()
                     .withFrequency(new Weekly()
                             .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.WEDNESDAY)))); 
         List<Temporal> madeDates = e
@@ -743,7 +743,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
         List<Temporal> madeDates = e
@@ -773,7 +773,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()));
         List<Temporal> madeDates = e
                 .recurrenceStreamer().stream(e.getDateTimeStart().getValue())
@@ -797,7 +797,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withCount(6)
                         .withFrequency(new Daily()
                                 .withInterval(3)));
@@ -823,7 +823,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(3)
                                 .withByRules(new ByMonthDay()
@@ -855,7 +855,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(2)
                                 .withByRules(new ByMonthDay(9))));
@@ -882,7 +882,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.FRIDAY))));
@@ -908,7 +908,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
                                 .withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Daily()
@@ -942,7 +942,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneOffset.systemDefault())
                                 .withZoneSameInstant(ZoneId.of("Z"))) // LocalDateTime adjusted to system default zone offset
                         .withFrequency(new Daily()
@@ -976,7 +976,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 0), ZoneId.of("Japan")))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 1, 0), ZoneId.of("Z")))
                         .withFrequency(new Daily()));
         List<Temporal> madeDates = e
@@ -1005,7 +1005,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("Z")))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0), ZoneId.of("Z")))
                         .withFrequency(new Daily()
                                 .withInterval(2)));
@@ -1068,7 +1068,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -1092,7 +1092,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -1152,7 +1152,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDate.of(2015, 11, 9))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withCount(6)
                         .withFrequency(new Daily()
                                 .withInterval(3)));
@@ -1175,7 +1175,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDate.of(2015, 11, 9))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(LocalDate.of(2015, 11, 24))
                         .withFrequency(new Daily()
                                 .withInterval(3)));
@@ -1198,7 +1198,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()));
         e.setDateTimeStart(new DateTimeStart<>(LocalDate.of(2015, 11, 9))); // change to whole-day
         {
@@ -1241,7 +1241,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()));
 
         { // initialize stream
@@ -1281,7 +1281,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()));        
         { // initialize stream
             List<Temporal> madeDates = e
@@ -1297,7 +1297,7 @@ public class RepeatableTest //extends Application
         }
 
         // Change RRule
-        e.setRecurrenceRule(new RecurrenceRuleParameter()
+        e.setRecurrenceRule(new RecurrenceRuleElement()
                 .withFrequency(new Weekly()
                         .withInterval(2)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -1333,7 +1333,7 @@ public class RepeatableTest //extends Application
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
         e.recurrenceStreamer().stream(e.getDateTimeStart().getValue()).limit(100).collect(Collectors.toList()); // set cache
@@ -1341,7 +1341,7 @@ public class RepeatableTest //extends Application
 
         VEventNew e2 = new VEventNew() // without cache
                 .withDateTimeStart(LocalDate.of(2015, 11, 9))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withCount(6)
                         .withFrequency(new Daily()
                                 .withInterval(3)));

@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.DayOfWeek;
 import java.time.Month;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -9,7 +10,8 @@ import java.util.TreeMap;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -23,7 +25,7 @@ public class RecurrenceRuleTest
         RecurrenceRule madeProperty = RecurrenceRule.parse(content);
         assertEquals(content, madeProperty.toContent());
         RecurrenceRule expectedProperty = new RecurrenceRule(
-                new RecurrenceRuleParameter()
+                new RecurrenceRuleElement()
                 .withFrequency(new Yearly()
                         .withByRules(new ByMonth(Month.JANUARY, Month.FEBRUARY))));
         assertEquals(expectedProperty, madeProperty);
@@ -45,5 +47,20 @@ public class RecurrenceRuleTest
         expectedMap2.put("UNTIL", "20160417T235959Z");
         expectedMap2.put("INTERVAL", "2");
         assertEquals(expectedMap2, valueMap2);
+    }
+    
+    @Test
+    public void canParseRecurrenceRule2()
+    {
+        String content = "RRULE:FREQ=YEARLY;UNTIL=19730429T070000Z;BYMONTH=4;BYDAY=-1SU";
+        RecurrenceRule madeProperty = RecurrenceRule.parse(content);
+        assertEquals(content, madeProperty.toContent());
+        RecurrenceRule expectedProperty = new RecurrenceRule(
+                new RecurrenceRuleElement()
+                    .withUntil("19730429T070000Z")
+                    .withFrequency(new Yearly()
+                            .withByRules(new ByMonth(Month.APRIL),
+                                    new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1)))));
+        assertEquals(expectedProperty, madeProperty);
     }
 }

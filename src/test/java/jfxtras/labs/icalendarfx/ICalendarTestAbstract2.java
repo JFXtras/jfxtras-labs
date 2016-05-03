@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
@@ -60,7 +60,7 @@ public abstract class ICalendarTestAbstract2
                 .withDuration(Duration.ofHours(1))
                 .withDescription("Yearly1 Description")
                 .withSummary("Yearly1 Summary")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()));
     }
 
@@ -69,7 +69,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByDay(DayOfWeek.FRIDAY))));
     }
@@ -82,7 +82,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByDay(DayOfWeek.THURSDAY)
                                            , new ByMonth(Month.JUNE, Month.JULY, Month.AUGUST))));
@@ -93,7 +93,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByMonth(Month.JANUARY, Month.FEBRUARY))));
 //        RRule rule = new RRule();
@@ -109,7 +109,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByMonth(Month.NOVEMBER)
                                            , new ByMonthDay(10))));
@@ -126,7 +126,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withInterval(4)
                                 .withByRules(new ByMonth(Month.NOVEMBER)
@@ -139,7 +139,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 20)))));
     }
@@ -149,7 +149,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Yearly()
                                 .withByRules(new ByWeekNumber(20).withWeekStart(DayOfWeek.MONDAY)
                                            , new ByDay(DayOfWeek.MONDAY))));
@@ -160,7 +160,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()));
     }
 
@@ -169,7 +169,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByMonthDay()
                                         .withDaysOfMonth(-2)))); // repeats 2nd to last day of month
@@ -180,7 +180,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
     }
@@ -190,7 +190,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.SATURDAY, -1))))); // last Saturday in month
     }
@@ -203,7 +203,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(1997, 9, 1, 8, 30), ZoneOffset.UTC))
                 .withDuration(Duration.ofHours(1))
                 .withUniqueIdentifier("19970901T083000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(DayOfWeek.FRIDAY), new ByMonthDay(13))));
     }
@@ -216,7 +216,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDuration(Duration.ofMinutes(90))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByMonth(Month.NOVEMBER, Month.DECEMBER)
                                            , new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -227,7 +227,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.MONDAY, 3)))));
     }
@@ -238,7 +238,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()));
     }
 
@@ -252,7 +252,7 @@ public abstract class ICalendarTestAbstract2
                 .withSummary("Weekly1 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
@@ -266,7 +266,7 @@ public abstract class ICalendarTestAbstract2
                 .withDuration(Duration.ofMinutes(45))
                 .withDescription("Weekly3 Description")
                 .withSummary("Weekly3 Summary")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))));
     }
@@ -286,7 +286,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeEnd(LocalDateTime.of(2016, 1, 3, 7, 0))
                 .withDescription("Weekly5 Description")
                 .withSummary("Weekly5 Summary")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.WEDNESDAY))));      
     }
@@ -299,7 +299,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
                 .withDescription("WeeklyZoned Description")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
                 .withSummary("WeeklyZoned Summary")
@@ -317,7 +317,7 @@ public abstract class ICalendarTestAbstract2
                 .withSummary("Daily1 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()));
     }
 
@@ -332,7 +332,7 @@ public abstract class ICalendarTestAbstract2
                 .withSummary("Daily2 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withCount(6)
                         .withFrequency(new Daily()
                                 .withInterval(3)));
@@ -346,7 +346,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withCount(10)
                         .withFrequency(new Daily()
                                 .withInterval(3)
@@ -359,7 +359,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(2)
                                 .withByRules(new ByMonthDay(9))));
@@ -370,7 +370,7 @@ public abstract class ICalendarTestAbstract2
     {
         return new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.FRIDAY))));
@@ -387,7 +387,7 @@ public abstract class ICalendarTestAbstract2
                 .withSummary("Daily6 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
                                 .withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Daily()
@@ -405,7 +405,7 @@ public abstract class ICalendarTestAbstract2
                 .withSummary("Daily6 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 29, 10, 0), ZoneOffset.systemDefault())
                                 .withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Daily()
@@ -422,7 +422,7 @@ public abstract class ICalendarTestAbstract2
                 .withSummary("DailyUTC Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0), ZoneOffset.UTC))
                         .withFrequency(new Daily()
                                 .withInterval(2)));
@@ -438,7 +438,7 @@ public abstract class ICalendarTestAbstract2
                 .withSummary("Japan Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 1, 0), ZoneOffset.UTC))
                         .withFrequency(new Daily()));
     }
@@ -511,7 +511,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withCount(6)
                         .withFrequency(new Daily()
                                 .withInterval(3)));
@@ -526,7 +526,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeEnd(LocalDate.of(2015, 11, 11))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withUntil(LocalDate.of(2015, 11, 24))
                         .withFrequency(new Daily()
                                 .withInterval(3)));
@@ -611,7 +611,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 8, 0), ZoneId.of("America/Los_Angeles")))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.TUESDAY, DayOfWeek.FRIDAY))))
                 .withSummary("test2")
@@ -631,7 +631,7 @@ public abstract class ICalendarTestAbstract2
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily())
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneOffset.UTC)))
                 .withSummary("test3")
@@ -648,7 +648,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 17), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 21, 36, 37), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 11, 0), ZoneId.of("America/Los_Angeles")))
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily())
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 2, 18, 18, 59, 59), ZoneOffset.UTC)))
                 .withSummary("test4")
@@ -670,7 +670,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 21, 36, 37), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 18, 11, 0), ZoneId.of("America/Los_Angeles")))
                 .withRelatedTo("mrrfvnj5acdcvn13273on9nrhs@google.com")
-                .withRecurrenceRule(new RecurrenceRuleParameter()
+                .withRecurrenceRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily())
                         .withCount(6))
                 .withSummary("test5")

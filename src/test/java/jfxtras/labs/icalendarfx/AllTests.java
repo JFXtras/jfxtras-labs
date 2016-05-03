@@ -90,6 +90,7 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
         StandardOrDaylightTimeTest.class,
        
        // property tests
+        GeneralPropertyTest.class,
         ActionTest.class,
         AttachmentTest.class,
         AttendeeTest.class,
@@ -106,7 +107,6 @@ import jfxtras.labs.icalendarfx.property.UniqueIdentifierTest;
         DurationTest.class,
         ExceptionsTest.class,
         FreeBusyTimeTest.class,
-        GeneralPropertyTest.class,
         IANATest.class,
         LocationTest.class,
         NonStandardTest.class,

@@ -102,12 +102,12 @@ public class ByDay extends ByRuleAbstract
     {
         this();
         List<ByDayPair> dayPairsList = new ArrayList<ByDayPair>();
-        Pattern p = Pattern.compile("([0-9]+)?([A-Z]{2})");
+        Pattern p = Pattern.compile("(-?[0-9]+)?([A-Z]{2})");
         Matcher m = p.matcher(dayPairs);
         while (m.find())
         {
             String token = m.group();
-            if (token.matches("^([0-9]+.*)")) // start with ordinal number
+            if (token.matches("^(-?[0-9]+.*)")) // start with ordinal number
             {
                 Matcher m2 = p.matcher(token);
                 if (m2.find())

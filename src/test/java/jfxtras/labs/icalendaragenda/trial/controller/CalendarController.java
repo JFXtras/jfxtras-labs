@@ -36,7 +36,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilitie
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Monthly;
@@ -150,7 +150,7 @@ public class CalendarController
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")))
                 .withDescription("WeeklyZoned Description")
-                .withRRule(new RecurrenceRuleParameter()
+                .withRRule(new RecurrenceRuleElement()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(15), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")).withZoneSameInstant(ZoneId.of("Z")))
                         .withFrequency(new Weekly()
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
@@ -164,7 +164,7 @@ public class CalendarController
             .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
             .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(7, 30)), ZoneId.of("America/Los_Angeles")))
             .withDescription("WeeklyZoned Description")
-            .withRRule(new RecurrenceRuleParameter()
+            .withRRule(new RecurrenceRuleElement()
                     .withFrequency(new Weekly()
                             .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
             .withSummary(Summary.parse("WeeklyZoned Infinite"))
@@ -179,7 +179,7 @@ public class CalendarController
                 .withDescription("LocalDate Description")
                 .withSummary(Summary.parse("LocalDate"))
                 .withUniqueIdentifier("20150110T080000-3@jfxtras.org")
-                .withRRule(new RecurrenceRuleParameter()
+                .withRRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()
                                 .withInterval(3)));
         agenda.vComponents().add(vEventLocalDate);        
@@ -192,7 +192,7 @@ public class CalendarController
                 .withDescription("LocalDateTime Daily Description")
                 .withSummary(Summary.parse("LocalDateTime Daily"))
                 .withUniqueIdentifier("20150110T080000-4@jfxtras.org")
-                .withRRule(new RecurrenceRuleParameter()
+                .withRRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily()));
         agenda.vComponents().add(vEventLocalDateTime); 
         
@@ -204,7 +204,7 @@ public class CalendarController
                 .withDescription("Monthly Description")
                 .withSummary(Summary.parse("Monthly"))
                 .withUniqueIdentifier("20150110T080000-5@jfxtras.org")
-                .withRRule(new RecurrenceRuleParameter()
+                .withRRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()));
         agenda.vComponents().add(vEventLocalDateTimeMonthly); 
         
@@ -218,7 +218,7 @@ public class CalendarController
                 .withDescription("Monthly Ordinal Description " + dayOfWeek + "#" + ordinalWeekNumber + " in month")
                 .withSummary(Summary.parse("Monthly Ordinal"))
                 .withUniqueIdentifier("20150110T080000-6@jfxtras.org")
-                .withRRule(new RecurrenceRuleParameter()
+                .withRRule(new RecurrenceRuleElement()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByDay(new ByDay.ByDayPair(dayOfWeek, ordinalWeekNumber)))));
         agenda.vComponents().add(vEventLocalDateMonthlyOrdinal);

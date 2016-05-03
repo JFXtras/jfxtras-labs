@@ -59,7 +59,7 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
@@ -430,7 +430,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             if (vComponent.getRRule() == null)
             {
                 // setup new default RRule
-                RecurrenceRuleParameter rRule = new RecurrenceRuleParameter()
+                RecurrenceRuleElement rRule = new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                         .withByRules(new ByDay(DayOfWeek.from(dateTimeStartInstanceNew)))); // default RRule
                 vComponent.setRRule(rRule);
@@ -834,7 +834,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 
      * This method is called only during setup */
-    private void setDayOfWeek(RecurrenceRuleParameter rRule)
+    private void setDayOfWeek(RecurrenceRuleElement rRule)
     {
         // Set day of week properties
         if (rRule.getFrequency().frequencyType() == FrequencyEnum.WEEKLY)
@@ -1010,7 +1010,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
      * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
      * @return Easy to read summary of repeat rule
      */
-    public static String makeSummary(RecurrenceRuleParameter rRule, Temporal startTemporal)
+    public static String makeSummary(RecurrenceRuleElement rRule, Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();
         if (rRule.getCount() == 1) return (Settings.resources == null) ? "Once" : Settings.resources.getString("rrule.summary.once");
@@ -1093,7 +1093,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     
     private boolean isSupported(VComponent<?> vComponent)
     {
-        RecurrenceRuleParameter rRule = vComponent.getRRule();
+        RecurrenceRuleElement rRule = vComponent.getRRule();
         if (rRule == null)
         {
             return true;

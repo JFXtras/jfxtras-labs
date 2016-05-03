@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecu
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
@@ -196,7 +196,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     default RecurrenceRule getRecurrenceRule() { return recurrenceRuleProperty().get(); }
     ObjectProperty<RecurrenceRule> recurrenceRuleProperty();
     default void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
-    default void setRecurrenceRule(RecurrenceRuleParameter rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
+    default void setRecurrenceRule(RecurrenceRuleElement rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
     default void setRecurrenceRule(String rrule) { setRecurrenceRule(RecurrenceRule.parse(rrule)); }
     default T withRecurrenceRule(String rrule)
     {
@@ -220,7 +220,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
-    default T withRecurrenceRule(RecurrenceRuleParameter rrule)
+    default T withRecurrenceRule(RecurrenceRuleElement rrule)
     {
         if (getRecurrenceRule() == null)
         {

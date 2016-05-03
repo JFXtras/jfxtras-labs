@@ -58,7 +58,8 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see RecurrenceRule
  *
  */
-public class RecurrenceRuleParameter
+// TODO - PRESERVE ORDER OF PARAMETERS FROM PARSED STRING
+public class RecurrenceRuleElement
 {            
     /** 
      * FREQ rule as defined in RFC 5545 iCalendar 3.3.10 p37 (i.e. Daily, Weekly, Monthly, etc.) 
@@ -67,7 +68,7 @@ public class RecurrenceRuleParameter
     private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, "FREQ");
     public Frequency getFrequency() { return frequency.get(); }
     public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
-    public RecurrenceRuleParameter withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
+    public RecurrenceRuleElement withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
     
     /**
      * COUNT: (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends
@@ -100,7 +101,7 @@ public class RecurrenceRuleParameter
         }
         else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
     }
-    public RecurrenceRuleParameter withCount(int count) { setCount(count); return this; }
+    public RecurrenceRuleElement withCount(int count) { setCount(count); return this; }
 
     /**
      * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
@@ -134,7 +135,8 @@ public class RecurrenceRuleParameter
             }
         } else throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
     }
-    public RecurrenceRuleParameter withUntil(Temporal until) { setUntil(until); return this; }
+    public RecurrenceRuleElement withUntil(Temporal until) { setUntil(until); return this; }
+    public RecurrenceRuleElement withUntil(String until) { setUntil(DateTimeUtilities.temporalFromString(until)); return this; }
     
     /**
      * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
@@ -146,16 +148,16 @@ public class RecurrenceRuleParameter
     public Set<VComponent<?>> recurrences() { return recurrences; }
     private Set<VComponent<?>> recurrences = new HashSet<>();
 //    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
-    public RecurrenceRuleParameter withRecurrences(VComponent<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
+    public RecurrenceRuleElement withRecurrences(VComponent<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
     /*
      * CONSTRUCTORS
      */
     
-    public RecurrenceRuleParameter() { }
+    public RecurrenceRuleElement() { }
 
     // construct new object by parsing property line
-    public RecurrenceRuleParameter(String propertyString)
+    public RecurrenceRuleElement(String propertyString)
     {
 //        System.out.println("recur:" + propertyString);
 //        String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
@@ -168,23 +170,24 @@ public class RecurrenceRuleParameter
                 .forEach(e ->
                 {
                     // check parameter to see if its in RRuleParameter enum
-                    RRuleEnum rRuleParameter = RRuleEnum.propertyFromName(e.getKey());
-                    if (rRuleParameter != null)
+                    // TODO - PUT ALL RRULE PARAMETERS IN ONE ENUM?
+                    RRuleEnum rRuleType = RRuleEnum.propertyFromName(e.getKey());
+                    if (rRuleType != null)
                     {
-                        rRuleParameter.setValue(this, e.getValue());
+                        rRuleType.setValue(this, e.getValue());
                     } else
                     { // if null try to match ByRuleParameter enum
-                        ByRuleEnum byRuleParameter = ByRuleEnum.enumFromName(e.getKey());
-                        if (byRuleParameter != null)
+                        ByRuleEnum byRuleType = ByRuleEnum.enumFromName(e.getKey());
+                        if (byRuleType != null)
                         {
-                            byRuleParameter.setValue(getFrequency(), e.getValue());
+                            byRuleType.setValue(getFrequency(), e.getValue());
                         }
                     }
                 });
     }
 
     // Copy constructor
-    public RecurrenceRuleParameter(RecurrenceRuleParameter source)
+    public RecurrenceRuleElement(RecurrenceRuleElement source)
     {
         Arrays.stream(RRuleEnum.values())
                 .forEach(p -> p.copyProperty(source, this));
@@ -249,7 +252,7 @@ public class RecurrenceRuleParameter
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        RecurrenceRuleParameter testObj = (RecurrenceRuleParameter) obj;
+        RecurrenceRuleElement testObj = (RecurrenceRuleElement) obj;
 
         boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
 //                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))

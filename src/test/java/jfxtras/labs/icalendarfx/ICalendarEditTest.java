@@ -25,7 +25,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.mocks.InstanceMock;
 import jfxtras.labs.icalendarfx.mocks.VEventMock;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleParameter;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
@@ -133,7 +133,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventMock vEvent0 = (VEventMock) vComponents.get(0);
         VEventMock vEvent1 = (VEventMock) vComponents.get(1);
         VEventMock expectedVEvent0 = getDaily2()
-                .withRRule(new RecurrenceRuleParameter()
+                .withRRule(new RecurrenceRuleElement()
                         .withCount(6)
                         .withFrequency(new Daily().withInterval(3))
                         .withRecurrences(vEvent1));
@@ -196,7 +196,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventMock vEvent0 = (VEventMock) vComponents.get(0);
         VEventMock vEvent1 = (VEventMock) vComponents.get(1);
         VEventMock expectedVEvent0 = getDaily2()
-                .withRRule(new RecurrenceRuleParameter()
+                .withRRule(new RecurrenceRuleElement()
                         .withCount(6)
                         .withFrequency(new Daily().withInterval(3))
                         .withRecurrences(vEvent1));
@@ -261,7 +261,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventMock vEvent0 = (VEventMock) vComponents.get(0);
         VEventMock vEvent1 = (VEventMock) vComponents.get(1);
         VEventMock expectedVEvent0 = getDaily1()
-                .withRRule(new RecurrenceRuleParameter()
+                .withRRule(new RecurrenceRuleElement()
                         .withFrequency(new Daily())
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 16, 10, 0), ZoneId.systemDefault())
                                 .withZoneSameInstant(ZoneId.of("Z"))));
@@ -596,7 +596,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventMock vEventOriginal = new VEventMock(vEvent);
         
         // apply changes
-        vEvent.setRRule(new RecurrenceRuleParameter()
+        vEvent.setRRule(new RecurrenceRuleElement()
                 .withFrequency(new Weekly()
                         .withInterval(2)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.FRIDAY)))); // remove WEDNESDAY
@@ -626,7 +626,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
         VEventMock expectedVEvent = getWeekly2()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 13, 10, 0))
                 .withSequence(1)
-                .withRRule(new RecurrenceRuleParameter()
+                .withRRule(new RecurrenceRuleElement()
                         .withFrequency(new Weekly()
                                 .withInterval(2)
                                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.FRIDAY))));

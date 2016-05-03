@@ -279,8 +279,8 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     public ObservableList<StandardOrDaylight<?>> getStandardOrDaylight() { return standardOrDaylight; }
     private ObservableList<StandardOrDaylight<?>> standardOrDaylight;
     public void setStandardOrDaylight(ObservableList<StandardOrDaylight<?>> standardOrDaylight) { this.standardOrDaylight = standardOrDaylight; }
-    public VTimeZone withVAlarms(ObservableList<StandardOrDaylight<?>> standardOrDaylight) { setStandardOrDaylight(standardOrDaylight); return this; }
-    public VTimeZone withVAlarms(StandardOrDaylight<?>...standardOrDaylight)
+    public VTimeZone withStandardOrDaylight(ObservableList<StandardOrDaylight<?>> standardOrDaylight) { setStandardOrDaylight(standardOrDaylight); return this; }
+    public VTimeZone withStandardOrDaylight(StandardOrDaylight<?>...standardOrDaylight)
     {
         if (getStandardOrDaylight() == null)
         {
