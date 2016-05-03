@@ -60,6 +60,8 @@ public abstract class VComponentDescribableBase<T> extends VComponentBase<T> imp
         }
         return summary;
     }
+    @Override
+    public Summary getSummary() { return (summary == null) ? null : summaryProperty().get(); }
     private ObjectProperty<Summary> summary;
     
     /*

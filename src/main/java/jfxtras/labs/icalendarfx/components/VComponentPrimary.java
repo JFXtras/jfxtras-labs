@@ -62,7 +62,6 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
      * start date/times of the repeating events.  Can be either type LocalDate or LocalDateTime
      */
     ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty();
-//    default DateTimeStart<? extends Temporal> getDateTimeStart() { return dateTimeStartProperty().get(); }
     DateTimeStart<? extends Temporal> getDateTimeStart();
     default void setDateTimeStart(String dtStart) { setDateTimeStart(DateTimeStart.parse(dtStart)); }
     default void setDateTimeStart(DateTimeStart<? extends Temporal> dtStart) { dateTimeStartProperty().set(dtStart); }

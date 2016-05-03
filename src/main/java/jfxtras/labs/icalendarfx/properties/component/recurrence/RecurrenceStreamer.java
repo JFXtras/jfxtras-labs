@@ -17,7 +17,7 @@ import java.util.stream.StreamSupport;
 
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
@@ -36,7 +36,7 @@ public class RecurrenceStreamer
     private int skipCounter = 0; // counter that increments up to CACHE_SKIP, indicates time to record a value, then resets to 0
     private Temporal[] temporalCache; // the start date or date/time cache
     private Temporal dateTimeStartLast; // last dateTimeStart, when changes indicates clearing the cache is necessary
-    private RecurrenceRuleElement rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
+    private RecurrenceRule2 rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
     private int cacheStart = 0; // start index where cache values are stored (starts in middle)
     private int cacheEnd = 0; // end index where cache values are stored
     private VComponentRepeatable<?> component; // the VComponent
@@ -112,7 +112,7 @@ public class RecurrenceStreamer
     public Stream<Temporal> stream(Temporal start)
     {
         final Temporal dateTimeStart;
-        final RecurrenceRuleElement recurrenceRule;
+        final RecurrenceRule2 recurrenceRule;
         
         dateTimeStart = component.getDateTimeStart().getValue();
 

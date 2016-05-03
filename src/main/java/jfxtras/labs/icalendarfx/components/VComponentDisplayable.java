@@ -78,7 +78,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * CLASS:PUBLIC
      */
     ObjectProperty<Classification> classificationProperty();
-    default Classification getClassification() { return classificationProperty().get(); }
+    Classification getClassification();
     default void setClassification(String classification) { setClassification(Classification.parse(classification)); }
     default void setClassification(Classification classification) { classificationProperty().set(classification); }
     default void setClassification(ClassificationType classification) { setClassification(new Classification(classification)); }
@@ -159,7 +159,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * CREATED:19960329T133000Z
      */
     ObjectProperty<DateTimeCreated> dateTimeCreatedProperty();
-    default DateTimeCreated getDateTimeCreated() { return dateTimeCreatedProperty().get(); }
+    DateTimeCreated getDateTimeCreated();
     default void setDateTimeCreated(String dtCreated) { setDateTimeCreated(DateTimeCreated.parse(dtCreated)); }
     default void setDateTimeCreated(DateTimeCreated dtCreated) { dateTimeCreatedProperty().set(dtCreated); }
     default void setDateTimeCreated(ZonedDateTime dtCreated) { setDateTimeCreated(new DateTimeCreated(dtCreated)); }
@@ -268,7 +268,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * RECURRENCE-ID;VALUE=DATE:19960401
      */
     ObjectProperty<RecurrenceId<? extends Temporal>> recurrenceIdProperty();
-    default RecurrenceId<? extends Temporal> getRecurrenceId() { return recurrenceIdProperty().get(); }
+    RecurrenceId<? extends Temporal> getRecurrenceId();
     default void setRecurrenceId(RecurrenceId<? extends Temporal> recurrenceId) { recurrenceIdProperty().set(recurrenceId); }
     default void setRecurrenceId(String recurrenceId) { setRecurrenceId(RecurrenceId.parse(recurrenceId)); }
     default void setRecurrenceId(Temporal temporal)
@@ -378,7 +378,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * SEQUENCE:2
      */
     ObjectProperty<Sequence> sequenceProperty();
-    default Sequence getSequence() { return sequenceProperty().get(); }
+    Sequence getSequence();
     default void setSequence(String sequence) { setSequence(Sequence.parse(sequence)); }
     default void setSequence(Integer sequence) { setSequence(new Sequence(sequence)); }
     default void setSequence(Sequence sequence) { sequenceProperty().set(sequence); }
@@ -426,7 +426,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * STATUS:TENTATIVE
      */
     ObjectProperty<Status> statusProperty();
-    default Status getStatus() { return statusProperty().get(); }
+    Status getStatus();
     default void setStatus(String status) { setStatus(Status.parse(status)); }
     default void setStatus(Status status) { statusProperty().set(status); }
     default void setStatus(StatusType status) { setStatus(new Status(status)); }

@@ -11,7 +11,6 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyUtilities.FrequencyEnum;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** Interface for frequency rule that produces a stream of LocalDateTime start times for repeatable events 
@@ -62,10 +61,10 @@ public interface Frequency {
      * @param start - starting point of stream (MUST be a valid occurrence date/time)
      * @return
      */
-    Stream<Temporal> stream(Temporal start);
+    Stream<Temporal> streamRecurrences(Temporal start);
 
     /** Which of the enum type FrenquencyType the implementing class represents */
-    FrequencyEnum frequencyType();
+    FrequencyType frequencyType();
         
     /** Temporal adjuster every class implementing Frequency must provide that modifies frequency dates 
      * For example, Weekly class advances the dates by INTERVAL Number of weeks. */
@@ -137,7 +136,12 @@ public interface Frequency {
         
         }
         return builder.toString();
-    }    
+    }
+    static Frequency parse(String frequency)
+    {
+        return null; // TODO
+    }
+//    Frequency parse(String frequency);
 }
 
 

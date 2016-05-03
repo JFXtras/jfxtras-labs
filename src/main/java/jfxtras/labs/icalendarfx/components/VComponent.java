@@ -25,7 +25,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RDate;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
@@ -133,6 +133,7 @@ instances into one property internally.
  * 
  * @author David Bal
  * */
+@Deprecated
 public interface VComponent<I>
 {
     /**
@@ -286,9 +287,9 @@ public interface VComponent<I>
      * to-dos, journal entries, or time zone definitions
      * If component is not repeating the value is null.
      */
-    RecurrenceRuleElement getRRule();
-    ObjectProperty<RecurrenceRuleElement> rRuleProperty();
-    void setRRule(RecurrenceRuleElement rRule);
+    RecurrenceRule2 getRRule();
+    ObjectProperty<RecurrenceRule2> rRuleProperty();
+    void setRRule(RecurrenceRule2 rRule);
 
     /**
      *  SEQUENCE: RFC 5545 iCalendar 3.8.7.4. page 138
@@ -533,7 +534,7 @@ public interface VComponent<I>
                     }
                 }
             }
-            Temporal t1 = getRRule().getFrequency().stream(getDateTimeStart()).findFirst().get();
+            Temporal t1 = getRRule().getFrequency().streamRecurrences(getDateTimeStart()).findFirst().get();
             final Temporal first;
             if (getExDate() != null)
             {

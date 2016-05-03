@@ -61,6 +61,8 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         }
         return recurrenceRule;
     }
+    @Override
+    public RecurrenceRule getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
     private ObjectProperty<RecurrenceRule> recurrenceRule;
     
     /*

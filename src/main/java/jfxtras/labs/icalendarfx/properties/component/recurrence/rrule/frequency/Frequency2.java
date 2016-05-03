@@ -15,22 +15,70 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
 
-public abstract class FrequencyAbstract<T> implements Frequency {
+/**
+ * Contains the following Recurrence Rule elements:
+ * FREQUENCY
+ * INTERVAL
+ * BYxxx RULES
+ * 
+ * @author David Bal
+ * 
+ * @see FrequencyType
+ */
+public class Frequency2
+{
+    /**
+     * FREQUENCY
+     * FREQ
+     * RFC 5545 iCalendar 3.3.10 p40
+     * 
+     * The FREQ rule part identifies the type of recurrence rule.  This
+     * rule part MUST be specified in the recurrence rule.  Valid values
+     * include SECONDLY, to specify repeating events based on an interval
+     * of a second or more; MINUTELY, to specify repeating events based
+     * on an interval of a minute or more; HOURLY, to specify repeating
+     * events based on an interval of an hour or more; DAILY, to specify
+     * repeating events based on an interval of a day or more; WEEKLY, to
+     * specify repeating events based on an interval of a week or more;
+     * MONTHLY, to specify repeating events based on an interval of a
+     * month or more; and YEARLY, to specify repeating events based on an
+     * interval of a year or more.
+     * 
+     * Frequency value.  Possible values include:
+     *  <br>
+     * {@link FrequencyType#SECONDLY } <br>
+     * {@link FrequencyType#MINUTELY } <br>
+     * {@link FrequencyType#HOURLY } <br>
+     * {@link FrequencyType#DAILY } <br>
+     * {@link FrequencyType#WEEKLY } <br>
+     * {@link FrequencyType#MONTHLY } <br>
+     * {@link FrequencyType#YEARLY }
+     */
+    public ObjectProperty<FrequencyType> valueProperty() { return value; }
+    public FrequencyType getValue() { return value.get(); }
+    private ObjectProperty<FrequencyType> value = new SimpleObjectProperty<>(this, RecurrenceRuleElement.FREQUENCY.toString());
+    public void setValue(FrequencyType value) { valueProperty().set(value); }
+    public void setValue(String value) { setValue(FrequencyType.valueOf(value)); }
+    public Frequency2 withValue(FrequencyType value) { setValue(value); return this; }
+    public Frequency2 withValue(String value) { setValue(value); return this; }
     
+    /**
+     * INTERVAL
+     */
     /** INTERVAL: (RFC 5545 iCalendar 3.3.10, page 40) number of frequency periods to pass before new appointment */
-    @Override
     public IntegerProperty intervalProperty()
     {
         if (interval == null) interval = new SimpleIntegerProperty(this, "interval", _interval);
         return interval;
     }
     private IntegerProperty interval;
-    @Override public Integer getInterval() { return (interval == null) ? _interval : interval.getValue(); }
+    public Integer getInterval() { return (interval == null) ? _interval : interval.getValue(); }
     private int _interval = 1;
-    @Override public void setInterval(Integer i)
+    public void setInterval(Integer i)
     {
         if (i > 0)
         {
@@ -46,15 +94,22 @@ public abstract class FrequencyAbstract<T> implements Frequency {
             throw new IllegalArgumentException("INTERVAL can't be less than 1. (" + i + ")");
         }
     }
-    public T withInterval(int interval) { setInterval(interval); return (T) this; }
+    public Frequency2 withInterval(int interval) { setInterval(interval); return this; }
 
     /** BYxxx Rules 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * Each BYxxx rule can only occur once */
-    @Override public ObservableList<ByRule> byRules() { return byRules; }
+    public ObservableList<ByRule> byRules() { return byRules; }
     private final ObservableList<ByRule> byRules = FXCollections.observableArrayList();
-
-    @Override
+    public Frequency2 withByRules(ByRule...byRules)
+    {
+        for (ByRule myByRule : byRules)
+        {
+            byRules().add(myByRule);
+        }
+        return this;
+    }
+    
     public ByRule lookupByRule(ByRuleEnum byRuleType)
     {
         Optional<ByRule> rule = byRules()
@@ -79,17 +134,8 @@ public abstract class FrequencyAbstract<T> implements Frequency {
 //        Collections.sort(getByRules());
 //    }
 
-    /** Add varargs of ByRules to Frequency 
-     * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
-     * Each BYxxx rule can only occur once */
-    public T withByRules(ByRule...byRules)
-    {
-        for (ByRule myByRule : byRules)
-        {
-            byRules().add(myByRule);
-        }
-        return (T) this;
-    }
+
+
 
     /** Time unit of last rule applied.  It represents the time span to apply future changes to the output stream of date/times
      * For example:
@@ -110,15 +156,15 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     private ObjectProperty<ChronoUnit> chronoUnit = new SimpleObjectProperty<ChronoUnit>();
     public void setChronoUnit(ChronoUnit chronoUnit) { this.chronoUnit.set(chronoUnit); }
     
-    @Override
     public FrequencyType frequencyType() { return frequencyType; }
     final private FrequencyType frequencyType;
     
-    @Override
     public TemporalAdjuster adjuster() { return (temporal) -> temporal.plus(getInterval(), frequencyType.getChronoUnit()); }
     
-    // CONSTRUCTOR
-    public FrequencyAbstract(FrequencyType frequencyType)
+    /*
+     * CONSTRUCTORS
+     */
+    public Frequency2(FrequencyType frequencyType)
     {
         this.frequencyType = frequencyType;
         setChronoUnit(frequencyType.getChronoUnit());
@@ -150,13 +196,22 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     }
     
     // Copy constructor
-    public FrequencyAbstract(Frequency source)
+    public Frequency2(Frequency source)
     {
         this(source.frequencyType());
         source.byRules().stream().forEach(b -> byRules().add(b.byRuleType().newInstance(b))); // copy each ByRule
     }
-
-    @Override
+    
+    /** STREAM 
+     * Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
+     * Rules.
+     * Starts on startDateTime, which MUST be a valid occurrence date/time, but not necessarily the
+     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
+     * get to later dates in the stream.
+     * 
+     * @param start - starting point of stream (MUST be a valid occurrence date/time)
+     * @return
+     */
     public Stream<Temporal> streamRecurrences(Temporal start)
     {
         setChronoUnit(frequencyType.getChronoUnit()); // start with Frequency ChronoUnit when making a stream

@@ -84,7 +84,7 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      * ORGANIZER;CN=John Smith:mailto:jsmith@example.com
      */
     ObjectProperty<Organizer> organizerProperty();
-    default Organizer getOrganizer() { return organizerProperty().get(); }
+    Organizer getOrganizer();
     default void setOrganizer(Organizer organizer) { organizerProperty().set(organizer); }
     default void setOrganizer(String organizer) { setOrganizer(Organizer.parse(organizer)); }
     default T withOrganizer(String organizer)
@@ -123,7 +123,6 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      */
     ObservableList<RequestStatus> getRequestStatus();
     void setRequestStatus(ObservableList<RequestStatus> properties);
-    /** add comma separated requestStatus into separate comment objects */
     default T withRequestStatus(ObservableList<RequestStatus> requestStatus) { setRequestStatus(requestStatus); return (T) this; }
     default T withRequestStatus(String...requestStatus)
     {
@@ -188,7 +187,7 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      * URL:http://example.com/pub/calendars/jsmith/mytime.ics
      */
     ObjectProperty<UniformResourceLocator> uniformResourceLocatorProperty();
-    default UniformResourceLocator getUniformResourceLocator() { return uniformResourceLocatorProperty().get(); }
+    UniformResourceLocator getUniformResourceLocator();
     default void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
     default void setUniformResourceLocator(String url) { setUniformResourceLocator(UniformResourceLocator.parse(url)); };
     default void setUniformResourceLocator(URI url) { setUniformResourceLocator(new UniformResourceLocator(url)); };

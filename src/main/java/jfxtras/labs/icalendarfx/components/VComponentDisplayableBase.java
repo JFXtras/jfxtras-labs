@@ -78,6 +78,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return classification;
     }
+    @Override
+    public Classification getClassification() { return (classification == null) ? null : classificationProperty().get(); }
     private ObjectProperty<Classification> classification;
     
     /**
@@ -117,6 +119,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return dateTimeCreated;
     }
+    @Override
+    public DateTimeCreated getDateTimeCreated() { return (dateTimeCreated == null) ? null : dateTimeCreatedProperty().get(); }
     private ObjectProperty<DateTimeCreated> dateTimeCreated;
     
    /** 
@@ -169,6 +173,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return lastModified;
     }
+    @Override
+    public LastModified getDateTimeLastModified() { return (lastModified == null) ? null : dateTimeLastModifiedProperty().get(); }
     private ObjectProperty<LastModified> lastModified;
     
     /**
@@ -214,6 +220,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return recurrenceId;
     }
+    @Override
+    public RecurrenceId<? extends Temporal> getRecurrenceId() { return (recurrenceId == null) ? null : recurrenceIdProperty().get(); }
     private ObjectProperty<RecurrenceId<? extends Temporal>> recurrenceId;
 
     /**
@@ -252,6 +260,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return recurrenceRule;
     }
+    @Override
+    public RecurrenceRule getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
     private ObjectProperty<RecurrenceRule> recurrenceRule;
  
     /**
@@ -278,6 +288,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return sequence;
     }
+    @Override
+    public Sequence getSequence() { return (sequence == null) ? null : sequenceProperty().get(); }
     private ObjectProperty<Sequence> sequence;
 
     /**
@@ -297,6 +309,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return summary;
     }
+    @Override
+    public Summary getSummary() { return (summary == null) ? null : summaryProperty().get(); }
     private ObjectProperty<Summary> summary;
     
     /**
@@ -317,6 +331,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         }
         return status;
     }
+    @Override
+    public Status getStatus() { return (status == null) ? null : statusProperty().get(); }
     private ObjectProperty<Status> status;
 
     

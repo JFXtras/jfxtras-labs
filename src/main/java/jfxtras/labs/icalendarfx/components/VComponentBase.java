@@ -116,7 +116,6 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     VComponentBase() { }
     
     /** Parse content lines into calendar component */
-    @Deprecated // use static parse
     VComponentBase(String contentLines)
     {
         parseContent(contentLines);

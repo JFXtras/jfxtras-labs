@@ -75,6 +75,8 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         }
         return organizer;
     }
+    @Override
+    public Organizer getOrganizer() { return (organizer == null) ? null : organizerProperty().get(); }
     private ObjectProperty<Organizer> organizer;
 
     /**
@@ -134,6 +136,8 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         }
         return uniformResourceLocator;
     }
+    @Override
+    public UniformResourceLocator getUniformResourceLocator() { return (uniformResourceLocator == null) ? null : uniformResourceLocatorProperty().get(); }
     private ObjectProperty<UniformResourceLocator> uniformResourceLocator;
 
     /*

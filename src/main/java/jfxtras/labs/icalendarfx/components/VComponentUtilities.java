@@ -15,7 +15,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RDate;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -614,7 +614,7 @@ public final class VComponentUtilities
             {
                 if (vComponent.getRRule() == null)
                 {
-                    vComponent.setRRule(new RecurrenceRuleElement(propertyLine));
+                    vComponent.setRRule(new RecurrenceRule2(propertyLine));
                 } else
                 {
                     throw new IllegalArgumentException(toString() + " can only appear once in calendar component");                    
@@ -643,7 +643,7 @@ public final class VComponentUtilities
             @Override
             public void copyProperty(VComponent<?> source, VComponent<?> destination)
             {
-                destination.setRRule(new RecurrenceRuleElement(source.getRRule()));
+                destination.setRRule(new RecurrenceRule2(source.getRRule()));
 //                if (source.getRRule() != null)
 //                {
 //                    if (destination.getRRule() == null)

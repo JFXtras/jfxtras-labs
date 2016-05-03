@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecu
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
@@ -193,10 +193,10 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    default RecurrenceRule getRecurrenceRule() { return recurrenceRuleProperty().get(); }
     ObjectProperty<RecurrenceRule> recurrenceRuleProperty();
+    RecurrenceRule getRecurrenceRule();
     default void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
-    default void setRecurrenceRule(RecurrenceRuleElement rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
+    default void setRecurrenceRule(RecurrenceRule2 rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
     default void setRecurrenceRule(String rrule) { setRecurrenceRule(RecurrenceRule.parse(rrule)); }
     default T withRecurrenceRule(String rrule)
     {
@@ -220,7 +220,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
-    default T withRecurrenceRule(RecurrenceRuleElement rrule)
+    default T withRecurrenceRule(RecurrenceRule2 rrule)
     {
         if (getRecurrenceRule() == null)
         {

@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
@@ -25,7 +25,7 @@ public class RecurrenceRuleTest
         RecurrenceRule madeProperty = RecurrenceRule.parse(content);
         assertEquals(content, madeProperty.toContent());
         RecurrenceRule expectedProperty = new RecurrenceRule(
-                new RecurrenceRuleElement()
+                new RecurrenceRule2()
                 .withFrequency(new Yearly()
                         .withByRules(new ByMonth(Month.JANUARY, Month.FEBRUARY))));
         assertEquals(expectedProperty, madeProperty);
@@ -56,7 +56,7 @@ public class RecurrenceRuleTest
         RecurrenceRule madeProperty = RecurrenceRule.parse(content);
         assertEquals(content, madeProperty.toContent());
         RecurrenceRule expectedProperty = new RecurrenceRule(
-                new RecurrenceRuleElement()
+                new RecurrenceRule2()
                     .withUntil("19730429T070000Z")
                     .withFrequency(new Yearly()
                             .withByRules(new ByMonth(Month.APRIL),

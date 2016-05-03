@@ -205,6 +205,8 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         }
         return description;
     }
+    @Override
+    public Description getDescription() { return (description == null) ? null : descriptionProperty().get(); }
     private ObjectProperty<Description> description;
     
     /** 

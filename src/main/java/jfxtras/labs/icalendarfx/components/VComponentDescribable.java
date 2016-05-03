@@ -58,7 +58,7 @@ public interface VComponentDescribable<T> extends VComponentNew<T>
      * SUMMARY:Department Party
      * */
     ObjectProperty<Summary> summaryProperty();
-    default Summary getSummary() { return summaryProperty().get(); }
+    Summary getSummary();
     default void setSummary(String summary) { setSummary(Summary.parse(summary)); }
     default void setSummary(Summary summary) { summaryProperty().set(summary); }
     default T withSummary(Summary summary)

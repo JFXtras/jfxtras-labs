@@ -317,6 +317,8 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
         }
         return lastModified;
     }
+    @Override
+    public LastModified getDateTimeLastModified() { return (lastModified == null) ? null : dateTimeLastModifiedProperty().get(); }
     private ObjectProperty<LastModified> lastModified;
     
     /**

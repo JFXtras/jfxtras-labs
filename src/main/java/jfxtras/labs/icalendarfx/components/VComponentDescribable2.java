@@ -27,7 +27,7 @@ public interface VComponentDescribable2<T> extends VComponentDescribable<T>
      *  MUST attend this meeting.\nRSVP to team leader.
      */
     public ObjectProperty<Description> descriptionProperty();
-    default Description getDescription() { return descriptionProperty().get(); }
+    Description getDescription();
     default void setDescription(String description) { setDescription(Description.parse(description)); }
     default void setDescription(Description description) { descriptionProperty().set(description); }
     default T withDescription(Description description)

@@ -15,7 +15,7 @@ public interface VComponentLastModified<T> extends VComponentNew<T>
      * The property value MUST be specified in the UTC time format.
      */
     ObjectProperty<LastModified> dateTimeLastModifiedProperty();
-    default LastModified getDateTimeLastModified() { return dateTimeLastModifiedProperty().get(); }
+    LastModified getDateTimeLastModified();
     default void setDateTimeLastModified(String lastModified) { setDateTimeLastModified(LastModified.parse(lastModified)); }
     default void setDateTimeLastModified(LastModified lastModified) { dateTimeLastModifiedProperty().set(lastModified); }
     default void setDateTimeLastModified(ZonedDateTime lastModified) { setDateTimeLastModified(new LastModified(lastModified)); }

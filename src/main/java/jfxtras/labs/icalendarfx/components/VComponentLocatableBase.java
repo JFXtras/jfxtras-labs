@@ -36,6 +36,8 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         }
         return description;
     }
+    @Override
+    public Description getDescription() { return (description == null) ? null : descriptionProperty().get(); }
     private ObjectProperty<Description> description;
 
     /** 
