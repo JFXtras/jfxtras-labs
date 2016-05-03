@@ -261,5 +261,10 @@ public class Frequency2
 //        if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
 //        return builder.toString();
     }
+    public static Frequency2 parse(String frequency)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

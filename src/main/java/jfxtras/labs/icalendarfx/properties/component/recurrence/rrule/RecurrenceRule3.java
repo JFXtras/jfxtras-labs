@@ -1,14 +1,13 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
-import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -21,10 +20,20 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByHour;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMinute;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonthDay;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.BySecond;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -38,8 +47,10 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * COUNT
  * UNTIL
  * FREQUENCY
+ * INTERVAL
+ * BYxxx RULES in a List
  * 
- * The value part of the recurrence rule property.  It supports the following parameters: <br>
+ * The value part of the recurrence rule.  It supports the following elements: <br>
  * ( "FREQ" "=" freq ) <br>
  * ( "UNTIL" "=" enddate ) <br>
  * ( "COUNT" "=" 1*DIGIT ) <br>
@@ -64,131 +75,238 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  *
  */
 // TODO - PRESERVE ORDER OF PARAMETERS FROM PARSED STRING
-public class RecurrenceRule2
+// TODO - LISTENER TO PREVENT COUNT AND LISTENER FROM BOTH BEING SET
+public class RecurrenceRule3
 {
     /** 
-     *
+     * BYxxx Rules
+     * RFC 5545, iCalendar 3.3.10 Page 42
+     * 
+     * List contains any of the following.  The following list also indicates the processing order:
+     * {@link ByMonth} {@link ByWeekNo} {@link ByYearDay} {@link ByMonthDay} {@link ByDay} {@link ByHour}
+     * {@link ByMinute} {@link BySecond} {@link BySetPos}
+     * 
+     * BYxxx rules modify the recurrence set by either expanding or limiting it.
+     * 
+     * Each BYxxx rule can only occur once
+     *  */
+    public ObservableList<ByRule> byRules() { return byRules; }
+    private final ObservableList<ByRule> byRules = FXCollections.observableArrayList();
+    public void setByRules(ObservableList<ByRule> byRules) { this.byRules = byRules; }
+    public RecurrenceRule3 withComments(ObservableList<ByRule> byRules) { setByRules(byRules); return this; }
+    public RecurrenceRule3 withByRules(ByRule...byRules)
+    {
+        for (ByRule myByRule : byRules)
+        {
+            byRules().add(myByRule);
+        }
+        return this;
+    }
+    /** Return ByRule associated with enum type */
+    public ByRule lookupByRule(ByRuleEnum byRuleType)
+    {
+        Optional<ByRule> rule = byRules()
+                .stream()
+                .filter(r -> r.byRuleType() == byRuleType)
+                .findFirst();
+        return (rule.isPresent()) ? rule.get() : null;
+    }
+    
+    /**
+     * COUNT:
+     * RFC 5545 iCalendar 3.3.10, page 41
+     * 
+     * The COUNT rule part defines the number of occurrences at which to
+     * range-bound the recurrence.  The "DTSTART" property value always
+     * counts as the first occurrence.
+     */
+    public IntegerProperty countProperty()
+    {
+        if (count == null)
+        {
+            count = new SimpleIntegerProperty(this, RecurrenceRuleElement.COUNT.toString());
+            // TODO - add listener to ensure COUNT and UNTIL are not both set
+            // listener to ensure >0 throw new IllegalArgumentException("COUNT can't be less than 0. (" + count + ")");
+//            else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
+        }
+        return count;
+    }
+    private IntegerProperty count;
+    public int getCount() { return (count == null) ? null : countProperty().get(); }
+    public void setCount(int count) { countProperty().set(count); }
+    public RecurrenceRule3 withCount(int count) { setCount(count); return this; }
+    
+    /** 
      * FREQUENCY
      * FREQ
      * RFC 5545 iCalendar 3.3.10 p40
      * 
-     * Frequency contains the following elements:
-     * FREQUENCY
-     * INTERVAL
-     * BYxxx RULES
+     * The FREQ rule part identifies the type of recurrence rule.  This
+     * rule part MUST be specified in the recurrence rule.  Valid values
+     * include SECONDLY, to specify repeating events based on an interval
+     * of a second or more; MINUTELY, to specify repeating events based
+     * on an interval of a minute or more; HOURLY, to specify repeating
+     * events based on an interval of an hour or more; DAILY, to specify
+     * repeating events based on an interval of a day or more; WEEKLY, to
+     * specify repeating events based on an interval of a week or more;
+     * MONTHLY, to specify repeating events based on an interval of a
+     * month or more; and YEARLY, to specify repeating events based on an
+     * interval of a year or more.
      */
-    public ObjectProperty<Frequency> frequencyProperty() { return frequency; }
-    private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, "FREQ");
-    public Frequency getFrequency() { return frequency.get(); }
-    public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
-    public void setFrequency(String frequency) { setFrequency(Frequency.parse(frequency)); }
-    public RecurrenceRule2 withFrequency(Frequency frequency) { setFrequency(frequency); return this; }
-    public RecurrenceRule2 withFrequency(String frequency) { setFrequency(frequency); return this; }
+    public ObjectProperty<Frequency2> frequencyProperty() { return frequency; }
+    private ObjectProperty<Frequency2> frequency = new SimpleObjectProperty<>(this, "FREQ");
+    public Frequency2 getFrequency() { return frequency.get(); }
+    public void setFrequency(Frequency2 frequency) { this.frequency.set(frequency); }
+    public void setFrequency(String frequency) { setFrequency(Frequency2.parse(frequency)); }
+    public RecurrenceRule3 withFrequency(Frequency2 frequency) { setFrequency(frequency); return this; }
+    public RecurrenceRule3 withFrequency(String frequency) { setFrequency(frequency); return this; }
     
     /**
-     * COUNT:
-     *  (RFC 5545 iCalendar 3.3.10, page 41) number of events to occur before repeat rule ends
+     * INTERVAL
+     * RFC 5545 iCalendar 3.3.10, page 40
+     * 
+     * The INTERVAL rule part contains a positive integer representing at
+     * which intervals the recurrence rule repeats.  The default value is
+     * "1", meaning every second for a SECONDLY rule, every minute for a
+     * MINUTELY rule, every hour for an HOURLY rule, every day for a
+     * DAILY rule, every week for a WEEKLY rule, every month for a
+     * MONTHLY rule, and every year for a YEARLY rule.  For example,
+     * within a DAILY rule, a value of "8" means every eight days.
      */
-    final static int INITIAL_COUNT = 0;
-    public IntegerProperty countProperty()
+    private static final Integer DEFAULT_INTERVAL = 1;
+    public IntegerProperty intervalProperty()
     {
-        if (count == null) count = new SimpleIntegerProperty(this, RRuleEnum.COUNT.toString(), _count);
-        return count;
-    }
-    private IntegerProperty count;
-    public Integer getCount() { return (count == null) ? _count : count.getValue(); }
-    private int _count = INITIAL_COUNT;
-    public void setCount(Integer i)
-    {
-        if ((getUntil() == null) || (i == INITIAL_COUNT))
+        if (interval == null)
         {
-            if (i >= INITIAL_COUNT)
-            {
-                if (count == null)
-                {
-                    _count = i;
-                } else
-                {
-                    count.set(i);
-                }
-            } else throw new IllegalArgumentException("COUNT can't be less than 0. (" + i + ")");
+            interval = new SimpleIntegerProperty(this, RecurrenceRuleElement.INTERVAL.toString());
+            // TODO - LISTENER TO PREVENT INTERVAL FROM BEING LESS THAN 1
         }
-        else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
+        return interval;
     }
-    public RecurrenceRule2 withCount(int count) { setCount(count); return this; }
+    private IntegerProperty interval;
+    public Integer getInterval() { return (interval == null) ? DEFAULT_INTERVAL : intervalProperty().get(); }
+    public void setInterval(Integer interval) { intervalProperty().set(interval); }
+    public RecurrenceRule3 withInterval(int interval) { setInterval(interval); return this; }
 
     /**
-     * UNTIL: (RFC 5545 iCalendar 3.3.10, page 41) date/time repeat rule ends
-     * Must be same Temporal type as dateTimeStart (DTSTART)
-     * If DTSTART has time then UNTIL must be UTC time.  That means the Temporal
-     * can be LocalDate or ZonedDateTime with ZoneID.of("Z");
+     * UNTIL:
+     * RFC 5545 iCalendar 3.3.10, page 41
+     * 
+     * The UNTIL rule part defines a DATE or DATE-TIME value that bounds
+     * the recurrence rule in an inclusive manner.  If the value
+     * specified by UNTIL is synchronized with the specified recurrence,
+     * this DATE or DATE-TIME becomes the last instance of the
+     * recurrence.  The value of the UNTIL rule part MUST have the same
+     * value type as the "DTSTART" property.  Furthermore, if the
+     * "DTSTART" property is specified as a date with local time, then
+     * the UNTIL rule part MUST also be specified as a date with local
+     * time.  If the "DTSTART" property is specified as a date with UTC
+     * time or a date with local time and time zone reference, then the
+     * UNTIL rule part MUST be specified as a date with UTC time.  In the
+     * case of the "STANDARD" and "DAYLIGHT" sub-components the UNTIL
+     * rule part MUST always be specified as a date with UTC time.  If
+     * specified as a DATE-TIME value, then it MUST be specified in a UTC
+     * time format.  If not present, and the COUNT rule part is also not
+     * present, the "RRULE" is considered to repeat forever
      */
     public SimpleObjectProperty<Temporal> untilProperty()
     {
-        if (until == null) until = new SimpleObjectProperty<Temporal>(this, RRuleEnum.UNTIL.toString(), _until);
+        if (until == null)
+        {
+            until = new SimpleObjectProperty<>(this, RecurrenceRuleElement.UNTIL.toString());
+            // TODO - add listener to ensure COUNT and UNTIL are not both set
+            // TODO - LISTENER TO ENSURE UTC OR DATE
+            // if ((DateTimeType.of(until) != DateTimeType.DATE) && (DateTimeType.of(until) != DateTimeType.DATE_WITH_UTC_TIME))
+        }
         return until;
     }
     private SimpleObjectProperty<Temporal> until;
     public Temporal getUntil() { return (until == null) ? _until : until.getValue(); }
     private Temporal _until;
-    public void setUntil(Temporal until)
-    {
-        if (getCount() == INITIAL_COUNT)
-        {
-            // check Temporal type
-            if ((DateTimeType.of(until) != DateTimeType.DATE) && (DateTimeType.of(until) != DateTimeType.DATE_WITH_UTC_TIME))
-            {
-                throw new DateTimeException("UNTIL must be either LocalDate or ZonedDateTime with UTC ZoneID - not:" + until.getClass().getSimpleName());
-            }
-            if (this.until == null)
-            {
-                _until = until;
-            } else
-            {
-                this.until.set(until);
-            }
-        } else throw new IllegalArgumentException("can't set UNTIL if COUNT is already set.");
-    }
-    public RecurrenceRule2 withUntil(Temporal until) { setUntil(until); return this; }
-    public RecurrenceRule2 withUntil(String until) { setUntil(DateTimeUtilities.temporalFromString(until)); return this; }
+    public void setUntil(Temporal until) { untilProperty().set(until); }
+    public void setUntil(String until) { setUntil(DateTimeUtilities.temporalFromString(until)); }
+    public RecurrenceRule3 withUntil(Temporal until) { setUntil(until); return this; }
+    public RecurrenceRule3 withUntil(String until) { setUntil(until); return this; }
     
     /**
-     * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
-     * specified individually in conjunction with "UID" and "SEQUENCE" properties.  Each instance 
-     * has a RECURRENCE ID with a value equal to the original value of the "DTSTART" property of 
-     * the recurrence instance.  The UID matches the UID of the parent calendar component.
-     * See 3.8.4.4 of RFC 5545 iCalendar
+     * Week Start
+     * WKST:
+     * RFC 5545 iCalendar 3.3.10, page 42
      * 
-     * These are components that contain RECURRENCE-ID's for the recurrences defined by this rule.
-     * The RECURRENCE-ID Temporals should be removed from the streamRecurrences.
+     * The WKST rule part specifies the day on which the workweek starts.
+     * Valid values are MO, TU, WE, TH, FR, SA, and SU.  This is
+     * significant when a WEEKLY "RRULE" has an interval greater than 1,
+     * and a BYDAY rule part is specified.  This is also significant when
+     * in a YEARLY "RRULE" when a BYWEEKNO rule part is specified.  The
+     * default value is MO.
      */
-    public Set<VComponent<?>> recurrences() { return recurrences; }
-    private Set<VComponent<?>> recurrences = new HashSet<>();
-//    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
-    public RecurrenceRule2 withRecurrences(VComponent<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
+    private static final DayOfWeek DEFAULT_WEEK_START = DayOfWeek.MONDAY;
+    public SimpleObjectProperty<DayOfWeek> weekStartProperty()
+    {
+        if (weekStart == null)
+        {
+            weekStart = new SimpleObjectProperty<DayOfWeek>(this, RecurrenceRuleElement.WEEK_START.toString());
+        }
+        return weekStart;
+    }
+    private SimpleObjectProperty<DayOfWeek> weekStart;
+    public DayOfWeek getWeekStart() { return (weekStart == null) ? DEFAULT_WEEK_START : weekStartProperty().get(); }
+    public void setWeekStart(DayOfWeek weekStart) { weekStartProperty().set(weekStart); }
+    public RecurrenceRule3 withWeekStart(DayOfWeek weekStart) { setWeekStart(weekStart); return this; }
+    
+    /** 
+     * SORT ORDER
+     * 
+     * Element sort order map.  Key is element, value is the sort order.  The map is automatically
+     * populated when parsing the content lines to preserve the existing property order.
+     * 
+     * When producing the content lines, if a element is not present in the map, it is put at
+     * the end of the sorted ones in the order appearing in {@link #RecurrenceRuleElement} 
+     * Generally, this map shouldn't be modified.  Only modify it when you want
+     * to force a specific property order (e.g. unit testing).
+     */
+    public Map<String, Integer> elementSortOrder() { return elementSortOrder; }
+    final private Map<String, Integer> elementSortOrder = new HashMap<>();
+    
+    
+    // TODO - THESE MUST GO TO REPEATABLE INTERFACE
+//    /**
+//     * The set of specific instances of recurring "VEVENT", "VTODO", or "VJOURNAL" calendar components
+//     * specified individually in conjunction with "UID" and "SEQUENCE" properties.  Each instance 
+//     * has a RECURRENCE ID with a value equal to the original value of the "DTSTART" property of 
+//     * the recurrence instance.  The UID matches the UID of the parent calendar component.
+//     * See 3.8.4.4 of RFC 5545 iCalendar
+//     * 
+//     * These are components that contain RECURRENCE-ID's for the recurrences defined by this rule.
+//     * The RECURRENCE-ID Temporals should be removed from the streamRecurrences.
+//     */
+//    public Set<VComponentDisplayable<?>> recurrences() { return recurrences; }
+//    private Set<VComponentDisplayable<?>> recurrences = new HashSet<>();
+////    public void setRecurrences(Set<VComponent<?>> temporal) { recurrences = temporal; }
+//    public RecurrenceRule3 withRecurrences(VComponentDisplayable<?>...v) { recurrences.addAll(Arrays.asList(v)); return this; }
 
     /*
      * CONSTRUCTORS
      */
     
-    public RecurrenceRule2() { }
+    public RecurrenceRule3() { }
 
     // construct new object by parsing property line
-    public RecurrenceRule2(String propertyString)
+    public RecurrenceRule3(String propertyString)
     {
 //        System.out.println("recur:" + propertyString);
 //        String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
         ICalendarUtilities.propertyLineToParameterMap(propertyString)
                 .entrySet()
                 .stream()
-                .sorted((Comparator<? super Entry<String, String>>) (p1, p2) ->
-                    (p1.getKey().equals(RRuleEnum.FREQUENCY.toString())) ? -1 : 1) // FREQ must be first
+//                .sorted((Comparator<? super Entry<String, String>>) (p1, p2) ->
+//                    (p1.getKey().equals(RRuleEnum.FREQUENCY.toString())) ? -1 : 1) // FREQ must be first
 //                .peek(System.out::println)
                 .forEach(e ->
                 {
                     // check parameter to see if its in RRuleParameter enum
                     // TODO - PUT ALL RRULE PARAMETERS IN ONE ENUM?
-                    RRuleEnum rRuleType = RRuleEnum.propertyFromName(e.getKey());
+                    RecurrenceRuleElement rRuleType = RecurrenceRuleElement.propertyFromName(e.getKey());
                     if (rRuleType != null)
                     {
                         rRuleType.setValue(this, e.getValue());
@@ -204,11 +322,11 @@ public class RecurrenceRule2
     }
 
     // Copy constructor
-    public RecurrenceRule2(RecurrenceRule2 source)
+    public RecurrenceRule3(RecurrenceRule3 source)
     {
-        Arrays.stream(RRuleEnum.values())
-                .forEach(p -> p.copyProperty(source, this));
-        source.recurrences().stream().forEach(r -> recurrences().add(r));
+//        Arrays.stream(RRuleEnum.values())
+//                .forEach(p -> p.copyProperty(source, this));
+//        source.recurrences().stream().forEach(r -> recurrences().add(r));
     }
     
 //    @Override
@@ -269,7 +387,7 @@ public class RecurrenceRule2
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        RecurrenceRule2 testObj = (RecurrenceRule2) obj;
+        RecurrenceRule3 testObj = (RecurrenceRule3) obj;
 
         boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
 //                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
@@ -415,7 +533,7 @@ public class RecurrenceRule2
                 getFrequency().streamRecurrences(start).filter(t -> 
                 {
                     return ! recurrences().stream()
-                            .map(v -> v.getDateTimeRecurrence())
+                            .map(v -> v.getRecurrenceId().getValue())
                             .filter(t2 -> t2.equals(t))
                             .findAny()
                             .isPresent();

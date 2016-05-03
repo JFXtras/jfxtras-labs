@@ -250,6 +250,8 @@ public abstract class PropertyBase<T,U> implements Property<T>
     }
     
     /** 
+     * SORT ORDER
+     * 
      * Parameter sort order map.  Key is parameter, value is order.  Follows sort order of parsed content.
      * If a parameter is not present in the map, it is put at the end of the sorted ones in
      * the order appearing in {@link #ParameterEnum} (should be alphabetical)

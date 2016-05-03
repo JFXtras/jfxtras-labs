@@ -97,7 +97,9 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     }
 
     /** 
-     * Property sort order map.  Key is property, value is the order.  The map is automatically
+     * SORT ORDER
+     * 
+     * Property sort order map.  Key is property, value is the sort order.  The map is automatically
      * populated when parsing the content lines to preserve the existing property order.
      * 
      * When producing the content lines, if a property is not present in the map, it is put at
