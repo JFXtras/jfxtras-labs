@@ -11,7 +11,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.
  * The class is used to make new instances of the different Rules by matching RRULE property
  * to its matching class
  * */
-public enum ByRuleEnum
+public enum ByRuleType
 {
     BY_SECOND ("BYSECOND", BySecond.class, 170)
     {
@@ -60,11 +60,11 @@ public enum ByRuleEnum
     };
   
     // Map to match up name to enum
-    private static Map<String, ByRuleEnum> enumFromNameMap = makeEnumFromNameMap();
-    private static Map<String, ByRuleEnum> makeEnumFromNameMap()
+    private static Map<String, ByRuleType> enumFromNameMap = makeEnumFromNameMap();
+    private static Map<String, ByRuleType> makeEnumFromNameMap()
     {
-        Map<String, ByRuleEnum> map = new HashMap<>();
-        ByRuleEnum[] values = ByRuleEnum.values();
+        Map<String, ByRuleType> map = new HashMap<>();
+        ByRuleType[] values = ByRuleType.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].toString(), values[i]);
@@ -72,17 +72,17 @@ public enum ByRuleEnum
         return map;
     }
     /** get enum from name */
-    public static ByRuleEnum enumFromName(String propertyName)
+    public static ByRuleType enumFromName(String propertyName)
     {
         return enumFromNameMap.get(propertyName.toUpperCase());
     }
     
     // Map to match up class to enum
-    private static Map<Class<? extends ByRule>, ByRuleEnum> enumFromClassMap = makeEnumFromClassMap();
-    private static Map<Class<? extends ByRule>, ByRuleEnum> makeEnumFromClassMap()
+    private static Map<Class<? extends ByRule>, ByRuleType> enumFromClassMap = makeEnumFromClassMap();
+    private static Map<Class<? extends ByRule>, ByRuleType> makeEnumFromClassMap()
     {
-        Map<Class<? extends ByRule>, ByRuleEnum> map = new HashMap<>();
-        ByRuleEnum[] values = ByRuleEnum.values();
+        Map<Class<? extends ByRule>, ByRuleType> map = new HashMap<>();
+        ByRuleType[] values = ByRuleType.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].myClass, values[i]);
@@ -90,7 +90,7 @@ public enum ByRuleEnum
         return map;
     }
     /** get enum from ByRule */
-    static ByRuleEnum enumFromClass(Class<? extends ByRule> byRuleClass)
+    static ByRuleType enumFromClass(Class<? extends ByRule> byRuleClass)
     {
         return enumFromClassMap.get(byRuleClass);
     }
@@ -103,7 +103,7 @@ public enum ByRuleEnum
     private Class<? extends ByRule> myClass;
     public int sortOrder() { return sortOrder; }
 
-    ByRuleEnum(String name, Class<? extends ByRule> myClass, int sortOrder)
+    ByRuleType(String name, Class<? extends ByRule> myClass, int sortOrder)
     {
         this.sortOrder = sortOrder;
         this.name = name;

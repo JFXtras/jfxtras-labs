@@ -6,7 +6,7 @@ import jfxtras.labs.icalendarfx.components.VEventNew;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 
 /**
  * RRULE
@@ -25,32 +25,31 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
  * @see DaylightSavingTime
  * @see StandardTime
  */
-@Deprecated
-public class RecurrenceRule extends PropertyBase<RecurrenceRule2, RecurrenceRule>
+public class RecurrenceRuleNew extends PropertyBase<RecurrenceRule3, RecurrenceRuleNew>
 {
 //    public RecurrenceRule(CharSequence contentLine)
 //    {
 //        super(contentLine);
 //    }
 
-    public RecurrenceRule(RecurrenceRule2 value)
+    public RecurrenceRuleNew(RecurrenceRule3 value)
     {
         super(value);
     }
     
-    public RecurrenceRule()
+    public RecurrenceRuleNew()
     {
         super();
     }
 
-    public RecurrenceRule(RecurrenceRule source)
+    public RecurrenceRuleNew(RecurrenceRuleNew source)
     {
         super(source);
     }
 
-    public static RecurrenceRule parse(String propertyContent)
+    public static RecurrenceRuleNew parse(String propertyContent)
     {
-        RecurrenceRule property = new RecurrenceRule();
+        RecurrenceRuleNew property = new RecurrenceRuleNew();
         property.parseContent(propertyContent);
         return property;
     }

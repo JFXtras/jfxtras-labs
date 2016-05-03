@@ -23,7 +23,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -194,7 +194,7 @@ public class RecurrenceRule2
                         rRuleType.setValue(this, e.getValue());
                     } else
                     { // if null try to match ByRuleParameter enum
-                        ByRuleEnum byRuleType = ByRuleEnum.enumFromName(e.getKey());
+                        ByRuleType byRuleType = ByRuleType.enumFromName(e.getKey());
                         if (byRuleType != null)
                         {
                             byRuleType.setValue(getFrequency(), e.getValue());

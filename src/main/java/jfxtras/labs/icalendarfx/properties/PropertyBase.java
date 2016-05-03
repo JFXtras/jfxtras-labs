@@ -370,9 +370,9 @@ public abstract class PropertyBase<T,U> implements Property<T>
     @Override
     public void parseContent(CharSequence contentLine)
     {
-//        setConverter(converter);
         String propertyString = contentLine.toString();
-        // test line, make changes if necessary
+        
+        // perform tests, make changes if necessary
         final String propertyValue;
         List<Integer> indices = new ArrayList<>();
         indices.add(propertyString.indexOf(':'));
@@ -412,32 +412,32 @@ public abstract class PropertyBase<T,U> implements Property<T>
 
             propertyValue = ":" + propertyString;
         }
-        // process parameters
+        
+        // parse parameters
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
 //        System.out.println("propertyString:" + propertyString + " " + map.size());
         map.entrySet()
             .stream()
 //            .peek(System.out::println)
-            .filter(e -> ! (e.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
-            .forEach(e ->
+            .filter(entry -> ! (entry.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
+            .forEach(entry ->
             {
-                ParameterType p = ParameterType.enumFromName(e.getKey());
+                ParameterType parameterType = ParameterType.enumFromName(entry.getKey());
 //                parameterSortOrder().put(p, parameterCounter++);
-                if (p != null)
+                if (parameterType != null)
                 {
-                    if (propertyType().allowedParameters().contains(p))
+                    if (propertyType().allowedParameters().contains(parameterType))
                     {
-                        p.parse(this, e.getValue());
-                        parameterSortOrder().put(p, parameterCounter);
+                        parameterType.parse(this, entry.getValue());
+                        parameterSortOrder().put(parameterType, parameterCounter);
                         parameterCounter += 100; // add 100 to allow insertions in between
-//                        parameterSortOrder().put(p.getParameter(this), parameterCounter++);
                     } else
                     {
-                        throw new IllegalArgumentException("Parameter " + p + " not allowed for property " + propertyType());
+                        throw new IllegalArgumentException("Parameter " + parameterType + " not allowed for property " + propertyType());
                     }
-                } else if ((e.getKey() != null) && (e.getValue() != null))
+                } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
-                    otherParameters().add(e.getKey() + "=" + e.getValue());
+                    otherParameters().add(entry.getKey() + "=" + entry.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
 

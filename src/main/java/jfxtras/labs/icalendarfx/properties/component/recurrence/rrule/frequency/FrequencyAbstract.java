@@ -16,7 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
 
 public abstract class FrequencyAbstract<T> implements Frequency {
     
@@ -55,7 +55,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     private final ObservableList<ByRule> byRules = FXCollections.observableArrayList();
 
     @Override
-    public ByRule lookupByRule(ByRuleEnum byRuleType)
+    public ByRule lookupByRule(ByRuleType byRuleType)
     {
         Optional<ByRule> rule = byRules()
                 .stream()

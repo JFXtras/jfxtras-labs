@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.components;
+package jfxtras.labs.icalendarfx;
 
 /**
  * Interface for all top-level calendar elements.  These include

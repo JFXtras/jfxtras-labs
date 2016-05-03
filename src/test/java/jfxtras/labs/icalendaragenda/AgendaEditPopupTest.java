@@ -43,7 +43,7 @@ import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
@@ -226,7 +226,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Frequency f = v.getRRule().getFrequency();
         assertEquals(FrequencyType.WEEKLY, f.frequencyType());
         assertEquals(1, f.byRules().size());
-        ByDay rule = (ByDay) f.lookupByRule(ByRuleEnum.BY_DAY);
+        ByDay rule = (ByDay) f.lookupByRule(ByRuleType.BY_DAY);
 
         // Check initial state
         List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
@@ -287,7 +287,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         assertFalse(dayOfMonth.isSelected());
         assertTrue(dayOfWeek.isSelected());
         assertEquals(1, f.byRules().size());
-        ByDay rule = (ByDay) f.lookupByRule(ByRuleEnum.BY_DAY);
+        ByDay rule = (ByDay) f.lookupByRule(ByRuleType.BY_DAY);
         assertEquals("BYDAY=2WE", rule.toString()); // 2nd Wednesday of the month
         }
         
@@ -568,7 +568,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         Frequency f = v.getRRule().getFrequency();
         assertEquals(FrequencyType.WEEKLY, f.frequencyType());
         assertEquals(1, f.byRules().size());
-        ByDay rule = (ByDay) f.lookupByRule(ByRuleEnum.BY_DAY);
+        ByDay rule = (ByDay) f.lookupByRule(ByRuleType.BY_DAY);
 
         // Check initial state
         List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);

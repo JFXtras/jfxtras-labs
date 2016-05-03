@@ -15,7 +15,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
@@ -252,7 +252,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    @Override public ObjectProperty<RecurrenceRule> recurrenceRuleProperty()
+    @Override public ObjectProperty<RecurrenceRuleNew> recurrenceRuleProperty()
     {
         if (recurrenceRule == null)
         {
@@ -261,8 +261,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         return recurrenceRule;
     }
     @Override
-    public RecurrenceRule getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
-    private ObjectProperty<RecurrenceRule> recurrenceRule;
+    public RecurrenceRuleNew getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
+    private ObjectProperty<RecurrenceRuleNew> recurrenceRule;
  
     /**
      * SEQUENCE:

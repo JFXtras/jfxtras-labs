@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;

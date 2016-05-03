@@ -18,9 +18,10 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecurrence;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
@@ -193,11 +194,11 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    ObjectProperty<RecurrenceRule> recurrenceRuleProperty();
-    RecurrenceRule getRecurrenceRule();
-    default void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
-    default void setRecurrenceRule(RecurrenceRule2 rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
-    default void setRecurrenceRule(String rrule) { setRecurrenceRule(RecurrenceRule.parse(rrule)); }
+    ObjectProperty<RecurrenceRuleNew> recurrenceRuleProperty();
+    RecurrenceRuleNew getRecurrenceRule();
+    default void setRecurrenceRule(RecurrenceRuleNew recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
+    default void setRecurrenceRule(RecurrenceRule3 rrule) { setRecurrenceRule(new RecurrenceRuleNew(rrule)); }
+    default void setRecurrenceRule(String rrule) { setRecurrenceRule(RecurrenceRuleNew.parse(rrule)); }
     default T withRecurrenceRule(String rrule)
     {
         if (getRecurrenceRule() == null)
@@ -209,7 +210,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
-    default T withRecurrenceRule(RecurrenceRule rrule)
+    default T withRecurrenceRule(RecurrenceRuleNew rrule)
     {
         if (getRecurrenceRule() == null)
         {
@@ -220,7 +221,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
-    default T withRecurrenceRule(RecurrenceRule2 rrule)
+    default T withRecurrenceRule(RecurrenceRule3 rrule)
     {
         if (getRecurrenceRule() == null)
         {

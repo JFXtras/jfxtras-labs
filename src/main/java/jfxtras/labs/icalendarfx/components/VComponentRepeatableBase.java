@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 /**
  * Contains following properties:
@@ -53,7 +54,7 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    @Override public ObjectProperty<RecurrenceRule> recurrenceRuleProperty()
+    @Override public ObjectProperty<RecurrenceRuleNew> recurrenceRuleProperty()
     {
         if (recurrenceRule == null)
         {
@@ -62,8 +63,8 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         return recurrenceRule;
     }
     @Override
-    public RecurrenceRule getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
-    private ObjectProperty<RecurrenceRule> recurrenceRule;
+    public RecurrenceRuleNew getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
+    private ObjectProperty<RecurrenceRuleNew> recurrenceRule;
     
     /*
      * CONSTRUCTORS

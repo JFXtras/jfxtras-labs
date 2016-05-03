@@ -10,9 +10,13 @@ import java.util.TreeMap;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -61,6 +65,24 @@ public class RecurrenceRuleTest
                     .withFrequency(new Yearly()
                             .withByRules(new ByMonth(Month.APRIL),
                                     new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1)))));
+        assertEquals(expectedProperty, madeProperty);
+    }
+    
+    @Test
+    public void canParseRecurrenceRule2New()
+    {
+        String content = "RRULE:FREQ=YEARLY;UNTIL=19730429T070000Z;BYMONTH=4;BYDAY=-1SU";
+        RecurrenceRuleNew madeProperty = RecurrenceRuleNew.parse(content);
+        assertEquals(content, madeProperty.toContent());
+        RecurrenceRuleNew expectedProperty = new RecurrenceRuleNew(
+                new RecurrenceRule3()
+                    .withUntil("19730429T070000Z")
+                    .withFrequency(new Frequency2(FrequencyType.YEARLY))
+                    .withByRules(new ByMonth(Month.APRIL),
+                                 new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1))));
+//        System.out.println(expectedProperty.getValue().elements());
+
+        System.out.println(expectedProperty.toContent());
         assertEquals(expectedProperty, madeProperty);
     }
 }

@@ -17,7 +17,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
 
 /**
  * Contains the following Recurrence Rule elements:
@@ -110,7 +110,7 @@ public class Frequency2
         return this;
     }
     
-    public ByRule lookupByRule(ByRuleEnum byRuleType)
+    public ByRule lookupByRule(ByRuleType byRuleType)
     {
         Optional<ByRule> rule = byRules()
                 .stream()

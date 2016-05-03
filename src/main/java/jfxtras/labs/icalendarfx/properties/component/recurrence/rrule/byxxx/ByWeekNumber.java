@@ -108,7 +108,7 @@ public class ByWeekNumber extends ByRuleAbstract
         String days = Arrays.stream(getWeekNumbers())
                 .mapToObj(d -> d + ",")
                 .collect(Collectors.joining());
-        return ByRuleEnum.BY_WEEK_NUMBER + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleType.BY_WEEK_NUMBER + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     @Override

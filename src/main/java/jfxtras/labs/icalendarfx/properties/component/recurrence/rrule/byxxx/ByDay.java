@@ -203,7 +203,7 @@ public class ByDay extends ByRuleAbstract
                     return (d.ordinal == 0) ? day : d.ordinal + day;
                 })
                 .collect(Collectors.joining());
-        return ByRuleEnum.BY_DAY + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleType.BY_DAY + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     @Override // TODO - try to REMOVE startTemporal

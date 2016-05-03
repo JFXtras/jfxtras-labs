@@ -58,7 +58,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
@@ -1231,7 +1231,7 @@ public enum PropertyType
     RECURRENCE_RULE ("RRULE", // property name
             Arrays.asList(ValueType.RECURRENCE_RULE), // valid property value types, first is default
             Arrays.asList(ParameterType.VALUE_DATA_TYPES), // allowed parameters
-            RecurrenceRule.class) // property class
+            RecurrenceRuleNew.class) // property class
     {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
@@ -1246,7 +1246,7 @@ public enum PropertyType
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             if (castComponent.getRecurrenceRule() == null)
             {
-                castComponent.setRecurrenceRule(RecurrenceRule.parse(propertyContent));                
+                castComponent.setRecurrenceRule(RecurrenceRuleNew.parse(propertyContent));                
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
@@ -1258,7 +1258,7 @@ public enum PropertyType
         {
             VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
-            RecurrenceRule property = new RecurrenceRule(castSource.getRecurrenceRule());
+            RecurrenceRuleNew property = new RecurrenceRuleNew(castSource.getRecurrenceRule());
             castDestination.setRecurrenceRule(property);
         }
     },
@@ -1294,10 +1294,14 @@ public enum PropertyType
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
-            VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
-            RecurrenceRule property = new RecurrenceRule(castSource.getRecurrenceRule());
-            castDestination.setRecurrenceRule(property);
+            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
+            VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
+            RelatedTo[] propertyArray = castSource.getRelatedTo()
+                    .stream()
+                    .map(c -> new RelatedTo(c)) // copy each property
+                    .toArray(size -> new RelatedTo[size]);
+            ObservableList<RelatedTo> properties = FXCollections.observableArrayList(propertyArray);
+            castDestination.setRelatedTo(properties);
         }
     },
     // Alarm

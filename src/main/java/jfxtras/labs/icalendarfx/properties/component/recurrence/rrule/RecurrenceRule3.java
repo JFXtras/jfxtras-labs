@@ -1,11 +1,12 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.DayOfWeek;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Spliterator;
@@ -22,7 +23,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByHour;
@@ -30,12 +30,10 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMi
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleEnum;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.BySecond;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
@@ -91,7 +89,7 @@ public class RecurrenceRule3
      * Each BYxxx rule can only occur once
      *  */
     public ObservableList<ByRule> byRules() { return byRules; }
-    private final ObservableList<ByRule> byRules = FXCollections.observableArrayList();
+    private ObservableList<ByRule> byRules = FXCollections.observableArrayList();
     public void setByRules(ObservableList<ByRule> byRules) { this.byRules = byRules; }
     public RecurrenceRule3 withComments(ObservableList<ByRule> byRules) { setByRules(byRules); return this; }
     public RecurrenceRule3 withByRules(ByRule...byRules)
@@ -103,11 +101,11 @@ public class RecurrenceRule3
         return this;
     }
     /** Return ByRule associated with enum type */
-    public ByRule lookupByRule(ByRuleEnum byRuleType)
+    public ByRule lookupByRule(Class<? extends ByRule> byRuleClass)
     {
         Optional<ByRule> rule = byRules()
                 .stream()
-                .filter(r -> r.byRuleType() == byRuleType)
+                .filter(r -> byRuleClass.isInstance(r))
                 .findFirst();
         return (rule.isPresent()) ? rule.get() : null;
     }
@@ -132,9 +130,9 @@ public class RecurrenceRule3
         return count;
     }
     private IntegerProperty count;
-    public int getCount() { return (count == null) ? null : countProperty().get(); }
-    public void setCount(int count) { countProperty().set(count); }
-    public RecurrenceRule3 withCount(int count) { setCount(count); return this; }
+    public Integer getCount() { return (count == null) ? null : countProperty().get(); }
+    public void setCount(Integer count) { countProperty().set(count); }
+    public RecurrenceRule3 withCount(Integer count) { setCount(count); return this; }
     
     /** 
      * FREQUENCY
@@ -173,7 +171,7 @@ public class RecurrenceRule3
      * MONTHLY rule, and every year for a YEARLY rule.  For example,
      * within a DAILY rule, a value of "8" means every eight days.
      */
-    private static final Integer DEFAULT_INTERVAL = 1;
+    static final Integer DEFAULT_INTERVAL = 1;
     public IntegerProperty intervalProperty()
     {
         if (interval == null)
@@ -240,7 +238,7 @@ public class RecurrenceRule3
      * in a YEARLY "RRULE" when a BYWEEKNO rule part is specified.  The
      * default value is MO.
      */
-    private static final DayOfWeek DEFAULT_WEEK_START = DayOfWeek.MONDAY;
+    static final DayOfWeek DEFAULT_WEEK_START = DayOfWeek.MONDAY;
     public SimpleObjectProperty<DayOfWeek> weekStartProperty()
     {
         if (weekStart == null)
@@ -254,6 +252,20 @@ public class RecurrenceRule3
     public void setWeekStart(DayOfWeek weekStart) { weekStartProperty().set(weekStart); }
     public RecurrenceRule3 withWeekStart(DayOfWeek weekStart) { setWeekStart(weekStart); return this; }
     
+    /**
+     * List of all elements found in object.
+     * The list is unmodifiable.
+     * 
+     * @return - the list of elements
+     */
+    public List<RecurrenceRuleElement> elements()
+    {
+        List<RecurrenceRuleElement> populatedElements = Arrays.stream(RecurrenceRuleElement.values())
+            .filter(p -> (p.getElement(this) != null))
+            .collect(Collectors.toList());
+      return Collections.unmodifiableList(populatedElements);
+    }
+    
     /** 
      * SORT ORDER
      * 
@@ -265,9 +277,9 @@ public class RecurrenceRule3
      * Generally, this map shouldn't be modified.  Only modify it when you want
      * to force a specific property order (e.g. unit testing).
      */
-    public Map<String, Integer> elementSortOrder() { return elementSortOrder; }
-    final private Map<String, Integer> elementSortOrder = new HashMap<>();
-    
+    public Map<RecurrenceRuleElement, Integer> elementSortOrder() { return elementSortOrder; }
+    final private Map<RecurrenceRuleElement, Integer> elementSortOrder = new HashMap<>();
+    private Integer elementCounter = 0;
     
     // TODO - THESE MUST GO TO REPEATABLE INTERFACE
 //    /**
@@ -295,28 +307,20 @@ public class RecurrenceRule3
     public RecurrenceRule3(String propertyString)
     {
 //        System.out.println("recur:" + propertyString);
-//        String rruleString = ICalendarUtilities.propertyLineToParameterMap(propertyString).get(ICalendarUtilities.PROPERTY_VALUE_KEY);
         ICalendarUtilities.propertyLineToParameterMap(propertyString)
                 .entrySet()
                 .stream()
-//                .sorted((Comparator<? super Entry<String, String>>) (p1, p2) ->
-//                    (p1.getKey().equals(RRuleEnum.FREQUENCY.toString())) ? -1 : 1) // FREQ must be first
-//                .peek(System.out::println)
-                .forEach(e ->
+                .forEach(entry ->
                 {
-                    // check parameter to see if its in RRuleParameter enum
-                    // TODO - PUT ALL RRULE PARAMETERS IN ONE ENUM?
-                    RecurrenceRuleElement rRuleType = RecurrenceRuleElement.propertyFromName(e.getKey());
-                    if (rRuleType != null)
+                    RecurrenceRuleElement element = RecurrenceRuleElement.enumFromName(entry.getKey());
+                    if (element != null)
                     {
-                        rRuleType.setValue(this, e.getValue());
+                        element.parse(this, entry.getValue());
+                        elementSortOrder().put(element, elementCounter);
+                        elementCounter += 100; // add 100 to allow insertions in between
                     } else
-                    { // if null try to match ByRuleParameter enum
-                        ByRuleEnum byRuleType = ByRuleEnum.enumFromName(e.getKey());
-                        if (byRuleType != null)
-                        {
-                            byRuleType.setValue(getFrequency(), e.getValue());
-                        }
+                    {
+                        throw new IllegalArgumentException("Unsupported Recurrence Rule element: " + entry.getKey());                        
                     }
                 });
     }
@@ -380,78 +384,78 @@ public class RecurrenceRule3
 //        copy(this, destination);
 //    }
 
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        RecurrenceRule3 testObj = (RecurrenceRule3) obj;
-
-        boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
-//                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
-                .map(e -> e.isPropertyEqual(this, testObj))
-                .allMatch(b -> b == true);
-        boolean recurrencesEquals = (recurrences() == null) ? (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());
-        return propertiesEquals && recurrencesEquals;
-//        System.out.println("propertiesEquals" + propertiesEquals);
-//        boolean countEquals = getCount().equals(testObj.getCount());
-//        boolean frequencyEquals = getFrequency().equals(testObj.getFrequency()); // RRule requires a frequency
-//        System.out.println("untils:" + getUntil() + " " + testObj.getUntil() + ((getUntil() != null) ? getUntil().hashCode() : "")
-//                + " " + ((testObj.getUntil() != null) ? testObj.getUntil().hashCode() : ""));
-//        boolean untilEquals = (getUntil() == null) ? (testObj.getUntil() == null) : getUntil().equals(testObj.getUntil());
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (obj == this) return true;
+//        if((obj == null) || (obj.getClass() != getClass())) {
+//            return false;
+//        }
+//        RecurrenceRule3 testObj = (RecurrenceRule3) obj;
 //
-//        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals + " " + untilEquals);
-//        return countEquals && frequencyEquals && recurrencesEquals && untilEquals;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        int hash = 7;
-        hash = (31 * hash) + getCount().hashCode();
-        hash = (31 * hash) + getFrequency().hashCode();
-        hash = (31 * hash) + ((recurrences() == null) ? 0 : recurrences().hashCode());
-        return hash;
-    }
+//        boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
+////                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
+//                .map(e -> e.isPropertyEqual(this, testObj))
+//                .allMatch(b -> b == true);
+//        boolean recurrencesEquals = (recurrences() == null) ? (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());
+//        return propertiesEquals && recurrencesEquals;
+////        System.out.println("propertiesEquals" + propertiesEquals);
+////        boolean countEquals = getCount().equals(testObj.getCount());
+////        boolean frequencyEquals = getFrequency().equals(testObj.getFrequency()); // RRule requires a frequency
+////        System.out.println("untils:" + getUntil() + " " + testObj.getUntil() + ((getUntil() != null) ? getUntil().hashCode() : "")
+////                + " " + ((testObj.getUntil() != null) ? testObj.getUntil().hashCode() : ""));
+////        boolean untilEquals = (getUntil() == null) ? (testObj.getUntil() == null) : getUntil().equals(testObj.getUntil());
+////
+////        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals + " " + untilEquals);
+////        return countEquals && frequencyEquals && recurrencesEquals && untilEquals;
+//    }
+//    
+//    @Override
+//    public int hashCode()
+//    {
+//        int hash = 7;
+//        hash = (31 * hash) + getCount().hashCode();
+//        hash = (31 * hash) + getFrequency().hashCode();
+//        hash = (31 * hash) + ((recurrences() == null) ? 0 : recurrences().hashCode());
+//        return hash;
+//    }
     
     /**
      * Checks to see if object contains required properties.  Returns empty string if it is
      * valid.  Returns string of errors if not valid.
      */
-    public String makeErrorString(VComponent<?> parent)
-    {
-        StringBuilder builder = new StringBuilder();
-        if (recurrences() != null)
-        {
-            recurrences().stream()
-                    .filter(r -> ! DateTimeType.of(r.getDateTimeRecurrence()).equals(parent.getDateTimeType()))
-                    .forEach(r -> 
-                    {
-                        builder.append(System.lineSeparator()
-                                + "Invalid RRule.  Recurrence ("
-                                + r.getDateTimeRecurrence() + ", " + r.getDateTimeType()
-                                + ") must have same DateTimeType as parent ("
-                                + parent.getDateTimeType() + ")");
-                    });
-        }
-        if (getUntil() != null)
-        {
-//            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), parent.getDateTimeType());
-            Temporal convertedUntil = parent.getDateTimeType().from(getUntil(), parent.getZoneId());
-            if (DateTimeUtilities.isBefore(convertedUntil, parent.getDateTimeStart())) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
-        }
-        if ((getCount() == null) || (getCount() < 0))
-        {
-            builder.append(System.lineSeparator() + "Invalid RRule.  COUNT must not be less than 0");
-        }
-        if (getFrequency() == null)
-        {
-            builder.append(System.lineSeparator() + "Invalid RRule.  FREQ must not be null");
-        } else builder.append(getFrequency().makeErrorString());
-        return builder.toString();
-    }
+//    public String makeErrorString(VComponent<?> parent)
+//    {
+//        StringBuilder builder = new StringBuilder();
+//        if (recurrences() != null)
+//        {
+//            recurrences().stream()
+//                    .filter(r -> ! DateTimeType.of(r.getDateTimeRecurrence()).equals(parent.getDateTimeType()))
+//                    .forEach(r -> 
+//                    {
+//                        builder.append(System.lineSeparator()
+//                                + "Invalid RRule.  Recurrence ("
+//                                + r.getDateTimeRecurrence() + ", " + r.getDateTimeType()
+//                                + ") must have same DateTimeType as parent ("
+//                                + parent.getDateTimeType() + ")");
+//                    });
+//        }
+//        if (getUntil() != null)
+//        {
+////            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), parent.getDateTimeType());
+//            Temporal convertedUntil = parent.getDateTimeType().from(getUntil(), parent.getZoneId());
+//            if (DateTimeUtilities.isBefore(convertedUntil, parent.getDateTimeStart())) builder.append(System.lineSeparator() + "Invalid RRule.  UNTIL can not come before DTSTART");
+//        }
+//        if ((getCount() == null) || (getCount() < 0))
+//        {
+//            builder.append(System.lineSeparator() + "Invalid RRule.  COUNT must not be less than 0");
+//        }
+//        if (getFrequency() == null)
+//        {
+//            builder.append(System.lineSeparator() + "Invalid RRule.  FREQ must not be null");
+//        } else builder.append(getFrequency().makeErrorString());
+//        return builder.toString();
+//    }
 
     /** Return new RRule with its properties set by parsing iCalendar compliant RRULE string */
 //    @Deprecated // replace with generic static method for dividing all properties into list of parameters and value
@@ -525,34 +529,34 @@ public class RecurrenceRule3
      * is met.
      * Starts on startDateTime, which MUST be a valid event date/time, not necessarily the
      * first date/time (DTSTART) in the sequence. */
-    public Stream<Temporal> streamRecurrence(Temporal start)
-    {
-        // filter out recurrences
-        Stream<Temporal> filteredStream = (recurrences().size() == 0) ?
-                getFrequency().streamRecurrences(start) :
-                getFrequency().streamRecurrences(start).filter(t -> 
-                {
-                    return ! recurrences().stream()
-                            .map(v -> v.getRecurrenceId().getValue())
-                            .filter(t2 -> t2.equals(t))
-                            .findAny()
-                            .isPresent();
-                }); // ! getRecurrences().contains(t))
-        if (getCount() > 0)
-        {
-            return filteredStream.limit(getCount());
-        } else if (getUntil() != null)
-        {
-//            return frequency
-//                    .stream(startDateTime)
-//                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
-//            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.of(start));
-            ZoneId zone = (start instanceof ZonedDateTime) ? ((ZonedDateTime) start).getZone() : null;
-            Temporal convertedUntil = DateTimeType.of(start).from(getUntil(), zone);
-            return takeWhile(filteredStream, a -> ! DateTimeUtilities.isAfter(a, convertedUntil));
-        }
-        return filteredStream;
-    };
+//    public Stream<Temporal> streamRecurrence(Temporal start)
+//    {
+//        // filter out recurrences
+//        Stream<Temporal> filteredStream = (recurrences().size() == 0) ?
+//                getFrequency().streamRecurrences(start) :
+//                getFrequency().streamRecurrences(start).filter(t -> 
+//                {
+//                    return ! recurrences().stream()
+//                            .map(v -> v.getRecurrenceId().getValue())
+//                            .filter(t2 -> t2.equals(t))
+//                            .findAny()
+//                            .isPresent();
+//                }); // ! getRecurrences().contains(t))
+//        if (getCount() > 0)
+//        {
+//            return filteredStream.limit(getCount());
+//        } else if (getUntil() != null)
+//        {
+////            return frequency
+////                    .stream(startDateTime)
+////                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
+////            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.of(start));
+//            ZoneId zone = (start instanceof ZonedDateTime) ? ((ZonedDateTime) start).getZone() : null;
+//            Temporal convertedUntil = DateTimeType.of(start).from(getUntil(), zone);
+//            return takeWhile(filteredStream, a -> ! DateTimeUtilities.isAfter(a, convertedUntil));
+//        }
+//        return filteredStream;
+//    };
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
     static <T> Spliterator<T> takeWhile(Spliterator<T> splitr, Predicate<? super T> predicate)
@@ -583,14 +587,35 @@ public class RecurrenceRule3
     @Override
     public String toString()
     {
-        Stream<String> rruleParameterStream = Arrays.stream(RRuleEnum.values())
-                .map(p -> p.toParameterString(this))
-                .filter(s -> s != null);
-
-        Stream<String> byRuleParameterStream = getFrequency().byRules()
-                .stream()
-                .map(e -> e.byRuleType().toParameterString(this.getFrequency()));
-        return Stream.concat(rruleParameterStream, byRuleParameterStream)
+        return elements().stream()
+                .sorted((Comparator<? super RecurrenceRuleElement>) (e1, e2) -> 
+                {
+                    Integer s1 = elementSortOrder().get(e1);
+                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
+                    Integer s2 = elementSortOrder().get(e2);
+                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
+                    return sort1.compareTo(sort2);
+                })
+                // all element objects MUST override toString
+                .map(e -> 
+                {
+                    Object object = e.getElement(this);
+                    return e.getConverter().toString(object);
+                })
                 .collect(Collectors.joining(";"));
     }
+
+    public Stream<Temporal> streamRecurrence(Temporal match)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+//        Stream<String> byRuleParameterStream = getFrequency().byRules()
+//                .stream()
+//                .map(e -> e.byRuleType().toParameterString(this.getFrequency()));
+//        return Stream.concat(rruleElementStream, byRuleParameterStream)
+//                .collect(Collectors.joining(";"));
+//    }
 }

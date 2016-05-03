@@ -20,7 +20,7 @@ import javafx.beans.property.ObjectProperty;
 /** BYMONTHDAY from RFC 5545, iCalendar */
 public class ByMonthDay extends ByRuleAbstract
 {
-    private final static ByRuleEnum MY_RULE = ByRuleEnum.BY_MONTH_DAY;
+    private final static ByRuleType MY_RULE = ByRuleType.BY_MONTH_DAY;
 
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
@@ -98,7 +98,7 @@ public class ByMonthDay extends ByRuleAbstract
         String days = Arrays.stream(getDaysOfMonth())
                 .mapToObj(d -> d + ",")
                 .collect(Collectors.joining());
-        return ByRuleEnum.BY_MONTH_DAY + "=" + days.substring(0, days.length()-1); // remove last comma
+        return ByRuleType.BY_MONTH_DAY + "=" + days.substring(0, days.length()-1); // remove last comma
     }
     
     /**

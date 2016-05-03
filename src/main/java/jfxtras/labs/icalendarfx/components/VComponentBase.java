@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -80,19 +81,21 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     @Override
     public List<PropertyType> propertyEnums()
     {
-        List<PropertyType> populatedProperties = new ArrayList<>();
-//        System.out.println("componentType():" + componentType().allowedProperties());
-        Iterator<PropertyType> i = componentType().allowedProperties().stream().iterator();
-        while (i.hasNext())
-        {
-            PropertyType propertyType = i.next();
-            Object property = propertyType.getProperty(this);
-//            System.out.println("props:" + propertyType + " " + property );
-            if (property != null)
-            {
-                populatedProperties.add(propertyType);
-            }
-        }
+        List<PropertyType> populatedProperties = componentType().allowedProperties().stream()
+                .filter(p -> p.getProperty(this) != null)
+                .collect(Collectors.toList());
+        
+//        Iterator<PropertyType> i = componentType().allowedProperties().stream().iterator();
+//        while (i.hasNext())
+//        {
+//            PropertyType propertyType = i.next();
+//            Object property = propertyType.getProperty(this);
+////            System.out.println("props:" + propertyType + " " + property );
+//            if (property != null)
+//            {
+//                populatedProperties.add(propertyType);
+//            }
+//        }
       return Collections.unmodifiableList(populatedProperties);
     }
 
@@ -109,6 +112,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      */
     public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
     final private Map<String, Integer> propertySortOrder = new HashMap<>();
+    private Integer propertyCounter = 0;
 //    public Map<Property<?>, Integer> propertySortOrder() { return propertySortOrder; }
 //    final private Map<Property<?>, Integer> propertySortOrder = new WeakHashMap<>();
     
@@ -140,7 +144,6 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     /** Parse component from list of unfolded lines */
     public void parseContent(List<String> contentLines)
     {
-        Integer propertyCounter = 0;
         for (int index=0; index<contentLines.size(); index++)
         {
             String line = contentLines.get(index);
