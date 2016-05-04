@@ -73,6 +73,7 @@ public class RecurrenceRuleTest
     {
         String content = "RRULE:FREQ=YEARLY;UNTIL=19730429T070000Z;BYMONTH=4;BYDAY=-1SU";
         RecurrenceRuleNew madeProperty = RecurrenceRuleNew.parse(content);
+        System.out.println(madeProperty.toContent() + " " + madeProperty.getValue().getFrequency());
         assertEquals(content, madeProperty.toContent());
         RecurrenceRuleNew expectedProperty = new RecurrenceRuleNew(
                 new RecurrenceRule3()

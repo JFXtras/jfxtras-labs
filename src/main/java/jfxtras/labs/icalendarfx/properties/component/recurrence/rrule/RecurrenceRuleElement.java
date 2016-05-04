@@ -29,8 +29,15 @@ public enum RecurrenceRuleElement
         @Override
         public void parse(RecurrenceRule3 recurrenceRule, String content)
         {
-            // TODO Auto-generated method stub
-            
+            System.out.println("set frequency:");
+            if (recurrenceRule.getFrequency() == null)
+            {
+                recurrenceRule.setFrequency(Frequency2.parse(content));                
+                System.out.println("set frequency2:" + recurrenceRule.getFrequency());
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
 
         @Override

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -33,6 +34,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRu
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.BySecond;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -152,12 +154,14 @@ public class RecurrenceRule3
      * interval of a year or more.
      */
     public ObjectProperty<Frequency2> frequencyProperty() { return frequency; }
-    private ObjectProperty<Frequency2> frequency = new SimpleObjectProperty<>(this, "FREQ");
+    final private ObjectProperty<Frequency2> frequency = new SimpleObjectProperty<>(this, RecurrenceRuleElement.FREQUENCY.toString());
     public Frequency2 getFrequency() { return frequency.get(); }
     public void setFrequency(Frequency2 frequency) { this.frequency.set(frequency); }
     public void setFrequency(String frequency) { setFrequency(Frequency2.parse(frequency)); }
+    public void setFrequency(FrequencyType frequency) { setFrequency(new Frequency2(frequency)); }
     public RecurrenceRule3 withFrequency(Frequency2 frequency) { setFrequency(frequency); return this; }
     public RecurrenceRule3 withFrequency(String frequency) { setFrequency(frequency); return this; }
+    public RecurrenceRule3 withFrequency(FrequencyType frequency) { setFrequency(frequency); return this; }
     
     /**
      * INTERVAL
@@ -177,6 +181,7 @@ public class RecurrenceRule3
         if (interval == null)
         {
             interval = new SimpleIntegerProperty(this, RecurrenceRuleElement.INTERVAL.toString());
+            interval.bind(getFrequency().intervalProperty());
             // TODO - LISTENER TO PREVENT INTERVAL FROM BEING LESS THAN 1
         }
         return interval;
@@ -301,15 +306,19 @@ public class RecurrenceRule3
      * CONSTRUCTORS
      */
     
-    public RecurrenceRule3() { }
+    public RecurrenceRule3()
+    {
+        Bindings.bindContentBidirectional(byRules(), getFrequency().byRules());
+    }
 
     // construct new object by parsing property line
     public RecurrenceRule3(String propertyString)
     {
-//        System.out.println("recur:" + propertyString);
+        System.out.println("recur:" + propertyString);
         ICalendarUtilities.propertyLineToParameterMap(propertyString)
                 .entrySet()
                 .stream()
+//                .peek(System.out::println)
                 .forEach(entry ->
                 {
                     RecurrenceRuleElement element = RecurrenceRuleElement.enumFromName(entry.getKey());
@@ -328,10 +337,12 @@ public class RecurrenceRule3
     // Copy constructor
     public RecurrenceRule3(RecurrenceRule3 source)
     {
+        // TODO 
 //        Arrays.stream(RRuleEnum.values())
 //                .forEach(p -> p.copyProperty(source, this));
 //        source.recurrences().stream().forEach(r -> recurrences().add(r));
     }
+    
     
 //    @Override
 //    public void parse(String propertyString)
@@ -384,31 +395,53 @@ public class RecurrenceRule3
 //        copy(this, destination);
 //    }
 
-//    @Override
-//    public boolean equals(Object obj)
-//    {
-//        if (obj == this) return true;
-//        if((obj == null) || (obj.getClass() != getClass())) {
-//            return false;
-//        }
-//        RecurrenceRule3 testObj = (RecurrenceRule3) obj;
-//
+    @Override
+    public boolean equals(Object obj)
+    {
+        System.out.println("rrule equal:" + obj + " " + (obj.getClass() != getClass()));
+        if (obj == this) return true;
+        System.out.println("rrule equal:" + obj + " " + obj.getClass() + " " + getClass());
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        RecurrenceRule3 testObj = (RecurrenceRule3) obj;
+
+        List<RecurrenceRuleElement> myElements = elements();
+        List<RecurrenceRuleElement> testElements = testObj.elements();
+        System.out.println("rrule equal:" + obj + " " + (obj.getClass() != getClass()));
+        
+        boolean isSameNumberOfElements = myElements.size() == testElements.size();
+        if (! isSameNumberOfElements)
+        {
+            return false;
+        }
+        boolean elementsEqual = true;
+        for (int i=0; i<myElements.size(); i++)
+        {
+            if (! myElements.get(i).equals(testElements.get(i)))
+            {
+                System.out.println("Recurrence rule not equal:" + myElements.get(i) + " " + testElements.get(i));
+                elementsEqual = false;
+            }
+        }
+        return elementsEqual;
+        
 //        boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
 ////                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
 //                .map(e -> e.isPropertyEqual(this, testObj))
 //                .allMatch(b -> b == true);
 //        boolean recurrencesEquals = (recurrences() == null) ? (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());
 //        return propertiesEquals && recurrencesEquals;
-////        System.out.println("propertiesEquals" + propertiesEquals);
-////        boolean countEquals = getCount().equals(testObj.getCount());
-////        boolean frequencyEquals = getFrequency().equals(testObj.getFrequency()); // RRule requires a frequency
-////        System.out.println("untils:" + getUntil() + " " + testObj.getUntil() + ((getUntil() != null) ? getUntil().hashCode() : "")
-////                + " " + ((testObj.getUntil() != null) ? testObj.getUntil().hashCode() : ""));
-////        boolean untilEquals = (getUntil() == null) ? (testObj.getUntil() == null) : getUntil().equals(testObj.getUntil());
-////
-////        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals + " " + untilEquals);
-////        return countEquals && frequencyEquals && recurrencesEquals && untilEquals;
-//    }
+//        System.out.println("propertiesEquals" + propertiesEquals);
+//        boolean countEquals = getCount().equals(testObj.getCount());
+//        boolean frequencyEquals = getFrequency().equals(testObj.getFrequency()); // RRule requires a frequency
+//        System.out.println("untils:" + getUntil() + " " + testObj.getUntil() + ((getUntil() != null) ? getUntil().hashCode() : "")
+//                + " " + ((testObj.getUntil() != null) ? testObj.getUntil().hashCode() : ""));
+//        boolean untilEquals = (getUntil() == null) ? (testObj.getUntil() == null) : getUntil().equals(testObj.getUntil());
+//
+//        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals + " " + untilEquals);
+//        return countEquals && frequencyEquals && recurrencesEquals && untilEquals;
+    }
 //    
 //    @Override
 //    public int hashCode()
@@ -587,6 +620,7 @@ public class RecurrenceRule3
     @Override
     public String toString()
     {
+//        System.out.println("tostring9:" + elements());
         return elements().stream()
                 .sorted((Comparator<? super RecurrenceRuleElement>) (e1, e2) -> 
                 {
@@ -610,12 +644,65 @@ public class RecurrenceRule3
         // TODO Auto-generated method stub
         return null;
     }
-
-
-//        Stream<String> byRuleParameterStream = getFrequency().byRules()
-//                .stream()
-//                .map(e -> e.byRuleType().toParameterString(this.getFrequency()));
-//        return Stream.concat(rruleElementStream, byRuleParameterStream)
-//                .collect(Collectors.joining(";"));
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((byRules == null) ? 0 : byRules.hashCode());
+        result = prime * result + ((count == null) ? 0 : count.hashCode());
+        result = prime * result + ((frequency == null) ? 0 : frequency.hashCode());
+        result = prime * result + ((interval == null) ? 0 : interval.hashCode());
+        result = prime * result + ((until == null) ? 0 : until.hashCode());
+        result = prime * result + ((weekStart == null) ? 0 : weekStart.hashCode());
+        return result;
+    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        RecurrenceRule3 other = (RecurrenceRule3) obj;
+//        if (byRules == null)
+//        {
+//            if (other.byRules != null)
+//                return false;
+//        } else if (!byRules.equals(other.byRules))
+//            return false;
+//        if (count == null)
+//        {
+//            if (other.count != null)
+//                return false;
+//        } else if (!count.equals(other.count))
+//            return false;
+//        if (frequency == null)
+//        {
+//            if (other.frequency != null)
+//                return false;
+//        } else if (!frequency.equals(other.frequency))
+//            return false;
+//        if (interval == null)
+//        {
+//            if (other.interval != null)
+//                return false;
+//        } else if (!interval.equals(other.interval))
+//            return false;
+//        if (until == null)
+//        {
+//            if (other.until != null)
+//                return false;
+//        } else if (!until.equals(other.until))
+//            return false;
+//        if (weekStart == null)
+//        {
+//            if (other.weekStart != null)
+//                return false;
+//        } else if (!weekStart.equals(other.weekStart))
+//            return false;
+//        return true;
 //    }
 }

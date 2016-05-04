@@ -5,25 +5,44 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRuleElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
 
 /**
- * Contains the following Recurrence Rule elements:
  * FREQUENCY
- * INTERVAL
- * BYxxx RULES
+ * FREQ
+ * RFC 5545 iCalendar 3.3.10 p40
+ * 
+ * The FREQ rule part identifies the type of recurrence rule.  This
+ * rule part MUST be specified in the recurrence rule.  Valid values
+ * include SECONDLY, to specify repeating events based on an interval
+ * of a second or more; MINUTELY, to specify repeating events based
+ * on an interval of a minute or more; HOURLY, to specify repeating
+ * events based on an interval of an hour or more; DAILY, to specify
+ * repeating events based on an interval of a day or more; WEEKLY, to
+ * specify repeating events based on an interval of a week or more;
+ * MONTHLY, to specify repeating events based on an interval of a
+ * month or more; and YEARLY, to specify repeating events based on an
+ * interval of a year or more.
+ * 
+ * Frequency value.  Possible values include:
+ *  <br>
+ * {@link FrequencyType#SECONDLY } <br>
+ * {@link FrequencyType#MINUTELY } <br>
+ * {@link FrequencyType#HOURLY } <br>
+ * {@link FrequencyType#DAILY } <br>
+ * {@link FrequencyType#WEEKLY } <br>
+ * {@link FrequencyType#MONTHLY } <br>
+ * {@link FrequencyType#YEARLY }
  * 
  * @author David Bal
  * 
@@ -32,31 +51,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRu
 public class Frequency2
 {
     /**
-     * FREQUENCY
-     * FREQ
-     * RFC 5545 iCalendar 3.3.10 p40
-     * 
-     * The FREQ rule part identifies the type of recurrence rule.  This
-     * rule part MUST be specified in the recurrence rule.  Valid values
-     * include SECONDLY, to specify repeating events based on an interval
-     * of a second or more; MINUTELY, to specify repeating events based
-     * on an interval of a minute or more; HOURLY, to specify repeating
-     * events based on an interval of an hour or more; DAILY, to specify
-     * repeating events based on an interval of a day or more; WEEKLY, to
-     * specify repeating events based on an interval of a week or more;
-     * MONTHLY, to specify repeating events based on an interval of a
-     * month or more; and YEARLY, to specify repeating events based on an
-     * interval of a year or more.
-     * 
-     * Frequency value.  Possible values include:
-     *  <br>
-     * {@link FrequencyType#SECONDLY } <br>
-     * {@link FrequencyType#MINUTELY } <br>
-     * {@link FrequencyType#HOURLY } <br>
-     * {@link FrequencyType#DAILY } <br>
-     * {@link FrequencyType#WEEKLY } <br>
-     * {@link FrequencyType#MONTHLY } <br>
-     * {@link FrequencyType#YEARLY }
+     * FREQUENCY value
      */
     public ObjectProperty<FrequencyType> valueProperty() { return value; }
     public FrequencyType getValue() { return value.get(); }
@@ -68,56 +63,52 @@ public class Frequency2
     
     /**
      * INTERVAL
+     * This value MUST be bound to the Interval value in {@link RecurrenceRule3#intervalProperty}
      */
-    /** INTERVAL: (RFC 5545 iCalendar 3.3.10, page 40) number of frequency periods to pass before new appointment */
-    public IntegerProperty intervalProperty()
-    {
-        if (interval == null) interval = new SimpleIntegerProperty(this, "interval", _interval);
-        return interval;
-    }
+    public IntegerProperty intervalProperty() { return interval; }
     private IntegerProperty interval;
-    public Integer getInterval() { return (interval == null) ? _interval : interval.getValue(); }
-    private int _interval = 1;
-    public void setInterval(Integer i)
-    {
-        if (i > 0)
-        {
-            if (interval == null)
-            {
-                _interval = i;
-            } else
-            {
-                interval.set(i);
-            }
-        } else
-        {
-            throw new IllegalArgumentException("INTERVAL can't be less than 1. (" + i + ")");
-        }
-    }
-    public Frequency2 withInterval(int interval) { setInterval(interval); return this; }
+    private Integer getInterval() { return (interval == null) ? null : interval.getValue(); }
+//    private int _interval = 1;
+//    public void setInterval(Integer i)
+//    {
+//        if (i > 0)
+//        {
+//            if (interval == null)
+//            {
+//                _interval = i;
+//            } else
+//            {
+//                interval.set(i);
+//            }
+//        } else
+//        {
+//            throw new IllegalArgumentException("INTERVAL can't be less than 1. (" + i + ")");
+//        }
+//    }
+//    public Frequency2 withInterval(int interval) { setInterval(interval); return this; }
 
     /** BYxxx Rules 
      * Collection of BYxxx rules that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
      * Each BYxxx rule can only occur once */
     public ObservableList<ByRule> byRules() { return byRules; }
     private final ObservableList<ByRule> byRules = FXCollections.observableArrayList();
-    public Frequency2 withByRules(ByRule...byRules)
-    {
-        for (ByRule myByRule : byRules)
-        {
-            byRules().add(myByRule);
-        }
-        return this;
-    }
+//    public Frequency2 withByRules(ByRule...byRules)
+//    {
+//        for (ByRule myByRule : byRules)
+//        {
+//            byRules().add(myByRule);
+//        }
+//        return this;
+//    }
     
-    public ByRule lookupByRule(ByRuleType byRuleType)
-    {
-        Optional<ByRule> rule = byRules()
-                .stream()
-                .filter(r -> r.byRuleType() == byRuleType)
-                .findFirst();
-        return (rule.isPresent()) ? rule.get() : null;
-    }
+//    public ByRule lookupByRule(ByRuleType byRuleType)
+//    {
+//        Optional<ByRule> rule = byRules()
+//                .stream()
+//                .filter(r -> r.byRuleType() == byRuleType)
+//                .findFirst();
+//        return (rule.isPresent()) ? rule.get() : null;
+//    }
 //    @Override public ObservableSet<ByRule> byRules() { return byRules; }
 //    private final ObservableSet<ByRule> byRules = FXCollections.observableSet(new TreeSet<>());
     
@@ -263,8 +254,8 @@ public class Frequency2
     }
     public static Frequency2 parse(String frequency)
     {
-        // TODO Auto-generated method stub
-        return null;
+        FrequencyType type = FrequencyType.valueOf(frequency);
+        return new Frequency2(type);
     }
 
 }
