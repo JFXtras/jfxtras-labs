@@ -17,47 +17,47 @@ public enum ByRuleType
     BY_SECOND ("BYSECOND", BySecond.class, 170)
     {
         @Override ByRule newInstance(String value) { return new BySecond(value); }
-        @Override public ByRule newInstance(ByRule source) { return new BySecond(source); }
+        @Override public ByRule newInstance(ByRule source) { return new BySecond((BySecond) source); }
     }
   , BY_MINUTE ("BYMINUTE", ByMinute.class, 160)
     {
         @Override ByRule newInstance(String value) { return new ByMinute(value); }
-        @Override public ByRule newInstance(ByRule source) { return new ByMinute(source); }
+        @Override public ByRule newInstance(ByRule source) { return new ByMinute((ByMinute) source); }
     }
   , BY_HOUR ("BYHOUR", ByHour.class, 150)
     {
         @Override ByRule newInstance(String value) { return new ByHour(value); }
-        @Override public ByRule newInstance(ByRule source) { return new ByHour(source); }
+        @Override public ByRule newInstance(ByRule source) { return new ByHour((ByHour) source); }
     }
   , BY_DAY ("BYDAY", ByDay.class, 140)
     {
-        @Override ByRule newInstance(String value) { return new ByDay(value); }
+        @Override ByRule newInstance(String value) { return ByDay.parse(value); }
         @Override public ByRule newInstance(ByRule source) { return new ByDay(source); }
     }
   , BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class, 130)
     {
-        @Override ByRule newInstance(String value) { return new ByMonthDay(value); }
-        @Override public ByRule newInstance(ByRule source) { return new ByMonthDay(source); }
+        @Override ByRule newInstance(String value) { return ByMonthDay.parse(value); }
+        @Override public ByRule newInstance(ByRule source) { return new ByMonthDay((ByMonthDay) source); }
     }
   , BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class, 120)
     {
         @Override ByRule newInstance(String value) { return new ByYearDay(value); }
-        @Override public ByRule newInstance(ByRule source) { return new ByYearDay(source); }
+        @Override public ByRule newInstance(ByRule source) { return new ByYearDay((ByYearDay) source); }
     }
   , BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 110)
     {
-        @Override ByRule newInstance(String value) { return new ByWeekNumber(value); }
-        @Override public ByRule newInstance(ByRule source) { return new ByWeekNumber(source); }
+        @Override ByRule newInstance(String value) { return ByWeekNumber.parse(value); }
+        @Override public ByRule newInstance(ByRule source) { return new ByWeekNumber((ByWeekNumber) source); }
     }
   , BY_MONTH ("BYMONTH", ByMonth.class, 100)
     {
-        @Override ByRule newInstance(String value) { return new ByMonth(value); }
-        @Override public ByRule newInstance(ByRule source) { return new ByMonth(source); }
+        @Override ByRule newInstance(String value) { return ByMonth.parse(value); }
+        @Override public ByRule newInstance(ByRule source) { return new ByMonth((ByMonth) source); }
     }
   , BY_SET_POSITION ("BYSETPOS", BySetPosition.class, 180)
     {
         @Override ByRule newInstance(String value) { return new BySetPosition(value); }
-        @Override public ByRule newInstance(ByRule source) { return new BySetPosition(source); }
+        @Override public ByRule newInstance(ByRule source) { return new BySetPosition((BySetPosition) source); }
     };
   
     // Map to match up name to enum

@@ -11,8 +11,9 @@ public class BySecond extends ByRuleAbstract<ObservableList<Integer>, BySecond>
 {
     public BySecond()
     {
-        super(BySecond.class);
-        throw new RuntimeException("not implemented");
+//        super(BySecond.class);
+        super();
+       throw new RuntimeException("not implemented");
     }
         
     public BySecond(String value)
@@ -20,7 +21,7 @@ public class BySecond extends ByRuleAbstract<ObservableList<Integer>, BySecond>
         this();
     }
     
-    public BySecond(ByRule source)
+    public BySecond(BySecond source)
     {
         super(source);
     }
@@ -30,5 +31,19 @@ public class BySecond extends ByRuleAbstract<ObservableList<Integer>, BySecond>
             Temporal startDateTime) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public String toContent()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void parseContent(String content)
+    {
+        // TODO Auto-generated method stub
+        
     }
 }

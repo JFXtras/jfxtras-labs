@@ -1,8 +1,17 @@
-package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency;
+package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Hourly;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Minutely;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Monthly;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Secondly;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
 
 public enum FrequencyType
 {
@@ -69,9 +78,10 @@ public enum FrequencyType
 //        
 //        /** Copies property value from source to destination */
 //        public abstract void copyProperty(Frequency source, Frequency destination);
-    
+    @Deprecated
     public abstract Frequency newInstance();
     /** return copy of Frequency */
+    @Deprecated
     public abstract Frequency newInstance(Frequency source);
     
 //        public abstract Frequency newInstance();

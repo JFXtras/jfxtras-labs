@@ -15,8 +15,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 
 public class DaylightSavingsTimeTest
 {

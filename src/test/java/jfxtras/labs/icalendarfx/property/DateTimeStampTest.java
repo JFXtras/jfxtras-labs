@@ -21,4 +21,12 @@ public class DateTimeStampTest
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(ZonedDateTime.of(LocalDateTime.of(1997, 12, 10, 8, 0), ZoneId.of("Z")), property.getValue());
     }
+    
+    @Test (expected = ClassCastException.class)
+    public void canCatchWrongDateTimeStamp()
+    {
+        String expectedContentLine = "DTSTAMP:19971210";
+        DateTimeStamp.parse(expectedContentLine);
+    }
+
 }

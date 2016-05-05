@@ -11,7 +11,7 @@ public class DelegateesTest
     @Test // can copy list
     public void canCopyDelegatees()
     {
-        Delegatees parameter = new Delegatees("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"");
+        Delegatees parameter = Delegatees.parse("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"");
         Delegatees parameter2 = new Delegatees(parameter);
         assertEquals(parameter, parameter2);
     }

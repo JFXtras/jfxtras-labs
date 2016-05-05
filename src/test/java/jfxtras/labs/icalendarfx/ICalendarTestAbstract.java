@@ -176,7 +176,7 @@ public abstract class ICalendarTestAbstract
                 .withRRule(new RecurrenceRule2()
                         .withFrequency(new Monthly()
                                 .withByRules(new ByMonthDay()
-                                        .withDaysOfMonth(-2)))); // repeats 2nd to last day of month
+                                        .withValue(-2)))); // repeats 2nd to last day of month
     }
 
     /** FREQ=MONTHLY;BYDAY=TU,WE,FR */
@@ -355,7 +355,7 @@ public abstract class ICalendarTestAbstract
                         .withFrequency(new Daily()
                                 .withInterval(3)
                                 .withByRules(new ByMonthDay()
-                                        .withDaysOfMonth(9,10,11,12,13,14))));
+                                        .withValue(9,10,11,12,13,14))));
     }
 
     /** FREQ=DAILY;INVERVAL=2;BYMONTHDAY=9 */

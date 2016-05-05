@@ -73,7 +73,8 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
      */
     public ByDay()
     {
-        super(ByDay.class);
+        super();
+//        super(ByDay.class);
         // TODO - USE WKST PROPERTY FOR START OF WEEK
         field = WeekFields.of(Locale.getDefault()).dayOfWeek();
         WeekFields weekFields = WeekFields.of(Locale.getDefault());

@@ -59,7 +59,8 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
     
     public ByMonthDay()
     {
-        super(ByMonthDay.class);
+//        super(ByMonthDay.class);
+        super();
     }
     
     /** Constructor takes String of comma-delimited integers, parses it to array of ints
@@ -94,25 +95,25 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
 //        }
 //    }
     
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        ByMonthDay testObj = (ByMonthDay) obj;
-        boolean daysOfMonthEquals = getValue().equals(testObj.getValue());
-        return daysOfMonthEquals;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        int hash = 5;
-        hash = (31 * hash) + getValue().hashCode();
-        return hash;
-    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (obj == this) return true;
+//        if((obj == null) || (obj.getClass() != getClass())) {
+//            return false;
+//        }
+//        ByMonthDay testObj = (ByMonthDay) obj;
+//        boolean daysOfMonthEquals = getValue().equals(testObj.getValue());
+//        return daysOfMonthEquals;
+//    }
+//    
+//    @Override
+//    public int hashCode()
+//    {
+//        int hash = 5;
+//        hash = (31 * hash) + getValue().hashCode();
+//        return hash;
+//    }
     
     @Override
     public String toContent()

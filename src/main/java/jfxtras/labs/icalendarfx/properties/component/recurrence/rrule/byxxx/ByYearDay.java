@@ -11,7 +11,8 @@ public class ByYearDay extends ByRuleAbstract<ObservableList<Integer>, ByYearDay
 {
     public ByYearDay()
     {
-        super(ByYearDay.class);
+//        super(ByYearDay.class);
+        super();
         throw new RuntimeException("not implemented");
     }
     
@@ -30,6 +31,20 @@ public class ByYearDay extends ByRuleAbstract<ObservableList<Integer>, ByYearDay
             Temporal startDateTime) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public String toContent()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void parseContent(String content)
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

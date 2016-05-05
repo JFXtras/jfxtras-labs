@@ -41,6 +41,6 @@ public interface RRuleElement<T> extends VCalendarElement
     @Override
     default String toContent()
     {
-        return elementType().toString() + "=" + getValue().toString();
+        return RRuleElementType.enumFromClass(getClass()).toString() + "=" + getValue().toString();
     }
 }

@@ -11,7 +11,8 @@ public class BySetPosition extends ByRuleAbstract<ObservableList<Integer>, BySet
 {
     public BySetPosition()
     {
-        super(BySetPosition.class);
+        super();
+//        super(BySetPosition.class);
         throw new RuntimeException("not implemented");
     }
     
@@ -30,6 +31,20 @@ public class BySetPosition extends ByRuleAbstract<ObservableList<Integer>, BySet
             Temporal startDateTime) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public String toContent()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void parseContent(String content)
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

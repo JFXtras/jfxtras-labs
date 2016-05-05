@@ -32,15 +32,27 @@ public class Until extends RRuleElementBase<Temporal, Until>
         // TODO Auto-generated constructor stub
     }
 
+    public Until()
+    {
+        super();
+    }
+
     @Override
     public String toContent()
     {
-        return ";" + elementType().toString() + "=" + DateTimeUtilities.temporalToString(getValue());
+        return RRuleElementType.enumFromClass(getClass()).toString() + "=" + DateTimeUtilities.temporalToString(getValue());
     }
 
     @Override
     public void parseContent(String content)
     {
         setValue(DateTimeUtilities.temporalFromString(content));
+    }
+
+    public static Until parse(String content)
+    {
+        Until element = new Until();
+        element.parseContent(content);
+        return element;
     }
 }

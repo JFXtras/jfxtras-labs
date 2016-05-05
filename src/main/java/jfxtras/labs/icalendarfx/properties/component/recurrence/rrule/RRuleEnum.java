@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 // TODO - SHOULD ALL RRULE PARAMETERS GO HERE? - BY RULE ONES TOO?

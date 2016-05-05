@@ -11,7 +11,7 @@ public class DirectoryEntryReferenceTest
     @Test
     public void canCopyDirectory()
     {
-        DirectoryEntryReference parameter = new DirectoryEntryReference("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
+        DirectoryEntryReference parameter = DirectoryEntryReference.parse("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
         DirectoryEntryReference parameter2 = new DirectoryEntryReference(parameter);
         assertEquals(parameter, parameter2);
     }

@@ -41,11 +41,11 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;

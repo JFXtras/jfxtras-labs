@@ -11,7 +11,8 @@ public class ByHour extends ByRuleAbstract<ObservableList<Integer>, ByHour>
 {
     public ByHour()
     {
-        super(ByHour.class);
+//        super(ByHour.class);
+        super();
         throw new RuntimeException("not implemented");
     }
     

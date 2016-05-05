@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
@@ -24,6 +25,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @see Hourly
  * @see Minutely
  * @see Secondly */
+@Deprecated
 public interface Frequency {
 
     /** Number of frequency periods elapsed before next occurrence. Defaults to 1*/
@@ -47,7 +49,7 @@ public interface Frequency {
     {
         Optional<ByRule> rule = byRules()
                 .stream()
-                .filter(r -> r.byRuleType() == byRuleType)
+//                .filter(r -> r.elementType() == byRuleType)
                 .findFirst();
         return (rule.isPresent()) ? rule.get() : null;
     }

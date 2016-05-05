@@ -1,10 +1,8 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
-import java.time.temporal.Temporal;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByHour;
@@ -19,9 +17,9 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public enum RRuleElementType
 {
-    FREQUENCY ("FREQ", Frequency2.class) {
+    FREQUENCY ("FREQ", Frequency2.class, 0) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.getFrequency();
         }
@@ -63,9 +61,9 @@ public enum RRuleElementType
 //            };
 //        }
     },
-    UNTIL ("UNTIL", Until.class) {
+    UNTIL ("UNTIL", Until.class, 0) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.getUntil();
         }
@@ -82,29 +80,29 @@ public enum RRuleElementType
             }
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return UNTIL.toString() + "=" + DateTimeUtilities.temporalToString((Temporal) object);
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                    // TODO - NOT BEING USED - SHOULD CONVERTER BE REPLACED BY ONE METHOD?
-                    return (T) DateTimeUtilities.temporalFromString(string);
-                }
-            };
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            return new StringConverter<T>()
+//            {
+//                @Override
+//                public String toString(T object)
+//                {
+//                    return UNTIL.toString() + "=" + DateTimeUtilities.temporalToString((Temporal) object);
+//                }
+//
+//                @Override
+//                public T fromString(String string)
+//                {
+//                    // TODO - NOT BEING USED - SHOULD CONVERTER BE REPLACED BY ONE METHOD?
+//                    return (T) DateTimeUtilities.temporalFromString(string);
+//                }
+//            };
+//        }
     },
-    COUNT ("COUNT", Count.class) {
+    COUNT ("COUNT", Count.class, 0) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.getCount();
         }
@@ -116,16 +114,16 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
     },
-    INTERVAL ("INTERVAL", Interval.class) {
+    INTERVAL ("INTERVAL", Interval.class, 0) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
 //            return (rrule.getInterval() == RecurrenceRule3.DEFAULT_INTERVAL) ? null : rrule.getInterval();
             return rrule.getInterval();
@@ -138,18 +136,19 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
     },
-    WEEK_START ("WKST", WeekStart.class) {
+    WEEK_START ("WKST", WeekStart.class, 0) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
-            return (rrule.getWeekStart() == RecurrenceRule3.DEFAULT_WEEK_START) ? null : rrule.getWeekStart();
+//            return (rrule.getWeekStart() == null) ? RecurrenceRule3.DEFAULT_WEEK_START : rrule.getWeekStart();
+            return rrule.getWeekStart();
         }
 
         @Override
@@ -159,16 +158,16 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
     },
-    BY_MONTH ("BYMONTH", ByMonth.class) {
+    BY_MONTH ("BYMONTH", ByMonth.class, 100) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.lookupByRule(ByMonth.class);
         }
@@ -185,28 +184,28 @@ public enum RRuleElementType
             }
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return object.toString();
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                    return (T) string;
-                }
-            };
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            return new StringConverter<T>()
+//            {
+//                @Override
+//                public String toString(T object)
+//                {
+//                    return object.toString();
+//                }
+//
+//                @Override
+//                public T fromString(String string)
+//                {
+//                    return (T) string;
+//                }
+//            };
+//        }
     },
-    BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class) {
+    BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 110) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.lookupByRule(ByWeekNumber.class);
         }
@@ -218,16 +217,16 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
     },
-    BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class) {
+    BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class, 120) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.lookupByRule(ByYearDay.class);
         }
@@ -239,16 +238,16 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
     },
-    BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class) {
+    BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class, 130) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.lookupByRule(ByMonthDay.class);
         }
@@ -260,16 +259,16 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
     },
-    BY_DAY ("BYDAY", ByDay.class) {
+    BY_DAY ("BYDAY", ByDay.class, 140) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.lookupByRule(ByDay.class);
         }
@@ -286,28 +285,28 @@ public enum RRuleElementType
             }
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return object.toString();
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                    return (T) string;
-                }
-            };
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            return new StringConverter<T>()
+//            {
+//                @Override
+//                public String toString(T object)
+//                {
+//                    return object.toString();
+//                }
+//
+//                @Override
+//                public T fromString(String string)
+//                {
+//                    return (T) string;
+//                }
+//            };
+//        }
     },
-    BY_HOUR ("BYHOUR", ByHour.class) {
+    BY_HOUR ("BYHOUR", ByHour.class, 150) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.lookupByRule(ByHour.class);
         }
@@ -319,16 +318,16 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
     },
-    BY_MINUTE ("BYMINUTE", ByMinute.class) {
+    BY_MINUTE ("BYMINUTE", ByMinute.class, 160) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.lookupByRule(ByMinute.class);
         }
@@ -340,16 +339,16 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
     },
-    BY_SECOND ("BYSECOND", BySecond.class) {
+    BY_SECOND ("BYSECOND", BySecond.class, 170) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.lookupByRule(BySecond.class);
         }
@@ -361,16 +360,16 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
     },
-    BY_SET_POSITION ("BYSETPOS", BySetPosition.class) {
+    BY_SET_POSITION ("BYSETPOS", BySetPosition.class, 180) {
         @Override
-        public Object getElement(RecurrenceRule3 rrule)
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
             return rrule.lookupByRule(BySetPosition.class);
         }
@@ -382,24 +381,24 @@ public enum RRuleElementType
             
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return object.toString();
-                }
-
-                @Override
-                public T fromString(String string)
-                {
-                    return (T) string;
-                }
-            };
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            return new StringConverter<T>()
+//            {
+//                @Override
+//                public String toString(T object)
+//                {
+//                    return object.toString();
+//                }
+//
+//                @Override
+//                public T fromString(String string)
+//                {
+//                    return (T) string;
+//                }
+//            };
+//        }
     };
     
     // Map to match up name to enum
@@ -448,17 +447,21 @@ public enum RRuleElementType
     
     private Class<? extends RRuleElement<?>> myClass;
     
-    RRuleElementType(String name, Class<? extends RRuleElement<?>> myClass)
+    int sortOrder;
+    public int sortOrder() { return sortOrder; }
+    
+    RRuleElementType(String name, Class<? extends RRuleElement<?>> myClass, int sortOrder)
     {
         this.name = name;
         this.myClass = myClass;
+        this.sortOrder = sortOrder;
     }
  
     /*
      * ABSTRACT METHODS
      */
     /** Returns associated Element */
-    abstract public Object getElement(RecurrenceRule3 rrule);
+    abstract public RRuleElement<?> getElement(RecurrenceRule3 rrule);
     
     abstract public void parse(RecurrenceRule3 recurrenceRule, String content);
     
@@ -470,8 +473,9 @@ public enum RRuleElementType
     
     /** return default String converter associated with property value type */
 //    @Deprecated
-    public <T> StringConverter<T> getConverter() {
-        return null; }
+//    public <T> StringConverter<T> getConverter() {
+//        return null; }
+
 
 
     

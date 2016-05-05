@@ -35,8 +35,8 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
@@ -177,10 +177,10 @@ public class DisplayableTest
     {
         VEventNew e = new VEventNew()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceRule(new RecurrenceRule2()
+                .withRecurrenceRule(new RecurrenceRule3()
                         .withCount(6)
-                        .withFrequency(new Daily()
-                                .withInterval(3)))
+                        .withFrequency("DAILY")
+                        .withInterval(3))
                 .withExceptions(new Exceptions<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 15, 10, 0)));
         List<Temporal> madeDates = e
@@ -209,8 +209,8 @@ public class DisplayableTest
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
-                .withRecurrenceRule(new RecurrenceRule2()
-                        .withFrequency(new Daily())
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withFrequency(FrequencyType.DAILY)
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
         Temporal start = ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles"));
         List<Temporal> madeDates = e
@@ -236,8 +236,8 @@ public class DisplayableTest
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
-                .withRecurrenceRule(new RecurrenceRule2()
-                        .withFrequency(new Daily())
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withFrequency(FrequencyType.DAILY)
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
         e.setExceptions(null);
         e.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(2016, 2, 7)));

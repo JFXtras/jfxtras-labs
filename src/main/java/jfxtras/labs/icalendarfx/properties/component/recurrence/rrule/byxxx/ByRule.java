@@ -26,7 +26,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleEleme
 public interface ByRule<T> extends Comparable<ByRule<T>>, RRuleElement<T>
 {
     
-    ByRuleType byRuleType();
+//    ByRuleType byRuleType();
     
     /** 
      * New stream of date/times made after applying rule that either filters out some date/times

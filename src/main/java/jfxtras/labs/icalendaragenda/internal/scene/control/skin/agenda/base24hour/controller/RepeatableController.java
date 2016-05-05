@@ -59,13 +59,13 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -1103,15 +1103,13 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         int unsupportedRules = (byDay == null) ? byRulesSize : byRulesSize-1;
         if (unsupportedRules > 0)
         {
-            String unsupportedByRules = rRule.getFrequency().byRules()
-                    .stream()
-//                    .map(e -> e.getValue())
-                    .filter(b -> b.byRuleType() != ByRuleType.BY_DAY)
-                    .map(b -> b.byRuleType().toString())
-//                    .filter(b -> b.getByRuleType() != ByRuleParameter.BY_DAY)
-//                    .map(b -> b.getByRuleType().toString())
-                    .collect(Collectors.joining(","));
-            System.out.println("RRULE contains unsupported ByRule" + ((unsupportedRules > 1) ? "s:" : ":") + unsupportedByRules);
+//            String unsupportedByRules = rRule.getFrequency().byRules()
+//                    .stream()
+////                    .map(e -> e.getValue())
+//                    .filter(b -> b.byRuleType() != ByRuleType.BY_DAY)
+//                    .map(b -> b.byRuleType().toString())
+//                    .collect(Collectors.joining(","));
+//            System.out.println("RRULE contains unsupported ByRule" + ((unsupportedRules > 1) ? "s:" : ":") + unsupportedByRules);
             return false;
         }
         return true;

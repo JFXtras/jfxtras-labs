@@ -18,11 +18,17 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDa
  */
 public class WeekStart extends RRuleElementBase<DayOfWeek, WeekStart>
 {
+    static final DayOfWeek DEFAULT_WEEK_START = DayOfWeek.MONDAY;
 
+    public WeekStart(DayOfWeek until)
+    {
+        // TODO Auto-generated constructor stub
+    }
+    
     @Override
     public String toContent()
     {
-        return ";" + elementType().toString() + "=" + getValue().toString().substring(0, 2);
+        return RRuleElementType.enumFromClass(getClass()).toString() + "=" + getValue().toString().substring(0, 2);
     }
 
     @Override

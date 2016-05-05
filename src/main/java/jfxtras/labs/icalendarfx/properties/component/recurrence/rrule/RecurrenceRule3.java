@@ -33,7 +33,6 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMo
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.BySecond;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -351,18 +350,19 @@ public class RecurrenceRule3
      * in a YEARLY "RRULE" when a BYWEEKNO rule part is specified.  The
      * default value is MO.
      */
-    static final DayOfWeek DEFAULT_WEEK_START = DayOfWeek.MONDAY;
-    public SimpleObjectProperty<DayOfWeek> weekStartProperty()
+    public SimpleObjectProperty<WeekStart> weekStartProperty()
     {
         if (weekStart == null)
         {
-            weekStart = new SimpleObjectProperty<DayOfWeek>(this, RRuleElementType.WEEK_START.toString());
+            weekStart = new SimpleObjectProperty<>(this, RRuleElementType.WEEK_START.toString());
         }
         return weekStart;
     }
-    private SimpleObjectProperty<DayOfWeek> weekStart;
-    public DayOfWeek getWeekStart() { return (weekStart == null) ? DEFAULT_WEEK_START : weekStartProperty().get(); }
-    public void setWeekStart(DayOfWeek weekStart) { weekStartProperty().set(weekStart); }
+    private SimpleObjectProperty<WeekStart> weekStart;
+    public WeekStart getWeekStart() { return (weekStart == null) ? null : weekStartProperty().get(); }
+    public void setWeekStart(WeekStart weekStart) { weekStartProperty().set(weekStart); }
+    public void setWeekStart(DayOfWeek weekStart) { weekStartProperty().set(new WeekStart(weekStart)); }
+    public RecurrenceRule3 withWeekStart(WeekStart weekStart) { setWeekStart(weekStart); return this; }
     public RecurrenceRule3 withWeekStart(DayOfWeek weekStart) { setWeekStart(weekStart); return this; }
     
     /**
@@ -430,12 +430,12 @@ public class RecurrenceRule3
                         ByRule newByRule = c;
                         long alreadyPresent = byRules()
                                 .stream()
-                                .map(r -> r.byRuleType())
-                                .filter(p -> p.equals(c.byRuleType()))
+                                .map(r -> r.elementType())
+                                .filter(p -> p.equals(c.elementType()))
                                 .count();
                         if (alreadyPresent > 1)
                         {
-                            throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + c.byRuleType() + ") more than once.");
+                            throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + c.elementType() + ") more than once.");
                         }
                     });
                     Collections.sort(byRules()); // sort additions
@@ -551,7 +551,7 @@ public class RecurrenceRule3
     public TemporalAdjuster adjuster()
     {
         int interval = (getInterval() == null) ? Interval.DEFAULT_INTERVAL : getInterval().getValue();
-        return (temporal) -> temporal.plus(interval, getFrequency().frequencyType().getChronoUnit());
+        return (temporal) -> temporal.plus(interval, getFrequency().getValue().getChronoUnit());
     }
 
     /**
@@ -568,7 +568,7 @@ public class RecurrenceRule3
      */
     public Stream<Temporal> streamRecurrences(Temporal start)
     {
-        getFrequency().setChronoUnit(getFrequency().frequencyType().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
+        getFrequency().setChronoUnit(getFrequency().getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
         Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
         Iterator<ByRule> rulesIterator = byRules()
                 .stream()
@@ -820,8 +820,9 @@ public class RecurrenceRule3
                 // all element objects MUST override toString
                 .map(e -> 
                 {
-                    Object object = e.getElement(this);
-                    return e.getConverter().toString(object);
+                    RRuleElement<?> element = e.getElement(this);
+                    return element.toContent();
+//                    return e.getConverter().toString(element);
                 })
                 .collect(Collectors.joining(";"));
     }

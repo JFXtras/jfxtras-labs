@@ -11,7 +11,8 @@ public class ByMinute extends ByRuleAbstract<ObservableList<Integer>, ByMinute>
 {
     public ByMinute()
     {
-        super(ByMinute.class);
+//        super(ByMinute.class);
+        super();
         throw new RuntimeException("not implemented");
     }
     

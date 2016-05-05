@@ -71,16 +71,17 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
      */
     public ByWeekNumber()
     {
-        super(ByWeekNumber.class);
+        super();
+//        super(ByWeekNumber.class);
     }
     
-    /** takes String of comma-delimited integers, parses it to array of ints 
-     */
-    public ByWeekNumber(String weekNumbers)
-    {
-        this();
-        parseContent(weekNumbers);
-    }
+//    /** takes String of comma-delimited integers, parses it to array of ints 
+//     */
+//    public ByWeekNumber(String weekNumbers)
+//    {
+//        this();
+//        parseContent(weekNumbers);
+//    }
     
     /** Constructor requires weeks of the year int value(s) */
     public ByWeekNumber(Integer...weekNumbers)

@@ -5,6 +5,11 @@ import javafx.beans.property.SimpleObjectProperty;
 
 abstract public class RRuleElementBase<T, U> implements RRuleElement<T>
 {
+    /*
+     * Recurrence Rule element value
+     * For example, FREQ=DAILY the value is DAILY
+     * 
+     */
     @Override
     public T getValue() { return value.get(); }
     @Override
@@ -15,7 +20,7 @@ abstract public class RRuleElementBase<T, U> implements RRuleElement<T>
     public U withValue(T value) { setValue(value); return (U) this; }
     
     /**
-     * PARAMETER TYPE
+     * ELEMENT TYPE
      * 
      *  The enumerated type of the parameter.
      */
@@ -29,7 +34,7 @@ abstract public class RRuleElementBase<T, U> implements RRuleElement<T>
     protected RRuleElementBase()
     {
         elementType = RRuleElementType.enumFromClass(getClass());
-        value = new SimpleObjectProperty<>(this, elementType.toString());
+        value = new SimpleObjectProperty<>(this, RRuleElementType.enumFromClass(getClass()).toString());
     }
     
     @Override

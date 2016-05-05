@@ -13,7 +13,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -462,17 +461,17 @@ public class RecurrenceRule2
     }
 
     
-    @Override
-    public String toString()
-    {
-        Stream<String> rruleParameterStream = Arrays.stream(RRuleEnum.values())
-                .map(p -> p.toParameterString(this))
-                .filter(s -> s != null);
-
-        Stream<String> byRuleParameterStream = getFrequency().byRules()
-                .stream()
-                .map(e -> e.byRuleType().toParameterString(this.getFrequency()));
-        return Stream.concat(rruleParameterStream, byRuleParameterStream)
-                .collect(Collectors.joining(";"));
-    }
+//    @Override
+//    public String toString()
+//    {
+//        Stream<String> rruleParameterStream = Arrays.stream(RRuleEnum.values())
+//                .map(p -> p.toParameterString(this))
+//                .filter(s -> s != null);
+//
+//        Stream<String> byRuleParameterStream = getFrequency().byRules()
+//                .stream()
+//                .map(e -> e.byRuleType().toParameterString(this.getFrequency()));
+//        return Stream.concat(rruleParameterStream, byRuleParameterStream)
+//                .collect(Collectors.joining(";"));
+//    }
 }

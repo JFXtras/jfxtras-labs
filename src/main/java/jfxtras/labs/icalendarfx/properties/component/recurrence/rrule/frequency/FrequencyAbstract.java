@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -13,11 +12,12 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
 
+@Deprecated
 public abstract class FrequencyAbstract<T> implements Frequency {
     
     /** INTERVAL: (RFC 5545 iCalendar 3.3.10, page 40) number of frequency periods to pass before new appointment */
@@ -59,7 +59,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
     {
         Optional<ByRule> rule = byRules()
                 .stream()
-                .filter(r -> r.byRuleType() == byRuleType)
+//                .filter(r -> r.byRuleType() == byRuleType)
                 .findFirst();
         return (rule.isPresent()) ? rule.get() : null;
     }
@@ -123,37 +123,37 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         this.frequencyType = frequencyType;
         setChronoUnit(frequencyType.getChronoUnit());
         
-        // Listener that ensures user doesn't add same ByRule a second time.  Also keeps the byRules list sorted.
-        byRules().addListener((ListChangeListener<? super ByRule>) (change) ->
-        {
-            while (change.next())
-            {
-                if (change.wasAdded())
-                {
-                    change.getAddedSubList().stream().forEach(c ->
-                    {
-                        ByRule newByRule = c;
-                        long alreadyPresent = byRules()
-                                .stream()
-                                .map(r -> r.byRuleType())
-                                .filter(p -> p.equals(c.byRuleType()))
-                                .count();
-                        if (alreadyPresent > 1)
-                        {
-                            throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + c.byRuleType() + ") more than once.");
-                        }
-                    });
-                    Collections.sort(byRules()); // sort additions
-                }
-            }
-        });
+//        // Listener that ensures user doesn't add same ByRule a second time.  Also keeps the byRules list sorted.
+//        byRules().addListener((ListChangeListener<? super ByRule>) (change) ->
+//        {
+//            while (change.next())
+//            {
+//                if (change.wasAdded())
+//                {
+//                    change.getAddedSubList().stream().forEach(c ->
+//                    {
+//                        ByRule newByRule = c;
+//                        long alreadyPresent = byRules()
+//                                .stream()
+//                                .map(r -> r.byRuleType())
+//                                .filter(p -> p.equals(c.byRuleType()))
+//                                .count();
+//                        if (alreadyPresent > 1)
+//                        {
+//                            throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + c.byRuleType() + ") more than once.");
+//                        }
+//                    });
+//                    Collections.sort(byRules()); // sort additions
+//                }
+//            }
+//        });
     }
     
     // Copy constructor
     public FrequencyAbstract(Frequency source)
     {
         this(source.frequencyType());
-        source.byRules().stream().forEach(b -> byRules().add(b.byRuleType().newInstance(b))); // copy each ByRule
+//        source.byRules().stream().forEach(b -> byRules().add(b.byRuleType().newInstance(b))); // copy each ByRule
     }
 
     @Override

@@ -33,7 +33,19 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
     {
         parseContent(months);
     }
+    public void setValue(int... months)
+    {
+        Month[] monthArray = Arrays.stream(months)
+                .mapToObj(i -> Month.of(i))
+                .toArray(size -> new Month[size]);
+        setValue(monthArray);
+    }
     public ByMonth withValue(Month... months)
+    {
+        setValue(months);
+        return this;
+    }
+    public ByMonth withValue(int... months)
     {
         setValue(months);
         return this;
@@ -49,19 +61,15 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
      */
     public ByMonth()
     {
-        super(ByMonth.class);
+        super();
+//        super(ByMonth.class);
     }
     
-//    @Deprecated // use parse
-//    public ByMonth(String months)
-//    {
-//        this();        
-//        setValue(
-//          Arrays.asList(months.split(","))
-//                .stream()
-//                .map(s -> Month.of(Integer.parseInt(s)))
-//                .toArray(size -> new Month[size]));
-//    }
+    public ByMonth(int month)
+    {
+        this();
+        setValue(month);
+    }
     
     public ByMonth(Month... months)
     {
@@ -81,33 +89,34 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
 //        destination2.setValue(getValue());
 //    }
     
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        ByMonth testObj = (ByMonth) obj;
-        boolean monthEquals = getValue().equals(testObj.getValue());
-//        boolean monthEquals = Arrays.equals(getValue(), testObj.getValue());
-        return monthEquals;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        int hash = 3;
-        hash = (31 * hash) + getValue().hashCode();
-        return hash;
-    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (obj == this) return true;
+//        if((obj == null) || (obj.getClass() != getClass())) {
+//            return false;
+//        }
+//        ByMonth testObj = (ByMonth) obj;
+//        boolean monthEquals = getValue().equals(testObj.getValue());
+////        boolean monthEquals = Arrays.equals(getValue(), testObj.getValue());
+//        return monthEquals;
+//    }
+//    
+//    @Override
+//    public int hashCode()
+//    {
+//        int hash = 3;
+//        hash = (31 * hash) + getValue().hashCode();
+//        return hash;
+//    }
+
 
     @Override
     public String toContent()
     {
         String days = getValue().stream()
 //        String days = Arrays.stream(getValue())
-                .map(d -> d.getValue() + ",")
+                .map(d -> Integer.toString(d.getValue()))
                 .collect(Collectors.joining(","));
         return RRuleElementType.BY_MONTH + "=" + days; // .substring(0, days.length()-1); // remove last comma
     }

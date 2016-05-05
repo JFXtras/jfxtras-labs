@@ -3,7 +3,10 @@ package jfxtras.labs.icalendarfx.property;
 import static org.junit.Assert.assertEquals;
 
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -12,11 +15,12 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -85,5 +89,36 @@ public class RecurrenceRuleTest
 
         System.out.println(expectedProperty.toContent());
         assertEquals(expectedProperty, madeProperty);
+    }
+    
+    /*
+     * TEST RECURRENCE RULE ELEMENTS
+     */
+    
+    @Test
+    public void canParseFrequency()
+    {
+        String content = "DAILY";
+        Frequency2 element = Frequency2.parse(content);
+        assertEquals(FrequencyType.DAILY, element.getValue());
+        assertEquals("FREQ=DAILY", element.toContent());
+    }
+    
+    @Test
+    public void canParseUntil()
+    {
+        String content = "19730429T070000Z";
+        Until element = Until.parse(content);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(1973, 4, 29, 7, 0), ZoneId.of("Z"));
+        assertEquals(t, element.getValue());
+        assertEquals("UNTIL=19730429T070000Z", element.toContent());
+    }
+
+    @Test
+    public void canParseByMonth()
+    {
+        ByMonth element = new ByMonth(4);
+        assertEquals(Month.APRIL, element.getValue().get(0));
+        assertEquals("BYMONTH=4", element.toContent());
     }
 }

@@ -4,7 +4,6 @@ import java.time.temporal.ChronoUnit;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 
 /**
  * FREQUENCY
@@ -39,6 +38,10 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.
  */
 public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
 {
+    
+    void setValue(String frequency) { setValue(FrequencyType.valueOf(frequency.toUpperCase())); }
+    public Frequency2 withValue(String frequency) { setValue(frequency); return this; }
+
 //    /**
 //     * FREQUENCY value
 //     */
@@ -136,8 +139,8 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
     private ObjectProperty<ChronoUnit> chronoUnit = new SimpleObjectProperty<ChronoUnit>();
     public void setChronoUnit(ChronoUnit chronoUnit) { this.chronoUnit.set(chronoUnit); }
     
-    public FrequencyType frequencyType() { return frequencyType; }
-    private FrequencyType frequencyType;
+//    public FrequencyType frequencyType() { return frequencyType; }
+//    private FrequencyType frequencyType;
     
 //    public TemporalAdjuster adjuster() { return (temporal) -> temporal.plus(getInterval(), frequencyType.getChronoUnit()); }
     
@@ -146,7 +149,8 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
      */
     public Frequency2(FrequencyType frequencyType)
     {
-        this.frequencyType = frequencyType;
+//        this.frequencyType = frequencyType;
+        setValue(frequencyType);
         setChronoUnit(frequencyType.getChronoUnit());
         
 //        // Listener that ensures user doesn't add same ByRule a second time.  Also keeps the byRules list sorted.
@@ -281,7 +285,7 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
     
     public static Frequency2 parse(String frequency)
     {
-        FrequencyType type = FrequencyType.valueOf(frequency);
+        FrequencyType type = FrequencyType.valueOf(frequency.toUpperCase());
         return new Frequency2(type);
     }
 }

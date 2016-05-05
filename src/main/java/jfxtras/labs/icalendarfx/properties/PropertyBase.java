@@ -443,9 +443,9 @@ public abstract class PropertyBase<T,U> implements Property<T>
 
         // save property value        
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-//        System.out.println("propertyValueString:" + getPropertyValueString());
+        System.out.println("propertyValueString:" + getPropertyValueString());
         T value = getConverter().fromString(getPropertyValueString());
-//        System.out.println("value class:" + value.getClass() + " " + isCustomConverter());
+        System.out.println("value class:" + value.getClass() + " " + isCustomConverter());
         if (value == null)
         {
             setUnknownValue(propertyValueString);
