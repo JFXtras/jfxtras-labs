@@ -21,4 +21,9 @@ public class Count extends RRuleElementBase<Integer, Count>
     public Integer getValue() { return (valueProperty() == null) ? DEFAULT_INTERVAL : valueProperty().get(); }
     // TODO - LISTENER TO PREVENT INTERVAL FROM BEING LESS THAN 1
 
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(Integer.parseInt(content));
+    }
 }

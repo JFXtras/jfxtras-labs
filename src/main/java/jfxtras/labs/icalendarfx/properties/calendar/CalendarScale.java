@@ -25,10 +25,10 @@ import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale.CalendarScaleT
  */
 public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale> implements VCalendarElement
 {
-    public CalendarScale(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public CalendarScale(String contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public CalendarScale(CalendarScale source)
     {

@@ -1127,7 +1127,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     private static String byDaySummary(ByDay byDay)
     {
         StringBuilder builder = new StringBuilder();
-        for (ByDayPair b : byDay.getByDayPairs())
+        for (ByDayPair b : byDay.getValue())
         {
             int ordinal = b.getOrdinal();
             DayOfWeek dayOfWeek = b.getDayOfWeek();

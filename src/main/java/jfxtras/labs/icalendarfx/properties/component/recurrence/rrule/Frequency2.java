@@ -240,16 +240,12 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
     @Override
     public String toString()
     {
-        return frequencyType().toString();
+        return super.toString() + ", " + toContent(); 
 //        StringBuilder builder = new StringBuilder("FREQ=" + frequencyType().toString());
 //        if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
 //        return builder.toString();
     }
-    public static Frequency2 parse(String frequency)
-    {
-        FrequencyType type = FrequencyType.valueOf(frequency);
-        return new Frequency2(type);
-    }
+    
     @Override
     public int hashCode()
     {
@@ -277,4 +273,15 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
         return true;
     }
 
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(FrequencyType.valueOf(content));
+    }
+    
+    public static Frequency2 parse(String frequency)
+    {
+        FrequencyType type = FrequencyType.valueOf(frequency);
+        return new Frequency2(type);
+    }
 }

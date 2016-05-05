@@ -5,8 +5,9 @@ import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 
-public class ByHour extends ByRuleAbstract
+public class ByHour extends ByRuleAbstract<ObservableList<Integer>, ByHour>
 {
     public ByHour()
     {
@@ -19,7 +20,7 @@ public class ByHour extends ByRuleAbstract
         this();
     }
     
-    public ByHour(ByRule source)
+    public ByHour(ByHour source)
     {
         super(source);
     }
@@ -32,10 +33,17 @@ public class ByHour extends ByRuleAbstract
     }
 
     @Override
-    public void copyTo(ByRule destination) {
+    public String toContent()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void parseContent(String content)
+    {
         // TODO Auto-generated method stub
         
     }
-
 
 }

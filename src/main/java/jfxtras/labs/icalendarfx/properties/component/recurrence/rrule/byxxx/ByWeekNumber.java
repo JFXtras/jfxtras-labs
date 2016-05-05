@@ -45,6 +45,10 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
         }
         setValue(FXCollections.observableArrayList(weekNumbers));
     }
+    public void setValue(String weekNumbers)
+    {
+        parseContent(weekNumbers);        
+    }
     public ByWeekNumber withValue(Integer... weekNumbers)
     {
         setValue(weekNumbers);
@@ -52,7 +56,7 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     }
     public ByWeekNumber withValue(String weekNumbers)
     {
-        parseContent(weekNumbers);
+        setValue(weekNumbers);
         return this;
     }
     
@@ -205,11 +209,11 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
         setValue(weekArray);
     }
 
-    public static ByWeekNumber parse(String weekNumbers)
+    public static ByWeekNumber parse(String content)
     {
-        ByWeekNumber byWeekNumber = new ByWeekNumber();
-        byWeekNumber.parseContent(weekNumbers);
-        return byWeekNumber;
+        ByWeekNumber element = new ByWeekNumber();
+        element.parseContent(content);
+        return element;
     }
 
 }

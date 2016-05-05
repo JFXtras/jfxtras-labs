@@ -2,6 +2,8 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.DayOfWeek;
 
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ICalendarDayOfWeek;
+
 /**
  * Week Start
  * WKST:
@@ -17,4 +19,15 @@ import java.time.DayOfWeek;
 public class WeekStart extends RRuleElementBase<DayOfWeek, WeekStart>
 {
 
+    @Override
+    public String toContent()
+    {
+        return ";" + elementType().toString() + "=" + getValue().toString().substring(0, 2);
+    }
+
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(ICalendarDayOfWeek.valueOf(content).getDayOfWeek());
+    }
 }

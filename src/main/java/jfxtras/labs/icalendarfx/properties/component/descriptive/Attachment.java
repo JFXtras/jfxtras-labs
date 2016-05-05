@@ -64,7 +64,7 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
        }
    }
    public Attachment<T> withFormatType(FormatType format) { setFormatType(format); return this; }
-   public Attachment<T> withFormatType(String format) { setFormatType(new FormatType(format)); return this; }
+   public Attachment<T> withFormatType(String format) { setFormatType(FormatType.parse(format)); return this; }
    
    /**
     * ENCODING: Incline Encoding

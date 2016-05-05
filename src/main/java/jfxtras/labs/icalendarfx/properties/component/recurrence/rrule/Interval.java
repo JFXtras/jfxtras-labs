@@ -23,4 +23,10 @@ public class Interval extends RRuleElementBase<Integer, Interval>
     {
         setValue(interval);
     }
+
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(Integer.parseInt(content));
+    }
 }

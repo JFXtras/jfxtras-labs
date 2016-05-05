@@ -59,7 +59,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     private ObjectProperty<CommonName> commonName;
     @Override
     public void setCommonName(CommonName commonName) { commonNameProperty().set(commonName); }
-    public void setCommonName(String content) { setCommonName(new CommonName(content)); }
+    public void setCommonName(String content) { setCommonName(CommonName.parse(content)); }
     public U withCommonName(CommonName commonName) { setCommonName(commonName); return (U) this; }
     public U withCommonName(String content) { setCommonName(content); return (U) this; }    
 
@@ -95,7 +95,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
             directoryEntryReferenceProperty().set(directoryEntryReference);
         }
     }
-    public void setDirectoryEntryReference(String content) { setDirectoryEntryReference(new DirectoryEntryReference(content)); }
+    public void setDirectoryEntryReference(String content) { setDirectoryEntryReference(DirectoryEntryReference.parse(content)); }
     public U withDirectoryEntryReference(DirectoryEntryReference directoryEntryReference) { setDirectoryEntryReference(directoryEntryReference); return (U) this; }
     public U withDirectoryEntryReference(URI uri) { setDirectoryEntryReference(new DirectoryEntryReference(uri)); return (U) this; }
     public U withDirectoryEntryReference(String content) { setDirectoryEntryReference(content); return (U) this; }
@@ -131,7 +131,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
             sentByProperty().set(sentBy);
         }
     }
-    public void setSentBy(String content) { setSentBy(new SentBy(content)); }
+    public void setSentBy(String content) { setSentBy(SentBy.parse(content)); }
     public U withSentBy(SentBy sentBy) { setSentBy(sentBy); return (U) this; }
     public U withSentBy(URI uri) { setSentBy(new SentBy(uri)); return (U) this; }
     public U withSentBy(String content) { setSentBy(content); return (U) this; }    
@@ -140,7 +140,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyBaseCalendarUser(CharSequence contentLine)
+    protected PropertyBaseCalendarUser(String contentLine)
     {
         super(contentLine);
     }

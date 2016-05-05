@@ -22,10 +22,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class Method extends PropertyBase<String, Method> implements VCalendarElement
 {
-    public Method(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Method(String contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public Method(Method source)
     {

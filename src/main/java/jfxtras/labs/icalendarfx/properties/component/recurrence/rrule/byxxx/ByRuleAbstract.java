@@ -64,4 +64,11 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<T, U> implem
         int p2 = byRule.byRuleType().sortOrder();
         return Integer.compare(p1, p2);
     }
+    
+    @Override
+    public String toString()
+    {
+        return super.toString() + ", " + toContent();
+    }
+
 }

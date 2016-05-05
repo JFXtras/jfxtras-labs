@@ -23,10 +23,10 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class Version extends PropertyBase<String, Version> implements VCalendarElement
 {
-    public Version(CharSequence contentLine)
-    {
-        super(contentLine);
-    }
+//    public Version(CharSequence contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public Version(Version source)
     {
@@ -36,7 +36,8 @@ public class Version extends PropertyBase<String, Version> implements VCalendarE
     /** Set version to default value of 2.0 */
     public Version()
     {
-        super(VCalendar.DEFAULT_ICALENDAR_SPECIFICATION_VERSION);
+        super();
+        setValue(VCalendar.DEFAULT_ICALENDAR_SPECIFICATION_VERSION);
     }
     
     public static Version parse(String string)

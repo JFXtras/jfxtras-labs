@@ -48,6 +48,79 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
 //    public ByDayPair[] getValue() { return byDayPairs; }
 //    private ByDayPair[] byDayPairs;
 //    private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
+
+    public void setValue(ByDayPair... byDayPairs)
+    {
+        setValue(FXCollections.observableArrayList(byDayPairs));
+    }
+    public void setValue(String byDayPairs)
+    {
+        parseContent(byDayPairs);
+    }
+    public ByDay withValue(ByDayPair... byDayPairs)
+    {
+        setValue(byDayPairs);
+        return this;
+    }
+    public ByDay withValue(String byDayPairs)
+    {
+        setValue(byDayPairs);
+        return this;
+    }
+    
+    //CONSTRUCTORS
+    /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
+     */
+    public ByDay()
+    {
+        super(ByDay.class);
+        // TODO - USE WKST PROPERTY FOR START OF WEEK
+        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
+    }
+    
+//    @Deprecated // use parse instead
+//    public ByDay(String dayPairs)
+//    {
+//        this();
+//        parseContent(dayPairs);
+//    }
+    
+    /** Constructor with varargs ByDayPair */
+    public ByDay(ByDayPair... byDayPairs)
+    {
+        this();
+        setValue(FXCollections.observableArrayList(byDayPairs));
+    }
+    
+    public ByDay(ByRule source)
+    {
+        super(source);
+        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
+    }
+
+    /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
+     * provided types are included within the specified frequency */
+    public ByDay(DayOfWeek... daysOfWeek)
+    {
+        this(Arrays.asList(daysOfWeek));
+    }
+
+    /** Constructor that uses DayOfWeek Collection.  No ordinals are allowed. */
+    public ByDay(Collection<DayOfWeek> daysOfWeek)
+    {
+        this();
+        ByDayPair[] dayArray = daysOfWeek.stream()
+            .map(d -> new ByDayPair(d,0))
+            .toArray(size -> new ByDayPair[size]);
+        setValue(FXCollections.observableArrayList(dayArray));
+    }
+
+    
+    
     /** Checks if byDayPairs has ordinal values.  If so returns true, otherwise false */
     public boolean hasOrdinals()
     {
@@ -104,58 +177,6 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
                      .map(d -> d.dayOfWeek)
                      .collect(Collectors.toList());
     }
-    
-    //CONSTRUCTORS
-    /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
-     */
-    public ByDay()
-    {
-        super(ByDay.class);
-        // TODO - USE WKST PROPERTY FOR START OF WEEK
-        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
-    }
-    
-//    @Deprecated // use parse instead
-//    public ByDay(String dayPairs)
-//    {
-//        this();
-//        parseContent(dayPairs);
-//    }
-    
-    /** Constructor with varargs ByDayPair */
-    public ByDay(ByDayPair... byDayPairs)
-    {
-        this();
-        setValue(FXCollections.observableArrayList(byDayPairs));
-    }
-    
-    public ByDay(ByRule source)
-    {
-        super(source);
-        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
-    }
-
-    /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
-     * provided types are included within the specified frequency */
-    public ByDay(DayOfWeek... daysOfWeek)
-    {
-        this(Arrays.asList(daysOfWeek));
-    }
-
-    /** Constructor that uses DayOfWeek Collection.  No ordinals are allowed. */
-    public ByDay(Collection<DayOfWeek> daysOfWeek)
-    {
-        this();
-        ByDayPair[] dayArray = daysOfWeek.stream()
-            .map(d -> new ByDayPair(d,0))
-            .toArray(size -> new ByDayPair[size]);
-        setValue(FXCollections.observableArrayList(dayArray));
-    }
-
     
 //    @Override
 //    public void copyTo(ByRule destination)
@@ -355,7 +376,7 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
     }
     
     /** Match up iCalendar 2-character day of week to Java Time DayOfWeek */
-    private enum ICalendarDayOfWeek
+    public enum ICalendarDayOfWeek
     {
         MO (DayOfWeek.MONDAY)
       , TU (DayOfWeek.TUESDAY)
@@ -403,10 +424,10 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
         byRule.setValue(FXCollections.observableArrayList(dayPairsList));
     }
 
-    public static ByDay parse(String dayPairs)
+    public static ByDay parse(String content)
     {
-        ByDay byRule = new ByDay();
-        byRule.parseContent(dayPairs);
-        return byRule;
+        ByDay element = new ByDay();
+        element.parseContent(content);
+        return element;
     }
 }

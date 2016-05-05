@@ -54,7 +54,7 @@ public class RelatedTo extends PropertyBase<String, RelatedTo> implements Proper
     private ObjectProperty<Relationship> relationship;
     @Override
     public void setRelationship(Relationship relationship) { relationshipProperty().set(relationship); }
-    public void setRelationship(String value) { setRelationship(new Relationship(value)); }
+    public void setRelationship(String value) { setRelationship(Relationship.parse(value)); }
     public RelatedTo withRelationship(Relationship altrep) { setRelationship(altrep); return this; }
     public RelatedTo withRelationship(RelationshipType value) { setRelationship(new Relationship(value)); return this; }
     public RelatedTo withRelationship(String content) { setRelationship(content); return this; }

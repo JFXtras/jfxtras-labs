@@ -35,7 +35,8 @@ public class ProductIdentifier extends PropertyBase<String, ProductIdentifier> i
 
     public ProductIdentifier()
     {
-        super(VCalendar.DEFAULT_PRODUCT_IDENTIFIER);
+        super();
+        setValue(VCalendar.DEFAULT_PRODUCT_IDENTIFIER);
     }
     
     public static ProductIdentifier parse(String string)

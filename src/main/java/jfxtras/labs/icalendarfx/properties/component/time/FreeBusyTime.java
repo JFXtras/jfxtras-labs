@@ -119,7 +119,7 @@ public class FreeBusyTime extends PropertyBase<List<Pair<ZonedDateTime, Temporal
     public void setFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(new FreeBusyType(type)); }
     public FreeBusyTime withFreeBusyType(FreeBusyType freeBusyType) { setFreeBusyType(freeBusyType); return this; }
     public FreeBusyTime withFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(type); return this; }
-    public FreeBusyTime withFreeBusyType(String freeBusyType) { setFreeBusyType(new FreeBusyType(freeBusyType)); return this; }
+    public FreeBusyTime withFreeBusyType(String freeBusyType) { setFreeBusyType(FreeBusyType.parse(freeBusyType)); return this; }
 
     /*
      * CONSTRUCTORS

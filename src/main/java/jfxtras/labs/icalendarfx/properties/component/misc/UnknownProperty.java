@@ -86,7 +86,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     private ObjectProperty<AlternateText> alternateText;
     @Override
     public void setAlternateText(AlternateText alternateText) { alternateTextProperty().set(alternateText); }
-    public void setAlternateText(String value) { setAlternateText(new AlternateText(value)); }
+    public void setAlternateText(String value) { setAlternateText(AlternateText.parse(value)); }
     public U withAlternateText(AlternateText altrep) { setAlternateText(altrep); return (U) this; }
     public U withAlternateText(URI value) { setAlternateText(new AlternateText(value)); return (U) this; }
     public U withAlternateText(String content) { setAlternateText(content); return (U) this; }
@@ -151,7 +151,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     public void setFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(new FreeBusyType(type)); }
     public U withFreeBusyType(FreeBusyType freeBusyType) { setFreeBusyType(freeBusyType); return (U)this; }
     public U withFreeBusyType(FreeBusyTypeEnum type) { setFreeBusyType(type); return (U) this; }
-    public U withFreeBusyType(String freeBusyType) { setFreeBusyType(new FreeBusyType(freeBusyType)); return (U) this; }
+    public U withFreeBusyType(String freeBusyType) { setFreeBusyType(FreeBusyType.parse(freeBusyType)); return (U) this; }
 
     /**
      * FMTTYPE: Format type parameter
@@ -173,7 +173,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     @Override
     public void setFormatType(FormatType formatType) { formatTypeProperty().set(formatType); }
     public U withFormatType(FormatType format) { setFormatType(format); return (U) this; }
-    public U withFormatType(String format) { setFormatType(new FormatType(format)); return (U) this; }
+    public U withFormatType(String format) { setFormatType(FormatType.parse(format)); return (U) this; }
 
     /**
      * RANGE
@@ -232,7 +232,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     public void setAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(new AlarmTriggerRelationship(type)); } 
     public U withAlarmTrigger(AlarmTriggerRelationship format) { setAlarmTrigger(format); return (U) this; }
     public U withAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(type); return (U) this; }
-    public U withAlarmTrigger(String format) { setAlarmTrigger(new AlarmTriggerRelationship(format)); return (U) this; }
+    public U withAlarmTrigger(String format) { setAlarmTrigger(AlarmTriggerRelationship.parse(format)); return (U) this; }
 
     /**
      * RELTYPE
@@ -260,7 +260,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     private ObjectProperty<Relationship> relationship;
     @Override
     public void setRelationship(Relationship relationship) { relationshipProperty().set(relationship); }
-    public void setRelationship(String value) { setRelationship(new Relationship(value)); }
+    public void setRelationship(String value) { setRelationship(Relationship.parse(value)); }
     public U withRelationship(Relationship altrep) { setRelationship(altrep); return (U) this; }
     public U withRelationship(RelationshipType value) { setRelationship(new Relationship(value)); return (U) this; }
     public U withRelationship(String content) { setRelationship(content); return (U) this; }
@@ -288,7 +288,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
     private ObjectProperty<TimeZoneIdentifierParameter> timeZoneIdentifier;
     @Override
     public void setTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { timeZoneIdentifierProperty().set(timeZoneIdentifier); }
-    public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value)); }
+    public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(TimeZoneIdentifierParameter.parse(value)); }
     public U withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (U) this; }
     public U withTimeZoneIdentifier(String content) { ParameterType.TIME_ZONE_IDENTIFIER.parse(this, content); return (U) this; }        
 
@@ -296,7 +296,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
      * CONSTRUCTORS
      */
     
-    public UnknownProperty(CharSequence contentLine)
+    public UnknownProperty(String contentLine)
     {
         super(contentLine);
     }

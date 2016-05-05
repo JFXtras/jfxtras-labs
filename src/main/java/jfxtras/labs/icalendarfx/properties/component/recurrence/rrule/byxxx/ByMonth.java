@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
@@ -28,6 +29,10 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
     {
         setValue(FXCollections.observableArrayList(months));
     }
+    public void setValue(String months)
+    {
+        parseContent(months);
+    }
     public ByMonth withValue(Month... months)
     {
         setValue(months);
@@ -35,7 +40,7 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
     }
     public ByMonth withValue(String months)
     {
-        setValue(makeMonthList(months));
+        setValue(months);
         return this;
     }
     
@@ -98,13 +103,13 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
     }
 
     @Override
-    public String toString()
+    public String toContent()
     {
         String days = getValue().stream()
 //        String days = Arrays.stream(getValue())
                 .map(d -> d.getValue() + ",")
-                .collect(Collectors.joining());
-        return ByRuleType.BY_MONTH + "=" + days.substring(0, days.length()-1); // remove last comma
+                .collect(Collectors.joining(","));
+        return RRuleElementType.BY_MONTH + "=" + days; // .substring(0, days.length()-1); // remove last comma
     }
 
     @Override
@@ -149,19 +154,29 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
         return null;    
     }
     
-    private static ObservableList<Month> makeMonthList(String months)
+//    private static ObservableList<Month> makeMonthList(String months)
+//    {
+//        return FXCollections.observableArrayList(
+//            Arrays.asList(months.split(","))
+//                .stream()
+//                .map(s -> Month.of(Integer.parseInt(s)))
+//                .toArray(size -> new Month[size]));
+//    }
+
+    @Override
+    public void parseContent(String content)
     {
-        return FXCollections.observableArrayList(
-            Arrays.asList(months.split(","))
+        Month[] monthArray = Arrays.asList(content.split(","))
                 .stream()
                 .map(s -> Month.of(Integer.parseInt(s)))
-                .toArray(size -> new Month[size]));
+                .toArray(size -> new Month[size]);
+        setValue(FXCollections.observableArrayList(monthArray));
     }
-
-    public static ByMonth parse(String months)
+    
+    public static ByMonth parse(String content)
     {
-        ByMonth byMonth = new ByMonth();
-        byMonth.setValue(makeMonthList(months) );
-        return byMonth;
+        ByMonth element = new ByMonth();
+        element.parseContent(content);
+        return element;
     }
 }
