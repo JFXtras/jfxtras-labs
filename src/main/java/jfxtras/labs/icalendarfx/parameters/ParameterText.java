@@ -7,6 +7,8 @@ package jfxtras.labs.icalendarfx.parameters;
  *
  * @param <T> - implementation class
  * @see CommonName
+ * @see FormatType
+ * @see Language
  */
 public abstract class ParameterText<T> extends ParameterBase<T,String>
 {
@@ -24,4 +26,10 @@ public abstract class ParameterText<T> extends ParameterBase<T,String>
     {
         super(source);
     }
+        
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(removeDoubleQuote(content));
+    } 
 }

@@ -37,4 +37,13 @@ public class Until extends RRuleElementBase<Temporal, Until>
     {
         return ";" + elementType().toString() + "=" + DateTimeUtilities.temporalToString(getValue());
     }
+
+    @Override
+    public void parseContent(String content)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    
 }

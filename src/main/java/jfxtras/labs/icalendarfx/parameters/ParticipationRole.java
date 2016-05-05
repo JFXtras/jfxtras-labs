@@ -33,15 +33,6 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
     {
         super(value);
     }
-
-    public ParticipationRole(String content)
-    {
-        super(ParticipationRoleType.enumFromName(content));
-        if (getValue() == ParticipationRoleType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
-    }
     
     public ParticipationRole(ParticipationRole source)
     {
@@ -55,6 +46,16 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
         String value = (getValue() == ParticipationRoleType.UNKNOWN) ? unknownValue : getValue().toString();
         String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
+    }
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(ParticipationRoleType.enumFromName(content));
+        if (getValue() == ParticipationRoleType.UNKNOWN)
+        {
+            unknownValue = content;
+        }
     }
     
     public enum ParticipationRoleType
@@ -86,5 +87,12 @@ public class ParticipationRole extends ParameterBase<ParticipationRole, Particip
         {
             this.names = names;
         }
+    }
+
+    public static ParticipationRole parse(String content)
+    {
+        ParticipationRole parameter = new ParticipationRole();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

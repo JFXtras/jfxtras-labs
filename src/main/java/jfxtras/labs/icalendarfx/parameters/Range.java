@@ -50,6 +50,13 @@ public class Range extends ParameterBase<Range, RangeType>
         return ";" + parameterName + "=" + getValue().toString();
     }
     
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(RangeType.enumFromName(content));
+    }
+    
     public enum RangeType
     {
         THIS_AND_FUTURE ("THISANDFUTURE"),
@@ -78,5 +85,12 @@ public class Range extends ParameterBase<Range, RangeType>
         {
             this.name = name;
         }
+    }
+
+    public static Range parse(String content)
+    {
+        Range parameter = new Range();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

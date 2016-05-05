@@ -30,15 +30,6 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
     {
         super(value);
     }
-
-    public Relationship(String content)
-    {
-        super(RelationshipType.valueOfWithUnknown(content));
-        if (getValue() == RelationshipType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
-    }
     
     public Relationship(Relationship source)
     {
@@ -52,6 +43,16 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
         String value = (getValue() == RelationshipType.UNKNOWN) ? unknownValue : getValue().toString();
         String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
+    }
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(RelationshipType.valueOfWithUnknown(content));
+        if (getValue() == RelationshipType.UNKNOWN)
+        {
+            unknownValue = content;
+        }
     }
     
     public enum RelationshipType
@@ -74,5 +75,12 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
             }
             return match;
         }
+    }
+
+    public static Relationship parse(String content)
+    {
+        Relationship parameter = new Relationship();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

@@ -19,13 +19,21 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
  */
 public class CommonName extends ParameterText<CommonName>
 {
-    public CommonName(String content)
+    public CommonName()
     {
-        super(content);
+        super();
     }
 
     public CommonName(CommonName source)
     {
         super(source);
+    }
+
+    public static CommonName parse(String content)
+    {
+        CommonName parameter = new CommonName();
+        parameter.parseContent(content);
+        return parameter;
+
     }
 }

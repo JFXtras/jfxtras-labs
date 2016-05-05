@@ -78,11 +78,11 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
     /*
      * CONSTRUCTORS
      */
-    public PropertyBaseRecurrence(CharSequence contentLine)
-    {
-        this();
-        parseContent(contentLine);
-    }
+//    public PropertyBaseRecurrence(CharSequence contentLine)
+//    {
+//        this();
+//        parseContent(contentLine);
+//    }
 
     public PropertyBaseRecurrence(ObservableSet<T> value)
     {

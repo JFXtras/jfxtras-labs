@@ -13,15 +13,22 @@ package jfxtras.labs.icalendarfx.parameters;
  * @author David Bal
  *
  */
-public class Language extends ParameterBase<Language, String>
+public class Language extends ParameterText<Language>
 {
-    public Language(String content)
+    public Language()
     {
-        super(content);
+        super();
     }
 
     public Language(Language source)
     {
         super(source);
+    }
+
+    public static Language parse(String content)
+    {
+        Language parameter = new Language();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

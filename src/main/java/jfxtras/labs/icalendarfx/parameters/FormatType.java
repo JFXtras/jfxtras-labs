@@ -16,7 +16,7 @@ import javafx.beans.property.StringProperty;
  *   
  *   @see Attachment
  */
-public class FormatType extends ParameterBase<FormatType, String>
+public class FormatType extends ParameterText<FormatType>
 {
     public String getTypeName() { return typeName.get(); }
     StringProperty typeNameProperty() { return typeName; }
@@ -56,13 +56,20 @@ public class FormatType extends ParameterBase<FormatType, String>
     /*
      * CONSTRUCTORS
      */  
-    public FormatType(String content)
+    public FormatType()
     {
-        super(content);
+        super();
     }
 
     public FormatType(FormatType source)
     {
         super(source);
+    }
+    
+    public static FormatType parse(String content)
+    {
+        FormatType parameter = new FormatType();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

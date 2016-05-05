@@ -35,15 +35,6 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
     {
         super(value);
     }
-
-    public FreeBusyType(String content)
-    {
-        super(FreeBusyTypeEnum.enumFromName(content));
-        if (getValue() == FreeBusyTypeEnum.UNKNOWN)
-        {
-            unknownValue = content;
-        }
-    }
     
     public FreeBusyType(FreeBusyType source)
     {
@@ -57,6 +48,16 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
         String value = (getValue() == FreeBusyTypeEnum.UNKNOWN) ? unknownValue : getValue().toString();
         String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
+    }
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(FreeBusyTypeEnum.enumFromName(content));
+        if (getValue() == FreeBusyTypeEnum.UNKNOWN)
+        {
+            unknownValue = content;
+        }
     }
     
     public enum FreeBusyTypeEnum
@@ -89,5 +90,12 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
         {
             this.names = names;
         }
+    }
+
+    public static FreeBusyType parse(String content)
+    {
+        FreeBusyType parameter = new FreeBusyType();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

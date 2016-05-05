@@ -57,7 +57,17 @@ public class ParticipationStatus extends ParameterBase<ParticipationStatus, Part
         String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
     }
-
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(ParticipationStatusType.enumFromName(content));
+        if (getValue() == ParticipationStatusType.UNKNOWN)
+        {
+            unknownValue = content;
+        }
+    }
+    
     public enum ParticipationStatusType
     {
         NEEDS_ACTION (Arrays.asList("NEEDS-ACTION", "NEEDS_ACTION")),  // VEvent, VTodo, VJournal - DEFAULT VALUE
@@ -91,5 +101,12 @@ public class ParticipationStatus extends ParameterBase<ParticipationStatus, Part
         {
             this.names = names;
         }
+    }
+
+    public static ParticipationStatus parse(String content)
+    {
+        ParticipationStatus parameter = new ParticipationStatus();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

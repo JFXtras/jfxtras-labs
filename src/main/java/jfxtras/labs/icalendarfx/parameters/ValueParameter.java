@@ -27,13 +27,9 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         super(value);
     }
     
-    public ValueParameter(String content)
+    public ValueParameter()
     {
-        super(ValueType.enumFromName(content));
-        if (getValue() == ValueType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
+        super();
     }
     
     @Override
@@ -42,5 +38,22 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
         String value = (getValue() == ValueType.UNKNOWN) ? unknownValue : getValue().toString();
         String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
+    }
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(ValueType.enumFromName(content));
+        if (getValue() == ValueType.UNKNOWN)
+        {
+            unknownValue = content;
+        }
+    } 
+
+    public static ValueParameter parse(String content)
+    {
+        ValueParameter parameter = new ValueParameter();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

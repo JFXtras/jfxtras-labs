@@ -1,8 +1,9 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.icalendarfx.VCalendarElement;
 
-public interface RRuleElement<T>
+public interface RRuleElement<T> extends VCalendarElement
 {
     /**
      * The value of the parameter.
@@ -37,6 +38,7 @@ public interface RRuleElement<T>
      * for example:
      * FREQ=DAILY
      */
+    @Override
     default String toContent()
     {
         return elementType().toString() + "=" + getValue().toString();

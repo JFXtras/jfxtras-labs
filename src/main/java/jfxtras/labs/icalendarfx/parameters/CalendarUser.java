@@ -31,15 +31,6 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
     {
         super(type);
     }
-    
-    public CalendarUser(String content)
-    {
-        super(CalendarUserType.valueOfWithUnknown(content));
-        if (getValue() == CalendarUserType.UNKNOWN)
-        {
-            unknownValue = content;
-        }
-    }
 
     public CalendarUser(CalendarUser source)
     {
@@ -53,6 +44,17 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
         String value = (getValue() == CalendarUserType.UNKNOWN) ? unknownValue : getValue().toString();
         String parameterName = parameterType().toString();
         return ";" + parameterName + "=" + value;
+    }
+    
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(CalendarUserType.valueOfWithUnknown(content));
+        if (getValue() == CalendarUserType.UNKNOWN)
+        {
+            unknownValue = content;
+        }
     }
     
     public enum CalendarUserType
@@ -76,5 +78,12 @@ public class CalendarUser extends ParameterBase<CalendarUser, CalendarUserType>
             return match;
         }
 
+    }
+
+    public static CalendarUser parse(String content)
+    {
+        CalendarUser parameter = new CalendarUser();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

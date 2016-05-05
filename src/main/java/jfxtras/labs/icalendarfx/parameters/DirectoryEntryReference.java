@@ -22,20 +22,27 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
  * @see Organizer
  *
  */
-public class DirectoryEntryReference extends ParameterBase<DirectoryEntryReference, URI>
+public class DirectoryEntryReference extends ParameterURI<DirectoryEntryReference>
 {
     public DirectoryEntryReference(URI uri)
     {
         super(uri);
     }
     
-    public DirectoryEntryReference(String content)
+    public DirectoryEntryReference()
     {
-        super(makeURI(content));
+        super();
     }
 
     public DirectoryEntryReference(DirectoryEntryReference source)
     {
         super(source);
+    }
+
+    public static DirectoryEntryReference parse(String content)
+    {
+        DirectoryEntryReference parameter = new DirectoryEntryReference();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

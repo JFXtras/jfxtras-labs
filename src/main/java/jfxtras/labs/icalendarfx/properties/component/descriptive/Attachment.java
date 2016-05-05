@@ -110,7 +110,7 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
     * CONSTRUCTORS
     */
    
-   public Attachment(Class<T> clazz, CharSequence contentLine)
+   public Attachment(Class<T> clazz, String contentLine)
    {
        super(clazz, contentLine);
        clazz.cast(getValue()); // ensure value class type matches parameterized type

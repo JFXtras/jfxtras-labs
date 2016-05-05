@@ -10,13 +10,14 @@ import jfxtras.labs.icalendarfx.parameters.CommonName;
 import jfxtras.labs.icalendarfx.parameters.Delegatees;
 import jfxtras.labs.icalendarfx.parameters.DirectoryEntryReference;
 import jfxtras.labs.icalendarfx.parameters.FormatType;
+import jfxtras.labs.icalendarfx.parameters.GroupMembership;
 
 public class ParseParameterTest
 {
     @Test // tests String as value
     public void canParseCommonName()
     {
-        CommonName parameter = new CommonName("David Bal");
+        CommonName parameter = CommonName.parse("David Bal");
         String expectedContent = ";CN=David Bal";
         assertEquals(expectedContent, parameter.toContent());
     }
@@ -24,7 +25,7 @@ public class ParseParameterTest
     @Test // tests enum as value
     public void canParseCalendarUser()
     {
-        CalendarUser parameter = new CalendarUser("GROUP");
+        CalendarUser parameter = CalendarUser.parse("GROUP");
         String expectedContent = ";CUTYPE=GROUP";
         assertEquals(expectedContent, parameter.toContent());
     }
@@ -32,23 +33,33 @@ public class ParseParameterTest
     @Test // tests list of URI value
     public void canParseDelegatees()
     {
-        Delegatees parameter = new Delegatees("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"");
+        Delegatees parameter = Delegatees.parse("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"");
         String expectedContent = ";DELEGATED-TO=\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"";
         assertEquals(expectedContent, parameter.toContent());
+        assertEquals(2, parameter.getValue().size());
     }
     
     @Test // tests single URI as value
     public void canParseAlternateText()
     {
-        AlternateText parameter = new AlternateText("\"CID:part3.msg.970415T083000@example.com\"");
+        AlternateText parameter = AlternateText.parse("\"CID:part3.msg.970415T083000@example.com\"");
         String expectedContent = ";ALTREP=\"CID:part3.msg.970415T083000@example.com\"";
         assertEquals(expectedContent, parameter.toContent());
+    }
+    
+    @Test // tests single URI as value
+    public void canParseGroupMembership()
+    {
+        String expectedContent = "\"mailto:projectA@example.com\",\"mailto:projectB@example.com\"";        
+        GroupMembership parameter = GroupMembership.parse(expectedContent);
+        assertEquals(";MEMBER=" + expectedContent, parameter.toContent());
+        assertEquals(2, parameter.getValue().size());
     }
     
     @Test // tests list as value
     public void canParseDirectory()
     {
-        DirectoryEntryReference parameter = new DirectoryEntryReference("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
+        DirectoryEntryReference parameter = DirectoryEntryReference.parse("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
         String expectedContent = ";DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"";
         assertEquals(expectedContent, parameter.toContent());
     }
@@ -56,7 +67,7 @@ public class ParseParameterTest
     @Test // tests two-value parameter
     public void canParseFormatType()
     {
-        FormatType parameter = new FormatType("application/msword");
+        FormatType parameter = FormatType.parse("application/msword");
         String expectedContent = ";FMTTYPE=application/msword";
         assertEquals(expectedContent, parameter.toContent());
         assertEquals("application", parameter.getTypeName());

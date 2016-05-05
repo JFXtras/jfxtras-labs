@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
@@ -20,7 +21,7 @@ import jfxtras.labs.icalendarfx.parameters.ValueParameter;
  *
  * @param <T> - type of value stored in Property
  */
-public interface Property<T>
+public interface Property<T> extends VCalendarElement
 {    
     /**
      * Property Name
@@ -121,15 +122,16 @@ public interface Property<T>
                     .collect(Collectors.toList()));
     }
     
-    /**
-     * Converts the property's value to a string for the content line
-     * 
-     * @return - string representation of property value consistent with iCalendar standards
-     */
-    CharSequence toContent();
-    
-    /** Parse content line into calendar property */
-    public void parseContent(CharSequence contentLine);
+//    /**
+//     * Converts the property's value to a string for the content line
+//     * 
+//     * @return - string representation of property value consistent with iCalendar standards
+//     */
+//    @Override
+//    String toContent();
+//    
+//    /** Parse content line into calendar property */
+//    public void parseContent(String contentLine);
     
     /**
      * tests if property's value and parameters are valid

@@ -26,7 +26,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyBaseAltText<?,?> castProperty = (PropertyBaseAltText<?, ?>) property;
-            castProperty.setAlternateText(new AlternateText(content));
+            castProperty.setAlternateText(AlternateText.parse(content));
         }
 
         @Override
@@ -51,7 +51,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) property;
-            castProperty.setCommonName(new CommonName(content));
+            castProperty.setCommonName(CommonName.parse(content));
         }
 
         @Override
@@ -76,7 +76,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
-            castProperty.setCalendarUser(new CalendarUser(content));
+            castProperty.setCalendarUser(CalendarUser.parse(content));
         }
 
         @Override
@@ -101,7 +101,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
-            castProperty.setDelegators(new Delegators(content));
+            castProperty.setDelegators(Delegators.parse(content));
         }
 
         @Override
@@ -126,7 +126,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
-            castProperty.setDelegatees(new Delegatees(content));
+            castProperty.setDelegatees(Delegatees.parse(content));
         }
 
         @Override
@@ -151,7 +151,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) property;
-            castProperty.setDirectoryEntryReference(new DirectoryEntryReference(content));
+            castProperty.setDirectoryEntryReference(DirectoryEntryReference.parse(content));
         }
 
         @Override
@@ -176,7 +176,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
-            castProperty.setEncoding(new Encoding(content));
+            castProperty.setEncoding(Encoding.parse(content));
         }
 
         @Override
@@ -201,7 +201,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAttachment<?> castProperty = (PropertyAttachment<?>) property;
-            castProperty.setFormatType(new FormatType(content));
+            castProperty.setFormatType(FormatType.parse(content));
         }
 
         @Override
@@ -226,7 +226,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyFreeBusy<?> castProperty = (PropertyFreeBusy<?>) property;
-            castProperty.setFreeBusyType(new FreeBusyType(content));
+            castProperty.setFreeBusyType(FreeBusyType.parse(content));
         }
 
         @Override
@@ -251,7 +251,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyBaseLanguage<?,?> castProperty = (PropertyBaseLanguage<?, ?>) property;
-            castProperty.setLanguage(new Language(content));
+            castProperty.setLanguage(Language.parse(content));
         }
 
         @Override
@@ -275,7 +275,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
-            castProperty.setGroupMembership(new GroupMembership(content));
+            castProperty.setGroupMembership(GroupMembership.parse(content));
         }
 
         @Override
@@ -299,7 +299,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
-            castProperty.setParticipationStatus(new ParticipationStatus(content));
+            castProperty.setParticipationStatus(ParticipationStatus.parse(content));
         }
 
         @Override
@@ -323,7 +323,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyRecurrenceID<?> castProperty = (PropertyRecurrenceID<?>) property;
-            castProperty.setRange(new Range(content));
+            castProperty.setRange(Range.parse(content));
         }
 
         @Override
@@ -347,7 +347,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAlarmTrigger<?> castProperty = (PropertyAlarmTrigger<?>) property;
-            castProperty.setAlarmTrigger(new AlarmTriggerRelationship(content));
+            castProperty.setAlarmTrigger(AlarmTriggerRelationship.parse(content));
         }
 
         @Override
@@ -371,7 +371,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyRelationship<?> castProperty = (PropertyRelationship<?>) property;
-            castProperty.setRelationship(new Relationship(content));
+            castProperty.setRelationship(Relationship.parse(content));
         }
 
         @Override
@@ -395,7 +395,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
-            castProperty.setParticipationRole(new ParticipationRole(content));
+            castProperty.setParticipationRole(ParticipationRole.parse(content));
         }
 
         @Override
@@ -419,7 +419,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
-            castProperty.setRSVP(new RSVP(content));
+            castProperty.setRSVP(RSVP.parse(content));
         }
 
         @Override
@@ -443,7 +443,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyBaseCalendarUser<?,?> castProperty = (PropertyBaseCalendarUser<?,?>) property;
-            castProperty.setSentBy(new SentBy(content));
+            castProperty.setSentBy(SentBy.parse(content));
         }
 
         @Override
@@ -467,7 +467,7 @@ public enum ParameterType
         public void parse(Property<?> property, String content)
         {
             PropertyDateTime<?> castProperty = (PropertyDateTime<?>) property;
-            castProperty.setTimeZoneIdentifier(new TimeZoneIdentifierParameter(content));
+            castProperty.setTimeZoneIdentifier(TimeZoneIdentifierParameter.parse(content));
         }
 
         @Override
@@ -499,7 +499,7 @@ public enum ParameterType
                 castProperty.setValueParameter(new ValueParameter(valueType));
             } else
             {
-                castProperty.setValueParameter(new ValueParameter(content)); // unknown value type
+                castProperty.setValueParameter(ValueParameter.parse(content)); // unknown value type
 //                throw new IllegalArgumentException("Value type: " + content + " is not valid");
             }
         }

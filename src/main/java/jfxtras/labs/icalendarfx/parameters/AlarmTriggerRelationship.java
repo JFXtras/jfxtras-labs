@@ -29,19 +29,27 @@ public class AlarmTriggerRelationship extends ParameterBase<AlarmTriggerRelation
         super(value);
     }
 
-    public AlarmTriggerRelationship(String content)
-    {
-        super(AlarmTriggerRelationshipType.valueOf(content.toUpperCase()));
-    }
-
     public AlarmTriggerRelationship(AlarmTriggerRelationship source)
     {
         super(source);
+    }
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(AlarmTriggerRelationshipType.valueOf(content.toUpperCase()));
     }
     
     public enum AlarmTriggerRelationshipType
     {
         START,
         END;
+    }
+
+    public static AlarmTriggerRelationship parse(String content)
+    {
+        AlarmTriggerRelationship parameter = new AlarmTriggerRelationship();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

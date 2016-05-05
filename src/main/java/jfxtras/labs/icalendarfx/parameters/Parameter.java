@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.parameters;
 
 import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.icalendarfx.VCalendarElement;
 
 /**
  * Every parameter requires the following methods:
@@ -13,7 +14,7 @@ import javafx.beans.property.ObjectProperty;
  * @param <T> - parameter value type
  *
  */
-public interface Parameter<T> extends Comparable<Parameter<T>>
+public interface Parameter<T> extends Comparable<Parameter<T>>, VCalendarElement
 {    
     /**
      * The value of the parameter.

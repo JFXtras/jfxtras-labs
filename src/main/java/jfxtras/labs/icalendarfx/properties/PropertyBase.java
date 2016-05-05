@@ -187,7 +187,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
         }
     }
     public void setValueParameter(ValueType value) { setValueParameter(new ValueParameter(value)); }
-    public void setValueParameter(String value) { setValueParameter(new ValueParameter(value)); }
+    public void setValueParameter(String value) { setValueParameter(ValueParameter.parse(value)); }
     public U withValueParameter(ValueType value) { setValueParameter(value); return (U) this; } 
     public U withValueParameter(String value) { setValueParameter(value); return (U) this; }
     // Synch value with type produced by string converter
@@ -318,13 +318,13 @@ public abstract class PropertyBase<T,U> implements Property<T>
      * @param contentLine - property text string
      */
     @Deprecated // use parse method instead
-    public PropertyBase(CharSequence contentLine)
+    public PropertyBase(String contentLine)
     {
         this();
         parseContent(contentLine);
     }
 
-    public PropertyBase(Class<T> valueClass, CharSequence contentLine)
+    public PropertyBase(Class<T> valueClass, String contentLine)
     {
         this();
         this.valueClass = valueClass;
@@ -368,7 +368,7 @@ public abstract class PropertyBase<T,U> implements Property<T>
     
     /** Parse content line into calendar property */
     @Override
-    public void parseContent(CharSequence contentLine)
+    public void parseContent(String contentLine)
     {
         String propertyString = contentLine.toString();
         

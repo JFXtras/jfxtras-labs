@@ -39,15 +39,16 @@ public class Encoding extends ParameterBase<Encoding, EncodingType>
     {
         super(value);
     }
-    
-    public Encoding(String content)
-    {
-        super(EncodingType.enumFromName(content));
-    }
 
     public Encoding(Encoding source)
     {
         super(source);
+    }
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(EncodingType.enumFromName(content));
     }
     
     public enum EncodingType
@@ -78,5 +79,12 @@ public class Encoding extends ParameterBase<Encoding, EncodingType>
         {
             this.name = name;
         }
+    }
+
+    public static Encoding parse(String content)
+    {
+        Encoding parameter = new Encoding();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

@@ -1,12 +1,6 @@
 package jfxtras.labs.icalendarfx.parameters;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
@@ -21,7 +15,7 @@ import javafx.beans.property.SimpleObjectProperty;
  * @param <T> - type of value stored in the Parameter, such as String for text-based, or the enumerated type of the classes based on an enum
  * @param <U> - implemented subclass
  */
-public class ParameterBase<U,T> implements Parameter<T>
+abstract public class ParameterBase<U,T> implements Parameter<T>
 {    
     @Override
     public T getValue() { return value.get(); }
@@ -177,34 +171,5 @@ public class ParameterBase<U,T> implements Parameter<T>
             return content.substring(name.length()+1);
         }
         return content;
-    }
-    
-    /**
-     * Parse comma-separated list of URIs into a List<URI>
-     * 
-     */
-    static List<URI> makeURIList(String content)
-    {
-        List<URI> uriList = new ArrayList<>();
-        Iterator<String> i = Arrays.stream(content.split(",")).iterator();
-        while (i.hasNext())
-        {
-            uriList.add(makeURI(i.next()));
-        }
-        return uriList;
-    }
-    
-    // Make URI from content
-    static URI makeURI(String content)
-    {
-        URI uri = null;
-        try
-        {
-            uri = new URI(removeDoubleQuote(content));
-        } catch (URISyntaxException e)
-        {
-            e.printStackTrace();
-        }
-        return uri;
     }
 }

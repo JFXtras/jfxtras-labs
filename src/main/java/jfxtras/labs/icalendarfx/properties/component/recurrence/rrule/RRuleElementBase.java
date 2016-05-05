@@ -31,4 +31,10 @@ abstract public class RRuleElementBase<T, U> implements RRuleElement<T>
         elementType = RRuleElementType.enumFromClass(getClass());
         value = new SimpleObjectProperty<>(this, elementType.toString());
     }
+    
+    @Override
+    public String toString()
+    {
+        return super.toString() + ", " + toContent();
+    }
 }

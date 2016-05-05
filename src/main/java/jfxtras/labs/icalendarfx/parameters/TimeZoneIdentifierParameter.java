@@ -18,9 +18,9 @@ import java.time.ZoneId;
  */
 public class TimeZoneIdentifierParameter extends ParameterBase<TimeZoneIdentifierParameter, ZoneId>
 {    
-    public TimeZoneIdentifierParameter(String content)
+    public TimeZoneIdentifierParameter()
     {
-        super(ZoneId.of(content));
+        super();
     }
     
     public TimeZoneIdentifierParameter(ZoneId value)
@@ -31,5 +31,18 @@ public class TimeZoneIdentifierParameter extends ParameterBase<TimeZoneIdentifie
     public TimeZoneIdentifierParameter(TimeZoneIdentifierParameter source)
     {
         super(source);
+    }
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(ZoneId.of(content));
+    }    
+
+    public static TimeZoneIdentifierParameter parse(String content)
+    {
+        TimeZoneIdentifierParameter parameter = new TimeZoneIdentifierParameter();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

@@ -11,11 +11,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeekNumber>
@@ -50,7 +52,7 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     }
     public ByWeekNumber withValue(String weekNumbers)
     {
-        setValue(makeWeekArray(weekNumbers));
+        parseContent(weekNumbers);
         return this;
     }
     
@@ -73,7 +75,7 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     public ByWeekNumber(String weekNumbers)
     {
         this();
-        setValue(makeWeekArray(weekNumbers));
+        parseContent(weekNumbers);
     }
     
     /** Constructor requires weeks of the year int value(s) */
@@ -120,14 +122,14 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
 //        return hash;
 //    }
     
-//    @Override
-//    public String toString()
-//    {
-//        String days = Arrays.stream(getWeekNumbers())
-//                .mapToObj(d -> d + ",")
-//                .collect(Collectors.joining());
-//        return ByRuleType.BY_WEEK_NUMBER + "=" + days.substring(0, days.length()-1); // remove last comma
-//    }
+    @Override
+    public String toContent()
+    {
+        String days = getValue().stream()
+                .map(v -> v.toString() + ",")
+                .collect(Collectors.joining(","));
+        return RRuleElementType.BY_WEEK_NUMBER + "=" + days; //.substring(0, days.length()-1); // remove last comma
+    }
     
     @Override
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
@@ -193,18 +195,20 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
         return null;    
     }
     
-    private static Integer[] makeWeekArray(String weekNumbers)
+    @Override
+    public void parseContent(String weekNumbers)
     {
-        return Arrays.asList(weekNumbers.split(","))
+        Integer[] weekArray = Arrays.asList(weekNumbers.split(","))
                 .stream()
                 .map(s -> Integer.parseInt(s))
                 .toArray(size -> new Integer[size]);
+        setValue(weekArray);
     }
 
     public static ByWeekNumber parse(String weekNumbers)
     {
         ByWeekNumber byWeekNumber = new ByWeekNumber();
-        byWeekNumber.setValue(makeWeekArray(weekNumbers));
+        byWeekNumber.parseContent(weekNumbers);
         return byWeekNumber;
     }
 

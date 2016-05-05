@@ -27,13 +27,20 @@ public class Delegatees extends ParameterURIList<GroupMembership>
         super(list);
     }
     
-    public Delegatees(String content)
-    {
-        super(content);
-    }
-    
     public Delegatees(Delegatees source)
     {
         super(source);
+    }
+
+    public Delegatees()
+    {
+        super();
+    }
+    
+    public static Delegatees parse(String content)
+    {
+        Delegatees parameter = new Delegatees();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

@@ -22,23 +22,25 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
  */
 public class Delegators extends ParameterURIList<GroupMembership>
 {
-//    public Delegators()
-//    {
-//        super();
-//    }
-
     public Delegators(List<URI> list)
     {
         super(list);
     }
     
-    public Delegators(String content)
+    public Delegators()
     {
-        super(content);
+        super();
     }
     
     public Delegators(Delegators source)
     {
         super(source);
+    }
+
+    public static Delegators parse(String content)
+    {
+        Delegators parameter = new Delegators();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

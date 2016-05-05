@@ -24,13 +24,20 @@ public class GroupMembership extends ParameterURIList<GroupMembership>
         super(values);
     }
     
-    public GroupMembership(String content)
+    public GroupMembership()
     {
-        super(content);
+        super();
     }
     
     public GroupMembership(GroupMembership source)
     {
         super(source);
+    }
+
+    public static GroupMembership parse(String content)
+    {
+        GroupMembership parameter = new GroupMembership();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

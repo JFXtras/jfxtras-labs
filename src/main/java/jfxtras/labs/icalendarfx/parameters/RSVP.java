@@ -25,14 +25,22 @@ public class RSVP extends ParameterBase<RSVP, Boolean>
     {
         super(value);
     }
-    
-    public RSVP(String content)
-    {
-        super(Boolean.parseBoolean(content));
-    }
 
     public RSVP(RSVP source)
     {
         super(source);
+    }
+    
+    @Override
+    public void parseContent(String content)
+    {
+        setValue(Boolean.parseBoolean(content));
+    }
+
+    public static RSVP parse(String content)
+    {
+        RSVP parameter = new RSVP();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

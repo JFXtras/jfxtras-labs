@@ -17,25 +17,27 @@ import java.net.URI;
  * @author David Bal
  *
  */
-public class SentBy extends ParameterBase<SentBy, URI>
+public class SentBy extends ParameterURI<SentBy>
 {
-//    public SentBy()
-//    {
-//        super();
-//    }
-
     public SentBy(URI uri)
     {
         super(uri);
     }
 
-    public SentBy(String content)
+    public SentBy()
     {
-        super(makeURI(content));
+        super();
     }
     
     public SentBy(SentBy source)
     {
         super(source);
+    }
+    
+    public static SentBy parse(String content)
+    {
+        SentBy parameter = new SentBy();
+        parameter.parseContent(content);
+        return parameter;
     }
 }

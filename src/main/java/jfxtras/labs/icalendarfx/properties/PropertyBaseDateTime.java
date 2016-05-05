@@ -61,7 +61,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
             throw new DateTimeException(ParameterType.TIME_ZONE_IDENTIFIER.toString() + " can't be set for date-time of type " + getValue().getClass().getSimpleName());
         }
     }
-    public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(value)); }
+    public void setTimeZoneIdentifier(String value) { setTimeZoneIdentifier(TimeZoneIdentifierParameter.parse(value)); }
     public void setTimeZoneIdentifier(ZoneId zone) { setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone)); }
     public U withTimeZoneIdentifier(TimeZoneIdentifierParameter timeZoneIdentifier) { setTimeZoneIdentifier(timeZoneIdentifier); return (U) this; }
     public U withTimeZoneIdentifier(ZoneId zone) { setTimeZoneIdentifier(zone); return (U) this; }
@@ -81,7 +81,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
     }
 
     @Deprecated
-    public PropertyBaseDateTime(Class<T> clazz, CharSequence contentLine)
+    public PropertyBaseDateTime(Class<T> clazz, String contentLine)
     {
         super(contentLine);
         clazz.cast(getValue()); // ensure value class type matches parameterized type
