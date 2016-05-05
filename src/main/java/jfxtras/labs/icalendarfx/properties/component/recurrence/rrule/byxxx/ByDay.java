@@ -377,6 +377,7 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
     }
     
     /** Match up iCalendar 2-character day of week to Java Time DayOfWeek */
+    @Deprecated
     public enum ICalendarDayOfWeek
     {
         MO (DayOfWeek.MONDAY)

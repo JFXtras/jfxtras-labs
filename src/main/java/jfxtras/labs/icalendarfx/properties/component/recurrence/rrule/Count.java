@@ -10,20 +10,35 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
  */
 public class Count extends RRuleElementBase<Integer, Count>
 {
-    static final Integer DEFAULT_INTERVAL = 1;
-
     public Count(int count)
     {
+        this();
         setValue(count);
     }
 
-    @Override
-    public Integer getValue() { return (valueProperty() == null) ? DEFAULT_INTERVAL : valueProperty().get(); }
-    // TODO - LISTENER TO PREVENT INTERVAL FROM BEING LESS THAN 1
+    public Count()
+    {
+        super();
+        valueProperty().addListener((obs, oldValue, newValue) ->
+        {
+            if ((newValue != null) && (newValue < 1))
+            {
+                setValue(oldValue);
+                throw new IllegalArgumentException(elementType() + " can't be less than 1");
+            }
+        });
+    }
 
     @Override
     public void parseContent(String content)
     {
         setValue(Integer.parseInt(content));
+    }
+
+    public static Count parse(String content)
+    {
+        Count element = new Count();
+        element.parseContent(content);
+        return element;
     }
 }

@@ -38,8 +38,7 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
 {
-    
-    void setValue(String frequency) { setValue(FrequencyType.valueOf(frequency.toUpperCase())); }
+    void setValue(String frequency) { parseContent(frequency); }
     public Frequency2 withValue(String frequency) { setValue(frequency); return this; }
 
 //    /**
@@ -149,7 +148,7 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
      */
     public Frequency2(FrequencyType frequencyType)
     {
-//        this.frequencyType = frequencyType;
+        this();
         setValue(frequencyType);
         setChronoUnit(frequencyType.getChronoUnit());
         
@@ -186,10 +185,10 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
 //        source.byRules().stream().forEach(b -> byRules().add(b.byRuleType().newInstance(b))); // copy each ByRule
 //    }
     
-//    public Frequency2()
-//    {
-//        // TODO Auto-generated constructor stub
-//    }
+    public Frequency2()
+    {
+        super();
+    }
 //    /** STREAM 
 //     * Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
 //     * Rules.
@@ -280,12 +279,13 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
     @Override
     public void parseContent(String content)
     {
-        setValue(FrequencyType.valueOf(content));
+        setValue(FrequencyType.valueOf(content.toUpperCase()));
     }
     
-    public static Frequency2 parse(String frequency)
+    public static Frequency2 parse(String content)
     {
-        FrequencyType type = FrequencyType.valueOf(frequency.toUpperCase());
-        return new Frequency2(type);
+        Frequency2 element = new Frequency2();
+        element.parseContent(content);
+        return element;
     }
 }

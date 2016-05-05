@@ -17,10 +17,23 @@ public class Interval extends RRuleElementBase<Integer, Interval>
     static final Integer DEFAULT_INTERVAL = 1;
     @Override
     public Integer getValue() { return (valueProperty() == null) ? DEFAULT_INTERVAL : valueProperty().get(); }
-    // TODO - LISTENER TO PREVENT INTERVAL FROM BEING LESS THAN 1
+    
+    public Interval()
+    {
+        super();
+        valueProperty().addListener((obs, oldValue, newValue) ->
+        {
+            if ((newValue != null) && (newValue < 1))
+            {
+                setValue(oldValue);
+                throw new IllegalArgumentException(elementType() + " can't be less than 1");
+            }
+        });
+    }
     
     public Interval(Integer interval)
     {
+        this();
         setValue(interval);
     }
 
@@ -28,5 +41,12 @@ public class Interval extends RRuleElementBase<Integer, Interval>
     public void parseContent(String content)
     {
         setValue(Integer.parseInt(content));
+    }
+
+    public static Interval parse(String content)
+    {
+        Interval element = new Interval();
+        element.parseContent(content);
+        return element;
     }
 }

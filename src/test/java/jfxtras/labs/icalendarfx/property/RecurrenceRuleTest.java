@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -10,15 +11,19 @@ import java.time.ZonedDateTime;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Count;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.WeekStart;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
@@ -113,6 +118,48 @@ public class RecurrenceRuleTest
         assertEquals(t, element.getValue());
         assertEquals("UNTIL=19730429T070000Z", element.toContent());
     }
+    
+    @Test (expected = DateTimeException.class)
+    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
+    public void canCatchWrongUntil()
+    {
+        String content = "19730429T070000";
+        Until.parse(content);
+    }
+    
+    @Test
+    public void canParseCount()
+    {
+        Count element = Count.parse("2");
+        assertEquals((Integer) 2, element.getValue());
+        assertEquals("COUNT=2", element.toContent());
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
+    public void canCatchNegativeCount()
+    {
+        Count element = new Count(5);
+        assertEquals((Integer) 5, element.getValue());
+        element.setValue(0);
+        assertEquals("COUNT=5", element.toContent());
+    }
+    
+    @Test
+    public void canParseInterval()
+    {
+        Interval element = Interval.parse("2");
+        assertEquals((Integer) 2, element.getValue());
+        assertEquals("INTERVAL=2", element.toContent());
+    }
+
+    @Test
+    public void canParseWeekStart()
+    {
+        WeekStart element = new WeekStart().withValue("SU");
+        assertEquals(DayOfWeek.SUNDAY, element.getValue());
+        assertEquals("WKST=SU", element.toContent());
+    }
 
     @Test
     public void canParseByMonth()
@@ -121,4 +168,4 @@ public class RecurrenceRuleTest
         assertEquals(Month.APRIL, element.getValue().get(0));
         assertEquals("BYMONTH=4", element.toContent());
     }
-}
+    }

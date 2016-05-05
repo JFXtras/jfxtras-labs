@@ -1,8 +1,10 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
+import java.time.DateTimeException;
 import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * UNTIL:
@@ -29,12 +31,28 @@ public class Until extends RRuleElementBase<Temporal, Until>
 {
     public Until(Temporal until)
     {
-        // TODO Auto-generated constructor stub
+        this();
+        setValue(until);
     }
 
     public Until()
     {
         super();
+        valueProperty().addListener((obs, oldValue, newValue) ->
+        {
+            if (newValue != null)
+            {
+                DateTimeType type = DateTimeUtilities.DateTimeType.of(newValue);
+                boolean isDate = type == DateTimeType.DATE;
+                boolean isUTC = type == DateTimeType.DATE_WITH_UTC_TIME;
+                if (! (isDate || isUTC))
+                {
+                    setValue(oldValue);
+                    throw new DateTimeException(elementType() + " can't be " + type + " It must be either " +
+                            DateTimeType.DATE + "(LocalDate) or " + DateTimeType.DATE_WITH_UTC_TIME + " (ZonedDateTime with Z as zone)");
+                }
+            }
+        });
     }
 
     @Override

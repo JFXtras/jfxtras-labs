@@ -1,8 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.DayOfWeek;
-
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ICalendarDayOfWeek;
+import java.util.Arrays;
 
 /**
  * Week Start
@@ -19,12 +18,24 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDa
 public class WeekStart extends RRuleElementBase<DayOfWeek, WeekStart>
 {
     static final DayOfWeek DEFAULT_WEEK_START = DayOfWeek.MONDAY;
+    
+    void setValue(String weekStart) { parseContent(weekStart); }
+    public WeekStart withValue(String weekStart) { setValue(weekStart); return this; }
+    
+    @Override
+    public DayOfWeek getValue() { return (valueProperty() == null) ? DEFAULT_WEEK_START : valueProperty().get(); }
 
-    public WeekStart(DayOfWeek until)
+    public WeekStart(DayOfWeek dayOfWeek)
     {
-        // TODO Auto-generated constructor stub
+        this();
+        setValue(dayOfWeek);
     }
     
+    public WeekStart()
+    {
+        super();
+    }
+
     @Override
     public String toContent()
     {
@@ -34,6 +45,10 @@ public class WeekStart extends RRuleElementBase<DayOfWeek, WeekStart>
     @Override
     public void parseContent(String content)
     {
-        setValue(ICalendarDayOfWeek.valueOf(content).getDayOfWeek());
+        DayOfWeek dayOfWeek = Arrays.stream(DayOfWeek.values())
+            .filter(d -> d.toString().substring(0, 2).equals(content))
+            .findAny()
+            .get();
+        setValue(dayOfWeek);
     }
 }
