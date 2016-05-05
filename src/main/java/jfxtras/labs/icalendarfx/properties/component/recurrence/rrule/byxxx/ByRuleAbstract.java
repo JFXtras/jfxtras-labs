@@ -1,5 +1,8 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElement;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementBase;
+
 /**
  * BYxxx rule that modify frequency rule (see RFC 5545, iCalendar 3.3.10 Page 42)
  * The BYxxx rules must be applied in a specific order
@@ -15,7 +18,7 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
  * @see BySecond
  * @see BySetPosition
  */
-public abstract class ByRuleAbstract implements ByRule, Comparable<ByRule>
+public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<T, U> implements ByRule<T>, Comparable<ByRule<T>>, RRuleElement<T>
 {
     /** ByRule enum containing order in which ByRules are processed */
     final private ByRuleType byRuleEnum;
@@ -34,6 +37,7 @@ public abstract class ByRuleAbstract implements ByRule, Comparable<ByRule>
 
     ByRuleAbstract(Class<? extends ByRule> byRuleClass)
     {
+        super();
         byRuleEnum = ByRuleType.enumFromClass(byRuleClass);
     }
 
@@ -44,14 +48,15 @@ public abstract class ByRuleAbstract implements ByRule, Comparable<ByRule>
     }
     
     // Copy constructor
-    ByRuleAbstract(ByRule source)
+    ByRuleAbstract(ByRule<T> source)
     {
         byRuleEnum = source.byRuleType();
-        source.copyTo(this);
+        setValue(source.getValue());
+//        source.copyTo(this);
     }
 
     @Override
-    public int compareTo(ByRule byRule)
+    public int compareTo(ByRule<T> byRule)
     {        
 //        int p1 = ByRuleType.propertyFromByRule(this).sortOrder();
 //        int p2 = ByRuleType.propertyFromByRule(byRule).sortOrder();

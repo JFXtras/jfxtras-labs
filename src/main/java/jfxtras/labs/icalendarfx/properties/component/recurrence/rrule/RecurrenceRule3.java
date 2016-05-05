@@ -2,10 +2,12 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.DayOfWeek;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,12 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -33,7 +33,6 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMo
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.BySecond;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.FrequencyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -91,9 +90,9 @@ public class RecurrenceRule3
      * Each BYxxx rule can only occur once
      *  */
     public ObservableList<ByRule> byRules() { return byRules; }
-    private ObservableList<ByRule> byRules = FXCollections.observableArrayList();
+    private ObservableList<ByRule> byRules; // = FXCollections.observableArrayList();
     public void setByRules(ObservableList<ByRule> byRules) { this.byRules = byRules; }
-    public RecurrenceRule3 withComments(ObservableList<ByRule> byRules) { setByRules(byRules); return this; }
+    public RecurrenceRule3 withByRules(ObservableList<ByRule> byRules) { setByRules(byRules); return this; }
     public RecurrenceRule3 withByRules(ByRule...byRules)
     {
         for (ByRule myByRule : byRules)
@@ -102,7 +101,13 @@ public class RecurrenceRule3
         }
         return this;
     }
-    /** Return ByRule associated with enum type */
+    public RecurrenceRule3 withByRules(String...byRules)
+    {
+        Arrays.stream(byRules).forEach(c -> parseContent(c));
+        return this;
+    }
+    
+    /** Return ByRule associated with class type */
     public ByRule lookupByRule(Class<? extends ByRule> byRuleClass)
     {
         Optional<ByRule> rule = byRules()
@@ -120,26 +125,49 @@ public class RecurrenceRule3
      * range-bound the recurrence.  The "DTSTART" property value always
      * counts as the first occurrence.
      */
-    public IntegerProperty countProperty()
+    public ObjectProperty<Count> countProperty()
     {
         if (count == null)
         {
-            count = new SimpleIntegerProperty(this, RecurrenceRuleElement.COUNT.toString());
+            count = new SimpleObjectProperty<>(this, RRuleElementType.COUNT.toString());
             // TODO - add listener to ensure COUNT and UNTIL are not both set
             // listener to ensure >0 throw new IllegalArgumentException("COUNT can't be less than 0. (" + count + ")");
 //            else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
         }
         return count;
     }
-    private IntegerProperty count;
-    public Integer getCount() { return (count == null) ? null : countProperty().get(); }
-    public void setCount(Integer count) { countProperty().set(count); }
-    public RecurrenceRule3 withCount(Integer count) { setCount(count); return this; }
+    private ObjectProperty<Count> count;
+    public Count getCount() { return (count == null) ? null : countProperty().get(); }
+    public void setCount(Count count) { countProperty().set(count); }
+    public void setCount(int count) { setCount(new Count(count)); }
+    public RecurrenceRule3 withCount(Count count)
+    {
+        if (getCount() == null)
+        {
+            setCount(count);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }    public RecurrenceRule3 withCount(int count)
+    {
+        if (getCount() == null)
+        {
+            setCount(count);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }
     
     /** 
      * FREQUENCY
      * FREQ
      * RFC 5545 iCalendar 3.3.10 p40
+     * 
+     * required element
      * 
      * The FREQ rule part identifies the type of recurrence rule.  This
      * rule part MUST be specified in the recurrence rule.  Valid values
@@ -154,14 +182,44 @@ public class RecurrenceRule3
      * interval of a year or more.
      */
     public ObjectProperty<Frequency2> frequencyProperty() { return frequency; }
-    final private ObjectProperty<Frequency2> frequency = new SimpleObjectProperty<>(this, RecurrenceRuleElement.FREQUENCY.toString());
+    final private ObjectProperty<Frequency2> frequency = new SimpleObjectProperty<>(this, RRuleElementType.FREQUENCY.toString());
     public Frequency2 getFrequency() { return frequency.get(); }
     public void setFrequency(Frequency2 frequency) { this.frequency.set(frequency); }
     public void setFrequency(String frequency) { setFrequency(Frequency2.parse(frequency)); }
     public void setFrequency(FrequencyType frequency) { setFrequency(new Frequency2(frequency)); }
-    public RecurrenceRule3 withFrequency(Frequency2 frequency) { setFrequency(frequency); return this; }
-    public RecurrenceRule3 withFrequency(String frequency) { setFrequency(frequency); return this; }
-    public RecurrenceRule3 withFrequency(FrequencyType frequency) { setFrequency(frequency); return this; }
+    public RecurrenceRule3 withFrequency(Frequency2 frequency)
+    {
+        if (getFrequency() == null)
+        {
+            setFrequency(frequency);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }
+    public RecurrenceRule3 withFrequency(String frequency)
+    {
+        if (getFrequency() == null)
+        {
+            setFrequency(frequency);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }
+    public RecurrenceRule3 withFrequency(FrequencyType frequency)
+    {
+        if (getFrequency() == null)
+        {
+            setFrequency(frequency);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }
     
     /**
      * INTERVAL
@@ -175,22 +233,41 @@ public class RecurrenceRule3
      * MONTHLY rule, and every year for a YEARLY rule.  For example,
      * within a DAILY rule, a value of "8" means every eight days.
      */
-    static final Integer DEFAULT_INTERVAL = 1;
-    public IntegerProperty intervalProperty()
+    public ObjectProperty<Interval> intervalProperty()
     {
         if (interval == null)
         {
-            interval = new SimpleIntegerProperty(this, RecurrenceRuleElement.INTERVAL.toString());
-            interval.bind(getFrequency().intervalProperty());
-            // TODO - LISTENER TO PREVENT INTERVAL FROM BEING LESS THAN 1
+            interval = new SimpleObjectProperty<>(this, RRuleElementType.INTERVAL.toString());
         }
         return interval;
     }
-    private IntegerProperty interval;
-    public Integer getInterval() { return (interval == null) ? DEFAULT_INTERVAL : intervalProperty().get(); }
-    public void setInterval(Integer interval) { intervalProperty().set(interval); }
-    public RecurrenceRule3 withInterval(int interval) { setInterval(interval); return this; }
-
+    private ObjectProperty<Interval> interval;
+    public Interval getInterval() { return (intervalProperty() == null) ? null : intervalProperty().get(); }
+    public void setInterval(Interval interval) { intervalProperty().set(interval); }
+    public void setInterval(Integer interval) { setInterval(new Interval(interval)); }
+    public RecurrenceRule3 withInterval(int interval)
+    {
+        if (getInterval() == null)
+        {
+            setInterval(interval);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }
+    public RecurrenceRule3 withInterval(Interval interval)
+    {
+        if (getInterval() == null)
+        {
+            setInterval(interval);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }
+    
     /**
      * UNTIL:
      * RFC 5545 iCalendar 3.3.10, page 41
@@ -212,24 +289,55 @@ public class RecurrenceRule3
      * time format.  If not present, and the COUNT rule part is also not
      * present, the "RRULE" is considered to repeat forever
      */
-    public SimpleObjectProperty<Temporal> untilProperty()
+    public SimpleObjectProperty<Until> untilProperty()
     {
         if (until == null)
         {
-            until = new SimpleObjectProperty<>(this, RecurrenceRuleElement.UNTIL.toString());
+            until = new SimpleObjectProperty<>(this, RRuleElementType.UNTIL.toString());
             // TODO - add listener to ensure COUNT and UNTIL are not both set
             // TODO - LISTENER TO ENSURE UTC OR DATE
             // if ((DateTimeType.of(until) != DateTimeType.DATE) && (DateTimeType.of(until) != DateTimeType.DATE_WITH_UTC_TIME))
         }
         return until;
     }
-    private SimpleObjectProperty<Temporal> until;
-    public Temporal getUntil() { return (until == null) ? _until : until.getValue(); }
-    private Temporal _until;
-    public void setUntil(Temporal until) { untilProperty().set(until); }
+    private SimpleObjectProperty<Until> until;
+    public Until getUntil() { return (until == null) ? null : untilProperty().getValue(); }
+    public void setUntil(Until until) { untilProperty().set(until); }
+    public void setUntil(Temporal until) { setUntil(new Until(until)); }
     public void setUntil(String until) { setUntil(DateTimeUtilities.temporalFromString(until)); }
-    public RecurrenceRule3 withUntil(Temporal until) { setUntil(until); return this; }
-    public RecurrenceRule3 withUntil(String until) { setUntil(until); return this; }
+    public RecurrenceRule3 withUntil(Temporal until)
+    {
+        if (getUntil() == null)
+        {
+            setUntil(until);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }
+    public RecurrenceRule3 withUntil(String until)
+    {
+        if (getUntil() == null)
+        {
+            setUntil(until);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }
+    public RecurrenceRule3 withUntil(Until until)
+    {
+        if (getUntil() == null)
+        {
+            setUntil(until);
+            return this;
+        } else
+        {
+            throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
+        }
+    }
     
     /**
      * Week Start
@@ -248,7 +356,7 @@ public class RecurrenceRule3
     {
         if (weekStart == null)
         {
-            weekStart = new SimpleObjectProperty<DayOfWeek>(this, RecurrenceRuleElement.WEEK_START.toString());
+            weekStart = new SimpleObjectProperty<DayOfWeek>(this, RRuleElementType.WEEK_START.toString());
         }
         return weekStart;
     }
@@ -263,9 +371,9 @@ public class RecurrenceRule3
      * 
      * @return - the list of elements
      */
-    public List<RecurrenceRuleElement> elements()
+    public List<RRuleElementType> elements()
     {
-        List<RecurrenceRuleElement> populatedElements = Arrays.stream(RecurrenceRuleElement.values())
+        List<RRuleElementType> populatedElements = Arrays.stream(RRuleElementType.values())
             .filter(p -> (p.getElement(this) != null))
             .collect(Collectors.toList());
       return Collections.unmodifiableList(populatedElements);
@@ -282,8 +390,8 @@ public class RecurrenceRule3
      * Generally, this map shouldn't be modified.  Only modify it when you want
      * to force a specific property order (e.g. unit testing).
      */
-    public Map<RecurrenceRuleElement, Integer> elementSortOrder() { return elementSortOrder; }
-    final private Map<RecurrenceRuleElement, Integer> elementSortOrder = new HashMap<>();
+    public Map<RRuleElementType, Integer> elementSortOrder() { return elementSortOrder; }
+    final private Map<RRuleElementType, Integer> elementSortOrder = new HashMap<>();
     private Integer elementCounter = 0;
     
     // TODO - THESE MUST GO TO REPEATABLE INTERFACE
@@ -308,31 +416,67 @@ public class RecurrenceRule3
     
     public RecurrenceRule3()
     {
-        Bindings.bindContentBidirectional(byRules(), getFrequency().byRules());
+        byRules = FXCollections.observableArrayList();
+        
+        // Listener that ensures user doesn't add same ByRule a second time.  Also keeps the byRules list sorted.
+        byRules().addListener((ListChangeListener<? super ByRule>) (change) ->
+        {
+            while (change.next())
+            {
+                if (change.wasAdded())
+                {
+                    change.getAddedSubList().stream().forEach(c ->
+                    {
+                        ByRule newByRule = c;
+                        long alreadyPresent = byRules()
+                                .stream()
+                                .map(r -> r.byRuleType())
+                                .filter(p -> p.equals(c.byRuleType()))
+                                .count();
+                        if (alreadyPresent > 1)
+                        {
+                            throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + c.byRuleType() + ") more than once.");
+                        }
+                    });
+                    Collections.sort(byRules()); // sort additions
+                }
+            }
+        });
+//        frequency = new SimpleObjectProperty<Frequency2>(this, RecurrenceRuleElement.FREQUENCY.toString(), new Frequency2());
+//        System.out.println("RecurrenceRule3:" + byRules() + " " + getFrequency());
+        // TODO - FREQUENCY IS NULL - CAN'T BIND TO BYRULES
+        
     }
 
-    // construct new object by parsing property line
-    public RecurrenceRule3(String propertyString)
+    /** construct new object by parsing property line */
+    public RecurrenceRule3(String contentLine)
     {
-        System.out.println("recur:" + propertyString);
-        ICalendarUtilities.propertyLineToParameterMap(propertyString)
-                .entrySet()
-                .stream()
-//                .peek(System.out::println)
-                .forEach(entry ->
-                {
-                    RecurrenceRuleElement element = RecurrenceRuleElement.enumFromName(entry.getKey());
-                    if (element != null)
-                    {
-                        element.parse(this, entry.getValue());
-                        elementSortOrder().put(element, elementCounter);
-                        elementCounter += 100; // add 100 to allow insertions in between
-                    } else
-                    {
-                        throw new IllegalArgumentException("Unsupported Recurrence Rule element: " + entry.getKey());                        
-                    }
-                });
+        this();
+        parseContent(contentLine);
     }
+    
+    /** Parse component from content line */
+    public void parseContent(String contentLine)
+    {
+        ICalendarUtilities.propertyLineToParameterMap(contentLine)
+        .entrySet()
+        .stream()
+//        .peek(System.out::println)
+        .forEach(entry ->
+        {
+            RRuleElementType element = RRuleElementType.enumFromName(entry.getKey());
+            if (element != null)
+            {
+                element.parse(this, entry.getValue());
+                elementSortOrder().put(element, elementCounter);
+                elementCounter += 100; // add 100 to allow insertions in between
+            } else
+            {
+                throw new IllegalArgumentException("Unsupported Recurrence Rule element: " + entry.getKey());                        
+            }
+        });
+    }
+
 
     // Copy constructor
     public RecurrenceRule3(RecurrenceRule3 source)
@@ -343,6 +487,15 @@ public class RecurrenceRule3
 //        source.recurrences().stream().forEach(r -> recurrences().add(r));
     }
     
+//    private void setupFrequencyListener()
+//    {
+//        // add listener to bind interval and byRules to fields in Frequency
+//        frequencyProperty().addListener(obs ->
+//        {
+//            interval.bind(getFrequency().intervalProperty());
+//            Bindings.bindContentBidirectional(byRules(), getFrequency().byRules());            
+//        });
+//    }
     
 //    @Override
 //    public void parse(String propertyString)
@@ -395,6 +548,40 @@ public class RecurrenceRule3
 //        copy(this, destination);
 //    }
 
+    public TemporalAdjuster adjuster()
+    {
+        int interval = (getInterval() == null) ? Interval.DEFAULT_INTERVAL : getInterval().getValue();
+        return (temporal) -> temporal.plus(interval, getFrequency().frequencyType().getChronoUnit());
+    }
+
+    /**
+     * STREAM RECURRENCES
+     * 
+     * Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
+     *
+     * Starts on startDateTime, which MUST be a valid occurrence date/time, but not necessarily the
+     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
+     * get to later dates in the stream.
+     * 
+     * @param start - starting point of stream (MUST be a valid occurrence date/time)
+     * @return
+     */
+    public Stream<Temporal> streamRecurrences(Temporal start)
+    {
+        getFrequency().setChronoUnit(getFrequency().frequencyType().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
+        Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
+        Iterator<ByRule> rulesIterator = byRules()
+                .stream()
+                .sorted()
+                .iterator();
+        while (rulesIterator.hasNext())
+        {
+            ByRule rule = rulesIterator.next();
+            stream = rule.streamRecurrences(stream, getFrequency().chronoUnitProperty(), start);
+        }
+        return stream;
+    }
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -406,8 +593,8 @@ public class RecurrenceRule3
         }
         RecurrenceRule3 testObj = (RecurrenceRule3) obj;
 
-        List<RecurrenceRuleElement> myElements = elements();
-        List<RecurrenceRuleElement> testElements = testObj.elements();
+        List<RRuleElementType> myElements = elements();
+        List<RRuleElementType> testElements = testObj.elements();
         System.out.println("rrule equal:" + obj + " " + (obj.getClass() != getClass()));
         
         boolean isSameNumberOfElements = myElements.size() == testElements.size();
@@ -554,7 +741,7 @@ public class RecurrenceRule3
      */
     public boolean isInfinite()
     {
-        return ((getCount() == 0) && (getUntil() == null));
+        return ((getCount().getValue() == 0) && (getUntil() == null));
     }
     
     /** Stream of date/times made after applying all modification rules.
@@ -622,7 +809,7 @@ public class RecurrenceRule3
     {
 //        System.out.println("tostring9:" + elements());
         return elements().stream()
-                .sorted((Comparator<? super RecurrenceRuleElement>) (e1, e2) -> 
+                .sorted((Comparator<? super RRuleElementType>) (e1, e2) -> 
                 {
                     Integer s1 = elementSortOrder().get(e1);
                     Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;

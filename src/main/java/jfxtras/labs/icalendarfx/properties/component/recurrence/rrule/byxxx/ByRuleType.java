@@ -11,6 +11,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.
  * The class is used to make new instances of the different Rules by matching RRULE property
  * to its matching class
  * */
+@Deprecated
 public enum ByRuleType
 {
     BY_SECOND ("BYSECOND", BySecond.class, 170)

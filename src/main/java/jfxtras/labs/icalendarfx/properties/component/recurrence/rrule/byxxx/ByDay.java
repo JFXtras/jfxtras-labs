@@ -24,10 +24,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
-public class ByDay extends ByRuleAbstract
+public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
 {
     private final TemporalField field;
     private final int firstDayOfWeekAdjustment;
@@ -98,6 +100,7 @@ public class ByDay extends ByRuleAbstract
         firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
     }
     
+    @Deprecated // use parse instead
     public ByDay(String dayPairs)
     {
         this();
@@ -207,7 +210,7 @@ public class ByDay extends ByRuleAbstract
     }
     
     @Override // TODO - try to REMOVE startTemporal
-    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
         // TODO - according to iCalendar standard a ByDay rule doesn't need any specified days - should use day from DTSTART, this is not implemented yet.  When implemented this line should be removed.
         if (getByDayPairs().length == 0) throw new RuntimeException("ByDay rule must have at least one day specified");
@@ -377,5 +380,34 @@ public class ByDay extends ByRuleAbstract
         }
       
         public DayOfWeek getDayOfWeek() { return dow; }
+    }
+
+    public static ByRule parse(String dayPairs)
+    {
+        ByDay byRule = new ByDay();
+        List<ByDayPair> dayPairsList = new ArrayList<ByDayPair>();
+        Pattern p = Pattern.compile("(-?[0-9]+)?([A-Z]{2})");
+        Matcher m = p.matcher(dayPairs);
+        while (m.find())
+        {
+            String token = m.group();
+            if (token.matches("^(-?[0-9]+.*)")) // start with ordinal number
+            {
+                Matcher m2 = p.matcher(token);
+                if (m2.find())
+                {
+                    DayOfWeek dayOfWeek = ICalendarDayOfWeek.valueOf(m2.group(2)).getDayOfWeek();
+                    int ordinal = Integer.parseInt(m2.group(1));
+                    dayPairsList.add(new ByDayPair(dayOfWeek, ordinal));
+                }
+            } else
+            { // has no ordinal number
+                DayOfWeek dayOfWeek = ICalendarDayOfWeek.valueOf(token).getDayOfWeek();
+                dayPairsList.add(new ByDayPair(dayOfWeek, 0));
+            }
+        }
+        byRule.byDayPairs = new ByDayPair[dayPairsList.size()];
+        byRule.byDayPairs = dayPairsList.toArray(byRule.byDayPairs);
+        return byRule;
     }
 }

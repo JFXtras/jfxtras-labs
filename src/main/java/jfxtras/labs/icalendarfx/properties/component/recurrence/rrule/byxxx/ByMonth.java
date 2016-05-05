@@ -11,18 +11,34 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
-public class ByMonth extends ByRuleAbstract
+public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
 {
     /** sorted array of months to be included
      * January = 1 - December = 12
      * Uses a varargs parameter to allow any number of months
      */
-    public Month[] getMonths() { return months; }
-    private Month[] months;
-    private void setMonths(Month... months) { this.months = months; }
-
+//    public Month[] getValue() { return months; }
+//    private Month[] months;
+//    private void setMonths(Month... months) { this.months = months; }
+    public void setValue(Month... months)
+    {
+        setValue(FXCollections.observableArrayList(months));
+    }
+    public ByMonth withValue(Month... months)
+    {
+        setValue(months);
+        return this;
+    }
+    public ByMonth withValue(String months)
+    {
+        setValue(makeMonthList(months));
+        return this;
+    }
+    
     /*
      * CONSTRUCTORS
      */
@@ -31,33 +47,34 @@ public class ByMonth extends ByRuleAbstract
         super(ByMonth.class);
     }
     
-    public ByMonth(String months)
-    {
-        this();
-        setMonths(
-          Arrays.asList(months.split(","))
-                .stream()
-                .map(s -> Month.of(Integer.parseInt(s)))
-                .toArray(size -> new Month[size]));
-    }
+//    @Deprecated // use parse
+//    public ByMonth(String months)
+//    {
+//        this();        
+//        setValue(
+//          Arrays.asList(months.split(","))
+//                .stream()
+//                .map(s -> Month.of(Integer.parseInt(s)))
+//                .toArray(size -> new Month[size]));
+//    }
     
     public ByMonth(Month... months)
     {
         this();
-        setMonths(months);
+        setValue(FXCollections.observableArrayList(months));
     }
     
-    public ByMonth(ByRule source)
+    public ByMonth(ByMonth source)
     {
         super(source);
     }
 
-    @Override
-    public void copyTo(ByRule destination)
-    {
-        ByMonth destination2 = (ByMonth) destination;
-        destination2.months = months;
-    }
+//    @Override
+//    public void copyTo(ByRule destination)
+//    {
+//        ByMonth destination2 = (ByMonth) destination;
+//        destination2.setValue(getValue());
+//    }
     
     @Override
     public boolean equals(Object obj)
@@ -67,7 +84,8 @@ public class ByMonth extends ByRuleAbstract
             return false;
         }
         ByMonth testObj = (ByMonth) obj;
-        boolean monthEquals = Arrays.equals(getMonths(), testObj.getMonths());
+        boolean monthEquals = getValue().equals(testObj.getValue());
+//        boolean monthEquals = Arrays.equals(getValue(), testObj.getValue());
         return monthEquals;
     }
     
@@ -75,21 +93,22 @@ public class ByMonth extends ByRuleAbstract
     public int hashCode()
     {
         int hash = 3;
-        hash = (31 * hash) + getMonths().hashCode();
+        hash = (31 * hash) + getValue().hashCode();
         return hash;
     }
 
     @Override
     public String toString()
     {
-        String days = Arrays.stream(getMonths())
+        String days = getValue().stream()
+//        String days = Arrays.stream(getValue())
                 .map(d -> d.getValue() + ",")
                 .collect(Collectors.joining());
         return ByRuleType.BY_MONTH + "=" + days.substring(0, days.length()-1); // remove last comma
     }
 
     @Override
-    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime)
     {
         ChronoUnit originalChronoUnit = chronoUnit.get();
         chronoUnit.set(MONTHS);
@@ -101,7 +120,7 @@ public class ByMonth extends ByRuleAbstract
             return inStream.filter(t ->
             { // filter out all but qualifying days
                 Month myMonth = Month.from(t);
-                for (Month month : getMonths())
+                for (Month month : getValue())
                 {
                     if (month == myMonth) return true;
                 }
@@ -112,7 +131,7 @@ public class ByMonth extends ByRuleAbstract
             { // Expand to include matching days in all months
                 List<Temporal> dates = new ArrayList<>();
                 int monthNum = Month.from(t).getValue();
-                for (Month month : getMonths())
+                for (Month month : getValue())
                 {
                     int myMonthNum = month.getValue();
                     int monthShift = myMonthNum - monthNum;
@@ -128,5 +147,21 @@ public class ByMonth extends ByRuleAbstract
             break;
         }
         return null;    
+    }
+    
+    private static ObservableList<Month> makeMonthList(String months)
+    {
+        return FXCollections.observableArrayList(
+            Arrays.asList(months.split(","))
+                .stream()
+                .map(s -> Month.of(Integer.parseInt(s)))
+                .toArray(size -> new Month[size]));
+    }
+
+    public static ByMonth parse(String months)
+    {
+        ByMonth byMonth = new ByMonth();
+        byMonth.setValue(makeMonthList(months) );
+        return byMonth;
     }
 }

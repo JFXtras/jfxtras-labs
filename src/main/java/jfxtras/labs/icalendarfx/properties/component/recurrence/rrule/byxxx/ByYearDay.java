@@ -5,8 +5,9 @@ import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 
-public class ByYearDay extends ByRuleAbstract
+public class ByYearDay extends ByRuleAbstract<ObservableList<Integer>, ByYearDay>
 {
     public ByYearDay()
     {
@@ -19,22 +20,16 @@ public class ByYearDay extends ByRuleAbstract
         this();
     }
     
-    public ByYearDay(ByRule source)
+    public ByYearDay(ByYearDay source)
     {
         super(source);
     }
 
     @Override
-    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
             Temporal startDateTime) {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public void copyTo(ByRule destination) {
-        // TODO Auto-generated method stub
-        
     }
 
 }

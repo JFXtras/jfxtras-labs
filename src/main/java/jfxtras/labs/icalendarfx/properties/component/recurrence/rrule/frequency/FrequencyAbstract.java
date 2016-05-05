@@ -168,7 +168,7 @@ public abstract class FrequencyAbstract<T> implements Frequency {
         while (rulesIterator.hasNext())
         {
             ByRule rule = rulesIterator.next();
-            stream = rule.stream(stream, chronoUnitProperty(), start);
+            stream = rule.streamRecurrences(stream, chronoUnitProperty(), start);
         }
         return stream;
     }

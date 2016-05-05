@@ -56,7 +56,7 @@ public class ByMonthDay extends ByRuleAbstract
         setDaysOfMonth(daysOfMonth);
     }
     
-    public ByMonthDay(ByRule source)
+    public ByMonthDay(ByMonthDay source)
     {
         super(source);
     }
@@ -105,7 +105,7 @@ public class ByMonthDay extends ByRuleAbstract
      * Return stream of valid dates made by rule (infinite if COUNT or UNTIL not present)
      */
     @Override
-    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
         if (daysOfMonth == null)
         { // if no days specified when constructing, get day of month for startDateTime

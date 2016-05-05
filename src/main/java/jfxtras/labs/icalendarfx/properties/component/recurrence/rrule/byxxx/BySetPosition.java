@@ -5,8 +5,9 @@ import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 
-public class BySetPosition extends ByRuleAbstract
+public class BySetPosition extends ByRuleAbstract<ObservableList<Integer>, BySetPosition>
 {
     public BySetPosition()
     {
@@ -19,22 +20,16 @@ public class BySetPosition extends ByRuleAbstract
         this();
     }
     
-    public BySetPosition(ByRule source)
+    public BySetPosition(BySetPosition source)
     {
         super(source);
     }
     
     @Override
-    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
             Temporal startDateTime) {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public void copyTo(ByRule destination) {
-        // TODO Auto-generated method stub
-        
     }
 
 }

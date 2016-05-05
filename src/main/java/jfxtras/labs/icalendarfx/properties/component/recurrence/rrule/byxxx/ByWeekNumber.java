@@ -11,30 +11,49 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
-public class ByWeekNumber extends ByRuleAbstract
+public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeekNumber>
 {
-    /** sorted array of weeks of the year
-     * (i.e. 5, 10 = 5th and 10th weeks of the year, -3 = 3rd from last week of the year)
-     * Uses a varargs parameter to allow any number of value.
-     */
-    public int[] getWeekNumbers() { return weekNumbers; }
-    private int[] weekNumbers;
-    public void setWeekNumbers(int... weekNumbers)
+//    /** sorted array of weeks of the year
+//     * (i.e. 5, 10 = 5th and 10th weeks of the year, -3 = 3rd from last week of the year)
+//     * Uses a varargs parameter to allow any number of value.
+//     */
+//    public int[] getWeekNumbers() { return weekNumbers; }
+//    private int[] weekNumbers;
+//    public void setWeekNumbers(int... weekNumbers)
+//    {
+//        for (int w : weekNumbers)
+//        {
+//            if (w < -53 || w > 53 || w == 0) throw new IllegalArgumentException("Invalid BYWEEKNO value (" + w + "). Valid values are 1 to 53 or -53 to -1.");
+//        }
+//        this.weekNumbers = weekNumbers;
+//    }
+//    public ByWeekNumber withWeekNumbers(int... weekNumbers) { setWeekNumbers(weekNumbers); return this; }
+    public void setValue(Integer... weekNumbers)
     {
         for (int w : weekNumbers)
         {
             if (w < -53 || w > 53 || w == 0) throw new IllegalArgumentException("Invalid BYWEEKNO value (" + w + "). Valid values are 1 to 53 or -53 to -1.");
         }
-        this.weekNumbers = weekNumbers;
+        setValue(FXCollections.observableArrayList(weekNumbers));
     }
-    public ByWeekNumber withWeekNumbers(int... weekNumbers) { setWeekNumbers(weekNumbers); return this; }
-
+    public ByWeekNumber withValue(Integer... weekNumbers)
+    {
+        setValue(weekNumbers);
+        return this;
+    }
+    public ByWeekNumber withValue(String weekNumbers)
+    {
+        setValue(makeWeekArray(weekNumbers));
+        return this;
+    }
+    
     /** Start of week - default start of week is Monday */
     public DayOfWeek getWeekStart() { return weekStart; }
     private DayOfWeek weekStart = DayOfWeek.MONDAY; // default to start on Monday
@@ -51,68 +70,67 @@ public class ByWeekNumber extends ByRuleAbstract
     
     /** takes String of comma-delimited integers, parses it to array of ints 
      */
-    public ByWeekNumber(String weekNumbersString)
+    public ByWeekNumber(String weekNumbers)
     {
-        this(Arrays.stream(weekNumbersString.split(","))
-                .mapToInt(s -> Integer.parseInt(s))
-                .toArray());
+        this();
+        setValue(makeWeekArray(weekNumbers));
     }
     
     /** Constructor requires weeks of the year int value(s) */
-    public ByWeekNumber(int...weekNumbers)
+    public ByWeekNumber(Integer...weekNumbers)
     {
         this();
-        setWeekNumbers(weekNumbers);
+        setValue(weekNumbers);
     }
     
-    public ByWeekNumber(ByRule source)
+    public ByWeekNumber(ByWeekNumber source)
     {
         super(source);
     }
 
-    @Override
-    public void copyTo(ByRule destination)
-    {
-        ByWeekNumber destination2 = (ByWeekNumber) destination;
-        destination2.weekNumbers = new int[weekNumbers.length];
-        for (int i=0; i<weekNumbers.length; i++)
-        {
-            destination2.weekNumbers[i] = weekNumbers[i];
-        }
-    }
+//    @Override
+//    public void copyTo(ByRule destination)
+//    {
+//        ByWeekNumber destination2 = (ByWeekNumber) destination;
+//        destination2.weekNumbers = new int[weekNumbers.length];
+//        for (int i=0; i<weekNumbers.length; i++)
+//        {
+//            destination2.weekNumbers[i] = weekNumbers[i];
+//        }
+//    }
+    
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (obj == this) return true;
+//        if((obj == null) || (obj.getClass() != getClass())) {
+//            return false;
+//        }
+//        ByWeekNumber testObj = (ByWeekNumber) obj;
+//        
+//        boolean weekNumbersEquals = Arrays.equals(getValue(), testObj.getValue());
+//        return weekNumbersEquals;
+//    }
+//    
+//    @Override
+//    public int hashCode()
+//    {
+//        int hash = 7;
+//        hash = (31 * hash) + getWeekNumbers().hashCode();
+//        return hash;
+//    }
+    
+//    @Override
+//    public String toString()
+//    {
+//        String days = Arrays.stream(getWeekNumbers())
+//                .mapToObj(d -> d + ",")
+//                .collect(Collectors.joining());
+//        return ByRuleType.BY_WEEK_NUMBER + "=" + days.substring(0, days.length()-1); // remove last comma
+//    }
     
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        ByWeekNumber testObj = (ByWeekNumber) obj;
-        
-        boolean weekNumbersEquals = Arrays.equals(getWeekNumbers(), testObj.getWeekNumbers());
-        return weekNumbersEquals;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        int hash = 7;
-        hash = (31 * hash) + getWeekNumbers().hashCode();
-        return hash;
-    }
-    
-    @Override
-    public String toString()
-    {
-        String days = Arrays.stream(getWeekNumbers())
-                .mapToObj(d -> d + ",")
-                .collect(Collectors.joining());
-        return ByRuleType.BY_WEEK_NUMBER + "=" + days.substring(0, days.length()-1); // remove last comma
-    }
-    
-    @Override
-    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
     {
         ChronoUnit originalChronoUnit = chronoUnit.get();
         chronoUnit.set(WEEKS);
@@ -151,7 +169,7 @@ public class ByWeekNumber extends ByRuleAbstract
             { // Expand to include matching days in all months
                 DayOfWeek dayOfWeek = DayOfWeek.from(startTemporal);
                 List<Temporal> dates = new ArrayList<>();
-                for (int myWeekNumber: getWeekNumbers())
+                for (int myWeekNumber: getValue())
                 {
                     Temporal newTemporal = date.with(TemporalAdjusters.next(dayOfWeek));
                     int newDateWeekNumber = newTemporal.get(weekFields2.weekOfWeekBasedYear());
@@ -173,6 +191,21 @@ public class ByWeekNumber extends ByRuleAbstract
             break;
         }
         return null;    
+    }
+    
+    private static Integer[] makeWeekArray(String weekNumbers)
+    {
+        return Arrays.asList(weekNumbers.split(","))
+                .stream()
+                .map(s -> Integer.parseInt(s))
+                .toArray(size -> new Integer[size]);
+    }
+
+    public static ByWeekNumber parse(String weekNumbers)
+    {
+        ByWeekNumber byWeekNumber = new ByWeekNumber();
+        byWeekNumber.setValue(makeWeekArray(weekNumbers));
+        return byWeekNumber;
     }
 
 }

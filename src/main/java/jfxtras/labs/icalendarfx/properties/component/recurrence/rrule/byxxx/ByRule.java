@@ -5,6 +5,7 @@ import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElement;
 
 /**
  * Interface for a rule that applies a modification to a Stream of start date/times, such
@@ -22,7 +23,7 @@ import javafx.beans.property.ObjectProperty;
  * @see BySecond
  * @see BySetPosition
  */
-public interface ByRule extends Comparable<ByRule>
+public interface ByRule<T> extends Comparable<ByRule<T>>, RRuleElement<T>
 {
     
     ByRuleType byRuleType();
@@ -36,13 +37,13 @@ public interface ByRule extends Comparable<ByRule>
      * @param startTemporal - start Temporal (date or date/time)
      * @return
      */
-    Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal);
+    Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal);
 
-    void copyTo(ByRule destination);
-
-    /** Deep copy all fields from source to destination */
-    static void copy(ByRule source, ByRule destination)
-    {
-        source.copyTo(destination);
-    }
+//    void copyTo(ByRule destination);
+//
+//    /** Deep copy all fields from source to destination */
+//    static void copy(ByRule source, ByRule destination)
+//    {
+//        source.copyTo(destination);
+//    }
 }

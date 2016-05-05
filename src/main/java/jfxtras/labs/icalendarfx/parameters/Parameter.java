@@ -10,7 +10,7 @@ import javafx.beans.property.ObjectProperty;
  * parse - convert string into parameter - this method is in ParameterEnum
  * 
  * @author David Bal
- * @param <T> - parameter value
+ * @param <T> - parameter value type
  *
  */
 public interface Parameter<T> extends Comparable<Parameter<T>>

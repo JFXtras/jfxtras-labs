@@ -25,7 +25,7 @@ public class ByHour extends ByRuleAbstract
     }
     
     @Override
-    public Stream<Temporal> stream(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
             Temporal startDateTime) {
         // TODO Auto-generated method stub
         return null;

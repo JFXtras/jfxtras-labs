@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByHour;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMinute;
@@ -14,12 +15,11 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.BySe
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.BySetPosition;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public enum RecurrenceRuleElement
+public enum RRuleElementType
 {
-    FREQUENCY ("FREQ") {
+    FREQUENCY ("FREQ", Frequency2.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -29,37 +29,41 @@ public enum RecurrenceRuleElement
         @Override
         public void parse(RecurrenceRule3 recurrenceRule, String content)
         {
-            System.out.println("set frequency:");
             if (recurrenceRule.getFrequency() == null)
             {
                 recurrenceRule.setFrequency(Frequency2.parse(content));                
-                System.out.println("set frequency2:" + recurrenceRule.getFrequency());
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
 
-        @Override
-        public <T> StringConverter<T> getConverter()
-        {
-            return new StringConverter<T>()
-            {
-                @Override
-                public String toString(T object)
-                {
-                    return FREQUENCY.toString() + "=" + ((Frequency2) object).toString();
-                }
+//        @Override
+//        public String elementToString(Object element)
+//        {
+//            return FREQUENCY.toString() + "=" + ((Frequency2) element).toString();
+//        }
 
-                @Override
-                public T fromString(String string)
-                {
-                    return (T) string;
-                }
-            };
-        }
+//        @Override
+//        public <T> StringConverter<T> getConverter()
+//        {
+//            return new StringConverter<T>()
+//            {
+//                @Override
+//                public String toString(T object)
+//                {
+//                    return FREQUENCY.toString() + "=" + ((Frequency2) object).toString();
+//                }
+//
+//                @Override
+//                public T fromString(String string)
+//                {
+//                    return (T) string;
+//                }
+//            };
+//        }
     },
-    UNTIL ("UNTIL") {
+    UNTIL ("UNTIL", Until.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -69,8 +73,13 @@ public enum RecurrenceRuleElement
         @Override
         public void parse(RecurrenceRule3 recurrenceRule, String content)
         {
-            // TODO Auto-generated method stub
-            
+            if (recurrenceRule.getUntil() == null)
+            {
+                recurrenceRule.setUntil(DateTimeUtilities.temporalFromString(content));                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
 
         @Override
@@ -87,12 +96,13 @@ public enum RecurrenceRuleElement
                 @Override
                 public T fromString(String string)
                 {
+                    // TODO - NOT BEING USED - SHOULD CONVERTER BE REPLACED BY ONE METHOD?
                     return (T) DateTimeUtilities.temporalFromString(string);
                 }
             };
         }
     },
-    COUNT ("COUNT") {
+    COUNT ("COUNT", Count.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -113,11 +123,12 @@ public enum RecurrenceRuleElement
             return null;
         }
     },
-    INTERVAL ("INTERVAL") {
+    INTERVAL ("INTERVAL", Interval.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
-            return (rrule.getInterval() == RecurrenceRule3.DEFAULT_INTERVAL) ? null : rrule.getInterval();
+//            return (rrule.getInterval() == RecurrenceRule3.DEFAULT_INTERVAL) ? null : rrule.getInterval();
+            return rrule.getInterval();
         }
 
         @Override
@@ -134,7 +145,7 @@ public enum RecurrenceRuleElement
             return null;
         }
     },
-    WEEK_START ("WKST") {
+    WEEK_START ("WKST", WeekStart.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -155,7 +166,7 @@ public enum RecurrenceRuleElement
             return null;
         }
     },
-    BY_MONTH ("BYMONTH") {
+    BY_MONTH ("BYMONTH", ByMonth.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -165,8 +176,13 @@ public enum RecurrenceRuleElement
         @Override
         public void parse(RecurrenceRule3 recurrenceRule, String content)
         {
-            // TODO Auto-generated method stub
-            
+            if (recurrenceRule.lookupByRule(ByMonth.class) == null)
+            {
+                recurrenceRule.byRules().add(ByMonth.parse(content));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
 
         @Override
@@ -188,7 +204,7 @@ public enum RecurrenceRuleElement
             };
         }
     },
-    BY_WEEK_NUMBER ("BYWEEKNO") {
+    BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -209,7 +225,7 @@ public enum RecurrenceRuleElement
             return null;
         }
     },
-    BY_YEAR_DAY ("BYYEARDAY") {
+    BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -230,7 +246,7 @@ public enum RecurrenceRuleElement
             return null;
         }
     },
-    BY_MONTH_DAY ("BYMONTHDAY") {
+    BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -251,7 +267,7 @@ public enum RecurrenceRuleElement
             return null;
         }
     },
-    BY_DAY ("BYDAY") {
+    BY_DAY ("BYDAY", ByDay.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -261,8 +277,13 @@ public enum RecurrenceRuleElement
         @Override
         public void parse(RecurrenceRule3 recurrenceRule, String content)
         {
-            // TODO Auto-generated method stub
-            
+            if (recurrenceRule.lookupByRule(ByDay.class) == null)
+            {
+                recurrenceRule.byRules().add(ByDay.parse(content));                
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
         }
 
         @Override
@@ -284,7 +305,7 @@ public enum RecurrenceRuleElement
             };
         }
     },
-    BY_HOUR ("BYHOUR") {
+    BY_HOUR ("BYHOUR", ByHour.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -305,7 +326,7 @@ public enum RecurrenceRuleElement
             return null;
         }
     },
-    BY_MINUTE ("BYMINUTE") {
+    BY_MINUTE ("BYMINUTE", ByMinute.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -326,7 +347,7 @@ public enum RecurrenceRuleElement
             return null;
         }
     },
-    BY_SECOND ("BYSECOND") {
+    BY_SECOND ("BYSECOND", BySecond.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -347,7 +368,7 @@ public enum RecurrenceRuleElement
             return null;
         }
     },
-    BY_SET_POSITION ("BYSETPOS") {
+    BY_SET_POSITION ("BYSETPOS", BySetPosition.class) {
         @Override
         public Object getElement(RecurrenceRule3 rrule)
         {
@@ -382,29 +403,55 @@ public enum RecurrenceRuleElement
     };
     
     // Map to match up name to enum
-    private static Map<String, RecurrenceRuleElement> enumFromNameMap = makeEnumFromNameMap();
-    private static Map<String, RecurrenceRuleElement> makeEnumFromNameMap()
+    private static Map<String, RRuleElementType> enumFromNameMap = makeEnumFromNameMap();
+    private static Map<String, RRuleElementType> makeEnumFromNameMap()
     {
-        Map<String, RecurrenceRuleElement> map = new HashMap<>();
-        RecurrenceRuleElement[] values = RecurrenceRuleElement.values();
+        Map<String, RRuleElementType> map = new HashMap<>();
+        RRuleElementType[] values = RRuleElementType.values();
         for (int i=0; i<values.length; i++)
         {
             map.put(values[i].toString(), values[i]);
         }
         return map;
     }
-    public static RecurrenceRuleElement enumFromName(String propertyName)
+    public static RRuleElementType enumFromName(String propertyName)
     {
         return enumFromNameMap.get(propertyName.toUpperCase());
+    }
+    
+    // Map to match up class to enum
+    private static Map<Class<? extends RRuleElement<?>>, RRuleElementType> enumFromClassMap = makeEnumFromClassMap();
+    private static Map<Class<? extends RRuleElement<?>>, RRuleElementType> makeEnumFromClassMap()
+    {
+        Map<Class<? extends RRuleElement<?>>, RRuleElementType> map = new HashMap<>();
+        RRuleElementType[] values = RRuleElementType.values();
+        for (int i=0; i<values.length; i++)
+        {
+            map.put(values[i].myClass, values[i]);
+        }
+        return map;
+    }
+    /** get enum from map */
+    public static RRuleElementType enumFromClass(Class<? extends RRuleElement> myClass)
+    {
+        RRuleElementType p = enumFromClassMap.get(myClass);
+        if (p == null)
+        {
+            throw new IllegalArgumentException(ParameterType.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
+        }
+        return p;
     }
     
     private String name;
     @Override
     public String toString() { return name; }
-  
-    RecurrenceRuleElement(String name)
+    
+    private Class<? extends RRuleElement<?>> myClass;
+    
+    RRuleElementType(String name, Class<? extends RRuleElement<?>> myClass)
     {
         this.name = name;
+        this.myClass = myClass;
     }
  
     /*
@@ -415,8 +462,18 @@ public enum RecurrenceRuleElement
     
     abstract public void parse(RecurrenceRule3 recurrenceRule, String content);
     
+//    public String elementToString(Object object)
+//    {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+    
     /** return default String converter associated with property value type */
-    abstract public <T> StringConverter<T> getConverter();
+//    @Deprecated
+    public <T> StringConverter<T> getConverter() {
+        return null; }
+
+
     
 //    abstract public String elementToString(RecurrenceRule3 recurrenceRule);
 
