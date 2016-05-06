@@ -128,6 +128,9 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
         chronoUnit.set(MONTHS);
         switch (originalChronoUnit)
         {
+        case HOURS:
+        case MINUTES:
+        case SECONDS:
         case DAYS:
         case WEEKS:
         case MONTHS:
@@ -153,14 +156,9 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
                 }
                 return dates.stream();
             });
-        case HOURS:
-        case MINUTES:
-        case SECONDS:
-            throw new RuntimeException("Not implemented ChronoUnit: " + chronoUnit); // probably same as DAILY
         default:
-            break;
+            throw new RuntimeException("Not implemented ChronoUnit: " + chronoUnit); // probably same as DAILY
         }
-        return null;    
     }
     
 //    private static ObservableList<Month> makeMonthList(String months)

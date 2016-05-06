@@ -8,8 +8,11 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,7 +28,10 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.WeekStart;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -168,4 +174,43 @@ public class RecurrenceRuleTest
         assertEquals(Month.APRIL, element.getValue().get(0));
         assertEquals("BYMONTH=4", element.toContent());
     }
+    
+    @Test
+    public void canStreamByMonth()
+    {
+        ByMonth element = new ByMonth(4);
+        Frequency2 frequency = new Frequency2(FrequencyType.YEARLY);
+        LocalDateTime start = LocalDateTime.of(2016, 5, 5, 10, 0);
+        Stream<Temporal> inStream = Stream.iterate(start, a -> a.with(frequency.adjuster(1)));
+//        element.streamRecurrences(frequency.s, chronoUnit, startDateTime)
     }
+
+
+    @Test
+    public void canParseByWeekNumber()
+    {
+        ByWeekNumber element = new ByWeekNumber(4,5);
+        assertEquals(Arrays.asList(4,5), element.getValue());
+        assertEquals("BYWEEKNO=4,5", element.toContent());
+    }
+    
+    @Test
+    public void canParseByYearDay()
+    {
+        ByYearDay element = new ByYearDay(100,200,300);
+        assertEquals(Arrays.asList(100,200,300), element.getValue());
+        assertEquals("BYYEARDAY=100,200,300", element.toContent());
+        
+    }
+    
+    @Test
+    public void canParseByDay()
+    {
+        ByDay element = ByDay.parse("-1SU");
+        ByDayPair byDayPair = new ByDayPair()
+                .withDayOfWeek(DayOfWeek.SUNDAY)
+                .withOrdinal(-1);
+        assertEquals(byDayPair, element.getValue().get(0));
+        assertEquals("BYDAY=-1SU", element.toContent());
+    }
+}

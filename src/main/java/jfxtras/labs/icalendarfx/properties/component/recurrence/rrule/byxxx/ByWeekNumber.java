@@ -131,7 +131,7 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     public String toContent()
     {
         String days = getValue().stream()
-                .map(v -> v.toString() + ",")
+                .map(v -> v.toString())
                 .collect(Collectors.joining(","));
         return RRuleElementType.BY_WEEK_NUMBER + "=" + days; //.substring(0, days.length()-1); // remove last comma
     }

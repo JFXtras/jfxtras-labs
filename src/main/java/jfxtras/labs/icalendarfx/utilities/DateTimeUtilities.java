@@ -8,6 +8,7 @@ import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 
 import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Optional;
 
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 
@@ -332,6 +334,24 @@ public final class DateTimeUtilities
         {
             throw new DateTimeException("Can't parse date-time string:" + string);                        
         }
+    }
+    
+    
+    /**
+     * Convert 2-character string to DayOfWeek following below convention:
+     * weekday     = "SU" / "MO" / "TU" / "WE" / "TH" / "FR" / "SA"
+     * Corresponding to SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, and SATURDAY days of the week.
+     * 
+     * @param dayOfWeekAbbreviation - 2 character abbreviation representing day of the week
+     * @return - associated DayOfWeek
+     */
+    public static DayOfWeek dayOfWeekFromAbbreviation(String dayOfWeekAbbreviation)
+    {
+        Optional<DayOfWeek> optional = Arrays.stream(DayOfWeek.values())
+                .filter(d -> d.toString().substring(0, 2).equals(dayOfWeekAbbreviation.toUpperCase()))
+                .findAny();
+        return (optional.isPresent()) ? optional.get() : null;
+            
     }
     
     /**

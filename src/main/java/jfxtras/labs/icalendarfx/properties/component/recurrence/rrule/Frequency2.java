@@ -1,6 +1,9 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -141,7 +144,11 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
 //    public FrequencyType frequencyType() { return frequencyType; }
 //    private FrequencyType frequencyType;
     
-//    public TemporalAdjuster adjuster() { return (temporal) -> temporal.plus(getInterval(), frequencyType.getChronoUnit()); }
+    /** TemporalAdjuster to enable frequency stream in {@link RecurrenceRule3#streamRecurrences(Temporal)} */
+    TemporalAdjuster adjuster(int interval)
+    {
+        return (temporal) -> temporal.plus(interval, getValue().getChronoUnit());
+    }
     
     /*
      * CONSTRUCTORS
@@ -189,20 +196,20 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
     {
         super();
     }
-//    /** STREAM 
-//     * Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
-//     * Rules.
-//     * Starts on startDateTime, which MUST be a valid occurrence date/time, but not necessarily the
-//     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
-//     * get to later dates in the stream.
-//     * 
-//     * @param start - starting point of stream (MUST be a valid occurrence date/time)
-//     * @return
-//     */
-//    public Stream<Temporal> streamRecurrences(Temporal start)
-//    {
-//        setChronoUnit(frequencyType.getChronoUnit()); // start with Frequency ChronoUnit when making a stream
-//        Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
+    /** STREAM 
+     * Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
+     * Rules.
+     * Starts on startDateTime, which MUST be a valid occurrence date/time, but not necessarily the
+     * first date/time (DTSTART) in the sequence. A later startDateTime can be used to more efficiently
+     * get to later dates in the stream.
+     * 
+     * @param start - starting point of stream (MUST be a valid occurrence date/time)
+     * @return
+     */
+    public Stream<Temporal> streamRecurrences(Temporal start)
+    {
+        setChronoUnit(getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
+        return Stream.iterate(start, a -> a.with(adjuster()));
 //        Iterator<ByRule> rulesIterator = byRules()
 //                .stream()
 //                .sorted()
@@ -213,7 +220,7 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
 //            stream = rule.stream(stream, chronoUnitProperty(), start);
 //        }
 //        return stream;
-//    }
+    }
     
 //    @Override
 //    public boolean equals(Object obj)

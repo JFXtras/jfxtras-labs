@@ -344,8 +344,13 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
     {
         private DayOfWeek dayOfWeek;
         public DayOfWeek getDayOfWeek() { return dayOfWeek; }
+        public void setDayOfWeek(DayOfWeek dayOfWeek) { this.dayOfWeek = dayOfWeek; }
+        public ByDayPair withDayOfWeek(DayOfWeek dayOfWeek) { setDayOfWeek(dayOfWeek); return this; }
+        
         private int ordinal = 0;
         public int getOrdinal() { return ordinal; }
+        public void setOrdinal(int ordinal) { this.ordinal = ordinal; }
+        public ByDayPair withOrdinal(int ordinal) { setOrdinal(ordinal); return this; }
 
         public ByDayPair(DayOfWeek dayOfWeek, int ordinal)
         {
@@ -353,6 +358,8 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
             this.ordinal = ordinal;
         }
         
+        public ByDayPair() { }
+
         @Override
         public boolean equals(Object obj)
         {
@@ -374,34 +381,39 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
             return hash;
         }
         
+        @Override
+        public String toString()
+        {
+            return super.toString() + ", " + getDayOfWeek() + ", " + getOrdinal();
+        }
+        
     }
     
-    /** Match up iCalendar 2-character day of week to Java Time DayOfWeek */
-    @Deprecated
-    public enum ICalendarDayOfWeek
-    {
-        MO (DayOfWeek.MONDAY)
-      , TU (DayOfWeek.TUESDAY)
-      , WE (DayOfWeek.WEDNESDAY)
-      , TH (DayOfWeek.THURSDAY)
-      , FR (DayOfWeek.FRIDAY)
-      , SA (DayOfWeek.SATURDAY)
-      , SU (DayOfWeek.SUNDAY);
-      
-        private DayOfWeek dow;
-      
-        ICalendarDayOfWeek(DayOfWeek dow)
-        {
-          this.dow = dow;
-        }
-      
-        public DayOfWeek getDayOfWeek() { return dow; }
-    }
+//    /** Match up iCalendar 2-character day of week to Java Time DayOfWeek */
+//    @Deprecated
+//    public enum ICalendarDayOfWeek
+//    {
+//        MO (DayOfWeek.MONDAY)
+//      , TU (DayOfWeek.TUESDAY)
+//      , WE (DayOfWeek.WEDNESDAY)
+//      , TH (DayOfWeek.THURSDAY)
+//      , FR (DayOfWeek.FRIDAY)
+//      , SA (DayOfWeek.SATURDAY)
+//      , SU (DayOfWeek.SUNDAY);
+//      
+//        private DayOfWeek dow;
+//      
+//        ICalendarDayOfWeek(DayOfWeek dow)
+//        {
+//          this.dow = dow;
+//        }
+//      
+//        public DayOfWeek getDayOfWeek() { return dow; }
+//    }
     
     @Override
     public void parseContent(String dayPairs)
     {
-        ByDay byRule = new ByDay();
         List<ByDayPair> dayPairsList = new ArrayList<ByDayPair>();
         Pattern p = Pattern.compile("(-?[0-9]+)?([A-Z]{2})");
         Matcher m = p.matcher(dayPairs);
@@ -413,17 +425,19 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
                 Matcher m2 = p.matcher(token);
                 if (m2.find())
                 {
-                    DayOfWeek dayOfWeek = ICalendarDayOfWeek.valueOf(m2.group(2)).getDayOfWeek();
+//                    DayOfWeek dayOfWeek = ICalendarDayOfWeek.valueOf(m2.group(2)).getDayOfWeek();
+                    DayOfWeek dayOfWeek = DateTimeUtilities.dayOfWeekFromAbbreviation(m2.group(2));
                     int ordinal = Integer.parseInt(m2.group(1));
                     dayPairsList.add(new ByDayPair(dayOfWeek, ordinal));
                 }
             } else
             { // has no ordinal number
-                DayOfWeek dayOfWeek = ICalendarDayOfWeek.valueOf(token).getDayOfWeek();
+                DayOfWeek dayOfWeek = DateTimeUtilities.dayOfWeekFromAbbreviation(token);
+//                DayOfWeek dayOfWeek = ICalendarDayOfWeek.valueOf(token).getDayOfWeek();
                 dayPairsList.add(new ByDayPair(dayOfWeek, 0));
             }
         }
-        byRule.setValue(FXCollections.observableArrayList(dayPairsList));
+        setValue(FXCollections.observableArrayList(dayPairsList));
     }
 
     public static ByDay parse(String content)
