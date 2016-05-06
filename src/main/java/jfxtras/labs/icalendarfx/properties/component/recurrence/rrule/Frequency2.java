@@ -1,12 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
-import java.util.stream.Stream;
-
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * FREQUENCY
@@ -136,10 +131,16 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
      * changes are not propagated back.  In that case, I would need a reference to the Frequency object that owns
      * it.  The ObjectProperty wrapper is easier.
      */
-    public ObjectProperty<ChronoUnit> chronoUnitProperty() { return chronoUnit; }
-    ChronoUnit getChronoUnit() { return chronoUnit.get(); };
-    private ObjectProperty<ChronoUnit> chronoUnit = new SimpleObjectProperty<ChronoUnit>();
-    public void setChronoUnit(ChronoUnit chronoUnit) { this.chronoUnit.set(chronoUnit); }
+//    public ObjectProperty<ChronoUnit> chronoUnitProperty() { return chronoUnit; }
+//    ChronoUnit getChronoUnit() { return chronoUnit.get(); };
+//    private ObjectProperty<ChronoUnit> chronoUnit = new SimpleObjectProperty<ChronoUnit>();
+//    public void setChronoUnit(ChronoUnit chronoUnit) { this.chronoUnit.set(chronoUnit); }
+
+//    public ChronoUnit chronoUnitProperty() { return chronoUnit; }
+//      public ChronoUnit getChronoUnit() { return chronoUnit; };
+//      final private ChronoUnit chronoUnit;
+
+
     
 //    public FrequencyType frequencyType() { return frequencyType; }
 //    private FrequencyType frequencyType;
@@ -157,7 +158,8 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
     {
         this();
         setValue(frequencyType);
-        setChronoUnit(frequencyType.getChronoUnit());
+//        chronoUnit = frequencyType.getChronoUnit();
+//        setChronoUnit(frequencyType.getChronoUnit());
         
 //        // Listener that ensures user doesn't add same ByRule a second time.  Also keeps the byRules list sorted.
 //        byRules().addListener((ListChangeListener<? super ByRule>) (change) ->
@@ -206,21 +208,21 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
      * @param start - starting point of stream (MUST be a valid occurrence date/time)
      * @return
      */
-    public Stream<Temporal> streamRecurrences(Temporal start)
-    {
-        setChronoUnit(getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
-        return Stream.iterate(start, a -> a.with(adjuster()));
-//        Iterator<ByRule> rulesIterator = byRules()
-//                .stream()
-//                .sorted()
-//                .iterator();
-//        while (rulesIterator.hasNext())
-//        {
-//            ByRule rule = rulesIterator.next();
-//            stream = rule.stream(stream, chronoUnitProperty(), start);
-//        }
-//        return stream;
-    }
+//    public Stream<Temporal> streamRecurrences(Temporal start)
+//    {
+//        setChronoUnit(getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
+//        return Stream.iterate(start, a -> a.with(adjuster()));
+////        Iterator<ByRule> rulesIterator = byRules()
+////                .stream()
+////                .sorted()
+////                .iterator();
+////        while (rulesIterator.hasNext())
+////        {
+////            ByRule rule = rulesIterator.next();
+////            stream = rule.stream(stream, chronoUnitProperty(), start);
+////        }
+////        return stream;
+//    }
     
 //    @Override
 //    public boolean equals(Object obj)

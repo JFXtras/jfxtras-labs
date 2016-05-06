@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
@@ -18,6 +17,8 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleEleme
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
 {
+    @Override
+    public ChronoUnit getChronoUnit() { return ChronoUnit.MONTHS; }
     /** sorted array of months to be included
      * January = 1 - December = 12
      * Uses a varargs parameter to allow any number of months
@@ -122,10 +123,11 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
     }
 
     @Override
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal startDateTime)
+//    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime)
     {
-        ChronoUnit originalChronoUnit = chronoUnit.get();
-        chronoUnit.set(MONTHS);
+        ChronoUnit originalChronoUnit = chronoUnit; //.get();
+//        chronoUnit.set(MONTHS);
         switch (originalChronoUnit)
         {
         case HOURS:

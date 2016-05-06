@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.DayOfWeek;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.util.Arrays;
@@ -88,11 +89,11 @@ public class RecurrenceRule3
      * 
      * Each BYxxx rule can only occur once
      *  */
-    public ObservableList<ByRule> byRules() { return byRules; }
-    private ObservableList<ByRule> byRules; // = FXCollections.observableArrayList();
-    public void setByRules(ObservableList<ByRule> byRules) { this.byRules = byRules; }
-    public RecurrenceRule3 withByRules(ObservableList<ByRule> byRules) { setByRules(byRules); return this; }
-    public RecurrenceRule3 withByRules(ByRule...byRules)
+    public ObservableList<ByRule<?>> byRules() { return byRules; }
+    private ObservableList<ByRule<?>> byRules; // = FXCollections.observableArrayList();
+    public void setByRules(ObservableList<ByRule<?>> byRules) { this.byRules = byRules; }
+    public RecurrenceRule3 withByRules(ObservableList<ByRule<?>> byRules) { setByRules(byRules); return this; }
+    public RecurrenceRule3 withByRules(ByRule<?>...byRules)
     {
         for (ByRule myByRule : byRules)
         {
@@ -107,9 +108,9 @@ public class RecurrenceRule3
     }
     
     /** Return ByRule associated with class type */
-    public ByRule lookupByRule(Class<? extends ByRule> byRuleClass)
+    public ByRule<?> lookupByRule(Class<? extends ByRule<?>> byRuleClass)
     {
-        Optional<ByRule> rule = byRules()
+        Optional<ByRule<?>> rule = byRules()
                 .stream()
                 .filter(r -> byRuleClass.isInstance(r))
                 .findFirst();
@@ -568,16 +569,19 @@ public class RecurrenceRule3
      */
     public Stream<Temporal> streamRecurrences(Temporal start)
     {
-        getFrequency().setChronoUnit(getFrequency().getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
+//        getFrequency().setChronoUnit(getFrequency().getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
+        ChronoUnit chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
         Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
-        Iterator<ByRule> rulesIterator = byRules()
+        Iterator<ByRule<?>> rulesIterator = byRules()
                 .stream()
                 .sorted()
                 .iterator();
         while (rulesIterator.hasNext())
         {
-            ByRule rule = rulesIterator.next();
-            stream = rule.streamRecurrences(stream, getFrequency().chronoUnitProperty(), start);
+            ByRule<?> rule = rulesIterator.next();
+//            stream = rule.streamRecurrences(stream, getFrequency().chronoUnitProperty(), start);
+            stream = rule.streamRecurrences(stream, chronoUnit, start);
+            chronoUnit = rule.getChronoUnit(); // update chronoUnit
         }
         return stream;
     }

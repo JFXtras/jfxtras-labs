@@ -8,10 +8,15 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Ignore;
@@ -179,10 +184,20 @@ public class RecurrenceRuleTest
     public void canStreamByMonth()
     {
         ByMonth element = new ByMonth(4);
-        Frequency2 frequency = new Frequency2(FrequencyType.YEARLY);
-        LocalDateTime start = LocalDateTime.of(2016, 5, 5, 10, 0);
-        Stream<Temporal> inStream = Stream.iterate(start, a -> a.with(frequency.adjuster(1)));
-//        element.streamRecurrences(frequency.s, chronoUnit, startDateTime)
+        LocalDateTime startDateTime = LocalDateTime.of(2016, 5, 5, 10, 0);
+        ChronoUnit chronoUnit = ChronoUnit.DAYS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, startDateTime);
+        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2017, 4, 1, 10, 0)
+              , LocalDateTime.of(2017, 4, 2, 10, 0)
+              , LocalDateTime.of(2017, 4, 3, 10, 0)
+              , LocalDateTime.of(2017, 4, 4, 10, 0)
+              , LocalDateTime.of(2017, 4, 5, 10, 0)
+                ));
+        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        assertEquals(expectedRecurrences, madeRecurrences);
     }
 
 
@@ -200,7 +215,6 @@ public class RecurrenceRuleTest
         ByYearDay element = new ByYearDay(100,200,300);
         assertEquals(Arrays.asList(100,200,300), element.getValue());
         assertEquals("BYYEARDAY=100,200,300", element.toContent());
-        
     }
     
     @Test

@@ -1,5 +1,10 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.util.stream.Stream;
+
+import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementBase;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
@@ -36,6 +41,15 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<T, U> implem
      * Constructors
      */
 
+    @Override
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal startTemporal) { throw new RuntimeException("not implemented"); }
+
+    @Override
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal) { return null; }
+
+    @Override
+    public ChronoUnit getChronoUnit() { throw new RuntimeException("not implemented"); }
+    
 //    ByRuleAbstract(Class<? extends ByRule<T>> byRuleClass)
     ByRuleAbstract()
     {

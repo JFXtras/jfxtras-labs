@@ -26,6 +26,11 @@ public class ByYearDay extends ByRuleAbstract<ObservableList<Integer>, ByYearDay
         super(source);
     }
 
+    public ByYearDay(int...byYearDay)
+    {
+        // TODO Auto-generated constructor stub
+    }
+
     @Override
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
             Temporal startDateTime) {
