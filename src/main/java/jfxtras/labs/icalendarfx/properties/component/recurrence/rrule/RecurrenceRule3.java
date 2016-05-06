@@ -584,6 +584,8 @@ public class RecurrenceRule3
             chronoUnit = rule.getChronoUnit(); // update chronoUnit
         }
         return stream;
+//        // Filter out too early
+//        return stream.filter(t -> ! DateTimeUtilities.isBefore(start, t));
     }
     
     @Override

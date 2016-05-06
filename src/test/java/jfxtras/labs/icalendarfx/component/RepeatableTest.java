@@ -407,8 +407,8 @@ public class RepeatableTest //extends Application
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.YEARLY)
-                        .withByRules(new ByWeekNumber(20).withWeekStart(DayOfWeek.MONDAY)
-                                   , new ByDay(DayOfWeek.MONDAY)));
+                        .withByRules(new ByWeekNumber(20),
+                                     new ByDay(DayOfWeek.MONDAY)));
         List<Temporal> madeDates = e
                 .recurrenceStreamer().stream(e.getDateTimeStart().getValue())
                 .limit(5)

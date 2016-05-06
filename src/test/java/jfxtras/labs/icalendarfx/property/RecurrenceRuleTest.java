@@ -199,7 +199,26 @@ public class RecurrenceRuleTest
         List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
-
+    
+    @Test
+    public void canStreamByMonth2()
+    {
+        ByMonth element = new ByMonth(4,5);
+        LocalDateTime startDateTime = LocalDateTime.of(2016, 5, 5, 10, 0);
+        ChronoUnit chronoUnit = ChronoUnit.YEARS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, startDateTime);
+        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2016, 5, 5, 10, 0)
+              , LocalDateTime.of(2017, 4, 5, 10, 0)
+              , LocalDateTime.of(2017, 5, 5, 10, 0)
+              , LocalDateTime.of(2018, 4, 5, 10, 0)
+              , LocalDateTime.of(2018, 5, 5, 10, 0)
+                ));
+        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        assertEquals(expectedRecurrences, madeRecurrences);
+    }
 
     @Test
     public void canParseByWeekNumber()
@@ -209,6 +228,48 @@ public class RecurrenceRuleTest
         assertEquals("BYWEEKNO=4,5", element.toContent());
     }
     
+    @Test
+    public void canStreamByWeekNumber()
+    {
+        ByWeekNumber element = new ByWeekNumber(20);
+        LocalDateTime startDateTime = LocalDateTime.of(1997, 5, 12, 10, 0);
+        ChronoUnit chronoUnit = ChronoUnit.YEARS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, startDateTime);
+        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(1997, 5, 12, 10, 0)
+              , LocalDateTime.of(1998, 5, 11, 10, 0)
+              , LocalDateTime.of(1999, 6, 17, 10, 0)
+                ));
+        List<Temporal> madeRecurrences = recurrenceStream.limit(3).peek(System.out::println).collect(Collectors.toList());
+        assertEquals(expectedRecurrences, madeRecurrences);
+    }
+
+//    @Test
+//    public void canCountWeekNumbers()
+//    {
+//        Locale myLocale = Locale.FRANCE;
+//        System.out.println("size:" + myLocale.getExtensionKeys().size());
+//        myLocale.getExtensionKeys().stream().forEach(System.out::println);
+//        
+////        Locale.setDefault(Locale.FRANCE);
+//        LocalDate firstDay = LocalDate.of(2016, 1, 1);
+//        WeekFields weekFields = WeekFields.of(Locale.FRANCE);
+//        System.out.println("min week days:" + weekFields.getMinimalDaysInFirstWeek());
+//        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, ChronoUnit.DAYS);
+//        boolean allMatch = Stream.iterate(firstDay, a -> a.with(adjuster))
+//                .limit(1000)
+//                .allMatch(d ->
+//                {
+//                    int weekFieldsWeekNumber = d.get(weekFields.weekOfWeekBasedYear());
+//                    int myWeekNumber = ByWeekNumber.calcWeekNumber(d, DayOfWeek.MONDAY);
+//                    System.out.println(myWeekNumber + " " + weekFieldsWeekNumber + " " + d);
+//                    return myWeekNumber == weekFieldsWeekNumber;
+//                });
+//        assertTrue(allMatch);
+//    }
+
     @Test
     public void canParseByYearDay()
     {

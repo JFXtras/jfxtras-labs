@@ -148,7 +148,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.YEARLY)
-                        .withByRules(new ByWeekNumber(20).withWeekStart(DayOfWeek.MONDAY)
+                        .withByRules(new ByWeekNumber(20)
                                    , new ByDay(DayOfWeek.MONDAY)));
     }
         

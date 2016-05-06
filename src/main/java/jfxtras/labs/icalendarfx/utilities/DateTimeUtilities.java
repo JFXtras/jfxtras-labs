@@ -106,7 +106,7 @@ public final class DateTimeUtilities
     };
     
     /** Determines if Temporal is before t2
-     * Works for LocalDate or LocalDateTime
+     * Works for LocalDate, LocalDateTime and ZonedDateTime
      * 
      * @param t1 first Temporal
      * @param t2 second Temporal (to compare with t1)
@@ -116,14 +116,24 @@ public final class DateTimeUtilities
     {
         if (t1.getClass().equals(t2.getClass()))
         {
-            LocalDateTime d1 = DateTimeUtilities.toLocalDateTime(t1);
-            LocalDateTime d2 = DateTimeUtilities.toLocalDateTime(t2);
-            return d1.isBefore(d2);
+            if (t1 instanceof LocalDate)
+            {
+                return ((LocalDate) t1).isBefore((LocalDate) t2);
+            } else if (t1 instanceof LocalDateTime)
+            {
+                return ((LocalDateTime) t1).isBefore((LocalDateTime) t2);
+            } else if (t1 instanceof ZonedDateTime)
+            {
+                return ((ZonedDateTime) t1).isBefore((ZonedDateTime) t2);
+            } else
+            {
+                throw new DateTimeException("Unsupported Temporal class: " + t1.getClass());
+            }
         } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }
 
     /** Determines if Temporal is after t2
-     * Works for LocalDate or LocalDateTime
+     * Works for LocalDate, LocalDateTime and ZonedDateTime
      * 
      * @param t1 first Temporal
      * @param t2 second Temporal (to compare with t1)
@@ -133,9 +143,19 @@ public final class DateTimeUtilities
     {
         if (t1.getClass().equals(t2.getClass()))
         {
-            LocalDateTime d1 = DateTimeUtilities.toLocalDateTime(t1);
-            LocalDateTime d2 = DateTimeUtilities.toLocalDateTime(t2);
-            return d1.isAfter(d2);
+            if (t1 instanceof LocalDate)
+            {
+                return ((LocalDate) t1).isAfter((LocalDate) t2);
+            } else if (t1 instanceof LocalDateTime)
+            {
+                return ((LocalDateTime) t1).isAfter((LocalDateTime) t2);
+            } else if (t1 instanceof ZonedDateTime)
+            {
+                return ((ZonedDateTime) t1).isAfter((ZonedDateTime) t2);
+            } else
+            {
+                throw new DateTimeException("Unsupported Temporal class: " + t1.getClass());
+            }
         } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }
     
@@ -379,6 +399,7 @@ public final class DateTimeUtilities
      * If the parameter is type ZonedDateTime the zoneID is changed to ZoneId.systemDefault() before taking the
      * LocalDateTime.
      */
+    @Deprecated
     public static LocalDateTime toLocalDateTime(Temporal temporal)
     {
         return (LocalDateTime) DateTimeType.DATE_WITH_LOCAL_TIME.from(temporal);

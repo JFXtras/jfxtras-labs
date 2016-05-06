@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
-import static java.time.temporal.ChronoUnit.WEEKS;
-
 import java.time.DayOfWeek;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -10,14 +8,15 @@ import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeekNumber>
@@ -61,10 +60,13 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     }
     
     /** Start of week - default start of week is Monday */
-    public DayOfWeek getWeekStart() { return weekStart; }
-    private DayOfWeek weekStart = DayOfWeek.MONDAY; // default to start on Monday
-    public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
-    public ByWeekNumber withWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; return this; }
+    public ObjectProperty<DayOfWeek> weekStartProperty() { return weekStart; }
+    private ObjectProperty<DayOfWeek> weekStart =  new SimpleObjectProperty<>(this, RRuleElementType.WEEK_START.toString()); // bind to WeekStart element
+    public DayOfWeek getWeekStart() { return (weekStart.get() == null) ? DayOfWeek.MONDAY : weekStart.get(); }
+    private final static int MIN_DAYS_IN_WEEK = 4;
+//    private DayOfWeek weekStart = DayOfWeek.MONDAY; // default to start on Monday
+//    public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
+//    public ByWeekNumber withWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; return this; }
 
     /*
      * CONSTRUCTORS
@@ -137,41 +139,15 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     }
     
     @Override
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal startTemporal)
     {
-        ChronoUnit originalChronoUnit = chronoUnit.get();
-        chronoUnit.set(WEEKS);
-        switch (originalChronoUnit)
+//        ChronoUnit originalChronoUnit = chronoUnit.get();
+//        chronoUnit.set(WEEKS);
+
+        switch (chronoUnit)
         {
         case YEARS:
-            Locale oldLocale = null;
-            WeekFields weekFields = WeekFields.of(Locale.getDefault());
-            DayOfWeek firstDayOfWeek = weekFields.getFirstDayOfWeek();
-            if (firstDayOfWeek != getWeekStart())
-            {
-                switch (weekStart)
-                { // Pick a Locale that matches the first day of week specified.
-                case MONDAY:
-                    oldLocale = Locale.getDefault();
-                    Locale.setDefault(Locale.FRANCE);
-                    break;
-                case SUNDAY:
-                    oldLocale = Locale.getDefault();
-                    Locale.setDefault(Locale.US);
-                    break;
-                case FRIDAY:
-                case SATURDAY:
-                case THURSDAY:
-                case TUESDAY:
-                case WEDNESDAY:
-                default:
-                    throw new RuntimeException("Not implemented start of week " + weekStart);
-                }
-            }
-            WeekFields weekFields2 = WeekFields.of(Locale.getDefault());
-            if (weekFields2.getFirstDayOfWeek() != getWeekStart()) throw new RuntimeException("Can't match first day of week " + getWeekStart());
-
-            // Make output stream
+            WeekFields weekFields = WeekFields.of(getWeekStart(), MIN_DAYS_IN_WEEK);
             Stream<Temporal> outStream = inStream.flatMap(date -> 
             { // Expand to include matching days in all months
                 DayOfWeek dayOfWeek = DayOfWeek.from(startTemporal);
@@ -179,13 +155,15 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
                 for (int myWeekNumber: getValue())
                 {
                     Temporal newTemporal = date.with(TemporalAdjusters.next(dayOfWeek));
-                    int newDateWeekNumber = newTemporal.get(weekFields2.weekOfWeekBasedYear());
+                    int newDateWeekNumber = newTemporal.get(weekFields.weekOfWeekBasedYear());
                     int weekShift = myWeekNumber - newDateWeekNumber;
-                    dates.add(newTemporal.plus(weekShift, ChronoUnit.WEEKS));
+                    if (! DateTimeUtilities.isBefore(newTemporal, startTemporal))
+                    {
+                        dates.add(newTemporal.plus(weekShift, ChronoUnit.WEEKS));
+                    }
                 }
                 return dates.stream();
             });
-            if (oldLocale != null) Locale.setDefault(oldLocale); // if changed, return Locale to former setting
             return outStream;
         case DAYS:
         case WEEKS:
@@ -193,12 +171,59 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
         case HOURS:
         case MINUTES:
         case SECONDS:
-            throw new IllegalArgumentException("BYWEEKNO is not available for " + chronoUnit.get() + " frequency."); // Not available
+            throw new IllegalArgumentException("BYWEEKNO is not available for " + chronoUnit + " frequency."); // Not available
         default:
             break;
         }
         return null;    
     }
+    
+//    public static int calcWeekNumber(LocalDate date, DayOfWeek startOfWeek)
+//    {
+//        System.out.println("calc week:" + date);
+//        int weekNumber = 1;
+//        LocalDate firstDay = date.with(TemporalAdjusters.firstDayOfYear());
+////        LocalDate firstMatchingDay = firstDay.with(TemporalAdjusters.nextOrSame(startOfWeek));
+//        long daysBetween = ChronoUnit.DAYS.between(firstDay, date) + 1;
+//        
+//        firstDay = (daysBetween >= 4) ? firstDay : firstDay.minusYears(1);
+//        System.out.println("firstDay2:" + firstDay);
+//        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, ChronoUnit.DAYS);
+//        Iterator<LocalDate> dateIterator = Stream.iterate(firstDay, a -> a.with(adjuster)).iterator();
+//        
+//        // first week
+//        DayOfWeek myDayOfWeek = DayOfWeek.from(firstDay);
+//        int dayCounter = 0;
+//        LocalDate myDate = firstDay;
+//        while ((myDate.isBefore(date)) && (! myDayOfWeek.equals(startOfWeek)))
+////        do
+//        {
+//            dayCounter++;
+//            myDate = dateIterator.next();
+//            myDayOfWeek = DayOfWeek.from(myDate);
+////            System.out.println("first week:" + myDate + " " + date);
+//        } //while (! myDayOfWeek.equals(startOfWeek));
+//        if (dayCounter >= 4)
+//        {
+//            weekNumber++;
+//        }
+//
+//        System.out.println("first week:" + weekNumber);
+//        // count beyond first week
+////        Year year = Year.from(firstDay);
+////        Year myYear = year;
+//        TemporalAdjuster adjuster2 = (temporal) -> temporal.plus(1, ChronoUnit.WEEKS);
+//        Iterator<LocalDate> dateIterator2 = Stream.iterate(myDate, a -> a.with(adjuster2)).iterator();
+//        LocalDate myDate2 = myDate;
+//        while (myDate2.isBefore(date))
+//        {
+//            weekNumber++;
+//            myDate2 = dateIterator2.next();
+//            myDayOfWeek = DayOfWeek.from(myDate2);
+//        };
+//        
+//        return weekNumber;
+//    }
     
     @Override
     public void parseContent(String weekNumbers)

@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
@@ -66,10 +67,10 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
 //        super(ByMonth.class);
     }
     
-    public ByMonth(int month)
+    public ByMonth(int... months)
     {
         this();
-        setValue(month);
+        setValue(months);
     }
     
     public ByMonth(Month... months)
@@ -123,12 +124,12 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
     }
 
     @Override
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal startDateTime)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal startTemporal)
 //    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime)
     {
         ChronoUnit originalChronoUnit = chronoUnit; //.get();
 //        chronoUnit.set(MONTHS);
-        switch (originalChronoUnit)
+        switch (chronoUnit)
         {
         case HOURS:
         case MINUTES:
@@ -137,7 +138,7 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
         case WEEKS:
         case MONTHS:
             return inStream.filter(t ->
-            { // filter out all but qualifying days
+            { // filter out all but qualifying months
                 Month myMonth = Month.from(t);
                 for (Month month : getValue())
                 {
@@ -147,14 +148,18 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
             });
         case YEARS:
             return inStream.flatMap(t -> 
-            { // Expand to include matching days in all months
+            { // Expand to include matching all matching months
                 List<Temporal> dates = new ArrayList<>();
                 int monthNum = Month.from(t).getValue();
                 for (Month month : getValue())
                 {
                     int myMonthNum = month.getValue();
                     int monthShift = myMonthNum - monthNum;
-                    dates.add(t.plus(monthShift, MONTHS));
+                    Temporal newTemporal = t.plus(monthShift, MONTHS);
+                    if (! DateTimeUtilities.isBefore(newTemporal, startTemporal))
+                    {
+                        dates.add(newTemporal);
+                    }
                 }
                 return dates.stream();
             });
