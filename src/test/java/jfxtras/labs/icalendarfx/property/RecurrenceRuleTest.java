@@ -276,11 +276,11 @@ public class RecurrenceRuleTest
     public void canStreamByDay()
     {
         ByDay element = ByDay.parse("-1SU,-2SU");
-        LocalDateTime startDateTime = LocalDateTime.of(2015, 12, 20, 10, 0);
+        LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 20, 10, 0);
         ChronoUnit chronoUnit = ChronoUnit.YEARS;
         TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
-        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit);
+        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2015, 12, 20, 10, 0)
               , LocalDateTime.of(2015, 12, 27, 10, 0)
@@ -292,21 +292,26 @@ public class RecurrenceRuleTest
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     
+    
+    /*
+     * DTSTART:20160503T100000
+     * RRULE:FREQ=YEARLY;BYDAY=SU,MO
+     */
     @Test
     public void canStreamByDay2()
     {
         ByDay element = ByDay.parse("SU,MO");
-        LocalDateTime startDateTime = LocalDateTime.of(2016, 1, 3, 10, 0);
+        LocalDateTime dateTimeStart = LocalDateTime.of(2016, 5, 2, 10, 0);
         ChronoUnit chronoUnit = ChronoUnit.YEARS;
         TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
-        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit);
+        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(2016, 1, 3, 10, 0)
-              , LocalDateTime.of(2016, 1, 4, 10, 0)
-              , LocalDateTime.of(2016, 1, 10, 10, 0)
-              , LocalDateTime.of(2016, 1, 11, 10, 0)
-              , LocalDateTime.of(2016, 1, 17, 10, 0)
+                LocalDateTime.of(2016, 5, 2, 10, 0)
+              , LocalDateTime.of(2016, 5, 8, 10, 0)
+              , LocalDateTime.of(2016, 5, 9, 10, 0)
+              , LocalDateTime.of(2016, 5, 15, 10, 0)
+              , LocalDateTime.of(2016, 5, 16, 10, 0)
                 ));
         List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
@@ -316,19 +321,19 @@ public class RecurrenceRuleTest
     public void canStreamByDay3()
     {
         ByDay element = ByDay.parse("3WE,2TU");
-        LocalDateTime startDateTime = LocalDateTime.of(2016, 6, 14, 10, 0);
+        LocalDateTime dateTimeStart = LocalDateTime.of(2016, 6, 15, 10, 0);
         ChronoUnit chronoUnit = ChronoUnit.MONTHS;
         TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
-        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit);
+        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(2016, 6, 14, 10, 0)
-              , LocalDateTime.of(2016, 6, 15, 10, 0)
+                LocalDateTime.of(2016, 6, 15, 10, 0)
               , LocalDateTime.of(2016, 7, 12, 10, 0)
               , LocalDateTime.of(2016, 7, 20, 10, 0)
               , LocalDateTime.of(2016, 8, 9, 10, 0)
               , LocalDateTime.of(2016, 8, 17, 10, 0)
               , LocalDateTime.of(2016, 9, 13, 10, 0)
+              , LocalDateTime.of(2016, 9, 21, 10, 0)
                 ));
         List<Temporal> madeRecurrences = recurrenceStream.limit(7).peek(System.out::println).collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);

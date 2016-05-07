@@ -232,7 +232,7 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
     }
     
     @Override // TODO - try to REMOVE startTemporal
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit) //, Temporal startTemporal)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart)
     {
         // TODO - according to iCalendar standard a ByDay rule doesn't need any specified days - should use day from DTSTART, this is not implemented yet.  When implemented this line should be removed.
 //        if (getValue().size() == 0) throw new RuntimeException("ByDay rule must have at least one day specified");
@@ -264,8 +264,8 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
                     int value = byDayPair.dayOfWeek.getValue(); //+ firstDayOfWeekAdjustment;
                     int valueAdj = (value > 7) ? value-7 : value;
                     Temporal newTemporal = t.with(dayOfWeekField, valueAdj);
-                    dates.add(newTemporal);
-//                    if (! DateTimeUtilities.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
+//                    dates.add(newTemporal);
+                    if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)) dates.add(newTemporal);
                 }
                 Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
                 return dates.stream();
@@ -284,15 +284,16 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
                         for (int weekNum=1; weekNum<=5; weekNum++)
                         {
                             Temporal newTemporal = date.with(TemporalAdjusters.dayOfWeekInMonth(weekNum, byDayPair.dayOfWeek));
-                            if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
-//                            if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
+//                            if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
+                            if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)) dates.add(newTemporal);
                         }
                     } else
                     { // if never any ordinal numbers then sort is not required
                         Month myMonth = Month.from(date);
                         Temporal newTemporal = date.with(TemporalAdjusters.dayOfWeekInMonth(byDayPair.ordinal, byDayPair.dayOfWeek));
 //                        System.out.println("values:" + byDayPair.ordinal + " " + byDayPair.dayOfWeek + " " + newTemporal);
-                        if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
+//                        if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
+                        if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)) dates.add(newTemporal);
                     }
                 }
                 if (getValue().size() > 1) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
@@ -313,14 +314,15 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
                                 .with(TemporalAdjusters.nextOrSame(byDayPair.dayOfWeek));
                         while (Year.from(newDate).equals(Year.from(date)))
                         {
-                            dates.add(newDate);
+                            if (! DateTimeUtilities.isBefore(newDate, dateTimeStart)) dates.add(newDate);
+//                            dates.add(newDate);
                             newDate = newDate.plus(1, ChronoUnit.WEEKS);
                         }
                     } else
                     { // if never any ordinal numbers then sort is not required
                         Temporal newDate = date.with(dayOfWeekInYear(byDayPair.ordinal, byDayPair.dayOfWeek));
-                        dates.add(newDate);
-//                        if (! DateTimeUtilities.isBefore(newDate, startTemporal)) dates.add(newDate);
+//                        dates.add(newDate);
+                        if (! DateTimeUtilities.isBefore(newDate, dateTimeStart)) dates.add(newDate);
                     }
                 }
                 if (getValue().size() > 1) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
