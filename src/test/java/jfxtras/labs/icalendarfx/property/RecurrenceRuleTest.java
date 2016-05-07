@@ -236,39 +236,22 @@ public class RecurrenceRuleTest
         ChronoUnit chronoUnit = ChronoUnit.YEARS;
         TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
         Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, startDateTime);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(1997, 5, 12, 10, 0)
+              , LocalDateTime.of(1997, 5, 13, 10, 0)
+              , LocalDateTime.of(1997, 5, 14, 10, 0)
+              , LocalDateTime.of(1997, 5, 15, 10, 0)
+              , LocalDateTime.of(1997, 5, 16, 10, 0)
+              , LocalDateTime.of(1997, 5, 17, 10, 0)
+              , LocalDateTime.of(1997, 5, 18, 10, 0)
               , LocalDateTime.of(1998, 5, 11, 10, 0)
-              , LocalDateTime.of(1999, 6, 17, 10, 0)
+              , LocalDateTime.of(1998, 5, 12, 10, 0)
+              , LocalDateTime.of(1998, 5, 13, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(3).peek(System.out::println).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream.collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
-
-//    @Test
-//    public void canCountWeekNumbers()
-//    {
-//        Locale myLocale = Locale.FRANCE;
-//        System.out.println("size:" + myLocale.getExtensionKeys().size());
-//        myLocale.getExtensionKeys().stream().forEach(System.out::println);
-//        
-////        Locale.setDefault(Locale.FRANCE);
-//        LocalDate firstDay = LocalDate.of(2016, 1, 1);
-//        WeekFields weekFields = WeekFields.of(Locale.FRANCE);
-//        System.out.println("min week days:" + weekFields.getMinimalDaysInFirstWeek());
-//        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, ChronoUnit.DAYS);
-//        boolean allMatch = Stream.iterate(firstDay, a -> a.with(adjuster))
-//                .limit(1000)
-//                .allMatch(d ->
-//                {
-//                    int weekFieldsWeekNumber = d.get(weekFields.weekOfWeekBasedYear());
-//                    int myWeekNumber = ByWeekNumber.calcWeekNumber(d, DayOfWeek.MONDAY);
-//                    System.out.println(myWeekNumber + " " + weekFieldsWeekNumber + " " + d);
-//                    return myWeekNumber == weekFieldsWeekNumber;
-//                });
-//        assertTrue(allMatch);
-//    }
 
     @Test
     public void canParseByYearDay()
@@ -287,5 +270,67 @@ public class RecurrenceRuleTest
                 .withOrdinal(-1);
         assertEquals(byDayPair, element.getValue().get(0));
         assertEquals("BYDAY=-1SU", element.toContent());
+    }
+    
+    @Test
+    public void canStreamByDay()
+    {
+        ByDay element = ByDay.parse("-1SU,-2SU");
+        LocalDateTime startDateTime = LocalDateTime.of(2015, 12, 20, 10, 0);
+        ChronoUnit chronoUnit = ChronoUnit.YEARS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit);
+        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2015, 12, 20, 10, 0)
+              , LocalDateTime.of(2015, 12, 27, 10, 0)
+              , LocalDateTime.of(2016, 12, 18, 10, 0)
+              , LocalDateTime.of(2016, 12, 25, 10, 0)
+              , LocalDateTime.of(2017, 12, 24, 10, 0)
+                ));
+        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        assertEquals(expectedRecurrences, madeRecurrences);
+    }
+    
+    @Test
+    public void canStreamByDay2()
+    {
+        ByDay element = ByDay.parse("SU,MO");
+        LocalDateTime startDateTime = LocalDateTime.of(2016, 1, 3, 10, 0);
+        ChronoUnit chronoUnit = ChronoUnit.YEARS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit);
+        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2016, 1, 3, 10, 0)
+              , LocalDateTime.of(2016, 1, 4, 10, 0)
+              , LocalDateTime.of(2016, 1, 10, 10, 0)
+              , LocalDateTime.of(2016, 1, 11, 10, 0)
+              , LocalDateTime.of(2016, 1, 17, 10, 0)
+                ));
+        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        assertEquals(expectedRecurrences, madeRecurrences);
+    }
+    
+    @Test
+    public void canStreamByDay3()
+    {
+        ByDay element = ByDay.parse("3WE,2TU");
+        LocalDateTime startDateTime = LocalDateTime.of(2016, 6, 14, 10, 0);
+        ChronoUnit chronoUnit = ChronoUnit.MONTHS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit);
+        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2016, 6, 14, 10, 0)
+              , LocalDateTime.of(2016, 6, 15, 10, 0)
+              , LocalDateTime.of(2016, 7, 12, 10, 0)
+              , LocalDateTime.of(2016, 7, 20, 10, 0)
+              , LocalDateTime.of(2016, 8, 9, 10, 0)
+              , LocalDateTime.of(2016, 8, 17, 10, 0)
+              , LocalDateTime.of(2016, 9, 13, 10, 0)
+                ));
+        List<Temporal> madeRecurrences = recurrenceStream.limit(7).peek(System.out::println).collect(Collectors.toList());
+        assertEquals(expectedRecurrences, madeRecurrences);
     }
 }

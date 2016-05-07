@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 public class WeekStart extends RRuleElementBase<DayOfWeek, WeekStart>
 {
-    static final DayOfWeek DEFAULT_WEEK_START = DayOfWeek.MONDAY;
+    public static final DayOfWeek DEFAULT_WEEK_START = DayOfWeek.MONDAY;
     
     void setValue(String weekStart) { parseContent(weekStart); }
     public WeekStart withValue(String weekStart) { setValue(weekStart); return this; }

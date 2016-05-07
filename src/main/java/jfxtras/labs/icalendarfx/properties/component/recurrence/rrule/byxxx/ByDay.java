@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,17 +24,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.WeekStart;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
-public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
+public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
 {
-    private final TemporalField field;
-    private final int firstDayOfWeekAdjustment;
+//    private final TemporalField field;
+//    private final int firstDayOfWeekAdjustment;
     /** Array of days of the week.  Ordinal number is optional.  Without will include all
      * days matching that day of the week, with the ordinal will be only include the
      * nth day of the week in the month, when n is the ordinal number.
@@ -68,6 +69,12 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
         return this;
     }
     
+    /** Start of week - default start of week is Monday */
+    public ObjectProperty<DayOfWeek> weekStartProperty() { return weekStart; }
+    private ObjectProperty<DayOfWeek> weekStart =  new SimpleObjectProperty<>(this, RRuleElementType.WEEK_START.toString()); // bind to WeekStart element
+    public DayOfWeek getWeekStart() { return (weekStart.get() == null) ? WeekStart.DEFAULT_WEEK_START : weekStart.get(); }
+    private final static int MIN_DAYS_IN_WEEK = 4;
+    
     //CONSTRUCTORS
     /** Parse iCalendar compliant list of days of the week.  For example 1MO,2TU,4SA
      */
@@ -76,9 +83,9 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
         super();
 //        super(ByDay.class);
         // TODO - USE WKST PROPERTY FOR START OF WEEK
-        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
+//        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
+//        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+//        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
     }
     
 //    @Deprecated // use parse instead
@@ -98,9 +105,9 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
     public ByDay(ByRule source)
     {
         super(source);
-        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
+//        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
+//        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+//        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
     }
 
     /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 
@@ -225,14 +232,17 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
     }
     
     @Override // TODO - try to REMOVE startTemporal
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit) //, Temporal startTemporal)
     {
         // TODO - according to iCalendar standard a ByDay rule doesn't need any specified days - should use day from DTSTART, this is not implemented yet.  When implemented this line should be removed.
-        if (getValue().size() == 0) throw new RuntimeException("ByDay rule must have at least one day specified");
-        ChronoUnit originalChronoUnit = chronoUnit.get();
-        chronoUnit.set(DAYS);
-        switch (originalChronoUnit)
+//        if (getValue().size() == 0) throw new RuntimeException("ByDay rule must have at least one day specified");
+//        ChronoUnit originalChronoUnit = chronoUnit.get();
+//        chronoUnit.set(DAYS);
+        switch (chronoUnit)
         {
+        case HOURS:
+        case MINUTES:
+        case SECONDS:
         case DAYS:
             return inStream.filter(t ->
             { // filter out all but qualifying days
@@ -244,21 +254,24 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
                 return false;
             });
         case WEEKS:
+            TemporalField dayOfWeekField = WeekFields.of(getWeekStart(), MIN_DAYS_IN_WEEK).dayOfWeek();
             return inStream.flatMap(t -> 
             { // Expand to be byDayPairs days in current week
                 List<Temporal> dates = new ArrayList<>();
+//                TemporalField field = WeekFields.of(Locale.getDefault()).dayOfWeek();
                 for (ByDayPair byDayPair : getValue())
                 {
-                    int value = byDayPair.dayOfWeek.getValue() + firstDayOfWeekAdjustment;
+                    int value = byDayPair.dayOfWeek.getValue(); //+ firstDayOfWeekAdjustment;
                     int valueAdj = (value > 7) ? value-7 : value;
-                    Temporal newTemporal = t.with(field, valueAdj);
-                    if (! DateTimeUtilities.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
+                    Temporal newTemporal = t.with(dayOfWeekField, valueAdj);
+                    dates.add(newTemporal);
+//                    if (! DateTimeUtilities.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
                 }
                 Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
         case MONTHS:
-            return inStream.flatMap(t -> 
+            return inStream.flatMap(date -> 
             {
                 List<Temporal> dates = new ArrayList<>();
                 boolean sortNeeded = false;
@@ -267,35 +280,38 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
                     if (byDayPair.ordinal == 0)
                     { // add every matching day of week in month
                         sortNeeded = true;
-                        Month myMonth = Month.from(t);
+                        Month myMonth = Month.from(date);
                         for (int weekNum=1; weekNum<=5; weekNum++)
                         {
-                            Temporal newTemporal = t.with(TemporalAdjusters.dayOfWeekInMonth(weekNum, byDayPair.dayOfWeek));
-                            if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
+                            Temporal newTemporal = date.with(TemporalAdjusters.dayOfWeekInMonth(weekNum, byDayPair.dayOfWeek));
+                            if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
+//                            if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, startTemporal)) dates.add(newTemporal);
                         }
                     } else
                     { // if never any ordinal numbers then sort is not required
-                        Month myMonth = Month.from(t);
-                        Temporal newTemporal = t.with(TemporalAdjusters.dayOfWeekInMonth(byDayPair.ordinal, byDayPair.dayOfWeek));
+                        Month myMonth = Month.from(date);
+                        Temporal newTemporal = date.with(TemporalAdjusters.dayOfWeekInMonth(byDayPair.ordinal, byDayPair.dayOfWeek));
+//                        System.out.println("values:" + byDayPair.ordinal + " " + byDayPair.dayOfWeek + " " + newTemporal);
                         if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
                     }
                 }
-                if (sortNeeded) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
+                if (getValue().size() > 1) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
         case YEARS:
             return inStream.flatMap(date -> 
             {
                 List<Temporal> dates = new ArrayList<>();
-                boolean sortNeeded = false;
+//                boolean sortNeeded = false;
                 for (ByDayPair byDayPair : getValue())
                 {
                     if (byDayPair.ordinal == 0)
                     { // add every matching day of week in year
-                        sortNeeded = true;
-                        Temporal newDate = (DayOfWeek.from(startTemporal).equals(byDayPair.dayOfWeek)) ? startTemporal
-                                : startTemporal.with(TemporalAdjusters.next(byDayPair.dayOfWeek));
-                        while (Year.from(newDate).equals(Year.from(startTemporal)))
+//                        sortNeeded = true;
+                        Temporal newDate = date
+                                .with(TemporalAdjusters.firstDayOfYear())
+                                .with(TemporalAdjusters.nextOrSame(byDayPair.dayOfWeek));
+                        while (Year.from(newDate).equals(Year.from(date)))
                         {
                             dates.add(newDate);
                             newDate = newDate.plus(1, ChronoUnit.WEEKS);
@@ -303,32 +319,29 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByMonth>
                     } else
                     { // if never any ordinal numbers then sort is not required
                         Temporal newDate = date.with(dayOfWeekInYear(byDayPair.ordinal, byDayPair.dayOfWeek));
-                        if (! DateTimeUtilities.isBefore(newDate, startTemporal)) dates.add(newDate);
+                        dates.add(newDate);
+//                        if (! DateTimeUtilities.isBefore(newDate, startTemporal)) dates.add(newDate);
                     }
                 }
-                if (sortNeeded) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
+                if (getValue().size() > 1) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
                 return dates.stream();
             }); 
-        case HOURS:
-        case MINUTES:
-        case SECONDS:
-            throw new RuntimeException("Not implemented ChronoUnit: " + chronoUnit); // probably same as DAILY
         default:
-            break;
+            throw new RuntimeException("Not implemented ChronoUnit: " + chronoUnit);
         }
-        return null;
     }
 
-    /** Finds nth occurrence of a week in a year.  Assumes ordinal is > 0 
+    /** Finds nth occurrence of a week in a year.
      * Based on TemporalAdjusters.dayOfWeekInMonth */
     private TemporalAdjuster dayOfWeekInYear(int ordinal, DayOfWeek dayOfWeek)
     {
         int dowValue = dayOfWeek.getValue();
         return (temporal) -> {
-            Temporal temp = temporal.with(TemporalAdjusters.firstDayOfYear());
+            Temporal temp = (ordinal > 0) ? temporal.with(TemporalAdjusters.firstDayOfYear()) :
+                temporal.plus(1, ChronoUnit.YEARS).with(TemporalAdjusters.firstDayOfYear());
             int curDow = temp.get(DAY_OF_WEEK);
             int dowDiff = (dowValue - curDow + 7) % 7;
-            dowDiff += (ordinal - 1L) * 7L;  // safe from overflow
+            dowDiff = (ordinal > 0) ? dowDiff + (ordinal - 1) * 7 : dowDiff + (ordinal) * 7;
             return temp.plus(dowDiff, DAYS);
         };
     }
