@@ -36,10 +36,10 @@ public class ByMonthTest
     {
         ByMonth element = new ByMonth(4);
         LocalDateTime startDateTime = LocalDateTime.of(2016, 5, 5, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.DAYS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        ChronoUnit frequency = ChronoUnit.DAYS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
         Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, startDateTime);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, startDateTime);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2017, 4, 1, 10, 0)
               , LocalDateTime.of(2017, 4, 2, 10, 0)
@@ -60,10 +60,10 @@ public class ByMonthTest
     {
         ByMonth element = new ByMonth(4,5);
         LocalDateTime startDateTime = LocalDateTime.of(2016, 5, 5, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.YEARS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        ChronoUnit frequency = ChronoUnit.YEARS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
         Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, startDateTime);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, startDateTime);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 5, 5, 10, 0)
               , LocalDateTime.of(2017, 4, 5, 10, 0)

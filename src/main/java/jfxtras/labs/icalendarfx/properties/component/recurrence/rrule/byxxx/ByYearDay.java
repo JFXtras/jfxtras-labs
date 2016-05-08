@@ -1,51 +1,43 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import javafx.beans.property.ObjectProperty;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public class ByYearDay extends ByRuleIntegerListAbstract<ByYearDay>
-{    
-//    @Override
-//    public void setValue(ObservableList<Integer> yearDays)
-//    {
-//        super.setValue(yearDays);
-//        getValue().addListener(validValueListener);
-//    }
-//    public void setValue(Integer... yearDays)
-//    {
-//        setValue(FXCollections.observableArrayList(yearDays));
-//    }
-//    public void setValue(String months)
-//    {
-//        parseContent(months);
-//    }
-//    public ByYearDay withValue(Integer... yearDays)
-//    {
-//        setValue(yearDays);
-//        return this;
-//    }
-//    public ByYearDay withValue(String yearDays)
-//    {
-//        setValue(yearDays);
-//        return this;
-//    }
-    
-    
+/**
+ * By Year Day
+ * BYYEARDAY
+ * RFC 5545, iCalendar 3.3.10, page 42
+ * 
+ * The BYYEARDAY rule part specifies a COMMA-separated list of days
+      of the year.  Valid values are 1 to 366 or -366 to -1.  For
+      example, -1 represents the last day of the year (December 31st)
+      and -306 represents the 306th to the last day of the year (March
+      1st).  The BYYEARDAY rule part MUST NOT be specified when the FREQ
+      rule part is set to DAILY, WEEKLY, or MONTHLY.
+  *
+  * @author David Bal
+  * 
+  */
+public class ByYearDay extends ByRuleIntegerAbstract<ByYearDay>
+{       
     public ByYearDay()
     {
         super();
-//        setValue(FXCollections.observableArrayList());
     }
     
     public ByYearDay(Integer... yearDays)
     {
         super(yearDays);
-//        this();
-//        setValue(yearDays);
     }
     
     public ByYearDay(ByYearDay source)
@@ -59,63 +51,58 @@ public class ByYearDay extends ByRuleIntegerListAbstract<ByYearDay>
         return (value) -> (value < -366) || (value > 366) || (value == 0);
     }
 
-    
-//    /**
-//     * Listener to validate additions to value list
-//     */
-//    private ListChangeListener<Integer> validValueListener = (ListChangeListener.Change<? extends Integer> change) ->
-//    {
-//        while (change.next())
-//        {
-//            if (change.wasAdded())
-//            {
-//                Iterator<? extends Integer> i = change.getAddedSubList().iterator();
-//                while (i.hasNext())
-//                {
-//                    int value = i.next();
-//                    if ((value < -366) || (value > 366) || (value == 0))
-//                    {
-//                        throw new IllegalArgumentException("Invalid " + elementType().toString() + " value (" + value + "). Valid values are 1 to 366 or -366 to -1.");
-//                    }
-//                }
-//            }
-//        }
-//    };
-    
-
     @Override
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
-            Temporal startDateTime) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String toContent()
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart)
     {
-        // TODO Auto-generated method stub
-        return null;
+        switch (chronoUnit)
+        {
+        case HOURS:
+        case MINUTES:
+        case SECONDS:
+            return inStream.filter(d ->
+                    { // filter out all but qualifying days
+                        int myDayOfYear = d.get(ChronoField.DAY_OF_YEAR);
+                        for (int dayOfYear : getValue())
+                        {
+                            if (dayOfYear > 0)
+                            {
+                                if (dayOfYear == myDayOfYear) return true;
+                            } else
+                            { // handle negative days of year
+                                Temporal firstDayOfNextYear = d.with(TemporalAdjusters.firstDayOfNextYear());
+                                Period myNegativeDayOfYear = Period.between(LocalDate.from(firstDayOfNextYear), LocalDate.from(d));
+                                if (Period.ofDays(dayOfYear).equals(myNegativeDayOfYear)) return true;
+                            }
+                        }
+                        return false;
+                    });
+        case YEARS:
+            return inStream.flatMap(d -> 
+            { // Expand to be include all days of year
+                List<Temporal> dates = new ArrayList<>();
+                for (int dayOfYear : getValue())
+                {
+                    Temporal newTemporal = d.with(ChronoField.DAY_OF_YEAR, dayOfYear);
+                    if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+                    {
+                        dates.add(newTemporal);
+                    }
+                }
+                return dates.stream();
+            });       
+        case DAYS:
+        case WEEKS:
+        case MONTHS:
+            throw new IllegalArgumentException("BYMONTHDAY is not available for " + chronoUnit + " frequency."); // Not available
+        default:
+            throw new IllegalArgumentException("Not implemented: " + chronoUnit);
+        }
     }
     
-//    @Override
-//    public void parseContent(String content)
-//    {
-//        Integer[] monthDayArray = Arrays.asList(content.split(","))
-//                .stream()
-//                .map(s -> Integer.parseInt(s))
-//                .toArray(size -> new Integer[size]);
-//        setValue(FXCollections.observableArrayList(monthDayArray));
-//    }
-    
-    public static ByMonthDay parse(String content)
+    public static ByYearDay parse(String content)
     {
-        ByMonthDay element = new ByMonthDay();
+        ByYearDay element = new ByYearDay();
         element.parseContent(content);
         return element;
     }
-
-
-
-
-
 }

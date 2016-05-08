@@ -26,13 +26,13 @@ public enum ByRuleType
     }
   , BY_HOUR ("BYHOUR", ByHour.class, 150)
     {
-        @Override ByRule newInstance(String value) { return new ByHour(value); }
+        @Override ByRule newInstance(String value) { return ByHour.parse(value); }
         @Override public ByRule newInstance(ByRule source) { return new ByHour((ByHour) source); }
     }
   , BY_DAY ("BYDAY", ByDay.class, 140)
     {
         @Override ByRule newInstance(String value) { return ByDay.parse(value); }
-        @Override public ByRule newInstance(ByRule source) { return new ByDay(source); }
+        @Override public ByRule newInstance(ByRule source) { return null; }
     }
   , BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class, 130)
     {
@@ -41,7 +41,7 @@ public enum ByRuleType
     }
   , BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class, 120)
     {
-        @Override ByRule newInstance(String value) { return new ByYearDay(value); }
+        @Override ByRule newInstance(String value) { return ByYearDay.parse(value); }
         @Override public ByRule newInstance(ByRule source) { return new ByYearDay((ByYearDay) source); }
     }
   , BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 110)

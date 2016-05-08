@@ -5,7 +5,8 @@ import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElement;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementBase;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 
@@ -24,22 +25,32 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleEleme
  * @see BySecond
  * @see BySetPosition
  */
-public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<T, U> implements ByRule<T>, Comparable<ByRule<T>>, RRuleElement<T>
+public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<ObservableList<T>, U> implements ByRule<ObservableList<T>> //, Comparable<ByRule<ObservableList<T>>>, RRuleElement<ObservableList<T>>
 {
-//    /** ByRule enum containing order in which ByRules are processed */
-//    final private ByRuleType byRuleEnum;
-//    @Override public ByRuleType byRuleType() { return byRuleEnum; }
-//
-//    /** Constructor that takes ByRule type as parameter 
-//     * The type contains the processing order as defined in RFC 5545 iCalendar page 44 */
-//    ByRuleAbstract(ByRuleType byRule)
-//    {
-//        this.byRule = byRule;
-//    }
+    @Override
+    public void setValue(ObservableList<T> values)
+    {
+        super.setValue(values);
+    }
+    public void setValue(T... values)
+    {
+        setValue(FXCollections.observableArrayList(values));
+    }
+    public void setValue(String values)
+    {
+        parseContent(values);
+    }
+    public U withValue(T... values)
+    {
+        setValue(values);
+        return (U) this;
+    }
+    public U withValue(String values)
+    {
+        setValue(values);
+        return (U) this;
+    }
     
-    /*
-     * Constructors
-     */
 
     @Override
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart) { throw new RuntimeException("not implemented"); }
@@ -49,23 +60,26 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<T, U> implem
 
     
     @Override
+    @Deprecated
     public ChronoUnit getChronoUnit() { throw new RuntimeException("not implemented"); }
     
-//    ByRuleAbstract(Class<? extends ByRule<T>> byRuleClass)
+    /*
+     * Constructors
+     */
+    
     ByRuleAbstract()
     {
         super();
-//        byRuleEnum = ByRuleType.enumFromClass(byRuleClass);
+        setValue(FXCollections.observableArrayList());
     }
 
-//    // Constructor that parses a string value
-//    ByRuleAbstract(String value)
-//    {
-//        this();
-//    }
+    ByRuleAbstract(T... values)
+    {
+        setValue(values);
+    }
     
     // Copy constructor
-    ByRuleAbstract(ByRule<T> source)
+    ByRuleAbstract(ByRuleAbstract<T, U> source)
     {
 //        byRuleEnum = source.byRuleType();
         setValue(source.getValue());
@@ -73,7 +87,7 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<T, U> implem
     }
 
     @Override
-    public int compareTo(ByRule<T> byRule)
+    public int compareTo(ByRule<ObservableList<T>> byRule)
     {        
 //        int p1 = ByRuleType.propertyFromByRule(this).sortOrder();
 //        int p2 = ByRuleType.propertyFromByRule(byRule).sortOrder();

@@ -96,7 +96,7 @@ public class FrequencyTest
     @Test
     public void canStreamDaily()
     {
-        Frequency2 element = new Frequency2(FrequencyType.WEEKLY);
+        Frequency2 element = new Frequency2(FrequencyType.DAILY);
         LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 27, 10, 0);
         Stream<Temporal> recurrenceStream = element.streamRecurrences(dateTimeStart, 1);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(

@@ -5,19 +5,14 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.WeekStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -45,39 +40,8 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
    * @author David Bal
    * 
  * */
-public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeekNumber>
-{
-//    /** sorted array of weeks of the year
-//     * (i.e. 5, 10 = 5th and 10th weeks of the year, -3 = 3rd from last week of the year)
-//     * Uses a varargs parameter to allow any number of value.
-//     */
-    @Override
-    public void setValue(ObservableList<Integer> weekNumbers)
-    {
-        super.setValue(weekNumbers);
-        getValue().addListener(validValueListener);
-    }
-    public void setValue(Integer... weekNumbers)
-    {
-        getValue().addAll(weekNumbers);
-    }
-    public void setValue(String weekNumbers)
-    {
-        parseContent(weekNumbers);        
-    }
-    public ByWeekNumber withValue(Integer... weekNumbers)
-    {
-        setValue(weekNumbers);
-        return this;
-    }
-    public ByWeekNumber withValue(String weekNumbers)
-    {
-        setValue(weekNumbers);
-        return this;
-    }
-
-
-    
+public class ByWeekNumber extends ByRuleIntegerAbstract<ByWeekNumber>
+{    
     /** Start of week - default start of week is Monday */
     public ObjectProperty<DayOfWeek> weekStartProperty() { return weekStart; }
     private ObjectProperty<DayOfWeek> weekStart =  new SimpleObjectProperty<>(this, RRuleElementType.WEEK_START.toString()); // bind to WeekStart element
@@ -90,42 +54,45 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     public ByWeekNumber()
     {
         super();
-        setValue(FXCollections.observableArrayList());
     }
     
-    /** Constructor requires weeks of the year int value(s) */
     public ByWeekNumber(Integer...weekNumbers)
     {
-        this();
-        setValue(weekNumbers);
+        super(weekNumbers);
     }
     
     public ByWeekNumber(ByWeekNumber source)
     {
         super(source);
     }
-    
-    /**
-     * Listener to validate additions to value list
-     */
-    private ListChangeListener<Integer> validValueListener = (ListChangeListener.Change<? extends Integer> change) ->
+        
+    @Override
+    Predicate<Integer> isValidValue()
     {
-        while (change.next())
-        {
-            if (change.wasAdded())
-            {
-                Iterator<? extends Integer> i = change.getAddedSubList().iterator();
-                while (i.hasNext())
-                {
-                    int value = i.next();
-                    if ((value < -53) || (value > 53) || (value == 0))
-                    {
-                        throw new IllegalArgumentException("Invalid " + elementType().toString() + " value (" + value + "). Valid values are 1 to 53 or -53 to -1.");
-                    }
-                }
-            }
-        }
-    };
+        return (value) -> (value < -53) || (value > 53) || (value == 0);
+    }
+    
+//    /**
+//     * Listener to validate additions to value list
+//     */
+//    private ListChangeListener<Integer> validValueListener = (ListChangeListener.Change<? extends Integer> change) ->
+//    {
+//        while (change.next())
+//        {
+//            if (change.wasAdded())
+//            {
+//                Iterator<? extends Integer> i = change.getAddedSubList().iterator();
+//                while (i.hasNext())
+//                {
+//                    int value = i.next();
+//                    if ((value < -53) || (value > 53) || (value == 0))
+//                    {
+//                        throw new IllegalArgumentException("Invalid " + elementType().toString() + " value (" + value + "). Valid values are 1 to 53 or -53 to -1.");
+//                    }
+//                }
+//            }
+//        }
+//    };
 
 //    @Override
 //    public void copyTo(ByRule destination)
@@ -159,14 +126,14 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
 //        return hash;
 //    }
     
-    @Override
-    public String toContent()
-    {
-        String days = getValue().stream()
-                .map(v -> v.toString())
-                .collect(Collectors.joining(","));
-        return RRuleElementType.BY_WEEK_NUMBER + "=" + days; //.substring(0, days.length()-1); // remove last comma
-    }
+//    @Override
+//    public String toContent()
+//    {
+//        String days = getValue().stream()
+//                .map(v -> v.toString())
+//                .collect(Collectors.joining(","));
+//        return RRuleElementType.BY_WEEK_NUMBER + "=" + days; //.substring(0, days.length()-1); // remove last comma
+//    }
     
     @Override
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart )
@@ -210,16 +177,6 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
             break;
         }
         return null;    
-    }
-
-    @Override
-    public void parseContent(String weekNumbers)
-    {
-        Integer[] weekArray = Arrays.asList(weekNumbers.split(","))
-                .stream()
-                .map(s -> Integer.parseInt(s))
-                .toArray(size -> new Integer[size]);
-        setValue(weekArray);
     }
 
     public static ByWeekNumber parse(String content)

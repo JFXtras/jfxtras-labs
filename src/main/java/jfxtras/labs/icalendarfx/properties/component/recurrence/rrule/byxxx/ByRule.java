@@ -37,10 +37,12 @@ public interface ByRule<T> extends Comparable<ByRule<T>>, RRuleElement<T>
      * @param startTemporal - start Temporal (date or date/time)
      * @return
      */
+    @Deprecated
     Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal);
 
     Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart);
 
+    @Deprecated
     ChronoUnit getChronoUnit();
     
 //    boolean isValid(); // TODO - PUT IN VCALENDARELEMENT

@@ -26,14 +26,13 @@ import java.util.stream.Stream;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.WeekStart;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
-public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
+public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
 {
 //    private final TemporalField field;
 //    private final int firstDayOfWeekAdjustment;
@@ -50,24 +49,24 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
 //    private ByDayPair[] byDayPairs;
 //    private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
 
-    public void setValue(ByDayPair... byDayPairs)
-    {
-        setValue(FXCollections.observableArrayList(byDayPairs));
-    }
-    public void setValue(String byDayPairs)
-    {
-        parseContent(byDayPairs);
-    }
-    public ByDay withValue(ByDayPair... byDayPairs)
-    {
-        setValue(byDayPairs);
-        return this;
-    }
-    public ByDay withValue(String byDayPairs)
-    {
-        setValue(byDayPairs);
-        return this;
-    }
+//    public void setValue(ByDayPair... byDayPairs)
+//    {
+//        setValue(FXCollections.observableArrayList(byDayPairs));
+//    }
+//    public void setValue(String byDayPairs)
+//    {
+//        parseContent(byDayPairs);
+//    }
+//    public ByDay withValue(ByDayPair... byDayPairs)
+//    {
+//        setValue(byDayPairs);
+//        return this;
+//    }
+//    public ByDay withValue(String byDayPairs)
+//    {
+//        setValue(byDayPairs);
+//        return this;
+//    }
     
     /** Start of week - default start of week is Monday */
     public ObjectProperty<DayOfWeek> weekStartProperty() { return weekStart; }
@@ -100,10 +99,10 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
     public ByDay(ByDayPair... byDayPairs)
     {
         this();
-        setValue(FXCollections.observableArrayList(byDayPairs));
+//        setValue(FXCollections.observableArrayList(byDayPairs));
     }
     
-    public ByDay(ByRule source)
+    public ByDay(ByDay source)
     {
         super(source);
 //        field = WeekFields.of(Locale.getDefault()).dayOfWeek();

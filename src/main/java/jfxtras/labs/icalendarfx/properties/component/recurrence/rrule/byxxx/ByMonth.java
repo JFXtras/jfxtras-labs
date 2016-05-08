@@ -11,12 +11,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
-public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
+public class ByMonth extends ByRuleAbstract<Month, ByMonth>
 {
     @Override
     public ChronoUnit getChronoUnit() { return ChronoUnit.MONTHS; }
@@ -27,14 +26,14 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
 //    public Month[] getValue() { return months; }
 //    private Month[] months;
 //    private void setMonths(Month... months) { this.months = months; }
-    public void setValue(Month... months)
-    {
-        setValue(FXCollections.observableArrayList(months));
-    }
-    public void setValue(String months)
-    {
-        parseContent(months);
-    }
+//    public void setValue(Month... months)
+//    {
+//        setValue(FXCollections.observableArrayList(months));
+//    }
+//    public void setValue(String months)
+//    {
+//        parseContent(months);
+//    }
     public void setValue(int... months)
     {
         Month[] monthArray = Arrays.stream(months)
@@ -42,21 +41,21 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
                 .toArray(size -> new Month[size]);
         setValue(monthArray);
     }
-    public ByMonth withValue(Month... months)
-    {
-        setValue(months);
-        return this;
-    }
+//    public ByMonth withValue(Month... months)
+//    {
+//        setValue(months);
+//        return this;
+//    }
     public ByMonth withValue(int... months)
     {
         setValue(months);
         return this;
     }
-    public ByMonth withValue(String months)
-    {
-        setValue(months);
-        return this;
-    }
+//    public ByMonth withValue(String months)
+//    {
+//        setValue(months);
+//        return this;
+//    }
     
     /*
      * CONSTRUCTORS
@@ -117,17 +116,16 @@ public class ByMonth extends ByRuleAbstract<ObservableList<Month>, ByMonth>
     public String toContent()
     {
         String days = getValue().stream()
-//        String days = Arrays.stream(getValue())
                 .map(d -> Integer.toString(d.getValue()))
                 .collect(Collectors.joining(","));
-        return RRuleElementType.BY_MONTH + "=" + days; // .substring(0, days.length()-1); // remove last comma
+        return RRuleElementType.BY_MONTH + "=" + days;
     }
 
     @Override
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal startTemporal)
 //    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime)
     {
-        ChronoUnit originalChronoUnit = chronoUnit; //.get();
+//        ChronoUnit originalChronoUnit = chronoUnit; //.get();
 //        chronoUnit.set(MONTHS);
         switch (chronoUnit)
         {

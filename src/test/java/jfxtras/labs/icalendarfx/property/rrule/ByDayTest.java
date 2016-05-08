@@ -40,10 +40,10 @@ public class ByDayTest
     {
         ByDay element = ByDay.parse("-1SU,2MO");
         LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 27, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.YEARS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        ChronoUnit frequency = ChronoUnit.YEARS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
         Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2015, 12, 27, 10, 0)
               , LocalDateTime.of(2016, 1, 11, 10, 0)
@@ -65,10 +65,10 @@ public class ByDayTest
     {
         ByDay element = ByDay.parse("SU,MO");
         LocalDateTime dateTimeStart = LocalDateTime.of(2016, 5, 2, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.YEARS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        ChronoUnit frequency = ChronoUnit.YEARS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
         Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 5, 2, 10, 0)
               , LocalDateTime.of(2016, 5, 8, 10, 0)
@@ -89,10 +89,10 @@ public class ByDayTest
     {
         ByDay element = ByDay.parse("3WE,2TU");
         LocalDateTime dateTimeStart = LocalDateTime.of(2016, 6, 15, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.MONTHS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        ChronoUnit frequency = ChronoUnit.MONTHS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
         Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 6, 15, 10, 0)
               , LocalDateTime.of(2016, 7, 12, 10, 0)
@@ -115,10 +115,10 @@ public class ByDayTest
     {
         ByDay element = ByDay.parse("SA,SU");
         LocalDateTime dateTimeStart = LocalDateTime.of(2016, 5, 8, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.MONTHS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        ChronoUnit frequency = ChronoUnit.MONTHS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
         Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 5, 8, 10, 0)
               , LocalDateTime.of(2016, 5, 14, 10, 0)
@@ -139,10 +139,10 @@ public class ByDayTest
     {
         ByDay element = ByDay.parse("MO,WE,FR");
         LocalDateTime dateTimeStart = LocalDateTime.of(2016, 5, 9, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.WEEKS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
+        ChronoUnit frequency = ChronoUnit.WEEKS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
         Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 5, 9, 10, 0)
               , LocalDateTime.of(2016, 5, 11, 10, 0)
@@ -163,10 +163,10 @@ public class ByDayTest
     {
         ByDay element = ByDay.parse("TU");
         LocalDateTime dateTimeStart = LocalDateTime.of(2016, 5, 10, 0, 0);
-        ChronoUnit chronoUnit = ChronoUnit.HOURS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(8, chronoUnit);
+        ChronoUnit frequency = ChronoUnit.HOURS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(8, frequency);
         Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 5, 10, 0, 0)
               , LocalDateTime.of(2016, 5, 10, 8, 0)

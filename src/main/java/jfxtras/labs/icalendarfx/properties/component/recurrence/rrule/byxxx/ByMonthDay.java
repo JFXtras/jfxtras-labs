@@ -6,16 +6,9 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 
 /**
  * By Month Day
@@ -31,37 +24,41 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleEleme
   * @author David Bal
   * 
  * */
-public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthDay>
+public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
 {
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
      * Uses a varargs parameter to allow any number of days
      */
     
-    @Override
-    public void setValue(ObservableList<Integer> monthDays)
-    {
-        super.setValue(monthDays);
-        getValue().addListener(validValueListener);
-    }
-    public void setValue(Integer... monthDays)
-    {
-        setValue(FXCollections.observableArrayList(monthDays));
-    }
-    public void setValue(String months)
-    {
-        parseContent(months);
-    }
-    public ByMonthDay withValue(Integer... monthDays)
-    {
-        setValue(monthDays);
-        return this;
-    }
-    public ByMonthDay withValue(String monthDays)
-    {
-        setValue(monthDays);
-        return this;
-    }
+//    @Override
+//    public void setValue(ObservableList<Integer> monthDays)
+//    {
+//        super.setValue(monthDays);
+//        getValue().addListener(validValueListener);
+//    }
+//    @Override
+//    public void setValue(int... monthDays)
+//    {
+//        setValue(FXCollections.observableArrayList(monthDays));
+//    }
+//    @Override
+//    public void setValue(String months)
+//    {
+//        parseContent(months);
+//    }
+//    @Override
+//    public ByMonthDay withValue(Integer... monthDays)
+//    {
+//        setValue(monthDays);
+//        return this;
+//    }
+//    @Override
+//    public ByMonthDay withValue(String monthDays)
+//    {
+//        setValue(monthDays);
+//        return this;
+//    }
     
     /*
      * CONSTRUCTORS
@@ -70,13 +67,11 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
     public ByMonthDay()
     {
         super();
-        setValue(FXCollections.observableArrayList());
     }
 
     public ByMonthDay(Integer... daysOfMonth)
     {
         this();
-        setValue(daysOfMonth);
     }
     
     public ByMonthDay(ByMonthDay source)
@@ -84,27 +79,12 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
         super(source);
     }
     
-    /**
-     * Listener to validate additions to value list
-     */
-    private ListChangeListener<Integer> validValueListener = (ListChangeListener.Change<? extends Integer> change) ->
+    @Override
+    Predicate<Integer> isValidValue()
     {
-        while (change.next())
-        {
-            if (change.wasAdded())
-            {
-                Iterator<? extends Integer> i = change.getAddedSubList().iterator();
-                while (i.hasNext())
-                {
-                    int value = i.next();
-                    if ((value < 1) || (value > 31))
-                    {
-                        throw new IllegalArgumentException("Invalid " + elementType().toString() + " value (" + value + "). Valid values are 1 to 31.");
-                    }
-                }
-            }
-        }
-    };
+        return (value) -> (value < 1) || (value > 31);
+    }
+
 
 //    @Override
 //    public void copyTo(ByRule destination)
@@ -137,14 +117,14 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
 //        return hash;
 //    }
     
-    @Override
-    public String toContent()
-    {
-        String days = getValue().stream()
-                .map(d -> d + ",")
-                .collect(Collectors.joining(","));
-        return RRuleElementType.BY_MONTH_DAY + "=" + days; //.substring(0, days.length()-1); // remove last comma
-    }
+//    @Override
+//    public String toContent()
+//    {
+//        String days = getValue().stream()
+//                .map(d -> d + ",")
+//                .collect(Collectors.joining(","));
+//        return RRuleElementType.BY_MONTH_DAY + "=" + days; //.substring(0, days.length()-1); // remove last comma
+//    }
     
     /**
      * Return stream of valid dates made by rule (infinite if COUNT or UNTIL not present)
@@ -201,15 +181,15 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
         }
     }
     
-    @Override
-    public void parseContent(String content)
-    {
-        Integer[] monthDayArray = Arrays.asList(content.split(","))
-                .stream()
-                .map(s -> Integer.parseInt(s))
-                .toArray(size -> new Integer[size]);
-        setValue(FXCollections.observableArrayList(monthDayArray));
-    }
+//    @Override
+//    public void parseContent(String content)
+//    {
+//        Integer[] monthDayArray = Arrays.asList(content.split(","))
+//                .stream()
+//                .map(s -> Integer.parseInt(s))
+//                .toArray(size -> new Integer[size]);
+//        setValue(FXCollections.observableArrayList(monthDayArray));
+//    }
     
     public static ByMonthDay parse(String content)
     {
