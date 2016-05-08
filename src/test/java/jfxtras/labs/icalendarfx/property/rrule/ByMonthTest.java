@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.parameter.rrule;
+package jfxtras.labs.icalendarfx.property.rrule;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,7 +19,6 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMo
 
 public class ByMonthTest
 {
-
     @Test
     public void canParseByMonth()
     {

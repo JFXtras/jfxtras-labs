@@ -7,6 +7,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -15,36 +16,50 @@ import java.util.stream.Stream;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.WeekStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-/** BYWEEKNO from RFC 5545, iCalendar 3.3.10, page 42 */
+/** 
+ * By Week Number
+ * BYWEEKNO
+ * RFC 5545, iCalendar 3.3.10, page 42
+ * 
+ * The BYWEEKNO rule part specifies a COMMA-separated list of
+      ordinals specifying weeks of the year.  Valid values are 1 to 53
+      or -53 to -1.  This corresponds to weeks according to week
+      numbering as defined in [ISO.8601.2004].  A week is defined as a
+      seven day period, starting on the day of the week defined to be
+      the week start (see WKST).  Week number one of the calendar year
+      is the first week that contains at least four (4) days in that
+      calendar year.  This rule part MUST NOT be used when the FREQ rule
+      part is set to anything other than YEARLY.  For example, 3
+      represents the third week of the year.
+
+         Note: Assuming a Monday week start, week 53 can only occur when
+         Thursday is January 1 or if it is a leap year and Wednesday is
+         January 1.
+   *         
+   * @author David Bal
+   * 
+ * */
 public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeekNumber>
 {
 //    /** sorted array of weeks of the year
 //     * (i.e. 5, 10 = 5th and 10th weeks of the year, -3 = 3rd from last week of the year)
 //     * Uses a varargs parameter to allow any number of value.
 //     */
-//    public int[] getWeekNumbers() { return weekNumbers; }
-//    private int[] weekNumbers;
-//    public void setWeekNumbers(int... weekNumbers)
-//    {
-//        for (int w : weekNumbers)
-//        {
-//            if (w < -53 || w > 53 || w == 0) throw new IllegalArgumentException("Invalid BYWEEKNO value (" + w + "). Valid values are 1 to 53 or -53 to -1.");
-//        }
-//        this.weekNumbers = weekNumbers;
-//    }
-//    public ByWeekNumber withWeekNumbers(int... weekNumbers) { setWeekNumbers(weekNumbers); return this; }
+    @Override
+    public void setValue(ObservableList<Integer> weekNumbers)
+    {
+        super.setValue(weekNumbers);
+        getValue().addListener(validValueListener);
+    }
     public void setValue(Integer... weekNumbers)
     {
-        for (int w : weekNumbers)
-        {
-            if (w < -53 || w > 53 || w == 0) throw new IllegalArgumentException("Invalid BYWEEKNO value (" + w + "). Valid values are 1 to 53 or -53 to -1.");
-        }
-        setValue(FXCollections.observableArrayList(weekNumbers));
+        getValue().addAll(weekNumbers);
     }
     public void setValue(String weekNumbers)
     {
@@ -60,15 +75,14 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
         setValue(weekNumbers);
         return this;
     }
+
+
     
     /** Start of week - default start of week is Monday */
     public ObjectProperty<DayOfWeek> weekStartProperty() { return weekStart; }
     private ObjectProperty<DayOfWeek> weekStart =  new SimpleObjectProperty<>(this, RRuleElementType.WEEK_START.toString()); // bind to WeekStart element
     public DayOfWeek getWeekStart() { return (weekStart.get() == null) ? WeekStart.DEFAULT_WEEK_START : weekStart.get(); }
     private final static int MIN_DAYS_IN_WEEK = 4;
-//    private DayOfWeek weekStart = DayOfWeek.MONDAY; // default to start on Monday
-//    public void setWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; }
-//    public ByWeekNumber withWeekStart(DayOfWeek weekStart) { this.weekStart = weekStart; return this; }
 
     /*
      * CONSTRUCTORS
@@ -76,16 +90,8 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     public ByWeekNumber()
     {
         super();
-//        super(ByWeekNumber.class);
+        setValue(FXCollections.observableArrayList());
     }
-    
-//    /** takes String of comma-delimited integers, parses it to array of ints 
-//     */
-//    public ByWeekNumber(String weekNumbers)
-//    {
-//        this();
-//        parseContent(weekNumbers);
-//    }
     
     /** Constructor requires weeks of the year int value(s) */
     public ByWeekNumber(Integer...weekNumbers)
@@ -98,6 +104,28 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     {
         super(source);
     }
+    
+    /**
+     * Listener to validate additions to value list
+     */
+    private ListChangeListener<Integer> validValueListener = (ListChangeListener.Change<? extends Integer> change) ->
+    {
+        while (change.next())
+        {
+            if (change.wasAdded())
+            {
+                Iterator<? extends Integer> i = change.getAddedSubList().iterator();
+                while (i.hasNext())
+                {
+                    int value = i.next();
+                    if ((value < -53) || (value > 53) || (value == 0))
+                    {
+                        throw new IllegalArgumentException("Invalid " + elementType().toString() + " value (" + value + "). Valid values are 1 to 53 or -53 to -1.");
+                    }
+                }
+            }
+        }
+    };
 
 //    @Override
 //    public void copyTo(ByRule destination)

@@ -1,8 +1,5 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
-import static java.time.temporal.ChronoUnit.DAYS;
-
-import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
@@ -10,30 +7,43 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 
-/** BYMONTHDAY from RFC 5545, iCalendar */
+/**
+ * By Month Day
+ * BYMONTHDAY
+ * RFC 5545, iCalendar 3.3.10, page 42
+ * 
+ * The BYMONTHDAY rule part specifies a COMMA-separated list of days
+      of the month.  Valid values are 1 to 31 or -31 to -1.  For
+      example, -10 represents the tenth to the last day of the month.
+      The BYMONTHDAY rule part MUST NOT be specified when the FREQ rule
+      part is set to WEEKLY.
+  *
+  * @author David Bal
+  * 
+ * */
 public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthDay>
 {
-    private final static ByRuleType MY_RULE = ByRuleType.BY_MONTH_DAY;
-
     /** sorted array of days of month
      * (i.e. 5, 10 = 5th and 10th days of the month, -3 = 3rd from last day of month)
      * Uses a varargs parameter to allow any number of days
      */
-//    public int[] getValue() { return daysOfMonth; }
-//    private int[] daysOfMonth;
-//    public void setValue(int... daysOfMonth) { this.daysOfMonth = daysOfMonth; }
-//    public ByRule withDaysOfMonth(int... daysOfMonth) { setValue(daysOfMonth); return this; }
     
-    
+    @Override
+    public void setValue(ObservableList<Integer> monthDays)
+    {
+        super.setValue(monthDays);
+        getValue().addListener(validValueListener);
+    }
     public void setValue(Integer... monthDays)
     {
         setValue(FXCollections.observableArrayList(monthDays));
@@ -59,20 +69,10 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
     
     public ByMonthDay()
     {
-//        super(ByMonthDay.class);
         super();
+        setValue(FXCollections.observableArrayList());
     }
-    
-    /** Constructor takes String of comma-delimited integers, parses it to array of ints
-     */
-//    public ByMonthDay(String daysOfMonthString)
-//    {
-//        this(Arrays.stream(daysOfMonthString.split(","))
-//                .mapToInt(s -> Integer.parseInt(s))
-//                .toArray());
-//    }
 
-    /** Constructor contains varargs of daysOfMonth */
     public ByMonthDay(Integer... daysOfMonth)
     {
         this();
@@ -83,6 +83,28 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
     {
         super(source);
     }
+    
+    /**
+     * Listener to validate additions to value list
+     */
+    private ListChangeListener<Integer> validValueListener = (ListChangeListener.Change<? extends Integer> change) ->
+    {
+        while (change.next())
+        {
+            if (change.wasAdded())
+            {
+                Iterator<? extends Integer> i = change.getAddedSubList().iterator();
+                while (i.hasNext())
+                {
+                    int value = i.next();
+                    if ((value < 1) || (value > 31))
+                    {
+                        throw new IllegalArgumentException("Invalid " + elementType().toString() + " value (" + value + "). Valid values are 1 to 31.");
+                    }
+                }
+            }
+        }
+    };
 
 //    @Override
 //    public void copyTo(ByRule destination)
@@ -128,16 +150,19 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
      * Return stream of valid dates made by rule (infinite if COUNT or UNTIL not present)
      */
     @Override
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart)
     {
-        if (getValue() == null)
-        { // if no days specified when constructing, get day of month for startDateTime
-            setValue(MonthDay.from(startTemporal).getDayOfMonth());
-        }
-        ChronoUnit originalChronoUnit = chronoUnit.get();
-        chronoUnit.set(DAYS);
-        switch (originalChronoUnit)
+//        if (getValue() == null)
+//        { // if no days specified when constructing, get day of month for startDateTime
+//            setValue(MonthDay.from(dateTimeStart).getDayOfMonth());
+//        }
+//        ChronoUnit originalChronoUnit = chronoUnit.get();
+//        chronoUnit.set(DAYS);
+        switch (chronoUnit)
         {
+        case HOURS:
+        case MINUTES:
+        case SECONDS:
         case DAYS:
             return inStream.filter(d ->
                     { // filter out all but qualifying days
@@ -170,15 +195,10 @@ public class ByMonthDay extends ByRuleAbstract<ObservableList<Integer>, ByMonthD
                 return dates.stream();
             });       
         case WEEKS:
-            throw new InvalidParameterException("BYMONTHDAY is not available for WEEKLY frequency."); // Not available
-        case HOURS:
-        case MINUTES:
-        case SECONDS:
-            throw new RuntimeException("Not implemented"); // probably same as DAILY
+            throw new IllegalArgumentException("BYMONTHDAY is not available for WEEKLY frequency."); // Not available
         default:
-            break;
+            throw new IllegalArgumentException("Not implemented: " + chronoUnit);
         }
-        return null;
     }
     
     @Override

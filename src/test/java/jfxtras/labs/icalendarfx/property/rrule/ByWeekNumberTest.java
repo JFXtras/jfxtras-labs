@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.parameter.rrule;
+package jfxtras.labs.icalendarfx.property.rrule;
 
 import static org.junit.Assert.assertEquals;
 
@@ -52,7 +52,16 @@ public class ByWeekNumberTest
               , LocalDateTime.of(1998, 5, 12, 10, 0)
               , LocalDateTime.of(1998, 5, 13, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream.limit(10).collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
+//        element.getValue().add(999); // throws exception
     }
+    
+    @Test
+    public void canCatchInvalidByWeekNumber()
+    {
+        ByWeekNumber element = new ByWeekNumber();
+        element.getValue().add(999); // throws exception
+    }
+
 }

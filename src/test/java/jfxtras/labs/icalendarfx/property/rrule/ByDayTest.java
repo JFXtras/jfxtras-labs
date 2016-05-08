@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.parameter.rrule;
+package jfxtras.labs.icalendarfx.property.rrule;
 
 import static org.junit.Assert.assertEquals;
 
