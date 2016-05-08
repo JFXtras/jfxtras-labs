@@ -47,6 +47,7 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<T, U> implem
     @Override
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal) { return null; }
 
+    
     @Override
     public ChronoUnit getChronoUnit() { throw new RuntimeException("not implemented"); }
     

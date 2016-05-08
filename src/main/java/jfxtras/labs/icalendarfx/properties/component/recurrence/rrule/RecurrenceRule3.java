@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 import java.time.DayOfWeek;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjuster;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -549,11 +548,11 @@ public class RecurrenceRule3
 //        copy(this, destination);
 //    }
 
-    public TemporalAdjuster adjuster()
-    {
-        int interval = (getInterval() == null) ? Interval.DEFAULT_INTERVAL : getInterval().getValue();
-        return (temporal) -> temporal.plus(interval, getFrequency().getValue().getChronoUnit());
-    }
+//    public TemporalAdjuster adjuster()
+//    {
+//        int interval = (getInterval() == null) ? Interval.DEFAULT_INTERVAL : getInterval().getValue();
+//        return (temporal) -> temporal.plus(interval, getFrequency().getValue().getChronoUnit());
+//    }
 
     /**
      * STREAM RECURRENCES
@@ -571,7 +570,9 @@ public class RecurrenceRule3
     {
 //        getFrequency().setChronoUnit(getFrequency().getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
         ChronoUnit chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
-        Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
+//        Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
+        int interval = (getInterval() == null) ? Interval.DEFAULT_INTERVAL : getInterval().getValue();
+        Stream<Temporal> recurrenceStream = getFrequency().streamRecurrences(start, interval);
         Iterator<ByRule<?>> rulesIterator = byRules()
                 .stream()
                 .sorted()
@@ -580,10 +581,10 @@ public class RecurrenceRule3
         {
             ByRule<?> rule = rulesIterator.next();
 //            stream = rule.streamRecurrences(stream, getFrequency().chronoUnitProperty(), start);
-            stream = rule.streamRecurrences(stream, chronoUnit, start);
+            recurrenceStream = rule.streamRecurrences(recurrenceStream, chronoUnit, start);
             chronoUnit = rule.getChronoUnit(); // update chronoUnit
         }
-        return stream;
+        return recurrenceStream;
 //        // Filter out too early
 //        return stream.filter(t -> ! DateTimeUtilities.isBefore(start, t));
     }

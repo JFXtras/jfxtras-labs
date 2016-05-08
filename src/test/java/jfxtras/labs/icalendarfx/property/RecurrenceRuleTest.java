@@ -8,16 +8,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjuster;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,10 +25,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.WeekStart;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -112,15 +101,6 @@ public class RecurrenceRuleTest
      */
     
     @Test
-    public void canParseFrequency()
-    {
-        String content = "DAILY";
-        Frequency2 element = Frequency2.parse(content);
-        assertEquals(FrequencyType.DAILY, element.getValue());
-        assertEquals("FREQ=DAILY", element.toContent());
-    }
-    
-    @Test
     public void canParseUntil()
     {
         String content = "19730429T070000Z";
@@ -171,171 +151,5 @@ public class RecurrenceRuleTest
         assertEquals(DayOfWeek.SUNDAY, element.getValue());
         assertEquals("WKST=SU", element.toContent());
     }
-
-    @Test
-    public void canParseByMonth()
-    {
-        ByMonth element = new ByMonth(4);
-        assertEquals(Month.APRIL, element.getValue().get(0));
-        assertEquals("BYMONTH=4", element.toContent());
-    }
     
-    @Test
-    public void canStreamByMonth()
-    {
-        ByMonth element = new ByMonth(4);
-        LocalDateTime startDateTime = LocalDateTime.of(2016, 5, 5, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.DAYS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
-        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, startDateTime);
-        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(2017, 4, 1, 10, 0)
-              , LocalDateTime.of(2017, 4, 2, 10, 0)
-              , LocalDateTime.of(2017, 4, 3, 10, 0)
-              , LocalDateTime.of(2017, 4, 4, 10, 0)
-              , LocalDateTime.of(2017, 4, 5, 10, 0)
-                ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
-        assertEquals(expectedRecurrences, madeRecurrences);
-    }
-    
-    @Test
-    public void canStreamByMonth2()
-    {
-        ByMonth element = new ByMonth(4,5);
-        LocalDateTime startDateTime = LocalDateTime.of(2016, 5, 5, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.YEARS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
-        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, startDateTime);
-        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(2016, 5, 5, 10, 0)
-              , LocalDateTime.of(2017, 4, 5, 10, 0)
-              , LocalDateTime.of(2017, 5, 5, 10, 0)
-              , LocalDateTime.of(2018, 4, 5, 10, 0)
-              , LocalDateTime.of(2018, 5, 5, 10, 0)
-                ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
-        assertEquals(expectedRecurrences, madeRecurrences);
-    }
-
-    @Test
-    public void canParseByWeekNumber()
-    {
-        ByWeekNumber element = new ByWeekNumber(4,5);
-        assertEquals(Arrays.asList(4,5), element.getValue());
-        assertEquals("BYWEEKNO=4,5", element.toContent());
-    }
-    
-    @Test
-    public void canStreamByWeekNumber()
-    {
-        ByWeekNumber element = new ByWeekNumber(20);
-        LocalDateTime startDateTime = LocalDateTime.of(1997, 5, 12, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.YEARS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
-        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit);
-        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(1997, 5, 12, 10, 0)
-              , LocalDateTime.of(1997, 5, 13, 10, 0)
-              , LocalDateTime.of(1997, 5, 14, 10, 0)
-              , LocalDateTime.of(1997, 5, 15, 10, 0)
-              , LocalDateTime.of(1997, 5, 16, 10, 0)
-              , LocalDateTime.of(1997, 5, 17, 10, 0)
-              , LocalDateTime.of(1997, 5, 18, 10, 0)
-              , LocalDateTime.of(1998, 5, 11, 10, 0)
-              , LocalDateTime.of(1998, 5, 12, 10, 0)
-              , LocalDateTime.of(1998, 5, 13, 10, 0)
-                ));
-        List<Temporal> madeRecurrences = recurrenceStream.collect(Collectors.toList());
-        assertEquals(expectedRecurrences, madeRecurrences);
-    }
-
-    @Test
-    public void canParseByYearDay()
-    {
-        ByYearDay element = new ByYearDay(100,200,300);
-        assertEquals(Arrays.asList(100,200,300), element.getValue());
-        assertEquals("BYYEARDAY=100,200,300", element.toContent());
-    }
-    
-    @Test
-    public void canParseByDay()
-    {
-        ByDay element = ByDay.parse("-1SU");
-        ByDayPair byDayPair = new ByDayPair()
-                .withDayOfWeek(DayOfWeek.SUNDAY)
-                .withOrdinal(-1);
-        assertEquals(byDayPair, element.getValue().get(0));
-        assertEquals("BYDAY=-1SU", element.toContent());
-    }
-    
-    @Test
-    public void canStreamByDay()
-    {
-        ByDay element = ByDay.parse("-1SU,-2SU");
-        LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 20, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.YEARS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
-        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
-        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(2015, 12, 20, 10, 0)
-              , LocalDateTime.of(2015, 12, 27, 10, 0)
-              , LocalDateTime.of(2016, 12, 18, 10, 0)
-              , LocalDateTime.of(2016, 12, 25, 10, 0)
-              , LocalDateTime.of(2017, 12, 24, 10, 0)
-                ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
-        assertEquals(expectedRecurrences, madeRecurrences);
-    }
-    
-    
-    /*
-     * DTSTART:20160503T100000
-     * RRULE:FREQ=YEARLY;BYDAY=SU,MO
-     */
-    @Test
-    public void canStreamByDay2()
-    {
-        ByDay element = ByDay.parse("SU,MO");
-        LocalDateTime dateTimeStart = LocalDateTime.of(2016, 5, 2, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.YEARS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
-        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
-        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(2016, 5, 2, 10, 0)
-              , LocalDateTime.of(2016, 5, 8, 10, 0)
-              , LocalDateTime.of(2016, 5, 9, 10, 0)
-              , LocalDateTime.of(2016, 5, 15, 10, 0)
-              , LocalDateTime.of(2016, 5, 16, 10, 0)
-                ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
-        assertEquals(expectedRecurrences, madeRecurrences);
-    }
-    
-    @Test
-    public void canStreamByDay3()
-    {
-        ByDay element = ByDay.parse("3WE,2TU");
-        LocalDateTime dateTimeStart = LocalDateTime.of(2016, 6, 15, 10, 0);
-        ChronoUnit chronoUnit = ChronoUnit.MONTHS;
-        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, chronoUnit);
-        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, chronoUnit, dateTimeStart);
-        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
-                LocalDateTime.of(2016, 6, 15, 10, 0)
-              , LocalDateTime.of(2016, 7, 12, 10, 0)
-              , LocalDateTime.of(2016, 7, 20, 10, 0)
-              , LocalDateTime.of(2016, 8, 9, 10, 0)
-              , LocalDateTime.of(2016, 8, 17, 10, 0)
-              , LocalDateTime.of(2016, 9, 13, 10, 0)
-              , LocalDateTime.of(2016, 9, 21, 10, 0)
-                ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(7).peek(System.out::println).collect(Collectors.toList());
-        assertEquals(expectedRecurrences, madeRecurrences);
-    }
 }

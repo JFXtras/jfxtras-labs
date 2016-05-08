@@ -141,7 +141,7 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
     }
     
     @Override
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart )
     {
 //        ChronoUnit originalChronoUnit = chronoUnit.get();
 //        chronoUnit.set(WEEKS);
@@ -159,17 +159,14 @@ public class ByWeekNumber extends ByRuleAbstract<ObservableList<Integer>, ByWeek
                     Temporal startDate = date
                             .with(weekFields.weekOfWeekBasedYear(), myWeekNumber)
                             .with(TemporalAdjusters.previousOrSame(getWeekStart()));
-                    IntStream.range(0,7).forEach(days -> dates.add(startDate.plus(days, ChronoUnit.DAYS)));
-//                    
-//                    date.with(weekFields.)
-////                    dates.add(startDate.plus(weekShift, ChronoUnit.WEEKS));                    
-//                    Temporal newTemporal = date.with(TemporalAdjusters.next(dayOfWeek));
-//                    int newDateWeekNumber = newTemporal.get(weekFields.weekOfWeekBasedYear());
-////                    int weekShift = myWeekNumber - newDateWeekNumber;
-////                    if (! DateTimeUtilities.isBefore(newTemporal, startTemporal))
-////                    {
-//                        dates.add(newTemporal.plus(weekShift, ChronoUnit.WEEKS));
-//                    }
+                    IntStream.range(0,7).forEach(days -> 
+                    {
+                        Temporal newTemporal = startDate.plus(days, ChronoUnit.DAYS);
+                        if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+                        {
+                            dates.add(newTemporal);
+                        }
+                    });
                 }
                 return dates.stream().sorted(DateTimeUtilities.TEMPORAL_COMPARATOR);
             });

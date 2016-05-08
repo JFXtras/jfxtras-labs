@@ -244,6 +244,12 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
         case MINUTES:
         case SECONDS:
         case DAYS:
+        {
+            boolean isValid = getValue().stream().allMatch(v -> v.getOrdinal() == 0);
+            if (! isValid)
+            {
+                throw new IllegalArgumentException("Numberic ordinal day values can't be set for FREQ as" + chronoUnit);
+            }
             return inStream.filter(t ->
             { // filter out all but qualifying days
                 DayOfWeek myDayOfWeek = DayOfWeek.from(t);
@@ -253,7 +259,14 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
                 }
                 return false;
             });
+        }
         case WEEKS:
+        {
+            boolean isValid = getValue().stream().allMatch(v -> v.getOrdinal() == 0);
+            if (! isValid)
+            {
+                throw new IllegalArgumentException("Numberic ordinal day values can't be set for FREQ as " + chronoUnit);
+            }
             TemporalField dayOfWeekField = WeekFields.of(getWeekStart(), MIN_DAYS_IN_WEEK).dayOfWeek();
             return inStream.flatMap(t -> 
             { // Expand to be byDayPairs days in current week
@@ -270,16 +283,17 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
                 Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
+        }
         case MONTHS:
             return inStream.flatMap(date -> 
             {
                 List<Temporal> dates = new ArrayList<>();
-                boolean sortNeeded = false;
+//                boolean sortNeeded = false;
                 for (ByDayPair byDayPair : getValue())
                 {
                     if (byDayPair.ordinal == 0)
                     { // add every matching day of week in month
-                        sortNeeded = true;
+//                        sortNeeded = true;
                         Month myMonth = Month.from(date);
                         for (int weekNum=1; weekNum<=5; weekNum++)
                         {
@@ -461,4 +475,11 @@ public class ByDay extends ByRuleAbstract<ObservableList<ByDayPair>, ByDay>
         element.parseContent(content);
         return element;
     }
+    
+//    @Override
+//    public boolean isValid()
+//    {
+//        // TODO Auto-generated method stub
+//        return false;
+//    }
 }

@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
+import java.util.stream.Stream;
 
 /**
  * FREQUENCY
@@ -208,8 +209,11 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
      * @param start - starting point of stream (MUST be a valid occurrence date/time)
      * @return
      */
-//    public Stream<Temporal> streamRecurrences(Temporal start)
-//    {
+    public Stream<Temporal> streamRecurrences(Temporal start, int interval)
+    {
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(interval, getValue().getChronoUnit());
+        return Stream.iterate(start, a -> a.with(adjuster));
+    }
 //        setChronoUnit(getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
 //        return Stream.iterate(start, a -> a.with(adjuster()));
 ////        Iterator<ByRule> rulesIterator = byRules()

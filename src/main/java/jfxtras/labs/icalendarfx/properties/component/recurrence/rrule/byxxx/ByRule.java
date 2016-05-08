@@ -42,6 +42,9 @@ public interface ByRule<T> extends Comparable<ByRule<T>>, RRuleElement<T>
     Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart);
 
     ChronoUnit getChronoUnit();
+    
+//    boolean isValid(); // TODO - PUT IN VCALENDARELEMENT
+    
 //    void copyTo(ByRule destination);
 //
 //    /** Deep copy all fields from source to destination */
