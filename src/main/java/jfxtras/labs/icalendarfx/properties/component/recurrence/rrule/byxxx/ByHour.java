@@ -34,9 +34,9 @@ public class ByHour extends ByRuleIntegerAbstract<ByHour>
         super();
     }
     
-    public ByHour(Integer... yearDays)
+    public ByHour(Integer... hours)
     {
-        super(yearDays);
+        super(hours);
     }
     
     public ByHour(ByHour source)
@@ -104,5 +104,4 @@ public class ByHour extends ByRuleIntegerAbstract<ByHour>
         element.parseContent(content);
         return element;
     }
-
 }

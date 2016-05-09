@@ -2,23 +2,22 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.ObservableList;
-
-public class BySetPosition extends ByRuleAbstract<ObservableList<Integer>, BySetPosition>
+public class BySetPosition extends ByRuleIntegerAbstract<BySetPosition>
 {
     public BySetPosition()
     {
         super();
-//        super(BySetPosition.class);
-        throw new RuntimeException("not implemented");
     }
     
-    public BySetPosition(String value)
+    public BySetPosition(Integer... setPositions)
     {
-        this();
+        super(setPositions);
     }
     
     public BySetPosition(BySetPosition source)
@@ -27,24 +26,33 @@ public class BySetPosition extends ByRuleAbstract<ObservableList<Integer>, BySet
     }
     
     @Override
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
-            Temporal startDateTime) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String toContent()
+    Predicate<Integer> isValidValue()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return (value) -> (value < -366) || (value > 366) || (value == 0);
     }
-
+    
     @Override
-    public void parseContent(String content)
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal startTemporal)
     {
-        // TODO Auto-generated method stub
-        
+        List<Temporal> inList = inStream.collect(Collectors.toList());
+        List<Temporal> outList = new ArrayList<>();
+        for (int setPosition : getValue())
+        {
+            if (setPosition > 0)
+            {
+                outList.add(inList.get(setPosition-1));                
+            } else if (setPosition < 0)
+            {
+                outList.add(inList.get(inList.size() + setPosition));                
+            }
+        }
+        return outList.stream();
     }
 
+    public static ByYearDay parse(String content)
+    {
+        ByYearDay element = new ByYearDay();
+        element.parseContent(content);
+        return element;
+    }
 }

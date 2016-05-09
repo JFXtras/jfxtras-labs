@@ -572,22 +572,58 @@ public class RecurrenceRule3
         ChronoUnit chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
 //        Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
         int interval = (getInterval() == null) ? Interval.DEFAULT_INTERVAL : getInterval().getValue();
-        Stream<Temporal> recurrenceStream = getFrequency().streamRecurrences(start, interval);
-        Iterator<ByRule<?>> rulesIterator = byRules()
-                .stream()
-                .sorted()
-                .iterator();
-        while (rulesIterator.hasNext())
+        Stream<Temporal> recurrenceStream = null;
+        Stream<Temporal> frequencyStream = getFrequency().streamRecurrences(start, interval);
+        
+//        Stream<Temporal> recurrenceStream = frequencyStream
+//                .flatMap(value ->
+//                {
+//                    myStream = Arrays.asList(value).stream();
+//                    byRules().stream()
+//                            .sorted()
+//                            .forEach(rule ->
+//                            {
+//                                myStream = rule.streamRecurrences(myStream, chronoUnit, start);
+//                                chronoUnit = rule.getChronoUnit();
+//                            });
+//                    return myStream;
+//                });
+        
+        Iterator<Temporal> frequencyTemporalIterator = frequencyStream.iterator();
+        while (frequencyTemporalIterator.hasNext())
         {
-            ByRule<?> rule = rulesIterator.next();
-//            stream = rule.streamRecurrences(stream, getFrequency().chronoUnitProperty(), start);
-            recurrenceStream = rule.streamRecurrences(recurrenceStream, chronoUnit, start);
-            chronoUnit = rule.getChronoUnit(); // update chronoUnit
+            Iterator<ByRule<?>> ruleIterator = byRules().iterator();
+            recurrenceStream = Arrays.asList(frequencyTemporalIterator.next()).stream();
+//            myStream
+            while (ruleIterator.hasNext())
+            {
+                ByRule<?> rule = ruleIterator.next();
+                Stream<Temporal> newStream = rule.streamRecurrences(recurrenceStream, chronoUnit, start);
+                recurrenceStream = Stream.concat(recurrenceStream, newStream);
+                chronoUnit = rule.getChronoUnit();
+            }
         }
+        
+//        Iterator<ByRule<?>> rulesIterator = byRules()
+//                .stream()
+//                .sorted()
+//                .iterator();
+//        while (rulesIterator.hasNext())
+//        {
+//            ByRule<?> rule = rulesIterator.next();
+////            stream = rule.streamRecurrences(stream, getFrequency().chronoUnitProperty(), start);
+////            recurrenceStream = rule.streamRecurrences(recurrenceStream, chronoUnit, start);
+//
+////            recurrenceStream = recurrenceStream
+////                    .flatMap(value -> streamRecurrences(recurrenceStream, chronoUnit, start);
+//            chronoUnit = rule.getChronoUnit(); // update chronoUnit
+//        }
         return recurrenceStream;
 //        // Filter out too early
 //        return stream.filter(t -> ! DateTimeUtilities.isBefore(start, t));
     }
+//    private ChronoUnit chronoUnit;
+//    private Stream<Temporal> myStream;
     
     @Override
     public boolean equals(Object obj)

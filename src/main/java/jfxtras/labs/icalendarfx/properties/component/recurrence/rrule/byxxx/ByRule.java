@@ -38,7 +38,7 @@ public interface ByRule<T> extends Comparable<ByRule<T>>, RRuleElement<T>
      * @return
      */
     @Deprecated
-    Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startTemporal);
+    Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime);
 
     Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart);
 

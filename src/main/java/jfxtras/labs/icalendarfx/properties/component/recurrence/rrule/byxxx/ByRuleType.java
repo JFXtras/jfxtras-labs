@@ -21,7 +21,7 @@ public enum ByRuleType
     }
   , BY_MINUTE ("BYMINUTE", ByMinute.class, 160)
     {
-        @Override ByRule newInstance(String value) { return new ByMinute(value); }
+        @Override ByRule newInstance(String value) { return ByMinute.parse(value); }
         @Override public ByRule newInstance(ByRule source) { return new ByMinute((ByMinute) source); }
     }
   , BY_HOUR ("BYHOUR", ByHour.class, 150)
@@ -56,7 +56,7 @@ public enum ByRuleType
     }
   , BY_SET_POSITION ("BYSETPOS", BySetPosition.class, 180)
     {
-        @Override ByRule newInstance(String value) { return new BySetPosition(value); }
+        @Override ByRule newInstance(String value) { return BySetPosition.parse(value); }
         @Override public ByRule newInstance(ByRule source) { return new BySetPosition((BySetPosition) source); }
     };
   
