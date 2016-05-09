@@ -17,7 +17,7 @@ public abstract class ByRuleIntegerAbstract<U> extends ByRuleAbstract<Integer, U
         // validate values
         values.forEach(value -> 
         {
-            if (isValidValue().test(value))
+            if (! isValidValue().test(value))
             {
                 throw new IllegalArgumentException("Out of range " + elementType().toString() + " value: " + value);
             }            
@@ -35,7 +35,7 @@ public abstract class ByRuleIntegerAbstract<U> extends ByRuleAbstract<Integer, U
                 {
                     change.getAddedSubList().forEach(value -> 
                     {
-                        if (isValidValue().test(value))
+                        if (! isValidValue().test(value))
                         {
                             throw new IllegalArgumentException("Out of range " + elementType().toString() + " value: " + value);
                         }

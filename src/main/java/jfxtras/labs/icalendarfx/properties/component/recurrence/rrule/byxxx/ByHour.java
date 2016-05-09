@@ -47,7 +47,7 @@ public class ByHour extends ByRuleIntegerAbstract<ByHour>
     @Override
     Predicate<Integer> isValidValue()
     {
-        return (value) -> (value < 0) || (value > 23);
+        return (value) -> (value >= 0) && (value <= 23);
     }
     
     @Override

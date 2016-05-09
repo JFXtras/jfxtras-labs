@@ -48,7 +48,7 @@ public class ByYearDay extends ByRuleIntegerAbstract<ByYearDay>
     @Override
     Predicate<Integer> isValidValue()
     {
-        return (value) -> (value < -366) || (value > 366) || (value == 0);
+        return (value) -> (value >= -366) && (value <= 366) && (value != 0);
     }
 
     @Override

@@ -107,7 +107,8 @@ public enum RRuleElementType
         {
             if (recurrenceRule.getWeekStart() == null)
             {
-                recurrenceRule.setWeekStart(DayOfWeek.valueOf(content.toUpperCase()));
+                DayOfWeek dayOfWeek = DateTimeUtilities.dayOfWeekFromAbbreviation(content);
+                recurrenceRule.setWeekStart(dayOfWeek);
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");

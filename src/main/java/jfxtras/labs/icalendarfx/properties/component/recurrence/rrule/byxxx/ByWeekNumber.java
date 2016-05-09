@@ -69,7 +69,7 @@ public class ByWeekNumber extends ByRuleIntegerAbstract<ByWeekNumber>
     @Override
     Predicate<Integer> isValidValue()
     {
-        return (value) -> (value < -53) || (value > 53) || (value == 0);
+        return (value) -> (value >= -53) && (value > 53) && (value != 0);
     }
     
 //    /**

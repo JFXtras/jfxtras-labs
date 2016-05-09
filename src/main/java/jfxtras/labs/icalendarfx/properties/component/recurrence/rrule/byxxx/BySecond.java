@@ -30,7 +30,7 @@ public class BySecond extends ByRuleIntegerAbstract<BySecond>
     @Override
     Predicate<Integer> isValidValue()
     {
-        return (value) -> (value < 0) || (value > 59);
+        return (value) -> (value >= 0) && (value <= 59);
     }
     
     @Override

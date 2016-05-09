@@ -5,6 +5,7 @@ import java.time.Month;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -55,7 +56,7 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
     @Override
     Predicate<Integer> isValidValue()
     {
-        return (value) -> (value < 1) || (value > 31);
+        return (value) -> (value >= -31) && (value <= 31) && (value != 0);
     }
 
 
@@ -137,17 +138,8 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
                 List<Temporal> dates = new ArrayList<>();
                 for (Month month : Month.values())
                 {
-                    Temporal newTemporal = d.with(ChronoField.MONTH_OF_YEAR, month.getValue());
-                    for (int dayOfMonth : getValue())
-                    {
-                        Temporal newTemporal2 = newTemporal.with(ChronoField.DAY_OF_MONTH, dayOfMonth);
-                        int actualDayOfMonth = newTemporal2.get(ChronoField.DAY_OF_MONTH);
-                        // ensure day of month hasn't changed.  If it changed the date was invalid and should be ignored.
-                        if ((dayOfMonth == actualDayOfMonth) && (! DateTimeUtilities.isBefore(newTemporal2, dateTimeStart)))
-                        {
-                            dates.add(newTemporal2);
-                        }
-                    }
+                    Temporal monthAdjustedTemporal = d.with(ChronoField.MONTH_OF_YEAR, month.getValue());
+                    dates.addAll(extracted(monthAdjustedTemporal, dateTimeStart));
                 }
                 return dates.stream();
             });
@@ -155,16 +147,17 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
             return inStream.flatMap(d -> 
             { // Expand to be daysOfMonth days in current month
                 List<Temporal> dates = new ArrayList<>();
-                for (int dayOfMonth : getValue())
-                {
-                    Temporal newTemporal = d.with(ChronoField.DAY_OF_MONTH, dayOfMonth);
-                    int actualDayOfMonth = newTemporal.get(ChronoField.DAY_OF_MONTH);
-                    // ensure day of month hasn't changed.  If it changed the date was invalid and should be ignored.
-                    if ((dayOfMonth == actualDayOfMonth) && (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)))
-                    {
-                        dates.add(newTemporal);
-                    }
-                }
+                dates.addAll(extracted(d, dateTimeStart));
+//                for (int dayOfMonth : getValue())
+//                {
+//                    Temporal newTemporal = d.with(ChronoField.DAY_OF_MONTH, dayOfMonth);
+//                    int actualDayOfMonth = newTemporal.get(ChronoField.DAY_OF_MONTH);
+//                    // ensure day of month hasn't changed.  If it changed the date was invalid and should be ignored.
+//                    if ((dayOfMonth == actualDayOfMonth) && (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)))
+//                    {
+//                        dates.add(newTemporal);
+//                    }
+//                }
 //                System.out.println("months:" + d + " " + dates.size());
                 return dates.stream();
             });
@@ -173,6 +166,51 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
         default:
             throw new IllegalArgumentException("Not implemented: " + chronoUnit);
         }
+    }
+
+    /* process dayOfMonth for YEARS and MONTHS */
+    private List<Temporal> extracted(Temporal initialTemporal, Temporal dateTimeStart)
+    {
+        List<Temporal> dates = new ArrayList<>();
+        for (int dayOfMonth : getValue())
+        {
+            final Temporal correctMonthTemporal = (dayOfMonth > 0) ? initialTemporal : initialTemporal.minus(1, ChronoUnit.MONTHS);
+            final int daysInMonth = correctMonthTemporal
+                    .with(TemporalAdjusters.lastDayOfMonth())
+                    .get(ChronoField.DAY_OF_MONTH);
+            final Temporal newTemporal;
+            if (dayOfMonth > 0)
+            {
+                if (dayOfMonth <= daysInMonth)
+                {
+                    newTemporal = initialTemporal.with(ChronoField.DAY_OF_MONTH, dayOfMonth);                    
+                } else
+                {
+                    newTemporal = null; // not enough days in month to make valid date - ignore this value
+                }
+            } else if (dayOfMonth < 0)
+            {
+                int newDayOfMonth = daysInMonth + dayOfMonth + 1;
+                if (newDayOfMonth > 0)
+                {
+                    newTemporal = initialTemporal
+                            .minus(1, ChronoUnit.MONTHS)
+                            .with(ChronoField.DAY_OF_MONTH, newDayOfMonth);
+                } else
+                {
+                    newTemporal = null;
+                }
+            } else
+            {
+                throw new IllegalArgumentException(elementType().toString() + " can't have a value of zero");
+            }
+            // ensure day of month hasn't changed.  If it changed the date was invalid and should be ignored.
+            if ((newTemporal != null) && (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)))
+            {
+                dates.add(newTemporal);
+            }
+        }
+        return dates;
     }
     
 //    @Override

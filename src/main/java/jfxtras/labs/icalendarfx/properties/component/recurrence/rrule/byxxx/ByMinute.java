@@ -47,7 +47,7 @@ public class ByMinute extends ByRuleIntegerAbstract<ByMinute>
     @Override
     Predicate<Integer> isValidValue()
     {
-        return (value) -> (value < 0) || (value > 59);
+        return (value) -> (value >= 0) && (value <= 59);
     }
     
     @Override

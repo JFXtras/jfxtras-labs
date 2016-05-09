@@ -28,7 +28,7 @@ public class BySetPosition extends ByRuleIntegerAbstract<BySetPosition>
     @Override
     Predicate<Integer> isValidValue()
     {
-        return (value) -> (value < -366) || (value > 366) || (value == 0);
+        return (value) -> (value >= -366) && (value <= 366) && (value != 0);
     }
     
     @Override
