@@ -28,7 +28,7 @@ public class BySetPositionTest
     @Test
     public void canStreamSetPosition()
     {
-        LocalDateTime startDateTime = LocalDateTime.of(2016, 1, 4, 0, 0);
+        LocalDateTime dateTimeStart = LocalDateTime.of(2016, 1, 4, 0, 0);
         ChronoUnit frequency = ChronoUnit.MONTHS;
         List<Temporal> list = Arrays.asList(
                 LocalDateTime.of(2016, 1, 4, 0, 0), 
@@ -37,7 +37,7 @@ public class BySetPositionTest
                 );
         
         BySetPosition element = new BySetPosition(2);        
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(list.stream(), frequency, startDateTime);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(list.stream(), frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 1, 5, 0, 0)
                 ));
@@ -48,7 +48,7 @@ public class BySetPositionTest
     @Test
     public void canStreamSetPosition2()
     {
-        LocalDateTime startDateTime = LocalDateTime.of(2016, 1, 4, 0, 0);
+        LocalDateTime dateTimeStart = LocalDateTime.of(2016, 1, 4, 0, 0);
         ChronoUnit frequency = ChronoUnit.MONTHS;
         List<Temporal> list = Arrays.asList(
                 LocalDateTime.of(2016, 1, 4, 0, 0), 
@@ -57,7 +57,7 @@ public class BySetPositionTest
                 );
         
         BySetPosition element = new BySetPosition(-1);        
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(list.stream(), frequency, startDateTime);
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(list.stream(), frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 1, 6, 0, 0)
                 ));

@@ -34,11 +34,11 @@ public class ByHourTest
     public void canStreamByHour()
     {
         ByHour element = new ByHour(10,12);
-        LocalDateTime startDateTime = LocalDateTime.of(2016, 1, 4, 10, 0);
+        LocalDateTime dateTimeStart = LocalDateTime.of(2016, 1, 4, 10, 0);
         ChronoUnit frequency = ChronoUnit.MINUTES;
         TemporalAdjuster adjuster = (temporal) -> temporal.plus(30, frequency);
-        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, startDateTime);
+        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 1, 4, 10, 0)
               , LocalDateTime.of(2016, 1, 4, 10, 30)
@@ -58,11 +58,11 @@ public class ByHourTest
     public void canStreamByHour2()
     {
         ByHour element = new ByHour(10,11,12);
-        LocalDateTime startDateTime = LocalDateTime.of(2016, 5, 5, 10, 0);
+        LocalDateTime dateTimeStart = LocalDateTime.of(2016, 5, 5, 10, 0);
         ChronoUnit frequency = ChronoUnit.YEARS;
         TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
-        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, startDateTime);
+        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 5, 5, 10, 0)
               , LocalDateTime.of(2016, 5, 5, 11, 0)

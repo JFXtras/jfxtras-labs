@@ -63,6 +63,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  *
  */
 // TODO - PRESERVE ORDER OF PARAMETERS FROM PARSED STRING
+@Deprecated
 public class RecurrenceRule2
 {
     /** 

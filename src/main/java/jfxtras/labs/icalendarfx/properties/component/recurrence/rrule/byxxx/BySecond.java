@@ -1,49 +1,90 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public class BySecond extends ByRuleAbstract<ObservableList<Integer>, BySecond>
+public class BySecond extends ByRuleIntegerAbstract<BySecond>
 {
     public BySecond()
     {
-//        super(BySecond.class);
         super();
-       throw new RuntimeException("not implemented");
     }
-        
-    public BySecond(String value)
+    
+    public BySecond(Integer... minutes)
     {
-        this();
+        super(minutes);
     }
     
     public BySecond(BySecond source)
     {
         super(source);
     }
-
+    
     @Override
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit,
-            Temporal startDateTime) {
-        // TODO Auto-generated method stub
-        return null;
+    Predicate<Integer> isValidValue()
+    {
+        return (value) -> (value < 0) || (value > 59);
+    }
+    
+    @Override
+    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart)
+    {
+        if (dateTimeStart.isSupported(ChronoField.SECOND_OF_MINUTE))
+        {
+            switch (chronoUnit)
+            {
+            case SECONDS:
+                return inStream.filter(d ->
+                        { // filter out all but qualifying hours
+                            int mySecondOfMinute = d.get(ChronoField.SECOND_OF_MINUTE);
+                            for (int secondOfMinute : getValue())
+                            {
+                                if (secondOfMinute > 0)
+                                {
+                                    if (secondOfMinute == mySecondOfMinute) return true;
+                                }
+                            }
+                            return false;
+                        });
+            case HOURS:
+            case MINUTES:
+            case DAYS:
+            case WEEKS:
+            case MONTHS:
+            case YEARS:
+                return inStream.flatMap(d -> 
+                { // Expand to be include all hours of day
+                    List<Temporal> dates = new ArrayList<>();
+                    for (int minuteOfHour : getValue())
+                    {
+                        Temporal newTemporal = d.with(ChronoField.SECOND_OF_MINUTE, minuteOfHour);
+                        if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+                        {
+                            dates.add(newTemporal);
+                        }
+                    }
+                    return dates.stream();
+                });
+            default:
+                throw new IllegalArgumentException("Not implemented: " + chronoUnit);
+            }
+        } else
+        {
+            return inStream; // ignore rule when not supported (RFC 5545 requirement)
+        }
     }
 
-    @Override
-    public String toContent()
+    public static ByMinute parse(String content)
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void parseContent(String content)
-    {
-        // TODO Auto-generated method stub
-        
+        ByMinute element = new ByMinute();
+        element.parseContent(content);
+        return element;
     }
 }

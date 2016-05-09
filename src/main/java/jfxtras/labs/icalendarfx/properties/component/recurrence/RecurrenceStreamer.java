@@ -243,7 +243,7 @@ public class RecurrenceStreamer
                 earliestCacheValue = dateTimeStart;
                 latestCacheValue = dateTimeStart;
             }
-            stream1 = recurrenceRule.streamRecurrence(match);
+            stream1 = recurrenceRule.streamRecurrences(match);
         }
         
         // If present, add recurrence list
@@ -353,7 +353,7 @@ public class RecurrenceStreamer
                     .filter(d -> ! DateTimeUtilities.isBefore(d, start));
         } else
         { // if has recurrence rule
-            stream1 = component.getRecurrenceRule().getValue().streamRecurrence(component.getDateTimeStart().getValue());
+            stream1 = component.getRecurrenceRule().getValue().streamRecurrences(component.getDateTimeStart().getValue());
         }
         // If present, add recurrence list
         final Stream<Temporal> stream2;

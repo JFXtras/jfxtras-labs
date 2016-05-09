@@ -57,8 +57,6 @@ public class ByMinute extends ByRuleIntegerAbstract<ByMinute>
         {
             switch (chronoUnit)
             {
-            case DAYS:
-            case HOURS:
             case MINUTES:
             case SECONDS:
                 return inStream.filter(d ->
@@ -73,6 +71,8 @@ public class ByMinute extends ByRuleIntegerAbstract<ByMinute>
                             }
                             return false;
                         });
+            case HOURS:
+            case DAYS:
             case WEEKS:
             case MONTHS:
             case YEARS:

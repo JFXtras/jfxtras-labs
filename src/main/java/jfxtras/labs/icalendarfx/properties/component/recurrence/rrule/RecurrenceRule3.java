@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +23,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByHour;
@@ -74,7 +74,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  */
 // TODO - PRESERVE ORDER OF PARAMETERS FROM PARSED STRING
 // TODO - LISTENER TO PREVENT COUNT AND LISTENER FROM BOTH BEING SET
-public class RecurrenceRule3
+public class RecurrenceRule3 implements VCalendarElement
 {
     /** 
      * BYxxx Rules
@@ -419,7 +419,7 @@ public class RecurrenceRule3
         byRules = FXCollections.observableArrayList();
         
         // Listener that ensures user doesn't add same ByRule a second time.  Also keeps the byRules list sorted.
-        byRules().addListener((ListChangeListener<? super ByRule>) (change) ->
+        byRules().addListener((ListChangeListener<? super ByRule<?>>) (change) ->
         {
             while (change.next())
             {
@@ -427,7 +427,7 @@ public class RecurrenceRule3
                 {
                     change.getAddedSubList().stream().forEach(c ->
                     {
-                        ByRule newByRule = c;
+                        ByRule<?> newByRule = c;
                         long alreadyPresent = byRules()
                                 .stream()
                                 .map(r -> r.elementType())
@@ -456,6 +456,7 @@ public class RecurrenceRule3
     }
     
     /** Parse component from content line */
+    @Override
     public void parseContent(String contentLine)
     {
         ICalendarUtilities.propertyLineToParameterMap(contentLine)
@@ -569,40 +570,43 @@ public class RecurrenceRule3
     public Stream<Temporal> streamRecurrences(Temporal start)
     {
 //        getFrequency().setChronoUnit(getFrequency().getValue().getChronoUnit()); // start with Frequency ChronoUnit when making a stream
-        ChronoUnit chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
 //        Stream<Temporal> stream = Stream.iterate(start, a -> a.with(adjuster()));
         int interval = (getInterval() == null) ? Interval.DEFAULT_INTERVAL : getInterval().getValue();
-        Stream<Temporal> recurrenceStream = null;
         Stream<Temporal> frequencyStream = getFrequency().streamRecurrences(start, interval);
         
-//        Stream<Temporal> recurrenceStream = frequencyStream
-//                .flatMap(value ->
-//                {
-//                    myStream = Arrays.asList(value).stream();
-//                    byRules().stream()
-//                            .sorted()
-//                            .forEach(rule ->
-//                            {
-//                                myStream = rule.streamRecurrences(myStream, chronoUnit, start);
-//                                chronoUnit = rule.getChronoUnit();
-//                            });
-//                    return myStream;
-//                });
-        
-        Iterator<Temporal> frequencyTemporalIterator = frequencyStream.iterator();
-        while (frequencyTemporalIterator.hasNext())
-        {
-            Iterator<ByRule<?>> ruleIterator = byRules().iterator();
-            recurrenceStream = Arrays.asList(frequencyTemporalIterator.next()).stream();
-//            myStream
-            while (ruleIterator.hasNext())
-            {
-                ByRule<?> rule = ruleIterator.next();
-                Stream<Temporal> newStream = rule.streamRecurrences(recurrenceStream, chronoUnit, start);
-                recurrenceStream = Stream.concat(recurrenceStream, newStream);
-                chronoUnit = rule.getChronoUnit();
-            }
-        }
+        chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
+        Stream<Temporal> recurrenceStream = frequencyStream
+                .flatMap(value ->
+                {
+                    System.out.println("value:" + value);
+                    myStream = Arrays.asList(value).stream();
+                    byRules().stream()
+                            .sorted()
+                            .forEach(rule ->
+                            {
+                                System.out.println("rule:" + rule.elementType());
+                                myStream = rule.streamRecurrences(myStream, chronoUnit, start);
+                                chronoUnit = rule.getChronoUnit();
+                            });
+                    return myStream;
+                });
+
+//        ChronoUnit chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
+//        Stream<Temporal> recurrenceStream = null;
+//        Iterator<Temporal> frequencyTemporalIterator = frequencyStream.iterator();
+//        while (frequencyTemporalIterator.hasNext())
+//        {
+//            Iterator<ByRule<?>> ruleIterator = byRules().iterator();
+//            recurrenceStream = Arrays.asList(frequencyTemporalIterator.next()).stream();
+//            while (ruleIterator.hasNext())
+//            {
+//                ByRule<?> rule = ruleIterator.next();
+//                Stream<Temporal> newStream = rule.streamRecurrences(recurrenceStream, chronoUnit, start);
+//                recurrenceStream = newStream;
+//                chronoUnit = rule.getChronoUnit();
+//                System.out.println(chronoUnit);
+//            }
+//        }
         
 //        Iterator<ByRule<?>> rulesIterator = byRules()
 //                .stream()
@@ -619,18 +623,16 @@ public class RecurrenceRule3
 //            chronoUnit = rule.getChronoUnit(); // update chronoUnit
 //        }
         return recurrenceStream;
-//        // Filter out too early
-//        return stream.filter(t -> ! DateTimeUtilities.isBefore(start, t));
     }
-//    private ChronoUnit chronoUnit;
-//    private Stream<Temporal> myStream;
+    private ChronoUnit chronoUnit; // must be field instead of local variable due to use in lambda expression
+    private Stream<Temporal> myStream; // must be field instead of local variable due to use in lambda expression
     
     @Override
     public boolean equals(Object obj)
     {
-        System.out.println("rrule equal:" + obj + " " + (obj.getClass() != getClass()));
+//        System.out.println("rrule equal:" + obj + " " + (obj.getClass() != getClass()));
         if (obj == this) return true;
-        System.out.println("rrule equal:" + obj + " " + obj.getClass() + " " + getClass());
+//        System.out.println("rrule equal:" + obj + " " + obj.getClass() + " " + getClass());
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
@@ -638,8 +640,9 @@ public class RecurrenceRule3
 
         List<RRuleElementType> myElements = elements();
         List<RRuleElementType> testElements = testObj.elements();
-        System.out.println("rrule equal:" + obj + " " + (obj.getClass() != getClass()));
+//        System.out.println("rrule equal:" + obj + " " + (obj.getClass() != getClass()));
         
+//        System.out.println("rrule equal:" + myElements.size() + " " + testElements.size());
         boolean isSameNumberOfElements = myElements.size() == testElements.size();
         if (! isSameNumberOfElements)
         {
@@ -845,12 +848,10 @@ public class RecurrenceRule3
     static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
     }
-
     
     @Override
-    public String toString()
+    public String toContent()
     {
-//        System.out.println("tostring9:" + elements());
         return elements().stream()
                 .sorted((Comparator<? super RRuleElementType>) (e1, e2) -> 
                 {
@@ -869,12 +870,14 @@ public class RecurrenceRule3
                 })
                 .collect(Collectors.joining(";"));
     }
-
-    public Stream<Temporal> streamRecurrence(Temporal match)
+    
+    @Override
+    public String toString()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return super.toString() + ", " + toContent();
     }
+
+
     @Override
     public int hashCode()
     {
@@ -936,4 +939,5 @@ public class RecurrenceRule3
 //            return false;
 //        return true;
 //    }
+
 }

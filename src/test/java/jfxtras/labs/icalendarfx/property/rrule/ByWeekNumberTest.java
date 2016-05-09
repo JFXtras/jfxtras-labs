@@ -36,11 +36,11 @@ public class ByWeekNumberTest
     public void canStreamByWeekNumber()
     {
         ByWeekNumber element = new ByWeekNumber(20);
-        LocalDateTime startDateTime = LocalDateTime.of(1997, 5, 12, 10, 0);
+        LocalDateTime dateTimeStart = LocalDateTime.of(1997, 5, 12, 10, 0);
         ChronoUnit frequency = ChronoUnit.YEARS;
         TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
-        Stream<Temporal> inStream = Stream.iterate(startDateTime, a -> a.with(adjuster));
-        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, startDateTime);
+        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(1997, 5, 12, 10, 0)
               , LocalDateTime.of(1997, 5, 13, 10, 0)

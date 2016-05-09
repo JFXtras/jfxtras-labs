@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
@@ -228,7 +229,8 @@ public enum ValueType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) string;
+                    throw new RuntimeException("not implemented");
+//                    return (T) string;
                 }
             };
         }
@@ -243,16 +245,14 @@ public enum ValueType
                 @Override
                 public String toString(T object)
                 {
-                    return object.toString();
+//                    System.out.println("rrule:" + object.getClass());
+                    return ((VCalendarElement) object).toContent();
                 }
 
                 @Override
                 public T fromString(String string)
                 {
-                    System.out.println("RECURRENCE_RULE converter:" + string);
-                    RecurrenceRule3 obj = new RecurrenceRule3(string);
-                    System.out.println("RECURRENCE_RULE converter:" + obj);
-                    return (T) obj;
+                    return (T) new RecurrenceRule3(string);
                 }
             };
         }
@@ -436,5 +436,6 @@ public enum ValueType
 
     /** return default String converter associated with property value type */
     abstract public <T> StringConverter<T> getConverter();
+//    abstract public <VCalendarElement> StringConverter<VCalendarElement> getConverter();
 
 }

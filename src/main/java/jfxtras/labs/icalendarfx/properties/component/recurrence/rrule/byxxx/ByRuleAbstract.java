@@ -59,9 +59,8 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<ObservableLi
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime) { return null; }
 
     
-    @Override
-    @Deprecated
-    public ChronoUnit getChronoUnit() { throw new RuntimeException("not implemented"); }
+//    @Override
+//    public ChronoUnit getChronoUnit() { throw new RuntimeException("not implemented"); }
     
     /*
      * Constructors

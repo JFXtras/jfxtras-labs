@@ -1,14 +1,16 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
 import java.time.LocalDate;
-import java.time.MonthDay;
+import java.time.Month;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * By Month Day
@@ -31,35 +33,6 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
      * Uses a varargs parameter to allow any number of days
      */
     
-//    @Override
-//    public void setValue(ObservableList<Integer> monthDays)
-//    {
-//        super.setValue(monthDays);
-//        getValue().addListener(validValueListener);
-//    }
-//    @Override
-//    public void setValue(int... monthDays)
-//    {
-//        setValue(FXCollections.observableArrayList(monthDays));
-//    }
-//    @Override
-//    public void setValue(String months)
-//    {
-//        parseContent(months);
-//    }
-//    @Override
-//    public ByMonthDay withValue(Integer... monthDays)
-//    {
-//        setValue(monthDays);
-//        return this;
-//    }
-//    @Override
-//    public ByMonthDay withValue(String monthDays)
-//    {
-//        setValue(monthDays);
-//        return this;
-//    }
-    
     /*
      * CONSTRUCTORS
      */
@@ -71,7 +44,7 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
 
     public ByMonthDay(Integer... daysOfMonth)
     {
-        this();
+        super(daysOfMonth);
     }
     
     public ByMonthDay(ByMonthDay source)
@@ -138,6 +111,7 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
 //        }
 //        ChronoUnit originalChronoUnit = chronoUnit.get();
 //        chronoUnit.set(DAYS);
+//        Set<Month> months = new LinkedHashSet<>();
         switch (chronoUnit)
         {
         case HOURS:
@@ -146,34 +120,53 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
         case DAYS:
             return inStream.filter(d ->
                     { // filter out all but qualifying days
-                        int myDay = MonthDay.from(d).getDayOfMonth();
+                        int myDay = d.get(ChronoField.DAY_OF_MONTH);
                         int myDaysInMonth = LocalDate.from(d).lengthOfMonth();
                         for (int day : getValue())
                         {
                             if (myDay == day) return true;
-                            if ((day < 0) && (myDay == myDaysInMonth + day + 1)) return true; // negative daysOfMonth (-3 = 3rd to last day of month)
+                            // negative daysOfMonth (-3 = 3rd to last day of month)
+                            if ((day < 0) && (myDay == myDaysInMonth + day + 1)) return true;
                         }
                         return false;
                     });
-        case MONTHS:
         case YEARS:
+//            months.addAll(Arrays.asList(Month.values()));
             return inStream.flatMap(d -> 
             { // Expand to be daysOfMonth days in current month
                 List<Temporal> dates = new ArrayList<>();
-                Temporal firstDateOfMonth = d.with(TemporalAdjusters.firstDayOfMonth());
-                Temporal lastDateOfMonth = d.with(TemporalAdjusters.lastDayOfMonth());
-                for (int day : getValue())
+                for (Month month : Month.values())
                 {
-                    if (day > 0)
+                    Temporal newTemporal = d.with(ChronoField.MONTH_OF_YEAR, month.getValue());
+                    for (int dayOfMonth : getValue())
                     {
-                        dates.add(firstDateOfMonth.plus(day-1, ChronoUnit.DAYS));
-                    } else
-                    { // negative daysOfMonth (-3 = 3rd to last day of month)
-                        dates.add(lastDateOfMonth.plus(day+1, ChronoUnit.DAYS));                        
+                        Temporal newTemporal2 = newTemporal.with(ChronoField.DAY_OF_MONTH, dayOfMonth);
+                        int actualDayOfMonth = newTemporal2.get(ChronoField.DAY_OF_MONTH);
+                        // ensure day of month hasn't changed.  If it changed the date was invalid and should be ignored.
+                        if ((dayOfMonth == actualDayOfMonth) && (! DateTimeUtilities.isBefore(newTemporal2, dateTimeStart)))
+                        {
+                            dates.add(newTemporal2);
+                        }
                     }
                 }
                 return dates.stream();
-            });       
+            });
+        case MONTHS:
+            return inStream.flatMap(d -> 
+            { // Expand to be daysOfMonth days in current month
+                List<Temporal> dates = new ArrayList<>();
+                for (int dayOfMonth : getValue())
+                {
+                    Temporal newTemporal = d.with(ChronoField.DAY_OF_MONTH, dayOfMonth);
+                    int actualDayOfMonth = newTemporal.get(ChronoField.DAY_OF_MONTH);
+                    // ensure day of month hasn't changed.  If it changed the date was invalid and should be ignored.
+                    if ((dayOfMonth == actualDayOfMonth) && (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)))
+                    {
+                        dates.add(newTemporal);
+                    }
+                }
+                return dates.stream();
+            });
         case WEEKS:
             throw new IllegalArgumentException("BYMONTHDAY is not available for WEEKLY frequency."); // Not available
         default:

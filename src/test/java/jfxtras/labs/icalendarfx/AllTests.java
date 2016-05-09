@@ -64,7 +64,7 @@ import jfxtras.labs.icalendarfx.property.rrule.ByMonthTest;
 import jfxtras.labs.icalendarfx.property.rrule.ByWeekNumberTest;
 import jfxtras.labs.icalendarfx.property.rrule.ByYearDayTest;
 import jfxtras.labs.icalendarfx.property.rrule.FrequencyTest;
-import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParameterTest;
+import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
@@ -141,7 +141,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParameterTest;
         ParseParameterTest.class,
         
         // Recurrence Rule tests
-        RecurrenceRuleParameterTest.class,
+        RecurrenceRuleParseTest.class,
         FrequencyTest.class,
         ByDayTest.class,
         ByMonthTest.class,

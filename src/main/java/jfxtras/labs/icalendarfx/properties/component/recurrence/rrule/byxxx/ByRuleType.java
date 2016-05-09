@@ -16,7 +16,7 @@ public enum ByRuleType
 {
     BY_SECOND ("BYSECOND", BySecond.class, 170)
     {
-        @Override ByRule newInstance(String value) { return new BySecond(value); }
+        @Override ByRule newInstance(String value) { return BySecond.parse(value); }
         @Override public ByRule newInstance(ByRule source) { return new BySecond((BySecond) source); }
     }
   , BY_MINUTE ("BYMINUTE", ByMinute.class, 160)
