@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import java.time.DayOfWeek;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
@@ -34,6 +36,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRu
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.BySecond;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
@@ -449,6 +452,7 @@ public class RecurrenceRule3 implements VCalendarElement
     }
 
     /** construct new object by parsing property line */
+    @Deprecated
     public RecurrenceRule3(String contentLine)
     {
         this();
@@ -574,22 +578,37 @@ public class RecurrenceRule3 implements VCalendarElement
         int interval = (getInterval() == null) ? Interval.DEFAULT_INTERVAL : getInterval().getValue();
         Stream<Temporal> frequencyStream = getFrequency().streamRecurrences(start, interval);
         
-        chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
         Stream<Temporal> recurrenceStream = frequencyStream
                 .flatMap(value ->
                 {
-                    System.out.println("value:" + value);
+//                    System.out.println("value:" + value);
+                    chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
                     myStream = Arrays.asList(value).stream();
                     byRules().stream()
                             .sorted()
                             .forEach(rule ->
                             {
-                                System.out.println("rule:" + rule.elementType());
+//                                System.out.println("rule:" + rule.elementType() + " " + chronoUnit + " " + rule.getClass().getSimpleName());
                                 myStream = rule.streamRecurrences(myStream, chronoUnit, start);
                                 chronoUnit = rule.getChronoUnit();
                             });
                     return myStream;
                 });
+        
+        if (getCount() != null)
+        {
+            return recurrenceStream.limit(getCount().getValue());
+        } else if (getUntil() != null)
+        {
+//            return frequency
+//                    .stream(startDateTime)
+//                    .takeWhile(a -> a.isBefore(getUntil())); // available in Java 9
+//            Temporal convertedUntil = DateTimeType.changeTemporal(getUntil(), DateTimeType.of(start));
+
+            ZoneId zone = (start instanceof ZonedDateTime) ? ((ZonedDateTime) start).getZone() : null;
+            Temporal convertedUntil = DateTimeType.of(start).from(getUntil().getValue(), zone);
+            return takeWhile(recurrenceStream, a -> ! DateTimeUtilities.isAfter(a, convertedUntil));
+        }
 
 //        ChronoUnit chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
 //        Stream<Temporal> recurrenceStream = null;
@@ -939,5 +958,11 @@ public class RecurrenceRule3 implements VCalendarElement
 //            return false;
 //        return true;
 //    }
-
+    
+    public static RecurrenceRule3 parse(String propertyContent)
+    {
+        RecurrenceRule3 property = new RecurrenceRule3();
+        property.parseContent(propertyContent);
+        return property;
+    }
 }

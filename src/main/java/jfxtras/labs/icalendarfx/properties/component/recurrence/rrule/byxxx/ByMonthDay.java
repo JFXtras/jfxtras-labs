@@ -165,10 +165,11 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
                         dates.add(newTemporal);
                     }
                 }
+//                System.out.println("months:" + d + " " + dates.size());
                 return dates.stream();
             });
         case WEEKS:
-            throw new IllegalArgumentException("BYMONTHDAY is not available for WEEKLY frequency."); // Not available
+            throw new IllegalArgumentException(elementType().toString() + " is not available for " + chronoUnit + " frequency."); // Not available
         default:
             throw new IllegalArgumentException("Not implemented: " + chronoUnit);
         }

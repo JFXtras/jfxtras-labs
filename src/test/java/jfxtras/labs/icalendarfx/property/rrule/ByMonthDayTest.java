@@ -74,4 +74,28 @@ public class ByMonthDayTest
         List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
+    
+    /*
+    DTSTART:20160510T100000
+    RRULE:FREQ=MONTHLY;BYMONTHDAY=10,11,12
+     */
+    @Test
+    public void canStreamByMonthDay3()
+    {
+        ByMonthDay element = new ByMonthDay(10,11,12);
+        LocalDateTime dateTimeStart = LocalDateTime.of(2016, 5, 10, 10, 0);
+        ChronoUnit frequency = ChronoUnit.MONTHS;
+        TemporalAdjuster adjuster = (temporal) -> temporal.plus(1, frequency);
+        Stream<Temporal> inStream = Stream.iterate(dateTimeStart, a -> a.with(adjuster));
+        Stream<Temporal> recurrenceStream = element.streamRecurrences(inStream, frequency, dateTimeStart);
+        List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
+                LocalDateTime.of(2016, 5, 10, 10, 0)
+              , LocalDateTime.of(2016, 5, 11, 10, 0)
+              , LocalDateTime.of(2016, 5, 12, 10, 0)
+              , LocalDateTime.of(2016, 6, 10, 10, 0)
+              , LocalDateTime.of(2016, 6, 11, 10, 0)
+                ));
+        List<Temporal> madeRecurrences = recurrenceStream.limit(5).peek(System.out::println).collect(Collectors.toList());
+        assertEquals(expectedRecurrences, madeRecurrences);
+    }
 }

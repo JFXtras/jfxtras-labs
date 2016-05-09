@@ -252,7 +252,7 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
             }
             return inStream.filter(t ->
             { // filter out all but qualifying days
-                System.out.println("days:" + t);
+//                System.out.println("days:" + t);
                 DayOfWeek myDayOfWeek = DayOfWeek.from(t);
                 for (ByDayPair byDayPair : getValue())
                 {

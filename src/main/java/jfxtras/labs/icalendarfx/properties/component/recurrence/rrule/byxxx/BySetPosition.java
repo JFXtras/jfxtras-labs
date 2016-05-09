@@ -49,9 +49,9 @@ public class BySetPosition extends ByRuleIntegerAbstract<BySetPosition>
         return outList.stream();
     }
 
-    public static ByYearDay parse(String content)
+    public static BySetPosition parse(String content)
     {
-        ByYearDay element = new ByYearDay();
+        BySetPosition element = new BySetPosition();
         element.parseContent(content);
         return element;
     }

@@ -93,7 +93,7 @@ public class ByYearDay extends ByRuleIntegerAbstract<ByYearDay>
         case DAYS:
         case WEEKS:
         case MONTHS:
-            throw new IllegalArgumentException("BYMONTHDAY is not available for " + chronoUnit + " frequency."); // Not available
+            throw new IllegalArgumentException(elementType().toString() + " is not available for " + chronoUnit + " frequency."); // Not available
         default:
             throw new IllegalArgumentException("Not implemented: " + chronoUnit);
         }
