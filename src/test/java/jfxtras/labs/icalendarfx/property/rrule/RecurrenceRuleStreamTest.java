@@ -457,4 +457,120 @@ public class RecurrenceRuleStreamTest
        List<Temporal> madeRecurrences = rRule.getValue().streamRecurrences(dateTimeStart).limit(6).collect(Collectors.toList());
        assertEquals(expectedRecurrences, madeRecurrences);
    }
+   
+   /*
+   DTSTART;TZID=America/New_York:19970902T090000
+   RRULE:FREQ=MONTHLY;COUNT=10;BYMONTHDAY=2,15
+    */
+   @Test
+   public void canStreamRRule19()
+   {
+       String s = "RRULE:FREQ=MONTHLY;BYMONTHDAY=2,15";
+       RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
+       assertEquals(rRule.toContent(), s);
+       Temporal dateTimeStart = ZonedDateTime.of(LocalDateTime.of(1997, 9, 2, 9, 0), ZoneId.of("America/New_York"));
+       List<Temporal> expectedRecurrences = new ArrayList<>(Arrays.asList(
+               ZonedDateTime.of(LocalDateTime.of(1997, 9, 2, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 15, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 10, 2, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 10, 15, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 11, 2, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 11, 15, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 12, 2, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 12, 15, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 1, 2, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 1, 15, 9, 0), ZoneId.of("America/New_York"))
+             ));
+       List<Temporal> madeRecurrences = rRule.getValue().streamRecurrences(dateTimeStart).limit(10).collect(Collectors.toList());
+       assertEquals(expectedRecurrences, madeRecurrences);
+   }
+   
+   /*
+   DTSTART;TZID=America/New_York:19970930T090000
+   RRULE:FREQ=MONTHLY;COUNT=10;BYMONTHDAY=1,-1
+    */
+   @Test
+   public void canStreamRRule20()
+   {
+       String s = "RRULE:FREQ=MONTHLY;COUNT=10;BYMONTHDAY=1,-1";
+       RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
+       assertEquals(rRule.toContent(), s);
+       Temporal dateTimeStart = ZonedDateTime.of(LocalDateTime.of(1997, 9, 2, 9, 0), ZoneId.of("America/New_York"));
+       List<Temporal> expectedRecurrences = new ArrayList<>(Arrays.asList(
+               ZonedDateTime.of(LocalDateTime.of(1997, 9, 30, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 10, 1, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 10, 31, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 11, 1, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 11, 30, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 12, 1, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 12, 31, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 1, 1, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 1, 31, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 2, 1, 9, 0), ZoneId.of("America/New_York"))
+             ));
+       List<Temporal> madeRecurrences = rRule.getValue().streamRecurrences(dateTimeStart).limit(10).collect(Collectors.toList());
+       assertEquals(expectedRecurrences, madeRecurrences);
+   }
+   
+   /*
+   DTSTART;TZID=America/New_York:19970910T090000
+   RRULE:FREQ=MONTHLY;INTERVAL=18;COUNT=10;BYMONTHDAY=10,11,12,13,14,15
+    */
+   @Test
+   public void canStreamRRule21()
+   {
+       String s = "RRULE:FREQ=MONTHLY;INTERVAL=18;COUNT=10;BYMONTHDAY=10,11,12,13,14,15";
+       RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
+       assertEquals(rRule.toContent(), s);
+       Temporal dateTimeStart = ZonedDateTime.of(LocalDateTime.of(1997, 9, 10, 9, 0), ZoneId.of("America/New_York"));
+       List<Temporal> expectedRecurrences = new ArrayList<>(Arrays.asList(
+               ZonedDateTime.of(LocalDateTime.of(1997, 9, 10, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 11, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 12, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 13, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 14, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 15, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1999, 3, 10, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1999, 3, 11, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1999, 3, 12, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1999, 3, 13, 9, 0), ZoneId.of("America/New_York"))
+             ));
+       List<Temporal> madeRecurrences = rRule.getValue().streamRecurrences(dateTimeStart).limit(10).collect(Collectors.toList());
+       assertEquals(expectedRecurrences, madeRecurrences);
+   }
+   
+   /*
+   DTSTART;TZID=America/New_York:19970902T090000
+   RRULE:FREQ=MONTHLY;INTERVAL=2;BYDAY=TU
+    */
+   @Test
+   public void canStreamRRule22()
+   {
+       String s = "RRULE:FREQ=MONTHLY;INTERVAL=2;BYDAY=TU";
+       RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
+       assertEquals(rRule.toContent(), s);
+       Temporal dateTimeStart = ZonedDateTime.of(LocalDateTime.of(1997, 9, 2, 9, 0), ZoneId.of("America/New_York"));
+       List<Temporal> expectedRecurrences = new ArrayList<>(Arrays.asList(
+               ZonedDateTime.of(LocalDateTime.of(1997, 9, 2, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 9, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 16, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 23, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 9, 30, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 11, 4, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 11, 11, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 11, 18, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1997, 11, 25, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 1, 6, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 1, 13, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 1, 20, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 1, 27, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 3, 3, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 3, 10, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 3, 17, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 3, 24, 9, 0), ZoneId.of("America/New_York"))
+             , ZonedDateTime.of(LocalDateTime.of(1998, 3, 31, 9, 0), ZoneId.of("America/New_York"))
+             ));
+       List<Temporal> madeRecurrences = rRule.getValue().streamRecurrences(dateTimeStart).limit(18).collect(Collectors.toList());
+       assertEquals(expectedRecurrences, madeRecurrences);
+   }
 }

@@ -141,7 +141,7 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
                     Temporal monthAdjustedTemporal = d.with(ChronoField.MONTH_OF_YEAR, month.getValue());
                     dates.addAll(extracted(monthAdjustedTemporal, dateTimeStart));
                 }
-                return dates.stream();
+                return dates.stream().sorted(DateTimeUtilities.TEMPORAL_COMPARATOR);
             });
         case MONTHS:
             return inStream.flatMap(d -> 
@@ -159,7 +159,7 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
 //                    }
 //                }
 //                System.out.println("months:" + d + " " + dates.size());
-                return dates.stream();
+                return dates.stream().sorted(DateTimeUtilities.TEMPORAL_COMPARATOR);
             });
         case WEEKS:
             throw new IllegalArgumentException(elementType().toString() + " is not available for " + chronoUnit + " frequency."); // Not available
