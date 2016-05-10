@@ -134,7 +134,7 @@ public enum RRuleElementType
             }
         }
     },
-    BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 110, ChronoUnit.WEEKS) {
+    BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 110, ChronoUnit.DAYS) {
         @Override
         public RRuleElement<?> getElement(RecurrenceRule3 rrule)
         {
