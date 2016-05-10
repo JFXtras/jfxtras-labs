@@ -264,7 +264,7 @@ public class ByWeekNumber extends ByRuleIntegerAbstract<ByWeekNumber>
 //                                int myWeekNumber = newTemporal.get(weekFields.weekOfWeekBasedYear());
                                 Year myYear = Year.from(newTemporal);
 //                                System.out.println("myYear:" + myYear + " " +  dateTimeStart);
-                                if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart) && myYear.equals(correctYear))
+                                if (myYear.equals(correctYear))
                                 {
                                     dates.add(newTemporal);
                                 }

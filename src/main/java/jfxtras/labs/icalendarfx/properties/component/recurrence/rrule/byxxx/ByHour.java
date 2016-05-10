@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-
 /**
  * By Hour 
  * BYHOUR
@@ -82,10 +80,10 @@ public class ByHour extends ByRuleIntegerAbstract<ByHour>
                     for (int hourOfDay : getValue())
                     {
                         Temporal newTemporal = d.with(ChronoField.HOUR_OF_DAY, hourOfDay);
-                        if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
-                        {
+//                        if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+//                        {
                             dates.add(newTemporal);
-                        }
+//                        }
                     }
                     return dates.stream();
                 });

@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 
 import javafx.collections.FXCollections;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /** BYMONTH from RFC 5545, iCalendar 3.3.10, page 42 */
 public class ByMonth extends ByRuleAbstract<Month, ByMonth>
@@ -154,10 +153,10 @@ public class ByMonth extends ByRuleAbstract<Month, ByMonth>
                     int myMonthNum = month.getValue();
                     int monthShift = myMonthNum - monthNum;
                     Temporal newTemporal = t.plus(monthShift, MONTHS);
-                    if (! DateTimeUtilities.isBefore(newTemporal, startTemporal))
-                    {
+//                    if (! DateTimeUtilities.isBefore(newTemporal, startTemporal))
+//                    {
                         dates.add(newTemporal);
-                    }
+//                    }
                 }
                 return dates.stream();
             });

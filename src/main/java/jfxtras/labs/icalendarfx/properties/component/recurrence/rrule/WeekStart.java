@@ -22,8 +22,8 @@ public class WeekStart extends RRuleElementBase<DayOfWeek, WeekStart>
     void setValue(String weekStart) { parseContent(weekStart); }
     public WeekStart withValue(String weekStart) { setValue(weekStart); return this; }
     
-    @Override
-    public DayOfWeek getValue() { return (valueProperty() == null) ? DEFAULT_WEEK_START : valueProperty().get(); }
+//    @Override
+//    public DayOfWeek getValue() { return (valueProperty() == null) ? DEFAULT_WEEK_START : valueProperty().get(); }
 
     public WeekStart(DayOfWeek dayOfWeek)
     {
@@ -34,6 +34,7 @@ public class WeekStart extends RRuleElementBase<DayOfWeek, WeekStart>
     public WeekStart()
     {
         super();
+        setValue(DEFAULT_WEEK_START);
     }
 
     @Override

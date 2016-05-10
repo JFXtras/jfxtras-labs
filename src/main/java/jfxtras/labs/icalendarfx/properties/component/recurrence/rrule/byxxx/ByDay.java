@@ -252,7 +252,6 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
             }
             return inStream.filter(t ->
             { // filter out all but qualifying days
-//                System.out.println("days:" + t);
                 DayOfWeek myDayOfWeek = DayOfWeek.from(t);
                 for (ByDayPair byDayPair : getValue())
                 {
@@ -268,20 +267,22 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
             {
                 throw new IllegalArgumentException("Numberic ordinal day values can't be set for FREQ as " + chronoUnit);
             }
-            TemporalField dayOfWeekField = WeekFields.of(getWeekStart(), MIN_DAYS_IN_WEEK).dayOfWeek();
+            WeekFields weekFields = WeekFields.of(getWeekStart(), MIN_DAYS_IN_WEEK);
+            TemporalField dayOfWeekField = weekFields.dayOfWeek();
             return inStream.flatMap(t -> 
             { // Expand to be byDayPairs days in current week
                 List<Temporal> dates = new ArrayList<>();
-//                TemporalField field = WeekFields.of(Locale.getDefault()).dayOfWeek();
                 for (ByDayPair byDayPair : getValue())
                 {
-                    int value = byDayPair.dayOfWeek.getValue(); //+ firstDayOfWeekAdjustment;
-                    int valueAdj = (value > 7) ? value-7 : value;
-                    Temporal newTemporal = t.with(dayOfWeekField, valueAdj);
-//                    dates.add(newTemporal);
-                    if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)) dates.add(newTemporal);
+                    int defaultFirstDayOfWeekValue = DayOfWeek.MONDAY.getValue();
+                    int myFirstDayOfWeekValue = weekFields.getFirstDayOfWeek().getValue();
+                    int dayOfWeekAdjustment = defaultFirstDayOfWeekValue - myFirstDayOfWeekValue + DayOfWeek.values().length;
+                    int dayOfWeekValue = byDayPair.dayOfWeek.getValue() + dayOfWeekAdjustment;
+                    dayOfWeekValue = (dayOfWeekValue > 7) ? dayOfWeekValue-7 : dayOfWeekValue;
+                    Temporal newTemporal = t.with(dayOfWeekField, dayOfWeekValue);
+                    dates.add(newTemporal);
                 }
-                Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
+                if (getValue().size() > 1) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
                 return dates.stream();
             });
         }
@@ -299,19 +300,26 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
                         for (int weekNum=1; weekNum<=5; weekNum++)
                         {
                             Temporal newTemporal = date.with(TemporalAdjusters.dayOfWeekInMonth(weekNum, byDayPair.dayOfWeek));
-//                            if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
-                            if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)) dates.add(newTemporal);
+//                            if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+                            if (Month.from(newTemporal) == myMonth)
+                            {
+                                dates.add(newTemporal);
+                            }
                         }
                     } else
-                    { // if never any ordinal numbers then sort is not required
+                    {
                         Month myMonth = Month.from(date);
                         Temporal newTemporal = date.with(TemporalAdjusters.dayOfWeekInMonth(byDayPair.ordinal, byDayPair.dayOfWeek));
-//                        System.out.println("values:" + byDayPair.ordinal + " " + byDayPair.dayOfWeek + " " + newTemporal);
-//                        if (Month.from(newTemporal) == myMonth) dates.add(newTemporal);
-                        if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)) dates.add(newTemporal);
+
+//                        if (Month.from(newTemporal) == myMonth && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+                        if (Month.from(newTemporal) == myMonth)
+                        {
+                            dates.add(newTemporal);
+                        }
                     }
                 }
                 if (getValue().size() > 1) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);
+//                dates.stream().forEach(d -> System.out.println(d + " " + dateTimeStart));
                 return dates.stream();
             });
         case YEARS:
@@ -329,15 +337,15 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
                                 .with(TemporalAdjusters.nextOrSame(byDayPair.dayOfWeek));
                         while (Year.from(newDate).equals(Year.from(date)))
                         {
-                            if (! DateTimeUtilities.isBefore(newDate, dateTimeStart)) dates.add(newDate);
-//                            dates.add(newDate);
+//                            if (! DateTimeUtilities.isBefore(newDate, dateTimeStart)) dates.add(newDate);
+                            dates.add(newDate);
                             newDate = newDate.plus(1, ChronoUnit.WEEKS);
                         }
                     } else
                     { // if never any ordinal numbers then sort is not required
                         Temporal newDate = date.with(dayOfWeekInYear(byDayPair.ordinal, byDayPair.dayOfWeek));
-//                        dates.add(newDate);
-                        if (! DateTimeUtilities.isBefore(newDate, dateTimeStart)) dates.add(newDate);
+                        dates.add(newDate);
+//                        if (! DateTimeUtilities.isBefore(newDate, dateTimeStart)) dates.add(newDate);
                     }
                 }
                 if (getValue().size() > 1) Collections.sort(dates, DateTimeUtilities.TEMPORAL_COMPARATOR);

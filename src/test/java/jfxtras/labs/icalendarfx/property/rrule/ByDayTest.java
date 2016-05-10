@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public class ByDayTest
 {    
@@ -55,7 +56,6 @@ public class ByDayTest
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     
-    
     /*
        DTSTART:20160503T100000
        RRULE:FREQ=YEARLY;BYDAY=SU,MO
@@ -76,7 +76,10 @@ public class ByDayTest
               , LocalDateTime.of(2016, 5, 15, 10, 0)
               , LocalDateTime.of(2016, 5, 16, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .filter(r -> ! DateTimeUtilities.isBefore(r, dateTimeStart)) // filter is normally done in streamRecurrences in RecurrenceRule2
+                .limit(5)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     
@@ -102,7 +105,10 @@ public class ByDayTest
               , LocalDateTime.of(2016, 9, 13, 10, 0)
               , LocalDateTime.of(2016, 9, 21, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(7).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .filter(r -> ! DateTimeUtilities.isBefore(r, dateTimeStart)) // filter is normally done in streamRecurrences in RecurrenceRule2
+                .limit(7)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     
@@ -126,7 +132,10 @@ public class ByDayTest
               , LocalDateTime.of(2016, 5, 21, 10, 0)
               , LocalDateTime.of(2016, 5, 22, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .filter(r -> ! DateTimeUtilities.isBefore(r, dateTimeStart)) // filter is normally done in streamRecurrences in RecurrenceRule2
+                .limit(5)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     

@@ -16,6 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public class ByWeekNumberTest
 {
@@ -82,7 +83,9 @@ public class ByWeekNumberTest
               , LocalDateTime.of(2002, 12, 30, 10, 0)
               , LocalDateTime.of(2002, 12, 31, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(10).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .limit(10)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     
@@ -111,7 +114,9 @@ public class ByWeekNumberTest
               , LocalDateTime.of(2000, 1, 2, 10, 0)
               , LocalDateTime.of(2004, 1, 1, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(10).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .limit(10)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     
@@ -140,7 +145,10 @@ public class ByWeekNumberTest
               , LocalDateTime.of(1999, 12, 31, 10, 0)
               , LocalDateTime.of(2000, 12, 25, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(10).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .filter(r -> ! DateTimeUtilities.isBefore(r, dateTimeStart)) // filter is normally done in streamRecurrences in RecurrenceRule2
+                .limit(10)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     

@@ -34,6 +34,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMo
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonthDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.BySecond;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByWeekNumber;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByYearDay;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -92,12 +93,12 @@ public class RecurrenceRule3 implements VCalendarElement
      * Each BYxxx rule can only occur once
      *  */
     public ObservableList<ByRule<?>> byRules() { return byRules; }
-    private ObservableList<ByRule<?>> byRules; // = FXCollections.observableArrayList();
-    public void setByRules(ObservableList<ByRule<?>> byRules) { this.byRules = byRules; }
-    public RecurrenceRule3 withByRules(ObservableList<ByRule<?>> byRules) { setByRules(byRules); return this; }
+    final private ObservableList<ByRule<?>> byRules; // = FXCollections.observableArrayList();
+//    public void setByRules(ObservableList<ByRule<?>> byRules) { this.byRules = byRules; }
+//    public RecurrenceRule3 withByRules(ObservableList<ByRule<?>> byRules) { setByRules(byRules); return this; }
     public RecurrenceRule3 withByRules(ByRule<?>...byRules)
     {
-        for (ByRule myByRule : byRules)
+        for (ByRule<?> myByRule : byRules)
         {
             byRules().add(myByRule);
         }
@@ -358,6 +359,12 @@ public class RecurrenceRule3 implements VCalendarElement
         if (weekStart == null)
         {
             weekStart = new SimpleObjectProperty<>(this, RRuleElementType.WEEK_START.toString());
+            weekStart.addListener((obs, oldValue, newValue) ->
+            {
+                // bind to values in the Byxxx rules that use it
+                addWeekStartBindings(lookupByRule(ByDay.class));
+                addWeekStartBindings(lookupByRule(ByWeekNumber.class));                
+            });
         }
         return weekStart;
     }
@@ -367,6 +374,23 @@ public class RecurrenceRule3 implements VCalendarElement
     public void setWeekStart(DayOfWeek weekStart) { weekStartProperty().set(new WeekStart(weekStart)); }
     public RecurrenceRule3 withWeekStart(WeekStart weekStart) { setWeekStart(weekStart); return this; }
     public RecurrenceRule3 withWeekStart(DayOfWeek weekStart) { setWeekStart(weekStart); return this; }
+    
+   // bind to values in the Byxxx rules that use Week Start
+    private void addWeekStartBindings(ByRule<?> rule)
+    {
+        if (getWeekStart() != null)
+        {
+            if (rule instanceof ByDay)
+            {
+//                System.out.println(weekStartProperty());
+//                System.out.println(getWeekStart());
+                ((ByDay) rule).weekStartProperty().bind(getWeekStart().valueProperty());
+            } else if (rule instanceof ByWeekNumber)
+            {
+                ((ByWeekNumber) rule).weekStartProperty().bind(getWeekStart().valueProperty());
+            }
+        }
+    }
     
     /**
      * List of all elements found in object.
@@ -440,6 +464,7 @@ public class RecurrenceRule3 implements VCalendarElement
                         {
                             throw new IllegalArgumentException("Can't add " + newByRule.getClass().getSimpleName() + " (" + c.elementType() + ") more than once.");
                         }
+                        addWeekStartBindings(newByRule);
                     });
                     Collections.sort(byRules()); // sort additions
                 }
@@ -486,10 +511,8 @@ public class RecurrenceRule3 implements VCalendarElement
     // Copy constructor
     public RecurrenceRule3(RecurrenceRule3 source)
     {
+        this();
         // TODO 
-//        Arrays.stream(RRuleEnum.values())
-//                .forEach(p -> p.copyProperty(source, this));
-//        source.recurrences().stream().forEach(r -> recurrences().add(r));
     }
     
 //    private void setupFrequencyListener()
@@ -592,7 +615,8 @@ public class RecurrenceRule3 implements VCalendarElement
                                 myStream = rule.streamRecurrences(myStream, chronoUnit, start);
                                 chronoUnit = rule.getChronoUnit();
                             });
-                    return myStream;
+                    // must filter out too early recurrences after all rules are processed in order to enable BySetOrder to work property
+                    return myStream.filter(r -> ! DateTimeUtilities.isBefore(r, start));
                 });
         
         if (getCount() != null)

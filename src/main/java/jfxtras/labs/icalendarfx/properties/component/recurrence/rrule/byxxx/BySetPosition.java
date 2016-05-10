@@ -34,7 +34,7 @@ public class BySetPosition extends ByRuleIntegerAbstract<BySetPosition>
     @Override
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal startTemporal)
     {
-        List<Temporal> inList = inStream.collect(Collectors.toList());
+        List<Temporal> inList = inStream.collect(Collectors.toList()); // can't be an infinite stream or will hang
         List<Temporal> outList = new ArrayList<>();
         for (int setPosition : getValue())
         {

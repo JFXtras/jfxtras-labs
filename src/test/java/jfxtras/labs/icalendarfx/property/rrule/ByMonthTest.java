@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonth;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public class ByMonthTest
 {
@@ -71,7 +72,10 @@ public class ByMonthTest
               , LocalDateTime.of(2018, 4, 5, 10, 0)
               , LocalDateTime.of(2018, 5, 5, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .filter(r -> ! DateTimeUtilities.isBefore(r, dateTimeStart)) // filter is normally done in streamRecurrences in RecurrenceRule2
+                .limit(5)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
 }

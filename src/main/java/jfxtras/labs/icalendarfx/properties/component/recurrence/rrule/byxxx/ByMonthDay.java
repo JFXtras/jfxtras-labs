@@ -198,7 +198,7 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
             Temporal newTemporal = (finalDayOfMonth != 0) ? correctMonthTemporal.with(ChronoField.DAY_OF_MONTH, finalDayOfMonth) : null;
             
             // ensure day of month hasn't changed.  If it changed the date was invalid and should be ignored.
-            if ((newTemporal != null) && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+            if (newTemporal != null)
             {
                 dates.add(newTemporal);
             }

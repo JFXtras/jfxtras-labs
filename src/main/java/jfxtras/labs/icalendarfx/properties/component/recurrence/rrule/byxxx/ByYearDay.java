@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-
 /**
  * By Year Day
  * BYYEARDAY
@@ -105,7 +103,7 @@ public class ByYearDay extends ByRuleIntegerAbstract<ByYearDay>
                     }
                     Temporal newTemporal = (finalDayOfYear != 0) ? correctYearTemporal.with(ChronoField.DAY_OF_YEAR, finalDayOfYear) : null;
 
-                    if ((newTemporal != null) && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+                    if (newTemporal != null)
                     {
                         dates.add(newTemporal);
                     }

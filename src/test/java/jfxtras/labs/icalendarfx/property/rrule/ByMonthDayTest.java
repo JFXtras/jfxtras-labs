@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonthDay;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public class ByMonthDayTest
 {
@@ -70,7 +71,10 @@ public class ByMonthDayTest
               , LocalDateTime.of(2016, 7, 4, 10, 0)
               , LocalDateTime.of(2016, 7, 5, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .filter(r -> ! DateTimeUtilities.isBefore(r, dateTimeStart)) // filter is normally done in streamRecurrences in RecurrenceRule2
+                .limit(5)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     
@@ -118,7 +122,10 @@ public class ByMonthDayTest
               , LocalDateTime.of(2016, 8, 29, 10, 0)
               , LocalDateTime.of(2016, 9, 28, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .filter(r -> ! DateTimeUtilities.isBefore(r, dateTimeStart)) // filter is normally done in streamRecurrences in RecurrenceRule2
+                .limit(5)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     
