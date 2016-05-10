@@ -82,8 +82,30 @@ public class ByYearDay extends ByRuleIntegerAbstract<ByYearDay>
                 List<Temporal> dates = new ArrayList<>();
                 for (int dayOfYear : getValue())
                 {
-                    Temporal newTemporal = d.with(ChronoField.DAY_OF_YEAR, dayOfYear);
-                    if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+                    final Temporal correctYearTemporal = (dayOfYear > 0) ? d : d.minus(1, ChronoUnit.YEARS);
+                    int daysInYear = (int) ChronoUnit.DAYS.between(correctYearTemporal.with(TemporalAdjusters.firstDayOfYear()),
+                                                                   correctYearTemporal.with(TemporalAdjusters.firstDayOfNextYear()));
+                    int finalDayOfYear = 0;
+                    if (dayOfYear > 0)
+                    {
+                        if (dayOfYear <= daysInYear)
+                        {
+                            finalDayOfYear = dayOfYear;
+                        }
+                    } else if (dayOfYear < 0)
+                    {
+                        int newDayOfYear = daysInYear + dayOfYear + 1;
+                        if (newDayOfYear > 0)
+                        {
+                            finalDayOfYear = newDayOfYear;
+                        }
+                    } else
+                    {
+                        throw new IllegalArgumentException(elementType().toString() + " can't have a value of zero");
+                    }
+                    Temporal newTemporal = (finalDayOfYear != 0) ? correctYearTemporal.with(ChronoField.DAY_OF_YEAR, finalDayOfYear) : null;
+
+                    if ((newTemporal != null) && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
                     {
                         dates.add(newTemporal);
                     }

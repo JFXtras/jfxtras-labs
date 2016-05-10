@@ -454,7 +454,7 @@ public class RecurrenceRuleStreamTest
              , ZonedDateTime.of(LocalDateTime.of(1998, 1, 29, 9, 0), ZoneId.of("America/New_York"))
              , ZonedDateTime.of(LocalDateTime.of(1998, 2, 26, 9, 0), ZoneId.of("America/New_York"))
              ));
-       List<Temporal> madeRecurrences = rRule.getValue().streamRecurrences(dateTimeStart).collect(Collectors.toList());
+       List<Temporal> madeRecurrences = rRule.getValue().streamRecurrences(dateTimeStart).limit(6).collect(Collectors.toList());
        assertEquals(expectedRecurrences, madeRecurrences);
    }
 }

@@ -1,12 +1,13 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
 import java.time.DayOfWeek;
+import java.time.Year;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -69,7 +70,7 @@ public class ByWeekNumber extends ByRuleIntegerAbstract<ByWeekNumber>
     @Override
     Predicate<Integer> isValidValue()
     {
-        return (value) -> (value >= -53) && (value > 53) && (value != 0);
+        return (value) -> (value >= -53) && (value <= 53) && (value != 0);
     }
     
 //    /**
@@ -147,23 +148,184 @@ public class ByWeekNumber extends ByRuleIntegerAbstract<ByWeekNumber>
             WeekFields weekFields = WeekFields.of(getWeekStart(), MIN_DAYS_IN_WEEK);
             Stream<Temporal> outStream = inStream.flatMap(date -> 
             { // Expand to include all days matching week numbers
-//                DayOfWeek dayOfWeek = DayOfWeek.from(date);
-                Set<Temporal> dates = new HashSet<>();
-                for (int myWeekNumber : getValue())
+                List<Temporal> dates = new ArrayList<>();
+                for (int weekNumber : getValue())
                 {
-                    Temporal startDate = date
-                            .with(weekFields.weekOfWeekBasedYear(), myWeekNumber)
-                            .with(TemporalAdjusters.previousOrSame(getWeekStart()));
-                    IntStream.range(0,7).forEach(days -> 
+                    Temporal correctYearTemporal = (weekNumber > 0) ? date : date.minus(1, ChronoUnit.YEARS);
+                    correctYearTemporal = correctYearTemporal
+                            .with(TemporalAdjusters.firstDayOfYear())
+                            .with(TemporalAdjusters.nextOrSame(weekFields.getFirstDayOfWeek())); // get first week entirely in correct year
+                    Year correctYear = Year.from(correctYearTemporal);
+//                    System.out.println(correctYear + " " + );
+//                    date.with(field, newValue)
+//                    int year = correctYearTemporal.get(weekFields.weekBasedYear());
+//                    for (int days = 0; days<7; days++)
+//                    {
+//                        Temporal adjustedTemporal = correctYearTemporal
+//                                .with(TemporalAdjusters.lastDayOfYear())
+//                                .minus(days, ChronoUnit.DAYS);
+//                        int myYear = adjustedTemporal
+//                                .get(weekFields.weekBasedYear());
+//                        System.out.println("years:" + year + " " + myYear);
+//                        if (year == myYear)
+//                        {
+//                            weeksInYear = adjustedTemporal.get(weekFields.weekOfWeekBasedYear());                            
+//                        }
+//                    }
+
+//                    int myYear = correctYearTemporal.
+//                    int weeksInYear = date.with(TemporalAdjusters.lastDayOfYear()).get(weekFields.weekOfWeekBasedYear());
+//                    final Temporal startDate;
+                    long between = 0;
+                    int finalWeekNumber;
+                    if (weekNumber > 0)
                     {
-                        Temporal newTemporal = startDate.plus(days, ChronoUnit.DAYS);
-                        if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
-                        {
-                            dates.add(newTemporal);
+//                        startDate = correctYearTemporal
+//                                .with(TemporalAdjusters.firstDayOfYear())
+//                                .with(TemporalAdjusters.nextOrSame(weekFields.getFirstDayOfWeek()))
+//                                .with(weekFields.weekOfWeekBasedYear(), weekNumber);
+                        finalWeekNumber = weekNumber;
+                    } else if (weekNumber < 0)
+                    {
+//                        date.with(weekFields.weekOfWeekBasedYear(), 53);
+                        int weeksInYear = 53;
+                        Temporal startWeek53 = correctYearTemporal.with(weekFields.weekOfWeekBasedYear(), weeksInYear);
+//                        int dayOfYearWeek53 = startWeek53.get(ChronoField.DAY_OF_YEAR);
+//                        if (dayOfYearWeek53 < )
+                        Temporal lastDayOfYear = correctYearTemporal.with(TemporalAdjusters.lastDayOfYear());
+                        
+//                        Temporal endWeek53 = correctYearTemporal
+//                                .with(TemporalAdjusters.lastDayOfYear())
+//                                .plus(2, ChronoUnit.WEEKS)
+//                                .with(TemporalAdjusters.nextOrSame(weekFields.getFirstDayOfWeek()))
+////                                .minus(1, ChronoUnit.DAYS)
+//                                .with(weekFields.weekOfWeekBasedYear(), 1);
+//                        System.out.println("dayOfYear:" + " " + date + " " + correctYearTemporal + "  " + startWeek53 + " " + dayOfYearWeek53 + " " + (lastDayOfYear-dayOfYearWeek53) );
+//                        System.out.println("daystogo:" + ChronoUnit.DAYS.between(startWeek53, lastDayOfYear));
+                          between = ChronoUnit.DAYS.between(startWeek53, lastDayOfYear);
+                         int adjustment = (between >= 3) ? 1 : 0;
+                        finalWeekNumber = weeksInYear + weekNumber + adjustment;
+//                        if (finalWeekNumber == 0)
+//                        {
+//                            if (ChronoUnit.DAYS.between(startWeek53, lastDayOfYear) < 0)
+//                                {
+//                                    finalWeekNumber = 1;
+//                                }
+//                        }
+//                        System.out.println("weeks:" + weeksInYear + " " + newWeekNumber);
+//                        if (newWeekNumber > 0)
+//                        {
+//                            finalWeekNumber = newWeekNumber;
+//                        } else
+//                        {
+//                            finalWeekNumber = 0;
+//                        }
+//                        startDate = correctYearTemporal
+//                                .with(TemporalAdjusters.firstDayOfYear())
+//                                .with(TemporalAdjusters.nextOrSame(weekFields.getFirstDayOfWeek()))
+//                                .with(weekFields.weekOfWeekBasedYear(), 53)
+//                                .plus(weekNumber*7+1, ChronoUnit.DAYS);
+                    } else
+                    {
+                        throw new IllegalArgumentException(elementType().toString() + " can't have a value of zero");
+                    }
+//                    Temporal newTemporal = correctYearTemporal.plus(finalWeekNumber, ChronoUnit.WEEKS);
+                    
+                    final Temporal startDate;
+                    if (finalWeekNumber > 0)
+                    {
+                        startDate = correctYearTemporal
+//                                .with(TemporalAdjusters.firstDayOfYear())
+//                                .with(TemporalAdjusters.nextOrSame(weekFields.getFirstDayOfWeek()))
+                                .with(weekFields.weekOfWeekBasedYear(), finalWeekNumber);
+                    } else if (between < 0)
+                    {
+//                        System.out.println("between:" + between);
+                        startDate = correctYearTemporal.minus(1, ChronoUnit.WEEKS);
+                    } else
+                    {
+                        startDate = null;
+                    }
+//                        Temporal temporal2 = temporal1
+//                                .with(weekFields.weekOfWeekBasedYear(), finalWeekNumber);
+//                        System.out.println("one,two:" + temporal1 + " " + temporal2 + " " + temporal2.get(weekFields.weekOfWeekBasedYear()));
+//                        if (! temporal1.equals(temporal2))
+//                        {
+//                        Temporal startDate = temporal2
+//                                .with(TemporalAdjusters.previousOrSame(weekFields.getFirstDayOfWeek()));
+                    if (startDate != null)
+                    {
+//                        System.out.println("startDate:" + startDate + " " + correctYear );
+//                        if (Year.from(startDate).equals(correctYear))
+//                        {
+                            IntStream.range(0,7).forEach(days -> 
+                            {
+                                Temporal newTemporal = startDate.plus(days, ChronoUnit.DAYS);
+//                                int myWeekNumber = newTemporal.get(weekFields.weekOfWeekBasedYear());
+                                Year myYear = Year.from(newTemporal);
+//                                System.out.println("myYear:" + myYear + " " +  dateTimeStart);
+                                if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart) && myYear.equals(correctYear))
+                                {
+                                    dates.add(newTemporal);
+                                }
+                            });
                         }
-                    });
+//                    }
                 }
                 return dates.stream().sorted(DateTimeUtilities.TEMPORAL_COMPARATOR);
+
+
+//                    weekFields.getFirstDayOfWeek()
+//                    final Temporal correctWeekTemporal = (weekNumber > 0) ? date : date.minus(1, ChronoUnit.WEEKS);
+//                    
+//                    correctWeekTemporal.with(TemporalAdjusters.previousOrSame(weekFields.getFirstDayOfWeek()));
+//                    int daysInWeek = (int) ChronoUnit.DAYS.between(correctWeekTemporal.with(TemporalAdjusters.firstDayOfWeek()),
+//                                                                   correctWeekTemporal.with(TemporalAdjusters.firstDayOfNextWeek()));
+//                    int finalWeekNumber = 0;
+//                    if (dayOfYear > 0)
+//                    {
+//                        if (dayOfYear <= daysInYear)
+//                        {
+//                            finalWeekNumber = dayOfYear;
+//                        }
+//                    } else if (dayOfYear < 0)
+//                    {
+//                        int newWeekNumber = daysInYear + dayOfYear + 1;
+//                        if (newWeekNumber > 0)
+//                        {
+//                            finalWeekNumber = newWeekNumber;
+//                        }
+//                    } else
+//                    {
+//                        throw new IllegalArgumentException(elementType().toString() + " can't have a value of zero");
+//                    }
+//                    Temporal newTemporal = (finalWeekNumber != 0) ? correctYearTemporal.with(ChronoField.DAY_OF_YEAR, finalWeekNumber) : null;
+//
+//                    if ((newTemporal != null) && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+//                    {
+//                        dates.add(newTemporal);
+//                    }
+//                }
+//                return dates.stream();
+                    
+                
+//                DayOfWeek dayOfWeek = DayOfWeek.from(date);
+//                Set<Temporal> dates = new HashSet<>();
+//                for (int myWeekNumber : getValue())
+//                {
+//                    Temporal startDate = date
+//                            .with(weekFields.weekOfWeekBasedYear(), myWeekNumber)
+//                            .with(TemporalAdjusters.previousOrSame(getWeekStart()));
+//                    IntStream.range(0,7).forEach(days -> 
+//                    {
+//                        Temporal newTemporal = startDate.plus(days, ChronoUnit.DAYS);
+//                        if (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
+//                        {
+//                            dates.add(newTemporal);
+//                        }
+//                    });
+//                }
+//                return dates.stream().sorted(DateTimeUtilities.TEMPORAL_COMPARATOR);
             });
             return outStream;
         case DAYS:

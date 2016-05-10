@@ -173,39 +173,32 @@ public class ByMonthDay extends ByRuleIntegerAbstract<ByMonthDay>
     {
         List<Temporal> dates = new ArrayList<>();
         for (int dayOfMonth : getValue())
-        {
+        {           
             final Temporal correctMonthTemporal = (dayOfMonth > 0) ? initialTemporal : initialTemporal.minus(1, ChronoUnit.MONTHS);
-            final int daysInMonth = correctMonthTemporal
-                    .with(TemporalAdjusters.lastDayOfMonth())
-                    .get(ChronoField.DAY_OF_MONTH);
-            final Temporal newTemporal;
+            int daysInMonth = (int) ChronoUnit.DAYS.between(correctMonthTemporal.with(TemporalAdjusters.firstDayOfMonth()),
+                                                            correctMonthTemporal.with(TemporalAdjusters.firstDayOfNextMonth()));
+            int finalDayOfMonth = 0;
             if (dayOfMonth > 0)
             {
                 if (dayOfMonth <= daysInMonth)
                 {
-                    newTemporal = initialTemporal.with(ChronoField.DAY_OF_MONTH, dayOfMonth);                    
-                } else
-                {
-                    newTemporal = null; // not enough days in month to make valid date - ignore this value
+                    finalDayOfMonth = dayOfMonth;
                 }
             } else if (dayOfMonth < 0)
             {
                 int newDayOfMonth = daysInMonth + dayOfMonth + 1;
                 if (newDayOfMonth > 0)
                 {
-                    newTemporal = initialTemporal
-                            .minus(1, ChronoUnit.MONTHS)
-                            .with(ChronoField.DAY_OF_MONTH, newDayOfMonth);
-                } else
-                {
-                    newTemporal = null;
+                    finalDayOfMonth = newDayOfMonth;
                 }
             } else
             {
                 throw new IllegalArgumentException(elementType().toString() + " can't have a value of zero");
             }
+            Temporal newTemporal = (finalDayOfMonth != 0) ? correctMonthTemporal.with(ChronoField.DAY_OF_MONTH, finalDayOfMonth) : null;
+            
             // ensure day of month hasn't changed.  If it changed the date was invalid and should be ignored.
-            if ((newTemporal != null) && (! DateTimeUtilities.isBefore(newTemporal, dateTimeStart)))
+            if ((newTemporal != null) && ! DateTimeUtilities.isBefore(newTemporal, dateTimeStart))
             {
                 dates.add(newTemporal);
             }
