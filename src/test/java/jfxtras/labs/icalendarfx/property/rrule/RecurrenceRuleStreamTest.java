@@ -26,7 +26,7 @@ public class RecurrenceRuleStreamTest
     RRULE:FREQ=MONTHLY;BYMONTHDAY=7,8,9,10,11,12,13;BYDAY=SA
      */
     @Test
-    public void canStreamRRule1()
+    public void canStreamRRuleSpecial1()
     {
         String s = "FREQ=MONTHLY;BYMONTHDAY=7,8,9,10,11,12,13;BYDAY=SA";
         RecurrenceRule3 rRule = RecurrenceRule3.parse(s);
@@ -44,13 +44,15 @@ public class RecurrenceRuleStreamTest
     }
     
     /*
+     * 
+     * 
     DTSTART;VALUE=DATE:20160630
     RRULE:FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1
     
     Last workday of the month
      */
     @Test
-    public void canStreamRRule2()
+    public void canStreamRRuleSpecial2()
     {
         String s = "FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1";
         RecurrenceRule3 rRule = RecurrenceRule3.parse(s);
@@ -71,11 +73,13 @@ public class RecurrenceRuleStreamTest
      */
     
     /*
+     * Daily for 10 occurrences:
+     * 
      DTSTART;TZID=America/New_York:19970902T090000
      RRULE:FREQ=DAILY;COUNT=10
      */
     @Test
-    public void canStreamRRule3()
+    public void canStreamRRule1()
     {
         String s = "FREQ=DAILY;COUNT=10";
         RecurrenceRule3 rRule = RecurrenceRule3.parse(s);
@@ -98,11 +102,13 @@ public class RecurrenceRuleStreamTest
     }
     
     /*
+     * Daily until December 24, 1997:
+     * 
     DTSTART;TZID=America/New_York:19970902T090000
     RRULE:FREQ=DAILY;UNTIL=19971224T000000Z
     */
    @Test
-   public void canStreamRRule4()
+   public void canStreamRRule2()
    {
        String s = "FREQ=DAILY;UNTIL=19971224T000000Z";
        RecurrenceRule3 rRule = RecurrenceRule3.parse(s);
@@ -117,11 +123,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Every other day - forever:
+    * 
    DTSTART;TZID=America/New_York:19970902T090000
    RRULE:FREQ=DAILY;INTERVAL=2
    */
   @Test
-  public void canStreamRRule5()
+  public void canStreamRRule3()
   {
       String s = "RRULE:FREQ=DAILY;INTERVAL=2";
       RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -139,11 +147,13 @@ public class RecurrenceRuleStreamTest
   }
   
     /*
+     * Every 10 days, 5 occurrences:
+     * 
     DTSTART;TZID=America/New_York:19970902T090000
     RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5
     */
    @Test
-   public void canStreamRRule6()
+   public void canStreamRRule4()
    {
        String s = "RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -161,13 +171,15 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Every day in January, for 3 years:
+    * 
    DTSTART;TZID=America/New_York:19980101T090000
    RRULE:FREQ=YEARLY;UNTIL=20000131T140000Z;BYMONTH=1;BYDAY=SU,MO,TU,WE,TH,FR,SA
    or
    RRULE:FREQ=DAILY;UNTIL=20000131T140000Z;BYMONTH=1
    */
    @Test
-   public void canStreamRRule7()
+   public void canStreamRRule5()
    {
        String s = "RRULE:FREQ=YEARLY;UNTIL=20000131T140000Z;BYMONTH=1;BYDAY=SU,MO,TU,WE,TH,FR,SA";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -196,12 +208,14 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Weekly for 10 occurrences:
+    * 
    DTSTART;TZID=America/New_York:19970902T090000
    RRULE:FREQ=WEEKLY;COUNT=10
     */
 
    @Test
-   public void canStreamRRule8()
+   public void canStreamRRule6()
    {
        String s = "RRULE:FREQ=WEEKLY;COUNT=10";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -216,11 +230,13 @@ public class RecurrenceRuleStreamTest
    }
   
    /*
+    * Weekly until December 24, 1997:
+    * 
    DTSTART;TZID=America/New_York:19970902T090000
    RRULE:FREQ=WEEKLY;UNTIL=19971224T000000Z
     */
    @Test
-   public void canStreamRRule9()
+   public void canStreamRRule7()
    {
        String s = "RRULE:FREQ=WEEKLY;UNTIL=19971224T000000Z";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -235,11 +251,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Every other week - forever:
+    * 
    DTSTART;TZID=America/New_York:19970902T090000
    RRULE:FREQ=WEEKLY;INTERVAL=2;WKST=SU
     */
    @Test
-   public void canStreamRRule10()
+   public void canStreamRRule8()
    {
        String s = "RRULE:FREQ=WEEKLY;INTERVAL=2;WKST=SU";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -254,11 +272,15 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Weekly on Tuesday and Thursday for five weeks:
+    * 
    DTSTART;TZID=America/New_York:19970902T090000
    RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
+   or
+   RRULE:FREQ=WEEKLY;COUNT=10;WKST=SU;BYDAY=TU,TH
     */
    @Test
-   public void canStreamRRule11()
+   public void canStreamRRule9()
    {
        String s = "RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -286,11 +308,14 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Every other week on Monday, Wednesday, and Friday until December
+    * 24, 1997, starting on Monday, September 1, 1997:
+    * 
    DTSTART;TZID=America/New_York:19970901T090000
    RRULE:FREQ=WEEKLY;INTERVAL=2;UNTIL=19971224T000000Z;WKST=SU;BYDAY=MO,WE,FR
     */
    @Test
-   public void canStreamRRule12()
+   public void canStreamRRule10()
    {
        String s = "RRULE:FREQ=WEEKLY;INTERVAL=2;UNTIL=19971224T000000Z;WKST=SU;BYDAY=MO,WE,FR";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -313,11 +338,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Every other week on Tuesday and Thursday, for 8 occurrences:
+    * 
    DTSTART;TZID=America/New_York:19970902T090000
    RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=8;WKST=SU;BYDAY=TU,TH
     */
    @Test
-   public void canStreamRRule13()
+   public void canStreamRRule11()
    {
        String s = "RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=8;WKST=SU;BYDAY=TU,TH";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -338,11 +365,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Monthly on the first Friday for 10 occurrences:
+    * 
      DTSTART;TZID=America/New_York:19970905T090000
      RRULE:FREQ=MONTHLY;COUNT=10;BYDAY=1FR
     */
    @Test
-   public void canStreamRRule14()
+   public void canStreamRRule12()
    {
        String s = "RRULE:FREQ=MONTHLY;COUNT=10;BYDAY=1FR";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -365,11 +394,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Monthly on the first Friday until December 24, 1997:
+    * 
    DTSTART;TZID=America/New_York:19970905T090000
    RRULE:FREQ=MONTHLY;UNTIL=19971224T000000Z;BYDAY=1FR
     */
    @Test
-   public void canStreamRRule15()
+   public void canStreamRRule13()
    {
        String s = "RRULE:FREQ=MONTHLY;UNTIL=19971224T000000Z;BYDAY=1FR";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -386,11 +417,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Every other month on the first and last Sunday of the month for 10 occurrences:
+    * 
    DTSTART;TZID=America/New_York:19970907T090000
    RRULE:FREQ=MONTHLY;INTERVAL=2;COUNT=10;BYDAY=1SU,-1SU
     */
    @Test
-   public void canStreamRRule16()
+   public void canStreamRRule14()
    {
        String s = "RRULE:FREQ=MONTHLY;INTERVAL=2;COUNT=10;BYDAY=1SU,-1SU";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -413,11 +446,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Monthly on the second-to-last Monday of the month for 6 months:
+    * 
    DTSTART;TZID=America/New_York:19970922T090000
    RRULE:FREQ=MONTHLY;COUNT=6;BYDAY=-2MO
     */
    @Test
-   public void canStreamRRule17()
+   public void canStreamRRule15()
    {
        String s = "RRULE:FREQ=MONTHLY;COUNT=6;BYDAY=-2MO";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -436,11 +471,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Monthly on the third-to-the-last day of the month, forever:
+    * 
    DTSTART;TZID=America/New_York:19970928T090000
    RRULE:FREQ=MONTHLY;BYMONTHDAY=-3
     */
    @Test
-   public void canStreamRRule18()
+   public void canStreamRRule16()
    {
        String s = "RRULE:FREQ=MONTHLY;BYMONTHDAY=-3";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -459,11 +496,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Monthly on the 2nd and 15th of the month for 10 occurrences:
+    * 
    DTSTART;TZID=America/New_York:19970902T090000
    RRULE:FREQ=MONTHLY;COUNT=10;BYMONTHDAY=2,15
     */
    @Test
-   public void canStreamRRule19()
+   public void canStreamRRule17()
    {
        String s = "RRULE:FREQ=MONTHLY;BYMONTHDAY=2,15";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -486,11 +525,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Monthly on the first and last day of the month for 10 occurrences:
+    * 
    DTSTART;TZID=America/New_York:19970930T090000
    RRULE:FREQ=MONTHLY;COUNT=10;BYMONTHDAY=1,-1
     */
    @Test
-   public void canStreamRRule20()
+   public void canStreamRRule18()
    {
        String s = "RRULE:FREQ=MONTHLY;COUNT=10;BYMONTHDAY=1,-1";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -513,11 +554,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Every 18 months on the 10th thru 15th of the month for 10 occurrences:
+    * 
    DTSTART;TZID=America/New_York:19970910T090000
    RRULE:FREQ=MONTHLY;INTERVAL=18;COUNT=10;BYMONTHDAY=10,11,12,13,14,15
     */
    @Test
-   public void canStreamRRule21()
+   public void canStreamRRule19()
    {
        String s = "RRULE:FREQ=MONTHLY;INTERVAL=18;COUNT=10;BYMONTHDAY=10,11,12,13,14,15";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -540,11 +583,13 @@ public class RecurrenceRuleStreamTest
    }
    
    /*
+    * Every Tuesday, every other month:
+    * 
    DTSTART;TZID=America/New_York:19970902T090000
    RRULE:FREQ=MONTHLY;INTERVAL=2;BYDAY=TU
     */
    @Test
-   public void canStreamRRule22()
+   public void canStreamRRule20()
    {
        String s = "RRULE:FREQ=MONTHLY;INTERVAL=2;BYDAY=TU";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -575,11 +620,13 @@ public class RecurrenceRuleStreamTest
    }
       
    /*
+    * Yearly in June and July for 10 occurrences:
+    * 
    DTSTART;TZID=America/New_York:19970610T090000
    RRULE:FREQ=YEARLY;COUNT=10;BYMONTH=6,7
     */
    @Test
-   public void canStreamRRule23()
+   public void canStreamRRule21()
    {
        String s = "RRULE:FREQ=YEARLY;COUNT=10;BYMONTH=6,7";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -608,7 +655,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=YEARLY;INTERVAL=2;COUNT=10;BYMONTH=1,2,3
     */
    @Test
-   public void canStreamRRule24()
+   public void canStreamRRule22()
    {
        String s = "RRULE:FREQ=YEARLY;INTERVAL=2;COUNT=10;BYMONTH=1,2,3";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -637,7 +684,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=YEARLY;INTERVAL=3;COUNT=10;BYYEARDAY=1,100,200
     */
    @Test
-   public void canStreamRRule25()
+   public void canStreamRRule23()
    {
        String s = "RRULE:FREQ=YEARLY;INTERVAL=3;COUNT=10;BYYEARDAY=1,100,200";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -666,7 +713,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=YEARLY;BYDAY=20MO
     */
    @Test
-   public void canStreamRRule26()
+   public void canStreamRRule24()
    {
        String s = "RRULE:FREQ=YEARLY;BYDAY=20MO";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -688,7 +735,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=YEARLY;BYWEEKNO=20;BYDAY=MO
     */
    @Test
-   public void canStreamRRule27()
+   public void canStreamRRule25()
    {
        String s = "RRULE:FREQ=YEARLY;BYWEEKNO=20;BYDAY=MO";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -710,7 +757,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=TH
     */
    @Test
-   public void canStreamRRule28()
+   public void canStreamRRule26()
    {
        String s = "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=TH";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -740,7 +787,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=YEARLY;BYDAY=TH;BYMONTH=6,7,8
     */
    @Test
-   public void canStreamRRule29()
+   public void canStreamRRule27()
    {
        String s = "RRULE:FREQ=YEARLY;BYDAY=TH;BYMONTH=6,7,8";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -774,7 +821,7 @@ public class RecurrenceRuleStreamTest
    Note: EXDATE is left out of test. EXDATE handled as property in calendar component and can't be tested here.
     */
    @Test
-   public void canStreamRRule30()
+   public void canStreamRRule28()
    {
        String s = "RRULE:FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -798,7 +845,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=MONTHLY;BYDAY=SA;BYMONTHDAY=7,8,9,10,11,12,13
     */
    @Test
-   public void canStreamRRule31()
+   public void canStreamRRule29()
    {
        String s = "RRULE:FREQ=MONTHLY;BYDAY=SA;BYMONTHDAY=7,8,9,10,11,12,13";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -827,7 +874,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=YEARLY;INTERVAL=4;BYMONTH=11;BYDAY=TU;BYMONTHDAY=2,3,4,5,6,7,8
     */
    @Test
-   public void canStreamRRule32()
+   public void canStreamRRule30()
    {
        String s = "RRULE:FREQ=YEARLY;INTERVAL=4;BYMONTH=11;BYDAY=TU;BYMONTHDAY=2,3,4,5,6,7,8";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -849,7 +896,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=MONTHLY;COUNT=3;BYDAY=TU,WE,TH;BYSETPOS=3
     */
    @Test
-   public void canStreamRRule33()
+   public void canStreamRRule31()
    {
        String s = "RRULE:FREQ=MONTHLY;COUNT=3;BYDAY=TU,WE,TH;BYSETPOS=3";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -871,7 +918,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-2
     */
    @Test
-   public void canStreamRRule34()
+   public void canStreamRRule32()
    {
        String s = "RRULE:FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-2";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -898,7 +945,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=HOURLY;INTERVAL=3;UNTIL=19970902T210000Z
     */
    @Test
-   public void canStreamRRule35()
+   public void canStreamRRule33()
    {
        String s = "RRULE:FREQ=HOURLY;INTERVAL=3;UNTIL=19970902T210000Z";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -920,7 +967,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=MINUTELY;INTERVAL=15;COUNT=6
     */
    @Test
-   public void canStreamRRule36()
+   public void canStreamRRule34()
    {
        String s = "RRULE:FREQ=MINUTELY;INTERVAL=15;COUNT=6";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -945,7 +992,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=MINUTELY;INTERVAL=90;COUNT=4
     */
    @Test
-   public void canStreamRRule37()
+   public void canStreamRRule35()
    {
        String s = "RRULE:FREQ=MINUTELY;INTERVAL=90;COUNT=4";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -970,7 +1017,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=MINUTELY;INTERVAL=20;BYHOUR=9,10,11,12,13,14,15,16
     */
    @Test
-   public void canStreamRRule38()
+   public void canStreamRRule36()
    {
        String s = "RRULE:FREQ=DAILY;BYHOUR=9,10,11,12,13,14,15,16;BYMINUTE=0,20,40";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -998,7 +1045,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=MINUTELY;INTERVAL=20;BYHOUR=9,10,11,12,13,14,15,16
     */
    @Test
-   public void canStreamRRule39()
+   public void canStreamRRule37()
    {
        String s = "RRULE:FREQ=DAILY;BYHOUR=9,10,11,12,13,14,15,16;BYMINUTE=0,20,40";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -1029,7 +1076,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=MO
     */
    @Test
-   public void canStreamRRule40()
+   public void canStreamRRule38()
    {
        String s = "RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=MO";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -1052,7 +1099,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=SU
     */
    @Test
-   public void canStreamRRule41()
+   public void canStreamRRule39()
    {
        String s = "RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=SU";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
@@ -1075,7 +1122,7 @@ public class RecurrenceRuleStreamTest
    RRULE:FREQ=MONTHLY;BYMONTHDAY=15,30;COUNT=5
     */
    @Test
-   public void canStreamRRule42()
+   public void canStreamRRule40()
    {
        String s = "RRULE:FREQ=MONTHLY;BYMONTHDAY=15,30;COUNT=5";
        RecurrenceRuleNew rRule = RecurrenceRuleNew.parse(s);
