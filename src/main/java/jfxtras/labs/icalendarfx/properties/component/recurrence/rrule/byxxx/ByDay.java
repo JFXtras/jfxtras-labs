@@ -31,43 +31,38 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.WeekStart;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-/** BYDAY from RFC 5545, iCalendar 3.3.10, page 40 */
+/** BYDAY from RFC 5545, iCalendar 3.3.10, page 40
+ * 
+ * The BYDAY rule part specifies a COMMA-separated list of days of
+ * the week; SU indicates Sunday; MO indicates Monday; TU indicates
+ * Tuesday; WE indicates Wednesday; TH indicates Thursday; FR
+ * indicates Friday; and SA indicates Saturday.
+ *
+ * Each BYDAY value can also be preceded by a positive (+n) or
+ * negative (-n) integer.  If present, this indicates the nth
+ * occurrence of a specific day within the MONTHLY or YEARLY "RRULE".
+ *
+ * For example, within a MONTHLY rule, +1MO (or simply 1MO)
+ * represents the first Monday within the month, whereas -1MO
+ * represents the last Monday of the month.  The numeric value in a
+ * BYDAY rule part with the FREQ rule part set to YEARLY corresponds
+ * to an offset within the month when the BYMONTH rule part is
+ * present, and corresponds to an offset within the year when the
+ * BYWEEKNO or BYMONTH rule parts are present.  If an integer
+ * modifier is not present, it means all days of this type within the
+ * specified frequency.  For example, within a MONTHLY rule, MO
+ * represents all Mondays within the month.  The BYDAY rule part MUST
+ * NOT be specified with a numeric value when the FREQ rule part is
+ * not set to MONTHLY or YEARLY.  Furthermore, the BYDAY rule part
+ * MUST NOT be specified with a numeric value with the FREQ rule part
+ * set to YEARLY when the BYWEEKNO rule part is specified.
+ * 
+ * Element value is a ByDayPair that contains a DayOfWeek and an optional ordinal int.
+ * if the ordinal int is 0 then it is ignored and all values matching the DayOfWeek are included.
+ * 
+ * */
 public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
-{
-//    private final TemporalField field;
-//    private final int firstDayOfWeekAdjustment;
-    /** Array of days of the week.  Ordinal number is optional.  Without will include all
-     * days matching that day of the week, with the ordinal will be only include the
-     * nth day of the week in the month, when n is the ordinal number.
-     * 
-     * Uses a varargs parameter to allow any number of days
-     * The list of days with ordinals must be sorted.  For example 1MO,2TU,4SA not 2TU,1MO,4SA
-     */
-//    public ObservableList<ByDayPair> byDayPair() { return byDayPairs; }
-//    ObservableList<ByDayPair> byDayPairs = FXCollections.observableArrayList();
-//    public ByDayPair[] getValue() { return byDayPairs; }
-//    private ByDayPair[] byDayPairs;
-//    private void setByDayPair(ByDayPair... byDayPairs) { this.byDayPairs = byDayPairs; }
-
-//    public void setValue(ByDayPair... byDayPairs)
-//    {
-//        setValue(FXCollections.observableArrayList(byDayPairs));
-//    }
-//    public void setValue(String byDayPairs)
-//    {
-//        parseContent(byDayPairs);
-//    }
-//    public ByDay withValue(ByDayPair... byDayPairs)
-//    {
-//        setValue(byDayPairs);
-//        return this;
-//    }
-//    public ByDay withValue(String byDayPairs)
-//    {
-//        setValue(byDayPairs);
-//        return this;
-//    }
-    
+{   
     /** Start of week - default start of week is Monday */
     public ObjectProperty<DayOfWeek> weekStartProperty() { return weekStart; }
     private ObjectProperty<DayOfWeek> weekStart =  new SimpleObjectProperty<>(this, RRuleElementType.WEEK_START.toString()); // bind to WeekStart element
@@ -95,10 +90,10 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
 //        parseContent(dayPairs);
 //    }
     
-    /** Constructor with varargs ByDayPair */
     public ByDay(ByDayPair... byDayPairs)
     {
         this();
+        setValue(byDayPairs);
 //        setValue(FXCollections.observableArrayList(byDayPairs));
     }
     

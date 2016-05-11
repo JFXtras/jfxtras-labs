@@ -52,7 +52,10 @@ public class ByDayTest
               , LocalDateTime.of(2017, 1, 9, 10, 0)
               , LocalDateTime.of(2017, 12, 31, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream
+                .filter(r -> ! DateTimeUtilities.isBefore(r, dateTimeStart)) // filter is normally done in streamRecurrences in RecurrenceRule2
+                .limit(5)
+                .collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     

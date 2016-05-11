@@ -253,41 +253,41 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
 //        return hash;
 //    }
     
-    @Override
-    public String toString()
-    {
-        return super.toString() + ", " + toContent(); 
-//        StringBuilder builder = new StringBuilder("FREQ=" + frequencyType().toString());
-//        if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
-//        return builder.toString();
-    }
+//    @Override
+//    public String toString()
+//    {
+//        return super.toString() + ", " + toContent(); 
+////        StringBuilder builder = new StringBuilder("FREQ=" + frequencyType().toString());
+////        if (getInterval() > 1) builder.append(";INTERVAL=" + getInterval());
+////        return builder.toString();
+//    }
     
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getValue() == null) ? 0 : getValue().hashCode());
-        return result;
-    }
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Frequency2 other = (Frequency2) obj;
-        if (getValue() == null)
-        {
-            if (other.getValue() != null)
-                return false;
-        } else if (!getValue().equals(other.getValue()))
-            return false;
-        return true;
-    }
+//    @Override
+//    public int hashCode()
+//    {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ((getValue() == null) ? 0 : getValue().hashCode());
+//        return result;
+//    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        Frequency2 other = (Frequency2) obj;
+//        if (getValue() == null)
+//        {
+//            if (other.getValue() != null)
+//                return false;
+//        } else if (!getValue().equals(other.getValue()))
+//            return false;
+//        return true;
+//    }
 
     @Override
     public void parseContent(String content)

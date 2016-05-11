@@ -44,8 +44,6 @@ public class RecurrenceRuleStreamTest
     }
     
     /*
-     * 
-     * 
     DTSTART;VALUE=DATE:20160630
     RRULE:FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1
     
