@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.mocks.InstanceMock;
@@ -63,6 +64,8 @@ public class ICalendarMakeInstancesTest extends ICalendarTestAbstract
     
     /** FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR */
     @Test
+    @Ignore
+
     public void makeInstancesWeeklyTest1()
     {
         VEventMock vevent = getWeekly2();

@@ -34,11 +34,11 @@ public class RecurrenceStreamer
     private static final int CACHE_RANGE = 51; // number of values in cache
     private static final int CACHE_SKIP = 21; // store every nth value in the cache
     private int skipCounter = 0; // counter that increments up to CACHE_SKIP, indicates time to record a value, then resets to 0
-    private Temporal[] temporalCache; // the start date or date/time cache
+    public Temporal[] temporalCache; // the start date or date/time cache
     private Temporal dateTimeStartLast; // last dateTimeStart, when changes indicates clearing the cache is necessary
     private RecurrenceRule3 rRuleLast; // last rRule, when changes indicates clearing the cache is necessary
-    private int cacheStart = 0; // start index where cache values are stored (starts in middle)
-    private int cacheEnd = 0; // end index where cache values are stored
+    public int cacheStart = 0; // start index where cache values are stored (starts in middle)
+    public int cacheEnd = 0; // end index where cache values are stored
     private VComponentRepeatable<?> component; // the VComponent
     
     public RecurrenceStreamer(VComponentRepeatable<?> component)
@@ -82,6 +82,121 @@ public class RecurrenceStreamer
         return lastT;
     }
     
+    public Temporal getStartFromCache(Temporal start)
+    {
+        final Temporal match;
+        final Temporal dateTimeStart;
+        final RecurrenceRule3 recurrenceRule;
+        
+        dateTimeStart = component.getDateTimeStart().getValue();
+        
+        recurrenceRule = (component.getRecurrenceRule() != null) ? component.getRecurrenceRule().getValue() : null;
+
+        // adjust start to ensure its not before dateTimeStart
+        final Temporal start2 = (DateTimeUtilities.isBefore(start, dateTimeStart)) ? dateTimeStart : start;
+        final Temporal latestCacheValue;
+
+        
+        if (recurrenceRule == null)
+        { // if individual event
+            return null;
+        }
+
+        // check if cache needs to be cleared (changes to RRULE or DTSTART)
+        if ((dateTimeStartLast != null) && (rRuleLast != null))
+        {
+            boolean startChanged = ! dateTimeStart.equals(dateTimeStartLast);
+            boolean rRuleChanged = ! recurrenceRule.equals(rRuleLast);
+            if (startChanged || rRuleChanged)
+            {
+                temporalCache = null;
+                cacheStart = 0;
+                cacheEnd = 0;
+                skipCounter = 0;
+                dateTimeStartLast = dateTimeStart;
+                rRuleLast = recurrenceRule;
+            }
+        } else
+        { // save current DTSTART and RRULE for next time
+            dateTimeStartLast = dateTimeStart;
+            rRuleLast = recurrenceRule;
+        }
+        
+        // use cache if available to find matching start date or date/time
+        if (temporalCache != null)
+        {
+            // Reorder cache to maintain centered and sorted
+            final int len = temporalCache.length;
+            final Temporal[] p1;
+            final Temporal[] p2;
+            if (cacheEnd < cacheStart) // high values have wrapped from end to beginning
+            {
+                p1 = Arrays.copyOfRange(temporalCache, cacheStart, len);
+                p2 = Arrays.copyOfRange(temporalCache, 0, Math.min(cacheEnd+1,len));
+            } else if (cacheEnd > cacheStart) // low values have wrapped from beginning to end
+            {
+                p2 = Arrays.copyOfRange(temporalCache, cacheStart, len);
+                p1 = Arrays.copyOfRange(temporalCache, 0, Math.min(cacheEnd+1,len));
+            } else
+            {
+                p1 = null;
+                p2 = null;
+            }
+            if (p1 != null)
+            { // copy elements to accommodate wrap and restore sort order
+                int p1Index = 0;
+                int p2Index = 0;
+                for (int i=0; i<len; i++)
+                {
+                    if (p1Index < p1.length)
+                    {
+                        temporalCache[i] = p1[p1Index];
+                        p1Index++;
+                    } else if (p2Index < p2.length)
+                    {
+                        temporalCache[i] = p2[p2Index];
+                        p2Index++;
+                    } else
+                    {
+                        cacheEnd = i;
+                        break;
+                    }
+                }
+            }
+
+            // Find match in cache
+            latestCacheValue = temporalCache[cacheEnd];
+            if ((! DateTimeUtilities.isBefore(start2, temporalCache[cacheStart])))
+            {
+                Temporal m = latestCacheValue;
+                for (int i=cacheStart; i<cacheEnd+1; i++)
+                {
+                    if (DateTimeUtilities.isAfter(temporalCache[i], start2))
+                    {
+                        m = temporalCache[i-1];
+                        break;
+                    }
+                }
+                match = m;
+            } else
+            { // all cached values too late - start over
+                cacheStart = 0;
+                cacheEnd = 0;
+                temporalCache[cacheStart] = dateTimeStart;
+                match = dateTimeStart;
+            }
+//            earliestCacheValue = temporalCache[cacheStart];
+        } else
+        { // no previous cache.  initialize new array with dateTimeStart as first value.
+            temporalCache = new Temporal[CACHE_RANGE];
+            temporalCache[cacheStart] = dateTimeStart;
+            match = dateTimeStart;
+//            earliestCacheValue = dateTimeStart;
+//            latestCacheValue = dateTimeStart;
+        }
+        return match;
+    }
+    
     /**
      * Produces the recurrence set
      * 
@@ -109,6 +224,7 @@ public class RecurrenceStreamer
      * have to be DTSTART, but DTSTART is always valid.
      * @return - stream of the recurrence set
      */
+    @Deprecated
     public Stream<Temporal> stream(Temporal start)
     {
         final Temporal dateTimeStart;
@@ -302,6 +418,7 @@ public class RecurrenceStreamer
                         // check if start or end needs to wrap
                         if (cacheEnd < 0) cacheEnd = CACHE_RANGE - 1;
                         if (cacheStart == CACHE_RANGE) cacheStart = 0;
+                        System.out.println("makeCache:" + cacheStart + " " + cacheEnd);
                     }
                 })
                 .filter(t -> ! DateTimeUtilities.isBefore(t, start2)); // remove too early events;
@@ -309,9 +426,56 @@ public class RecurrenceStreamer
         return stream4;
     }
     
+    /** add to cache while streaming recurrences */
+    public Stream<Temporal> makeCache(Stream<Temporal> inStream)
+    {
+        Temporal earliestCacheValue = temporalCache[cacheStart];
+        Temporal latestCacheValue = temporalCache[cacheEnd];
+//        System.out.println("makeCache:" + earliestCacheValue + " " + latestCacheValue + " " + component.getRecurrences());
+        Stream<Temporal> outStream = inStream
+                .peek(t ->
+                { // save new values in cache
+                    if (component.getRecurrenceRule() != null)
+                    {
+                        if (DateTimeUtilities.isBefore(t, earliestCacheValue))
+                        {
+                            if (skipCounter == CACHE_SKIP)
+                            {
+                                cacheStart--;
+                                if (cacheStart < 0) cacheStart = CACHE_RANGE - 1;
+                                if (cacheStart == cacheEnd) cacheEnd--; // just overwrote oldest value - push cacheEnd down
+                                temporalCache[cacheStart] = t;
+                                skipCounter = 0;
+                            } else skipCounter++;
+                        }
+                        if (DateTimeUtilities.isAfter(t, latestCacheValue))
+                        {
+                            if (skipCounter == CACHE_SKIP)
+                            {
+                                cacheEnd++;
+                                if (cacheEnd == CACHE_RANGE) cacheEnd = 0;
+                                if (cacheStart == cacheEnd) cacheStart++; // just overwrote oldest value - push cacheStart up
+                                temporalCache[cacheEnd] = t;
+                                skipCounter = 0;
+                            } else skipCounter++;
+                        }
+                        // check if start or end needs to wrap
+                        if (cacheEnd < 0) cacheEnd = CACHE_RANGE - 1;
+                        if (cacheStart == CACHE_RANGE) cacheStart = 0;
+//                        System.out.println("makeCache:" + cacheStart + " " + cacheEnd);
+                    }
+                });
+
+        //                .filter(t -> ! DateTimeUtilities.isBefore(t, start)); // remove too early events;
+
+        return outStream;
+    }
+
+    
     /**
      * Produces the recurrence set beginning at DTSTART
      */ 
+    @Deprecated
     public Stream<Temporal> stream()
     {
         return stream(component.getDateTimeStart().getValue());
@@ -328,6 +492,7 @@ public class RecurrenceStreamer
      * are generated by the returned stream
      * @return stream of starting dates or date/times for occurrences after rangeStart
      */
+    @Deprecated
     public Stream<Temporal> streamNoCache(Temporal start)
     {
         final Comparator<Temporal> temporalComparator;
@@ -450,5 +615,11 @@ public class RecurrenceStreamer
             }
             return theNext;
         }
+    }
+
+    public Temporal getStartFromCache()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

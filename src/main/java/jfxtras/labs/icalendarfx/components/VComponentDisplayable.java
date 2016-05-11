@@ -6,12 +6,14 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
@@ -490,6 +492,15 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
             }
         }        
     }
+    
+    /**
+     * List of child components having RecurrenceIDs.
+     * Note: This list is maintained by a listener in {@link VCalendar#displayableListChangeListener}
+     * Do not modify the list.
+     * 
+     * @return - list of child components having RecurrenceIDs
+     */
+    List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs();
     
     @Override
     default boolean isValid()

@@ -12,4 +12,6 @@ public interface VCalendarElement
     String toContent();
     
     void parseContent(String content);
+    
+    //TODO - ADD isValid - that returns a list of errors - empty list means its valid
 }

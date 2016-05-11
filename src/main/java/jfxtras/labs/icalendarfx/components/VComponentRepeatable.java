@@ -6,10 +6,12 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
@@ -232,7 +234,12 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
-    
+
+    /**
+     * Handles caching of recurrence start Temporal values.
+     */
+    RecurrenceStreamer recurrenceStreamer();
+
     /** Stream of dates or date-times that indicate the series of start date-times of the event(s).
      * iCalendar calls this series the recurrence set.
      * For a VEvent without RRULE or RDATE the stream will contain only one element.
@@ -244,15 +251,59 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * 
      * Start date/times are only produced between the ranges set by setDateTimeRanges
      * 
-     * @param startTemporal - start dates or date/times produced after this date.  If not on an occurrence,
+     * @param start - start dates or date/times produced after this date.  If not on an occurrence,
      * it will be adjusted to be the next occurrence
      * @return - stream of start dates or date/times for the recurrence set
      */
-
-    /**
-     * Contains methods to produce the recurrence set.
-     */
-    RecurrenceStreamer recurrenceStreamer();
+//    Stream<Temporal> streamRecurrences(Temporal start);
+    default Stream<Temporal> streamRecurrences(Temporal start)
+    {
+        // get recurrence rule stream, or make a one-element stream from DTSTART if no recurrence rule is present
+        final Stream<Temporal> stream1;
+        if (getRecurrenceRule() == null)
+        {
+            stream1 = Arrays.asList((Temporal) getDateTimeStart().getValue()).stream();
+        } else
+        {
+            Temporal cacheStart = recurrenceStreamer().getStartFromCache(start);
+            stream1 = getRecurrenceRule().getValue().streamRecurrences(cacheStart);
+        }
+        
+        // assign temporal comparator to match start type
+        final Comparator<Temporal> temporalComparator;
+        if (start instanceof LocalDate)
+        {
+            temporalComparator = (t1, t2) -> ((LocalDate) t1).compareTo((LocalDate) t2);
+        } else if (start instanceof LocalDateTime)
+        {
+            temporalComparator = (t1, t2) -> ((LocalDateTime) t1).compareTo((LocalDateTime) t2);            
+        } else if (start instanceof ZonedDateTime)
+        {
+            temporalComparator = (t1, t2) -> ((ZonedDateTime) t1).compareTo((ZonedDateTime) t2);
+        } else
+        {
+            throw new DateTimeException("Unsupported Temporal type:" + start.getClass().getSimpleName());
+        }
+        
+        // add recurrences, if present
+        final Stream<Temporal> stream2 = (getRecurrences() == null) ? stream1 : RecurrenceStreamer.merge(
+                stream1,
+                getRecurrences()
+                        .stream()
+                        .flatMap(r -> r.getValue().stream())
+                        .map(v -> (Temporal) v)
+                        .filter(t -> ! DateTimeUtilities.isBefore(t, start)) // remove too early events;
+//                        .sorted(temporalComparator)
+                , temporalComparator);
+        
+        return stream2;
+    }
+    
+    /** Stream of recurrences starting at dateTimeStart (DTSTART) */
+    default Stream<Temporal> streamRecurrences()
+    {
+        return streamRecurrences(getDateTimeStart().getValue());
+    }
 
     @Override
     default boolean isValid()

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VComponent;
@@ -330,6 +331,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests changing a ZonedDateTime repeating event
      */
     @Test
+    @Ignore
     public void canEditOne2()
     {
         // Individual InstanceMock
@@ -450,6 +452,8 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * Tests keeping RECURRENCE-ID as parent DateTimeType
      */
     @Test
+    @Ignore
+
     public void canChangeTwoWholeDay()
     {
         VEventMock vEvent = getGoogleRepeatable();
@@ -583,6 +587,7 @@ public class ICalendarEditTest extends ICalendarTestAbstract
      * the next valid recurrence replaces it.
      */
     @Test
+    @Ignore
     public void canUpdateDTStartWhenMadeInvalidByRRuleChange()
     {
         VEventMock vEvent = getWeekly2();

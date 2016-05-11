@@ -11,13 +11,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.WeakHashMap;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.CalendarElement;
 import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VEventNew;
@@ -354,15 +357,59 @@ public class VCalendar
         return this;
     }
     
+    /* Map of displayable parent components.  Key is UID string, value is component reference.
+     * Used to find parent components when a component with a recurrenceID is added
+     */
+    private Map<String, VComponentDisplayable<?>> displayableComponentMap = new WeakHashMap<String, VComponentDisplayable<?>>();
+    /**
+     * RecurrenceID listener
+     * notifies parents when a child component with recurrenceID is created or removed
+     */
+    private ListChangeListener<VComponentDisplayable<?>> displayableListChangeListener = (ListChangeListener.Change<? extends VComponentDisplayable<?>> change) ->
+    {
+        while (change.next())
+        {
+            if (change.wasAdded())
+            {
+                System.out.println("displayableListChangeListener:");
+                change.getAddedSubList().forEach(e -> 
+                {
+                    System.out.println("change:" + e.getSummary());
+                    if (e.getRecurrenceId() == null)
+                    { // is a parent component
+                        displayableComponentMap.put(e.getUniqueIdentifier().getValue(), e);
+                    } else
+                    { // is a child component
+                        String uid = e.getUniqueIdentifier().getValue();
+                        VComponentDisplayable<?> parent = displayableComponentMap.get(uid);
+                        if (parent != null)
+                        {
+                            parent.childComponentsWithRecurrenceIDs().add(e);
+                        } else
+                        {
+                            throw new RuntimeException("Parent component not found for UID:" + uid);
+                        }
+                    }
+                });
+            }
+        }
+    };
+    
     /*
      * CONSTRUCTORS
      */
     
-    public VCalendar() {  }
+    public VCalendar()
+    {
+        getVEvents().addListener(displayableListChangeListener);
+        getVTodos().addListener(displayableListChangeListener);
+        getVJournals().addListener(displayableListChangeListener);
+    }
   
     /** Copy constructor */
     public VCalendar(VCalendar source)
     {
+        this();
         // TODO Auto-generated method stub        
     }
 

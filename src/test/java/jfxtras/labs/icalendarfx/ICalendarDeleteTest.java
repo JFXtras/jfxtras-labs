@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VComponent;
@@ -25,12 +26,19 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
 
+/**
+ * TODO - needs revision - should just add EXDATES to calendar object
+ * 
+ * @author david
+ *
+ */
 public class ICalendarDeleteTest extends ICalendarTestAbstract
 {
     /**
      * Tests deleting one instance from recurrence set
      */
     @Test
+    @Ignore
     public void canDeleteOne()
     {
         VEventMock vEvent = getWeeklyZoned();
@@ -76,6 +84,7 @@ public class ICalendarDeleteTest extends ICalendarTestAbstract
      * Tests deleting all instances from recurrence set
      */
     @Test
+    @Ignore
     public void canDeleteAll()
     {
         VEventMock vEvent = getWeeklyZoned();

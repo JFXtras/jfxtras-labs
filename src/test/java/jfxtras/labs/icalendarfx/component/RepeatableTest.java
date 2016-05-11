@@ -162,7 +162,12 @@ public class RepeatableTest //extends Application
         VEventNew component = new VEventNew()
                 .withRecurrenceRule("RRULE:FREQ=DAILY")
                 .withDateTimeStart(LocalDate.of(2016, 4, 22));
-        component.recurrenceStreamer().stream(LocalDate.of(2016, 4, 22)).limit(10).forEach(System.out::println);
+        component.streamRecurrences().limit(2000).forEach(System.out::println);
+//        component.recurrenceStreamer().stream().limit(2000).forEach(System.out::println);
+        System.out.println("cache:" + component.recurrenceStreamer().cacheStart + " " +
+                component.recurrenceStreamer().cacheEnd + " " + 
+               component.recurrenceStreamer().temporalCache[0] + " " + 
+               component.recurrenceStreamer().temporalCache[component.recurrenceStreamer().cacheEnd] );
     }
 
     
@@ -1342,5 +1347,32 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.DAILY)
                         .withInterval(3));
         assertEquals(LocalDate.of(2015, 11, 24), e2.recurrenceStreamer().previousValue(LocalDate.of(2015, 12, 31)));
+    }
+    
+    // Tests added components with recurrence ID to parent's list of recurrences
+    @Test
+    public void canHandleRecurrenceID()
+    {
+        VEventNew e = new VEventNew()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0))
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withFrequency(FrequencyType.WEEKLY)
+                        .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
+        e.recurrenceStreamer().stream(e.getDateTimeStart().getValue()).limit(100).collect(Collectors.toList()); // set cache
+        assertEquals(LocalDateTime.of(2016, 1, 20, 10, 0), e.recurrenceStreamer().previousValue(LocalDateTime.of(2016, 1, 21, 10, 0)));
+
+        VEventNew e2 = new VEventNew() // without cache
+                .withDateTimeStart(LocalDate.of(2015, 11, 9))
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withCount(6)
+                        .withFrequency(FrequencyType.DAILY)
+                        .withInterval(3));
+        assertEquals(LocalDate.of(2015, 11, 24), e2.recurrenceStreamer().previousValue(LocalDate.of(2015, 12, 31)));
+    }
+    
+    @Test
+    public void canHandleExceptions()
+    {
+        
     }
 }

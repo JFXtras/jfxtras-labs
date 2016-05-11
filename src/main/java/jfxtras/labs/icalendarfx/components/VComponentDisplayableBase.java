@@ -1,6 +1,15 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -351,11 +360,84 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         super(source);
     }
     
-    // Recurrence streamer - produces recurrence set
+    @Override
+    public Stream<Temporal> streamRecurrences(Temporal start)
+    {
+        // get stream with recurrence rule (RRULE) and recurrence date (RDATE)
+        Stream<Temporal> inStream = VComponentDisplayable.super.streamRecurrences(start);
+
+        // assign temporal comparator to match start type
+        // TODO - COMBINE INTO ONE LOCATION TO REPLACE VERSION IN VComponentRepeatable
+        final Comparator<Temporal> temporalComparator;
+        if (start instanceof LocalDate)
+        {
+            temporalComparator = (t1, t2) -> ((LocalDate) t1).compareTo((LocalDate) t2);
+        } else if (start instanceof LocalDateTime)
+        {
+            temporalComparator = (t1, t2) -> ((LocalDateTime) t1).compareTo((LocalDateTime) t2);            
+        } else if (start instanceof ZonedDateTime)
+        {
+            temporalComparator = (t1, t2) -> ((ZonedDateTime) t1).compareTo((ZonedDateTime) t2);
+        } else
+        {
+            throw new DateTimeException("Unsupported Temporal type:" + start.getClass().getSimpleName());
+        }
+        
+        // Handle Recurrence IDs
+        final Stream<Temporal> stream3;
+        if (childComponentsWithRecurrenceIDs() != null)
+        {
+            // If present, remove recurrence ID original values
+            List<Temporal> recurrenceIDTemporals = childComponentsWithRecurrenceIDs()
+                    .stream()
+                    .map(c -> c.getRecurrenceId().getValue())
+                    .collect(Collectors.toList());
+            Stream<Temporal> stream2 = inStream.filter(t -> ! recurrenceIDTemporals.contains(t));
+            // If present, add replacement recurrences from child components
+            stream3 = RecurrenceStreamer.merge(
+                    stream2,
+                    childComponentsWithRecurrenceIDs().stream().flatMap(c ->  c.streamRecurrences(start)), 
+                    temporalComparator);
+        } else
+        {
+            stream3 = inStream;
+        }
+        
+        // If present, remove exceptions
+        final Stream<Temporal> stream4;
+        if (getExceptions() != null)
+        {
+            List<Temporal> exceptions = getExceptions()
+                    .stream()
+                    .flatMap(r -> r.getValue().stream())
+                    .map(v -> (Temporal) v)
+                    .sorted(temporalComparator)
+                    .collect(Collectors.toList());
+            stream4 = stream3.filter(d -> ! exceptions.contains(d));
+        } else
+        {
+            stream4 = stream3;
+        }
+        
+        return recurrenceStreamer().makeCache(stream4);
+//        return stream4;
+    }
+
+    /*
+     *  RECURRENCE STREAMER
+     *  produces recurrence set
+     */
     private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
     @Override
     public RecurrenceStreamer recurrenceStreamer() { return streamer; }
 
+    /*
+     * COMPONENTS WITH RECURRENCE-IDs
+     */
+    @Override
+    public List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs() { return childComponentsWithRecurrenceIDs; }
+    private List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs = new ArrayList<>();
+    
     @Override
     public boolean isValid()
     {
