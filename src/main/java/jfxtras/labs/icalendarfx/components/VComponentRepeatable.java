@@ -266,10 +266,12 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         } else
         {
             Temporal cacheStart = recurrenceStreamer().getStartFromCache(start);
+//            System.out.println("cacheStart:" + cacheStart);
             stream1 = getRecurrenceRule().getValue().streamRecurrences(cacheStart);
         }
         
         // assign temporal comparator to match start type
+        // TODO PUT THIS ELSEWHERE - COMBINE WITH DISPLAYABLE VERSION
         final Comparator<Temporal> temporalComparator;
         if (start instanceof LocalDate)
         {
@@ -293,13 +295,14 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
                         .flatMap(r -> r.getValue().stream())
                         .map(v -> (Temporal) v)
                         .filter(t -> ! DateTimeUtilities.isBefore(t, start)) // remove too early events;
-//                        .sorted(temporalComparator)
+                        .sorted(temporalComparator)
                 , temporalComparator);
         
-        return stream2;
+        return stream2.filter(t -> ! DateTimeUtilities.isBefore(t, start));
     }
     
-    /** Stream of recurrences starting at dateTimeStart (DTSTART) */
+    /** Stream of recurrences starting at dateTimeStart (DTSTART) 
+     * @link {@link #streamRecurrences(Temporal)}*/
     default Stream<Temporal> streamRecurrences()
     {
         return streamRecurrences(getDateTimeStart().getValue());

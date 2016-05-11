@@ -38,6 +38,25 @@ public enum RRuleElementType
             }
         }
     },
+    INTERVAL ("INTERVAL", Interval.class, 0, null) {
+        @Override
+        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
+        {
+            return rrule.getInterval();
+        }
+
+        @Override
+        public void parse(RecurrenceRule3 recurrenceRule, String content)
+        {
+            if (recurrenceRule.getInterval() == null)
+            {
+                recurrenceRule.setInterval(Integer.parseInt(content));
+            } else
+            {
+                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
+            }
+        }
+    },
     UNTIL ("UNTIL", Until.class, 0, null) {
         @Override
         public RRuleElement<?> getElement(RecurrenceRule3 rrule)
@@ -70,25 +89,6 @@ public enum RRuleElementType
             if (recurrenceRule.getCount() == null)
             {
                 recurrenceRule.setCount(Integer.parseInt(content));
-            } else
-            {
-                throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
-            }
-        }
-    },
-    INTERVAL ("INTERVAL", Interval.class, 0, null) {
-        @Override
-        public RRuleElement<?> getElement(RecurrenceRule3 rrule)
-        {
-            return rrule.getInterval();
-        }
-
-        @Override
-        public void parse(RecurrenceRule3 recurrenceRule, String content)
-        {
-            if (recurrenceRule.getInterval() == null)
-            {
-                recurrenceRule.setInterval(Integer.parseInt(content));
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");

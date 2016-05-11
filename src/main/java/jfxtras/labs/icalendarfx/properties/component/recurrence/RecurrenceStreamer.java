@@ -21,7 +21,8 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
- * Produces a stream of Temporal objects representing the recurrence set as defined 
+ * Handles caching an array of Temporal date/time values to speed up producing a stream
+ * of recurrence instances for a recurrence rule (RRULE).
  * RFC 5545 3.8.5.2, page 121
  * The recurrence set is the complete set of recurrence instances for a calendar component.
  * 
@@ -418,7 +419,7 @@ public class RecurrenceStreamer
                         // check if start or end needs to wrap
                         if (cacheEnd < 0) cacheEnd = CACHE_RANGE - 1;
                         if (cacheStart == CACHE_RANGE) cacheStart = 0;
-                        System.out.println("makeCache:" + cacheStart + " " + cacheEnd);
+//                        System.out.println("makeCache:" + cacheStart + " " + cacheEnd);
                     }
                 })
                 .filter(t -> ! DateTimeUtilities.isBefore(t, start2)); // remove too early events;

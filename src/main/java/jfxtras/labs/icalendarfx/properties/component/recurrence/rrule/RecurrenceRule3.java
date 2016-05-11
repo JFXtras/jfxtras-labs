@@ -694,7 +694,6 @@ public class RecurrenceRule3 implements VCalendarElement
         boolean elementsEqual = true;
         for (int i=0; i<myElements.size(); i++)
         {
-            System.out.println("element:" + i);
             if (! myElements.get(i).getElement(this).equals(testElements.get(i).getElement(testObj)))
             {
                 System.out.println("Recurrence rule not equal:" + myElements.get(i).getElement(this).toContent() +

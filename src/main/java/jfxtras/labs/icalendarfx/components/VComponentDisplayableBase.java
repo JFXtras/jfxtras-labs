@@ -396,7 +396,10 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             // If present, add replacement recurrences from child components
             stream3 = RecurrenceStreamer.merge(
                     stream2,
-                    childComponentsWithRecurrenceIDs().stream().flatMap(c ->  c.streamRecurrences(start)), 
+                    childComponentsWithRecurrenceIDs()
+                            .stream()
+                            .flatMap(c ->  c.streamRecurrences(start))
+                            .sorted(temporalComparator),
                     temporalComparator);
         } else
         {
@@ -419,8 +422,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             stream4 = stream3;
         }
         
-        return recurrenceStreamer().makeCache(stream4);
-//        return stream4;
+        if (getRecurrenceRule() == null)
+        {
+            return stream4; // no cache is no recurrence rule
+        }
+        return recurrenceStreamer().makeCache(stream4);  // make cache of start date/times
     }
 
     /*
