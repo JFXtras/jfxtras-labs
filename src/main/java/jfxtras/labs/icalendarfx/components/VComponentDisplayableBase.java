@@ -1,9 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,12 +20,13 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBase<T> implements VComponentDisplayable<T>, VComponentRepeatable<T>, VComponentDescribable<T>
 {
@@ -367,24 +364,10 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         Stream<Temporal> inStream = VComponentDisplayable.super.streamRecurrences(start);
 
         // assign temporal comparator to match start type
-        // TODO - COMBINE INTO ONE LOCATION TO REPLACE VERSION IN VComponentRepeatable
-        final Comparator<Temporal> temporalComparator;
-        if (start instanceof LocalDate)
-        {
-            temporalComparator = (t1, t2) -> ((LocalDate) t1).compareTo((LocalDate) t2);
-        } else if (start instanceof LocalDateTime)
-        {
-            temporalComparator = (t1, t2) -> ((LocalDateTime) t1).compareTo((LocalDateTime) t2);            
-        } else if (start instanceof ZonedDateTime)
-        {
-            temporalComparator = (t1, t2) -> ((ZonedDateTime) t1).compareTo((ZonedDateTime) t2);
-        } else
-        {
-            throw new DateTimeException("Unsupported Temporal type:" + start.getClass().getSimpleName());
-        }
+        final Comparator<Temporal> temporalComparator = DateTimeUtilities.makeTemporalComparator(start);
         
         // Handle Recurrence IDs
-        final Stream<Temporal> stream3;
+        final Stream<Temporal> stream2;
         if (childComponentsWithRecurrenceIDs() != null)
         {
             // If present, remove recurrence ID original values
@@ -392,22 +375,22 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
                     .stream()
                     .map(c -> c.getRecurrenceId().getValue())
                     .collect(Collectors.toList());
-            Stream<Temporal> stream2 = inStream.filter(t -> ! recurrenceIDTemporals.contains(t));
-            // If present, add replacement recurrences from child components
-            stream3 = RecurrenceStreamer.merge(
-                    stream2,
-                    childComponentsWithRecurrenceIDs()
-                            .stream()
-                            .flatMap(c ->  c.streamRecurrences(start))
-                            .sorted(temporalComparator),
-                    temporalComparator);
+            stream2 = inStream.filter(t -> ! recurrenceIDTemporals.contains(t));
+//            // If present, add replacement recurrences from child components - DON'T DO - ADDED IN WHEN OTHER COMPONENT IS PROCESSED
+//            stream3 = RecurrenceStreamer.merge(
+//                    stream2,
+//                    childComponentsWithRecurrenceIDs()
+//                            .stream()
+//                            .flatMap(c ->  c.streamRecurrences(start))
+//                            .sorted(temporalComparator),
+//                    temporalComparator);
         } else
         {
-            stream3 = inStream;
+            stream2 = inStream;
         }
         
         // If present, remove exceptions
-        final Stream<Temporal> stream4;
+        final Stream<Temporal> stream3;
         if (getExceptions() != null)
         {
             List<Temporal> exceptions = getExceptions()
@@ -416,26 +399,26 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
                     .map(v -> (Temporal) v)
                     .sorted(temporalComparator)
                     .collect(Collectors.toList());
-            stream4 = stream3.filter(d -> ! exceptions.contains(d));
+            stream3 = stream2.filter(d -> ! exceptions.contains(d));
         } else
         {
-            stream4 = stream3;
+            stream3 = stream2;
         }
         
         if (getRecurrenceRule() == null)
         {
-            return stream4; // no cache is no recurrence rule
+            return stream3; // no cache is no recurrence rule
         }
-        return recurrenceStreamer().makeCache(stream4);  // make cache of start date/times
+        return recurrenceStreamer().makeCache(stream3);  // make cache of start date/times
     }
 
     /*
      *  RECURRENCE STREAMER
      *  produces recurrence set
      */
-    private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
+    private RecurrenceRuleCache streamer = new RecurrenceRuleCache(this);
     @Override
-    public RecurrenceStreamer recurrenceStreamer() { return streamer; }
+    public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
 
     /*
      * COMPONENTS WITH RECURRENCE-IDs

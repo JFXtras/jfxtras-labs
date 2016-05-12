@@ -4,7 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneName;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetFrom;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
@@ -103,7 +103,7 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
     }
     
     // Recurrence streamer - produces recurrence set
-    private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
+    private RecurrenceRuleCache streamer = new RecurrenceRuleCache(this);
     @Override
-    public RecurrenceStreamer recurrenceStreamer() { return streamer; }
+    public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
 }

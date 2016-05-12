@@ -10,8 +10,11 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
@@ -20,8 +23,8 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecurrence;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -238,7 +241,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     /**
      * Handles caching of recurrence start Temporal values.
      */
-    RecurrenceStreamer recurrenceStreamer();
+    RecurrenceRuleCache recurrenceStreamer();
 
     /** Stream of dates or date-times that indicate the series of start date-times of the event(s).
      * iCalendar calls this series the recurrence set.
@@ -271,24 +274,10 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         }
         
         // assign temporal comparator to match start type
-        // TODO PUT THIS ELSEWHERE - COMBINE WITH DISPLAYABLE VERSION
-        final Comparator<Temporal> temporalComparator;
-        if (start instanceof LocalDate)
-        {
-            temporalComparator = (t1, t2) -> ((LocalDate) t1).compareTo((LocalDate) t2);
-        } else if (start instanceof LocalDateTime)
-        {
-            temporalComparator = (t1, t2) -> ((LocalDateTime) t1).compareTo((LocalDateTime) t2);            
-        } else if (start instanceof ZonedDateTime)
-        {
-            temporalComparator = (t1, t2) -> ((ZonedDateTime) t1).compareTo((ZonedDateTime) t2);
-        } else
-        {
-            throw new DateTimeException("Unsupported Temporal type:" + start.getClass().getSimpleName());
-        }
+        final Comparator<Temporal> temporalComparator = DateTimeUtilities.makeTemporalComparator(start);
         
         // add recurrences, if present
-        final Stream<Temporal> stream2 = (getRecurrences() == null) ? stream1 : RecurrenceStreamer.merge(
+        final Stream<Temporal> stream2 = (getRecurrences() == null) ? stream1 : merge(
                 stream1,
                 getRecurrences()
                         .stream()
@@ -319,6 +308,68 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             return startType == recurrenceType;
         }
         return true;
+    }
+    
+    public static <T> Stream<T> merge(Stream<T> stream1, Stream<T> stream2, Comparator<T> comparator)
+    {
+            Iterator<T> iterator = new MergedIterator<T>(
+                    stream1.iterator()
+                  , stream2.iterator()
+                  , comparator);
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false);
+    }
+    
+    /*
+     * Recommend using with StreamSupport.stream(iteratorStream, false);
+     */
+
+    /** Merge two sorted iterators */
+    static class MergedIterator<T> implements Iterator<T>
+    {
+        private final Iterator<T> iterator1;
+        private final Iterator<T> iterator2;
+        private final Comparator<T> comparator;
+        private T next1;
+        private T next2;
+        
+        public MergedIterator(Iterator<T> iterator1, Iterator<T> iterator2, Comparator<T> comparator)
+        {
+            this.iterator1 = iterator1;
+            this.iterator2 = iterator2;
+            this.comparator = comparator;
+        }
+        
+        @Override
+        public boolean hasNext()
+        {
+            return  iterator1.hasNext() || iterator2.hasNext() || (next1 != null) || (next2 != null);
+        }
+
+        @Override
+        public T next()
+        {
+            if (iterator1.hasNext() && (next1 == null)) next1 = iterator1.next();
+            if (iterator2.hasNext() && (next2 == null)) next2 = iterator2.next();
+            T theNext;
+            int result = (next1 == null) ? 1 :
+                         (next2 == null) ? -1 :
+                         comparator.compare(next1, next2);
+            if (result > 0)
+            {
+                theNext = next2;
+                next2 = null;
+            } else if (result < 0)
+            {
+                theNext = next1;
+                next1 = null;
+            } else
+            { // same element, return one, advance both
+                theNext = next1;
+                next1 = null;
+                next2 = null;
+            }
+            return theNext;
+        }
     }
 
 }

@@ -105,6 +105,24 @@ public final class DateTimeUtilities
         return ld1.compareTo(ld2);
     };
     
+    /** Returns correct comparator based on Temporal parameter */
+    public final static Comparator<Temporal> makeTemporalComparator(Temporal t) 
+    {
+        if (t instanceof LocalDate)
+        {
+            return (t1, t2) -> ((LocalDate) t1).compareTo((LocalDate) t2);
+        } else if (t instanceof LocalDateTime)
+        {
+            return (t1, t2) -> ((LocalDateTime) t1).compareTo((LocalDateTime) t2);            
+        } else if (t instanceof ZonedDateTime)
+        {
+            return (t1, t2) -> ((ZonedDateTime) t1).compareTo((ZonedDateTime) t2);
+        } else
+        {
+            throw new DateTimeException("Unsupported Temporal type:" + t.getClass().getSimpleName());
+        }
+    }
+    
     /** Determines if Temporal is before t2
      * Works for LocalDate, LocalDateTime and ZonedDateTime
      * 
@@ -129,7 +147,8 @@ public final class DateTimeUtilities
             {
                 throw new DateTimeException("Unsupported Temporal class: " + t1.getClass());
             }
-        } throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
+        }
+        throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
     }
 
     /** Determines if Temporal is after t2

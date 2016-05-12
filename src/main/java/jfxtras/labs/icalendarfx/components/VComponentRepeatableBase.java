@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceStreamer;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 /**
  * Contains following properties:
@@ -83,9 +83,9 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
      *  RECURRENCE STREAMER
      *  produces recurrence set
      */
-    private RecurrenceStreamer streamer = new RecurrenceStreamer(this);
+    private RecurrenceRuleCache streamer = new RecurrenceRuleCache(this);
     @Override
-    public RecurrenceStreamer recurrenceStreamer() { return streamer; }
+    public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
     
     /*
      * CONSTRUCTORS

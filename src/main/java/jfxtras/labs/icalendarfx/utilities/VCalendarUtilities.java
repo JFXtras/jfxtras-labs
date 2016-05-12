@@ -88,7 +88,7 @@ public final class VCalendarUtilities
             vCalendarProperty.parseAndSetProperty(vCalendar, value);
         }
     }
-    
+    @Deprecated
     public enum VCalendarComponent
     {
         CALENDAR_SCALE ("CALSCALE") {

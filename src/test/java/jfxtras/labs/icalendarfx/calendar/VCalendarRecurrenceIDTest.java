@@ -11,7 +11,7 @@ import jfxtras.labs.icalendarfx.components.VEventNew;
 public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract2
 {
     @Test
-    public void canBuildVCalendar()
+    public void canStreamVCalendar()
     {
         VEventNew parent = getYearly1();
         VEventNew child = getRecurrenceForYearly1();
@@ -19,6 +19,6 @@ public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract2
                 .withVEvents(parent, child);
         assertEquals(2, c.getVEvents().size());
         assertEquals(1, parent.childComponentsWithRecurrenceIDs().size());
-        parent.recurrenceStreamer().stream().limit(5).forEach(System.out::println);
+        parent.streamRecurrences().limit(5).forEach(System.out::println);
     }
 }

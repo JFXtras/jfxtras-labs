@@ -167,7 +167,7 @@ public class DisplayableTest
             
             builtComponent.setRecurrenceRule("RRULE:FREQ=DAILY;INTERVAL=2");
             builtComponent.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "19960301T010000Z"));
-            List<Temporal> myDates = builtComponent.recurrenceStreamer().stream().limit(6).collect(Collectors.toList());
+            List<Temporal> myDates = builtComponent.streamRecurrences().limit(6).collect(Collectors.toList());
             assertEquals(expectedDates, myDates);
         }
     }
@@ -184,7 +184,7 @@ public class DisplayableTest
                 .withExceptions(new Exceptions<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 15, 10, 0)));
         List<Temporal> madeDates = e
-                .recurrenceStreamer().stream(e.getDateTimeStart().getValue())
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -212,9 +212,8 @@ public class DisplayableTest
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.DAILY)
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
-        Temporal start = ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles"));
         List<Temporal> madeDates = e
-                .recurrenceStreamer().stream(start)
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
@@ -248,7 +247,7 @@ public class DisplayableTest
                           )));
         Temporal start = LocalDate.of(2016, 2, 7);
         List<Temporal> madeDates = e
-                .recurrenceStreamer().stream(start)
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
