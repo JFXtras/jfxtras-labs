@@ -13,7 +13,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  * Describable VComponents
  * 
  * @author David Bal
- * @see VEvent
+ * @see VEventOld
  * @see VTodoOld
  * @see VJournal
  * @see VAlarm

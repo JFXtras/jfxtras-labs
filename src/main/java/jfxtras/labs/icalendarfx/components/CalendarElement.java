@@ -39,7 +39,7 @@ public enum CalendarElement
         @Override
         public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
-            VEventNew e = new VEventNew();
+            VEvent e = new VEvent();
             e.parseContent(contentLines);
             vCalendar.getVEvents().add(e);
             return e;

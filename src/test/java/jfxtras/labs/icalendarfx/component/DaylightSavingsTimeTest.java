@@ -71,7 +71,7 @@ public class DaylightSavingsTimeTest
     public void canBuildRepeatable()
     {
         DaylightSavingTime builtComponent = new DaylightSavingTime()
-                .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
+                .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904")
                 .withRecurrenceRule(new RecurrenceRule3()
                     .withFrequency(FrequencyType.DAILY)
                     .withInterval(4));
@@ -90,7 +90,7 @@ public class DaylightSavingsTimeTest
                 LocalDate.of(1996, 4, 2),
                 LocalDate.of(1996, 4, 3),
                 LocalDate.of(1996, 4, 4) );        
-        builtComponent.getRecurrences().add(new Recurrences<LocalDate>(expectedValues));
+        builtComponent.getRecurrenceDates().add(new Recurrences<LocalDate>(expectedValues));
         String content2 = "BEGIN:" + componentName + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19960402,19960403,19960404" + System.lineSeparator() +
@@ -105,9 +105,9 @@ public class DaylightSavingsTimeTest
     public void canCatchDifferentRepeatableTypes()
     {
         DaylightSavingTime builtComponent = new DaylightSavingTime()
-                .withRecurrences("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
+                .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
         ObservableSet<ZonedDateTime> expectedValues = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
-        builtComponent.getRecurrences().add(new Recurrences<ZonedDateTime>(expectedValues));
+        builtComponent.getRecurrenceDates().add(new Recurrences<ZonedDateTime>(expectedValues));
     }
 }

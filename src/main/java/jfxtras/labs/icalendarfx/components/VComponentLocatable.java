@@ -16,8 +16,9 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
  * 
  * @author David Bal
  *
- * @param <I> class of recurrence instance
- * @see VEvent
+ * @param <T> - implemented class
+ * @param <R> - class of Recurrence instance
+ * @see VEventOld
  * @see VTodoOld
  */
 public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VComponentDuration<T>, VComponentDescribable2<T>

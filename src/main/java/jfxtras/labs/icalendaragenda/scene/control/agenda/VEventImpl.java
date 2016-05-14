@@ -18,7 +18,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentUtilities;
-import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.VEventOld;
 import jfxtras.labs.icalendarfx.components.VEventUtilities;
 import jfxtras.labs.icalendarfx.components.VComponentUtilities.VComponentPropertyOld;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -33,7 +33,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * @author David Bal
  *
  */
-public class VEventImpl extends VEvent<Appointment, VEventImpl>
+public class VEventImpl extends VEventOld<Appointment, VEventImpl>
 {
     public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroup; }
     private ObjectProperty<AppointmentGroup> appointmentGroup = new SimpleObjectProperty<AppointmentGroup>(this, "CATEGORIES");

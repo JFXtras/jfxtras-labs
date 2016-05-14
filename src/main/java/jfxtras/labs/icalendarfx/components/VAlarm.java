@@ -127,7 +127,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
          confirmation in such a case.
  * 
  * @author David Bal
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  */
 public class VAlarm extends VComponentDescribableBase<VAlarm> implements VComponentDescribable2<VAlarm>,

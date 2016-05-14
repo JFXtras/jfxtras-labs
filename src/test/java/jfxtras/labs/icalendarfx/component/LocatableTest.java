@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
@@ -22,7 +22,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
 /**
  * Test following components:
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * 
  * for the following properties:
@@ -42,7 +42,7 @@ public class LocatableTest
     public void canBuildLocatable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentLocatable<?>> components = Arrays.asList(
-                new VEventNew()
+                new VEvent()
                     .withDescription("DESCRIPTION:A simple description")
                     .withLocation("Antarctica")
                     .withPriority(2)

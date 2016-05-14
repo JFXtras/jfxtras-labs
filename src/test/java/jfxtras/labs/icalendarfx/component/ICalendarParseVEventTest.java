@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 
 public class ICalendarParseVEventTest extends ICalendarTestAbstract2
 {           
@@ -25,8 +25,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
                               + "SUMMARY:Yearly1 Summary" + System.lineSeparator()
                               + "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventNew vEvent = VEventNew.parse(vEventString);
-        VEventNew expectedVEvent = getYearly1();
+        VEvent vEvent = VEvent.parse(vEventString);
+        VEvent expectedVEvent = getYearly1();
         assertEquals(expectedVEvent, vEvent);
     }
 
@@ -40,9 +40,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
                               + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventNew vEvent = VEventNew.parse(vEventString);
+        VEvent vEvent = VEvent.parse(vEventString);
         System.out.println(vEvent);
-        VEventNew expectedVEvent = getDaily3();
+        VEvent expectedVEvent = getDaily3();
         assertEquals(expectedVEvent, vEvent);
     }
     
@@ -59,8 +59,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
                               + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventNew vEvent = VEventNew.parse(vEventString);
-        VEventNew expectedVEvent = getDaily3();
+        VEvent vEvent = VEvent.parse(vEventString);
+        VEvent expectedVEvent = getDaily3();
         assertEquals(expectedVEvent, vEvent);
     }
         
@@ -79,9 +79,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
                               + "SUMMARY:DailyUTC Summary" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
-        VEventNew vEvent = VEventNew.parse(vEventString);
+        VEvent vEvent = VEvent.parse(vEventString);
         System.out.println("text:" + vEvent);
-        VEventNew expectedVEvent = getDailyUTC();
+        VEvent expectedVEvent = getDailyUTC();
         assertEquals(expectedVEvent, vEvent);
     }
     
@@ -100,8 +100,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
                 + "SUMMARY:Daily2 Summary" + System.lineSeparator()
                 + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
-        VEventNew vEvent = VEventNew.parse(vEventString);
-        VEventNew expectedVEvent = getDailyWithException1();
+        VEvent vEvent = VEvent.parse(vEventString);
+        VEvent expectedVEvent = getDailyWithException1();
         assertEquals(expectedVEvent, vEvent);
     }
     
@@ -114,8 +114,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
                           + "DTSTART:VALUE=DATE:20151109" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
-    VEventNew vEvent = VEventNew.parse(vEventString);
-    VEventNew expectedVEvent = getWholeDayDaily1();
+    VEvent vEvent = VEvent.parse(vEventString);
+    VEvent expectedVEvent = getWholeDayDaily1();
     assertEquals(expectedVEvent, vEvent);
     }
     
@@ -136,8 +136,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
             + "SUMMARY:test1" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventNew vEvent = VEventNew.parse(vEventString);
-    VEventNew expectedVEvent = getGoogleIndividual();
+    VEvent vEvent = VEvent.parse(vEventString);
+    VEvent expectedVEvent = getGoogleIndividual();
     assertEquals(expectedVEvent, vEvent);
     }
     
@@ -159,8 +159,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
             + "SUMMARY:test2" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventNew vEvent = VEventNew.parse(vEventString);
-    VEventNew expectedVEvent = getGoogleRepeatable();
+    VEvent vEvent = VEvent.parse(vEventString);
+    VEvent expectedVEvent = getGoogleRepeatable();
     assertEquals(expectedVEvent, vEvent);
     }
     
@@ -185,8 +185,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
             + "SUMMARY:test3" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventNew vEvent = VEventNew.parse(vEventString);
-    VEventNew expectedVEvent = getGoogleWithExceptions();
+    VEvent vEvent = VEvent.parse(vEventString);
+    VEvent expectedVEvent = getGoogleWithExceptions();
     assertEquals(expectedVEvent, vEvent);
     }
     
@@ -208,8 +208,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
             + "SUMMARY:test4" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventNew vEvent = VEventNew.parse(vEventString);
-    VEventNew expectedVEvent = getGoogleRepeatablePart1();
+    VEvent vEvent = VEvent.parse(vEventString);
+    VEvent expectedVEvent = getGoogleRepeatablePart1();
     assertEquals(expectedVEvent, vEvent);
     }
     
@@ -231,8 +231,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
             + "SUMMARY:test5" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventNew vEvent = VEventNew.parse(vEventString);
-    VEventNew expectedVEvent = getGoogleRepeatablePart2();
+    VEvent vEvent = VEvent.parse(vEventString);
+    VEvent expectedVEvent = getGoogleRepeatablePart2();
     assertEquals(expectedVEvent, vEvent);
     }
     
@@ -254,8 +254,8 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
             + "SUMMARY:test6" + System.lineSeparator()
             + "TRANSP:OPAQUE" + System.lineSeparator() // currently not supported
             + "END:VEVENT";
-    VEventNew vEvent = VEventNew.parse(vEventString);
-    VEventNew expectedVEvent = getGoogleRepeatablePart3();
+    VEvent vEvent = VEvent.parse(vEventString);
+    VEvent expectedVEvent = getGoogleRepeatablePart3();
     assertEquals(expectedVEvent, vEvent);
     }
 }

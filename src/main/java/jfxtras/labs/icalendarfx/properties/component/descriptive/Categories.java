@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
@@ -25,7 +25,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  */

@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
@@ -1160,7 +1160,7 @@ public enum PropertyType
         public Object getProperty(VComponentNew<?> vComponent)
         {
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
-            return castComponent.getRecurrences();
+            return castComponent.getRecurrenceDates();
         }
 
         @Override
@@ -1168,13 +1168,13 @@ public enum PropertyType
         {
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             final ObservableList<Recurrences<? extends Temporal>> list;
-            if (castComponent.getRecurrences() == null)
+            if (castComponent.getRecurrenceDates() == null)
             {
                 list = FXCollections.observableArrayList();
-                castComponent.setRecurrences(list);
+                castComponent.setRecurrenceDates(list);
             } else
             {
-                list = castComponent.getRecurrences();
+                list = castComponent.getRecurrenceDates();
             }
             list.add(Recurrences.parse(propertyContent));
         }
@@ -1184,12 +1184,12 @@ public enum PropertyType
         {
             VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
-            Recurrences<?>[] propertyArray = castSource.getRecurrences()
+            Recurrences<?>[] propertyArray = castSource.getRecurrenceDates()
                     .stream()
                     .map(c -> new Recurrences<>(c)) // copy each property
                     .toArray(size -> new Recurrences[size]);
             ObservableList<Recurrences<?>> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setRecurrences(properties);
+            castDestination.setRecurrenceDates(properties);
         }
     },
     // Relationship
@@ -1534,14 +1534,14 @@ public enum PropertyType
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
-            VEventNew castComponent = (VEventNew) vComponent;
+            VEvent castComponent = (VEvent) vComponent;
             return castComponent.getTimeTransparency();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
-            VEventNew castComponent = (VEventNew) vComponent;
+            VEvent castComponent = (VEvent) vComponent;
             if (castComponent.getTimeTransparency() == null)
             {
                 castComponent.setTimeTransparency(TimeTransparency.parse(propertyContent));                                
@@ -1554,8 +1554,8 @@ public enum PropertyType
         @Override
         public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination)
         {
-            VEventNew castSource = (VEventNew) source;
-            VEventNew castDestination = (VEventNew) destination;
+            VEvent castSource = (VEvent) source;
+            VEvent castDestination = (VEvent) destination;
             TimeTransparency property = new TimeTransparency(castSource.getTimeTransparency());
             castDestination.setTimeTransparency(property);
         }

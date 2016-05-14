@@ -12,7 +12,7 @@ import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
@@ -22,7 +22,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 /**
  * Test following components:
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  * @see VAlarm
@@ -44,7 +44,7 @@ public class BaseTest
     public void canBuildBase() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentBase<?>> components = Arrays.asList(
-                new VEventNew()
+                new VEvent()
                     .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
                     .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
                     .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid")),

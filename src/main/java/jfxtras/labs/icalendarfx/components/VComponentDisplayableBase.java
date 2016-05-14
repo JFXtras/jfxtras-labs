@@ -194,16 +194,16 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
     @Override
-    public ObservableList<Recurrences<? extends Temporal>> getRecurrences() { return recurrences; }
-    private ObservableList<Recurrences<? extends Temporal>> recurrences;
+    public ObservableList<Recurrences<? extends Temporal>> getRecurrenceDates() { return recurrenceDates; }
+    private ObservableList<Recurrences<? extends Temporal>> recurrenceDates;
     @Override
-    public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
+    public void setRecurrenceDates(ObservableList<Recurrences<? extends Temporal>> recurrenceDates)
     {
-        this.recurrences = recurrences;
-        if (recurrences != null)
+        this.recurrenceDates = recurrenceDates;
+        if (recurrenceDates != null)
         {
-            recurrences.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-            checkRecurrencesConsistency(recurrences, null);
+            recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
+            checkRecurrencesConsistency(recurrenceDates, null);
         }
     }
 
@@ -357,11 +357,40 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         super(source);
     }
     
+//    /**
+//     * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+//     * This property is not a part of the iCalendar standard
+//     */
+//    @Override
+//    public Temporal getStartRange() { return startRange; }
+//    private Temporal startRange;
+//    @Override
+//    public void setStartRange(Temporal startRange) { this.startRange = startRange; }
+//    public T withStartRange(Temporal startRange) { setStartRange(startRange); return (T) this; }
+//    
+//    /**
+//     * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+//     */
+//    @Override
+//    public Temporal getEndRange() { return endRange; }
+//    private Temporal endRange;
+//    @Override
+//    public void setEndRange(Temporal endRange) { this.endRange = endRange; }
+//    public T withEndRange(Temporal endRange) { setEndRange(endRange); return (T) this; }
+    
+//    /**
+//     * Recurrence instances, represented as type R, that are bounded by {@link #startRange} and {@link #endRange}
+//     * The elements of the list are created by calling {@link #makeRecurrences()}
+//     */
+//    @Override
+//    public List<R> recurrences() { return recurrences; }
+//    final private List<R> recurrences = new ArrayList<>();
+    
     @Override
-    public Stream<Temporal> streamRecurrences(Temporal start)
+    public Stream<Temporal> streamRecurrenceDates(Temporal start)
     {
         // get stream with recurrence rule (RRULE) and recurrence date (RDATE)
-        Stream<Temporal> inStream = VComponentDisplayable.super.streamRecurrences(start);
+        Stream<Temporal> inStream = VComponentDisplayable.super.streamRecurrenceDates(start);
 
         // assign temporal comparator to match start type
         final Comparator<Temporal> temporalComparator = DateTimeUtilities.makeTemporalComparator(start);

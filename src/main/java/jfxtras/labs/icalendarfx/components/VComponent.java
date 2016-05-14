@@ -127,7 +127,7 @@ instances into one property internally.
 
  * @param <I> - type of recurrence instance, such as an appointment implementation
  * @see VComponentDisplayableOldBase
- * @see VEvent
+ * @see VEventOld
  * @see VTodoOld // not implemented yet
  * @see VJournal // not implemented yet
  * 

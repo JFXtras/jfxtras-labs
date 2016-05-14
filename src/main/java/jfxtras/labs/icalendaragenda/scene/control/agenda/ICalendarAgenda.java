@@ -34,9 +34,10 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectedOneAppointmentLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VComponent.StartEndRange;
+import jfxtras.labs.icalendarfx.components.VEventOld;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -63,10 +64,17 @@ public class ICalendarAgenda extends Agenda
     
     private LocalDateTimeRange dateTimeRange; // date range of current skin, set when localDateTimeRangeCallback fires
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
+
+    /** The VCalendar object that contains all scheduling information */
+    public VCalendar getVCalendar() { return vCalendar; }
+    private VCalendar vCalendar;
+    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
     
     /** VComponents are iCalendar compliant calendar components.
      * They make appointments for Agenda to render. */
+    @Deprecated
     public ObservableList<VComponent<Appointment>> vComponents() { return vComponents; }
+    @Deprecated
     private ObservableList<VComponent<Appointment>> vComponents = FXCollections.observableArrayList();
     
     /** VEvent class - used in factory to instantiate new VEvent objects */
@@ -217,8 +225,8 @@ public class ICalendarAgenda extends Agenda
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
         // TODO - NEED ANOTHER VERSION OF THIS CODE FOR VTODO
-        VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) findVComponent(appointment);
-        VEvent<Appointment,?> vEventOriginal = (VEvent<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
+        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
+        VEventOld<Appointment,?> vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
         Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
         final Temporal startInstance;
         final Temporal endInstance;
@@ -499,7 +507,7 @@ public class ICalendarAgenda extends Agenda
                 {
                     Appointment appointment = selectedAppointments().get(0);
                     getSelectedOneAppointmentCallback().call(appointment);
-                    VEvent<Appointment,?> vEvent = (VEvent<Appointment,?>) findVComponent(appointment);
+                    VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
                     System.out.println("selected vEvent:" + vEvent);
                 }
             }

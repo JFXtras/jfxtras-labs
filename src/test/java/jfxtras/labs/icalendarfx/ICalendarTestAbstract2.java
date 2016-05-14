@@ -9,7 +9,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -45,9 +45,9 @@ public abstract class ICalendarTestAbstract2
 //    }
     
     /** FREQ=YEARLY; */
-    protected VEventNew getYearly1()
+    protected VEvent getYearly1()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withCategories("group13")
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
@@ -62,9 +62,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /** FREQ=YEARLY; */
-    protected VEventNew getRecurrenceForYearly1()
+    protected VEvent getRecurrenceForYearly1()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withCategories("group13")
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
@@ -79,9 +79,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=YEARLY;BYDAY=FR; */
-    protected VEventNew getYearly2()
+    protected VEvent getYearly2()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 6, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.YEARLY)
@@ -92,9 +92,9 @@ public abstract class ICalendarTestAbstract2
      * DTSTART;TZID=America/New_York:19970605T090000
      * RRULE:FREQ=YEARLY;BYDAY=TH;BYMONTH=6,7,8
      * example in RFC 5545 iCalendar, page 129 */
-    protected VEventNew getYearly3()
+    protected VEvent getYearly3()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(1997, 6, 5, 9, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.YEARLY)
@@ -103,9 +103,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /** FREQ=YEARLY;BYMONTH=1,2 */
-    protected VEventNew getYearly4()
+    protected VEvent getYearly4()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 1, 6, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.YEARLY)
@@ -119,9 +119,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=10 */
-    protected VEventNew getYearly5()
+    protected VEvent getYearly5()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 10, 0, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.YEARLY)
@@ -136,9 +136,9 @@ public abstract class ICalendarTestAbstract2
        DTSTART;TZID=America/New_York:19961105T090000
        RRULE:FREQ=YEARLY;INTERVAL=4;BYMONTH=11;BYDAY=TU;
         BYMONTHDAY=2,3,4,5,6,7,8 */
-    protected VEventNew getYearly6()
+    protected VEvent getYearly6()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(1996, 11, 5, 0, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.YEARLY)
@@ -149,9 +149,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /** FREQ=YEARLY;BYDAY=20MO */
-    protected VEventNew getYearly7()
+    protected VEvent getYearly7()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 19, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.YEARLY)
@@ -159,9 +159,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /** FREQ=YEARLY;WKST=MO;BYWEEKNO=20;BYDAY=MO */
-    protected VEventNew getYearly8()
+    protected VEvent getYearly8()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(1997, 5, 12, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.YEARLY)
@@ -170,18 +170,18 @@ public abstract class ICalendarTestAbstract2
     }
         
     /** FREQ=MONTHLY, Basic monthly stream, repeats 9th day of every month */
-    protected VEventNew getMonthly1()
+    protected VEvent getMonthly1()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.MONTHLY));
     }
 
     /** FREQ=MONTHLY;BYMONTHDAY=-2, Monthly stream, negative day of month */
-    protected VEventNew getMonthly2()
+    protected VEvent getMonthly2()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 29, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.MONTHLY)
@@ -190,9 +190,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=MONTHLY;BYDAY=TU,WE,FR */
-    protected VEventNew getMonthly3()
+    protected VEvent getMonthly3()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.MONTHLY)
@@ -200,9 +200,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=MONTHLY;BYDAY=-1SA */
-    protected VEventNew getMonthly4()
+    protected VEvent getMonthly4()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.MONTHLY)
@@ -210,9 +210,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13 Every Friday the 13th, forever: */
-    protected VEventNew getMonthly5()
+    protected VEvent getMonthly5()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(1997, 6, 13, 10, 0))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(1997, 9, 1, 8, 30), ZoneOffset.UTC))
                 .withDuration(Duration.ofHours(1))
@@ -223,9 +223,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=MONTHLY;BYMONTH=11,12;BYDAY=TU,WE,FR  */
-    protected VEventNew getMonthly6()
+    protected VEvent getMonthly6()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 3, 10, 0))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDuration(Duration.ofMinutes(90))
@@ -237,9 +237,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /** FREQ=MONTHLY;BYDAY=3MO */
-    protected VEventNew getMonthly7()
+    protected VEvent getMonthly7()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.MONTHLY)
@@ -248,18 +248,18 @@ public abstract class ICalendarTestAbstract2
     
     
     /** FREQ=WEEKLY, Basic weekly stream */
-    protected VEventNew getWeekly1()
+    protected VEvent getWeekly1()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.WEEKLY));
     }
 
     /** FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR */
-    protected static VEventNew getWeekly2()
+    protected static VEvent getWeekly2()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
                 .withDuration(Duration.ofMinutes(45))
                 .withDescription("Weekly1 Description")
@@ -273,9 +273,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=WEEKLY;BYDAY=MO,WE,FR  */
-    protected VEventNew getWeekly3()
+    protected VEvent getWeekly3()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0))
                 .withDuration(Duration.ofMinutes(45))
                 .withDescription("Weekly3 Description")
@@ -286,16 +286,16 @@ public abstract class ICalendarTestAbstract2
     }
     
     /** FREQ=WEEKLY;INTERVAL=2;COUNT=11;BYDAY=MO,WE,FR */
-    protected VEventNew getWeekly4()
+    protected VEvent getWeekly4()
     {
-        VEventNew vEvent = getWeekly2();
+        VEvent vEvent = getWeekly2();
         vEvent.getRecurrenceRule().getValue().setCount(11);
         return vEvent;
     }
     
-    protected VEventNew getWeekly5()
+    protected VEvent getWeekly5()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2016, 1, 3, 5, 0))
                 .withDateTimeEnd(LocalDateTime.of(2016, 1, 3, 7, 0))
                 .withDescription("Weekly5 Description")
@@ -306,9 +306,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /** FREQ=WEEKLY;BYDAY=MO,WE,FR  */
-    public static VEventNew getWeeklyZoned()
+    public static VEvent getWeeklyZoned()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 45), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("America/Los_Angeles")))
@@ -322,9 +322,9 @@ public abstract class ICalendarTestAbstract2
 
     
     /** FREQ=DAILY, Basic daily stream */
-    public static VEventNew getDaily1()
+    public static VEvent getDaily1()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDescription("Daily1 Description")
@@ -336,9 +336,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=DAILY;INVERVAL=3;COUNT=6 */
-    protected static VEventNew getDaily2()
+    protected static VEvent getDaily2()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withCategories("group03")
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(90))
@@ -353,9 +353,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14 */
-    protected VEventNew getDaily3()
+    protected VEvent getDaily3()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -369,9 +369,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /** FREQ=DAILY;INVERVAL=2;BYMONTHDAY=9 */
-    protected VEventNew getDaily4()
+    protected VEvent getDaily4()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.DAILY)
@@ -380,9 +380,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /** FREQ=DAILY;INVERVAL=2;BYDAY=FR */
-    protected VEventNew getDaily5()
+    protected VEvent getDaily5()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.DAILY)
@@ -391,9 +391,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /* FREQ=DAILY;INVERVAL=2;UNTIL=20151201T095959 */
-    protected static VEventNew getDaily6()
+    protected static VEvent getDaily6()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withCategories("group03")
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
@@ -410,9 +410,9 @@ public abstract class ICalendarTestAbstract2
     
     /* FREQ=DAILY;INVERVAL=2;UNTIL=20151129T100000 
      * Tests inclusive UNTIL */
-    protected static VEventNew getDaily7()
+    protected static VEvent getDaily7()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDescription("Daily6 Description")
@@ -426,9 +426,9 @@ public abstract class ICalendarTestAbstract2
                         .withInterval(2));
     }
     
-    public static VEventNew getDailyUTC()
+    public static VEvent getDailyUTC()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withCategories("group03")
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneOffset.UTC))
@@ -442,9 +442,9 @@ public abstract class ICalendarTestAbstract2
                         .withInterval(2));
     }
     
-    public static VEventNew getDailyJapanZone()
+    public static VEvent getDailyJapanZone()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withCategories("group03")
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 0), ZoneId.of("Japan")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 9, 0), ZoneId.of("Japan")))
@@ -458,9 +458,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /** Individual - non repeatable VEvent */
-    public static VEventNew getIndividual1()
+    public static VEvent getIndividual1()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30))
                 .withDuration(Duration.ofMinutes(60))
                 .withDescription("Individual Description")
@@ -469,18 +469,18 @@ public abstract class ICalendarTestAbstract2
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
     
-    protected static VEventNew getIndividual2()
+    protected static VEvent getIndividual2()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDate.of(2015, 11, 11))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
     
-    public static VEventNew getIndividualZoned()
+    public static VEvent getIndividualZoned()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -489,7 +489,7 @@ public abstract class ICalendarTestAbstract2
     
     /** FREQ=DAILY;INVERVAL=3;COUNT=6
      *  EXDATE=20151112T100000,20151115T100000 */
-    public static VEventNew getDailyWithException1()
+    public static VEvent getDailyWithException1()
     {
         return getDaily2()
                 .withExceptions(new Exceptions<LocalDateTime>(
@@ -497,20 +497,20 @@ public abstract class ICalendarTestAbstract2
                         LocalDateTime.of(2015, 11, 15, 10, 0)));
     }
 
-    protected static VEventNew getRecurrences()
+    protected static VEvent getRecurrences()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(60))
-                .withRecurrences(new Recurrences<LocalDateTime>(
+                .withRecurrenceDates(new Recurrences<LocalDateTime>(
                         LocalDateTime.of(2015, 11, 12, 10, 0),
                         LocalDateTime.of(2015, 11, 14, 12, 0)));
     }
     
     /** all-day appointments */
-    protected VEventNew getWholeDayDaily1()
+    protected VEvent getWholeDayDaily1()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDate.of(2015, 11, 9))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -518,9 +518,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /* FREQ=DAILY;INVERVAL=3;COUNT=6 */
-    protected VEventNew getWholeDayDaily2()
+    protected VEvent getWholeDayDaily2()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeStart(LocalDate.of(2015, 11, 9))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -532,9 +532,9 @@ public abstract class ICalendarTestAbstract2
     }
 
     /* FREQ=DAILY;INVERVAL=3;UNTIL=20151124 */
-    protected static VEventNew getWholeDayDaily3()
+    protected static VEvent getWholeDayDaily3()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withCategories("group06")
                 .withDateTimeStart(LocalDate.of(2015, 11, 9))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 11))
@@ -604,9 +604,9 @@ public abstract class ICalendarTestAbstract2
 //    }
     
     /* Example Google individual appointment */
-    protected static VEventNew getGoogleIndividual()
+    protected static VEvent getGoogleIndividual()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 15, 0), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
@@ -617,9 +617,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /* Example Google repeatable appointment */
-    public static VEventNew getGoogleRepeatable()
+    public static VEvent getGoogleRepeatable()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 11, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
@@ -633,9 +633,9 @@ public abstract class ICalendarTestAbstract2
     }
     
     /* Example Google repeatable appointment with EXDATE*/
-    protected static VEventNew getGoogleWithExceptions()
+    protected static VEvent getGoogleWithExceptions()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 15, 30), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
@@ -654,9 +654,9 @@ public abstract class ICalendarTestAbstract2
     
     /* Example Google repeatable appointment with 3 parts 
      * Parent*/
-    protected static VEventNew getGoogleRepeatablePart1()
+    protected static VEvent getGoogleRepeatablePart1()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 3), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 13, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 17), ZoneOffset.UTC))
@@ -675,9 +675,9 @@ public abstract class ICalendarTestAbstract2
      * For this part, Google doesn't use RELATED-TO to establish the parent.
      * Instead, Google adds a UTC date, like a RECURRENCE-ID, to the UID
      * The special UID is converted to the RELATED-TO field internally */
-    protected static VEventNew getGoogleRepeatablePart2()
+    protected static VEvent getGoogleRepeatablePart2()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 3), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 18, 14, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 17), ZoneOffset.UTC))
@@ -693,9 +693,9 @@ public abstract class ICalendarTestAbstract2
     
     /* Example Google repeatable appointment with 3 parts 
      * Recurrence */
-    protected static VEventNew getGoogleRepeatablePart3()
+    protected static VEvent getGoogleRepeatablePart3()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 19, 37, 3), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 16, 9, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 21, 32, 26), ZoneOffset.UTC))
@@ -720,9 +720,9 @@ public abstract class ICalendarTestAbstract2
 //        return vComponents;
 //    }
 
-    protected static VEventNew getSplitWeek()
+    protected static VEvent getSplitWeek()
     {
-        return new VEventNew()
+        return new VEvent()
                 .withDateTimeEnd(LocalDateTime.of(2016, 3, 13, 5, 45))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(2016, 3, 12, 4, 0))

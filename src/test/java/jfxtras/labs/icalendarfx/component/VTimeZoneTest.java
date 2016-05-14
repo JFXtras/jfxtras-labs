@@ -114,7 +114,7 @@ public class VTimeZoneTest
                             .withTimeZoneNames("EST"),
                         new DaylightSavingTime() // 3
                             .withDateTimeStart("19760425T020000")
-                            .withRecurrences("RDATE:19750223T020000")
+                            .withRecurrenceDates("RDATE:19750223T020000")
                             .withTimeZoneOffsetFrom("-0500")
                             .withTimeZoneOffsetTo("-0400")
                             .withTimeZoneNames("EDT"),

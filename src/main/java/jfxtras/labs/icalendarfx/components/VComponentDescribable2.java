@@ -10,7 +10,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
  * @author David Bal
  *
  * @param <T> - concrete subclass
- * @see VEvent
+ * @see VEventOld
  * @see VTodoOld
  * @see VAlarm
  */

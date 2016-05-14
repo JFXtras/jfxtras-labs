@@ -11,14 +11,14 @@ import java.time.temporal.Temporal;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
 /**
  * Test following components:
- * @see VEventNew
+ * @see VEvent
  * 
  * for the following properties:
  * @see TimeTransparency
@@ -31,7 +31,7 @@ public class VEventTest
     @Test
     public void canBuildVEvent()
     {
-        VEventNew builtComponent = new VEventNew()
+        VEvent builtComponent = new VEvent()
                 .withTimeTransparency(TimeTransparencyType.OPAQUE)
                 .withDateTimeEnd(LocalDate.of(1997, 3, 1));
         String componentName = builtComponent.componentType().toString();
@@ -41,7 +41,7 @@ public class VEventTest
                 "TRANSP:OPAQUE" + System.lineSeparator() +
                 "END:" + componentName;
                 
-        VEventNew madeComponent = VEventNew.parse(content);
+        VEvent madeComponent = VEvent.parse(content);
         assertEquals(madeComponent, builtComponent);
         assertEquals(content, builtComponent.toContent());
     }
@@ -50,7 +50,7 @@ public class VEventTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchBothDurationAndDTEnd()
     {
-       new VEventNew()
+       new VEvent()
                 .withDateTimeEnd(LocalDate.of(1997, 3, 1))
                 .withDuration(Duration.ofMinutes(30));
     }
@@ -59,7 +59,7 @@ public class VEventTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchBothDurationAndDTEnd2()
     {
-       new VEventNew()
+       new VEvent()
              .withDuration(Duration.ofMinutes(30))
              .withDateTimeEnd(LocalDate.of(1997, 3, 1));
     }
@@ -67,7 +67,7 @@ public class VEventTest
     @Test
     public void canChangeDTEndToDuration()
     {
-        VEventNew builtComponent = new VEventNew()
+        VEvent builtComponent = new VEvent()
              .withDateTimeEnd(LocalDate.of(1997, 3, 1));
         assertEquals(LocalDate.of(1997, 3, 1), builtComponent.getDateTimeEnd().getValue());
         builtComponent.setDateTimeEnd((DateTimeEnd<?>) null);

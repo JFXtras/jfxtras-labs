@@ -6,7 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 
@@ -21,7 +21,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
  * 
  * @author David Bal
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  * @see DaylightSavingTime

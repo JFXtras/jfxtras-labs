@@ -8,8 +8,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 /**
  * Contains following properties:
@@ -35,14 +35,14 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
     @Override
-    public ObservableList<Recurrences<? extends Temporal>> getRecurrences() { return recurrences; }
-    private ObservableList<Recurrences<? extends Temporal>> recurrences;
+    public ObservableList<Recurrences<? extends Temporal>> getRecurrenceDates() { return recurrenceDates; }
+    private ObservableList<Recurrences<? extends Temporal>> recurrenceDates;
     @Override
-    public void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
+    public void setRecurrenceDates(ObservableList<Recurrences<? extends Temporal>> recurrenceDates)
     {
-        this.recurrences = recurrences;
-        recurrences.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-        checkRecurrencesConsistency(recurrences, null);
+        this.recurrenceDates = recurrenceDates;
+        recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
+        checkRecurrencesConsistency(recurrenceDates, null);
     }
 
     /**
@@ -68,25 +68,6 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
     public RecurrenceRuleNew getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
     private ObjectProperty<RecurrenceRuleNew> recurrenceRule;
     
-    @Override
-    public Stream<Temporal> streamRecurrences(Temporal start)
-    {
-        Stream<Temporal> inStream = VComponentRepeatable.super.streamRecurrences(start);
-        if (getRecurrenceRule() == null)
-        {
-            return inStream; // no cache is no recurrence rule
-        }
-        return recurrenceStreamer().makeCache(inStream);   // make cache of start date/times
-    }
-        
-    /*
-     *  RECURRENCE STREAMER
-     *  produces recurrence set
-     */
-    private RecurrenceRuleCache streamer = new RecurrenceRuleCache(this);
-    @Override
-    public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
-    
     /*
      * CONSTRUCTORS
      */
@@ -95,5 +76,53 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
     VComponentRepeatableBase(String contentLines)
     {
         super(contentLines);
+    }    
+    
+//    /**
+//     * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+//     * This property is not a part of the iCalendar standard
+//     */
+//    @Override
+//    public Temporal getStartRange() { return startRange; }
+//    private Temporal startRange;
+//    @Override
+//    public void setStartRange(Temporal startRange) { this.startRange = startRange; }
+//    public T withStartRange(Temporal startRange) { setStartRange(startRange); return (T) this; }
+//    
+//    /**
+//     * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
+//     */
+//    @Override
+//    public Temporal getEndRange() { return endRange; }
+//    private Temporal endRange;
+//    @Override
+//    public void setEndRange(Temporal endRange) { this.endRange = endRange; }
+//    public T withEndRange(Temporal endRange) { setEndRange(endRange); return (T) this; }
+    
+    @Override
+    public Stream<Temporal> streamRecurrenceDates(Temporal start)
+    {
+        Stream<Temporal> inStream = VComponentRepeatable.super.streamRecurrenceDates(start);
+        if (getRecurrenceRule() == null)
+        {
+            return inStream; // no cache is no recurrence rule
+        }
+        return recurrenceStreamer().makeCache(inStream);   // make cache of start date/times
     }
+    
+//    /**
+//     * Recurrence instances, represented as type R, that are bounded by {@link #startRange} and {@link #endRange}
+//     * The elements of the list are created by calling {@link #makeRecurrences()}
+//     */
+//    @Override
+//    public List<R> recurrences() { return recurrences; }
+//    final private List<R> recurrences = new ArrayList<>();
+
+    /*
+     *  RECURRENCE STREAMER
+     *  produces recurrence set
+     */
+    private RecurrenceRuleCache streamer = new RecurrenceRuleCache(this);
+    @Override
+    public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
 }

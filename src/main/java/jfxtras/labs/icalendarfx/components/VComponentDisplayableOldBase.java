@@ -44,7 +44,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
  * Abstract implementation of VComponent with all common methods for VEvent, VTodo, and VJournal
  * 
  * @author David Bal
- * @see VEvent
+ * @see VEventOld
  *
  * @param <I> - recurrence instance type
  * @param <T> - Implementation class

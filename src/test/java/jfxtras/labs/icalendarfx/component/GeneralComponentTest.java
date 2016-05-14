@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
@@ -37,7 +37,7 @@ public class GeneralComponentTest
     public void canFoldAndUnfoldLine()
     {
         String line = "Ek and Lorentzon said they would consider halting investment at th,eir headquarters in Stockholm. The pioneering music streaming company employs about 850 people in the city, and more than 1,000 in nearly 30 other offices around the world.";
-        VEventNew builtComponent = new VEventNew()
+        VEvent builtComponent = new VEvent()
                 .withComments(line);
         String componentName = builtComponent.componentType().toString();
         String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
@@ -53,7 +53,7 @@ public class GeneralComponentTest
     @Test
     public void canGetProperties()
     {
-        VEventNew builtComponent = new VEventNew()
+        VEvent builtComponent = new VEvent()
                 .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
                 .withDateTimeStart(new DateTimeStart<LocalDateTime>(LocalDateTime.of(2016, 4, 15, 12, 0)))
                 .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
@@ -80,7 +80,7 @@ public class GeneralComponentTest
                 "CLASS:PUBLIC" + System.lineSeparator() +
                 "CLASS:PRIVATE" + System.lineSeparator() + // not allowed
                 "END:" + componentName;
-        VEventNew.parse(content);
+        VEvent.parse(content);
     }
     
     @Test
@@ -90,7 +90,7 @@ public class GeneralComponentTest
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "CLASS:PUBLIC" + System.lineSeparator() +
                 "END:" + componentName;
-        VEventNew madeComponent = VEventNew.parse(content);
+        VEvent madeComponent = VEvent.parse(content);
         madeComponent.setClassification("PRIVATE");
         assertEquals(ClassificationType.PRIVATE, madeComponent.getClassification().getValue());
     }
@@ -108,7 +108,7 @@ public class GeneralComponentTest
                 + "DESCRIPTION:DailyUTC Description" + System.lineSeparator()
                 + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z" + System.lineSeparator()
                 + "END:VEVENT";
-        VEventNew builtComponent = VEventNew.parse(contentLines);
+        VEvent builtComponent = VEvent.parse(contentLines);
         builtComponent.setDescription((Description) null);
         builtComponent.getCategories().add(Categories.parse("group05"));
         builtComponent.setClassification(ClassificationType.PRIVATE);

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -20,7 +21,7 @@ import org.junit.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
@@ -44,7 +45,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
 /**
  * Test following components:
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  * 
@@ -73,14 +74,14 @@ public class DisplayableTest
     public void canBuildDisplayable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentDisplayable<?>> components = Arrays.asList(
-                new VEventNew()
+                new VEvent()
                     .withStatus(StatusType.NEEDS_ACTION)
                     .withSequence(2)
                     .withRelatedTo("jsmith.part7.19960817T083000.xyzMail@example.com",
                             "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com")
                     .withRecurrenceId(ZonedDateTime.of(LocalDateTime.of(2016, 1, 1, 12, 0), ZoneId.of("Z")))
                     .withSummary("a test summary")
-                    .withRecurrences("RDATE:19960302T010000Z,19960304T010000Z")
+                    .withRecurrenceDates("RDATE:19960302T010000Z,19960304T010000Z")
                     .withRecurrenceRule("RRULE:FREQ=DAILY")
                     .withDateTimeLastModified("20160306T080000Z")
                     .withAttachments(Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
@@ -97,7 +98,7 @@ public class DisplayableTest
                             "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com")
                     .withRecurrenceId(ZonedDateTime.of(LocalDateTime.of(2016, 1, 1, 12, 0), ZoneId.of("Z")))
                     .withSummary("a test summary")
-                    .withRecurrences("RDATE:19960302T010000Z,19960304T010000Z")
+                    .withRecurrenceDates("RDATE:19960302T010000Z,19960304T010000Z")
                     .withRecurrenceRule("RRULE:FREQ=DAILY")
                     .withDateTimeLastModified("20160306T080000Z")
                     .withAttachments(Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
@@ -114,7 +115,7 @@ public class DisplayableTest
                             "RELATED-TO;RELTYPE=SIBLING:19960401-080045-4000F192713@example.com")
                     .withRecurrenceId(ZonedDateTime.of(LocalDateTime.of(2016, 1, 1, 12, 0), ZoneId.of("Z")))
                     .withSummary("a test summary")
-                    .withRecurrences("RDATE:19960302T010000Z,19960304T010000Z")
+                    .withRecurrenceDates("RDATE:19960302T010000Z,19960304T010000Z")
                     .withRecurrenceRule("RRULE:FREQ=DAILY")
                     .withDateTimeLastModified("20160306T080000Z")
                     .withAttachments(Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
@@ -167,7 +168,7 @@ public class DisplayableTest
             
             builtComponent.setRecurrenceRule("RRULE:FREQ=DAILY;INTERVAL=2");
             builtComponent.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "19960301T010000Z"));
-            List<Temporal> myDates = builtComponent.streamRecurrences().limit(6).collect(Collectors.toList());
+            List<Temporal> myDates = builtComponent.streamRecurrenceDates().limit(6).collect(Collectors.toList());
             assertEquals(expectedDates, myDates);
         }
     }
@@ -175,7 +176,7 @@ public class DisplayableTest
     @Test
     public void exceptionTest1()
     {
-        VEventNew e = new VEventNew()
+        VEvent e = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withCount(6)
@@ -184,7 +185,7 @@ public class DisplayableTest
                 .withExceptions(new Exceptions<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 15, 10, 0)));
         List<Temporal> madeDates = e
-                .streamRecurrences()
+                .streamRecurrenceDates()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -203,7 +204,7 @@ public class DisplayableTest
     @Test
     public void canStreamGoogleWithExDates()
     {
-        VEventNew e = new VEventNew()
+        VEvent e = new VEvent()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
                 .withExceptions(new Exceptions<ZonedDateTime>(
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
@@ -213,7 +214,7 @@ public class DisplayableTest
                         .withFrequency(FrequencyType.DAILY)
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
         List<Temporal> madeDates = e
-                .streamRecurrences()
+                .streamRecurrenceDates()
                 .limit(5)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
@@ -229,7 +230,7 @@ public class DisplayableTest
     @Test
     public void canChangeGoogleWithExDatesToWholeDay()
     {
-        VEventNew e = new VEventNew()
+        VEvent e = new VEvent()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
                 .withExceptions(new Exceptions<ZonedDateTime>(
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
@@ -247,7 +248,7 @@ public class DisplayableTest
                           )));
         Temporal start = LocalDate.of(2016, 2, 7);
         List<Temporal> madeDates = e
-                .streamRecurrences()
+                .streamRecurrenceDates()
                 .limit(5)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
@@ -260,11 +261,28 @@ public class DisplayableTest
         assertEquals(expectedDates, madeDates);
     }
     
+    @Test
+    public void canStreamWithEnd()
+    {
+        VEvent e = new VEvent()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 20, 0))
+                .withDuration(Duration.ofHours(6))
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withCount(6)
+                        .withFrequency("DAILY")
+                        .withInterval(3));
+        List<Temporal> recurrences = e.streamRecurrenceDates(LocalDateTime.of(2015, 11, 9, 22, 0))
+                .peek(System.out::println)
+                .collect(Collectors.toList());
+//        recurrences
+
+    }
+    
     @Test (expected = DateTimeException.class)
     @Ignore // can't catch exception in listener
     public void canHandleDTStartTypeChange()
     {
-        VEventNew component = new VEventNew()
+        VEvent component = new VEvent()
             .withDateTimeStart(LocalDate.of(1997, 3, 1))
             .withExceptions("EXDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
 //      Platform.runLater(() -> component.setDateTimeStart("20160302T223316Z"));      
@@ -274,7 +292,7 @@ public class DisplayableTest
     @Test (expected = DateTimeException.class)
     public void canCatchWrongDateType()
     {
-        VEventNew component = new VEventNew()
+        VEvent component = new VEvent()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
         ObservableList<Exceptions<? extends Temporal>> exceptions = FXCollections.observableArrayList();
         exceptions.add(Exceptions.parse("20160228T093000"));
@@ -285,7 +303,7 @@ public class DisplayableTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongRecurrenceIdType()
     {
-        new VEventNew()
+        new VEvent()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1))
                 .withRecurrenceId("20160306T080000Z");
     }
@@ -294,7 +312,7 @@ public class DisplayableTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongRecurrenceIdType2()
     {
-       new VEventNew()
+       new VEvent()
                 .withRecurrenceId("20160306T080000Z")
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
     }
@@ -303,7 +321,7 @@ public class DisplayableTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongRecurrenceIdType3()
     {
-        VEventNew builtComponent = new VEventNew();
+        VEvent builtComponent = new VEvent();
         builtComponent.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(1997, 3, 1)));
         builtComponent.setRecurrenceId(new RecurrenceId<LocalDateTime>(LocalDateTime.of(2016, 3, 6, 8, 0)));
     }
@@ -311,7 +329,7 @@ public class DisplayableTest
     @Test (expected = ClassCastException.class)
     public void canCatchWrongExceptionType1()
     {
-        new VEventNew().withExceptions(LocalDate.of(2016, 4, 27),
+        new VEvent().withExceptions(LocalDate.of(2016, 4, 27),
                 LocalDateTime.of(2016, 4, 27, 12, 0));
     }
 }

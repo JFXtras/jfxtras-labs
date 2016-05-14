@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
 
 public class ComponentCopyTest extends ICalendarTestAbstract2
@@ -16,22 +16,22 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
     @Test
     public void canCopyVEvent1()
     {
-        VEventNew vevent = new VEventNew()
+        VEvent vevent = new VEvent()
                 .withDateTimeStart("20150831")
                 .withComments("comment1", "comment2");
-        VEventNew veventCopy = new VEventNew(vevent);
+        VEvent veventCopy = new VEvent(vevent);
         assertEquals(vevent, veventCopy);
     }
     
     @Test
     public void canCopyVEvent2()
     {
-        VEventNew component1 = getWeekly3()
+        VEvent component1 = getWeekly3()
                 .withExceptions(new Exceptions<>(
                 LocalDateTime.of(2016, 2, 10, 12, 30)
               , LocalDateTime.of(2016, 2, 12, 12, 30)
               , LocalDateTime.of(2016, 2, 9, 12, 30) ));
-        VEventNew component2 = new VEventNew(component1);
+        VEvent component2 = new VEvent(component1);
         assertEquals(component1, component2);
         assertFalse(component1 == component2);
     }
@@ -61,8 +61,8 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
        "X-YAHOO-USER-STATUS:BUSY" + System.lineSeparator() +
        "X-YAHOO-EVENT-STATUS:BUSY" + System.lineSeparator() +
        "END:VEVENT";
-        VEventNew component1 = VEventNew.parse(content);
-        VEventNew component2 = new VEventNew(component1);
+        VEvent component1 = VEvent.parse(content);
+        VEvent component2 = new VEvent(component1);
         assertEquals(component1, component2);
         assertEquals(component1.toContent(), component2.toContent());
         System.out.println(component2.toContent());
@@ -121,8 +121,8 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
    "END:VALARM" + System.lineSeparator() +
    "END:VEVENT";
         
-        VEventNew component1 = VEventNew.parse(content);
-        VEventNew component2 = new VEventNew(component1);
+        VEvent component1 = VEvent.parse(content);
+        VEvent component2 = new VEvent(component1);
         assertEquals(component1, component2);
         assertEquals(component1.toContent(), component2.toContent());
 //        assertEquals(content, component2.toContentLines());

@@ -155,6 +155,7 @@ public interface VComponentNew<T>
      * 
      * @return - true if component is valid, false otherwise
      */
+    @Deprecated // replace with list of problems instead
     boolean isValid();
     
     /** Indicates the calendar component is top-level and can be a member of the VCalendar directly.

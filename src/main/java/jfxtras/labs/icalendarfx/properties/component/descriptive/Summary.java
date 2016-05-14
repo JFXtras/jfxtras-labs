@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
@@ -18,7 +18,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  * @see VAlarm

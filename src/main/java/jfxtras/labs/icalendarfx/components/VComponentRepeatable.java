@@ -36,11 +36,14 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * @see Recurrences
  * 
  * @author David Bal
- * @see VEvent
+ * @see VEventOld
  * @see VTodo
  * @see VJournal
  * @see StandardTime
  * @see DaylightSavingTime
+ *
+ * @param <T> implemented class
+ * @param <R> recurrence type
  */
 public interface VComponentRepeatable<T> extends VComponentPrimary<T>
 {    
@@ -54,56 +57,56 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * RDATE;VALUE=DATE:19970101,19970120,19970217,19970421
      *  19970526,19970704,19970901,19971014,19971128,19971129,1997122
      */
-    ObservableList<Recurrences<? extends Temporal>> getRecurrences();
-    void setRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences);
-    default T withRecurrences(ObservableList<Recurrences<? extends Temporal>> recurrences)
+    ObservableList<Recurrences<? extends Temporal>> getRecurrenceDates();
+    void setRecurrenceDates(ObservableList<Recurrences<? extends Temporal>> recurrences);
+    default T withRecurrenceDates(ObservableList<Recurrences<? extends Temporal>> recurrenceDates)
     {
-        setRecurrences(recurrences);
+        setRecurrenceDates(recurrenceDates);
         return (T) this;
     }
-    default T withRecurrences(String...recurrences)
+    default T withRecurrenceDates(String...recurrenceDates)
     {
-        Arrays.stream(recurrences).forEach(s -> PropertyType.RECURRENCE_DATE_TIMES.parse(this, s));   
+        Arrays.stream(recurrenceDates).forEach(s -> PropertyType.RECURRENCE_DATE_TIMES.parse(this, s));   
         return (T) this;
     }
-    default T withRecurrences(Temporal...recurrences)
+    default T withRecurrenceDates(Temporal...recurrenceDates)
     {
-        if (recurrences.length > 0)
+        if (recurrenceDates.length > 0)
         {
             final ObservableList<Recurrences<? extends Temporal>> list;
-            if (getRecurrences() == null)
+            if (getRecurrenceDates() == null)
             {
                 list = FXCollections.observableArrayList();
-                setRecurrences(list);
+                setRecurrenceDates(list);
             } else
             {
-                list = getRecurrences();
+                list = getRecurrenceDates();
             }
             
-            Temporal t = recurrences[0];
+            Temporal t = recurrenceDates[0];
             if (t instanceof LocalDate)
             {
-                Set<LocalDate> recurrences2 = Arrays.stream(recurrences).map(r -> (LocalDate) r).collect(Collectors.toSet());
-                getRecurrences().add(new Recurrences<LocalDate>(FXCollections.observableSet(recurrences2)));
+                Set<LocalDate> recurrences2 = Arrays.stream(recurrenceDates).map(r -> (LocalDate) r).collect(Collectors.toSet());
+                getRecurrenceDates().add(new Recurrences<LocalDate>(FXCollections.observableSet(recurrences2)));
             } else if (t instanceof LocalDateTime)
             {
-                getRecurrences().add(new Recurrences<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) recurrences)));
+                getRecurrenceDates().add(new Recurrences<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) recurrenceDates)));
             } else if (t instanceof ZonedDateTime)
             {
-                getRecurrences().add(new Recurrences<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) recurrences)));
+                getRecurrenceDates().add(new Recurrences<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) recurrenceDates)));
             }
         }
         return (T) this;
     }
-    default T withRecurrences(Recurrences<?>...recurrences)
+    default T withRecurrenceDates(Recurrences<?>...recurrenceDates)
     {
-        if (getRecurrences() == null)
+        if (getRecurrenceDates() == null)
         {
-            setRecurrences(FXCollections.observableArrayList());
-            Arrays.stream(recurrences).forEach(r -> getRecurrences().add(r)); // add one at a time to ensure date-time type compliance
+            setRecurrenceDates(FXCollections.observableArrayList());
+            Arrays.stream(recurrenceDates).forEach(r -> getRecurrenceDates().add(r)); // add one at a time to ensure date-time type compliance
         } else
         {
-            getRecurrences().addAll(recurrences);
+            getRecurrenceDates().addAll(recurrenceDates);
         }
         return (T) this;
     }
@@ -175,9 +178,9 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     @Override
     default void checkDateTimeStartConsistency()
     {
-        if ((getRecurrences() != null) && (getDateTimeStart() != null))
+        if ((getRecurrenceDates() != null) && (getDateTimeStart() != null))
         {
-            Temporal firstRecurrence = getRecurrences().get(0).getValue().iterator().next();
+            Temporal firstRecurrence = getRecurrenceDates().get(0).getValue().iterator().next();
             DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
             DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
             if (recurrenceType != dateTimeStartType)
@@ -243,23 +246,44 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      */
     RecurrenceRuleCache recurrenceStreamer();
 
-    /** Stream of dates or date-times that indicate the series of start date-times of the event(s).
-     * iCalendar calls this series the recurrence set.
-     * For a VEvent without RRULE or RDATE the stream will contain only one element.
-     * In a VEvent with a RRULE the stream should contain more than one date/time element.  It is possible
-     * to define a single-event RRULE, but it is not advisable.  The stream will be infinite 
-     * if COUNT or UNTIL is not present.  The stream has an end when COUNT or UNTIL condition is met.
-     * The stream starts on startDateTime, which must be a valid event date/time, not necessarily the
-     * first date/time (DTSTART) in the sequence.
+    /**
+     * Produces a stream of dates or date-times bounded by the start and end parameters.  See {@link #streamRecurrenceDates(Temporal)}
      * 
-     * Start date/times are only produced between the ranges set by setDateTimeRanges
-     * 
-     * @param start - start dates or date/times produced after this date.  If not on an occurrence,
-     * it will be adjusted to be the next occurrence
+     * @param start - values are produced after this date or date-time.
+     * @param end - production of values stops at this date
      * @return - stream of start dates or date/times for the recurrence set
      */
-//    Stream<Temporal> streamRecurrences(Temporal start);
-    default Stream<Temporal> streamRecurrences(Temporal start)
+    default Stream<Temporal> streamRecurrenceDates(Temporal start, Temporal end)
+    {
+        return streamRecurrenceDates(start)
+                .filter(a -> DateTimeUtilities.isBefore(a, end));
+//        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
+//        if ()
+//        TemporalAmount amount = endType().getDuration(this);
+//        Stream<Temporal> removedTooEarly = stream(getStartRange().minus(amount)).filter(d -> 
+//        {
+//            TemporalAmount duration = endType().getDuration(this);
+//            Temporal plus = d.plus(duration);
+//            return DateTimeUtilities.isAfter(plus, getStartRange()); 
+//        }); // inclusive
+//        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
+//        return removedTooLate;        
+    }
+
+    
+    /** 
+     * Produces a stream of dates or date-times (depending on DTSTART) that represents the start
+     * of each element in the recurrence set.
+     * The values are calculated after applying DTSTART, RDATE, RRULE, and EXDATE properties.
+     * 
+     * If the RRULE is forever, then the stream has no end as well.
+
+     * For a VEvent without RRULE or RDATE the stream will contain only one element.
+     * 
+     * @param start - values are produced after this date or date-time.
+     * @return - stream of start dates or date/times for the recurrence set
+     */
+    default Stream<Temporal> streamRecurrenceDates(Temporal start)
     {
         // get recurrence rule stream, or make a one-element stream from DTSTART if no recurrence rule is present
         final Stream<Temporal> stream1;
@@ -277,9 +301,9 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         final Comparator<Temporal> temporalComparator = DateTimeUtilities.makeTemporalComparator(start);
         
         // add recurrences, if present
-        final Stream<Temporal> stream2 = (getRecurrences() == null) ? stream1 : merge(
+        final Stream<Temporal> stream2 = (getRecurrenceDates() == null) ? stream1 : merge(
                 stream1,
-                getRecurrences()
+                getRecurrenceDates()
                         .stream()
                         .flatMap(r -> r.getValue().stream())
                         .map(v -> (Temporal) v)
@@ -291,19 +315,88 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     }
     
     /** Stream of recurrences starting at dateTimeStart (DTSTART) 
-     * @link {@link #streamRecurrences(Temporal)}*/
-    default Stream<Temporal> streamRecurrences()
+     * @link {@link #streamRecurrenceDates(Temporal)}*/
+    default Stream<Temporal> streamRecurrenceDates()
     {
-        return streamRecurrences(getDateTimeStart().getValue());
+        return streamRecurrenceDates(getDateTimeStart().getValue());
     }
+    
+//    /**
+//     * Start of range for which recurrence instances are generated.
+//     * Should match the start date displayed on the calendar.
+//     * This is not a part of an iCalendar VComponent.
+//     */
+//    Temporal getStartRange();
+//    /**
+//     * Start of range for which recurrence instances are generated.
+//     * Should match the start date displayed on the calendar.
+//     * This is not a part of an iCalendar VComponent.
+//     */
+//    void setStartRange(Temporal start);
+//    /**
+//     * End of range for which recurrence instances are generated.
+//     * Should match the end date displayed on the calendar.
+//     * This is not a part of an iCalendar VComponent.
+//     */
+//    Temporal getEndRange();
+//    /**
+//     * End of range for which recurrence instances are generated.
+//     * Should match the end date displayed on the calendar.
+//     * This is not a part of an iCalendar VComponent.
+//     */
+//    void setEndRange(Temporal end);
+
+//    /**
+//     * Returns a list of recurrence instances of type R that exists
+//     * between startRange and endRange.  
+//     *  
+//     * @param start - beginning of time frame to make recurrences
+//     * @param end - end of time frame to make recurrences
+//     * @return
+//     */
+//    List<R> makeRecurrences(Temporal startRange, Temporal endRange);
+//    default List<R> makeRecurrences(Temporal startRange, Temporal endRange)
+//    {
+//        if (DateTimeUtilities.isAfter(startRange, endRange))
+//        {
+//            throw new DateTimeException("endRange must be after startRange");
+//        }
+//        setEndRange(endRange);
+//        setStartRange(startRange);
+//        return makeRecurrences();
+//    }
+//
+//    /**
+//     * Returns the collection of recurrence instances of calendar component of type T that exists
+//     * between dateTimeRangeStart and dateTimeRangeEnd based on VComponent.
+//     * Recurrence set is defined in RFC 5545 iCalendar page 121 as follows 
+//     * "The recurrence set is the complete set of recurrence instances for a calendar component.  
+//     * The recurrence set is generated by considering the initial "DTSTART" property along with
+//     * the "RRULE", "RDATE", and "EXDATE" properties contained within the recurring component."
+//     * 
+//     * Uses start and end values from a previous call to makeInstances(Temporal start, Temporal end)
+//     * If there are no start and end values an exception is thrown.
+//     *  
+//     * @return
+//     */
+////    List<R> makeRecurrences();
+//    /**
+//     * Returns existing instances in the Recurrence Set (defined in RFC 5545 iCalendar page 121)
+//     * made by the last call of makeRecurrenceSet
+//     * @param <R> type of recurrence instance, such as an appointment implementation
+//     * 
+//     * @return - current instances of the Recurrence Set
+//     * @see makeRecurrenceSet
+//     */
+//    List<R> recurrences();
 
     @Override
     default boolean isValid()
     {
-        if (getRecurrences() != null)
+        if (getRecurrenceDates() != null)
         {
             DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            Temporal r1 = getRecurrences().get(0).getValue().iterator().next();
+            Temporal r1 = getRecurrenceDates().get(0).getValue().iterator().next();
             DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
             return startType == recurrenceType;
         }

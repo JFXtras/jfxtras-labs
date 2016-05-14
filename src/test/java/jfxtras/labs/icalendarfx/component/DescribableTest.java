@@ -11,7 +11,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable2;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
@@ -19,7 +19,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 
 /**
  * Test following components:
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  * @see VAlarm
@@ -37,7 +37,7 @@ public class DescribableTest
     public void canBuildDescribable() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentDescribable<?>> components = Arrays.asList(
-                new VEventNew()
+                new VEvent()
                     .withAttachments(Attachment.parse("ATTACH;FMTTYPE=text/plain;ENCODING=BASE64;VALUE=BINARY:TG9yZW"),
                             Attachment.parse("ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com"))
                     .withSummary(new Summary()
@@ -82,7 +82,7 @@ public class DescribableTest
     public void canBuildDescribable2() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentDescribable2<?>> components = Arrays.asList(
-                new VEventNew()
+                new VEvent()
                     .withDescription("Sample description"),
                 new VTodo()
                     .withDescription("Sample description"),

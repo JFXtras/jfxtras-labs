@@ -35,7 +35,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * 
  * @author David Bal
  *
- * @see VEvent
+ * @see VEventOld
  * @see VTodoOld
  * @see VJournal
  */

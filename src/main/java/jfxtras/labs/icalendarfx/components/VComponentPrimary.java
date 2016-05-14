@@ -102,6 +102,7 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
 
     @Deprecated
     default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };
+    @Deprecated
     default ZoneId getZoneId()
     {
 //        if (getDateTimeType() == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)

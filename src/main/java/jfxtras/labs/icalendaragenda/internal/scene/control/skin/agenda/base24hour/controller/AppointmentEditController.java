@@ -41,7 +41,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.VEventOld;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -70,9 +70,9 @@ public class AppointmentEditController extends Pane
     private Temporal startOriginalInstance;
     private Temporal endInstanceOriginal;
     
-    private VEvent<Appointment,?> vEvent;
+    private VEventOld<Appointment,?> vEvent;
 //    private VComponent<Appointment> vEventOld;
-    private VEvent<Appointment,?> vEventOriginal;
+    private VEventOld<Appointment,?> vEventOriginal;
     private Collection<Appointment> appointments;
     private Collection<VComponent<Appointment>> vComponents;
     private Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback;
@@ -174,7 +174,7 @@ public class AppointmentEditController extends Pane
         this.vComponents = vComponents;
         this.popup = popup;
         this.vEventWriteCallback = vEventWriteCallback;
-        vEvent = (VEvent<Appointment,?>) vComponent;
+        vEvent = (VEventOld<Appointment,?>) vComponent;
         
         // Disable repeat rules for events with recurrence-id
         if (vComponent.getDateTimeRecurrence() != null)
@@ -192,7 +192,7 @@ public class AppointmentEditController extends Pane
         }
         
         // Copy original VEvent
-        vEventOriginal = (VEvent<Appointment,?>) VComponentFactory.newVComponent(vEvent);
+        vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent);
         
         // String bindings
         summaryTextField.textProperty().bindBidirectional(vEvent.getSummary().valueProperty());

@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.relationship;
 
 import java.net.URI;
 
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -17,7 +17,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * ORGANIZER;CN=John Smith:mailto:jsmith@example.com
  * 
  * @author David Bal
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy

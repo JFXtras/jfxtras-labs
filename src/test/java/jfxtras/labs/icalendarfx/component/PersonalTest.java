@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -22,7 +22,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
 
 /**
  * Test following components:
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy
@@ -44,7 +44,7 @@ public class PersonalTest
     public void canBuildPersonal() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentPersonal<?>> components = Arrays.asList(
-                new VEventNew()
+                new VEvent()
                     .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
                     .withDateTimeStamp(DateTimeStamp.parse("20160415T120000Z"))
                     .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))

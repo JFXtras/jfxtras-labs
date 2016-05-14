@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeT
  * @author David Bal
  * 
  * The property can be specified in following components:
- * @see VEventNew
+ * @see VEvent
  */
 public class TimeTransparency extends PropertyBase<TimeTransparencyType,TimeTransparency>
 {

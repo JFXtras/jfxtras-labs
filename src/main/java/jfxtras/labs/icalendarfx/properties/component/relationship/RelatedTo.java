@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.relationship;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
@@ -22,7 +22,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
  * RECURRENCE-ID;VALUE=DATE:19960401
  * 
  * @author David Bal
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  */

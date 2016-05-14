@@ -63,22 +63,6 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
     {
         return CalendarElement.VJOURNAL;
     }
-    
-    /*
-     * CONSTRUCTORS
-     */
-    public VJournal() { super(); }
-    
-    public VJournal(String contentLines)
-    {
-        super(contentLines);
-    }
-    
-    /** Copy constructor */
-    public VJournal(VJournal source)
-    {
-        super(source);
-    }
 
     /**
      * DESCRIPTION:
@@ -111,6 +95,22 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
             getDescriptions().addAll(descriptions);
         }
         return this;
+    }
+    
+    /*
+     * CONSTRUCTORS
+     */
+    public VJournal() { super(); }
+    
+    public VJournal(String contentLines)
+    {
+        super(contentLines);
+    }
+    
+    /** Copy constructor */
+    public VJournal(VJournal source)
+    {
+        super(source);
     }
     
     /** Parse content lines into calendar component object */

@@ -2,527 +2,222 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
-import jfxtras.labs.icalendarfx.components.VEventUtilities.VEventProperty;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
+import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
+import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 
 /**
- * Parent calendar component, VEVENT
- * Defined in RFC 5545 iCalendar 3.6.1, page 52.
+ * VEVENT
+ * Event Component
+ * RFC 5545, 3.6.1, page 52
  * 
- * The status of following component properties from RFC 5545:
- * 
-       3.8.1.  Descriptive Component Properties  . . . . . . . . . .  81
-         3.8.1.1.  Attachment  . . . . . . . . . . . . . . . . . . .  81 - NO (from VComponent)
-         3.8.1.2.  Categories  . . . . . . . . . . . . . . . . . . .  82 - Yes (from VComponent)
-         3.8.1.3.  Classification  . . . . . . . . . . . . . . . . .  83 - TODO (from VComponent)
-         3.8.1.4.  Comment . . . . . . . . . . . . . . . . . . . . .  84 - Yes (from VComponent)
-         3.8.1.5.  Description . . . . . . . . . . . . . . . . . . .  85 - Yes
-         3.8.1.6.  Geographic Position . . . . . . . . . . . . . . .  87 - NO
-         3.8.1.7.  Location  . . . . . . . . . . . . . . . . . . . .  88 - Yes
-         3.8.1.8.  Percent Complete  . . . . . . . . . . . . . . . .  89 - NO
-         3.8.1.9.  Priority  . . . . . . . . . . . . . . . . . . . .  90 - NO
-         3.8.1.10. Resources . . . . . . . . . . . . . . . . . . . .  92 - NO (from VComponent)
-         3.8.1.11. Status  . . . . . . . . . . . . . . . . . . . . .  93 - TODO (from VComponent)
-         3.8.1.12. Summary . . . . . . . . . . . . . . . . . . . . .  94 - Yes (from VComponent)
-       3.8.2.  Date and Time Component Properties  . . . . . . . . .  95
-         3.8.2.1.  Date-Time Completed . . . . . . . . . . . . . . .  95 - NO
-         3.8.2.2.  Date-Time End . . . . . . . . . . . . . . . . . .  96 - Yes
-         3.8.2.3.  Date-Time Due . . . . . . . . . . . . . . . . . .  97 - NO
-         3.8.2.4.  Date-Time Start . . . . . . . . . . . . . . . . .  99 - Yes (from VComponent)
-         3.8.2.5.  Duration  . . . . . . . . . . . . . . . . . . . . 100 - Yes
-         3.8.2.6.  Free/Busy Time  . . . . . . . . . . . . . . . . . 101 - NO
-         3.8.2.7.  Time Transparency . . . . . . . . . . . . . . . . 102 - NO
-       3.8.3.  Time Zone Component Properties  . . . . . . . . . . . 103 - NO
-         3.8.3.1.  Time Zone Identifier  . . . . . . . . . . . . . . 103 - NO
-         3.8.3.2.  Time Zone Name  . . . . . . . . . . . . . . . . . 105 - NO
-         3.8.3.3.  Time Zone Offset From . . . . . . . . . . . . . . 106 - NO
-         3.8.3.4.  Time Zone Offset To . . . . . . . . . . . . . . . 106 - NO
-         3.8.3.5.  Time Zone URL . . . . . . . . . . . . . . . . . . 107 - NO
-       3.8.4.  Relationship Component Properties . . . . . . . . . . 108
-         3.8.4.1.  Attendee  . . . . . . . . . . . . . . . . . . . . 108 - NO (from VComponent)
-         3.8.4.2.  Contact . . . . . . . . . . . . . . . . . . . . . 111 - TODO (from VComponent)
-         3.8.4.3.  Organizer . . . . . . . . . . . . . . . . . . . . 113 - TODO (from VComponent)
-         3.8.4.4.  Recurrence ID . . . . . . . . . . . . . . . . . . 114 - TODO (from VComponent)
-         3.8.4.5.  Related To  . . . . . . . . . . . . . . . . . . . 117 - NO (from VComponent)
-         3.8.4.6.  Uniform Resource Locator  . . . . . . . . . . . . 118 - NO (from VComponent)
-         3.8.4.7.  Unique Identifier . . . . . . . . . . . . . . . . 119 - Yes (from VComponent)
-       3.8.5.  Recurrence Component Properties . . . . . . . . . . . 120
-         3.8.5.1.  Exception Date-Times  . . . . . . . . . . . . . . 120 - Yes, in EXDate class
-         3.8.5.2.  Recurrence Date-Times . . . . . . . . . . . . . . 122 - TODO, in RDate class
-         3.8.5.3.  Recurrence Rule . . . . . . . . . . . . . . . . . 124 - TODO, in RRule class
-       3.8.6.  Alarm Component Properties  . . . . . . . . . . . . . 134
-         3.8.6.1.  Action  . . . . . . . . . . . . . . . . . . . . . 134 - NO
-         3.8.6.2.  Repeat Count  . . . . . . . . . . . . . . . . . . 135 - NO
-         3.8.6.3.  Trigger . . . . . . . . . . . . . . . . . . . . . 135 - NO
-       3.8.7.  Change Management Component Properties  . . . . . . . 138
-         3.8.7.1.  Date-Time Created . . . . . . . . . . . . . . . . 138 - TODO (from VComponent)
-         3.8.7.2.  Date-Time Stamp . . . . . . . . . . . . . . . . . 139 - TODO (from VComponent)
-         3.8.7.3.  Last Modified . . . . . . . . . . . . . . . . . . 140 - TODO (from VComponent)
-         3.8.7.4.  Sequence Number . . . . . . . . . . . . . . . . . 141 - TODO (from VComponent)
-       3.8.8.  Miscellaneous Component Properties  . . . . . . . . . 142
-         3.8.8.1.  IANA Properties . . . . . . . . . . . . . . . . . 142 - NO (from VComponent)
-         3.8.8.2.  Non-Standard Properties . . . . . . . . . . . . . 142 - TODO (from VComponent, some X-properties may be defined here too)
-         3.8.8.3.  Request Status  . . . . . . . . . . . . . . . . . 144 - NO (from VComponent)
+ *    Description:  A "VEVENT" calendar component is a grouping of
+      component properties, possibly including "VALARM" calendar
+      components, that represents a scheduled amount of time on a
+      calendar.  For example, it can be an activity; such as a one-hour
+      long, department meeting from 8:00 AM to 9:00 AM, tomorrow.
+      Generally, an event will take up time on an individual calendar.
+      Hence, the event will appear as an opaque interval in a search for
+      busy time.  Alternately, the event can have its Time Transparency
+
+      set to "TRANSPARENT" in order to prevent blocking of the event in
+      searches for busy time.
+
+      The "VEVENT" is also the calendar component used to specify an
+      anniversary or daily reminder within a calendar.  These events
+      have a DATE value type for the "DTSTART" property instead of the
+      default value type of DATE-TIME.  If such a "VEVENT" has a "DTEND"
+      property, it MUST be specified as a DATE value also.  The
+      anniversary type of "VEVENT" can span more than one date (i.e.,
+      "DTEND" property value is set to a calendar date after the
+      "DTSTART" property value).  If such a "VEVENT" has a "DURATION"
+      property, it MUST be specified as a "dur-day" or "dur-week" value.
+
+      The "DTSTART" property for a "VEVENT" specifies the inclusive
+      start of the event.  For recurring events, it also specifies the
+      very first instance in the recurrence set.  The "DTEND" property
+      for a "VEVENT" calendar component specifies the non-inclusive end
+      of the event.  For cases where a "VEVENT" calendar component
+      specifies a "DTSTART" property with a DATE value type but no
+      "DTEND" nor "DURATION" property, the event's duration is taken to
+      be one day.  For cases where a "VEVENT" calendar component
+      specifies a "DTSTART" property with a DATE-TIME value type but no
+      "DTEND" property, the event ends on the same calendar date and
+      time of day specified by the "DTSTART" property.
+
+      The "VEVENT" calendar component cannot be nested within another
+      calendar component.  However, "VEVENT" calendar components can be
+      related to each other or to a "VTODO" or to a "VJOURNAL" calendar
+      component with the "RELATED-TO" property.
+      
+         Example:  The following is an example of the "VEVENT" calendar
+      component used to represent a meeting that will also be opaque to
+      searches for busy time:
+
+       BEGIN:VEVENT
+       UID:19970901T130000Z-123401@example.com
+       DTSTAMP:19970901T130000Z
+       DTSTART:19970903T163000Z
+       DTEND:19970903T190000Z
+       SUMMARY:Annual Employee Review
+       CLASS:PRIVATE
+       CATEGORIES:BUSINESS,HUMAN RESOURCES
+       END:VEVENT
  *
  * @author David Bal
- * @see VEventImpl
+ *
  */
-public abstract class VEvent<I, T> extends VComponentDisplayableOldBase<I, T>
+public class VEvent extends VComponentLocatableBase<VEvent> implements VComponentDateTimeEnd<VEvent>,
+    VComponentDescribable2<VEvent>
 {
+    @Override
+    public CalendarElement componentType()
+    {
+        return CalendarElement.VEVENT;
+    }
+
     /**
-     * DESCRIPTION: RFC 5545 iCalendar 3.8.1.12. page 84
-     * This property provides a more complete description of the
-     * calendar component than that provided by the "SUMMARY" property.
+     * DTEND
+     * Date-Time End
+     * RFC 5545, 3.8.2.2, page 95
+     * 
+     * This property specifies when the calendar component ends.
+     * 
+     * The value type of this property MUST be the same as the "DTSTART" property, and
+     * its value MUST be later in time than the value of the "DTSTART" property.
+     * 
      * Example:
-     * DESCRIPTION:Meeting to provide technical review for "Phoenix"
-     *  design.\nHappy Face Conference Room. Phoenix design team
-     *  MUST attend this meeting.\nRSVP to team leader.
+     * DTEND;VALUE=DATE:19980704
      */
-    public StringProperty descriptionProperty() { return description; }
-    final private StringProperty description = new SimpleStringProperty(this, VEventProperty.DESCRIPTION.toString());
-    public String getDescription() { return description.getValue(); }
-    public void setDescription(String description) { this.description.set(description); }
-    public T withDescription(String description) { setDescription(description); return (T) this; }
-    
-    /** 
-     * DURATION from RFC 5545 iCalendar 3.8.2.5 page 99, 3.3.6 page 34
-     * Can't be used if DTEND is used.  Must be one or the other.
-     * */
-    final private ObjectProperty<TemporalAmount> duration = new SimpleObjectProperty<>(this, VEventProperty.DURATION.toString());
-    public ObjectProperty<TemporalAmount> durationProperty() { return duration; }
-    public TemporalAmount getDuration() { return duration.getValue(); }
-    public void setDuration(TemporalAmount duration)
+    @Override
+    public ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty()
     {
-        if (duration == null)
+        if (dateTimeEnd == null)
         {
-            endPriority = null;
-        } else
-        {
-            endPriority = EndType.DURATION;
+            dateTimeEnd = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_END.toString());
+            dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
-        this.duration.set(duration);
+        return dateTimeEnd;
     }
-    public T withDuration(TemporalAmount duration) { setDuration(duration); return (T) this; }
-
-    
-    /**
-     * DTEND, Date-Time End. from RFC 5545 iCalendar 3.8.2.2 page 95
-     * Specifies the date and time that a calendar component ends.
-     * Can't be used if DURATION is used.  Must be one or the other.
-     * Must be same Temporal type as dateTimeStart (DTSTART)
-     */
-    final private ObjectProperty<Temporal> dateTimeEnd = new SimpleObjectProperty<>(this, VEventProperty.DATE_TIME_END.toString());
-    public ObjectProperty<Temporal> dateTimeEndProperty() { return dateTimeEnd; }
-    public void setDateTimeEnd(Temporal dtEnd)
+    @Override
+    public DateTimeEnd<? extends Temporal> getDateTimeEnd() { return (dateTimeEnd == null) ? null : dateTimeEndProperty().get(); }
+    private ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEnd;
+    /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
+     *  after dateTimeEndProperty() is initialized */
+    @Override
+    public void checkDateTimeEndConsistency()
     {
-        if (dtEnd == null)
+        VComponentDateTimeEnd.super.checkDateTimeEndConsistency();
+        if ((getDateTimeEnd() != null) && (getDuration() != null))
         {
-            endPriority = null;
-        } else
-        {
-            DateTimeType myDateTimeType = DateTimeType.of(dtEnd);
-            if ((lastDtStartDateTimeType() != null) && (myDateTimeType != lastDtStartDateTimeType()))
-            {
-                throw new DateTimeException("DTEND must have the same DateTimeType as DTSTART, (" + myDateTimeType + " and " + lastDtStartDateTimeType() + ", respectively");
-            }
-            endPriority = EndType.DTEND;
-         }
-        dateTimeEnd.set(dtEnd);
+            throw new DateTimeException("DURATION and DTEND can't both be set");
+        }
     }
-    public Temporal getDateTimeEnd() { return dateTimeEnd.get(); }
-    public T withDateTimeEnd(Temporal dtEnd) { setDateTimeEnd(dtEnd); return (T) this; }
-
-    /** Indicates end option, DURATION or DTEND. 
-     * Getter and setter methods in EndPriority enum */
-    public EndType endType() { return endPriority; }
-    EndType endPriority;
+    
+    /** add listener to Duration to ensure both DURATION and DTEND are not both set */
+    @Override public ObjectProperty<DurationProp> durationProperty()
+    {
+        ObjectProperty<DurationProp> duration = super.durationProperty();
+        duration.addListener((obs) ->
+        {
+            if ((getDateTimeEnd() != null) && (getDuration() != null))
+            {
+                throw new DateTimeException("DURATION and DTEND can't both be set");
+            }            
+        });
+        return duration;
+    }
 
     /**
-     * LOCATION: RFC 5545 iCalendar 3.8.1.12. page 87
-     * This property defines the intended venue for the activity
-     * defined by a calendar component.
+     * TRANSP
+     * Time Transparency
+     * RFC 5545 iCalendar 3.8.2.7. page 101
+     * 
+     * This property defines whether or not an event is transparent to busy time searches.
+     * Events that consume actual time SHOULD be recorded as OPAQUE.  Other
+     * events, which do not take up time SHOULD be recorded as TRANSPARENT.
+     *    
      * Example:
-     * LOCATION:Conference Room - F123\, Bldg. 002
+     * TRANSP:TRANSPARENT
      */
-    public StringProperty locationProperty() { return locationProperty; }
-    final private StringProperty locationProperty = new SimpleStringProperty(this, VEventProperty.LOCATION.toString());
-    public String getLocation() { return locationProperty.getValue(); }
-    public void setLocation(String location) { locationProperty.setValue(location); }
-    public T withLocation(String location) { setLocation(location); return (T) this; }
-
-    @Override
-    void ensureDateTimeTypeConsistency(DateTimeType dateTimeType, ZoneId zone)
+    ObjectProperty<TimeTransparency> timeTransparencyProperty()
     {
-        // DTEND
-        if ((getDateTimeEnd() != null) && (dateTimeType != DateTimeType.of(getDateTimeEnd())))
+        if (timeTransparency == null)
         {
-            // convert to new Temporal type
-//            Temporal newDateTimeEnd = DateTimeType.changeTemporal(getDateTimeEnd(), dateTimeType);
-            Temporal newDateTimeEnd = dateTimeType.from(getDateTimeEnd(), zone);
-            setDateTimeEnd(newDateTimeEnd);
+            timeTransparency = new SimpleObjectProperty<>(this, PropertyType.TIME_TRANSPARENCY.toString());
         }
-        super.ensureDateTimeTypeConsistency(dateTimeType, zone);
+        return timeTransparency;
+    }
+    private ObjectProperty<TimeTransparency> timeTransparency;
+    public TimeTransparency getTimeTransparency() { return timeTransparencyProperty().get(); }
+    public void setTimeTransparency(String timeTransparency) { setTimeTransparency(TimeTransparency.parse(timeTransparency)); }
+    public void setTimeTransparency(TimeTransparency timeTransparency) { timeTransparencyProperty().set(timeTransparency); }
+    public void setTimeTransparency(TimeTransparencyType timeTransparency) { setTimeTransparency(new TimeTransparency(timeTransparency)); }
+    public VEvent withTimeTransparency(TimeTransparency timeTransparency) { setTimeTransparency(timeTransparency); return this; }
+    public VEvent withTimeTransparency(TimeTransparencyType timeTransparencyType) { setTimeTransparency(timeTransparencyType); return this; }
+    public VEvent withTimeTransparency(String timeTransparency) { PropertyType.TIME_TRANSPARENCY.parse(this, timeTransparency); return this; }
+    
+    /*
+     * CONSTRUCTORS
+     */
+    public VEvent() { super(); }
+
+//    @Deprecated
+    public VEvent(String contentLines)
+    {
+        super(contentLines);
     }
     
-    @Override
-    boolean requiresChangeDialog(List<String> changedPropertyNames)
+    /** Copy constructor */
+    public VEvent(VEvent source)
     {
-        if (super.requiresChangeDialog(changedPropertyNames))
+        super(source);
+    }
+
+    /** Stream recurrence dates with adjustment to include recurrences that end before start */
+    @Override
+    public Stream<Temporal> streamRecurrenceDates(Temporal start)
+    {
+        final TemporalAmount adjustment;
+        if (getDuration() != null)
         {
-            return true;
+            adjustment = getDuration().getValue();
+        } else if (getDateTimeEnd() != null)
+        {
+            adjustment = Duration.between(getDateTimeStart().getValue(), getDateTimeEnd().getValue());
         } else
         {
-            return changedPropertyNames.stream()
-                    .map(s ->  
-                    {
-                        VEventProperty p = VEventProperty.propertyFromName(s);
-                        return (p != null) ? p.isDialogRequired() : false;
-                    })
-                    .anyMatch(b -> b == true);
+            throw new RuntimeException("Either DTEND or DURATION must be set");
         }
-    }
-
-    @Override
-    List<String> findChangedProperties(VComponent<I> vComponentOriginal)
-    {
-        List<String> changedProperties = new ArrayList<>();
-        changedProperties.addAll(super.findChangedProperties(vComponentOriginal));
-        Arrays.stream(VEventProperty.values())
-                .filter(p -> ! p.equals(VEventProperty.DATE_TIME_END)) // DATE_TIME_END change calculated in changedStartAndEndDateTime
-                .filter(p -> ! p.equals(VEventProperty.DURATION)) // DURATION change calculated in changedStartAndEndDateTime
-                .forEach(p -> 
-                {
-                    boolean equals = p.isPropertyEqual(this, (VEvent<?,?>) vComponentOriginal);
-                    if (! equals)
-                    {
-                        changedProperties.add(p.toString());
-                    }
-                });        
-        return changedProperties;
-    }
-    
-    // CONSTRUCTORS
-    public VEvent(VEvent<I,T> vevent)
-    {
-        super(vevent);
-        copy(vevent, this);
-    }
-    
-    public VEvent()
-    {
-        super();
-    }
-    
-    // HANDLE EDIT METHODS
-    @Override
-    void validateStartInstanceAndDTStart(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
-    {
-        // Test if DTSTART is not valid, get new one
-        if (! isStreamValue(getDateTimeStart()))
-        {            
-            Optional<Temporal> optionalAfter = stream(getDateTimeStart()).findFirst();
-            final Temporal newTestedStart;
-            if (optionalAfter.isPresent())
-            {
-                newTestedStart = optionalAfter.get();
-            } else
-            {
-                throw new RuntimeException("No valid DTSTART in VComponent");
-            }
-            TemporalAmount duration = endType().getDuration(this);
-//            Temporal newTestedEnd = newTestedStart.plus(duration);
-            setDateTimeStart(newTestedStart);
-            endType().setDuration(this, duration);
-//            setDateTimeEnd(newTestedEnd);
-        }
-//        return super.validateStartInstanceAndDTStart(startOriginalInstance, startInstance, endInstance);
-    }
-        
-    @Override
-    protected void becomingIndividual(VComponent<I> vComponentOriginal, Temporal startInstance, Temporal endInstance)
-    {
-        super.becomingIndividual(vComponentOriginal, startInstance, endInstance);
-        if ((vComponentOriginal.getRRule() != null) && (endType() == EndType.DTEND))
-        { // RRULE was removed, update DTEND
-            setDateTimeEnd(endInstance);
-        }
-    }
-    
-    /** returns list of date-time properties that have been edited (DURATION or DTEND) */
-    @Override
-    protected Collection<String> changedStartAndEndDateTime(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
-    {
-        Collection<String> changedProperties = super.changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance);
-        TemporalAmount durationNew = DateTimeUtilities.durationBetween(startInstance, endInstance);
-        TemporalAmount durationOriginal = endType().getDuration(this);
-        if (! durationOriginal.equals(durationNew)) { changedProperties.add(endType().toString()); }
-        return changedProperties;
-    }
-    
-    /* Adjust DTEND by instance start and end date-time */
-    @Override
-    protected void adjustDateTime(Temporal startOriginalInstance
-            , Temporal startInstance
-            , Temporal endInstance)
-    {
-        super.adjustDateTime(startOriginalInstance, startInstance, endInstance);
-        endType().setDuration(this, startInstance, endInstance);
-    }
-
-    @Override // edit end date or date/time
-    protected Collection<I> editOne(
-            VComponent<I> vComponentOriginal
-          , Collection<VComponent<I>> vComponents
-          , Temporal startOriginalInstance
-          , Temporal startInstance
-          , Temporal endInstance
-          , Collection<I> instances)
-    {
-        // Apply dayShift, if any
-
-        switch (endType())  // TODO - CAN THIS BE PUT INTO EndPriority enum?
-        {
-        case DTEND:
-            Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
-            Temporal newEnd = getDateTimeEnd().plus(dayShift);
-            setDateTimeEnd(newEnd);
-            break;
-        case DURATION:
-            endType().setDuration(this, startInstance, endInstance);
-//            setDuration(Duration.between(startInstance, endInstance));
-            break;
-        }
-//        endType().setDuration(this, startInclusive, endExclusive);
-        return super.editOne(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
-    }
-
-    @Override // edit end date or date/time
-    protected Collection<I> editThisAndFuture(
-            VComponent<I> vComponentOriginal
-          , Collection<VComponent<I>> vComponents
-          , Temporal startOriginalInstance
-          , Temporal startInstance
-          , Temporal endInstance
-          , Collection<I> instances)
-    {
-        final TemporalAmount duration;
-        if (isWholeDay())
-        {
-            duration = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startInstance));
-        } else
-        {
-            duration = Duration.between(getDateTimeStart(), startInstance);
-        }
-        Temporal endNew = getDateTimeEnd().plus(duration);
-        setDateTimeEnd(endNew);
-        return super.editThisAndFuture(vComponentOriginal, vComponents, startOriginalInstance, startInstance, endInstance, instances);
-    }
-    
-    /** Deep copy all fields from source to destination.  Used both by copyTo method and copy constructor. 
-     * */
-    @Deprecated // loop through VEventProperty copy methods directly
-    private static void copy(VEvent<?,?> source, VEvent<?,?> destination)
-    {
-        Arrays.stream(VEventProperty.values())
-                .forEach(p ->
-                {
-                    p.copyProperty(source, destination);
-                });
-        destination.endPriority = source.endType();
-    }
-
-    /** Deep copy all fields from this to destination */
-    @Override
-    public void copyTo(VComponent<I> destination)
-    {
-        super.copyTo(destination);
-        copy(this, (VEvent<?,?>) destination);
-    }
-    
-    /** Make iCalendar compliant string of VEvent calendar component.
-     * This method should be overridden by an implementing class if that
-     * class contains any extra properties. */
-    @Override
-    public String toString()
-    {
-        return super.toString() + System.lineSeparator() + "[" + toComponentText() + "]";
+        return super.streamRecurrenceDates(start.minus(adjustment));
     }
     
     @Override
-    public String toComponentText()
+    public boolean isValid()
     {
-        List<String> properties = makeContentLines();
-        String propertiesString = properties.stream()
-                .map(p -> p + System.lineSeparator())
-                .sorted()
-                .collect(Collectors.joining());
-        return "BEGIN:VEVENT" + System.lineSeparator() + propertiesString + "END:VEVENT";
-    }
-
-    @Override
-    protected List<String> makeContentLines()
-    {
-        List<String> properties = new ArrayList<>();
-        properties.addAll(super.makeContentLines());
-        Arrays.stream(VEventProperty.values())
-                .forEach(p ->
-                {
-                    String newLine = p.toPropertyString(this);
-                    if (newLine != null)
-                    {
-                        properties.add(newLine);
-                    }
-                });
-        return properties;
+        boolean isDateTimeStartPresent = getDateTimeStart() != null;
+        boolean isDateTimeEndPresent = getDateTimeEnd() != null;
+        boolean isDurationPresent = getDuration() != null;
+        boolean ok1 = isDateTimeEndPresent && ! isDurationPresent;
+        boolean ok2 = ! isDateTimeEndPresent && isDurationPresent;
+        boolean isDateTimeEndAndDurationOk = ok1 || ok2;
+        boolean isDateTimeEndTypeOk = VComponentDateTimeEnd.super.isValid();
+        return super.isValid() && isDateTimeStartPresent && isDateTimeEndAndDurationOk && isDateTimeEndTypeOk;
     }
     
-    @Override
-    public Stream<Temporal> streamLimitedByRange()
+    /** Parse content lines into calendar component object */
+    public static VEvent parse(String contentLines)
     {
-        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
-        TemporalAmount amount = endType().getDuration(this);
-        Stream<Temporal> removedTooEarly = stream(getStartRange().minus(amount)).filter(d -> 
-        {
-            TemporalAmount duration = endType().getDuration(this);
-            Temporal plus = d.plus(duration);
-            return DateTimeUtilities.isAfter(plus, getStartRange()); 
-        }); // inclusive
-        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
-        return removedTooLate;
+        VEvent component = new VEvent();
+        component.parseContent(contentLines);
+        return component;
     }
-    
-    /**
-     * Checks that one, and only one, of DTEND or DURATION is set.
-     */
-    @Override
-    public String errorString()
-    {
-        StringBuilder errorsBuilder = new StringBuilder(super.errorString());
-
-        if ((getDateTimeEnd() != null) && (! DateTimeUtilities.isAfter(getDateTimeEnd(), getDateTimeStart())))
-        {
-            errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTEND (" + getDateTimeEnd()
-            + ") must be after DTSTART (" + getDateTimeStart() + ")");
-        }
-        
-        // Note: Check for invalid condition where both DURATION and DTEND not being null is done in parseVEvent.
-        // It is not checked here due to bindings between both DURATION and DTEND.
-        boolean isDurationNull = getDuration() == null;
-        boolean isEndDateTimeNull = getDateTimeEnd() == null;
-        if (isDurationNull && isEndDateTimeNull)
-        {
-            errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  Both DURATION and DTEND can not be null.");
-        }
-
-        if (! isEndDateTimeNull)
-        {
-            Class<? extends Temporal> startClass = getDateTimeStart().getClass();
-            Class<? extends Temporal> endClass = getDateTimeEnd().getClass();
-            if (! startClass.equals(endClass))
-            {
-                errorsBuilder.append(System.lineSeparator() + "Invalid VEvent.  DTSTART and DTEND must be same Temporal type");
-            }
-        }
-        
-        return errorsBuilder.toString();
-    }
-    
-    public enum EndType
-    {
-        DURATION
-        {
-            @Override
-            public void setDuration(VEvent<?,?> vEvent, Temporal startInclusive, Temporal endExclusive)
-            {
-                TemporalAmount duration = DateTimeUtilities.durationBetween(startInclusive, endExclusive);
-                vEvent.setDuration(duration);
-            }
-
-            @Override
-            public TemporalAmount getDuration(VEvent<?,?> vEvent)
-            {
-                return vEvent.getDuration();
-            }
-
-            @Override
-            public void setDuration(VEvent<?, ?> vEvent, TemporalAmount amount)
-            {
-                vEvent.setDuration(amount);
-            }
-        }
-      , DTEND
-      {
-        @Override
-        public void setDuration(VEvent<?,?> vEvent, Temporal startInclusive, Temporal endExclusive)
-        {
-            TemporalAmount duration = DateTimeUtilities.durationBetween(startInclusive, endExclusive);
-            Temporal dtEnd = vEvent.getDateTimeStart().plus(duration);
-            vEvent.setDateTimeEnd(dtEnd);
-        }
-
-        @Override
-        public TemporalAmount getDuration(VEvent<?,?> vEvent)
-        {
-            if (vEvent.isWholeDay())
-            {
-                return Period.between(LocalDate.from(vEvent.getDateTimeStart()), LocalDate.from(vEvent.getDateTimeEnd()));
-            } else
-            {
-                return Duration.between(vEvent.getDateTimeStart(), vEvent.getDateTimeEnd());
-            }
-        }
-
-        @Override
-        public void setDuration(VEvent<?, ?> vEvent, TemporalAmount amount)
-        {
-            vEvent.setDateTimeEnd(vEvent.getDateTimeStart().plus(amount));
-        }
-    };
-
-    /**
-     * Sets the DURATION or DTEND, of the vEvent depending on the EndType value vEvent contains.  If the EndType is DTEND it
-     * is calculated by adding the amount to DTSTART.  Otherwise, DURATION is simply set to amount
-     * 
-     * @param vEvent - VEvent to modify
-     * @param amount - TemporalAmount for duration or calculations for DTSTART
-     */
-    public abstract void setDuration(VEvent<?,?> vEvent, TemporalAmount amount);
-     /**
-     * Sets the DURATION or DTEND, of the vEvent depending on the EndType value vEvent contains.  The duration or
-     * period is calculated from the startInclusive and endExclusive parameters.
-     * 
-     * @param vEvent - VEvent to modify
-     * @param startInclusive
-     * @param endExclusive
-     */
-    public abstract void setDuration(VEvent<?,?> vEvent, Temporal startInclusive, Temporal endExclusive);
-
-    /**
-     * Gets duration, either from DURATION property, or by calculating duration between
-     * DTSTART and DTEND
-     * 
-     * @param vEvent
-     * @return
-     */
-    public abstract TemporalAmount getDuration(VEvent<?,?> vEvent);    
-    }}
+}

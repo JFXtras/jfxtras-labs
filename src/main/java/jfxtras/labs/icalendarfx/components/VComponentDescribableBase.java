@@ -14,7 +14,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  * @param <T> - concrete subclass
  * 
  * Components
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VAlarm
  * @see VJournal

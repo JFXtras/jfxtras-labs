@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
@@ -43,7 +43,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * 
  * @author David Bal
  *
- * @see VEventNew
+ * @see VEvent
  * @see VTodo
  * @see VJournal
  * @see VFreeBusy
@@ -258,16 +258,16 @@ public class VCalendar
      * A grouping of component properties that describe an event.
      * 
      */
-    public ObservableList<VEventNew> getVEvents() { return vEvents; }
-    private ObservableList<VEventNew> vEvents = FXCollections.observableArrayList();
-    public void setVEvents(ObservableList<VEventNew> vEvents) { this.vEvents = vEvents; }
-    public VCalendar withVEventNew(ObservableList<VEventNew> vEvents) { setVEvents(vEvents); return this; }
+    public ObservableList<VEvent> getVEvents() { return vEvents; }
+    private ObservableList<VEvent> vEvents = FXCollections.observableArrayList();
+    public void setVEvents(ObservableList<VEvent> vEvents) { this.vEvents = vEvents; }
+    public VCalendar withVEventNew(ObservableList<VEvent> vEvents) { setVEvents(vEvents); return this; }
     public VCalendar withVEventNew(String...vEvents)
     {
-        Arrays.stream(vEvents).forEach(c -> getVEvents().add(VEventNew.parse(c)));
+        Arrays.stream(vEvents).forEach(c -> getVEvents().add(VEvent.parse(c)));
         return this;
     }
-    public VCalendar withVEvents(VEventNew...vEvents)
+    public VCalendar withVEvents(VEvent...vEvents)
     {
         getVEvents().addAll(vEvents);
         return this;

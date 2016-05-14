@@ -13,14 +13,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
-import jfxtras.labs.icalendarfx.components.VEventNew;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
 /**
  * Test following components:
- * @see VEventNew
+ * @see VEvent
  * @see VFreeBusy
  * 
  * for the following properties:
@@ -35,7 +35,7 @@ public class DateTimeEndTest
     public void canBuildLastModified() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
         List<VComponentDateTimeEnd<?>> components = Arrays.asList(
-                new VEventNew()
+                new VEvent()
                         .withDateTimeEnd(DateTimeEnd.parse("20160306T080000Z")),
                 new VFreeBusy()
                         .withDateTimeEnd(DateTimeEnd.parse("20160306T080000Z"))
@@ -61,7 +61,7 @@ public class DateTimeEndTest
 //    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongDateType()
     {
-        new VEventNew()
+        new VEvent()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1))
                 .withDateTimeEnd("20160306T080000Z");
     }
@@ -70,7 +70,7 @@ public class DateTimeEndTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongDateType2()
     {
-       new VEventNew()
+       new VEvent()
                 .withDateTimeEnd("20160306T080000Z")
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
     }
@@ -79,7 +79,7 @@ public class DateTimeEndTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongDateType3()
     {
-        VEventNew builtComponent = new VEventNew();
+        VEvent builtComponent = new VEvent();
         builtComponent.setDateTimeEnd(new DateTimeEnd<LocalDateTime>(LocalDateTime.of(2016, 3, 6, 8, 0)));
         builtComponent.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(1997, 3, 1)));
     }
