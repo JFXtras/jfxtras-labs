@@ -29,6 +29,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
  * Contains following properties:
@@ -249,25 +250,13 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     /**
      * Produces a stream of dates or date-times bounded by the start and end parameters.  See {@link #streamRecurrenceDates(Temporal)}
      * 
-     * @param start - values are produced after this date or date-time.
-     * @param end - production of values stops at this date
+     * @param start - include recurrences that END before this value
+     * @param end - include recurrences that START before this value
      * @return - stream of start dates or date/times for the recurrence set
      */
     default Stream<Temporal> streamRecurrenceDates(Temporal start, Temporal end)
     {
-        return streamRecurrenceDates(start)
-                .filter(a -> DateTimeUtilities.isBefore(a, end));
-//        if ((getStartRange() == null) || (getEndRange() == null)) throw new RuntimeException("Can't make instances without setting date/time range first");
-//        if ()
-//        TemporalAmount amount = endType().getDuration(this);
-//        Stream<Temporal> removedTooEarly = stream(getStartRange().minus(amount)).filter(d -> 
-//        {
-//            TemporalAmount duration = endType().getDuration(this);
-//            Temporal plus = d.plus(duration);
-//            return DateTimeUtilities.isAfter(plus, getStartRange()); 
-//        }); // inclusive
-//        Stream<Temporal> removedTooLate = ICalendarUtilities.takeWhile(removedTooEarly, a -> DateTimeUtilities.isBefore(a, getEndRange())); // exclusive
-//        return removedTooLate;        
+        return ICalendarUtilities.takeWhile(streamRecurrenceDates(start), a -> DateTimeUtilities.isBefore(a, end)); // exclusive
     }
 
     
@@ -280,7 +269,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
 
      * For a VEvent without RRULE or RDATE the stream will contain only one element.
      * 
-     * @param start - values are produced after this date or date-time.
+     * @param start - include recurrences that END before this value
      * @return - stream of start dates or date/times for the recurrence set
      */
     default Stream<Temporal> streamRecurrenceDates(Temporal start)

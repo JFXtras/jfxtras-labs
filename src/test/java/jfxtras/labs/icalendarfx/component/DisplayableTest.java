@@ -266,16 +266,40 @@ public class DisplayableTest
     {
         VEvent e = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 20, 0))
-                .withDuration(Duration.ofHours(6))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 10, 2, 0))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withCount(6)
                         .withFrequency("DAILY")
                         .withInterval(3));
-        List<Temporal> recurrences = e.streamRecurrenceDates(LocalDateTime.of(2015, 11, 9, 22, 0))
-                .peek(System.out::println)
-                .collect(Collectors.toList());
-//        recurrences
-
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 15, 20, 0)
+              , LocalDateTime.of(2015, 11, 18, 20, 0)
+              , LocalDateTime.of(2015, 11, 21, 20, 0)
+              , LocalDateTime.of(2015, 11, 24, 20, 0)
+                ));
+        List<Temporal> madeDates = e.streamRecurrenceDates(LocalDateTime.of(2015, 11, 15, 22, 0))
+               .collect(Collectors.toList());
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
+    public void canStreamWithRange()
+    {
+        VEvent e = new VEvent()
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 20, 0))
+                .withDuration(Duration.ofHours(6))
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withFrequency("DAILY")
+                        .withInterval(3));
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(2015, 11, 15, 20, 0)
+              , LocalDateTime.of(2015, 11, 18, 20, 0)
+              , LocalDateTime.of(2015, 11, 21, 20, 0)
+                ));
+        List<Temporal> madeDates = e.streamRecurrenceDates(LocalDateTime.of(2015, 11, 14, 20, 0), 
+                                                           LocalDateTime.of(2015, 11, 22, 0, 0))
+               .collect(Collectors.toList());
+        assertEquals(expectedDates, madeDates);
     }
     
     @Test (expected = DateTimeException.class)
