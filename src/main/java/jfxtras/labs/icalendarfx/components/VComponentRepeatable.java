@@ -250,8 +250,8 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     /**
      * Produces a stream of dates or date-times bounded by the start and end parameters.  See {@link #streamRecurrences(Temporal)}
      * 
-     * @param start - include recurrences that END before this value
-     * @param end - include recurrences that START before this value
+     * @param start - include recurrences that END before this value (inclusive)
+     * @param end - include recurrences that START before this value (exclusive)
      * @return - stream of start dates or date/times for the recurrence set
      */
     default Stream<Temporal> streamRecurrences(Temporal start, Temporal end)

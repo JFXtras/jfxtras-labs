@@ -1,10 +1,13 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
+import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -196,6 +199,24 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     public VTodo(VTodo source)
     {
         super(source);
+    }
+    
+    /** Stream recurrence dates with adjustment to include recurrences that are due before start */
+    @Override
+    public Stream<Temporal> streamRecurrences(Temporal start)
+    {
+        final TemporalAmount adjustment;
+        if (getDuration() != null)
+        {
+            adjustment = getDuration().getValue();
+        } else if (getDateTimeDue() != null)
+        {
+            adjustment = Duration.between(getDateTimeStart().getValue(), getDateTimeDue().getValue());
+        } else
+        {
+            throw new RuntimeException("Either DTEND or DURATION must be set");
+        }
+        return super.streamRecurrences(start.minus(adjustment));
     }
     
     @Override

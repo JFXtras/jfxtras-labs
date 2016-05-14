@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.DateTimeException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -258,47 +257,6 @@ public class DisplayableTest
               , LocalDate.of(2016, 2, 13)
               , LocalDate.of(2016, 2, 14)
                 ));
-        assertEquals(expectedDates, madeDates);
-    }
-    
-    @Test
-    public void canStreamWithEnd()
-    {
-        VEvent e = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 20, 0))
-                .withDateTimeEnd(LocalDateTime.of(2015, 11, 10, 2, 0))
-                .withRecurrenceRule(new RecurrenceRule3()
-                        .withCount(6)
-                        .withFrequency("DAILY")
-                        .withInterval(3));
-        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 15, 20, 0)
-              , LocalDateTime.of(2015, 11, 18, 20, 0)
-              , LocalDateTime.of(2015, 11, 21, 20, 0)
-              , LocalDateTime.of(2015, 11, 24, 20, 0)
-                ));
-        List<Temporal> madeDates = e.streamRecurrences(LocalDateTime.of(2015, 11, 15, 22, 0))
-               .collect(Collectors.toList());
-        assertEquals(expectedDates, madeDates);
-    }
-    
-    @Test
-    public void canStreamWithRange()
-    {
-        VEvent e = new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 20, 0))
-                .withDuration(Duration.ofHours(6))
-                .withRecurrenceRule(new RecurrenceRule3()
-                        .withFrequency("DAILY")
-                        .withInterval(3));
-        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 15, 20, 0)
-              , LocalDateTime.of(2015, 11, 18, 20, 0)
-              , LocalDateTime.of(2015, 11, 21, 20, 0)
-                ));
-        List<Temporal> madeDates = e.streamRecurrences(LocalDateTime.of(2015, 11, 14, 20, 0), 
-                                                           LocalDateTime.of(2015, 11, 22, 0, 0))
-               .collect(Collectors.toList());
         assertEquals(expectedDates, madeDates);
     }
     

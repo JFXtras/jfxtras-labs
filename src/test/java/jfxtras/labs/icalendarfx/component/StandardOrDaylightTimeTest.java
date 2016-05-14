@@ -3,15 +3,20 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.StandardTime;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 
 public class StandardOrDaylightTimeTest
 {
@@ -45,5 +50,24 @@ public class StandardOrDaylightTimeTest
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }
+    }
+    
+    
+    @Test
+    public void canStreamWithRange()
+    {
+        StandardTime e = new StandardTime()
+                .withDateTimeStart("19961027T020000")
+                .withRecurrenceRule(RecurrenceRule3.parse("FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU"));
+        List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
+                LocalDateTime.of(1996, 10, 27, 2, 0)
+              , LocalDateTime.of(1997, 10, 26, 2, 0)
+              , LocalDateTime.of(1998, 10, 25, 2, 0)
+              , LocalDateTime.of(1999, 10, 31, 2, 0)
+                ));
+        List<Temporal> madeDates = e.streamRecurrences(LocalDateTime.of(1996, 1, 1, 0, 0), 
+                                                           LocalDateTime.of(2000, 1, 1, 0, 0))
+               .collect(Collectors.toList());
+        assertEquals(expectedDates, madeDates);
     }
 }
