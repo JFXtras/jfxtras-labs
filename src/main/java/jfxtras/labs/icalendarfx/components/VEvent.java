@@ -184,7 +184,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
 
     /** Stream recurrence dates with adjustment to include recurrences that end before start */
     @Override
-    public Stream<Temporal> streamRecurrenceDates(Temporal start)
+    public Stream<Temporal> streamRecurrences(Temporal start)
     {
         final TemporalAmount adjustment;
         if (getDuration() != null)
@@ -197,7 +197,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         {
             throw new RuntimeException("Either DTEND or DURATION must be set");
         }
-        return super.streamRecurrenceDates(start.minus(adjustment));
+        return super.streamRecurrences(start.minus(adjustment));
     }
     
     @Override

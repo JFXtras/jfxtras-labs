@@ -168,7 +168,7 @@ public class DisplayableTest
             
             builtComponent.setRecurrenceRule("RRULE:FREQ=DAILY;INTERVAL=2");
             builtComponent.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "19960301T010000Z"));
-            List<Temporal> myDates = builtComponent.streamRecurrenceDates().limit(6).collect(Collectors.toList());
+            List<Temporal> myDates = builtComponent.streamRecurrences().limit(6).collect(Collectors.toList());
             assertEquals(expectedDates, myDates);
         }
     }
@@ -185,7 +185,7 @@ public class DisplayableTest
                 .withExceptions(new Exceptions<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 15, 10, 0)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -214,7 +214,7 @@ public class DisplayableTest
                         .withFrequency(FrequencyType.DAILY)
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
@@ -248,7 +248,7 @@ public class DisplayableTest
                           )));
         Temporal start = LocalDate.of(2016, 2, 7);
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
@@ -277,7 +277,7 @@ public class DisplayableTest
               , LocalDateTime.of(2015, 11, 21, 20, 0)
               , LocalDateTime.of(2015, 11, 24, 20, 0)
                 ));
-        List<Temporal> madeDates = e.streamRecurrenceDates(LocalDateTime.of(2015, 11, 15, 22, 0))
+        List<Temporal> madeDates = e.streamRecurrences(LocalDateTime.of(2015, 11, 15, 22, 0))
                .collect(Collectors.toList());
         assertEquals(expectedDates, madeDates);
     }
@@ -296,7 +296,7 @@ public class DisplayableTest
               , LocalDateTime.of(2015, 11, 18, 20, 0)
               , LocalDateTime.of(2015, 11, 21, 20, 0)
                 ));
-        List<Temporal> madeDates = e.streamRecurrenceDates(LocalDateTime.of(2015, 11, 14, 20, 0), 
+        List<Temporal> madeDates = e.streamRecurrences(LocalDateTime.of(2015, 11, 14, 20, 0), 
                                                            LocalDateTime.of(2015, 11, 22, 0, 0))
                .collect(Collectors.toList());
         assertEquals(expectedDates, madeDates);

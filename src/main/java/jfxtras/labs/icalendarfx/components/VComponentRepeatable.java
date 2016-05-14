@@ -248,15 +248,15 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     RecurrenceRuleCache recurrenceStreamer();
 
     /**
-     * Produces a stream of dates or date-times bounded by the start and end parameters.  See {@link #streamRecurrenceDates(Temporal)}
+     * Produces a stream of dates or date-times bounded by the start and end parameters.  See {@link #streamRecurrences(Temporal)}
      * 
      * @param start - include recurrences that END before this value
      * @param end - include recurrences that START before this value
      * @return - stream of start dates or date/times for the recurrence set
      */
-    default Stream<Temporal> streamRecurrenceDates(Temporal start, Temporal end)
+    default Stream<Temporal> streamRecurrences(Temporal start, Temporal end)
     {
-        return ICalendarUtilities.takeWhile(streamRecurrenceDates(start), a -> DateTimeUtilities.isBefore(a, end)); // exclusive
+        return ICalendarUtilities.takeWhile(streamRecurrences(start), a -> DateTimeUtilities.isBefore(a, end)); // exclusive
     }
 
     
@@ -272,7 +272,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * @param start - include recurrences that END before this value
      * @return - stream of start dates or date/times for the recurrence set
      */
-    default Stream<Temporal> streamRecurrenceDates(Temporal start)
+    default Stream<Temporal> streamRecurrences(Temporal start)
     {
         // get recurrence rule stream, or make a one-element stream from DTSTART if no recurrence rule is present
         final Stream<Temporal> stream1;
@@ -304,10 +304,10 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     }
     
     /** Stream of recurrences starting at dateTimeStart (DTSTART) 
-     * @link {@link #streamRecurrenceDates(Temporal)}*/
-    default Stream<Temporal> streamRecurrenceDates()
+     * @link {@link #streamRecurrences(Temporal)}*/
+    default Stream<Temporal> streamRecurrences()
     {
-        return streamRecurrenceDates(getDateTimeStart().getValue());
+        return streamRecurrences(getDateTimeStart().getValue());
     }
     
 //    /**

@@ -61,7 +61,7 @@ public class RecurrenceRuleCache
             }
             start = (m != null) ? m : component.getDateTimeStart().getValue();
         }
-        Iterator<Temporal> i = component.streamRecurrenceDates(start).iterator();
+        Iterator<Temporal> i = component.streamRecurrences(start).iterator();
 //        Iterator<Temporal> i = streamNoCache(start).iterator();
         Temporal lastT = null;
         while (i.hasNext())

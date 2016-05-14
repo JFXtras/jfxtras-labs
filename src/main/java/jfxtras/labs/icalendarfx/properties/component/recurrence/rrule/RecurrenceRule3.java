@@ -69,7 +69,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * ( "WKST" "=" weekday ) <br>
  * 
  * In addition to methods to support iCalendar recurrence rule parts, there is a method
- * {@link #streamRecurrence(Temporal)}  that produces a stream of start date/times for the recurrences
+ * {@link #streamRecurrences(Temporal)}  that produces a stream of start date/times for the recurrences
  * defined by the rule.
  * 
  * @author David Bal

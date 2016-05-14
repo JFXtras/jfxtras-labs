@@ -387,10 +387,10 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
 //    final private List<R> recurrences = new ArrayList<>();
     
     @Override
-    public Stream<Temporal> streamRecurrenceDates(Temporal start)
+    public Stream<Temporal> streamRecurrences(Temporal start)
     {
         // get stream with recurrence rule (RRULE) and recurrence date (RDATE)
-        Stream<Temporal> inStream = VComponentDisplayable.super.streamRecurrenceDates(start);
+        Stream<Temporal> inStream = VComponentDisplayable.super.streamRecurrences(start);
 
         // assign temporal comparator to match start type
         final Comparator<Temporal> temporalComparator = DateTimeUtilities.makeTemporalComparator(start);

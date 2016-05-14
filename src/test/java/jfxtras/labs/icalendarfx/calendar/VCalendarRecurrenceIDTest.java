@@ -19,6 +19,6 @@ public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract2
                 .withVEvents(parent, child);
         assertEquals(2, c.getVEvents().size());
         assertEquals(1, parent.childComponentsWithRecurrenceIDs().size());
-        parent.streamRecurrenceDates().limit(5).forEach(System.out::println);
+        parent.streamRecurrences().limit(5).forEach(System.out::println);
     }
 }

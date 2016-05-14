@@ -149,7 +149,7 @@ public class RepeatableTest //extends Application
             
             builtComponent.setDateTimeStart(new DateTimeStart<>(LocalDate.of(2016, 4, 13)));
             List<Temporal> madeDates = builtComponent                    
-                    .streamRecurrenceDates()
+                    .streamRecurrences()
                     .limit(12)
                     .collect(Collectors.toList());
             assertEquals(expectedDates, madeDates);
@@ -167,7 +167,7 @@ public class RepeatableTest //extends Application
                 .iterate(dateTimeStart, a -> a.plus(1, ChronoUnit.DAYS))
                 .limit(100)
                 .collect(Collectors.toList());
-        List<Temporal> madeRecurrences = component.streamRecurrenceDates().limit(100).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = component.streamRecurrences().limit(100).collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
 
@@ -218,7 +218,7 @@ public class RepeatableTest //extends Application
                 .withRecurrenceRule(new RecurrenceRule3()
                 .withFrequency(FrequencyType.YEARLY));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -243,7 +243,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.YEARLY)
                         .withByRules(new ByDay(DayOfWeek.FRIDAY)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -269,7 +269,7 @@ public class RepeatableTest //extends Application
                         .withByRules(new ByDay(DayOfWeek.THURSDAY),
                                 new ByMonth(Month.JUNE, Month.JULY, Month.AUGUST)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(20)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -309,7 +309,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.YEARLY)
                         .withByRules(new ByMonth(Month.JANUARY, Month.FEBRUARY)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -334,7 +334,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.YEARLY)
                         .withByRules(new ByMonth(Month.NOVEMBER), new ByMonthDay(10)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -364,7 +364,7 @@ public class RepeatableTest //extends Application
                                    , new ByDay(DayOfWeek.TUESDAY)
                                    , new ByMonthDay(2,3,4,5,6,7,8)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(6)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -390,7 +390,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.YEARLY)
                         .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 20))));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(3)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -416,7 +416,7 @@ public class RepeatableTest //extends Application
                         .withByRules(new ByWeekNumber(20),
                                      new ByDay(DayOfWeek.MONDAY)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -441,7 +441,7 @@ public class RepeatableTest //extends Application
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.MONTHLY));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -467,7 +467,7 @@ public class RepeatableTest //extends Application
                                 .withByRules(new ByMonthDay()
                                         .withValue(-2))); // repeats 2nd to last day of month
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -492,7 +492,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.MONTHLY)
                         .withByRules(new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(10)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -522,7 +522,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.MONTHLY)
                         .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.SATURDAY, -1)))); // last Saturday in month
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -547,7 +547,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.MONTHLY)
                         .withByRules(new ByDay(DayOfWeek.FRIDAY), new ByMonthDay(13)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(6)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -576,7 +576,7 @@ public class RepeatableTest //extends Application
                         .withByRules(new ByMonth(Month.NOVEMBER, Month.DECEMBER)
                                    , new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(13)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -608,7 +608,7 @@ public class RepeatableTest //extends Application
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.WEEKLY));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -634,7 +634,7 @@ public class RepeatableTest //extends Application
                         .withInterval(2)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(10)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -664,7 +664,7 @@ public class RepeatableTest //extends Application
                     .withFrequency(FrequencyType.WEEKLY)
                     .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -690,7 +690,7 @@ public class RepeatableTest //extends Application
                         .withInterval(2)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))
                         .withCount(11));
-        List<Temporal> madeDates = e.streamRecurrenceDates()
+        List<Temporal> madeDates = e.streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 11, 10, 0)
@@ -719,7 +719,7 @@ public class RepeatableTest //extends Application
                     .withFrequency(FrequencyType.WEEKLY)
                     .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.WEDNESDAY))); 
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(10)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -748,7 +748,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(10)
                 .collect(Collectors.toList());
         List<ZonedDateTime> expectedDates = new ArrayList<>(Arrays.asList(
@@ -777,7 +777,7 @@ public class RepeatableTest //extends Application
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.DAILY));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(5)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -803,7 +803,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.DAILY)
                         .withInterval(3));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -830,7 +830,7 @@ public class RepeatableTest //extends Application
                         .withByRules(new ByMonthDay()
                             .withValue(9,10,11,12,13,14)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(10)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -861,7 +861,7 @@ public class RepeatableTest //extends Application
                         .withInterval(2)
                         .withByRules(new ByMonthDay(9)) );
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(6)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -888,7 +888,7 @@ public class RepeatableTest //extends Application
                         .withInterval(2)
                         .withByRules(new ByDay(DayOfWeek.FRIDAY)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .limit(6)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -915,7 +915,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.DAILY)
                                 .withInterval(2));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -949,7 +949,7 @@ public class RepeatableTest //extends Application
                 .withFrequency(FrequencyType.DAILY)
                         .withInterval(2));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -981,7 +981,7 @@ public class RepeatableTest //extends Application
                 .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 11, 19, 1, 0), ZoneId.of("Z")))
                 .withFrequency(FrequencyType.DAILY));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 0), ZoneId.of("Japan"))
@@ -1011,7 +1011,7 @@ public class RepeatableTest //extends Application
                 .withFrequency(FrequencyType.DAILY)
                         .withInterval(2));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<ZonedDateTime> expectedDates = new ArrayList<>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneId.of("Z"))
@@ -1037,7 +1037,7 @@ public class RepeatableTest //extends Application
         VEvent e = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 30));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 11, 10, 30)
@@ -1054,7 +1054,7 @@ public class RepeatableTest //extends Application
                 .withRecurrenceDates(new Recurrences<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 14, 12, 0)));
         List<Temporal> madeDates = e
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0)
@@ -1076,7 +1076,7 @@ public class RepeatableTest //extends Application
 
         LocalDateTime start2 = LocalDateTime.of(2015, 12, 6, 0, 0);
         List<Temporal> madeDates2 = e
-                .streamRecurrenceDates(start2)
+                .streamRecurrences(start2)
                 .limit(3)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -1100,7 +1100,7 @@ public class RepeatableTest //extends Application
         
         LocalDateTime start = LocalDateTime.of(2025, 11, 10, 0, 0);
         List<Temporal> madeDates = e
-                .streamRecurrenceDates(start)
+                .streamRecurrences(start)
                 .limit(3)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -1112,7 +1112,7 @@ public class RepeatableTest //extends Application
         
         LocalDateTime start2 = LocalDateTime.of(2015, 11, 11, 0, 0);
         List<Temporal> madeDates2 = e
-                .streamRecurrenceDates(start2)
+                .streamRecurrences(start2)
                 .limit(2)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -1123,7 +1123,7 @@ public class RepeatableTest //extends Application
         
         LocalDateTime start3 = LocalDateTime.of(2025, 11, 12, 0, 0);
         List<Temporal> madeDates3 = e
-                .streamRecurrenceDates(start3)
+                .streamRecurrences(start3)
                 .limit(3)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates3 = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -1135,7 +1135,7 @@ public class RepeatableTest //extends Application
 
         LocalDateTime start4 = LocalDateTime.of(2025, 11, 17, 0, 0);
         List<Temporal> madeDates4 = e
-                .streamRecurrenceDates(start4)
+                .streamRecurrences(start4)
                 .limit(3)
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedDates4 = new ArrayList<LocalDateTime>(Arrays.asList(
@@ -1158,7 +1158,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.DAILY)
                         .withInterval(3));
         List<Temporal> madeDates = e               
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDate> expectedDates = new ArrayList<>(Arrays.asList(
                 LocalDate.of(2015, 11, 9)
@@ -1181,7 +1181,7 @@ public class RepeatableTest //extends Application
                         .withFrequency(FrequencyType.DAILY)
                         .withInterval(3));
         List<Temporal> madeDates = e                
-                .streamRecurrenceDates()
+                .streamRecurrences()
                 .collect(Collectors.toList());
         List<LocalDate> expectedDates = new ArrayList<>(Arrays.asList(
                 LocalDate.of(2015, 11, 9)
@@ -1204,7 +1204,7 @@ public class RepeatableTest //extends Application
         e.setDateTimeStart(new DateTimeStart<>(LocalDate.of(2015, 11, 9))); // change to whole-day
         {
             List<Temporal> madeDates = e
-                    .streamRecurrenceDates()
+                    .streamRecurrences()
                     .limit(6)
                     .collect(Collectors.toList());
             List<LocalDate> expectedDates = new ArrayList<>(Arrays.asList(
@@ -1222,7 +1222,7 @@ public class RepeatableTest //extends Application
         e.setDateTimeStart(new DateTimeStart<>(LocalDateTime.of(2015, 11, 9, 10, 0))); // change to date/time
         { // start date/time
             List<Temporal> madeDates = e                
-                    .streamRecurrenceDates()
+                    .streamRecurrences()
                     .limit(6)
                     .collect(Collectors.toList());
             List<LocalDateTime> expectedDates = new ArrayList<>(Arrays.asList(
@@ -1247,7 +1247,7 @@ public class RepeatableTest //extends Application
 
         { // initialize stream
             List<Temporal> madeDates = e
-                    .streamRecurrenceDates()
+                    .streamRecurrences()
                     .limit(50)
                     .collect(Collectors.toList());
             Temporal seed = LocalDateTime.of(2015, 11, 9, 10, 00);
@@ -1261,7 +1261,7 @@ public class RepeatableTest //extends Application
         e.setDateTimeStart(new DateTimeStart<>(LocalDateTime.of(2015, 11, 10, 10, 0))); // change start
         { // make new stream
             List<Temporal> madeDates = e
-                    .streamRecurrenceDates(LocalDateTime.of(2015, 12, 9, 10, 0))
+                    .streamRecurrences(LocalDateTime.of(2015, 12, 9, 10, 0))
 //                    .recurrenceStreamer().stream(LocalDateTime.of(2015, 12, 9, 10, 0))
                     .limit(50)
                     .collect(Collectors.toList());
@@ -1274,7 +1274,7 @@ public class RepeatableTest //extends Application
         }
 
         // request date beyond first cached date to test cache system
-        Temporal t = e.streamRecurrenceDates(LocalDateTime.of(2016, 12, 25, 10, 0)).findFirst().get();
+        Temporal t = e.streamRecurrences(LocalDateTime.of(2016, 12, 25, 10, 0)).findFirst().get();
         assertEquals(LocalDateTime.of(2016, 12, 25, 10, 0), t);
     }
     
@@ -1287,7 +1287,7 @@ public class RepeatableTest //extends Application
                 .withFrequency(FrequencyType.DAILY));        
         { // initialize stream
             List<Temporal> madeDates = e
-                    .streamRecurrenceDates()
+                    .streamRecurrences()
                     .limit(50)
                     .collect(Collectors.toList());
             Temporal seed = LocalDateTime.of(2015, 11, 9, 10, 00);
@@ -1306,7 +1306,7 @@ public class RepeatableTest //extends Application
 
         { // check new repeatable stream
             List<Temporal> madeDates = e
-                    .streamRecurrenceDates()
+                    .streamRecurrences()
                     .limit(50)
                     .collect(Collectors.toList());
             Temporal seed = LocalDateTime.of(2015, 11, 9, 10, 00);
@@ -1326,7 +1326,7 @@ public class RepeatableTest //extends Application
         }
 
         // request date beyond first cached date to test cache system
-        Temporal date = e.streamRecurrenceDates(LocalDateTime.of(2015, 12, 9, 10, 0)).findFirst().get();
+        Temporal date = e.streamRecurrences(LocalDateTime.of(2015, 12, 9, 10, 0)).findFirst().get();
         assertEquals(LocalDateTime.of(2015, 12, 9, 10, 0), date);
     }
     
@@ -1338,7 +1338,7 @@ public class RepeatableTest //extends Application
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
-        e.streamRecurrenceDates().limit(100).collect(Collectors.toList()); // set cache
+        e.streamRecurrences().limit(100).collect(Collectors.toList()); // set cache
         assertEquals(LocalDateTime.of(2016, 1, 20, 10, 0), e.recurrenceStreamer().previousValue(LocalDateTime.of(2016, 1, 21, 10, 0)));
 
         VEvent e2 = new VEvent() // without cache
@@ -1359,7 +1359,7 @@ public class RepeatableTest //extends Application
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
-        e.streamRecurrenceDates().limit(100).collect(Collectors.toList()); // set cache
+        e.streamRecurrences().limit(100).collect(Collectors.toList()); // set cache
         assertEquals(LocalDateTime.of(2016, 1, 20, 10, 0), e.recurrenceStreamer().previousValue(LocalDateTime.of(2016, 1, 21, 10, 0)));
 
         VEvent e2 = new VEvent() // without cache

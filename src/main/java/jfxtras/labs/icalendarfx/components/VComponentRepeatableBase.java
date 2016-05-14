@@ -100,9 +100,9 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
 //    public T withEndRange(Temporal endRange) { setEndRange(endRange); return (T) this; }
     
     @Override
-    public Stream<Temporal> streamRecurrenceDates(Temporal start)
+    public Stream<Temporal> streamRecurrences(Temporal start)
     {
-        Stream<Temporal> inStream = VComponentRepeatable.super.streamRecurrenceDates(start);
+        Stream<Temporal> inStream = VComponentRepeatable.super.streamRecurrences(start);
         if (getRecurrenceRule() == null)
         {
             return inStream; // no cache is no recurrence rule
