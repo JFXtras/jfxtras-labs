@@ -1,10 +1,10 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
@@ -12,8 +12,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
-import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /** makes a group of colored squares used to select appointment group */
@@ -34,13 +34,13 @@ public AppointmentGroupGridPane()
     checkIcon.getStyleClass().add("check-icon");
 }
 
-public AppointmentGroupGridPane(VComponent<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
+public AppointmentGroupGridPane(VComponentDisplayable<?> vComponent, List<AppointmentGroup> appointmentGroups)
 {
     this();
     setupData(vComponent, appointmentGroups);
 }
  
- public void setupData(VComponent<Appointment> vComponent, List<AppointmentGroup> appointmentGroups)
+ public void setupData(VComponentDisplayable<?> vComponent, List<AppointmentGroup> appointmentGroups)
  {
 //      myIcon = new SVGPath();
 //     myIcon.setFill(Color.rgb(0, 255, 0, .9));
@@ -75,8 +75,7 @@ public AppointmentGroupGridPane(VComponent<Appointment> vComponent, List<Appoint
 
              // assign appointment group, store description in CATEGORIES field
              AppointmentGroup g = appointmentGroups.get(appointmentGroupSelected.getValue());
-             vComponent.getCategories().setValue(Arrays.asList(g.getDescription()));
-//             vComponent.setCategories(g.getDescription());
+             vComponent.setCategories(FXCollections.observableArrayList(Categories.parse(g.getDescription())));
          });
          lCnt++;
      }

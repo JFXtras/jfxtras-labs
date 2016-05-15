@@ -50,8 +50,7 @@ public class StandardOrDaylightTimeTest
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());            
         }
-    }
-    
+    }    
     
     @Test
     public void canStreamWithRange()

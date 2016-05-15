@@ -40,7 +40,9 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.VComponentFactory;
-import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEventOld;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -71,11 +73,11 @@ public class AppointmentEditController extends Pane
     private Temporal endInstanceOriginal;
     
     private VEventOld<Appointment,?> vEvent;
-//    private VComponent<Appointment> vEventOld;
+//    private VComponentNew<?> vEventOld;
     private VEventOld<Appointment,?> vEventOriginal;
     private Collection<Appointment> appointments;
-    private Collection<VComponent<Appointment>> vComponents;
-    private Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback;
+    private Collection<VComponentNew<?>> vComponents;
+    private Callback<Collection<VComponentNew<?>>, Void> vEventWriteCallback;
     private Stage popup;
 
     /** Indicates how the popup window closed */
@@ -157,12 +159,12 @@ public class AppointmentEditController extends Pane
     
     public void setupData(
               Appointment appointment
-            , VComponent<Appointment> vComponent
+            , VComponentDisplayable<?> vComponent
             , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
-            , Collection<VComponent<Appointment>> vComponents
+            , VCalendar vCalendar
             , List<AppointmentGroup> appointmentGroups
-            , Callback<Collection<VComponent<Appointment>>, Void> vEventWriteCallback
+            , Callback<Collection<VComponentNew<?>>, Void> vEventWriteCallback
             , Stage popup)
     {
         appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET);
@@ -177,7 +179,7 @@ public class AppointmentEditController extends Pane
         vEvent = (VEventOld<Appointment,?>) vComponent;
         
         // Disable repeat rules for events with recurrence-id
-        if (vComponent.getDateTimeRecurrence() != null)
+        if (vComponent.getRecurrenceDates() != null)
         { // recurrence instances can't add repeat rules (only parent can have repeat rules)
             repeatableTab.setDisable(true);
             repeatableTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));

@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEventOld;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -26,10 +26,10 @@ public class AppointmentEditLoader extends Stage
     // CONSTRUCTOR
     public AppointmentEditLoader(
               Appointment appointment // selected instance
-            , VComponent<Appointment> vComponent
+            , VComponentNew<?> vComponent
             , ICalendarAgenda agenda
             , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
-            , Callback<Collection<VComponent<Appointment>>, Void> veventWriteCallback)
+            , Callback<Collection<VComponentNew<?>>, Void> veventWriteCallback)
     {
         String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
         VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) vComponent;
@@ -56,7 +56,7 @@ public class AppointmentEditLoader extends Stage
               , vComponent
               , agenda.getDateTimeRange()
               , agenda.appointments()
-              , agenda.vComponents()
+              , agenda.getVCalendar()
               , agenda.appointmentGroups()
               , veventWriteCallback
               , this);

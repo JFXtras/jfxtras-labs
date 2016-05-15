@@ -188,7 +188,11 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
     }
     
     /** Copy properties and subcomponents from source into this component,
-     * essentially making a copy of source */
+     * essentially making a copy of source 
+     * 
+     * Note: this method only overwrites properties found in source.  If there are properties in
+     * this component that are not present in source then those will remain unchanged.
+     * */
     public void copyComponentFrom(VComponentBase<?> source)
     {
         source.propertyEnums().forEach(p -> p.copyProperty(source, this));

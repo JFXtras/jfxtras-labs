@@ -680,8 +680,7 @@ public final class ICalendarUtilities
                 choices.put(ChangeDialogOption.ALL, new StartEndRange(vComponent.getDateTimeStart(), end));
             }
             return choices;
-        }
-        
+        }        
     }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate

@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
+import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
@@ -32,7 +34,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeT
  * @author David Bal
  *
  */
-public class VEventTest
+public class VEventTest extends ICalendarTestAbstract2
 {
     @Test
     public void canBuildVEvent()
@@ -123,4 +125,24 @@ public class VEventTest
                .collect(Collectors.toList());
         assertEquals(expectedDates, madeDates);
     }
+
+    /** use {@link VComponentBase#copyComponentFrom} */
+    @Test
+    public void canCopyComponent()
+    {
+        VEvent e = getYearly1();
+        VEvent e2 = new VEvent();
+        e2.copyComponentFrom(e);
+        assertEquals(e, e2);
+    }
+
+    // Use copy constructor
+    @Test
+    public void canCopyComponent2()
+    {
+        VEvent e = getYearly1();
+        VEvent e2 = new VEvent(e);
+        assertEquals(e, e2);
+    }
+    
 }
