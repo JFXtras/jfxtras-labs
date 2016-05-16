@@ -35,14 +35,11 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEventOld;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -76,8 +73,8 @@ public class AppointmentEditController extends Pane
 //    private VComponentNew<?> vEventOld;
     private VEventOld<Appointment,?> vEventOriginal;
     private Collection<Appointment> appointments;
-    private Collection<VComponentNew<?>> vComponents;
-    private Callback<Collection<VComponentNew<?>>, Void> vEventWriteCallback;
+    private Collection<VComponentDisplayable<?>> vComponents;
+    private Callback<Collection<VComponentDisplayable<?>>, Void> vEventWriteCallback;
     private Stage popup;
 
     /** Indicates how the popup window closed */
@@ -164,7 +161,7 @@ public class AppointmentEditController extends Pane
             , Collection<Appointment> appointments
             , VCalendar vCalendar
             , List<AppointmentGroup> appointmentGroups
-            , Callback<Collection<VComponentNew<?>>, Void> vEventWriteCallback
+            , Callback<Collection<VComponentDisplayable<?>>, Void> vEventWriteCallback
             , Stage popup)
     {
         appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET);
@@ -349,14 +346,14 @@ public class AppointmentEditController extends Pane
     {
         System.out.println("summary text:" + vEvent.getSummary().getValue());
         System.out.println("summary text:" + vEventOriginal.getSummary().getValue());
-        vEvent.handleEdit(
-                vEventOriginal
-              , vComponents
-              , startOriginalInstance
-              , startInstance
-              , endInstance
-              , appointments
-              , EditChoiceDialog.EDIT_DIALOG_CALLBACK);
+//        vEvent.handleEdit(
+//                vEventOriginal
+//              , vComponents
+//              , startOriginalInstance
+//              , startInstance
+//              , endInstance
+//              , appointments
+//              , EditChoiceDialog.EDIT_DIALOG_CALLBACK);
         popup.close();
     }
     
@@ -374,12 +371,12 @@ public class AppointmentEditController extends Pane
 
     @FXML private void handleDeleteButton()
     {
-        vEvent.handleDelete(
-                vComponents
-              , startInstance
-              , appointment
-              , appointments
-              , DeleteChoiceDialog.DELETE_DIALOG_CALLBACK);
+//        vEvent.handleDelete(
+//                vComponents
+//              , startInstance
+//              , appointment
+//              , appointments
+//              , DeleteChoiceDialog.DELETE_DIALOG_CALLBACK);
         popup.close();
     }
     

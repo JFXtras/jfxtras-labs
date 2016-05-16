@@ -25,7 +25,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public class Exceptions<T extends Temporal> extends PropertyBaseRecurrence<T, Exceptions<T>>
+public class Exceptions extends PropertyBaseRecurrence<Exceptions>
 {       
 //    public Exceptions(CharSequence contentLine)
 //    {
@@ -33,17 +33,17 @@ public class Exceptions<T extends Temporal> extends PropertyBaseRecurrence<T, Ex
 //    }
 
     @SuppressWarnings("unchecked")
-    public Exceptions(T...temporals)
+    public Exceptions(Temporal...temporals)
     {
         super(FXCollections.observableSet(temporals));
     }
 
-    public Exceptions(Exceptions<T> source)
+    public Exceptions(Exceptions source)
     {
         super(source);
     }
     
-    public Exceptions(ObservableSet<T> value)
+    public Exceptions(ObservableSet<Temporal> value)
     {
         super(value);
     }
@@ -55,17 +55,17 @@ public class Exceptions<T extends Temporal> extends PropertyBaseRecurrence<T, Ex
 
     /** Parse string to Temporal.  Not type safe.  Implementation must
      * ensure parameterized type is the same as date-time represented by String parameter */
-    public static <U extends Temporal> Exceptions<U> parse(String value)
+    public static Exceptions parse(String value)
     {
-        Exceptions<U> property = new Exceptions<U>();
+        Exceptions property = new Exceptions();
         property.parseContent(value);
         return property;
     }
     
     /** Parse string with Temporal class Exceptions provided as parameter */
-    public static <U extends Temporal> Exceptions<U> parse(Class<U> clazz, String value)
+    public static  Exceptions parse(Class<? extends Temporal> clazz, String value)
     {
-        Exceptions<U> property = new Exceptions<U>();
+        Exceptions property = new Exceptions();
         property.parseContent(value);
         clazz.cast(property.getValue().iterator().next()); // class check
         return property;

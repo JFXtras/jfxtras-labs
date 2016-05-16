@@ -27,7 +27,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public class Recurrences<T extends Temporal> extends PropertyBaseRecurrence<T, Recurrences<T>>
+public class Recurrences extends PropertyBaseRecurrence<Recurrences>
 {       
 //    public Recurrences(CharSequence contentLine)
 //    {
@@ -35,17 +35,17 @@ public class Recurrences<T extends Temporal> extends PropertyBaseRecurrence<T, R
 //    }
     
     @SuppressWarnings("unchecked")
-    public Recurrences(T...temporals)
+    public Recurrences(Temporal...temporals)
     {
         super(FXCollections.observableSet(temporals));
     }
     
-    public Recurrences(Recurrences<T> source)
+    public Recurrences(Recurrences source)
     {
         super(source);
     }
     
-    public Recurrences(ObservableSet<T> value)
+    public Recurrences(ObservableSet<Temporal> value)
     {
         super(value);
     }
@@ -57,17 +57,17 @@ public class Recurrences<T extends Temporal> extends PropertyBaseRecurrence<T, R
 
     /** Parse string to Temporal.  Not type safe.  Implementation must
      * ensure parameterized type is the same as date-time represented by String parameter */
-    public static <U extends Temporal> Recurrences<U> parse(String value)
+    public static Recurrences parse(String value)
     {
-        Recurrences<U> property = new Recurrences<U>();
+        Recurrences property = new Recurrences();
         property.parseContent(value);
         return property;
     }
     
     /** Parse string with Temporal class Exceptions provided as parameter */
-    public static <U extends Temporal> Recurrences<U> parse(Class<U> clazz, String value)
+    public static Recurrences parse(Class<? extends Temporal> clazz, String value)
     {
-        Recurrences<U> property = new Recurrences<U>();
+        Recurrences property = new Recurrences();
         property.parseContent(value);
         clazz.cast(property.getValue().iterator().next()); // class check
         return property;

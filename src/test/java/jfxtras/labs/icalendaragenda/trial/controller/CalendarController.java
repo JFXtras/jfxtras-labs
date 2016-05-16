@@ -33,18 +33,15 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.VEventImpl;
-import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Monthly;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDatePicker;
 import jfxtras.scene.control.agenda.Agenda;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 
@@ -57,7 +54,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 public class CalendarController
 {
      public ICalendarAgenda agenda = new ICalendarAgenda();
-     private final Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback = null;
+     private final Callback<Collection<VComponentDisplayable<?>>, Void> repeatWriteCallback = null;
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;
@@ -133,95 +130,101 @@ public class CalendarController
 
     public void setupData(LocalDate startDate, LocalDate endDate)
     {
-        VEventImpl vEventSplit = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(8))
+        VEvent vEventSplit = new VEvent()
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(8))
                 .withDateTimeEnd(LocalDateTime.of(endDate, LocalTime.of(5, 45)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(endDate.minusDays(1), LocalTime.of(15, 45)))
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(8).getDescription())
 //                .withDescription(new Description("Split Description"))
                 .withDescription("Split Description")
                 .withSummary(Summary.parse("Split"))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
-            agenda.vComponents().add(vEventSplit);
+        agenda.getVCalendar().getVEvents().add(vEventSplit);
         
-        VEventImpl vEventZonedUntil = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(10))
+        VEvent vEventZonedUntil = new VEvent()
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(10))
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(10).getDescription())
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(9, 45)), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")))
                 .withDescription("WeeklyZoned Description")
-                .withRRule(new RecurrenceRule2()
+                .withRecurrenceRule(new RecurrenceRule3()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(15), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")).withZoneSameInstant(ZoneId.of("Z")))
-                        .withFrequency(new Weekly()
-                                .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
+                        .withFrequency(FrequencyType.WEEKLY)
+                        .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
                 .withSummary(Summary.parse("WeeklyZoned Ends"))
                 .withUniqueIdentifier("20150110T080000-1@jfxtras.org");
-            agenda.vComponents().add(vEventZonedUntil);
+        agenda.getVCalendar().getVEvents().add(vEventZonedUntil);
         
-        VEventImpl vEventZonedInfinite = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-            .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3))
+        VEvent vEventZonedInfinite = new VEvent()
+            .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
             .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(12, 00)), ZoneId.of("America/Los_Angeles")))
             .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
             .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(7, 30)), ZoneId.of("America/Los_Angeles")))
             .withDescription("WeeklyZoned Description")
-            .withRRule(new RecurrenceRule2()
-                    .withFrequency(new Weekly()
-                            .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))))
+            .withRecurrenceRule(new RecurrenceRule3()
+                    .withFrequency(FrequencyType.WEEKLY)
+                    .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
             .withSummary(Summary.parse("WeeklyZoned Infinite"))
             .withUniqueIdentifier("20150110T080000-2@jfxtras.org");
-        agenda.vComponents().add(vEventZonedInfinite);
+        agenda.getVCalendar().getVEvents().add(vEventZonedInfinite);
         
-        VEventImpl vEventLocalDate = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(15))
+        VEvent vEventLocalDate = new VEvent()
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(15).getDescription())
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(15))
                 .withDateTimeStart(startDate)
                 .withDateTimeEnd(startDate.plusDays(1))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDescription("LocalDate Description")
                 .withSummary(Summary.parse("LocalDate"))
                 .withUniqueIdentifier("20150110T080000-3@jfxtras.org")
-                .withRRule(new RecurrenceRule2()
-                        .withFrequency(new Daily()
-                                .withInterval(3)));
-        agenda.vComponents().add(vEventLocalDate);        
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withFrequency(FrequencyType.WEEKLY)
+                        .withInterval(3));
+        agenda.getVCalendar().getVEvents().add(vEventLocalDate);        
 
-        VEventImpl vEventLocalDateTime = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
+        VEvent vEventLocalDateTime = new VEvent()
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2).getDescription())
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withDateTimeStart(LocalDateTime.of(startDate, LocalTime.of(11, 00)))
                 .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(13, 0)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDescription("LocalDateTime Daily Description")
                 .withSummary(Summary.parse("LocalDateTime Daily"))
                 .withUniqueIdentifier("20150110T080000-4@jfxtras.org")
-                .withRRule(new RecurrenceRule2()
-                        .withFrequency(new Daily()));
-        agenda.vComponents().add(vEventLocalDateTime); 
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withFrequency(FrequencyType.DAILY));
+        agenda.getVCalendar().getVEvents().add(vEventLocalDateTime); 
         
-        VEventImpl vEventLocalDateTimeMonthly = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(17))
+        VEvent vEventLocalDateTimeMonthly = new VEvent()
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(17))
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(17).getDescription())
                 .withDateTimeStart(LocalDateTime.of(startDate, LocalTime.of(14, 00)))
                 .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(15, 0)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDescription("Monthly Description")
                 .withSummary(Summary.parse("Monthly"))
                 .withUniqueIdentifier("20150110T080000-5@jfxtras.org")
-                .withRRule(new RecurrenceRule2()
-                        .withFrequency(new Monthly()));
-        agenda.vComponents().add(vEventLocalDateTimeMonthly); 
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withFrequency(FrequencyType.MONTHLY));
+        agenda.getVCalendar().getVEvents().add(vEventLocalDateTimeMonthly); 
         
         DayOfWeek dayOfWeek = DayOfWeek.from(startDate.plusDays(2));
         int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(startDate.plusDays(2));
-        VEventImpl vEventLocalDateMonthlyOrdinal = new VEventImpl(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS)
-                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5))
+        VEvent vEventLocalDateMonthlyOrdinal = new VEvent()
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
+//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5))
                 .withDateTimeStart(startDate.plusDays(2))
                 .withDateTimeEnd(startDate.plusDays(3))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withDescription("Monthly Ordinal Description " + dayOfWeek + "#" + ordinalWeekNumber + " in month")
                 .withSummary(Summary.parse("Monthly Ordinal"))
                 .withUniqueIdentifier("20150110T080000-6@jfxtras.org")
-                .withRRule(new RecurrenceRule2()
-                        .withFrequency(new Monthly()
-                                .withByRules(new ByDay(new ByDay.ByDayPair(dayOfWeek, ordinalWeekNumber)))));
-        agenda.vComponents().add(vEventLocalDateMonthlyOrdinal);
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withFrequency(FrequencyType.MONTHLY)
+                        .withByRules(new ByDay(new ByDay.ByDayPair(dayOfWeek, ordinalWeekNumber))));
+        agenda.getVCalendar().getVEvents().add(vEventLocalDateMonthlyOrdinal);
         
         // replace Agenda's appointmentGroups with the ones used in the test events.
         agenda.appointmentGroups().clear();

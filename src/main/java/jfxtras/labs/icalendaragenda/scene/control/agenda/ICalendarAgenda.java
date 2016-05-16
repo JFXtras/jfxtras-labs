@@ -116,8 +116,8 @@ public class ICalendarAgenda extends Agenda
     public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
     
     // I/O callbacks, must be set to provide I/O functionality, null by default - TODO - NOT IMPLEMENTED YET
-    private Callback<Collection<VComponentNew<?>>, Void> repeatWriteCallback = null;
-    public void setRepeatWriteCallback(Callback<Collection<VComponentNew<?>>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
+    private Callback<Collection<VComponentDisplayable<?>>, Void> repeatWriteCallback = null;
+    public void setRepeatWriteCallback(Callback<Collection<VComponentDisplayable<?>>, Void> repeatWriteCallback) { this.repeatWriteCallback = repeatWriteCallback; }
 
     private Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback = null; // TODO - NOT IMPLEMENTED YET
     public void setAppointmentGroupWriteCallback(Callback<Collection<AppointmentGroup>, Void> appointmentWriteCallback) { this.appointmentGroupWriteCallback = appointmentGroupWriteCallback; }
@@ -147,7 +147,7 @@ public class ICalendarAgenda extends Agenda
     // It has controls for repeatable events
     private Callback<Appointment, Void> iCalendarEditPopupCallback = (Appointment appointment) ->
     {
-        VComponentNew<?> vComponent = findVComponent(appointment); // Match appointment to VComponent
+        VComponentDisplayable<?> vComponent = findVComponent(appointment); // Match appointment to VComponent
         appointments().removeListener(appointmentsListChangeListener); // remove listener to prevent making extra vEvents during edit
         Stage editPopup = new AppointmentEditLoader(
                   appointment

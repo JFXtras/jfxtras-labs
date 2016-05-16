@@ -57,18 +57,13 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.ExDate;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRuleType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
@@ -87,6 +82,7 @@ final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount 
 final private static int INITIAL_INTERVAL = 1;
     
 private VComponentDisplayable<?> vComponent;
+private RecurrenceRule3 rrule;
 private Temporal dateTimeStartInstanceNew;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -173,11 +169,11 @@ private ChangeListener<? super Boolean> dayOfWeekButtonListener = (observable, o
         int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(dateTimeStartInstanceNew);
         DayOfWeek dayOfWeek = DayOfWeek.from(dateTimeStartInstanceNew);
         ByRule<?> byDayRuleMonthly = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
-        vComponent.getRecurrenceRule().getValue().byRules().add(byDayRuleMonthly);
+        rrule.byRules().add(byDayRuleMonthly);
     } else
     { // remove rule to reset to default behavior of repeat by day of month
-        ByRule<?> r = vComponent.getRecurrenceRule().getValue().lookupByRule(ByDay.class);
-        vComponent.getRecurrenceRule().getValue().byRules().remove(r);
+        ByRule<?> r = rrule.lookupByRule(ByDay.class);
+        rrule.byRules().remove(r);
     }
     refreshSummary();
     refreshExceptionDates();
@@ -192,7 +188,7 @@ final private InvalidationListener makeExceptionDatesAndSummaryListener = (obs) 
 };
 private void refreshSummary()
 {
-   String summaryString = makeSummary(vComponent.getRecurrenceRule().getValue(), vComponent.getDateTimeStart());
+   String summaryString = makeSummary(rrule, vComponent.getDateTimeStart().getValue());
    repeatSummaryLabel.setText(summaryString);
 }
 private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, newValue) ->
@@ -208,14 +204,14 @@ private final ChangeListener<? super Boolean> neverListener = (obs, oldValue, ne
 private final ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) -> 
 {
     // Change Frequency if different.  Copy Interval, null ExDate
-    if (vComponent.getRRule().getFrequency().frequencyType() != newSel)
+    if (rrule.getFrequency().getValue() != newSel)
     {
-        Frequency newFrequency = newSel.newInstance();
-        Integer interval = vComponent.getRRule().getFrequency().getInterval();
-        if (interval > 1) newFrequency.setInterval(interval);
-        vComponent.getRRule().setFrequency(newFrequency);
+//        Frequency newFrequency = newSel.newInstance();
+        Integer interval = rrule.getInterval().getValue();
+//        if (interval > 1) newFrequency.setInterval(interval);
+        rrule.setFrequency(newSel);
         exceptionsListView.getItems().clear();
-        vComponent.setExDate(null);
+        vComponent.setExceptions(null);
     }
 
     // Setup monthlyVBox and weeklyHBox setting visibility
@@ -225,22 +221,22 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
     case YEARLY:
         break;
     case MONTHLY:
-        ByRule r = vComponent.getRRule().getFrequency().lookupByRule(ByRuleType.BY_DAY);
-        vComponent.getRRule().getFrequency().byRules().remove(r);
+        ByRule<?> r = rrule.lookupByRule(ByDay.class);
+        rrule.byRules().remove(r);
         dayOfMonthRadioButton.selectedProperty().set(true);
         dayOfWeekRadioButton.selectedProperty().set(false);
         break;
     case WEEKLY:
-        ByRule r2 = vComponent.getRRule().getFrequency().lookupByRule(ByRuleType.BY_DAY);
-        vComponent.getRRule().getFrequency().byRules().remove(r2);
+        ByRule<?> r2 = rrule.lookupByRule(ByDay.class);
+        rrule.byRules().remove(r2);
         if (dayOfWeekList.isEmpty())
         {
             DayOfWeek dayOfWeek = LocalDate.from(dateTimeStartInstanceNew).getDayOfWeek();
-            vComponent.getRRule().getFrequency().byRules().add(new ByDay(dayOfWeek)); // add days already clicked
+            rrule.byRules().add(new ByDay(dayOfWeek)); // add days already clicked
             dayOfWeekCheckBoxMap.get(dayOfWeek).set(true);
         } else
         {
-            vComponent.getRRule().getFrequency().byRules().add(new ByDay(dayOfWeekList)); // add days already clicked            
+            rrule.byRules().add(new ByDay(dayOfWeekList)); // add days already clicked            
         }
         break;
     case SECONDLY:
@@ -317,16 +313,16 @@ private final ChangeListener<? super Integer> intervalSpinnerListener = (observa
         frequencyLabelText = Settings.REPEAT_FREQUENCIES_PLURAL.get(frequencyComboBox.valueProperty().get());
     }
     frequencyLabel.setText(frequencyLabelText);
-    vComponent.getRRule().getFrequency().setInterval(newValue);
+    rrule.setInterval(newValue);
     refreshSummary();
     refreshExceptionDates();
 };
 
 private final ChangeListener<? super LocalDate> untilListener = (observable, oldSelection, newSelection) ->
 {
-    if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart())))
+    if (newSelection.isBefore(LocalDate.from(vComponent.getDateTimeStart().getValue())))
     {
-        tooEarlyDateAlert(vComponent.getDateTimeStart());
+        tooEarlyDateAlert(vComponent.getDateTimeStart().getValue());
         untilDatePicker.setValue(oldSelection);
     } else
     {
@@ -336,7 +332,7 @@ private final ChangeListener<? super LocalDate> untilListener = (observable, old
             notOccurrenceDateAlert(until);
             untilDatePicker.setValue(LocalDate.from(until));
         }
-        vComponent.getRRule().setUntil(until);
+        rrule.setUntil(until);
         refreshSummary();
         refreshExceptionDates();
     }
@@ -346,19 +342,22 @@ private final ChangeListener<? super Boolean> untilRadioButtonListener = (observ
 {
     if (newSelection)
     {
-        if (vComponent.getRRule().getUntil() == null)
+        if (rrule.getUntil() == null)
         { // new selection - use date/time one month in the future as default
-            boolean isInstanceFarEnoughInFuture = DateTimeUtilities.isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD));
-            LocalDate defaultEndOnDateTime = (isInstanceFarEnoughInFuture) ? LocalDate.from(dateTimeStartInstanceNew) : LocalDate.from(vComponent.getDateTimeStart().plus(DEFAULT_UNTIL_PERIOD));
+            boolean isInstanceFarEnoughInFuture = DateTimeUtilities
+                    .isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().getValue().plus(DEFAULT_UNTIL_PERIOD));
+            LocalDate defaultEndOnDateTime = (isInstanceFarEnoughInFuture)
+                    ? LocalDate.from(dateTimeStartInstanceNew)
+                    : LocalDate.from(vComponent.getDateTimeStart().getValue().plus(DEFAULT_UNTIL_PERIOD));
             Temporal until = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
-            vComponent.getRRule().setUntil(until);
+            rrule.setUntil(until);
         }
-        untilDatePicker.setValue(LocalDate.from(vComponent.getRRule().getUntil()));
+        untilDatePicker.setValue(LocalDate.from(rrule.getUntil().getValue()));
         untilDatePicker.setDisable(false);
         untilDatePicker.show();
         refreshExceptionDates();
     } else {
-        vComponent.getRRule().setUntil(null);
+        rrule.setUntil((Temporal) null);
         untilDatePicker.setDisable(true);
     }
 };
@@ -371,10 +370,10 @@ private final ChangeListener<? super Boolean> untilRadioButtonListener = (observ
  */
 private Temporal findUntil(LocalDate initialUntilDate)
 {
-    Temporal timeAdjustedSelection = vComponent.getDateTimeStart().with(initialUntilDate);
+    Temporal timeAdjustedSelection = vComponent.getDateTimeStart().getValue().with(initialUntilDate);
 
     // find last instance that is not after initialUntilDate
-    Iterator<Temporal> i = vComponent.getRRule().getFrequency().streamRecurrences(vComponent.getDateTimeStart()).iterator();
+    Iterator<Temporal> i = vComponent.streamRecurrences().iterator();
     Temporal until = i.next();
     while (i.hasNext())
     {
@@ -429,23 +428,23 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         if (newSelection)
         {
             removeListeners();
-            if (vComponent.getRRule() == null)
+            if (rrule == null)
             {
                 // setup new default RRule
-                RecurrenceRule2 rRule = new RecurrenceRule2()
-                        .withFrequency(new Weekly()
-                        .withByRules(new ByDay(DayOfWeek.from(dateTimeStartInstanceNew)))); // default RRule
-                vComponent.setRRule(rRule);
+                RecurrenceRule3 rRule = new RecurrenceRule3()
+                        .withFrequency(FrequencyType.WEEKLY)
+                        .withByRules(new ByDay(DayOfWeek.from(dateTimeStartInstanceNew))); // default RRule
+                vComponent.setRecurrenceRule(rRule);
                 setInitialValues(vComponent);
             }
-            vComponent.dateTimeStartProperty().addListener(dateTimeStartToExceptionChangeListener);
+            vComponent.getDateTimeStart().valueProperty().addListener(dateTimeStartToExceptionChangeListener);
             repeatableGridPane.setDisable(false);
             startDatePicker.setDisable(false);
             addListeners();
         } else
         {
-            vComponent.dateTimeStartProperty().removeListener(dateTimeStartToExceptionChangeListener);
-            vComponent.setRRule(null);
+            vComponent.getDateTimeStart().valueProperty().removeListener(dateTimeStartToExceptionChangeListener);
+            vComponent.setRecurrenceRule((RecurrenceRuleNew) null);
             repeatableGridPane.setDisable(true);
             startDatePicker.setDisable(true);
         }
@@ -507,7 +506,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             if (isNumber)
             {
                 value = Integer.parseInt(s);
-                vComponent.getRRule().getFrequency().setInterval(value);
+                rrule.setInterval(value);
                 refreshSummary();
                 refreshExceptionDates();
             } else {
@@ -522,10 +521,10 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     {
         if (oldValue != null)
         {
-            if (vComponent.getDateTimeStart().isSupported(ChronoUnit.NANOS))
+            if (vComponent.getDateTimeStart().getValue().isSupported(ChronoUnit.NANOS))
             {
                 long d = ChronoUnit.DAYS.between(oldValue, newValue);
-                Temporal start = vComponent.getDateTimeStart().plus(d, ChronoUnit.DAYS);
+                Temporal start = vComponent.getDateTimeStart().getValue().plus(d, ChronoUnit.DAYS);
                 vComponent.setDateTimeStart(start);
             } else
             {
@@ -559,7 +558,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     {
         if (endAfterRadioButton.isSelected())
         {
-              vComponent.getRRule().setCount(newSelection);
+              rrule.setCount(newSelection);
               refreshSummary();
               refreshExceptionDates();
         }
@@ -576,12 +575,12 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         {
             endAfterEventsSpinner.setDisable(false);
             eventLabel.setDisable(false);
-            vComponent.getRRule().setCount(endAfterEventsSpinner.getValue());
+            rrule.setCount(endAfterEventsSpinner.getValue());
             refreshSummary();
             refreshExceptionDates();
         } else
         {
-            vComponent.getRRule().setCount(0);
+            rrule.setCount(0);
             endAfterEventsSpinner.setValueFactory(null);
             endAfterEventsSpinner.setDisable(true);
             eventLabel.setDisable(true);
@@ -611,7 +610,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             boolean isNumber = s.matches("[0-9]+");
             if (isNumber) {
                 value = Integer.parseInt(s);
-                vComponent.getRRule().setCount(value);
+                rrule.setCount(value);
             } else {
                 String lastValue = endAfterEventsSpinner.getValue().toString();
                 endAfterEventsSpinner.getEditor().textProperty().set(lastValue);
@@ -656,6 +655,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
           , Stage stage)
     {
         this.vComponent = vComponent;
+        rrule = vComponent.getRecurrenceRule().getValue();
         this.dateTimeStartInstanceNew = dateTimeStartInstanceNew;
         if (! isSupported(vComponent))
         {
@@ -665,7 +665,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         // EXCEPTIONS
         // Note: exceptionComboBox string converter must be setup after the controller's initialization 
         // because the resource bundle isn't instantiated earlier.
-        exceptionFirstTemporal = vComponent.getDateTimeStart();
+        exceptionFirstTemporal = vComponent.getDateTimeStart().getValue();
         exceptionComboBox.setConverter(new StringConverter<Temporal>()
         { // setup string converter
             @Override public String toString(Temporal temporal)
@@ -748,7 +748,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 
                 
         // SETUP CONTROLLER'S INITIAL DATA FROM RRULE
-        boolean isRepeatable = (vComponent.getRRule() != null);
+        boolean isRepeatable = (rrule != null);
         if (isRepeatable)
         {
             setInitialValues(vComponent);
@@ -778,17 +778,17 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     }
     
     /* Set controls to values in rRule */
-    private void setInitialValues(VComponent<T> vComponent)
+    private void setInitialValues(VComponentDisplayable<?> vComponent)
     {
-        int initialInterval = (vComponent.getRRule().getFrequency().getInterval() > 0) ?
-                vComponent.getRRule().getFrequency().getInterval() : INITIAL_INTERVAL;
+        int initialInterval = (rrule.getInterval() != null) ?
+                rrule.getInterval().getValue() : INITIAL_INTERVAL;
         intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, initialInterval));
-        FrequencyType frequencyType = vComponent.getRRule().getFrequency().frequencyType();
+        FrequencyType frequencyType = rrule.getFrequency().getValue();
         frequencyComboBox.setValue(frequencyType); // will trigger frequencyListener
         switch(frequencyType)
         {
         case MONTHLY:
-            ByDay rule = (ByDay) vComponent.getRRule().getFrequency().lookupByRule(ByRuleType.BY_DAY);
+            ByDay rule = (ByDay) rrule.lookupByRule(ByDay.class);
             if (rule == null)
             {
                 dayOfMonthRadioButton.selectedProperty().set(true);
@@ -798,7 +798,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             }
             break;
         case WEEKLY:
-            setDayOfWeek(vComponent.getRRule());
+            setDayOfWeek(rrule);
             break;
         default:
             break;
@@ -806,22 +806,22 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         setFrequencyVisibility(frequencyType);
         
         // ExDates
-        if (vComponent.getExDate() != null)
+        if (vComponent.getExceptions() != null)
         {
             List<Temporal> collect = vComponent
-                    .getExDate()
-                    .getTemporals()
+                    .getExceptions()
                     .stream()
+                    .flatMap(e -> e.getValue().stream())
                     .collect(Collectors.toList());
             exceptionsListView.getItems().addAll(collect);
         }
         
-        int initialCount = (vComponent.getRRule().getCount() > 0) ? vComponent.getRRule().getCount() : INITIAL_COUNT;
+        int initialCount = (rrule.getCount() != null) ? rrule.getCount().getValue() : INITIAL_COUNT;
         endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, initialCount));
-        if (vComponent.getRRule().getCount() > 0)
+        if (rrule.getCount() != null)
         {
             endAfterRadioButton.selectedProperty().set(true);
-        } else if (vComponent.getRRule().getUntil() != null)
+        } else if (rrule.getUntil() != null)
         {
             untilRadioButton.selectedProperty().set(true);
         } else
@@ -829,19 +829,19 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             endNeverRadioButton.selectedProperty().set(true);
         }
         
-        startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart()));
+        startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart().getValue()));
         refreshSummary();
         refreshExceptionDates(); // Should this be here? - TODO - CHECK # OF CALLS
     }
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 
      * This method is called only during setup */
-    private void setDayOfWeek(RecurrenceRule2 rRule)
+    private void setDayOfWeek(RecurrenceRule3 rRule)
     {
         // Set day of week properties
-        if (rRule.getFrequency().frequencyType() == FrequencyType.WEEKLY)
+        if (rRule.getFrequency().getValue() == FrequencyType.WEEKLY)
         {
-            ByRule rule = rRule.getFrequency().lookupByRule(ByRuleType.BY_DAY);
+            ByRule rule = rRule.lookupByRule(ByDay.class);
             ((ByDay) rule).dayOfWeekWithoutOrdinalList()
                     .stream()
                     .forEach(d -> 
@@ -879,7 +879,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     /** Make list of start date/times for exceptionComboBox */
     private void refreshExceptionDates()
     {
-        exceptionFirstTemporal = vComponent.getDateTimeStart();
+        exceptionFirstTemporal = vComponent.getDateTimeStart().getValue();
         makeExceptionDates();
     }
     
@@ -887,16 +887,16 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     private void makeExceptionDates()
     {
         final Temporal dateTimeStart = exceptionFirstTemporal; // vComponent.getDateTimeStart();
-        final Stream<Temporal> stream1 = vComponent.stream(dateTimeStart);
-        Stream<Temporal> stream2 = (vComponent.getExDate() == null) ? stream1
-                : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
+        final Stream<Temporal> stream1 = vComponent.streamRecurrences();
+//        Stream<Temporal> stream2 = (vComponent.getExceptions() == null) ? stream1
+//                : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
         final Stream<Temporal> stream3; 
         if (DateTimeType.of(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
         {
-            stream3 = stream2.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
+            stream3 = stream1.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
         } else
         {
-            stream3 = stream2;
+            stream3 = stream1;
         }
         Temporal lastExceptionInMasterList = (exceptionMasterList.isEmpty()) ? dateTimeStart.with(LocalDate.MIN) : exceptionMasterList.get(exceptionMasterList.size()-1);
         List<Temporal> exceptionDates = stream3
@@ -917,8 +917,11 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     {
         Temporal d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
-        if (vComponent.getExDate() == null) vComponent.setExDate(new ExDate());
-        vComponent.getExDate().getTemporals().add(d);
+        if (vComponent.getExceptions() == null)
+        {
+            vComponent.setExceptions(FXCollections.observableArrayList());
+        }
+        vComponent.getExceptions().get(0).getValue().add(d);
         refreshExceptionDates();
         Collections.sort(exceptionsListView.getItems(),DateTimeUtilities.TEMPORAL_COMPARATOR); // Maintain sorted list
         if (exceptionComboBox.getValue() == null) addExceptionButton.setDisable(true);
@@ -927,7 +930,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     @FXML private void handleRemoveException()
     {
         Temporal d = exceptionsListView.getSelectionModel().getSelectedItem();
-        vComponent.getExDate().getTemporals().remove(d);
+        vComponent.getExceptions().get(0).getValue().remove(d);
         refreshExceptionDates();
         exceptionsListView.getItems().remove(d);
         if (exceptionsListView.getSelectionModel().getSelectedItem() == null) removeExceptionButton.setDisable(true);
@@ -1015,10 +1018,13 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     public static String makeSummary(RecurrenceRule3 rRule, Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();
-        if (rRule.getCount().getValue() == 1) return (Settings.resources == null) ? "Once" : Settings.resources.getString("rrule.summary.once");
+        if ((rRule.getCount() != null) && (rRule.getCount().getValue() == 1))
+        {
+            return (Settings.resources == null) ? "Once" : Settings.resources.getString("rrule.summary.once");
+        }
         
         final String frequencyText;
-        if (rRule.getInterval().getValue() == 1)
+        if (rRule.getInterval() == null)
         {
             frequencyText = Settings.REPEAT_FREQUENCIES.get(rRule.getFrequency().getValue());
         } else if (rRule.getInterval().getValue() > 1)
@@ -1080,10 +1086,10 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             break;
         }
         
-        if (rRule.getCount().getValue() > 0)
+        if (rRule.getCount() != null)
         {
             String times = (Settings.resources == null) ? "times" : Settings.resources.getString("rrule.summary.times");
-            builder.append(", " + rRule.getCount() + " " + times);
+            builder.append(", " + rRule.getCount().getValue() + " " + times);
         } else if (rRule.getUntil() != null)
         {
             String until = (Settings.resources == null) ? "until" : Settings.resources.getString("rrule.summary.until");
@@ -1093,15 +1099,14 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         return builder.toString();
     }
     
-    private boolean isSupported(VComponent<?> vComponent)
+    private boolean isSupported(VComponentDisplayable<?> vComponent)
     {
-        RecurrenceRule2 rRule = vComponent.getRRule();
-        if (rRule == null)
+        if (rrule == null)
         {
             return true;
         }
-        ByDay byDay = (ByDay) rRule.getFrequency().lookupByRule(ByRuleType.BY_DAY);
-        int byRulesSize = rRule.getFrequency().byRules().size();
+        ByDay byDay = (ByDay) rrule.lookupByRule(ByDay.class);
+        int byRulesSize = rrule.byRules().size();
         int unsupportedRules = (byDay == null) ? byRulesSize : byRulesSize-1;
         if (unsupportedRules > 0)
         {

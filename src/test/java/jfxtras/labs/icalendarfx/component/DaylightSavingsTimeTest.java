@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -86,11 +87,11 @@ public class DaylightSavingsTimeTest
         assertEquals(madeComponent, builtComponent);
         
         // add another set of recurrences
-        ObservableSet<LocalDate> expectedValues = FXCollections.observableSet(
+        ObservableSet<Temporal> expectedValues = FXCollections.observableSet(
                 LocalDate.of(1996, 4, 2),
                 LocalDate.of(1996, 4, 3),
                 LocalDate.of(1996, 4, 4) );        
-        builtComponent.getRecurrenceDates().add(new Recurrences<LocalDate>(expectedValues));
+        builtComponent.getRecurrenceDates().add(new Recurrences(expectedValues));
         String content2 = "BEGIN:" + componentName + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19960402,19960403,19960404" + System.lineSeparator() +
@@ -106,8 +107,8 @@ public class DaylightSavingsTimeTest
     {
         DaylightSavingTime builtComponent = new DaylightSavingTime()
                 .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
-        ObservableSet<ZonedDateTime> expectedValues = FXCollections.observableSet(
+        ObservableSet<Temporal> expectedValues = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
-        builtComponent.getRecurrenceDates().add(new Recurrences<ZonedDateTime>(expectedValues));
+        builtComponent.getRecurrenceDates().add(new Recurrences(expectedValues));
     }
 }

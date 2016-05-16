@@ -11,8 +11,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendarfx.components.VComponentNew;
-import jfxtras.labs.icalendarfx.components.VEventOld;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -26,14 +25,14 @@ public class AppointmentEditLoader extends Stage
     // CONSTRUCTOR
     public AppointmentEditLoader(
               Appointment appointment // selected instance
-            , VComponentNew<?> vComponent
+            , VComponentDisplayable<?> vComponent
             , ICalendarAgenda agenda
             , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
-            , Callback<Collection<VComponentNew<?>>, Void> veventWriteCallback)
+            , Callback<Collection<VComponentDisplayable<?>>, Void> veventWriteCallback)
     {
         String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
-        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) vComponent;
-        setTitle(vEvent.getSummary() + ": " + appointmentTime);
+//        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) vComponent;
+        setTitle(vComponent.getSummary().getValue() + ": " + appointmentTime);
         initModality(Modality.APPLICATION_MODAL);
         
         // LOAD FXML

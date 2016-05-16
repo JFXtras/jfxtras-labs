@@ -209,9 +209,9 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z
      * 
      */
-    ObservableList<Exceptions<? extends Temporal>> getExceptions();
-    void setExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions);
-    default T withExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions)
+    ObservableList<Exceptions> getExceptions();
+    void setExceptions(ObservableList<Exceptions> exceptions);
+    default T withExceptions(ObservableList<Exceptions> exceptions)
     {
         setExceptions(exceptions);
         return (T) this;
@@ -223,7 +223,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     }
     default T withExceptions(Temporal...exceptions)
     {
-        final ObservableList<Exceptions<? extends Temporal>> list;
+        final ObservableList<Exceptions> list;
         if (getExceptions() == null)
         {
             list = FXCollections.observableArrayList();
@@ -233,21 +233,23 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
             list = getExceptions();
         }
         // below code ensures all exceptions are of the same Temporal class
-        Temporal t = exceptions[0];
-        if (t instanceof LocalDate)
-        {
-            Set<LocalDate> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
-            getExceptions().add(new Exceptions<LocalDate>(FXCollections.observableSet(exceptions2)));
-        } else if (t instanceof LocalDateTime)
-        {
-            getExceptions().add(new Exceptions<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) exceptions)));
-        } else if (t instanceof ZonedDateTime)
-        {
-            getExceptions().add(new Exceptions<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) exceptions)));
-        }
+//        Temporal t = exceptions[0];
+        Set<Temporal> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
+        getExceptions().add(new Exceptions(FXCollections.observableSet(exceptions2)));
+//        if (t instanceof LocalDate)
+//        {
+//            Set<LocalDate> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
+//            getExceptions().add(new Exceptions<LocalDate>(FXCollections.observableSet(exceptions2)));
+//        } else if (t instanceof LocalDateTime)
+//        {
+//            getExceptions().add(new Exceptions<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) exceptions)));
+//        } else if (t instanceof ZonedDateTime)
+//        {
+//            getExceptions().add(new Exceptions<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) exceptions)));
+//        }
         return (T) this;
     }
-    default T withExceptions(Exceptions<?>...exceptions)
+    default T withExceptions(Exceptions...exceptions)
     {
         if (getExceptions() == null)
         {

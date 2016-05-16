@@ -138,13 +138,13 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     * recurring events, to-dos, journal entries, or time zone definitions.
     */ 
     @Override
-    public ObservableList<Exceptions<? extends Temporal>> getExceptions()
+    public ObservableList<Exceptions> getExceptions()
     {
         return exceptions;
     }
-    private ObservableList<Exceptions<? extends Temporal>> exceptions;
+    private ObservableList<Exceptions> exceptions;
     @Override
-    public void setExceptions(ObservableList<Exceptions<? extends Temporal>> exceptions)
+    public void setExceptions(ObservableList<Exceptions> exceptions)
     {
         this.exceptions = exceptions;
         if (exceptions != null)
@@ -194,10 +194,10 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
     @Override
-    public ObservableList<Recurrences<? extends Temporal>> getRecurrenceDates() { return recurrenceDates; }
-    private ObservableList<Recurrences<? extends Temporal>> recurrenceDates;
+    public ObservableList<Recurrences> getRecurrenceDates() { return recurrenceDates; }
+    private ObservableList<Recurrences> recurrenceDates;
     @Override
-    public void setRecurrenceDates(ObservableList<Recurrences<? extends Temporal>> recurrenceDates)
+    public void setRecurrenceDates(ObservableList<Recurrences> recurrenceDates)
     {
         this.recurrenceDates = recurrenceDates;
         if (recurrenceDates != null)
@@ -425,7 +425,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             List<Temporal> exceptions = getExceptions()
                     .stream()
                     .flatMap(r -> r.getValue().stream())
-                    .map(v -> (Temporal) v)
+                    .map(v -> v)
                     .sorted(temporalComparator)
                     .collect(Collectors.toList());
             stream3 = stream2.filter(d -> ! exceptions.contains(d));

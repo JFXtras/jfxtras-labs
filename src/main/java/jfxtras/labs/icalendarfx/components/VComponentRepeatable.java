@@ -2,8 +2,6 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -58,9 +56,9 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * RDATE;VALUE=DATE:19970101,19970120,19970217,19970421
      *  19970526,19970704,19970901,19971014,19971128,19971129,1997122
      */
-    ObservableList<Recurrences<? extends Temporal>> getRecurrenceDates();
-    void setRecurrenceDates(ObservableList<Recurrences<? extends Temporal>> recurrences);
-    default T withRecurrenceDates(ObservableList<Recurrences<? extends Temporal>> recurrenceDates)
+    ObservableList<Recurrences> getRecurrenceDates();
+    void setRecurrenceDates(ObservableList<Recurrences> recurrences);
+    default T withRecurrenceDates(ObservableList<Recurrences> recurrenceDates)
     {
         setRecurrenceDates(recurrenceDates);
         return (T) this;
@@ -74,7 +72,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     {
         if (recurrenceDates.length > 0)
         {
-            final ObservableList<Recurrences<? extends Temporal>> list;
+            final ObservableList<Recurrences> list;
             if (getRecurrenceDates() == null)
             {
                 list = FXCollections.observableArrayList();
@@ -83,23 +81,25 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             {
                 list = getRecurrenceDates();
             }
+            Set<Temporal> recurrences2 = Arrays.stream(recurrenceDates).map(r -> (LocalDate) r).collect(Collectors.toSet());
+            getRecurrenceDates().add(new Recurrences(FXCollections.observableSet(recurrences2)));
             
-            Temporal t = recurrenceDates[0];
-            if (t instanceof LocalDate)
-            {
-                Set<LocalDate> recurrences2 = Arrays.stream(recurrenceDates).map(r -> (LocalDate) r).collect(Collectors.toSet());
-                getRecurrenceDates().add(new Recurrences<LocalDate>(FXCollections.observableSet(recurrences2)));
-            } else if (t instanceof LocalDateTime)
-            {
-                getRecurrenceDates().add(new Recurrences<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) recurrenceDates)));
-            } else if (t instanceof ZonedDateTime)
-            {
-                getRecurrenceDates().add(new Recurrences<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) recurrenceDates)));
-            }
+//            Temporal t = recurrenceDates[0];
+//            if (t instanceof LocalDate)
+//            {
+//                Set<LocalDate> recurrences2 = Arrays.stream(recurrenceDates).map(r -> (LocalDate) r).collect(Collectors.toSet());
+//                getRecurrenceDates().add(new Recurrences<LocalDate>(FXCollections.observableSet(recurrences2)));
+//            } else if (t instanceof LocalDateTime)
+//            {
+//                getRecurrenceDates().add(new Recurrences<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) recurrenceDates)));
+//            } else if (t instanceof ZonedDateTime)
+//            {
+//                getRecurrenceDates().add(new Recurrences<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) recurrenceDates)));
+//            }
         }
         return (T) this;
     }
-    default T withRecurrenceDates(Recurrences<?>...recurrenceDates)
+    default T withRecurrenceDates(Recurrences...recurrenceDates)
     {
         if (getRecurrenceDates() == null)
         {
@@ -115,16 +115,16 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     /** Ensures new recurrence values match previously added ones.  Also ensures recurrence
      * value match DateTimeStart.  Should be called after dateTimeEndProperty() 
      * @param exceptions */
-    default ListChangeListener<PropertyBaseRecurrence<? extends Temporal, ?>> getRecurrencesConsistencyWithDateTimeStartListener()
+    default ListChangeListener<PropertyBaseRecurrence<?>> getRecurrencesConsistencyWithDateTimeStartListener()
     {
-        return (ListChangeListener.Change<? extends PropertyBaseRecurrence<? extends Temporal, ?>> change) ->
+        return (ListChangeListener.Change<? extends PropertyBaseRecurrence<?>> change) ->
         {
-            ObservableList<? extends PropertyBaseRecurrence<? extends Temporal, ?>> list = change.getList();
+            ObservableList<? extends PropertyBaseRecurrence<?>> list = change.getList();
             while (change.next())
             {
                 if (change.wasAdded())
                 {
-                    List<? extends PropertyBaseRecurrence<? extends Temporal, ?>> changeList = change.getAddedSubList();
+                    List<? extends PropertyBaseRecurrence<?>> changeList = change.getAddedSubList();
                     Temporal firstRecurrence = list.get(0).getValue().iterator().next();
                     // check consistency with previous recurrence values
                     checkRecurrencesConsistency(changeList, firstRecurrence);
@@ -143,7 +143,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * @param firstRecurrence - example of Temporal to match against.  If null uses first element in first recurrence in list
      * @return - true is valid, throws exception otherwise
      */
-    default boolean checkRecurrencesConsistency(List<? extends PropertyBaseRecurrence<? extends Temporal, ?>> list, Temporal firstRecurrence)
+    default boolean checkRecurrencesConsistency(List<? extends PropertyBaseRecurrence<?>> list, Temporal firstRecurrence)
     {
         if ((list == null) || (list.isEmpty()))
         {
@@ -151,10 +151,10 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         }
         firstRecurrence = (firstRecurrence == null) ? list.get(0).getValue().iterator().next() : firstRecurrence;
         DateTimeType firstDateTimeTypeType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
-        Iterator<? extends PropertyBaseRecurrence<? extends Temporal, ?>> i = list.iterator();
+        Iterator<? extends PropertyBaseRecurrence<?>> i = list.iterator();
         while (i.hasNext())
         {
-            PropertyBaseRecurrence<? extends Temporal, ?> r = i.next();
+            PropertyBaseRecurrence<?> r = i.next();
             Temporal myTemporalClass = r.getValue().iterator().next();
             DateTimeType myDateTimeType = DateTimeUtilities.DateTimeType.of(myTemporalClass);
             if (myDateTimeType != firstDateTimeTypeType)
@@ -295,7 +295,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
                 getRecurrenceDates()
                         .stream()
                         .flatMap(r -> r.getValue().stream())
-                        .map(v -> (Temporal) v)
+                        .map(v -> v)
                         .filter(t -> ! DateTimeUtilities.isBefore(t, start)) // remove too early events;
                         .sorted(temporalComparator)
                 , temporalComparator);

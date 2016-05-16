@@ -188,7 +188,7 @@ public class RepeatableTest //extends Application
     {
         VEvent component = new VEvent()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
-        ObservableList<Recurrences<? extends Temporal>> recurrences = FXCollections.observableArrayList();
+        ObservableList<Recurrences> recurrences = FXCollections.observableArrayList();
         recurrences.add(Recurrences.parse(LocalDateTime.class, "20160228T093000"));
         component.setRecurrenceDates(recurrences); // invalid        
     }
@@ -199,9 +199,9 @@ public class RepeatableTest //extends Application
     {
         VEvent builtComponent = new VEvent()
                 .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
-        ObservableSet<ZonedDateTime> expectedValues = FXCollections.observableSet(
+        ObservableSet<Temporal> expectedValues = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
-        builtComponent.getRecurrenceDates().add(new Recurrences<ZonedDateTime>(expectedValues));
+        builtComponent.getRecurrenceDates().add(new Recurrences(expectedValues));
     }
     
     /*
@@ -1051,7 +1051,7 @@ public class RepeatableTest //extends Application
     {
         VEvent e = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceDates(new Recurrences<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
+                .withRecurrenceDates(new Recurrences(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 14, 12, 0)));
         List<Temporal> madeDates = e
                 .streamRecurrences()

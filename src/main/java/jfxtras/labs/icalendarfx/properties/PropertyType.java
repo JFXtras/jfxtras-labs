@@ -755,7 +755,7 @@ public enum PropertyType
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
-            final ObservableList<Exceptions<? extends Temporal>> list;
+            final ObservableList<Exceptions> list;
             if (castComponent.getExceptions() == null)
             {
                 list = FXCollections.observableArrayList();
@@ -772,11 +772,11 @@ public enum PropertyType
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            Exceptions<?>[] propertyArray = castSource.getExceptions()
+            Exceptions[] propertyArray = castSource.getExceptions()
                     .stream()
-                    .map(c -> new Exceptions<>(c)) // copy each property
+                    .map(c -> new Exceptions(c)) // copy each property
                     .toArray(size -> new Exceptions[size]);
-            ObservableList<Exceptions<?>> properties = FXCollections.observableArrayList(propertyArray);
+            ObservableList<Exceptions> properties = FXCollections.observableArrayList(propertyArray);
             castDestination.setExceptions(properties);
         }
     },
@@ -1167,7 +1167,7 @@ public enum PropertyType
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
-            final ObservableList<Recurrences<? extends Temporal>> list;
+            final ObservableList<Recurrences> list;
             if (castComponent.getRecurrenceDates() == null)
             {
                 list = FXCollections.observableArrayList();
@@ -1184,11 +1184,11 @@ public enum PropertyType
         {
             VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
-            Recurrences<?>[] propertyArray = castSource.getRecurrenceDates()
+            Recurrences[] propertyArray = castSource.getRecurrenceDates()
                     .stream()
-                    .map(c -> new Recurrences<>(c)) // copy each property
+                    .map(c -> new Recurrences(c)) // copy each property
                     .toArray(size -> new Recurrences[size]);
-            ObservableList<Recurrences<?>> properties = FXCollections.observableArrayList(propertyArray);
+            ObservableList<Recurrences> properties = FXCollections.observableArrayList(propertyArray);
             castDestination.setRecurrenceDates(properties);
         }
     },

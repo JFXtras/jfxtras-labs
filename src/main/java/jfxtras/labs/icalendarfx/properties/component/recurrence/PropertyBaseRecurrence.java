@@ -28,11 +28,11 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * @see Exceptions
  * @see Recurrences
  */
-public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends PropertyBaseDateTime<ObservableSet<T>, U>
+public abstract class PropertyBaseRecurrence<U> extends PropertyBaseDateTime<ObservableSet<Temporal>, U>
 {
     private ZoneId zone;
     private DateTimeType myType;
-    private final SetChangeListener<T> recurrenceListener = (SetChangeListener<T>) (SetChangeListener.Change<? extends T> change) ->
+    private final SetChangeListener<Temporal> recurrenceListener = (SetChangeListener<Temporal>) (SetChangeListener.Change<? extends Temporal> change) ->
     {
         if (change.wasAdded())
         {
@@ -55,10 +55,10 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
         }
     };
     
-    private final StringConverter<ObservableSet<T>> CONVERTER = new StringConverter<ObservableSet<T>>()
+    private final StringConverter<ObservableSet<Temporal>> CONVERTER = new StringConverter<ObservableSet<Temporal>>()
     {
         @Override
-        public String toString(ObservableSet<T> object)
+        public String toString(ObservableSet<Temporal> object)
         {
             return object.stream()
                     .sorted()
@@ -67,9 +67,9 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
         }
 
         @Override
-        public ObservableSet<T> fromString(String string)
+        public ObservableSet<Temporal> fromString(String string)
         {
-            return (ObservableSet<T>) FXCollections.observableSet(Arrays.stream(string.split(","))
+            return FXCollections.observableSet(Arrays.stream(string.split(","))
                     .map(s -> DateTimeUtilities.temporalFromString(s))
                     .collect(Collectors.toSet()));
         }
@@ -84,7 +84,7 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
 //        parseContent(contentLine);
 //    }
 
-    public PropertyBaseRecurrence(ObservableSet<T> value)
+    public PropertyBaseRecurrence(ObservableSet<Temporal> value)
     {
         this();
         setValue(value);
@@ -100,7 +100,7 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
         setConverter(CONVERTER);
     }
 
-    public PropertyBaseRecurrence( PropertyBaseRecurrence<T, U> source)
+    public PropertyBaseRecurrence( PropertyBaseRecurrence<U> source)
     {
         this();
         copyPropertyFrom(source);
@@ -114,7 +114,7 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
     {
         if (! getValue().isEmpty())
         {
-            T sampleValue = getValue().iterator().next();
+            Temporal sampleValue = getValue().iterator().next();
             myType = DateTimeType.of(sampleValue);
             getValue().addListener(recurrenceListener);
             if (sampleValue instanceof ZonedDateTime)
@@ -126,11 +126,11 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
     }
 
     @Override
-    public void setValue(ObservableSet<T> value)
+    public void setValue(ObservableSet<Temporal> value)
     {
         if (! value.isEmpty())
         {
-            T sampleValue = value.iterator().next();
+            Temporal sampleValue = value.iterator().next();
             if (sampleValue instanceof LocalDate)
             {
                 setValueParameter(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
@@ -149,7 +149,7 @@ public abstract class PropertyBaseRecurrence<T extends Temporal, U> extends Prop
     {
         if (! getValue().isEmpty())
         {
-            T sampleValue = getValue().iterator().next();
+            Temporal sampleValue = getValue().iterator().next();
             // ensure all ZoneId values are the same
             if (sampleValue instanceof ZonedDateTime)
             {

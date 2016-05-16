@@ -181,7 +181,7 @@ public class DisplayableTest
                         .withCount(6)
                         .withFrequency("DAILY")
                         .withInterval(3))
-                .withExceptions(new Exceptions<LocalDateTime>(LocalDateTime.of(2015, 11, 12, 10, 0)
+                .withExceptions(new Exceptions(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 15, 10, 0)));
         List<Temporal> madeDates = e
                 .streamRecurrences()
@@ -205,7 +205,7 @@ public class DisplayableTest
     {
         VEvent e = new VEvent()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
-                .withExceptions(new Exceptions<ZonedDateTime>(
+                .withExceptions(new Exceptions(
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
@@ -231,7 +231,7 @@ public class DisplayableTest
     {
         VEvent e = new VEvent()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
-                .withExceptions(new Exceptions<ZonedDateTime>(
+                .withExceptions(new Exceptions(
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
@@ -240,7 +240,7 @@ public class DisplayableTest
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
         e.setExceptions(null);
         e.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(2016, 2, 7)));
-        e.setExceptions(FXCollections.observableArrayList(new Exceptions<LocalDate>(
+        e.setExceptions(FXCollections.observableArrayList(new Exceptions(
                             LocalDate.of(2016, 2, 10)
                           , LocalDate.of(2016, 2, 12)
                           , LocalDate.of(2016, 2, 9)
@@ -276,7 +276,7 @@ public class DisplayableTest
     {
         VEvent component = new VEvent()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
-        ObservableList<Exceptions<? extends Temporal>> exceptions = FXCollections.observableArrayList();
+        ObservableList<Exceptions> exceptions = FXCollections.observableArrayList();
         exceptions.add(Exceptions.parse("20160228T093000"));
         component.setExceptions(exceptions); // invalid        
     }

@@ -27,7 +27,7 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
     public void canCopyVEvent2()
     {
         VEvent component1 = getWeekly3()
-                .withExceptions(new Exceptions<>(
+                .withExceptions(new Exceptions(
                 LocalDateTime.of(2016, 2, 10, 12, 30)
               , LocalDateTime.of(2016, 2, 12, 12, 30)
               , LocalDateTime.of(2016, 2, 9, 12, 30) ));

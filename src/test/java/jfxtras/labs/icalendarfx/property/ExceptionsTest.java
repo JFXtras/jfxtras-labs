@@ -29,13 +29,13 @@ public class ExceptionsTest
     public void canParseExceptions1()
     {
         String content = "EXDATE:20151112T100000,20151115T100000";
-        Exceptions<LocalDateTime> madeProperty = Exceptions.parse(LocalDateTime.class, content);
+        Exceptions madeProperty = Exceptions.parse(LocalDateTime.class, content);
         assertEquals(content, madeProperty.toContent());
-        Exceptions<LocalDateTime> expectedProperty = new Exceptions<LocalDateTime>(FXCollections.observableSet(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0)));
+        Exceptions expectedProperty = new Exceptions(FXCollections.observableSet(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0)));
         assertEquals(expectedProperty, madeProperty);
         
         List<LocalDateTime> expectedValues = new ArrayList<>(Arrays.asList(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0)));
-        List<LocalDateTime> madeValues =  madeProperty.getValue().stream().sorted().collect(Collectors.toList());
+        List<Temporal> madeValues =  madeProperty.getValue().stream().sorted().collect(Collectors.toList());
         assertEquals(expectedValues, madeValues);
     }
 
@@ -43,13 +43,13 @@ public class ExceptionsTest
     public void canParseExceptions2()
     {
         String content = "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z";
-        Exceptions<ZonedDateTime> madeProperty = Exceptions.parse(content);
+        Exceptions madeProperty = Exceptions.parse(content);
         assertEquals(content, madeProperty.toContent());
-        ObservableSet<ZonedDateTime> observableSet = FXCollections.observableSet(
+        ObservableSet<Temporal> observableSet = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("Z")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("Z")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );
-        Exceptions<ZonedDateTime> expectedProperty = new Exceptions<ZonedDateTime>(observableSet);
+        Exceptions expectedProperty = new Exceptions(observableSet);
         assertEquals(expectedProperty, madeProperty);
         
         Set<ZonedDateTime> expectedValues = new HashSet<>(Arrays.asList(
@@ -66,9 +66,9 @@ public class ExceptionsTest
     public void canParseExceptions3()
     {
         String content = "EXDATE;VALUE=DATE:20160402";
-        Exceptions<LocalDate> madeProperty = Exceptions.parse(LocalDate.class, content);
+        Exceptions madeProperty = Exceptions.parse(LocalDate.class, content);
         assertEquals(content, madeProperty.toContent());
-        Exceptions<LocalDate> expectedProperty = new Exceptions<LocalDate>(FXCollections.observableSet(
+        Exceptions expectedProperty = new Exceptions(FXCollections.observableSet(
                 LocalDate.of(2016, 4, 2) ));
         assertEquals(expectedProperty, madeProperty);
         
@@ -80,7 +80,7 @@ public class ExceptionsTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongTypeExceptions1()
     {
-        Exceptions<Temporal> e = Exceptions.parse("20160228T093000");
+        Exceptions e = Exceptions.parse("20160228T093000");
         e.getValue().add(LocalDateTime.of(2016, 4, 25, 1, 0));
         e.getValue().add(LocalDate.of(2016, 4, 25));
         assertEquals(2, e.getValue().size());
@@ -90,7 +90,7 @@ public class ExceptionsTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongTypeExceptions2()
     {
-        Exceptions<Temporal> e = new Exceptions<>();
+        Exceptions e = new Exceptions();
         e.setValue(FXCollections.observableSet(ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("America/Los_Angeles"))));
         e.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("America/Los_Angeles")));
         e.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 5, 1, 0), ZoneId.of("America/New_York")));
@@ -101,8 +101,8 @@ public class ExceptionsTest
     public void canCopyExceptions()
     {
         String content = "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z";
-        Exceptions<ZonedDateTime> property1 = Exceptions.parse(content);
-        Exceptions<ZonedDateTime> property2 = new Exceptions<>(property1);
+        Exceptions property1 = Exceptions.parse(content);
+        Exceptions property2 = new Exceptions(property1);
         assertEquals(property1, property2);
         assertFalse(property1 == property2);
     }

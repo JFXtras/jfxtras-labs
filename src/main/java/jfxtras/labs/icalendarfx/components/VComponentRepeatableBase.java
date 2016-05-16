@@ -36,10 +36,10 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
     @Override
-    public ObservableList<Recurrences<? extends Temporal>> getRecurrenceDates() { return recurrenceDates; }
-    private ObservableList<Recurrences<? extends Temporal>> recurrenceDates;
+    public ObservableList<Recurrences> getRecurrenceDates() { return recurrenceDates; }
+    private ObservableList<Recurrences> recurrenceDates;
     @Override
-    public void setRecurrenceDates(ObservableList<Recurrences<? extends Temporal>> recurrenceDates)
+    public void setRecurrenceDates(ObservableList<Recurrences> recurrenceDates)
     {
         this.recurrenceDates = recurrenceDates;
         recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
