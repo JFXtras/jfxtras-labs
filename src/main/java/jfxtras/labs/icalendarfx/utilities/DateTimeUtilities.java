@@ -839,12 +839,15 @@ public final class DateTimeUtilities
         abstract String propertyTag(String propertyName, Temporal temporal);
     
         /** Format temporal to embedded DateTimeFormatter */
+        @Deprecated
         abstract String formatDateTimeType(Temporal temporal);
         
         /** Convert temporal to new DateTimeType - for DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
+        @Deprecated
         public abstract Temporal from(Temporal temporal, ZoneId zone);
         
         /** Convert temporal to new DateTimeType  - for all types, but DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
+        @Deprecated
         public abstract Temporal from(Temporal temporal);
     }
 }

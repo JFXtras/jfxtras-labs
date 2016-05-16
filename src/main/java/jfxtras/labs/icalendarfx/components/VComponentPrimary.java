@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -13,7 +11,6 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * Components with the following properties:
@@ -102,18 +99,18 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
         }
     }
 
-    @Deprecated
-    default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };
-    @Deprecated
-    default ZoneId getZoneId()
-    {
-//        if (getDateTimeType() == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
-        if (getDateTimeStart().getValue() instanceof ZonedDateTime)
-        {
-            return ((ZonedDateTime) getDateTimeStart().getValue()).getZone();
-        }
-        return null;
-    }
+//    @Deprecated
+//    default DateTimeType getDateTimeType() { return DateTimeType.of(getDateTimeStart().getValue()); };
+//    @Deprecated
+//    default ZoneId getZoneId()
+//    {
+////        if (getDateTimeType() == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+//        if (getDateTimeStart().getValue() instanceof ZonedDateTime)
+//        {
+//            return ((ZonedDateTime) getDateTimeStart().getValue()).getZone();
+//        }
+//        return null;
+//    }
     
     /**
      * Sorts VComponents by DTSTART date/time

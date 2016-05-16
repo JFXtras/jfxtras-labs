@@ -34,11 +34,11 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getDaily2());
-            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getWeekly2());
-            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getWholeDayDaily3());
-            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getIndividual1());
-            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getIndividual2());
+            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getDaily2());
+            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getWeekly2());
+            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getWholeDayDaily3());
+            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getIndividual1());
+            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getIndividual2());
         });
 
         List<LocalDateTime> startDates = agenda.appointments()
@@ -178,7 +178,7 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getIndividualZoned());
+            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getIndividualZoned());
         });
         
         VEvent v = agenda.getVCalendar().getVEvents().get(0);

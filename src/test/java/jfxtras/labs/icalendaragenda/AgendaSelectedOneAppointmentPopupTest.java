@@ -19,7 +19,7 @@ public class AgendaSelectedOneAppointmentPopupTest extends AgendaTestAbstract
     @Test
     public void canProduceSelectedOneAppointmentPopup()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getDaily1()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarComponents.getDaily1()));
 
         // Open popup
         move("#hourLine11");

@@ -32,7 +32,7 @@ public class AgendaChangeTest extends AgendaTestAbstract
     @Test
     public void canDragAndDropAppointment()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getDaily1()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarComponents.getDaily1()));
         
         // move one appointment
         assertFind("#AppointmentRegularBodyPane2015-11-11/0");
@@ -57,7 +57,7 @@ public class AgendaChangeTest extends AgendaTestAbstract
 //                .withRRule(r);
         assertEquals(Arrays.asList(v1), v0.childComponentsWithRecurrenceIDs()); // has recurrence ID in child list
         
-        VEvent expectedV1 = ICalendarStaticVEvents.getDaily1()
+        VEvent expectedV1 = ICalendarComponents.getDaily1()
                 .withRecurrenceRule((RecurrenceRule3) null)
                 .withRecurrenceId(LocalDateTime.of(2015, 11, 11, 10, 0))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 14, 0))

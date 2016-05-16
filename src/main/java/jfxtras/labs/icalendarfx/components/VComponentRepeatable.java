@@ -274,6 +274,13 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      */
     default Stream<Temporal> streamRecurrences(Temporal start)
     {
+        DateTimeType startType = DateTimeUtilities.DateTimeType.of(start);
+        DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+        if (startType != dateTimeStartType)
+        {
+            System.out.println(("Start type " + startType + " must match DTSTART type of " + dateTimeStartType));
+            throw new DateTimeException("Start type " + startType + " must match DTSTART type of " + dateTimeStartType);
+        }
         // get recurrence rule stream, or make a one-element stream from DTSTART if no recurrence rule is present
         final Stream<Temporal> stream1;
         if (getRecurrenceRule() == null)

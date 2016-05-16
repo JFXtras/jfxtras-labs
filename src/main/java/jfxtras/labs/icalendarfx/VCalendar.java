@@ -371,10 +371,10 @@ public class VCalendar
         {
             if (change.wasAdded())
             {
-                System.out.println("displayableListChangeListener:");
+//                System.out.println("displayableListChangeListener:");
                 change.getAddedSubList().forEach(e -> 
                 {
-                    System.out.println("change:" + e.getSummary());
+//                    System.out.println("change:" + e.getSummary());
                     if (e.getRecurrenceId() == null)
                     { // is a parent component
                         displayableComponentMap.put(e.getUniqueIdentifier().getValue(), e);
