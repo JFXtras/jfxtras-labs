@@ -4,6 +4,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
@@ -11,6 +12,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
@@ -112,6 +114,16 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
         }
         return null;
     }
+    
+    /**
+     * Sorts VComponents by DTSTART date/time
+     */
+    final static Comparator<? super VComponentPrimary<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
+    {
+        Temporal t1 = v1.getDateTimeStart().getValue();
+        Temporal t2 = v2.getDateTimeStart().getValue();
+        return DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t1, t2);
+    };
     
     /** If subclass has date-time properties (e.g. DTEND) that must be consistent with DTSTART
      * add a listener to dateTimeStartProperty() here to check for consistency

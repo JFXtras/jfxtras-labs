@@ -70,8 +70,8 @@ public class ICalendarAgenda extends Agenda
 
     /** The VCalendar object that contains all scheduling information */
     public VCalendar getVCalendar() { return vCalendar; }
-    private VCalendar vCalendar;
-    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
+    final private VCalendar vCalendar;
+//    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
     
 //    /** VComponents are iCalendar compliant calendar components.
 //     * They make appointments for Agenda to render. */
@@ -281,15 +281,17 @@ public class ICalendarAgenda extends Agenda
     };
     
     // CONSTRUCTOR
-    public ICalendarAgenda()
+    public ICalendarAgenda(VCalendar vCalendar)
     {
         super();
+        this.vCalendar = vCalendar;
+        System.out.println("here0:" + getVCalendar());
         getVCalendar().getVEvents().addListener((InvalidationListener) (obs) -> 
         {
 //            System.out.println("vComponents chagned:******************************" + vComponents.size());
 //            vComponents.stream().forEach(System.out::println);
         });
-
+        System.out.println("here1b:");
         // setup event listener to delete selected appointments when Agenda is added to a scene
         sceneProperty().addListener((obs, oldValue, newValue) ->
         {
@@ -305,7 +307,8 @@ public class ICalendarAgenda extends Agenda
                 });
             }
         });
-        
+        System.out.println("here1:");
+
         // setup i18n resource bundle
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", myLocale);
@@ -392,7 +395,8 @@ public class ICalendarAgenda extends Agenda
                 }
             }
         };
-        
+        System.out.println("here2:");
+
         // fires when VComponents are added outside the edit popup, such as initialization
         vComponentsChangeListener = (ListChangeListener.Change<? extends VComponentNew<?>> change) ->
         {
@@ -474,6 +478,7 @@ public class ICalendarAgenda extends Agenda
                 }
             }
         };
+        System.out.println("here3:");
 
         // Listen for changes to appointments (additions and deletions)
         appointments().addListener(appointmentsListChangeListener);
@@ -511,6 +516,7 @@ public class ICalendarAgenda extends Agenda
 
         // Listen for changes to vComponents (additions and deletions)
         getVCalendar().getVEvents().addListener(vComponentsChangeListener);
+        System.out.println("here4:");
 
         /*
          * Open select-one appointment popup
@@ -533,7 +539,8 @@ public class ICalendarAgenda extends Agenda
         
         // CHANGE DEFAULT EDIT POPUP - replace default popup with one with repeat options
         setEditAppointmentCallback(iCalendarEditPopupCallback);
-        
+        System.out.println("here5:");
+
         // LISTEN FOR AGENDA RANGE CHANGES
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {

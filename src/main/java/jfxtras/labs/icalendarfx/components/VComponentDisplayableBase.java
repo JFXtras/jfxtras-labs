@@ -393,7 +393,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         Stream<Temporal> inStream = VComponentDisplayable.super.streamRecurrences(start);
 
         // assign temporal comparator to match start type
-        final Comparator<Temporal> temporalComparator = DateTimeUtilities.makeTemporalComparator(start);
+        final Comparator<Temporal> temporalComparator = DateTimeUtilities.getTemporalComparator(start);
         
         // Handle Recurrence IDs
         final Stream<Temporal> stream2;

@@ -97,16 +97,22 @@ public final class DateTimeUtilities
             .toFormatter();
     
     /** Compares two temporals of the same type */
-    @Deprecated
     public final static Comparator<Temporal> TEMPORAL_COMPARATOR = (t1, t2) -> 
     {
-        LocalDateTime ld1 = (t1.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t1) : LocalDate.from(t1).atStartOfDay();
-        LocalDateTime ld2 = (t2.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t2) : LocalDate.from(t2).atStartOfDay();
-        return ld1.compareTo(ld2);
+        if (t1.getClass().equals(t2.getClass()))
+        {
+            return getTemporalComparator(t1).compare(t1, t2);
+        } else
+        {
+            throw new DateTimeException("For comparision, Temporal classes must be equal (" + t1.getClass().getSimpleName() + ", " + t2.getClass().getSimpleName() + ")");
+        }
+//        LocalDateTime ld1 = (t1.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t1) : LocalDate.from(t1).atStartOfDay();
+//        LocalDateTime ld2 = (t2.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t2) : LocalDate.from(t2).atStartOfDay();
+//        return ld1.compareTo(ld2);
     };
     
     /** Returns correct comparator based on Temporal parameter */
-    public final static Comparator<Temporal> makeTemporalComparator(Temporal t) 
+    public final static Comparator<Temporal> getTemporalComparator(Temporal t) 
     {
         if (t instanceof LocalDate)
         {

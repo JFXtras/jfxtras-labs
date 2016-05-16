@@ -16,8 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Parent;
-import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.test.TestUtil;
 
 public class AgendaRenderVComponentsTest extends AgendaTestAbstract
@@ -35,11 +34,11 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.vComponents().add(ICalendarStaticVEvents.getDaily2());
-            agenda.vComponents().add(ICalendarStaticVEvents.getWeekly2());
-            agenda.vComponents().add(ICalendarStaticVEvents.getWholeDayDaily3());
-            agenda.vComponents().add(ICalendarStaticVEvents.getIndividual1());
-            agenda.vComponents().add(ICalendarStaticVEvents.getIndividual2());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getDaily2());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getWeekly2());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getWholeDayDaily3());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getIndividual1());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getIndividual2());
         });
 
         List<LocalDateTime> startDates = agenda.appointments()
@@ -179,10 +178,10 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.vComponents().add(ICalendarStaticVEvents.getIndividualZoned());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticVEvents.getIndividualZoned());
         });
         
-        VComponent<Appointment> v = agenda.vComponents().get(0);
+        VEvent v = agenda.getVCalendar().getVEvents().get(0);
         System.out.println("v:" + v + " " + agenda.appointments().size());
         List<Temporal> startZoneDates = agenda.appointments()
                 .stream()

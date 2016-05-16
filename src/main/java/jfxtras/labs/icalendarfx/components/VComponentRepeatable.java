@@ -287,7 +287,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         }
         
         // assign temporal comparator to match start type
-        final Comparator<Temporal> temporalComparator = DateTimeUtilities.makeTemporalComparator(start);
+        final Comparator<Temporal> temporalComparator = DateTimeUtilities.getTemporalComparator(start);
         
         // add recurrences, if present
         final Stream<Temporal> stream2 = (getRecurrenceDates() == null) ? stream1 : merge(

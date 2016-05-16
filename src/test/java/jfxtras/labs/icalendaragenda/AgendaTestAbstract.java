@@ -11,6 +11,7 @@ import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.test.JFXtrasGuiTest;
@@ -19,6 +20,7 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
 {
 //    final protected Map<String, Agenda.AppointmentGroup> appointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
     public static LocalDateTime dateTimeStamp;
+    private VCalendar calendar = new VCalendar();
     
     @Override
     public Parent getRootNode()
@@ -28,7 +30,7 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
         vbox = new VBox();
 
         // setup appointment groups       
-        agenda = new ICalendarAgenda();
+        agenda = new ICalendarAgenda(calendar);
         agenda.setDisplayedLocalDateTime(LocalDate.of(2015, 11, 8).atStartOfDay());
 //        agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
         agenda.setPrefSize(1000, 800);

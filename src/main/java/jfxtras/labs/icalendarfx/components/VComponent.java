@@ -688,6 +688,7 @@ public interface VComponent<I>
     /**
      * Sorts VComponents by DTSTART date/time
      */
+    @Deprecated
     final static Comparator<? super VComponent<?>> VCOMPONENT_COMPARATOR = (v1, v2) -> 
     {
         Temporal t1 = v1.getDateTimeStart();
@@ -697,6 +698,18 @@ public interface VComponent<I>
         return ld1.compareTo(ld2);
     };
 
+    
+    /**
+     * Sorts VComponents by DTSTART date/time
+     */
+    final static Comparator<? super VComponentPrimary<?>> VCOMPONENT_COMPARATOR2 = (v1, v2) -> 
+    {
+        Temporal t1 = v1.getDateTimeStart().getValue();
+        LocalDateTime ld1 = (t1.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t1) : LocalDate.from(t1).atStartOfDay();
+        Temporal t2 = v2.getDateTimeStart().getValue();
+        LocalDateTime ld2 = (t2.isSupported(ChronoUnit.NANOS)) ? LocalDateTime.from(t2) : LocalDate.from(t2).atStartOfDay();
+        return ld1.compareTo(ld2);
+    };
 
     /**
      * Return list of all related VComponents that make up entire recurrence set.

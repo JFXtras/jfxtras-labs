@@ -14,7 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonBar.ButtonData;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -227,10 +227,10 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
         Appointment a = agenda.appointments().get(0);
         
         Assert.assertEquals(1, agenda.appointments().size());
-        VComponent<Appointment> v = agenda.vComponents().get(0);
+        VEvent v = agenda.getVCalendar().getVEvents().get(0);
         System.out.println(v.getDateTimeStart() + " ");
-        String dateTimeStamp = DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(v.getDateTimeStamp());
-        String dateTimeCreated = DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(v.getDateTimeCreated());
+        String dateTimeStamp = DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(v.getDateTimeStamp().getValue());
+        String dateTimeCreated = DateTimeUtilities.ZONED_DATE_TIME_UTC_FORMATTER.format(v.getDateTimeCreated().getValue());
         String expectedString = "BEGIN:VEVENT" + System.lineSeparator()
                 + "CATEGORIES:group00" + System.lineSeparator()
                 + "CREATED:" + dateTimeCreated + System.lineSeparator()
@@ -239,7 +239,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
                 + "DTSTART;TZID=Japan:20151111T100000" + System.lineSeparator()
                 + "UID:20151108T000000-0jfxtras.org" + System.lineSeparator()
                 + "END:VEVENT";
-        Assert.assertEquals(expectedString, v.toComponentText());
+        Assert.assertEquals(expectedString, v.toContent());
     }  
 
 }

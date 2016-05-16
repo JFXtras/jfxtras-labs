@@ -393,7 +393,7 @@ public class RecurrenceRule3 implements VCalendarElement
     }
     
     /**
-     * List of all elements found in object.
+     * List of all recurrence rule elements found in object.
      * The list is unmodifiable.
      * 
      * @return - the list of elements
@@ -604,7 +604,7 @@ public class RecurrenceRule3 implements VCalendarElement
         Stream<Temporal> recurrenceStream = frequencyStream
                 .flatMap(value ->
                 {
-//                    System.out.println("value:" + value);
+                    // process byRules
                     chronoUnit = getFrequency().getValue().getChronoUnit(); // initial chronoUnit from Frequency
                     myStream = Arrays.asList(value).stream();
                     byRules().stream()
@@ -615,7 +615,7 @@ public class RecurrenceRule3 implements VCalendarElement
                                 myStream = rule.streamRecurrences(myStream, chronoUnit, start);
                                 chronoUnit = rule.getChronoUnit();
                             });
-                    // must filter out too early recurrences after all rules are processed in order to enable BySetOrder to work property
+                    // must filter out too early recurrences
                     return myStream.filter(r -> ! DateTimeUtilities.isBefore(r, start));
                 });
         

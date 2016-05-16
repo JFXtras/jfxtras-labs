@@ -33,6 +33,7 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
@@ -53,7 +54,8 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
  */
 public class CalendarController
 {
-     public ICalendarAgenda agenda = new ICalendarAgenda();
+     VCalendar vCalendar = new VCalendar();
+     public ICalendarAgenda agenda = new ICalendarAgenda(vCalendar);
      private final Callback<Collection<VComponentDisplayable<?>>, Void> repeatWriteCallback = null;
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
