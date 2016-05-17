@@ -31,7 +31,7 @@ public class MakeAppointmentsTest
 {
     /** Tests daily stream with FREQ=DAILY */
     @Test
-    public void makeInstancesDailyTest1()
+    public void makeAppointmentsDailyTest1()
     {
         VEvent vevent = ICalendarComponents.getDaily1();
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
@@ -62,9 +62,8 @@ public class MakeAppointmentsTest
         }
     }
     
-    /** Tests daily stream with FREQ=DAILY */
     @Test
-    public void makeInstancesDailyTest2()
+    public void makeAppointmentsDailyTest2()
     {
         LocalDate startDate = LocalDate.of(2015, 11, 15);
         VEvent vevent = new VEvent()
@@ -94,6 +93,43 @@ public class MakeAppointmentsTest
                             .withStartTemporal(d)
                             .withEndTemporal(d.plus(90, ChronoUnit.MINUTES))
                             .withSummary("WeeklyZoned Ends");
+                })
+                .collect(Collectors.toList());
+        for (int i=0; i<expectedAppointments.size(); i++)
+        {
+            assertTrue(isEqualTo(expectedAppointments.get(i), newAppointments.get(i)));
+        }
+    }
+    
+    @Test
+    public void makeAppointmentsDailyTest3()
+    {
+        LocalDate startDate = LocalDate.of(2015, 11, 15);
+        VEvent vevent = new VEvent()
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(15).getDescription())
+                .withDateTimeStart(startDate)
+                .withDateTimeEnd(startDate.plusDays(1))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withDescription("LocalDate Description")
+                .withSummary("LocalDate")
+                .withUniqueIdentifier("20150110T080000-3@jfxtras.org")
+                .withRecurrenceRule(new RecurrenceRule3()
+                        .withFrequency(FrequencyType.WEEKLY)
+                        .withInterval(3));
+        LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
+        LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
+        List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(vevent, startRange, endRange);
+        List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
+                LocalDate.of(2015, 11, 15)
+                ));
+
+        List<Appointment> expectedAppointments = expectedDates
+                .stream()
+                .map(d -> {
+                    return new Agenda.AppointmentImplTemporal()
+                            .withStartTemporal(d)
+                            .withEndTemporal(d.plus(1, ChronoUnit.DAYS))
+                            .withSummary("LocalDate");
                 })
                 .collect(Collectors.toList());
         for (int i=0; i<expectedAppointments.size(); i++)

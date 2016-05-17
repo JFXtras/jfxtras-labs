@@ -3,6 +3,7 @@ package jfxtras.labs.icalendaragenda.scene.control.agenda;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
@@ -38,8 +39,17 @@ public final class ICalendarAgendaUtilities
 //        System.out.println("make appointmetns:" + component.getSummary() + " " + component.getDateTimeStart());
         List<Appointment> appointments = new ArrayList<>();
         Boolean isWholeDay = component.getDateTimeStart().getValue() instanceof LocalDate;
-        Temporal startRange2 = component.getDateTimeStart().getValue().with(startRange);
-        Temporal endRange2 = component.getDateTimeStart().getValue().with(endRange);
+        final Temporal startRange2;
+        final Temporal endRange2;
+        if (isWholeDay)
+        {
+            startRange2 = startRange.toLocalDate();
+            endRange2 = endRange.toLocalDate();            
+        } else
+        {
+            startRange2 = component.getDateTimeStart().getValue().with(startRange);
+            endRange2 = component.getDateTimeStart().getValue().with(endRange);            
+        }
         component.streamRecurrences(startRange2, endRange2).forEach(startTemporal ->
         {
             System.out.println("startTemporal1:" + startTemporal);
@@ -49,8 +59,17 @@ public final class ICalendarAgendaUtilities
                 adjustment = component.getDuration().getValue();
             } else if (component.getDateTimeEnd() != null)
             {
-                adjustment = Duration.between(component.getDateTimeStart().getValue(),
-                        component.getDateTimeEnd().getValue());
+                Temporal dtstart = component.getDateTimeStart().getValue();
+                Temporal dtend = component.getDateTimeEnd().getValue();
+                if (dtstart instanceof LocalDate)
+                {
+                    adjustment = Period.between((LocalDate) dtstart, (LocalDate) dtend);                
+                } else
+                {
+                    adjustment = Duration.between(dtstart, dtend);
+                }
+//                adjustment = Duration.between(component.getDateTimeStart().getValue(),
+//                        component.getDateTimeEnd().getValue());
             } else
             {
                 throw new RuntimeException("Either DTEND or DURATION must be set");

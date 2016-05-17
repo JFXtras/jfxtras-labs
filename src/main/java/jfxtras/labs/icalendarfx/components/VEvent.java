@@ -2,6 +2,8 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.stream.Stream;
@@ -192,7 +194,15 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
             adjustment = getDuration().getValue();
         } else if (getDateTimeEnd() != null)
         {
-            adjustment = Duration.between(getDateTimeStart().getValue(), getDateTimeEnd().getValue());
+            Temporal dtstart = getDateTimeStart().getValue();
+            Temporal dtend = getDateTimeEnd().getValue();
+            if (dtstart instanceof LocalDate)
+            {
+                adjustment = Period.between((LocalDate) dtstart, (LocalDate) dtend);                
+            } else
+            {
+                adjustment = Duration.between(dtstart, dtend);
+            }
         } else
         {
             throw new RuntimeException("Either DTEND or DURATION must be set");
