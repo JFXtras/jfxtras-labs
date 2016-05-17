@@ -3,14 +3,17 @@ package jfxtras.labs.icalendaragenda;
 import static org.junit.Assert.assertTrue;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
@@ -36,7 +40,7 @@ public class MakeAppointmentsTest
         VEvent vevent = ICalendarComponents.getDaily1();
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
-        List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(vevent, startRange, endRange);
+        List<Appointment> newAppointments = makeAppointments(vevent, startRange, endRange);
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 15, 10, 0)
               , LocalDateTime.of(2015, 11, 16, 10, 0)
@@ -79,7 +83,7 @@ public class MakeAppointmentsTest
               .withUniqueIdentifier("20150110T080000-1@jfxtras.org");
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
-        List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(vevent, startRange, endRange);
+        List<Appointment> newAppointments = makeAppointments(vevent, startRange, endRange);
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2015, 11, 16, 8, 15), ZoneId.of("America/Los_Angeles"))
               , ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 8, 15), ZoneId.of("America/Los_Angeles"))
@@ -118,7 +122,7 @@ public class MakeAppointmentsTest
                         .withInterval(3));
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
-        List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(vevent, startRange, endRange);
+        List<Appointment> newAppointments = makeAppointments(vevent, startRange, endRange);
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
                 LocalDate.of(2015, 11, 15)
                 ));
@@ -136,6 +140,80 @@ public class MakeAppointmentsTest
         {
             assertTrue(isEqualTo(expectedAppointments.get(i), newAppointments.get(i)));
         }
+    }
+    
+    /** Similar to {@link ICalendarAgenda#makeAppointments} */
+    public static List<Appointment> makeAppointments(VEvent component, LocalDateTime startRange, LocalDateTime endRange)
+    {
+        List<Appointment> appointments = new ArrayList<>();
+        Boolean isWholeDay = component.getDateTimeStart().getValue() instanceof LocalDate;
+        
+        // Make start and end ranges in Temporal type that matches DTSTART
+//        LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
+//        LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
+        final Temporal startRange2;
+        final Temporal endRange2;
+        if (isWholeDay)
+        {
+            startRange2 = startRange.toLocalDate();
+            endRange2 = endRange.toLocalDate();            
+        } else
+        {
+            startRange2 = component.getDateTimeStart().getValue().with(startRange);
+            endRange2 = component.getDateTimeStart().getValue().with(endRange);            
+        }
+        component.streamRecurrences(startRange2, endRange2).forEach(startTemporal ->
+        {
+            // calculate date-time end
+            final TemporalAmount adjustment;
+            if (component.getDuration() != null)
+            {
+                adjustment = component.getDuration().getValue();
+            } else if (component.getDateTimeEnd() != null)
+            {
+                Temporal dtstart = component.getDateTimeStart().getValue();
+                Temporal dtend = component.getDateTimeEnd().getValue();
+                if (dtstart instanceof LocalDate)
+                {
+                    adjustment = Period.between((LocalDate) dtstart, (LocalDate) dtend);                
+                } else
+                {
+                    adjustment = Duration.between(dtstart, dtend);
+                }
+            } else
+            {
+                throw new RuntimeException("Either DTEND or DURATION must be set");
+            }
+            Temporal endTemporal = startTemporal.plus(adjustment);
+
+//            /* Find AppointmentGroup
+//             * control can only handle one category.  Checks only first category
+//             */
+//            final AppointmentGroup appointmentGroup;
+//            if (component.getCategories() != null)
+//            {
+//                String firstCategory = component.getCategories().get(0).getValue().get(0);
+//                Optional<AppointmentGroup> myGroup = appointmentGroups()
+//                        .stream()
+//                        .filter(g -> g.getDescription().equals(firstCategory))
+//                        .findAny();
+//                appointmentGroup = (myGroup.isPresent()) ? myGroup.get() : null;
+//            } else
+//            {
+//                appointmentGroup = null;
+//            }
+            // Make appointment
+            Appointment appt = new Agenda.AppointmentImplTemporal()
+                    .withStartTemporal(startTemporal)
+                    .withEndTemporal(endTemporal)
+                    .withDescription( (component.getDescription() != null) ? component.getDescription().getValue() : null )
+                    .withSummary( (component.getSummary() != null) ? component.getSummary().getValue() : null)
+                    .withLocation( (component.getLocation() != null) ? component.getLocation().getValue() : null)
+                    .withWholeDay(isWholeDay);
+//                    .withAppointmentGroup(appointmentGroup);
+            appointments.add(appt);   // add appointments to return argument
+        });
+        return appointments;
     }
     
     public static boolean isEqualTo(Appointment a1, Appointment a2)

@@ -1,12 +1,15 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -549,7 +552,8 @@ public class ICalendarAgenda extends Agenda
                     LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
                     LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
 //                    System.out.println("range:" + start + " " + end);
-                    List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(v, start, end);
+//                    List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(v, start, end);
+                    List<Appointment> newAppointments = makeAppointments(v);
 //                    vComponentAppointmentMap.put(v, newAppointments);
                     appointments().addAll(newAppointments);
 //                    newAppointments.stream().forEach(a ->
@@ -566,61 +570,83 @@ public class ICalendarAgenda extends Agenda
     } // end of constructor
     
     /**
-     * Returns appointments for Agenda that should exist between dateTimeRangeStart and dateTimeRangeEnd
-     * based on VEvent properties.  Uses dateTimeRange previously set in VEvent.
-     * @param <Appointment>
+     * Returns appointments for Agenda that should exist between displayed range
      * 
+     * @param component - calendar component
      * @return created appointments
      */
-//    // TODO - MAYBE PUT IT ICALENDAR AGENDA - CAN I LOSE startRange, endRange AND getAppointmentGroups as parameters?
-//    // MAY BE PROBLEM IN AGENDA, NEED TO ACCESS WHERE AGENDA IS NOT KNOWN
-//    public List<Appointment> makeAppointments()
-//    {
-//        List<Appointment> appointments = new ArrayList<>();
-//        getVCalendar().getVEvents().forEach(component ->
-//        {
-//            Boolean isWholeDay = component.getDateTimeStart().getValue() instanceof LocalDate;
-//            Temporal startRange = getDateTimeRange().getStartLocalDateTime();
-//            Temporal endRange = getDateTimeRange().getEndLocalDateTime();
-//            // TODO - ACCOMODATE DIFFERENT TEMPORAL TYPES - CONVERT
-//            component.streamRecurrences(startRange, endRange).forEach(startTemporal ->
-//            {
-//                final TemporalAmount adjustment;
-//                if (component.getDuration() != null)
-//                {
-//                    adjustment = component.getDuration().getValue();
-//                } else if (component.getDateTimeEnd() != null)
-//                {
-//                    adjustment = Duration.between(component.getDateTimeStart().getValue(),
-//                            component.getDateTimeEnd().getValue());
-//                } else
-//                {
-//                    throw new RuntimeException("Either DTEND or DURATION must be set");
-//                }
-//                Temporal endTemporal = startTemporal.minus(adjustment);
-//                Optional<AppointmentGroup> myGroup = appointmentGroups()
-//                        .stream()
-////                        .peek(a -> System.out.println(a.getDescription()))
-//                        .filter(g -> g.getDescription().equals(component.getCategories().get(0).getValue().get(0)))
-//                        .findFirst();
-//                AppointmentGroup getAppointmentGroup = (
-//                        myGroup.isPresent() &&
-//                        component.getCategories().size() == 1 &&
-//                        component.getCategories().get(0).getValue().size() == 1) ? myGroup.get() : null;
-//                Appointment appt = new Agenda.AppointmentImplTemporal()
-//                        .withStartTemporal(startTemporal)
-//                        .withEndTemporal(endTemporal)
-//                        .withDescription(component.getDescription().getValue())
-//                        .withSummary(component.getSummary().getValue())
-//                        .withLocation(component.getLocation().getValue())
-//                        .withWholeDay(isWholeDay)
-//                        .withAppointmentGroup(getAppointmentGroup);
-//                appointments.add(appt);   // add appointments to return argument
-////                instances().add(appt); // add appointments to this object's collection
-//            });
-//        });
-//        return appointments;
-//    }
+    private List<Appointment> makeAppointments(VEvent component)
+    {
+        List<Appointment> appointments = new ArrayList<>();
+        Boolean isWholeDay = component.getDateTimeStart().getValue() instanceof LocalDate;
+        
+        // Make start and end ranges in Temporal type that matches DTSTART
+        LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
+        LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
+        final Temporal startRange2;
+        final Temporal endRange2;
+        if (isWholeDay)
+        {
+            startRange2 = startRange.toLocalDate();
+            endRange2 = endRange.toLocalDate();            
+        } else
+        {
+            startRange2 = component.getDateTimeStart().getValue().with(startRange);
+            endRange2 = component.getDateTimeStart().getValue().with(endRange);            
+        }
+        component.streamRecurrences(startRange2, endRange2).forEach(startTemporal ->
+        {
+            // calculate date-time end
+            final TemporalAmount adjustment;
+            if (component.getDuration() != null)
+            {
+                adjustment = component.getDuration().getValue();
+            } else if (component.getDateTimeEnd() != null)
+            {
+                Temporal dtstart = component.getDateTimeStart().getValue();
+                Temporal dtend = component.getDateTimeEnd().getValue();
+                if (dtstart instanceof LocalDate)
+                {
+                    adjustment = Period.between((LocalDate) dtstart, (LocalDate) dtend);                
+                } else
+                {
+                    adjustment = Duration.between(dtstart, dtend);
+                }
+            } else
+            {
+                throw new RuntimeException("Either DTEND or DURATION must be set");
+            }
+            Temporal endTemporal = startTemporal.plus(adjustment);
+
+            /* Find AppointmentGroup
+             * control can only handle one category.  Checks only first category
+             */
+            final AppointmentGroup appointmentGroup;
+            if (component.getCategories() != null)
+            {
+                String firstCategory = component.getCategories().get(0).getValue().get(0);
+                Optional<AppointmentGroup> myGroup = appointmentGroups()
+                        .stream()
+                        .filter(g -> g.getDescription().equals(firstCategory))
+                        .findAny();
+                appointmentGroup = (myGroup.isPresent()) ? myGroup.get() : null;
+            } else
+            {
+                appointmentGroup = null;
+            }
+            // Make appointment
+            Appointment appt = new Agenda.AppointmentImplTemporal()
+                    .withStartTemporal(startTemporal)
+                    .withEndTemporal(endTemporal)
+                    .withDescription( (component.getDescription() != null) ? component.getDescription().getValue() : null )
+                    .withSummary( (component.getSummary() != null) ? component.getSummary().getValue() : null)
+                    .withLocation( (component.getLocation() != null) ? component.getLocation().getValue() : null)
+                    .withWholeDay(isWholeDay)
+                    .withAppointmentGroup(appointmentGroup);
+            appointments.add(appt);   // add appointments to return argument
+        });
+        return appointments;
+    }
     
     // TODO - SHOULD THESE LISTENERS AND BACKING MAPS GO TO NEW CLASS?
     public VComponentDisplayable<?> findVComponent(Appointment appointment)
