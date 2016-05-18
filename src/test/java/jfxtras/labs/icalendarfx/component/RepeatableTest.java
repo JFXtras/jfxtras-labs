@@ -32,7 +32,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -52,7 +52,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @see DaylightSavingTime
  * 
  * for the following properties:
- * @see Recurrences
+ * @see RecurrenceDates
  * @see RecurrenceRule
  * 
  * @author David Bal
@@ -188,8 +188,8 @@ public class RepeatableTest //extends Application
     {
         VEvent component = new VEvent()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
-        ObservableList<Recurrences> recurrences = FXCollections.observableArrayList();
-        recurrences.add(Recurrences.parse(LocalDateTime.class, "20160228T093000"));
+        ObservableList<RecurrenceDates> recurrences = FXCollections.observableArrayList();
+        recurrences.add(RecurrenceDates.parse(LocalDateTime.class, "20160228T093000"));
         component.setRecurrenceDates(recurrences); // invalid        
     }
 
@@ -201,7 +201,7 @@ public class RepeatableTest //extends Application
                 .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
         ObservableSet<Temporal> expectedValues = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
-        builtComponent.getRecurrenceDates().add(new Recurrences(expectedValues));
+        builtComponent.getRecurrenceDates().add(new RecurrenceDates(expectedValues));
     }
     
     /*
@@ -1051,7 +1051,7 @@ public class RepeatableTest //extends Application
     {
         VEvent e = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withRecurrenceDates(new Recurrences(LocalDateTime.of(2015, 11, 12, 10, 0)
+                .withRecurrenceDates(new RecurrenceDates(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 14, 12, 0)));
         List<Temporal> madeDates = e
                 .streamRecurrences()

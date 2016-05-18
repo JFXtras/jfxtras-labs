@@ -11,12 +11,14 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 
 /**
- * EXDATE
- * Exception Date-Times
- * RFC 5545 iCalendar 3.8.5.1, page 117.
+ * RDATE
+ * Recurrence Date-Times
+ * RFC 5545 iCalendar 3.8.5.2, page 120.
  * 
- * This property defines the list of DATE-TIME exceptions for
+ * This property defines the list of DATE-TIME values for
  * recurring events, to-dos, journal entries, or time zone definitions.
+ * 
+ * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
  * 
  * @author David Bal
  * @see VEvent
@@ -25,47 +27,47 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public class Exceptions extends PropertyBaseRecurrence<Exceptions>
+public class RecurrenceDates extends PropertyBaseRecurrence<RecurrenceDates>
 {       
-//    public Exceptions(CharSequence contentLine)
+//    public Recurrences(CharSequence contentLine)
 //    {
 //        super(contentLine);
 //    }
-
+    
     @SuppressWarnings("unchecked")
-    public Exceptions(Temporal...temporals)
+    public RecurrenceDates(Temporal...temporals)
     {
         super(FXCollections.observableSet(temporals));
     }
-
-    public Exceptions(Exceptions source)
+    
+    public RecurrenceDates(RecurrenceDates source)
     {
         super(source);
     }
     
-    public Exceptions(ObservableSet<Temporal> value)
+    public RecurrenceDates(ObservableSet<Temporal> value)
     {
         super(value);
     }
     
-    public Exceptions()
+    public RecurrenceDates()
     {
         super();
     }
 
     /** Parse string to Temporal.  Not type safe.  Implementation must
      * ensure parameterized type is the same as date-time represented by String parameter */
-    public static Exceptions parse(String value)
+    public static RecurrenceDates parse(String value)
     {
-        Exceptions property = new Exceptions();
+        RecurrenceDates property = new RecurrenceDates();
         property.parseContent(value);
         return property;
     }
     
     /** Parse string with Temporal class Exceptions provided as parameter */
-    public static  Exceptions parse(Class<? extends Temporal> clazz, String value)
+    public static RecurrenceDates parse(Class<? extends Temporal> clazz, String value)
     {
-        Exceptions property = new Exceptions();
+        RecurrenceDates property = new RecurrenceDates();
         property.parseContent(value);
         clazz.cast(property.getValue().iterator().next()); // class check
         return property;

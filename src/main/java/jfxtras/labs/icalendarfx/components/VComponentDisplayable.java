@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.EditDeleteUtilities;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
@@ -22,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
@@ -209,33 +211,33 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z
      * 
      */
-    ObservableList<Exceptions> getExceptions();
-    void setExceptions(ObservableList<Exceptions> exceptions);
-    default T withExceptions(ObservableList<Exceptions> exceptions)
+    ObservableList<ExceptionDates> getExceptionDates();
+    void setExceptionDates(ObservableList<ExceptionDates> exceptions);
+    default T withExceptionDates(ObservableList<ExceptionDates> exceptions)
     {
-        setExceptions(exceptions);
+        setExceptionDates(exceptions);
         return (T) this;
     }
-    default T withExceptions(String...exceptions)
+    default T withExceptionDates(String...exceptions)
     {
         Arrays.stream(exceptions).forEach(s -> PropertyType.EXCEPTION_DATE_TIMES.parse(this, s));   
         return (T) this;
     }
-    default T withExceptions(Temporal...exceptions)
+    default T withExceptionDates(Temporal...exceptions)
     {
-        final ObservableList<Exceptions> list;
-        if (getExceptions() == null)
+        final ObservableList<ExceptionDates> list;
+        if (getExceptionDates() == null)
         {
             list = FXCollections.observableArrayList();
-            setExceptions(list);
+            setExceptionDates(list);
         } else
         {
-            list = getExceptions();
+            list = getExceptionDates();
         }
         // below code ensures all exceptions are of the same Temporal class
 //        Temporal t = exceptions[0];
         Set<Temporal> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
-        getExceptions().add(new Exceptions(FXCollections.observableSet(exceptions2)));
+        getExceptionDates().add(new ExceptionDates(FXCollections.observableSet(exceptions2)));
 //        if (t instanceof LocalDate)
 //        {
 //            Set<LocalDate> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
@@ -249,15 +251,15 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
 //        }
         return (T) this;
     }
-    default T withExceptions(Exceptions...exceptions)
+    default T withExceptionDates(ExceptionDates...exceptions)
     {
-        if (getExceptions() == null)
+        if (getExceptionDates() == null)
         {
-            setExceptions(FXCollections.observableArrayList());
-            Arrays.stream(exceptions).forEach(e -> getExceptions().add(e)); // add one at a time to ensure date-time type compliance
+            setExceptionDates(FXCollections.observableArrayList());
+            Arrays.stream(exceptions).forEach(e -> getExceptionDates().add(e)); // add one at a time to ensure date-time type compliance
         } else
         {
-            getExceptions().addAll(exceptions);
+            getExceptionDates().addAll(exceptions);
         }
         return (T) this;
     }
@@ -472,9 +474,9 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default void checkDateTimeStartConsistency()
     {
         VComponentRepeatable.super.checkDateTimeStartConsistency();
-        if ((getExceptions() != null) && (getDateTimeStart() != null))
+        if ((getExceptionDates() != null) && (getDateTimeStart() != null))
         {
-            Temporal firstException = getExceptions().get(0).getValue().iterator().next();
+            Temporal firstException = getExceptionDates().get(0).getValue().iterator().next();
             DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(firstException);
             DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
             if (exceptionType != dateTimeStartType)
@@ -504,14 +506,25 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs();
     
+    /**
+     * Part of {@link EditDeleteUtilities#handleEdit}
+     * Changes a VComponent with a RRULE to become a non-recurring component
+     * 
+     * @param vComponentOriginal - unmodified component
+     * @param startRecurrence - start date/time of edited recurrence
+     * @param endRecurrence - end date/time of edited recurrence
+     * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection, Callback)
+     */
+    void becomeNonRecurring(VComponentRepeatable<T> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence);
+    
     @Override
     default boolean isValid()
     {
         final boolean isExceptionTypeMatch;
-        if (getExceptions() != null)
+        if (getExceptionDates() != null)
         {
             DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            Temporal e1 = getExceptions().get(0).getValue().iterator().next();
+            Temporal e1 = getExceptionDates().get(0).getValue().iterator().next();
             DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(e1);
             isExceptionTypeMatch = startType == exceptionType;
         } else

@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -193,7 +193,7 @@ public final class ICalendarComponents
     public static VEvent getDailyWithException1()
     {
         return getDaily2()
-                .withExceptions(new Exceptions(
+                .withExceptionDates(new ExceptionDates(
                         LocalDateTime.of(2015, 11, 12, 10, 0),
                         LocalDateTime.of(2015, 11, 15, 10, 0)));
     }

@@ -32,9 +32,9 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
@@ -54,11 +54,11 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
  * @see Classification
  * @see Contact
  * @see DateTimeCreated
- * @see Exceptions
+ * @see ExceptionDates
  * @see LastModified - extended from LastModified
  * @see RecurrenceId
  * @see RecurrenceRule - extended from Repeatable
- * @see Recurrences - extended from Repeatable
+ * @see RecurrenceDates - extended from Repeatable
  * @see RelatedTo
  * @see Sequence
  * @see Status
@@ -89,7 +89,7 @@ public class DisplayableTest
                     .withCategories("group06")
                     .withClassification(ClassificationType.PUBLIC)
                     .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
-                    .withExceptions("EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z"),
+                    .withExceptionDates("EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z"),
                 new VTodo()
                     .withStatus(StatusType.NEEDS_ACTION)
                     .withSequence(2)
@@ -106,7 +106,7 @@ public class DisplayableTest
                     .withCategories("group06")
                     .withClassification(ClassificationType.PUBLIC)
                     .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
-                    .withExceptions("EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z"),
+                    .withExceptionDates("EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z"),
                 new VJournal()
                     .withStatus(StatusType.NEEDS_ACTION)
                     .withSequence(2)
@@ -123,7 +123,7 @@ public class DisplayableTest
                     .withCategories("group06")
                     .withClassification(ClassificationType.PUBLIC)
                     .withContacts("CONTACT:Jim Dolittle\\, ABC Industries\\, +1-919-555-1234", "Harry Potter\\, Hogwarts\\, by owl")
-                    .withExceptions("EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z")
+                    .withExceptionDates("EXDATE:19960301T010000Z,19960304T010000Z,19960307T010000Z")
                 );
         
         List<ZonedDateTime> expectedDates = Arrays.asList(
@@ -181,7 +181,7 @@ public class DisplayableTest
                         .withCount(6)
                         .withFrequency("DAILY")
                         .withInterval(3))
-                .withExceptions(new Exceptions(LocalDateTime.of(2015, 11, 12, 10, 0)
+                .withExceptionDates(new ExceptionDates(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 15, 10, 0)));
         List<Temporal> madeDates = e
                 .streamRecurrences()
@@ -194,7 +194,7 @@ public class DisplayableTest
                 ));
         assertEquals(expectedDates, madeDates);
         String expectedContent = "EXDATE:20151112T100000,20151115T100000";
-        assertEquals(expectedContent, e.getExceptions().get(0).toContent());
+        assertEquals(expectedContent, e.getExceptionDates().get(0).toContent());
         String expectedContent2 = "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6";
         assertEquals(expectedContent2, e.getRecurrenceRule().toContent());
     }
@@ -205,7 +205,7 @@ public class DisplayableTest
     {
         VEvent e = new VEvent()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
-                .withExceptions(new Exceptions(
+                .withExceptionDates(new ExceptionDates(
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
@@ -231,16 +231,16 @@ public class DisplayableTest
     {
         VEvent e = new VEvent()
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
-                .withExceptions(new Exceptions(
+                .withExceptionDates(new ExceptionDates(
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))
                 .withRecurrenceRule(new RecurrenceRule3()
                         .withFrequency(FrequencyType.DAILY)
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
-        e.setExceptions(null);
+        e.setExceptionDates(null);
         e.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(2016, 2, 7)));
-        e.setExceptions(FXCollections.observableArrayList(new Exceptions(
+        e.setExceptionDates(FXCollections.observableArrayList(new ExceptionDates(
                             LocalDate.of(2016, 2, 10)
                           , LocalDate.of(2016, 2, 12)
                           , LocalDate.of(2016, 2, 9)
@@ -266,7 +266,7 @@ public class DisplayableTest
     {
         VEvent component = new VEvent()
             .withDateTimeStart(LocalDate.of(1997, 3, 1))
-            .withExceptions("EXDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
+            .withExceptionDates("EXDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
 //      Platform.runLater(() -> component.setDateTimeStart("20160302T223316Z"));      
         component.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "20160302T223316Z")); // invalid
     }
@@ -276,9 +276,9 @@ public class DisplayableTest
     {
         VEvent component = new VEvent()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
-        ObservableList<Exceptions> exceptions = FXCollections.observableArrayList();
-        exceptions.add(Exceptions.parse("20160228T093000"));
-        component.setExceptions(exceptions); // invalid        
+        ObservableList<ExceptionDates> exceptions = FXCollections.observableArrayList();
+        exceptions.add(ExceptionDates.parse("20160228T093000"));
+        component.setExceptionDates(exceptions); // invalid        
     }
     
     @Test //(expected = DateTimeException.class)
@@ -311,7 +311,7 @@ public class DisplayableTest
     @Test (expected = ClassCastException.class)
     public void canCatchWrongExceptionType1()
     {
-        new VEvent().withExceptions(LocalDate.of(2016, 4, 27),
+        new VEvent().withExceptionDates(LocalDate.of(2016, 4, 27),
                 LocalDateTime.of(2016, 4, 27, 12, 0));
     }
 }

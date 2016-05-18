@@ -19,10 +19,11 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
@@ -138,13 +139,13 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     * recurring events, to-dos, journal entries, or time zone definitions.
     */ 
     @Override
-    public ObservableList<Exceptions> getExceptions()
+    public ObservableList<ExceptionDates> getExceptionDates()
     {
         return exceptions;
     }
-    private ObservableList<Exceptions> exceptions;
+    private ObservableList<ExceptionDates> exceptions;
     @Override
-    public void setExceptions(ObservableList<Exceptions> exceptions)
+    public void setExceptionDates(ObservableList<ExceptionDates> exceptions)
     {
         this.exceptions = exceptions;
         if (exceptions != null)
@@ -194,10 +195,10 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
     @Override
-    public ObservableList<Recurrences> getRecurrenceDates() { return recurrenceDates; }
-    private ObservableList<Recurrences> recurrenceDates;
+    public ObservableList<RecurrenceDates> getRecurrenceDates() { return recurrenceDates; }
+    private ObservableList<RecurrenceDates> recurrenceDates;
     @Override
-    public void setRecurrenceDates(ObservableList<Recurrences> recurrenceDates)
+    public void setRecurrenceDates(ObservableList<RecurrenceDates> recurrenceDates)
     {
         this.recurrenceDates = recurrenceDates;
         if (recurrenceDates != null)
@@ -420,9 +421,9 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         
         // If present, remove exceptions
         final Stream<Temporal> stream3;
-        if (getExceptions() != null)
+        if (getExceptionDates() != null)
         {
-            List<Temporal> exceptions = getExceptions()
+            List<Temporal> exceptions = getExceptionDates()
                     .stream()
                     .flatMap(r -> r.getValue().stream())
                     .map(v -> v)
@@ -455,6 +456,18 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     @Override
     public List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs() { return childComponentsWithRecurrenceIDs; }
     private List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs = new ArrayList<>();
+    
+    @Override
+    public void becomeNonRecurring(VComponentRepeatable<T> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence)
+    {
+        setRecurrenceRule((RecurrenceRule3) null);
+        setRecurrenceDates(null);
+        setExceptionDates(null);
+        if (vComponentOriginal.getRecurrenceRule() != null)
+        { // RRULE was removed, update DTSTART, DTEND or DURATION
+            setDateTimeStart(startRecurrence);
+        }
+    }
     
     @Override
     public boolean isValid()

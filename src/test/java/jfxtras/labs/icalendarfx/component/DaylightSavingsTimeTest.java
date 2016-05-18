@@ -15,7 +15,7 @@ import org.junit.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 
@@ -91,7 +91,7 @@ public class DaylightSavingsTimeTest
                 LocalDate.of(1996, 4, 2),
                 LocalDate.of(1996, 4, 3),
                 LocalDate.of(1996, 4, 4) );        
-        builtComponent.getRecurrenceDates().add(new Recurrences(expectedValues));
+        builtComponent.getRecurrenceDates().add(new RecurrenceDates(expectedValues));
         String content2 = "BEGIN:" + componentName + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19960402,19960403,19960404" + System.lineSeparator() +
@@ -109,6 +109,6 @@ public class DaylightSavingsTimeTest
                 .withRecurrenceDates("RDATE;VALUE=DATE:19970304,19970504,19970704,19970904");
         ObservableSet<Temporal> expectedValues = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );        
-        builtComponent.getRecurrenceDates().add(new Recurrences(expectedValues));
+        builtComponent.getRecurrenceDates().add(new RecurrenceDates(expectedValues));
     }
 }

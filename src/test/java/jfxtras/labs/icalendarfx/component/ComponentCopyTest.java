@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 
 public class ComponentCopyTest extends ICalendarTestAbstract2
 {
@@ -27,7 +27,7 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
     public void canCopyVEvent2()
     {
         VEvent component1 = getWeekly3()
-                .withExceptions(new Exceptions(
+                .withExceptionDates(new ExceptionDates(
                 LocalDateTime.of(2016, 2, 10, 12, 30)
               , LocalDateTime.of(2016, 2, 12, 12, 30)
               , LocalDateTime.of(2016, 2, 9, 12, 30) ));

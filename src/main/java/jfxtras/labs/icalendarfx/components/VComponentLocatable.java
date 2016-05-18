@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 
 import javafx.beans.property.ObjectProperty;
@@ -209,4 +211,15 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
         }
         return (T) this;
     }
+    
+    /** Return either Duration property value, or a calculated duration based on start and end values */
+    TemporalAmount getActualDuration();
+    
+    /** 
+     * Sets the appropriate end or duration value calculated from the parameters
+     * 
+     * @param startRecurrence - start of a recurrence
+     * @param endRecurrence - end of the same recurrence
+     */
+    void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence);
 }

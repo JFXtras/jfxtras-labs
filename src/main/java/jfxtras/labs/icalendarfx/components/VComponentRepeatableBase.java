@@ -10,12 +10,12 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 /**
  * Contains following properties:
  * @see RecurrenceRule
- * @see Recurrences
+ * @see RecurrenceDates
  * 
  * @author David Bal
  *
@@ -36,10 +36,10 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
      * NOTE: DOESN'T CURRENTLY SUPPORT PERIOD VALUE TYPE
      * */
     @Override
-    public ObservableList<Recurrences> getRecurrenceDates() { return recurrenceDates; }
-    private ObservableList<Recurrences> recurrenceDates;
+    public ObservableList<RecurrenceDates> getRecurrenceDates() { return recurrenceDates; }
+    private ObservableList<RecurrenceDates> recurrenceDates;
     @Override
-    public void setRecurrenceDates(ObservableList<Recurrences> recurrenceDates)
+    public void setRecurrenceDates(ObservableList<RecurrenceDates> recurrenceDates)
     {
         this.recurrenceDates = recurrenceDates;
         recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());

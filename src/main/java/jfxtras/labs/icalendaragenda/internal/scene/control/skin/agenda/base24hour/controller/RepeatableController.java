@@ -211,7 +211,7 @@ private final ChangeListener<? super FrequencyType> frequencyListener = (obs, ol
 //        if (interval > 1) newFrequency.setInterval(interval);
         rrule.setFrequency(newSel);
         exceptionsListView.getItems().clear();
-        vComponent.setExceptions(null);
+        vComponent.setExceptionDates(null);
     }
 
     // Setup monthlyVBox and weeklyHBox setting visibility
@@ -806,10 +806,10 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         setFrequencyVisibility(frequencyType);
         
         // ExDates
-        if (vComponent.getExceptions() != null)
+        if (vComponent.getExceptionDates() != null)
         {
             List<Temporal> collect = vComponent
-                    .getExceptions()
+                    .getExceptionDates()
                     .stream()
                     .flatMap(e -> e.getValue().stream())
                     .collect(Collectors.toList());
@@ -917,11 +917,11 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     {
         Temporal d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
-        if (vComponent.getExceptions() == null)
+        if (vComponent.getExceptionDates() == null)
         {
-            vComponent.setExceptions(FXCollections.observableArrayList());
+            vComponent.setExceptionDates(FXCollections.observableArrayList());
         }
-        vComponent.getExceptions().get(0).getValue().add(d);
+        vComponent.getExceptionDates().get(0).getValue().add(d);
         refreshExceptionDates();
         Collections.sort(exceptionsListView.getItems(),DateTimeUtilities.TEMPORAL_COMPARATOR); // Maintain sorted list
         if (exceptionComboBox.getValue() == null) addExceptionButton.setDisable(true);
@@ -930,7 +930,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
     @FXML private void handleRemoveException()
     {
         Temporal d = exceptionsListView.getSelectionModel().getSelectedItem();
-        vComponent.getExceptions().get(0).getValue().remove(d);
+        vComponent.getExceptionDates().get(0).getValue().remove(d);
         refreshExceptionDates();
         exceptionsListView.getItems().remove(d);
         if (exceptionsListView.getSelectionModel().getSelectedItem() == null) removeExceptionButton.setDisable(true);

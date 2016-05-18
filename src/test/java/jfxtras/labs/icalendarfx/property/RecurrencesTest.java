@@ -22,7 +22,7 @@ import org.junit.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class RecurrencesTest
@@ -64,7 +64,7 @@ public class RecurrencesTest
     @Test
     public void canMakeRecurrences1()
     {
-        Recurrences property = new Recurrences(
+        RecurrenceDates property = new RecurrenceDates(
                 FXCollections.observableSet(LocalDateTime.of(2015, 11, 12, 10, 0)
                      , LocalDateTime.of(2015, 11, 14, 12, 0)));
         ObservableSet<LocalDateTime> expectedDates = FXCollections.observableSet(
@@ -78,11 +78,11 @@ public class RecurrencesTest
     public void canParseRecurrences2()
     {
         String content = "RDATE;TZID=America/Los_Angeles:19960402T010000";
-        Recurrences madeProperty = Recurrences.parse(ZonedDateTime.class, content);
+        RecurrenceDates madeProperty = RecurrenceDates.parse(ZonedDateTime.class, content);
         madeProperty.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("America/Los_Angeles")));
         madeProperty.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("America/Los_Angeles")));
         assertEquals(content + ",19960403T010000,19960404T010000", madeProperty.toContent());
-        Recurrences expectedProperty = new Recurrences(FXCollections.observableSet(
+        RecurrenceDates expectedProperty = new RecurrenceDates(FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("America/Los_Angeles")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("America/Los_Angeles")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("America/Los_Angeles")) ));
@@ -99,7 +99,7 @@ public class RecurrencesTest
     public void canParseRecurrences3()
     {
         String content = "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904";
-        Recurrences madeProperty = new Recurrences(
+        RecurrenceDates madeProperty = new RecurrenceDates(
                 LocalDate.of(1997, 3, 4),
                 LocalDate.of(1997, 5, 4),
                 LocalDate.of(1997, 7, 4),
@@ -115,7 +115,7 @@ public class RecurrencesTest
         VEvent e = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(60))
-                .withRecurrenceDates(new Recurrences(LocalDateTime.of(2015, 11, 12, 10, 0)
+                .withRecurrenceDates(new RecurrenceDates(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 14, 12, 0)));
         List<Temporal> madeDates = e
                 .streamRecurrences()

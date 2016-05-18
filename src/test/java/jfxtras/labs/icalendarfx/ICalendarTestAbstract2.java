@@ -10,8 +10,8 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -492,7 +492,7 @@ public abstract class ICalendarTestAbstract2
     public static VEvent getDailyWithException1()
     {
         return getDaily2()
-                .withExceptions(new Exceptions(
+                .withExceptionDates(new ExceptionDates(
                         LocalDateTime.of(2015, 11, 12, 10, 0),
                         LocalDateTime.of(2015, 11, 15, 10, 0)));
     }
@@ -502,7 +502,7 @@ public abstract class ICalendarTestAbstract2
         return new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(60))
-                .withRecurrenceDates(new Recurrences(
+                .withRecurrenceDates(new RecurrenceDates(
                         LocalDateTime.of(2015, 11, 12, 10, 0),
                         LocalDateTime.of(2015, 11, 14, 12, 0)));
     }
@@ -641,7 +641,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 7, 22, 31), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 7, 12, 30), ZoneId.of("America/Los_Angeles")))
-                .withExceptions(new Exceptions(
+                .withExceptionDates(new ExceptionDates(
                             ZonedDateTime.of(LocalDateTime.of(2016, 2, 10, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 12, 12, 30), ZoneId.of("America/Los_Angeles"))
                           , ZonedDateTime.of(LocalDateTime.of(2016, 2, 9, 12, 30), ZoneId.of("America/Los_Angeles"))))

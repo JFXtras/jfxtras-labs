@@ -25,8 +25,8 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  *
  * @param <U> - subclass
  * @param <T> - property value type
- * @see Exceptions
- * @see Recurrences
+ * @see ExceptionDates
+ * @see RecurrenceDates
  */
 public abstract class PropertyBaseRecurrence<U> extends PropertyBaseDateTime<ObservableSet<Temporal>, U>
 {

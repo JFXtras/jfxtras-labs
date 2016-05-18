@@ -20,10 +20,10 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecurrence;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -32,7 +32,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 /**
  * Contains following properties:
  * @see RecurrenceRule
- * @see Recurrences
+ * @see RecurrenceDates
  * 
  * @author David Bal
  * @see VEventOld
@@ -56,9 +56,9 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * RDATE;VALUE=DATE:19970101,19970120,19970217,19970421
      *  19970526,19970704,19970901,19971014,19971128,19971129,1997122
      */
-    ObservableList<Recurrences> getRecurrenceDates();
-    void setRecurrenceDates(ObservableList<Recurrences> recurrences);
-    default T withRecurrenceDates(ObservableList<Recurrences> recurrenceDates)
+    ObservableList<RecurrenceDates> getRecurrenceDates();
+    void setRecurrenceDates(ObservableList<RecurrenceDates> recurrences);
+    default T withRecurrenceDates(ObservableList<RecurrenceDates> recurrenceDates)
     {
         setRecurrenceDates(recurrenceDates);
         return (T) this;
@@ -72,7 +72,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     {
         if (recurrenceDates.length > 0)
         {
-            final ObservableList<Recurrences> list;
+            final ObservableList<RecurrenceDates> list;
             if (getRecurrenceDates() == null)
             {
                 list = FXCollections.observableArrayList();
@@ -82,7 +82,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
                 list = getRecurrenceDates();
             }
             Set<Temporal> recurrences2 = Arrays.stream(recurrenceDates).map(r -> (LocalDate) r).collect(Collectors.toSet());
-            getRecurrenceDates().add(new Recurrences(FXCollections.observableSet(recurrences2)));
+            getRecurrenceDates().add(new RecurrenceDates(FXCollections.observableSet(recurrences2)));
             
 //            Temporal t = recurrenceDates[0];
 //            if (t instanceof LocalDate)
@@ -99,7 +99,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         }
         return (T) this;
     }
-    default T withRecurrenceDates(Recurrences...recurrenceDates)
+    default T withRecurrenceDates(RecurrenceDates...recurrenceDates)
     {
         if (getRecurrenceDates() == null)
         {
@@ -369,6 +369,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
 ////          , Collection<Object> instances
 //          , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback);
 //    
+    
     @Override
     default boolean isValid()
     {

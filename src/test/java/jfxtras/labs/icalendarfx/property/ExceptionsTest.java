@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 
 public class ExceptionsTest
 {
@@ -29,9 +29,9 @@ public class ExceptionsTest
     public void canParseExceptions1()
     {
         String content = "EXDATE:20151112T100000,20151115T100000";
-        Exceptions madeProperty = Exceptions.parse(LocalDateTime.class, content);
+        ExceptionDates madeProperty = ExceptionDates.parse(LocalDateTime.class, content);
         assertEquals(content, madeProperty.toContent());
-        Exceptions expectedProperty = new Exceptions(FXCollections.observableSet(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0)));
+        ExceptionDates expectedProperty = new ExceptionDates(FXCollections.observableSet(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0)));
         assertEquals(expectedProperty, madeProperty);
         
         List<LocalDateTime> expectedValues = new ArrayList<>(Arrays.asList(LocalDateTime.of(2015, 11, 12, 10, 0), LocalDateTime.of(2015, 11, 15, 10, 0)));
@@ -43,13 +43,13 @@ public class ExceptionsTest
     public void canParseExceptions2()
     {
         String content = "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z";
-        Exceptions madeProperty = Exceptions.parse(content);
+        ExceptionDates madeProperty = ExceptionDates.parse(content);
         assertEquals(content, madeProperty.toContent());
         ObservableSet<Temporal> observableSet = FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("Z")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("Z")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("Z")) );
-        Exceptions expectedProperty = new Exceptions(observableSet);
+        ExceptionDates expectedProperty = new ExceptionDates(observableSet);
         assertEquals(expectedProperty, madeProperty);
         
         Set<ZonedDateTime> expectedValues = new HashSet<>(Arrays.asList(
@@ -66,9 +66,9 @@ public class ExceptionsTest
     public void canParseExceptions3()
     {
         String content = "EXDATE;VALUE=DATE:20160402";
-        Exceptions madeProperty = Exceptions.parse(LocalDate.class, content);
+        ExceptionDates madeProperty = ExceptionDates.parse(LocalDate.class, content);
         assertEquals(content, madeProperty.toContent());
-        Exceptions expectedProperty = new Exceptions(FXCollections.observableSet(
+        ExceptionDates expectedProperty = new ExceptionDates(FXCollections.observableSet(
                 LocalDate.of(2016, 4, 2) ));
         assertEquals(expectedProperty, madeProperty);
         
@@ -80,7 +80,7 @@ public class ExceptionsTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongTypeExceptions1()
     {
-        Exceptions e = Exceptions.parse("20160228T093000");
+        ExceptionDates e = ExceptionDates.parse("20160228T093000");
         e.getValue().add(LocalDateTime.of(2016, 4, 25, 1, 0));
         e.getValue().add(LocalDate.of(2016, 4, 25));
         assertEquals(2, e.getValue().size());
@@ -90,7 +90,7 @@ public class ExceptionsTest
     @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongTypeExceptions2()
     {
-        Exceptions e = new Exceptions();
+        ExceptionDates e = new ExceptionDates();
         e.setValue(FXCollections.observableSet(ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("America/Los_Angeles"))));
         e.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("America/Los_Angeles")));
         e.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 5, 1, 0), ZoneId.of("America/New_York")));
@@ -101,8 +101,8 @@ public class ExceptionsTest
     public void canCopyExceptions()
     {
         String content = "EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z";
-        Exceptions property1 = Exceptions.parse(content);
-        Exceptions property2 = new Exceptions(property1);
+        ExceptionDates property1 = ExceptionDates.parse(content);
+        ExceptionDates property2 = new ExceptionDates(property1);
         assertEquals(property1, property2);
         assertFalse(property1 == property2);
     }

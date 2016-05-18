@@ -1,12 +1,9 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
-import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -15,6 +12,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * VEVENT
@@ -78,7 +76,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeT
  *
  */
 public class VEvent extends VComponentLocatableBase<VEvent> implements VComponentDateTimeEnd<VEvent>,
-    VComponentDescribable2<VEvent>
+    VComponentDescribable2<VEvent>, VComponentRepeatable<VEvent>
 {
     @Override
     public CalendarElement componentType()
@@ -184,31 +182,87 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         super(source);
     }
 
-    /** Stream recurrence dates with adjustment to include recurrences that end before start */
     @Override
-    public Stream<Temporal> streamRecurrences(Temporal start)
+    public TemporalAmount getActualDuration()
     {
-        final TemporalAmount adjustment;
+        final TemporalAmount duration;
         if (getDuration() != null)
         {
-            adjustment = getDuration().getValue();
+            duration = getDuration().getValue();
         } else if (getDateTimeEnd() != null)
         {
             Temporal dtstart = getDateTimeStart().getValue();
             Temporal dtend = getDateTimeEnd().getValue();
-            if (dtstart instanceof LocalDate)
-            {
-                adjustment = Period.between((LocalDate) dtstart, (LocalDate) dtend);                
-            } else
-            {
-                adjustment = Duration.between(dtstart, dtend);
-            }
+            duration = DateTimeUtilities.durationBetween(dtstart, dtend);
         } else
         {
             throw new RuntimeException("Either DTEND or DURATION must be set");
         }
-        return super.streamRecurrences(start.minus(adjustment));
+        return duration;
     }
+    
+    @Override
+    public void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
+    {
+        if (getDuration() != null)
+        {
+            TemporalAmount duration = DateTimeUtilities.durationBetween(startRecurrence, endRecurrence);
+            setDuration(duration);
+        } else if (getDateTimeEnd() != null)
+        {
+            Temporal dtend = getDateTimeStart().getValue().with((TemporalAdjuster) endRecurrence);
+            setDateTimeEnd(dtend);
+        } else
+        {
+            throw new RuntimeException("Either DTEND or DURATION must be set");
+        }
+    }
+    
+    @Override
+    public void becomeNonRecurring(VComponentRepeatable<VEvent> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence)
+    {
+        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+        if (vComponentOriginal.getRecurrenceRule() != null)
+        { // RRULE was removed, update DTEND or DURATION
+            if (getDuration() != null)
+            {
+                TemporalAmount duration = DateTimeUtilities.durationBetween(startRecurrence, endRecurrence);
+                setDuration(duration);
+            } else if (getDateTimeEnd() != null)
+            {
+                setDateTimeEnd(endRecurrence);
+            } else
+            {
+                throw new RuntimeException("Either DTEND or DURATION must be set");
+            }
+        }
+    }
+    
+//    /** Stream recurrence dates with adjustment to include recurrences that end before start */
+//    @Override
+//    public Stream<Temporal> streamRecurrences(Temporal start)
+//    {
+//        final TemporalAmount adjustment = getActualDuration();
+////        if (getDuration() != null)
+////        {
+////            adjustment = getDuration().getValue();
+////        } else if (getDateTimeEnd() != null)
+////        {
+////            Temporal dtstart = getDateTimeStart().getValue();
+////            Temporal dtend = getDateTimeEnd().getValue();
+////            if (dtstart instanceof LocalDate)
+////            {
+////                adjustment = Period.between((LocalDate) dtstart, (LocalDate) dtend);                
+////            } else
+////            {
+////                adjustment = Duration.between(dtstart, dtend);
+////            }
+////        } else
+////        {
+////            throw new RuntimeException("Either DTEND or DURATION must be set");
+////        }
+//        return super.streamRecurrences(start.minus(adjustment));
+//    }
     
     @Override
     public boolean isValid()
@@ -229,5 +283,12 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         VEvent component = new VEvent();
         component.parseContent(contentLines);
         return component;
+    }
+
+    @Override
+    public void checkDateTimeStartConsistency()
+    {
+        // TODO Auto-generated method stub
+        
     }
 }

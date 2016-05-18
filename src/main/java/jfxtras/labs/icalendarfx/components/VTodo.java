@@ -1,13 +1,12 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
-import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -201,23 +200,79 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         super(source);
     }
     
-    /** Stream recurrence dates with adjustment to include recurrences that are due before start */
     @Override
-    public Stream<Temporal> streamRecurrences(Temporal start)
+    public TemporalAmount getActualDuration()
     {
-        final TemporalAmount adjustment;
+        final TemporalAmount duration;
         if (getDuration() != null)
         {
-            adjustment = getDuration().getValue();
+            duration = getDuration().getValue();
         } else if (getDateTimeDue() != null)
         {
-            adjustment = Duration.between(getDateTimeStart().getValue(), getDateTimeDue().getValue());
+            Temporal dtstart = getDateTimeStart().getValue();
+            Temporal dtdue = getDateTimeDue().getValue();
+            duration = DateTimeUtilities.durationBetween(dtstart, dtdue);
         } else
         {
-            throw new RuntimeException("Either DTEND or DURATION must be set");
+            throw new RuntimeException("Either DUE or DURATION must be set");
         }
-        return super.streamRecurrences(start.minus(adjustment));
+        return duration;
     }
+    
+    @Override
+    public void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
+    {
+        if (getDuration() != null)
+        {
+            TemporalAmount duration = DateTimeUtilities.durationBetween(startRecurrence, endRecurrence);
+            setDuration(duration);
+        } else if (getDateTimeDue() != null)
+        {
+            Temporal dtdue = getDateTimeStart().getValue().with((TemporalAdjuster) endRecurrence);
+            setDateTimeDue(dtdue);
+        } else
+        {
+            throw new RuntimeException("Either DUE or DURATION must be set");
+        }        
+    }
+    
+    @Override
+    public void becomeNonRecurring(VComponentRepeatable<VTodo> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence)
+    {
+        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+        if (vComponentOriginal.getRecurrenceRule() != null)
+        { // RRULE was removed, update DTEND or DURATION
+            if (getDuration() != null)
+            {
+                TemporalAmount duration = DateTimeUtilities.durationBetween(startRecurrence, endRecurrence);
+                setDuration(duration);
+            } else if (getDateTimeDue() != null)
+            {
+                setDateTimeDue(endRecurrence);
+            } else
+            {
+                throw new RuntimeException("Either DTEND or DURATION must be set");
+            }
+        }
+    }
+    
+//    /** Stream recurrence dates with adjustment to include recurrences that are due before start */
+//    @Override
+//    public Stream<Temporal> streamRecurrences(Temporal start)
+//    {
+//        final TemporalAmount adjustment = getActualDuration();
+////        if (getDuration() != null)
+////        {
+////            adjustment = getDuration().getValue();
+////        } else if (getDateTimeDue() != null)
+////        {
+////            adjustment = Duration.between(getDateTimeStart().getValue(), getDateTimeDue().getValue());
+////        } else
+////        {
+////            throw new RuntimeException("Either DTEND or DURATION must be set");
+////        }
+//        return super.streamRecurrences(start.minus(adjustment));
+//    }
     
     @Override
     public boolean isValid()

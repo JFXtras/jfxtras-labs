@@ -57,9 +57,9 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Exceptions;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.Recurrences;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
@@ -742,29 +742,29 @@ public enum PropertyType
     EXCEPTION_DATE_TIMES ("EXDATE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE), // valid property value types, first is default
             Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES), // allowed parameters
-            Exceptions.class)
+            ExceptionDates.class)
     {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
-            return castComponent.getExceptions();
+            return castComponent.getExceptionDates();
         }
 
         @Override
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
-            final ObservableList<Exceptions> list;
-            if (castComponent.getExceptions() == null)
+            final ObservableList<ExceptionDates> list;
+            if (castComponent.getExceptionDates() == null)
             {
                 list = FXCollections.observableArrayList();
-                castComponent.setExceptions(list);
+                castComponent.setExceptionDates(list);
             } else
             {
-                list = castComponent.getExceptions();
+                list = castComponent.getExceptionDates();
             }
-            list.add(Exceptions.parse(propertyContent));
+            list.add(ExceptionDates.parse(propertyContent));
         }
 
         @Override
@@ -772,12 +772,12 @@ public enum PropertyType
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            Exceptions[] propertyArray = castSource.getExceptions()
+            ExceptionDates[] propertyArray = castSource.getExceptionDates()
                     .stream()
-                    .map(c -> new Exceptions(c)) // copy each property
-                    .toArray(size -> new Exceptions[size]);
-            ObservableList<Exceptions> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setExceptions(properties);
+                    .map(c -> new ExceptionDates(c)) // copy each property
+                    .toArray(size -> new ExceptionDates[size]);
+            ObservableList<ExceptionDates> properties = FXCollections.observableArrayList(propertyArray);
+            castDestination.setExceptionDates(properties);
         }
     },
     // Date and Time
@@ -1154,7 +1154,7 @@ public enum PropertyType
     RECURRENCE_DATE_TIMES ("RDATE", // property name
             Arrays.asList(ValueType.DATE_TIME, ValueType.DATE, ValueType.PERIOD), // valid property value types, first is default
             Arrays.asList(ParameterType.TIME_ZONE_IDENTIFIER, ParameterType.VALUE_DATA_TYPES), // allowed parameters
-            Recurrences.class)
+            RecurrenceDates.class)
     {
         @Override
         public Object getProperty(VComponentNew<?> vComponent)
@@ -1167,7 +1167,7 @@ public enum PropertyType
         public void parse(VComponentNew<?> vComponent, String propertyContent)
         {
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
-            final ObservableList<Recurrences> list;
+            final ObservableList<RecurrenceDates> list;
             if (castComponent.getRecurrenceDates() == null)
             {
                 list = FXCollections.observableArrayList();
@@ -1176,7 +1176,7 @@ public enum PropertyType
             {
                 list = castComponent.getRecurrenceDates();
             }
-            list.add(Recurrences.parse(propertyContent));
+            list.add(RecurrenceDates.parse(propertyContent));
         }
 
         @Override
@@ -1184,11 +1184,11 @@ public enum PropertyType
         {
             VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
-            Recurrences[] propertyArray = castSource.getRecurrenceDates()
+            RecurrenceDates[] propertyArray = castSource.getRecurrenceDates()
                     .stream()
-                    .map(c -> new Recurrences(c)) // copy each property
-                    .toArray(size -> new Recurrences[size]);
-            ObservableList<Recurrences> properties = FXCollections.observableArrayList(propertyArray);
+                    .map(c -> new RecurrenceDates(c)) // copy each property
+                    .toArray(size -> new RecurrenceDates[size]);
+            ObservableList<RecurrenceDates> properties = FXCollections.observableArrayList(propertyArray);
             castDestination.setRecurrenceDates(properties);
         }
     },
