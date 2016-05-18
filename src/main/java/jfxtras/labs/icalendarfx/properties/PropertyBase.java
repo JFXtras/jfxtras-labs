@@ -55,7 +55,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @param <U> - type of implementing subclass
  * @param <T> - type of property value
  */
-public abstract class PropertyBase<T,U> implements Property<T>
+public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Property<T>>
 {
     /**
      * PROPERTY VALUE
@@ -619,52 +619,10 @@ public abstract class PropertyBase<T,U> implements Property<T>
         }
         return hash;
     }
-//    @Override
-//    public boolean equals(Object obj)
-//    {
-//        if (this == obj)
-//            return true;
-//        if (obj == null)
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//        PropertyBase other = (PropertyBase) obj;
-//        if (converter == null)
-//        {
-//            if (other.converter != null)
-//                return false;
-//        } else if (!converter.equals(other.converter))
-//            return false;
-//        if (otherParameters == null)
-//        {
-//            if (other.otherParameters != null)
-//                return false;
-//        } else if (!otherParameters.equals(other.otherParameters))
-//            return false;
-//        if (propertyName == null)
-//        {
-//            if (other.propertyName != null)
-//                return false;
-//        } else if (!propertyName.equals(other.propertyName))
-//            return false;
-//        if (propertyValueString == null)
-//        {
-//            if (other.propertyValueString != null)
-//                return false;
-//        } else if (!propertyValueString.equals(other.propertyValueString))
-//            return false;
-//        if (unknownValue == null)
-//        {
-//            if (other.unknownValue != null)
-//                return false;
-//        } else if (!unknownValue.equals(other.unknownValue))
-//            return false;
-//        if (value == null)
-//        {
-//            if (other.value != null)
-//                return false;
-//        } else if (!value.equals(other.value))
-//            return false;
-//        return true;
-//    }
+
+    @Override
+    public int compareTo(Property<T> otherProperty)
+    {
+        return Integer.compare(propertyType().ordinal(), otherProperty.propertyType().ordinal());
+    }
 }

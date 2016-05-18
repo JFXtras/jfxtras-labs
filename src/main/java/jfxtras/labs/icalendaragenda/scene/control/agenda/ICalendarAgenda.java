@@ -45,6 +45,8 @@ import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VEventOld;
+import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -666,18 +668,23 @@ public class ICalendarAgenda extends Agenda
             break;
         case WITH_EXISTING_REPEAT:
             // Find which properties changed
-            List<String> changedPropertyNames = findChangedProperties(vComponentOriginal);
+            List<PropertyType> changedProperties = findChangedProperties(
+                    vComponentEdited,
+                    vComponentOriginal,
+                    startOriginalRecurrence,
+                    startRecurrence,
+                    endRecurrence);
             /* Note:
              * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
              * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
              * question is answered. */
-            changedPropertyNames.addAll(changedStartAndEndDateTime(startOriginalRecurrence, startRecurrence, endRecurrence));
+//            changedProperties.addAll(changedStartAndEndDateTime(startOriginalRecurrence, startRecurrence, endRecurrence));
             // determine if any changed properties warrant dialog
 //            changedPropertyNames.stream().forEach(a -> System.out.println("changed property:" + a));
-            boolean provideDialog = requiresChangeDialog(changedPropertyNames);
-            if (changedPropertyNames.size() > 0) // if changes occurred
+            boolean provideDialog = requiresChangeDialog(changedProperties);
+            if (changedProperties.size() > 0) // if changes occurred
             {
-                List<VComponent<I>> relatedVComponents = Arrays.asList(this); // TODO - support related components
+                List<VComponentLocatable<T>> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
@@ -802,6 +809,91 @@ public class ICalendarAgenda extends Agenda
 //        instances().clear(); // clear VEvent of outdated appointments
         instancesTemp.addAll(makeAppointments(vComponentEdited)); // make new recurrences and add to main collection (added to VEvent's collection in makeAppointments)
         return instancesTemp;
+    }
+    
+    /**
+     * Generates a list of iCalendar property names that have different values from the 
+     * input parameter
+     * 
+     * equal checks are encapsulated inside the enum VComponentProperty
+     */
+    public static List<PropertyType> findChangedProperties(
+            VComponentLocatable<?> vComponentEdited,
+            VComponentLocatable<?> vComponentOriginal,
+            Temporal startOriginalInstance,
+            Temporal startInstance,
+            Temporal endInstance)
+    {
+        List<PropertyType> changedProperties = new ArrayList<>();
+        vComponentEdited.properties()
+                .stream()
+                .map(p -> p.propertyType())
+                .forEach(t ->
+                {
+                    Object p1 = t.getProperty(vComponentEdited);
+                    Object p2 = t.getProperty(vComponentOriginal);
+                    if (! p1.equals(p2))
+                    {
+                        changedProperties.add(t);
+                    }
+                });
+        
+        /* Note:
+         * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
+         * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
+         * question is answered. */
+        if (! startOriginalInstance.equals(startInstance))
+        {
+            changedProperties.add(PropertyType.DATE_TIME_START);
+        }
+        
+        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
+        TemporalAmount durationOriginal = vComponentEdited.getActualDuration();
+        if (! durationOriginal.equals(durationNew))
+        {
+            if (vComponentEdited instanceof VEvent)
+            {
+                if (! (((VEvent) vComponentEdited).getDateTimeEnd() == null))
+                {
+                    changedProperties.add(PropertyType.DATE_TIME_END);                    
+                }
+            } else if (vComponentEdited instanceof VTodo)
+            {
+                if (! (((VTodo) vComponentEdited).getDateTimeDue() == null))
+                {
+                    changedProperties.add(PropertyType.DATE_TIME_DUE);                    
+                }                
+            }
+            boolean isDurationNull = vComponentEdited.getDuration() == null;
+            if (! isDurationNull)
+            {
+                changedProperties.add(PropertyType.DURATION);                    
+            }
+        }   
+        
+        return changedProperties;
+    }
+
+    // TODO - DOUBLE CHECK THIS LIST - WHY NO DESCRIPTION, FOR EXAMPLE?
+    private final static List<PropertyType> DIALOG_REQUIRED_PROPERTIES = Arrays.asList(
+            PropertyType.CATEGORIES,
+            PropertyType.COMMENT,
+            PropertyType.DATE_TIME_START,
+            PropertyType.ORGANIZER,
+            PropertyType.SUMMARY
+            );
+    
+    /**
+     * Return true if ANY changed property requires a dialog, false otherwise
+     * 
+     * @param changedPropertyNames - list from {@link #findChangedProperties(VComponent)}
+     * @return
+     */
+    boolean requiresChangeDialog(List<PropertyType> changedPropertyNames)
+    {
+        return changedPropertyNames.stream()
+                .map(p -> DIALOG_REQUIRED_PROPERTIES.contains(p))
+                .anyMatch(b -> b == true);
     }
     
     // TODO - SHOULD THESE LISTENERS AND BACKING MAPS GO TO NEW CLASS?

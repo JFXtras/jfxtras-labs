@@ -37,6 +37,8 @@ public class MakeAppointmentsTest
     @Test
     public void makeAppointmentsDailyTest1()
     {
+//        Arrays.stream(VComponentUtilities.VComponentPropertyOld.values())
+//        .forEach(p -> System.out.println(p + " " + p.isDialogRequired()));
         VEvent vevent = ICalendarComponents.getDaily1();
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);

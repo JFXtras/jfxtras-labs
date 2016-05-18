@@ -326,7 +326,7 @@ public class AppointmentEditController extends Pane
             Temporal instanceBefore = vEvent.previousStreamValue(startInstance);
             Optional<Temporal> optionalAfter = vEvent.stream(startInstance).findFirst();
             Temporal newStartInstance = (optionalAfter.isPresent()) ? optionalAfter.get() : instanceBefore;
-            TemporalAmount duration = DateTimeUtilities.durationBetween(startInstance, endInstance);
+            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
             Temporal newEndInstance = newStartInstance.plus(duration);
             Temporal startInstanceBeforeChange = startInstance;
             startTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartInstance));

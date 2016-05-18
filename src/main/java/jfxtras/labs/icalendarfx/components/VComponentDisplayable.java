@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.EditDeleteUtilities;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;

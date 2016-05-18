@@ -193,7 +193,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         {
             Temporal dtstart = getDateTimeStart().getValue();
             Temporal dtend = getDateTimeEnd().getValue();
-            duration = DateTimeUtilities.durationBetween(dtstart, dtend);
+            duration = DateTimeUtilities.temporalAmountBetween(dtstart, dtend);
         } else
         {
             throw new RuntimeException("Either DTEND or DURATION must be set");
@@ -206,7 +206,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     {
         if (getDuration() != null)
         {
-            TemporalAmount duration = DateTimeUtilities.durationBetween(startRecurrence, endRecurrence);
+            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
             setDuration(duration);
         } else if (getDateTimeEnd() != null)
         {
@@ -226,7 +226,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         { // RRULE was removed, update DTEND or DURATION
             if (getDuration() != null)
             {
-                TemporalAmount duration = DateTimeUtilities.durationBetween(startRecurrence, endRecurrence);
+                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
                 setDuration(duration);
             } else if (getDateTimeEnd() != null)
             {

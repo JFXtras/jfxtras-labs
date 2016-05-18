@@ -273,7 +273,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableOldBase<I, T>
     protected Collection<String> changedStartAndEndDateTime(Temporal startOriginalInstance, Temporal startInstance, Temporal endInstance)
     {
         Collection<String> changedProperties = super.changedStartAndEndDateTime(startOriginalInstance, startInstance, endInstance);
-        TemporalAmount durationNew = DateTimeUtilities.durationBetween(startInstance, endInstance);
+        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
         TemporalAmount durationOriginal = endType().getDuration(this);
         if (! durationOriginal.equals(durationNew)) { changedProperties.add(endType().toString()); }
         return changedProperties;
@@ -454,7 +454,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableOldBase<I, T>
             @Override
             public void setDuration(VEventOld<?,?> vEvent, Temporal startInclusive, Temporal endExclusive)
             {
-                TemporalAmount duration = DateTimeUtilities.durationBetween(startInclusive, endExclusive);
+                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startInclusive, endExclusive);
                 vEvent.setDuration(duration);
             }
 
@@ -475,7 +475,7 @@ public abstract class VEventOld<I, T> extends VComponentDisplayableOldBase<I, T>
         @Override
         public void setDuration(VEventOld<?,?> vEvent, Temporal startInclusive, Temporal endExclusive)
         {
-            TemporalAmount duration = DateTimeUtilities.durationBetween(startInclusive, endExclusive);
+            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startInclusive, endExclusive);
             Temporal dtEnd = vEvent.getDateTimeStart().plus(duration);
             vEvent.setDateTimeEnd(dtEnd);
         }

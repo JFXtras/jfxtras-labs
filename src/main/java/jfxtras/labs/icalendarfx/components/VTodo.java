@@ -211,7 +211,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         {
             Temporal dtstart = getDateTimeStart().getValue();
             Temporal dtdue = getDateTimeDue().getValue();
-            duration = DateTimeUtilities.durationBetween(dtstart, dtdue);
+            duration = DateTimeUtilities.temporalAmountBetween(dtstart, dtdue);
         } else
         {
             throw new RuntimeException("Either DUE or DURATION must be set");
@@ -224,7 +224,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     {
         if (getDuration() != null)
         {
-            TemporalAmount duration = DateTimeUtilities.durationBetween(startRecurrence, endRecurrence);
+            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
             setDuration(duration);
         } else if (getDateTimeDue() != null)
         {
@@ -244,7 +244,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         { // RRULE was removed, update DTEND or DURATION
             if (getDuration() != null)
             {
-                TemporalAmount duration = DateTimeUtilities.durationBetween(startRecurrence, endRecurrence);
+                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
                 setDuration(duration);
             } else if (getDateTimeDue() != null)
             {

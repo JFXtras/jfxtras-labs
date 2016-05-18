@@ -21,7 +21,7 @@ import jfxtras.labs.icalendarfx.parameters.ValueParameter;
  *
  * @param <T> - type of value stored in Property
  */
-public interface Property<T> extends VCalendarElement
+public interface Property<T> extends VCalendarElement, Comparable<Property<T>>
 {    
     /**
      * Property Name

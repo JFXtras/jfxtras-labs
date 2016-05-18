@@ -211,7 +211,7 @@ public final class DateTimeUtilities
      * @param endExclusive - the end temporal, not null
      * @return - Period for DATE, Duration for all other DateTimeTypes
      */
-    public static TemporalAmount durationBetween(Temporal startInclusive, Temporal endExclusive)
+    public static TemporalAmount temporalAmountBetween(Temporal startInclusive, Temporal endExclusive)
     {
         if (! startInclusive.getClass().equals(endExclusive.getClass()))
         {
