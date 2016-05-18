@@ -506,7 +506,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs();
     
     /**
-     * Part of {@link EditDeleteUtilities#handleEdit}
+     * Part of {@link EditDeleteHelper#handleEdit}
      * Changes a VComponent with a RRULE to become a non-recurring component
      * 
      * @param vComponentOriginal - unmodified component

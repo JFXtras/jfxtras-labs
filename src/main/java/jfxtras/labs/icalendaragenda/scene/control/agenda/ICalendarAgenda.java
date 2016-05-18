@@ -1,17 +1,14 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -37,20 +34,17 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectedOneAppointmentLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.EditDeleteHelper.Callback2;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.EditDeleteHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponent.StartEndRange;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VEventOld;
-import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.PropertyType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.util.NodeUtil;
 /**
@@ -291,6 +285,9 @@ public class ICalendarAgenda extends Agenda
     {
         super();
         this.vCalendar = vCalendar;
+        EditDeleteHelper<Appointment> editDeleteHelper = new EditDeleteHelper<Appointment>(
+                appointments(),
+                makeAppointmentCallback);
         System.out.println("here0:" + getVCalendar());
         getVCalendar().getVEvents().addListener((InvalidationListener) (obs) -> 
         {
@@ -558,7 +555,8 @@ public class ICalendarAgenda extends Agenda
                     LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
 //                    System.out.println("range:" + start + " " + end);
 //                    List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(v, start, end, appointmentGroups());
-                    List<Appointment> newAppointments = makeAppointments(v);
+                    List<Appointment> newAppointments = editDeleteHelper.makeRecurrences(v);
+//                    List<Appointment> newAppointments = makeRecurrences(v);
 //                    vComponentAppointmentMap.put(v, newAppointments);
                     appointments().addAll(newAppointments);
 //                    newAppointments.stream().forEach(a ->
@@ -574,327 +572,376 @@ public class ICalendarAgenda extends Agenda
         });
     } // end of constructor
     
-    /**
-     * Makes appointments from VEVENT or VTODO for Agenda
-     * Appointments are made between displayed range
-     * 
-     * @param vComponentEdited - calendar component
-     * @return created appointments
-     */
-    private List<Appointment> makeAppointments(VComponentLocatable<?> vComponentEdited)
+    private final Callback2<VComponentLocatable<?>, Temporal, Appointment> makeAppointmentCallback = (vComponentEdited, startTemporal) ->
     {
-        List<Appointment> appointments = new ArrayList<>();
         Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
-        
-        // Make start and end ranges in Temporal type that matches DTSTART
-        LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
-        LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
-        final Temporal startRange2;
-        final Temporal endRange2;
-        if (isWholeDay)
+        final TemporalAmount adjustment = vComponentEdited.getActualDuration();
+        Temporal endTemporal = startTemporal.plus(adjustment);
+
+        /* Find AppointmentGroup
+         * control can only handle one category.  Checks only first category
+         */
+        final AppointmentGroup appointmentGroup;
+        if (vComponentEdited.getCategories() != null)
         {
-            startRange2 = startRange.toLocalDate();
-            endRange2 = endRange.toLocalDate();            
+            String firstCategory = vComponentEdited.getCategories().get(0).getValue().get(0);
+            Optional<AppointmentGroup> myGroup = appointmentGroups()
+                    .stream()
+                    .filter(g -> g.getDescription().equals(firstCategory))
+                    .findAny();
+            appointmentGroup = (myGroup.isPresent()) ? myGroup.get() : null;
         } else
         {
-            startRange2 = vComponentEdited.getDateTimeStart().getValue().with(startRange);
-            endRange2 = vComponentEdited.getDateTimeStart().getValue().with(endRange);            
+            appointmentGroup = null;
         }
-        vComponentEdited.streamRecurrences(startRange2, endRange2).forEach(startTemporal ->
-        {
-            // calculate date-time end
-            final TemporalAmount adjustment = vComponentEdited.getActualDuration();
-            Temporal endTemporal = startTemporal.plus(adjustment);
+        // Make appointment
+        Appointment appt = new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(startTemporal)
+                .withEndTemporal(endTemporal)
+                .withDescription( (vComponentEdited.getDescription() != null) ? vComponentEdited.getDescription().getValue() : null )
+                .withSummary( (vComponentEdited.getSummary() != null) ? vComponentEdited.getSummary().getValue() : null)
+                .withLocation( (vComponentEdited.getLocation() != null) ? vComponentEdited.getLocation().getValue() : null)
+                .withWholeDay(isWholeDay)
+                .withAppointmentGroup(appointmentGroup);
+        return appt;
+    };
+    
+//    /**
+//     * Makes appointments from VEVENT or VTODO for Agenda
+//     * Appointments are made between displayed range
+//     * 
+//     * @param vComponentEdited - calendar component
+//     * @return created appointments
+//     */
+//    private List<Appointment> makeRecurrences(VComponentLocatable<?> vComponentEdited)
+//    {
+//        List<Appointment> appointments = new ArrayList<>();
+//        Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
+//        
+//        // Make start and end ranges in Temporal type that matches DTSTART
+//        LocalDateTime startRange = getDateTimeRange().getStartLocalDateTime();
+//        LocalDateTime endRange = getDateTimeRange().getEndLocalDateTime();
+//        final Temporal startRange2;
+//        final Temporal endRange2;
+//        if (isWholeDay)
+//        {
+//            startRange2 = startRange.toLocalDate();
+//            endRange2 = endRange.toLocalDate();            
+//        } else
+//        {
+//            startRange2 = vComponentEdited.getDateTimeStart().getValue().with(startRange);
+//            endRange2 = vComponentEdited.getDateTimeStart().getValue().with(endRange);            
+//        }
+//        vComponentEdited.streamRecurrences(startRange2, endRange2).forEach(startTemporal ->
+//        {
+//            // calculate date-time end
+//            final TemporalAmount adjustment = vComponentEdited.getActualDuration();
+//            Temporal endTemporal = startTemporal.plus(adjustment);
+//
+//            /* Find AppointmentGroup
+//             * control can only handle one category.  Checks only first category
+//             */
+//            final AppointmentGroup appointmentGroup;
+//            if (vComponentEdited.getCategories() != null)
+//            {
+//                String firstCategory = vComponentEdited.getCategories().get(0).getValue().get(0);
+//                Optional<AppointmentGroup> myGroup = appointmentGroups()
+//                        .stream()
+//                        .filter(g -> g.getDescription().equals(firstCategory))
+//                        .findAny();
+//                appointmentGroup = (myGroup.isPresent()) ? myGroup.get() : null;
+//            } else
+//            {
+//                appointmentGroup = null;
+//            }
+//            // Make appointment
+//            Appointment appt = new Agenda.AppointmentImplTemporal()
+//                    .withStartTemporal(startTemporal)
+//                    .withEndTemporal(endTemporal)
+//                    .withDescription( (vComponentEdited.getDescription() != null) ? vComponentEdited.getDescription().getValue() : null )
+//                    .withSummary( (vComponentEdited.getSummary() != null) ? vComponentEdited.getSummary().getValue() : null)
+//                    .withLocation( (vComponentEdited.getLocation() != null) ? vComponentEdited.getLocation().getValue() : null)
+//                    .withWholeDay(isWholeDay)
+//                    .withAppointmentGroup(appointmentGroup);
+//            appointments.add(appt);   // add appointments to return argument
+//        });
+//        return appointments;
+//    }
+    
+//    /** Edit VEvent or VTodo */
+//    public <T> boolean handleEdit(
+//            VComponentLocatable<T> vComponentEdited
+//          , VComponentLocatable<T> vComponentOriginal
+//          , Collection<VComponentLocatable<T>> vComponents
+//          , Temporal startOriginalRecurrence
+//          , Temporal startRecurrence
+//          , Temporal endRecurrence
+////          , Collection<Object> allRecurrences
+////          , Collection<Object> componentRecurrences
+//          , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
+//    {
+//        validateStartRecurrenceAndDTStart(vComponentEdited, startOriginalRecurrence, startRecurrence);
+//        final EditDeleteHelper.RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentEdited.getRecurrenceRule(), vComponentOriginal.getRecurrenceRule());
+//        System.out.println("rruleType:" + rruleType);
+//        boolean incrementSequence = true;
+//        Collection<Object> newRecurrences = null;
+//        Collection<?> allRecurrences = appointments();
+//        switch (rruleType)
+//        {
+//        case HAD_REPEAT_BECOMING_INDIVIDUAL:
+//            vComponentEdited.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+//            // fall through
+//        case WITH_NEW_REPEAT: // no dialog
+//        case INDIVIDUAL:
+//            adjustDateTime(vComponentEdited, startOriginalRecurrence, startRecurrence, endRecurrence);
+//            if (! vComponentEdited.equals(vComponentOriginal))
+//            {
+//                newRecurrences = updateRecurrences(vComponentEdited);
+//            }
+//            break;
+//        case WITH_EXISTING_REPEAT:
+//            // Find which properties changed
+//            List<PropertyType> changedProperties = findChangedProperties(
+//                    vComponentEdited,
+//                    vComponentOriginal,
+//                    startOriginalRecurrence,
+//                    startRecurrence,
+//                    endRecurrence);
+//            /* Note:
+//             * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
+//             * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
+//             * question is answered. */
+////            changedProperties.addAll(changedStartAndEndDateTime(startOriginalRecurrence, startRecurrence, endRecurrence));
+//            // determine if any changed properties warrant dialog
+////            changedPropertyNames.stream().forEach(a -> System.out.println("changed property:" + a));
+//            boolean provideDialog = requiresChangeDialog(changedProperties);
+//            if (changedProperties.size() > 0) // if changes occurred
+//            {
+//                List<VComponentLocatable<T>> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
+//                final ChangeDialogOption changeResponse;
+//                if (provideDialog)
+//                {
+//                    Map<ChangeDialogOption, StartEndRange> choices = ChangeDialogOption.makeDialogChoices(vComponentEdited, startOriginalRecurrence);
+//                    changeResponse = dialogCallback.call(choices);
+//                } else
+//                {
+//                    changeResponse = ChangeDialogOption.ALL;
+//                }
+//                switch (changeResponse)
+//                {
+//                case ALL:
+//                    if (relatedVComponents.size() == 1)
+//                    {
+//                        adjustDateTime(vComponentEdited, startOriginalRecurrence, startRecurrence, endRecurrence);
+////                        if (vComponentEdited.childComponentsWithRecurrenceIDs().size() > 0)
+////                        {
+//                        // Adjust children components with RecurrenceIDs
+//                        vComponentEdited.childComponentsWithRecurrenceIDs()
+//                                .stream()
+////                                .map(c -> c.getRecurrenceId())
+//                                .forEach(v ->
+//                                {
+//                                    Temporal newRecurreneId = adjustRecurrenceStart(v.getRecurrenceId().getValue(), startOriginalRecurrence, startRecurrence, endRecurrence);
+//                                    v.setRecurrenceId(newRecurreneId);
+//                                });
+////                        }
+//                        newRecurrences = updateRecurrences(allRecurrences);
+//                    } else
+//                    {
+//                        throw new RuntimeException("Only 1 relatedVComponents currently supported");
+//                    }
+//                    break;
+//                case CANCEL:
+//                    vComponentOriginal.copyTo(this); // return to original
+//                    return false;
+//                case THIS_AND_FUTURE:
+//                    newRecurrences = editThisAndFuture(vComponentOriginal, vComponents, startOriginalRecurrence, startRecurrence, endRecurrence, allRecurrences);
+//                    break;
+//                case ONE:
+//                    newRecurrences = editOne(vComponentOriginal, vComponents, startOriginalRecurrence, startRecurrence, endRecurrence, allRecurrences);
+//                    break;
+//                default:
+//                    break;
+//                }
+//            }
+//        }
+//        if (! isValid()) throw new RuntimeException(errorString());
+//        if (incrementSequence) { incrementSequence(); }
+//        if (newRecurrences != null)
+//        {
+//            allRecurrences.clear();
+//            allRecurrences.addAll(newRecurrences);
+//        }
+//        return true;
+//    }
+    
+//    /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
+//     * endRecurrence to closest valid values
+//     */
+//    // TODO - VERITFY THIS WORKS - changed from old version
+//    private static void validateStartRecurrenceAndDTStart(VComponentLocatable<?> vComponentEdited, Temporal startOriginalRecurrence, Temporal startRecurrence)
+//    {
+////        boolean isStreamedValue;
+//        if (vComponentEdited.getRecurrenceRule() != null)
+//        {
+//            Temporal firstTemporal = vComponentEdited.getRecurrenceRule().getValue()
+//                    .streamRecurrences(vComponentEdited.getDateTimeStart().getValue())
+//                    .findFirst()
+//                    .get();
+//            if (! firstTemporal.equals(vComponentEdited.getDateTimeStart().getValue()))
+//            {
+//                vComponentEdited.setDateTimeStart(firstTemporal);
+//            }
+//        }
+//    }
+//    
+//    /* Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time */
+//    private static void adjustDateTime(
+//            VComponentLocatable<?> vComponentEdited,
+//            Temporal startOriginalRecurrence,
+//            Temporal startRecurrence,
+//            Temporal endRecurrence)
+//    {
+//        Temporal newStart = adjustRecurrenceStart(
+//                vComponentEdited.getDateTimeStart().getValue(),
+//                startOriginalRecurrence,
+//                startRecurrence,
+//                endRecurrence);
+//        vComponentEdited.setDateTimeStart(newStart);
+//        System.out.println("new DTSTART:" + newStart);
+//        vComponentEdited.setEndOrDuration(startRecurrence, endRecurrence);
+////        endType().setDuration(this, startRecurrence, endRecurrence);
+//    }
+//
+//    /* Adjust DTSTART of RECURRENCE-ID */
+//    private static Temporal adjustRecurrenceStart(Temporal initialStart
+//            , Temporal startOriginalRecurrence
+//            , Temporal startRecurrence
+//            , Temporal endRecurrence)
+//    {
+//        DateTimeType newDateTimeType = DateTimeType.of(startRecurrence);
+//        ZoneId zone = (startRecurrence instanceof ZonedDateTime) ? ZoneId.from(startRecurrence) : null;
+//        Temporal startAdjusted = newDateTimeType.from(initialStart, zone);
+//        Temporal startOriginalRecurrenceAdjusted = newDateTimeType.from(startOriginalRecurrence, zone);
+//
+//        // Calculate shift from startAdjusted to make new DTSTART
+//        final TemporalAmount startShift;
+//        if (newDateTimeType == DateTimeType.DATE)
+//        {
+//            startShift = Period.between(LocalDate.from(startOriginalRecurrence), LocalDate.from(startRecurrence));
+//        } else
+//        {
+//            startShift = Duration.between(startOriginalRecurrenceAdjusted, startRecurrence);
+//        }
+//        return startAdjusted.plus(startShift);
+//    }
+//    
+//    private Collection<Object> updateRecurrences(VComponentLocatable<?> vComponentEdited)
+//    {
+//        Collection<? extends Object> recurrences = appointments();
+//        Collection<Appointment> componentRecurrences = vComponentAppointmentMap.get(vComponentEdited);
+//        Collection<Object> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+//        instancesTemp.addAll(recurrences);
+//        instancesTemp.removeIf(a -> componentRecurrences.stream().anyMatch(a2 -> a2 == a));
+////        instances().clear(); // clear VEvent of outdated appointments
+//        instancesTemp.addAll(makeRecurrences(vComponentEdited)); // make new recurrences and add to main collection (added to VEvent's collection in makeAppointments)
+//        return instancesTemp;
+//    }
+//    
+//    /**
+//     * Generates a list of iCalendar property names that have different values from the 
+//     * input parameter
+//     * 
+//     * equal checks are encapsulated inside the enum VComponentProperty
+//     */
+//    public static List<PropertyType> findChangedProperties(
+//            VComponentLocatable<?> vComponentEdited,
+//            VComponentLocatable<?> vComponentOriginal,
+//            Temporal startOriginalInstance,
+//            Temporal startInstance,
+//            Temporal endInstance)
+//    {
+//        List<PropertyType> changedProperties = new ArrayList<>();
+//        vComponentEdited.properties()
+//                .stream()
+//                .map(p -> p.propertyType())
+//                .forEach(t ->
+//                {
+//                    Object p1 = t.getProperty(vComponentEdited);
+//                    Object p2 = t.getProperty(vComponentOriginal);
+//                    if (! p1.equals(p2))
+//                    {
+//                        changedProperties.add(t);
+//                    }
+//                });
+//        
+//        /* Note:
+//         * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
+//         * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
+//         * question is answered. */
+//        if (! startOriginalInstance.equals(startInstance))
+//        {
+//            changedProperties.add(PropertyType.DATE_TIME_START);
+//        }
+//        
+//        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
+//        TemporalAmount durationOriginal = vComponentEdited.getActualDuration();
+//        if (! durationOriginal.equals(durationNew))
+//        {
+//            if (vComponentEdited instanceof VEvent)
+//            {
+//                if (! (((VEvent) vComponentEdited).getDateTimeEnd() == null))
+//                {
+//                    changedProperties.add(PropertyType.DATE_TIME_END);                    
+//                }
+//            } else if (vComponentEdited instanceof VTodo)
+//            {
+//                if (! (((VTodo) vComponentEdited).getDateTimeDue() == null))
+//                {
+//                    changedProperties.add(PropertyType.DATE_TIME_DUE);                    
+//                }                
+//            }
+//            boolean isDurationNull = vComponentEdited.getDuration() == null;
+//            if (! isDurationNull)
+//            {
+//                changedProperties.add(PropertyType.DURATION);                    
+//            }
+//        }   
+//        
+//        return changedProperties;
+//    }
+//
+//   static Collection<?> updateRecurrences(VComponentLocatable<?> vComponentEdited, Collection<?> recurrences)
+//   {
+//       Collection<Object> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+//       recurrencesTemp.addAll(recurrences);
+//       recurrencesTemp.removeIf(a -> updateInstances().stream().anyMatch(a2 -> a2 == a));
+//       recurrences().clear(); // clear VEvent of outdated appointments
+//       recurrencesTemp.addAll(makeRecurrences(vComponentEdited)); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+//       return recurrencesTemp;
+//   }
 
-            /* Find AppointmentGroup
-             * control can only handle one category.  Checks only first category
-             */
-            final AppointmentGroup appointmentGroup;
-            if (vComponentEdited.getCategories() != null)
-            {
-                String firstCategory = vComponentEdited.getCategories().get(0).getValue().get(0);
-                Optional<AppointmentGroup> myGroup = appointmentGroups()
-                        .stream()
-                        .filter(g -> g.getDescription().equals(firstCategory))
-                        .findAny();
-                appointmentGroup = (myGroup.isPresent()) ? myGroup.get() : null;
-            } else
-            {
-                appointmentGroup = null;
-            }
-            // Make appointment
-            Appointment appt = new Agenda.AppointmentImplTemporal()
-                    .withStartTemporal(startTemporal)
-                    .withEndTemporal(endTemporal)
-                    .withDescription( (vComponentEdited.getDescription() != null) ? vComponentEdited.getDescription().getValue() : null )
-                    .withSummary( (vComponentEdited.getSummary() != null) ? vComponentEdited.getSummary().getValue() : null)
-                    .withLocation( (vComponentEdited.getLocation() != null) ? vComponentEdited.getLocation().getValue() : null)
-                    .withWholeDay(isWholeDay)
-                    .withAppointmentGroup(appointmentGroup);
-            appointments.add(appt);   // add appointments to return argument
-        });
-        return appointments;
-    }
-    
-    /** Edit VEvent or VTodo */
-    public <T> boolean handleEdit(
-            VComponentLocatable<T> vComponentEdited
-          , VComponentLocatable<T> vComponentOriginal
-          , Collection<VComponentLocatable<T>> vComponents
-          , Temporal startOriginalRecurrence
-          , Temporal startRecurrence
-          , Temporal endRecurrence
-//          , Collection<Object> allRecurrences
-//          , Collection<Object> componentRecurrences
-          , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
-    {
-        validateStartRecurrenceAndDTStart(vComponentEdited, startOriginalRecurrence, startRecurrence);
-        final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentEdited.getRecurrenceRule(), vComponentOriginal.getRecurrenceRule());
-        System.out.println("rruleType:" + rruleType);
-        boolean incrementSequence = true;
-        Collection<Object> newRecurrences = null;
-        switch (rruleType)
-        {
-        case HAD_REPEAT_BECOMING_INDIVIDUAL:
-            vComponentEdited.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
-            // fall through
-        case WITH_NEW_REPEAT: // no dialog
-        case INDIVIDUAL:
-            adjustDateTime(vComponentEdited, startOriginalRecurrence, startRecurrence, endRecurrence);
-            if (! vComponentEdited.equals(vComponentOriginal))
-            {
-                newRecurrences = updateRecurrences(vComponentEdited);
-            }
-            break;
-        case WITH_EXISTING_REPEAT:
-            // Find which properties changed
-            List<PropertyType> changedProperties = findChangedProperties(
-                    vComponentEdited,
-                    vComponentOriginal,
-                    startOriginalRecurrence,
-                    startRecurrence,
-                    endRecurrence);
-            /* Note:
-             * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
-             * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
-             * question is answered. */
-//            changedProperties.addAll(changedStartAndEndDateTime(startOriginalRecurrence, startRecurrence, endRecurrence));
-            // determine if any changed properties warrant dialog
-//            changedPropertyNames.stream().forEach(a -> System.out.println("changed property:" + a));
-            boolean provideDialog = requiresChangeDialog(changedProperties);
-            if (changedProperties.size() > 0) // if changes occurred
-            {
-                List<VComponentLocatable<T>> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
-                final ChangeDialogOption changeResponse;
-                if (provideDialog)
-                {
-                    Map<ChangeDialogOption, StartEndRange> choices = ChangeDialogOption.makeDialogChoices(this, startOriginalRecurrence);
-                    changeResponse = dialogCallback.call(choices);
-                } else
-                {
-                    changeResponse = ChangeDialogOption.ALL;
-                }
-                switch (changeResponse)
-                {
-                case ALL:
-                    if (relatedVComponents.size() == 1)
-                    {
-                        adjustDateTime(vComponentEdited, startOriginalRecurrence, startRecurrence, endRecurrence);
-                        if ((getRRule() != null) && (getRRule().recurrences().size() > 0))
-                        {
-                            getRRule().recurrences().forEach(v ->
-                            {
-                                Temporal newRecurreneId = adjustRecurrenceStart(v.getDateTimeRecurrence(), startOriginalRecurrence, startRecurrence, endRecurrence);
-                                v.setDateTimeRecurrence(newRecurreneId);
-                            });
-                        }
-                        newRecurrences = updateRecurrences(allRecurrences);
-                    } else
-                    {
-                        throw new RuntimeException("Only 1 relatedVComponents currently supported");
-                    }
-                    break;
-                case CANCEL:
-                    vComponentOriginal.copyTo(this); // return to original
-                    return false;
-                case THIS_AND_FUTURE:
-                    newRecurrences = editThisAndFuture(vComponentOriginal, vComponents, startOriginalRecurrence, startRecurrence, endRecurrence, allRecurrences);
-                    break;
-                case ONE:
-                    newRecurrences = editOne(vComponentOriginal, vComponents, startOriginalRecurrence, startRecurrence, endRecurrence, allRecurrences);
-                    break;
-                default:
-                    break;
-                }
-            }
-        }
-        if (! isValid()) throw new RuntimeException(errorString());
-        if (incrementSequence) { incrementSequence(); }
-        if (newRecurrences != null)
-        {
-            allRecurrences.clear();
-            allRecurrences.addAll(newRecurrences);
-        }
-        return true;
-    }
-    
-    /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
-     * endRecurrence to closest valid values
-     */
-    // TODO - VERITFY THIS WORKS - changed from old version
-    private static void validateStartRecurrenceAndDTStart(VComponentLocatable<?> vComponentEdited, Temporal startOriginalRecurrence, Temporal startRecurrence)
-    {
-//        boolean isStreamedValue;
-        if (vComponentEdited.getRecurrenceRule() != null)
-        {
-            Temporal firstTemporal = vComponentEdited.getRecurrenceRule().getValue()
-                    .streamRecurrences(vComponentEdited.getDateTimeStart().getValue())
-                    .findFirst()
-                    .get();
-            if (! firstTemporal.equals(vComponentEdited.getDateTimeStart().getValue()))
-            {
-                vComponentEdited.setDateTimeStart(firstTemporal);
-            }
-        }
-    }
-    
-    /* Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time */
-    private static void adjustDateTime(
-            VComponentLocatable<?> vComponentEdited,
-            Temporal startOriginalRecurrence,
-            Temporal startRecurrence,
-            Temporal endRecurrence)
-    {
-        Temporal newStart = adjustRecurrenceStart(
-                vComponentEdited.getDateTimeStart().getValue(),
-                startOriginalRecurrence,
-                startRecurrence,
-                endRecurrence);
-        vComponentEdited.setDateTimeStart(newStart);
-        System.out.println("new DTSTART:" + newStart);
-        vComponentEdited.setEndOrDuration(startRecurrence, endRecurrence);
-//        endType().setDuration(this, startRecurrence, endRecurrence);
-    }
-
-    /* Adjust DTSTART of RECURRENCE-ID */
-    private static Temporal adjustRecurrenceStart(Temporal initialStart
-            , Temporal startOriginalRecurrence
-            , Temporal startRecurrence
-            , Temporal endRecurrence)
-    {
-        DateTimeType newDateTimeType = DateTimeType.of(startRecurrence);
-        ZoneId zone = (startRecurrence instanceof ZonedDateTime) ? ZoneId.from(startRecurrence) : null;
-        Temporal startAdjusted = newDateTimeType.from(initialStart, zone);
-        Temporal startOriginalRecurrenceAdjusted = newDateTimeType.from(startOriginalRecurrence, zone);
-
-        // Calculate shift from startAdjusted to make new DTSTART
-        final TemporalAmount startShift;
-        if (newDateTimeType == DateTimeType.DATE)
-        {
-            startShift = Period.between(LocalDate.from(startOriginalRecurrence), LocalDate.from(startRecurrence));
-        } else
-        {
-            startShift = Duration.between(startOriginalRecurrenceAdjusted, startRecurrence);
-        }
-        return startAdjusted.plus(startShift);
-    }
-    
-    private Collection<Object> updateRecurrences(VComponentLocatable<?> vComponentEdited)
-    {
-        Collection<? extends Object> recurrences = appointments();
-        Collection<Appointment> componentRecurrences = vComponentAppointmentMap.get(vComponentEdited);
-        Collection<Object> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
-        instancesTemp.addAll(recurrences);
-        instancesTemp.removeIf(a -> componentRecurrences.stream().anyMatch(a2 -> a2 == a));
-//        instances().clear(); // clear VEvent of outdated appointments
-        instancesTemp.addAll(makeAppointments(vComponentEdited)); // make new recurrences and add to main collection (added to VEvent's collection in makeAppointments)
-        return instancesTemp;
-    }
-    
-    /**
-     * Generates a list of iCalendar property names that have different values from the 
-     * input parameter
-     * 
-     * equal checks are encapsulated inside the enum VComponentProperty
-     */
-    public static List<PropertyType> findChangedProperties(
-            VComponentLocatable<?> vComponentEdited,
-            VComponentLocatable<?> vComponentOriginal,
-            Temporal startOriginalInstance,
-            Temporal startInstance,
-            Temporal endInstance)
-    {
-        List<PropertyType> changedProperties = new ArrayList<>();
-        vComponentEdited.properties()
-                .stream()
-                .map(p -> p.propertyType())
-                .forEach(t ->
-                {
-                    Object p1 = t.getProperty(vComponentEdited);
-                    Object p2 = t.getProperty(vComponentOriginal);
-                    if (! p1.equals(p2))
-                    {
-                        changedProperties.add(t);
-                    }
-                });
-        
-        /* Note:
-         * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
-         * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
-         * question is answered. */
-        if (! startOriginalInstance.equals(startInstance))
-        {
-            changedProperties.add(PropertyType.DATE_TIME_START);
-        }
-        
-        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
-        TemporalAmount durationOriginal = vComponentEdited.getActualDuration();
-        if (! durationOriginal.equals(durationNew))
-        {
-            if (vComponentEdited instanceof VEvent)
-            {
-                if (! (((VEvent) vComponentEdited).getDateTimeEnd() == null))
-                {
-                    changedProperties.add(PropertyType.DATE_TIME_END);                    
-                }
-            } else if (vComponentEdited instanceof VTodo)
-            {
-                if (! (((VTodo) vComponentEdited).getDateTimeDue() == null))
-                {
-                    changedProperties.add(PropertyType.DATE_TIME_DUE);                    
-                }                
-            }
-            boolean isDurationNull = vComponentEdited.getDuration() == null;
-            if (! isDurationNull)
-            {
-                changedProperties.add(PropertyType.DURATION);                    
-            }
-        }   
-        
-        return changedProperties;
-    }
-
-    // TODO - DOUBLE CHECK THIS LIST - WHY NO DESCRIPTION, FOR EXAMPLE?
-    private final static List<PropertyType> DIALOG_REQUIRED_PROPERTIES = Arrays.asList(
-            PropertyType.CATEGORIES,
-            PropertyType.COMMENT,
-            PropertyType.DATE_TIME_START,
-            PropertyType.ORGANIZER,
-            PropertyType.SUMMARY
-            );
-    
-    /**
-     * Return true if ANY changed property requires a dialog, false otherwise
-     * 
-     * @param changedPropertyNames - list from {@link #findChangedProperties(VComponent)}
-     * @return
-     */
-    boolean requiresChangeDialog(List<PropertyType> changedPropertyNames)
-    {
-        return changedPropertyNames.stream()
-                .map(p -> DIALOG_REQUIRED_PROPERTIES.contains(p))
-                .anyMatch(b -> b == true);
-    }
+//    // TODO - DOUBLE CHECK THIS LIST - WHY NO DESCRIPTION, FOR EXAMPLE?
+//    private final static List<PropertyType> DIALOG_REQUIRED_PROPERTIES = Arrays.asList(
+//            PropertyType.CATEGORIES,
+//            PropertyType.COMMENT,
+//            PropertyType.DATE_TIME_START,
+//            PropertyType.ORGANIZER,
+//            PropertyType.SUMMARY
+//            );
+//    
+//    /**
+//     * Return true if ANY changed property requires a dialog, false otherwise
+//     * 
+//     * @param changedPropertyNames - list from {@link #findChangedProperties(VComponent)}
+//     * @return
+//     */
+//    boolean requiresChangeDialog(List<PropertyType> changedPropertyNames)
+//    {
+//        return changedPropertyNames.stream()
+//                .map(p -> DIALOG_REQUIRED_PROPERTIES.contains(p))
+//                .anyMatch(b -> b == true);
+//    }
     
     // TODO - SHOULD THESE LISTENERS AND BACKING MAPS GO TO NEW CLASS?
     public VComponentDisplayable<?> findVComponent(Appointment appointment)
@@ -915,36 +962,28 @@ public class ICalendarAgenda extends Agenda
         return appointmentVComponentMap.get(System.identityHashCode(appointment));
     }
     
-    @Deprecated // TODO - consider replace with simple booleans
-    private enum RRuleStatus
-    {
-        INDIVIDUAL ,
-        WITH_EXISTING_REPEAT ,
-        WITH_NEW_REPEAT, 
-        HAD_REPEAT_BECOMING_INDIVIDUAL;
-      
-        public static RRuleStatus getRRuleType(RecurrenceRuleNew rruleNew, RecurrenceRuleNew rruleOld)
-        {
-            if (rruleNew == null)
-            {
-                if (rruleOld == null)
-                { // doesn't have repeat or have old repeat either
-                    return RRuleStatus.INDIVIDUAL;
-                } else {
-                    return RRuleStatus.HAD_REPEAT_BECOMING_INDIVIDUAL;
-                }
-            } else
-            { // RRule != null
-                if (rruleOld == null)
-                {
-                    return RRuleStatus.WITH_NEW_REPEAT;                
-                } else
-                {
-                    return RRuleStatus.WITH_EXISTING_REPEAT;
-                }
-            }
-        }
-    }
+    /**
+     * A convenience class to represent start and end date-time pairs
+     * 
+     */
+   static public class StartEndRange
+   {
+       public StartEndRange(Temporal start, Temporal end)
+       {
+           if ((start != null) && (end != null) && (start.getClass() != end.getClass())) { throw new RuntimeException("Temporal classes of start and end must be the same."); }
+           this.start = start;
+           this.end = end;
+       }
+       
+       public Temporal getDateTimeStart() { return start; }
+       private final Temporal start;
+       
+       public Temporal getDateTimeEnd() { return end; }
+       private final Temporal end; 
+       
+       @Override
+       public String toString() { return super.toString() + " " + start + " to " + end; }
+   }
     
     /**
      * VComponent factory methods

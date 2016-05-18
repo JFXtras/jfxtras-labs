@@ -658,6 +658,7 @@ public final class ICalendarUtilities
      * Sometimes all options are not available.  For example, a one-part repeating
      * event doesn't have the SEGMENT option.
      */
+    @Deprecated
     public enum ChangeDialogOption
     {
         ONE                  // individual instance

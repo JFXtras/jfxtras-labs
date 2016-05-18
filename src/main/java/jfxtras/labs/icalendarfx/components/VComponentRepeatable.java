@@ -324,6 +324,24 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         return ! i.hasNext();
     }
     
+    /** returns the last date or date/time of the series.  If infinite returns null */
+    default Temporal lastRecurrence()
+    {
+        if ((getRecurrenceRule() != null) && (getRecurrenceRule().getValue().isInfinite()))
+        {
+            return null;
+        } else
+        {
+            Iterator<Temporal> i = streamRecurrences().iterator();
+            Temporal myTemporal = null;
+            while (i.hasNext())
+            {
+                myTemporal = i.next();
+            }
+            return myTemporal;
+        }       
+    }
+    
     /**
      * Handles how an edited VComponent is processed.  For a VComponent with a recurrence rule (RRULE)
      * the user is given a dialog to select ONE, THIS_AND_FUTURE, or ALL instances to edit.
