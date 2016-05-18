@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
@@ -131,7 +132,31 @@ public interface VComponentNew<T>
         .collect(Collectors.toList()));
     }
     
+    /** 
+     * SORT ORDER
+     * 
+     * Property sort order map.  Key is property, value is the sort order.  The map is automatically
+     * populated when parsing the content lines to preserve the existing property order.
+     * 
+     * When producing the content lines, if a property is not present in the map, it is put at
+     * the end of the sorted ones in the order appearing in {@link #PropertyEnum} (should be
+     * alphabetical) Generally, this map shouldn't be modified.  Only modify it when you want
+     * to force a specific property order (e.g. unit testing).
+     */
+    public Map<String, Integer> propertySortOrder();
 
+    /** Copy properties and subcomponents from source into this component,
+     * essentially making a copy of source 
+     * 
+     * Note: this method only overwrites properties found in source.  If there are properties in
+     * this component that are not present in source then those will remain unchanged.
+     * */
+    default void copyComponentFrom(VComponentNew<?> source)
+    {
+        source.propertyEnums().forEach(p -> p.copyProperty(source, this));
+        propertySortOrder().putAll(source.propertySortOrder());
+    }
+    
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.4
      * Contains component properties with their values and any parameters.

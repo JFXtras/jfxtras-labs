@@ -6,11 +6,13 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,13 +21,13 @@ import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.StartEndRange;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
  * Handles edit and delete functionality of VEvents and VTodos
@@ -33,7 +35,7 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
  * @author David Bal
  *
  */
-public class EditDeleteHelper<R>
+public class RecurrenceHelper<R>
 {   
     private Collection<R> recurrences;
     private LocalDateTime startRange;
@@ -41,16 +43,19 @@ public class EditDeleteHelper<R>
 //    private List<AppointmentGroup> appointmentGroups;
 //    private 
     private Callback2<VComponentLocatable<?>, Temporal, R> recurrenceCallBack;
+    private Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap;
     
-    public EditDeleteHelper(
+    public RecurrenceHelper(
             Collection<R> recurrences,
-            Callback2<VComponentLocatable<?>, Temporal, R>  recurrenceCallBack)
+            Callback2<VComponentLocatable<?>, Temporal, R>  recurrenceCallBack,
+            Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap)
     {
         this.recurrences = recurrences;
         this.recurrenceCallBack = recurrenceCallBack;
+        this.vComponentRecurrencetMap = vComponentRecurrencetMap;
     }
-    
-    
+
+
     /**
      * Makes appointments from VEVENT or VTODO for Agenda
      * Appointments are made between displayed range
@@ -82,15 +87,15 @@ public class EditDeleteHelper<R>
             {
                 R recurrence = recurrenceCallBack.call(vComponentEdited, startTemporal);
                 newRecurrences.add(recurrence);
-            });   // add appointments
+            });
         return newRecurrences;
     }
     
     /** Edit VEvent or VTodo */
-    public <T> boolean handleEdit(
-            VComponentLocatable<T> vComponentEdited
-          , VComponentLocatable<T> vComponentOriginal
-          , Collection<VComponentLocatable<T>> vComponents
+    public boolean handleEdit(
+            VComponentLocatable<R> vComponentEdited
+          , VComponentLocatable<R> vComponentOriginal
+          , Collection<VComponentLocatable<R>> vComponents
           , Temporal startOriginalRecurrence
           , Temporal startRecurrence
           , Temporal endRecurrence
@@ -99,7 +104,7 @@ public class EditDeleteHelper<R>
           , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
     {
         validateStartRecurrenceAndDTStart(vComponentEdited, startOriginalRecurrence, startRecurrence);
-        final EditDeleteHelper.RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentEdited.getRecurrenceRule(), vComponentOriginal.getRecurrenceRule());
+        final RecurrenceHelper.RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentEdited.getRecurrenceRule(), vComponentOriginal.getRecurrenceRule());
         System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         Collection<R> newRecurrences = null;
@@ -163,14 +168,15 @@ public class EditDeleteHelper<R>
                                     v.setRecurrenceId(newRecurreneId);
                                 });
 //                        }
-                        newRecurrences = updateRecurrences(allRecurrences);
+                        newRecurrences = updateRecurrences(vComponentEdited);
                     } else
                     {
                         throw new RuntimeException("Only 1 relatedVComponents currently supported");
                     }
                     break;
                 case CANCEL:
-                    vComponentOriginal.copyTo(this); // return to original
+                    vComponentEdited.copyComponentFrom(vComponentOriginal);  // return to original
+//                    vComponentOriginal.copyTo(this); // return to original
                     return false;
                 case THIS_AND_FUTURE:
                     newRecurrences = editThisAndFuture(vComponentOriginal, vComponents, startOriginalRecurrence, startRecurrence, endRecurrence, allRecurrences);
@@ -254,17 +260,26 @@ public class EditDeleteHelper<R>
         return startAdjusted.plus(startShift);
     }
     
-    private Collection<Object> updateRecurrences(VComponentLocatable<?> vComponentEdited)
+    private Collection<R> updateRecurrences(VComponentLocatable<?> vComponentEdited)
     {
-        Collection<? extends Object> recurrences = appointments();
-        Collection<Appointment> componentRecurrences = vComponentAppointmentMap.get(vComponentEdited);
-        Collection<Object> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+        Collection<R> componentRecurrences = vComponentRecurrencetMap.get(vComponentEdited);
+        Collection<R> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
         instancesTemp.addAll(recurrences);
         instancesTemp.removeIf(a -> componentRecurrences.stream().anyMatch(a2 -> a2 == a));
 //        instances().clear(); // clear VEvent of outdated appointments
         instancesTemp.addAll(makeRecurrences(vComponentEdited)); // make new recurrences and add to main collection (added to VEvent's collection in makeAppointments)
         return instancesTemp;
     }
+
+//    private Collection<?> updateRecurrences(VComponentLocatable<?> vComponentEdited, Collection<?> recurrences)
+//   {
+//       Collection<Object> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+//       recurrencesTemp.addAll(recurrences);
+//       recurrencesTemp.removeIf(a -> updateInstances().stream().anyMatch(a2 -> a2 == a));
+//       recurrences().clear(); // clear VEvent of outdated appointments
+//       recurrencesTemp.addAll(makeRecurrences(vComponentEdited)); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
+//       return recurrencesTemp;
+//   }
     
     /**
      * Generates a list of iCalendar property names that have different values from the 
@@ -329,15 +344,6 @@ public class EditDeleteHelper<R>
         return changedProperties;
     }
 
-   static Collection<?> updateRecurrences(VComponentLocatable<?> vComponentEdited, Collection<?> recurrences)
-   {
-       Collection<Object> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
-       recurrencesTemp.addAll(recurrences);
-       recurrencesTemp.removeIf(a -> updateInstances().stream().anyMatch(a2 -> a2 == a));
-       recurrences().clear(); // clear VEvent of outdated appointments
-       recurrencesTemp.addAll(makeRecurrences(vComponentEdited)); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
-       return recurrencesTemp;
-   }
 
    // TODO - DOUBLE CHECK THIS LIST - WHY NO DESCRIPTION, FOR EXAMPLE?
    private final static List<PropertyType> DIALOG_REQUIRED_PROPERTIES = Arrays.asList(
@@ -359,6 +365,131 @@ public class EditDeleteHelper<R>
        return changedPropertyNames.stream()
                .map(p -> DIALOG_REQUIRED_PROPERTIES.contains(p))
                .anyMatch(b -> b == true);
+   }
+   
+   /**
+    * Changing this and future instances in VComponent is done by ending the previous
+    * VComponent with a UNTIL date or date/time and starting a new VComponent from 
+    * the selected instance.  EXDATE, RDATE and RECURRENCES are split between both
+    * VComponents.  vEventNew has new settings, vEvent has former settings.
+    * @param endInstance 
+    * @param <T>
+    * 
+    * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
+    */
+   private Collection<R> editThisAndFuture(
+           VComponentLocatable<?> vComponentEdited,
+           VComponentLocatable<?> vComponentOriginal,
+           Collection<VComponentLocatable<R>> vComponents,
+           Temporal startOriginalInstance,
+           Temporal startInstance,
+           Temporal endInstance)
+   {
+       // adjust original VEvent
+       if (vComponentOriginal.getRecurrenceRule().getValue().getCount() != null)
+       {
+           vComponentOriginal.getRecurrenceRule().getValue().setCount(null);
+       }
+       final Temporal untilNew;
+       if (vComponentEdited.isWholeDay())
+       {
+           untilNew = LocalDate.from(startOriginalInstance).minus(1, ChronoUnit.DAYS);
+       } else
+       {
+//           Temporal temporal = startOriginalInstance.minus(1, ChronoUnit.NANOS);
+//           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
+           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue(startInstance));
+       }
+       vComponentOriginal.getRRule().setUntil(untilNew);
+       
+       
+       setDateTimeStart(startInstance);
+       adjustDateTime(startInstance, startInstance, endInstance);
+       setUniqueIdentifier();
+       String relatedUID = (vComponentOriginal.getRelatedTo() == null) ? vComponentOriginal.getUniqueIdentifier() : vComponentOriginal.getRelatedTo();
+       setRelatedTo(relatedUID);
+       setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
+       
+       // Split EXDates dates between this and newVEvent
+       if (getExDate() != null)
+       {
+           getExDate().getTemporals().clear();
+           final Iterator<Temporal> exceptionIterator = getExDate().getTemporals().iterator();
+           while (exceptionIterator.hasNext())
+           {
+               Temporal d = exceptionIterator.next();
+               int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(d, startInstance);
+               if (result < 0)
+               {
+                   exceptionIterator.remove();
+               } else {
+                   getExDate().getTemporals().add(d);
+               }
+           }
+           if (getExDate().getTemporals().isEmpty()) setExDate(null);
+           if (getExDate().getTemporals().isEmpty()) setExDate(null);
+       }
+
+       // Split recurrence date/times between this and newVEvent
+       if (getRDate() != null)
+       {
+           getRDate().getTemporals().clear();
+           final Iterator<Temporal> recurrenceIterator = getRDate().getTemporals().iterator();
+           while (recurrenceIterator.hasNext())
+           {
+               Temporal d = recurrenceIterator.next();
+               int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(d, startInstance);
+               if (result < 0)
+               {
+                   recurrenceIterator.remove();
+               } else {
+                   getRDate().getTemporals().add(d);
+               }
+           }
+           if (getRDate().getTemporals().isEmpty()) setRDate(null);
+           if (getRDate().getTemporals().isEmpty()) setRDate(null);
+       }
+
+       // Split instance dates between this and newVEvent
+       if (getRRule().recurrences() != null)
+       {
+           getRRule().recurrences().clear();
+           final Iterator<VComponent<?>> recurrenceIterator = getRRule().recurrences().iterator();
+           while (recurrenceIterator.hasNext())
+           {
+               VComponent<?> d = recurrenceIterator.next();
+               if (DateTimeUtilities.isBefore(d.getDateTimeRecurrence(), startInstance))
+               {
+                   recurrenceIterator.remove();
+               } else {
+                   getRRule().recurrences().add(d);
+               }
+           }
+       }
+       
+       // Modify COUNT for the edited vEvent
+       if (getRRule().getCount() > 0)
+       {
+           int countInOrginal = vComponentOriginal.makeInstances().size();
+           int countInNew = getRRule().getCount() - countInOrginal;
+           getRRule().setCount(countInNew);
+       }
+//       adjustDateTime(startOriginalInstance, startInstance, endInstance);        
+       
+       if (! vComponentOriginal.isValid()) throw new RuntimeException(vComponentOriginal.errorString());
+       vComponents.add(vComponentOriginal);
+
+       // Remove old appointments, add back ones
+       Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
+       instancesTemp.addAll(instances);
+       instancesTemp.removeIf(a -> vComponentOriginal.instances().stream().anyMatch(a2 -> a2 == a));
+       vComponentOriginal.instances().clear(); // clear vEvent outdated collection of appointments
+       instancesTemp.addAll(vComponentOriginal.makeInstances()); // make new appointments and add to main collection (added to vEvent's collection in makeAppointments)
+       instances().clear(); // clear vEvent's outdated collection of appointments
+       instancesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
+       return instancesTemp;
+//       instances.clear();
+//       instances.addAll(instancesTemp);
    }
    
 //   /**

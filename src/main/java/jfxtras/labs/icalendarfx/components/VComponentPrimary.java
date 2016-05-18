@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -97,6 +98,12 @@ public interface VComponentPrimary<T> extends VComponentNew<T>
         {
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
+    }
+    
+    /** Component is whole day if dateTimeStart (DTSTART) only contains a date (no time) */
+    default boolean isWholeDay()
+    {
+        return ! getDateTimeStart().getValue().isSupported(ChronoUnit.NANOS);
     }
 
 //    @Deprecated

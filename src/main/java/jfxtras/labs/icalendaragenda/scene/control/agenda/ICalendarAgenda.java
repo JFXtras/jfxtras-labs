@@ -34,8 +34,8 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectedOneAppointmentLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.EditDeleteHelper.Callback2;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.EditDeleteHelper.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.Callback2;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
@@ -285,9 +285,11 @@ public class ICalendarAgenda extends Agenda
     {
         super();
         this.vCalendar = vCalendar;
-        EditDeleteHelper<Appointment> editDeleteHelper = new EditDeleteHelper<Appointment>(
+        RecurrenceHelper<Appointment> editDeleteHelper = new RecurrenceHelper<Appointment>(
                 appointments(),
-                makeAppointmentCallback);
+                makeAppointmentCallback,
+                vComponentAppointmentMap
+                );
         System.out.println("here0:" + getVCalendar());
         getVCalendar().getVEvents().addListener((InvalidationListener) (obs) -> 
         {
