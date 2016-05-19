@@ -65,8 +65,20 @@ public class ICalendarAgenda extends Agenda
 {   
     public final static String ICALENDAR_STYLE_SHEET = ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();
     
+//    private ObjectProperty<LocalDateTime> startRange = new SimpleObjectProperty<>(); // must be updated when range changes
+//    private ObjectProperty<LocalDateTime> endRange = new SimpleObjectProperty<>();
     private LocalDateTimeRange dateTimeRange; // date range of current skin, set when localDateTimeRangeCallback fires
+    public void setDateTimeRange(LocalDateTimeRange dateTimeRange)
+    {
+        this.dateTimeRange = dateTimeRange;
+        getRecurrenceHelper().setStartRange(dateTimeRange.getStartLocalDateTime());
+        getRecurrenceHelper().setEndRange(dateTimeRange.getEndLocalDateTime());
+    }
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
+    
+    // Recurrence helper - handles making appointments, edit and delete components
+    final private RecurrenceHelper<Appointment> recurrenceHelper;
+    public RecurrenceHelper<Appointment> getRecurrenceHelper() { return recurrenceHelper; }
 
     /** The VCalendar object that contains all scheduling information */
     public VCalendar getVCalendar() { return vCalendar; }
@@ -285,7 +297,7 @@ public class ICalendarAgenda extends Agenda
     {
         super();
         this.vCalendar = vCalendar;
-        RecurrenceHelper<Appointment> editDeleteHelper = new RecurrenceHelper<Appointment>(
+        recurrenceHelper = new RecurrenceHelper<Appointment>(
                 appointments(),
                 makeAppointmentCallback,
                 vComponentAppointmentMap
@@ -544,7 +556,7 @@ public class ICalendarAgenda extends Agenda
         // LISTEN FOR AGENDA RANGE CHANGES
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
-            this.dateTimeRange = dateTimeRange;
+            setDateTimeRange(dateTimeRange);
 //            System.out.println("range0:" + dateTimeRange);
             if (dateTimeRange != null)
             {        
@@ -557,10 +569,12 @@ public class ICalendarAgenda extends Agenda
                     LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
 //                    System.out.println("range:" + start + " " + end);
 //                    List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(v, start, end, appointmentGroups());
-                    List<Appointment> newAppointments = editDeleteHelper.makeRecurrences(v);
 //                    List<Appointment> newAppointments = makeRecurrences(v);
 //                    vComponentAppointmentMap.put(v, newAppointments);
+
+                    List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(v);
                     appointments().addAll(newAppointments);
+                    
 //                    newAppointments.stream().forEach(a ->
 //                    {
 ////                        System.out.println("map5:" + System.identityHashCode(a) + " " + a.getStartTemporal());

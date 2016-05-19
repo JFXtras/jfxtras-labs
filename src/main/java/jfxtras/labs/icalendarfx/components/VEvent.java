@@ -218,25 +218,25 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         }
     }
     
-    @Override
-    public void becomeNonRecurring(VComponentRepeatable<VEvent> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence)
-    {
-        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
-        if (vComponentOriginal.getRecurrenceRule() != null)
-        { // RRULE was removed, update DTEND or DURATION
-            if (getDuration() != null)
-            {
-                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-                setDuration(duration);
-            } else if (getDateTimeEnd() != null)
-            {
-                setDateTimeEnd(endRecurrence);
-            } else
-            {
-                throw new RuntimeException("Either DTEND or DURATION must be set");
-            }
-        }
-    }
+//    @Override
+//    public void becomeNonRecurring(VComponentRepeatable<VEvent> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence)
+//    {
+//        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+//        if (vComponentOriginal.getRecurrenceRule() != null)
+//        { // RRULE was removed, update DTEND or DURATION
+//            if (getDuration() != null)
+//            {
+//                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+//                setDuration(duration);
+//            } else if (getDateTimeEnd() != null)
+//            {
+//                setDateTimeEnd(endRecurrence);
+//            } else
+//            {
+//                throw new RuntimeException("Either DTEND or DURATION must be set");
+//            }
+//        }
+//    }
     
 //    /** Stream recurrence dates with adjustment to include recurrences that end before start */
 //    @Override

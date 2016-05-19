@@ -23,7 +23,6 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
@@ -455,19 +454,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      */
     @Override
     public List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs() { return childComponentsWithRecurrenceIDs; }
-    private List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs = new ArrayList<>();
-    
-    @Override
-    public void becomeNonRecurring(VComponentRepeatable<T> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence)
-    {
-        setRecurrenceRule((RecurrenceRule3) null);
-        setRecurrenceDates(null);
-        setExceptionDates(null);
-        if (vComponentOriginal.getRecurrenceRule() != null)
-        { // RRULE was removed, update DTSTART, DTEND or DURATION
-            setDateTimeStart(startRecurrence);
-        }
-    }
+    private List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs = new ArrayList<>();    
     
     @Override
     public boolean isValid()

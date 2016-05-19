@@ -1,8 +1,11 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.LocalDateTime;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
@@ -10,6 +13,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Organizer;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniformResourceLocator;
 import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * Components with the following properties:
@@ -118,6 +122,20 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     }
     private ObjectProperty<UniqueIdentifier> uniqueIdentifier;
 
+    /** Callback for creating unique uid values  */
+    @Override
+    public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
+    private static Integer nextKey = 0; // TODO - FIND WAY TO UPDATE WHEN PARSING A CALENDAR, USE X-PROP?
+    private Callback<Void, String> uidGeneratorCallback = (Void) ->
+    { // default UID generator callback
+        String dateTime = DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String domain = "jfxtras.org";
+        return dateTime + "-" + nextKey++ + domain;
+    };
+    @Override
+    public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
+
+    
     /**
      * URL: Uniform Resource Locator
      * RFC 5545 iCalendar 3.8.4.6 page 116

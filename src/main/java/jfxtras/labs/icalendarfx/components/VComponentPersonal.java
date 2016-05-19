@@ -7,6 +7,7 @@ import java.util.Arrays;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
@@ -155,6 +156,8 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     default UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifierProperty().get(); }
     default void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
     default void setUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(UniqueIdentifier.parse(uniqueIdentifier)); }
+    /** Set uniqueIdentifier by calling uidGeneratorCallback */
+    default void setUniqueIdentifier() { setUniqueIdentifier(getUidGeneratorCallback().call(null)); }
     default T withUniqueIdentifier(String uniqueIdentifier)
     {
         if (getUniqueIdentifier() == null)
@@ -177,6 +180,10 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
+    
+    /** Callback for creating unique uid values  */
+    Callback<Void, String> getUidGeneratorCallback();
+    void setUidGeneratorCallback(Callback<Void, String> uidCallback);
     
     /**
      * URL: Uniform Resource Locator

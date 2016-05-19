@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -515,16 +514,16 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs();
     
-    /**
-     * Part of {@link EditDeleteHelper#handleEdit}
-     * Changes a VComponent with a RRULE to become a non-recurring component
-     * 
-     * @param vComponentOriginal - unmodified component
-     * @param startRecurrence - start date/time of edited recurrence
-     * @param endRecurrence - end date/time of edited recurrence
-     * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection, Callback)
-     */
-    void becomeNonRecurring(VComponentRepeatable<T> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence);
+//    /**
+//     * Part of {@link EditDeleteHelper#handleEdit}
+//     * Changes a VComponent with a RRULE to become a non-recurring component
+//     * 
+//     * @param vComponentOriginal - unmodified component
+//     * @param startRecurrence - start date/time of edited recurrence
+//     * @param endRecurrence - end date/time of edited recurrence
+//     * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection, Callback)
+//     */
+//    void becomeNonRecurring(VComponentRepeatable<T> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence);
     
     @Override
     default boolean isValid()

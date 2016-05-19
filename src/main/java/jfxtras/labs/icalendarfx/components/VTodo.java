@@ -236,25 +236,25 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         }        
     }
     
-    @Override
-    public void becomeNonRecurring(VComponentRepeatable<VTodo> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence)
-    {
-        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
-        if (vComponentOriginal.getRecurrenceRule() != null)
-        { // RRULE was removed, update DTEND or DURATION
-            if (getDuration() != null)
-            {
-                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-                setDuration(duration);
-            } else if (getDateTimeDue() != null)
-            {
-                setDateTimeDue(endRecurrence);
-            } else
-            {
-                throw new RuntimeException("Either DTEND or DURATION must be set");
-            }
-        }
-    }
+//    @Override
+//    public void becomeNonRecurring(VComponentRepeatable<VTodo> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence)
+//    {
+//        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+//        if (vComponentOriginal.getRecurrenceRule() != null)
+//        { // RRULE was removed, update DTEND or DURATION
+//            if (getDuration() != null)
+//            {
+//                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+//                setDuration(duration);
+//            } else if (getDateTimeDue() != null)
+//            {
+//                setDateTimeDue(endRecurrence);
+//            } else
+//            {
+//                throw new RuntimeException("Either DTEND or DURATION must be set");
+//            }
+//        }
+//    }
     
 //    /** Stream recurrence dates with adjustment to include recurrences that are due before start */
 //    @Override
