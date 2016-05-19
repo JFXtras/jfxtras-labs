@@ -16,13 +16,21 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.Callback2;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -144,7 +152,41 @@ public class MakeAppointmentsTest
         }
     }
     
+    @Test
+    public void makeAppointmentsDailyTest4()
+    {
+        final Collection<Appointment> appointments = new ArrayList<>();
+        final Map<VComponentNew<?>, List<Appointment>> vComponentAppointmentMap = new HashMap<>();    
+        final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VComponent that made it */
+
+        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
+                appointments,
+                makeAppointmentCallback,
+                vComponentAppointmentMap,
+                appointmentVComponentMap
+                );
+    }
+    
+    /** Callback to make appointment from VComponent and Temporal */
+    public static final Callback2<VComponentLocatable<?>, Temporal, Appointment> makeAppointmentCallback = (vComponentEdited, startTemporal) ->
+    {
+        Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
+        final TemporalAmount adjustment = vComponentEdited.getActualDuration();
+        Temporal endTemporal = startTemporal.plus(adjustment);
+
+        // Make appointment
+        Appointment appt = new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(startTemporal)
+                .withEndTemporal(endTemporal)
+                .withDescription( (vComponentEdited.getDescription() != null) ? vComponentEdited.getDescription().getValue() : null )
+                .withSummary( (vComponentEdited.getSummary() != null) ? vComponentEdited.getSummary().getValue() : null)
+                .withLocation( (vComponentEdited.getLocation() != null) ? vComponentEdited.getLocation().getValue() : null)
+                .withWholeDay(isWholeDay);
+        return appt;
+    };
+    
     /** Similar to {@link ICalendarAgenda#makeAppointments} */
+    @Deprecated
     public static List<Appointment> makeAppointments(VEvent component, LocalDateTime startRange, LocalDateTime endRange)
     {
         List<Appointment> appointments = new ArrayList<>();

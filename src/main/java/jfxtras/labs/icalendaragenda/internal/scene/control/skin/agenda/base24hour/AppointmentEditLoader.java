@@ -32,6 +32,7 @@ public class AppointmentEditLoader extends Stage
     {
         String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
 //        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) vComponent;
+//        System.out.println("component:" + vComponent.hashCode());
         setTitle(vComponent.getSummary().getValue() + ": " + appointmentTime);
         initModality(Modality.APPLICATION_MODAL);
         

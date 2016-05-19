@@ -20,6 +20,7 @@ import java.util.Map;
 import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.StartEndRange;
 import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
@@ -39,7 +40,10 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  */
 public class RecurrenceHelper<R>
 {   
-    private Collection<R> recurrences; // collection of recurrences
+    private final Collection<R> recurrences; // collection of recurrences
+    private final Callback2<VComponentLocatable<?>, Temporal, R> recurrenceCallBack;
+    private final Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap;    
+    private final Map<Integer, VComponentDisplayable<?>> recurrenceVComponentMap; /* map matches appointment to VComponent that made it */
     
     private LocalDateTime startRange; // must be updated when range changes
     void setStartRange(LocalDateTime startRange) { this.startRange = startRange; } 
@@ -47,17 +51,17 @@ public class RecurrenceHelper<R>
     private LocalDateTime endRange; // must be updated when range changes
     void setEndRange(LocalDateTime endRange) { this.endRange = endRange; } 
 
-    private Callback2<VComponentLocatable<?>, Temporal, R> recurrenceCallBack;
-    private Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap;
-    
+
     public RecurrenceHelper(
             Collection<R> recurrences,
             Callback2<VComponentLocatable<?>, Temporal, R>  recurrenceCallBack,
-            Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap)
+            Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap,
+            Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap)
     {
         this.recurrences = recurrences;
         this.recurrenceCallBack = recurrenceCallBack;
         this.vComponentRecurrencetMap = vComponentRecurrencetMap;
+        this.recurrenceVComponentMap = appointmentVComponentMap;
     }
 
 
@@ -89,6 +93,7 @@ public class RecurrenceHelper<R>
             .forEach(startTemporal -> 
             {
                 R recurrence = recurrenceCallBack.call(vComponentEdited, startTemporal);
+                recurrenceVComponentMap.put(System.identityHashCode(recurrence), vComponentEdited);
                 newRecurrences.add(recurrence);
             });
         return newRecurrences;
