@@ -316,6 +316,44 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     {
         return streamRecurrences(getDateTimeStart().getValue());
     }
+    
+    /**
+     * finds previous stream Temporal before input parameter value
+     * 
+     * @param value
+     * @return
+     */
+    default Temporal previousStreamValue(Temporal value)
+    {
+        Temporal cacheStart = recurrenceStreamer().getStartFromCache(value);
+
+//        final Temporal start; 
+//        if (cacheEnd == 0)
+//        {
+//            start = getDateTimeStart();
+//        } else
+//        { // try to get start from cache
+//            Temporal m  = null;
+//            for (int i=cacheEnd; i>cacheStart; i--)
+//            {
+//                if (DateTimeUtilities.isBefore(temporalCache[i], value))
+//                {
+//                    m = temporalCache[i];
+//                    break;
+//                }
+//            }
+//            start = (m != null) ? m : getDateTimeStart();
+//        }
+        Iterator<Temporal> i = streamRecurrences(cacheStart).iterator();
+        Temporal lastT = null;
+        while (i.hasNext())
+        {
+            Temporal t = i.next();
+            if (! DateTimeUtilities.isBefore(t, value)) break;
+            lastT = t;
+        }
+        return lastT;
+    }
 
     /** Returns true if VComponent has zero instances in recurrence set */
     default boolean isRecurrenceSetEmpty()

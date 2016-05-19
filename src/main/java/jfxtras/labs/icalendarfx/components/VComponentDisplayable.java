@@ -420,6 +420,16 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
+    default void incrementSequence()
+    {
+        if (getSequence() == null)
+        {
+            setSequence(getSequence().getValue()+1);            
+        } else
+        {
+            setSequence(1);            
+        }
+    }
     
     /**
      * STATUS

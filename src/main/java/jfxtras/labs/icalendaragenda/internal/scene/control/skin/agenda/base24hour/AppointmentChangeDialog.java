@@ -10,8 +10,9 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.components.VComponent.StartEndRange;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.StartEndRange;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
+
 
 /**
  * Dialog that can be either an edit or a delete choice dialog.

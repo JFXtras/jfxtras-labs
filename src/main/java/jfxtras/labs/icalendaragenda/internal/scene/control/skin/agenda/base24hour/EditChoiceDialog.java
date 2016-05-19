@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.util.Callback;
-import jfxtras.labs.icalendarfx.components.VComponent.StartEndRange;
-import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities.ChangeDialogOption;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.StartEndRange;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
 
 
 /**

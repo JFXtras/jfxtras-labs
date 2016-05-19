@@ -140,7 +140,7 @@ public class RecurrenceHelper<R>
             boolean provideDialog = requiresChangeDialog(changedProperties);
             if (changedProperties.size() > 0) // if changes occurred
             {
-                List<VComponentLocatable<T>> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
+                List<VComponentLocatable<?>> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
@@ -176,21 +176,34 @@ public class RecurrenceHelper<R>
                     break;
                 case CANCEL:
                     vComponentEdited.copyComponentFrom(vComponentOriginal);  // return to original
-//                    vComponentOriginal.copyTo(this); // return to original
                     return false;
                 case THIS_AND_FUTURE:
-                    newRecurrences = editThisAndFuture(vComponentOriginal, vComponents, startOriginalRecurrence, startRecurrence, endRecurrence, allRecurrences);
+                    newRecurrences = editThisAndFuture(
+                            vComponentEdited,
+                            vComponentOriginal,
+                            vComponents,
+                            startOriginalRecurrence,
+                            startRecurrence,
+                            endRecurrence
+                            );
                     break;
                 case ONE:
-                    newRecurrences = editOne(vComponentOriginal, vComponents, startOriginalRecurrence, startRecurrence, endRecurrence, allRecurrences);
+                    newRecurrences = editOne(
+                            vComponentEdited,
+                            vComponentOriginal,
+                            vComponents,
+                            startOriginalRecurrence,
+                            startRecurrence,
+                            endRecurrence
+                            );
                     break;
                 default:
                     break;
                 }
             }
         }
-        if (! isValid()) throw new RuntimeException(errorString());
-        if (incrementSequence) { incrementSequence(); }
+        if (! vComponentEdited.isValid()) throw new RuntimeException("Invalid component"); // TODO - MAKE ERROR STRING
+        if (incrementSequence) { vComponentEdited.incrementSequence(); }
         if (newRecurrences != null)
         {
             allRecurrences.clear();
@@ -372,7 +385,7 @@ public class RecurrenceHelper<R>
     * VComponent with a UNTIL date or date/time and starting a new VComponent from 
     * the selected instance.  EXDATE, RDATE and RECURRENCES are split between both
     * VComponents.  vEventNew has new settings, vEvent has former settings.
-    * @param endInstance 
+    * @param endRecurrence 
     * @param <T>
     * 
     * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
@@ -381,9 +394,10 @@ public class RecurrenceHelper<R>
            VComponentLocatable<?> vComponentEdited,
            VComponentLocatable<?> vComponentOriginal,
            Collection<VComponentLocatable<R>> vComponents,
-           Temporal startOriginalInstance,
-           Temporal startInstance,
-           Temporal endInstance)
+           Temporal startOriginalRecurrence,
+           Temporal startRecurrence,
+           Temporal endRecurrence
+           )
    {
        // adjust original VEvent
        if (vComponentOriginal.getRecurrenceRule().getValue().getCount() != null)
@@ -393,32 +407,47 @@ public class RecurrenceHelper<R>
        final Temporal untilNew;
        if (vComponentEdited.isWholeDay())
        {
-           untilNew = LocalDate.from(startOriginalInstance).minus(1, ChronoUnit.DAYS);
+           untilNew = LocalDate.from(startOriginalRecurrence).minus(1, ChronoUnit.DAYS);
        } else
        {
 //           Temporal temporal = startOriginalInstance.minus(1, ChronoUnit.NANOS);
 //           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
-           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue(startInstance));
+//           Temporal previousRecurrence = vComponentEdited.previousStreamValue(startRecurrence);
+//           if (startRecurrence instanceof LocalDateTime)
+//           {
+//               LocalDateTime.from(previousRecurrence).atZone(DateTimeUtilities.DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
+//           } else if (startRecurrence instanceof ZonedDateTime)
+//           {
+//               
+//           }
+//           return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
+//       case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+//           return ZonedDateTime.from(temporal).withZoneSameInstant(ZoneId.of("Z"));
+           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(vComponentEdited.previousStreamValue(startRecurrence));
+//           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue(startInstance));
        }
-       vComponentOriginal.getRRule().setUntil(untilNew);
+       vComponentOriginal.getRecurrenceRule().getValue().setUntil(untilNew);
        
        
-       setDateTimeStart(startInstance);
-       adjustDateTime(startInstance, startInstance, endInstance);
-       setUniqueIdentifier();
-       String relatedUID = (vComponentOriginal.getRelatedTo() == null) ? vComponentOriginal.getUniqueIdentifier() : vComponentOriginal.getRelatedTo();
-       setRelatedTo(relatedUID);
-       setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
+       vComponentEdited.setDateTimeStart(startRecurrence);
+       adjustDateTime(vComponentEdited, startOriginalRecurrence, startRecurrence, endRecurrence);
+//       adjustDateTime(startRecurrence, startRecurrence, endInstance);
+       vComponentEdited.setUniqueIdentifier(); // ADD UID CALLBACK
+       // only supports one RELATED-TO value
+       String relatedUID = (vComponentOriginal.getRelatedTo() == null) ?
+               vComponentOriginal.getUniqueIdentifier().getValue() : vComponentOriginal.getRelatedTo().get(0).getValue();
+       vComponentEdited.withRelatedTo(relatedUID);
+       vComponentEdited.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
        
        // Split EXDates dates between this and newVEvent
-       if (getExDate() != null)
+       if (vComponentEdited.getExceptionDates() != null)
        {
            getExDate().getTemporals().clear();
            final Iterator<Temporal> exceptionIterator = getExDate().getTemporals().iterator();
            while (exceptionIterator.hasNext())
            {
                Temporal d = exceptionIterator.next();
-               int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(d, startInstance);
+               int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(d, startRecurrence);
                if (result < 0)
                {
                    exceptionIterator.remove();
@@ -438,7 +467,7 @@ public class RecurrenceHelper<R>
            while (recurrenceIterator.hasNext())
            {
                Temporal d = recurrenceIterator.next();
-               int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(d, startInstance);
+               int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(d, startRecurrence);
                if (result < 0)
                {
                    recurrenceIterator.remove();
@@ -458,7 +487,7 @@ public class RecurrenceHelper<R>
            while (recurrenceIterator.hasNext())
            {
                VComponent<?> d = recurrenceIterator.next();
-               if (DateTimeUtilities.isBefore(d.getDateTimeRecurrence(), startInstance))
+               if (DateTimeUtilities.isBefore(d.getDateTimeRecurrence(), startRecurrence))
                {
                    recurrenceIterator.remove();
                } else {
@@ -490,6 +519,53 @@ public class RecurrenceHelper<R>
        return instancesTemp;
 //       instances.clear();
 //       instances.addAll(instancesTemp);
+   }
+   
+   /**
+    * Edit one instance of a VEvent with a RRule.  The instance becomes a new VEvent without a RRule
+    * as with the same UID as the parent and a recurrence-id for the replaced date or date/time.
+    * 
+    * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
+    */
+   private Collection<R> editOne(
+           VComponentLocatable<?> vComponentEdited,
+           VComponentLocatable<?> vComponentOriginal,
+           Collection<VComponentLocatable<R>> vComponents,
+           Temporal startOriginalInstance,
+           Temporal startInstance,
+           Temporal endInstance
+           )
+   {
+       // Remove RRule and set parent component
+       setRRule(null);
+       setParent(vComponentOriginal);
+
+       // Apply dayShift, account for editing instance beyond first
+       Period dayShift = Period.between(LocalDate.from(getDateTimeStart()), LocalDate.from(startOriginalInstance));
+       Temporal newStart = getDateTimeStart().plus(dayShift);
+       setDateTimeStart(newStart);
+       adjustDateTime(startOriginalInstance, startInstance, endInstance);
+       setDateTimeRecurrence(startOriginalInstance);
+       setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
+  
+       // Add recurrence to original vEvent
+       vComponentOriginal.getRRule().recurrences().add(this);
+       
+       // Check for validity
+       if (! isValid()) { throw new RuntimeException(errorString()); }
+//       System.out.println("here:" + vComponentOriginal);
+       if (! vComponentOriginal.isValid()) { throw new RuntimeException(vComponentOriginal.errorString()); }
+       
+       // Remove old instances, add back ones
+       Collection<I> instancesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to instances
+       instancesTemp.addAll(instances);
+       instancesTemp.removeIf(a -> vComponentOriginal.instances().stream().anyMatch(a2 -> a2 == a));
+       vComponentOriginal.instances().clear(); // clear vEventOriginal outdated collection of instances
+       instancesTemp.addAll(vComponentOriginal.makeInstances()); // make new instances and add to main collection (added to vEventNew's collection in makeinstances)
+       instances().clear(); // clear vEvent outdated collection of instances
+       instancesTemp.addAll(makeInstances()); // add vEventOld part of new instances
+       vComponents.add(vComponentOriginal);
+       return instancesTemp;
    }
    
 //   /**
