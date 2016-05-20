@@ -2,6 +2,7 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,11 +25,13 @@ public class AppointmentEditLoader extends Stage
 {
     // CONSTRUCTOR
     public AppointmentEditLoader(
-              Appointment appointment // selected instance
-            , VComponentDisplayable<?> vComponent
-            , ICalendarAgenda agenda
-            , Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback
-            , Callback<Collection<VComponentDisplayable<?>>, Void> veventWriteCallback)
+            Appointment appointment, // selected instance
+            VComponentDisplayable<?> vComponent,
+            Collection<Appointment> appointments,
+            List<AppointmentGroup> appointmentGroups,
+            Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback,
+            Callback<Collection<VComponentDisplayable<?>>, Void> veventWriteCallback
+            )
     {
         String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
 //        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) vComponent;
@@ -39,7 +42,10 @@ public class AppointmentEditLoader extends Stage
         // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
         appointmentMenuLoader.setLocation(AppointmentEditLoader.class.getResource("view/AppointmentEdit.fxml"));
-        appointmentMenuLoader.setResources(Settings.resources);
+        if (Settings.resources != null)
+        {
+            appointmentMenuLoader.setResources(Settings.resources);
+        }
         Control appointmentPopup = null;
         try {
             appointmentPopup = appointmentMenuLoader.load();
@@ -52,14 +58,13 @@ public class AppointmentEditLoader extends Stage
         scene.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET);
         
         appointmentEditController.setupData(
-                appointment
-              , vComponent
-              , agenda.getDateTimeRange()
-              , agenda.appointments()
-              , agenda.getVCalendar()
-              , agenda.appointmentGroups()
-              , veventWriteCallback
-              , this);
+              appointment,
+              vComponent,
+              appointments,
+              appointmentGroups,
+              veventWriteCallback,
+              this
+              );
 
         setResizable(false);
         setScene(scene);

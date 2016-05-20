@@ -207,11 +207,12 @@ public class ICalendarAgenda extends Agenda
         {
             appointments().removeListener(appointmentsListChangeListener); // remove listener to prevent making extra vEvents during edit
             Stage editPopup = new AppointmentEditLoader(
-                      appointment
-                    , vComponent
-                    , this
-                    , appointmentGroupWriteCallback
-                    , repeatWriteCallback);
+                    appointment,
+                    vComponent,
+                    appointments(),
+                    appointmentGroups(),
+                    appointmentGroupWriteCallback,
+                    repeatWriteCallback);
     
             editPopup.getScene().getStylesheets().addAll(getUserAgentStylesheet(), ICALENDAR_STYLE_SHEET);
     
@@ -604,6 +605,8 @@ public class ICalendarAgenda extends Agenda
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
             setDateTimeRange(dateTimeRange);
+            getRecurrenceHelper().setStartRange(dateTimeRange.getStartLocalDateTime());
+            getRecurrenceHelper().setEndRange(dateTimeRange.getEndLocalDateTime());
 //            System.out.println("range0:" + dateTimeRange);
             if (dateTimeRange != null)
             {        

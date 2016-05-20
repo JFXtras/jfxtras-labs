@@ -38,14 +38,13 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.VComponentFactory;
-import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VEventOld;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
-import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
 /**
@@ -69,9 +68,9 @@ public class AppointmentEditController extends Pane
     private Temporal startOriginalInstance;
     private Temporal endInstanceOriginal;
     
-    private VEventOld<Appointment,?> vEvent;
+    private VEvent vEvent;
 //    private VComponentNew<?> vEventOld;
-    private VEventOld<Appointment,?> vEventOriginal;
+    private VEvent vEventOriginal;
     private Collection<Appointment> appointments;
     private Collection<VComponentDisplayable<?>> vComponents;
     private Callback<Collection<VComponentDisplayable<?>>, Void> vEventWriteCallback;
@@ -157,9 +156,9 @@ public class AppointmentEditController extends Pane
     public void setupData(
               Appointment appointment
             , VComponentDisplayable<?> vComponent
-            , LocalDateTimeRange dateTimeRange
+//            , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
-            , VCalendar vCalendar
+//            , VCalendar vCalendar
             , List<AppointmentGroup> appointmentGroups
             , Callback<Collection<VComponentDisplayable<?>>, Void> vEventWriteCallback
             , Stage popup)

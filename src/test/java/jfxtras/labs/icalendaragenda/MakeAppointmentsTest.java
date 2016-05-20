@@ -161,14 +161,21 @@ public class MakeAppointmentsTest
 
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
                 appointments,
-                makeAppointmentCallback,
+                MAKE_APPOINTMENT_TEST_CALLBACK,
                 vComponentAppointmentMap,
                 appointmentVComponentMap
                 );
+        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
+        
+        VEvent vevent = ICalendarComponents.getDaily1();
+        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
+        System.out.println(appointments.size());
+        newAppointments.stream().forEach(System.out::println);
     }
     
     /** Callback to make appointment from VComponent and Temporal */
-    public static final Callback2<VComponentLocatable<?>, Temporal, Appointment> makeAppointmentCallback = (vComponentEdited, startTemporal) ->
+    public static final Callback2<VComponentLocatable<?>, Temporal, Appointment> MAKE_APPOINTMENT_TEST_CALLBACK = (vComponentEdited, startTemporal) ->
     {
         Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
         final TemporalAmount adjustment = vComponentEdited.getActualDuration();

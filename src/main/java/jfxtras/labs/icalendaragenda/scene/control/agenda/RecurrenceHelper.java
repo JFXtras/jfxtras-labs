@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda;
 
+import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,10 +47,10 @@ public class RecurrenceHelper<R>
     private final Map<Integer, VComponentDisplayable<?>> recurrenceVComponentMap; /* map matches appointment to VComponent that made it */
     
     private LocalDateTime startRange; // must be updated when range changes
-    void setStartRange(LocalDateTime startRange) { this.startRange = startRange; } 
+    public void setStartRange(LocalDateTime startRange) { this.startRange = startRange; } 
 
     private LocalDateTime endRange; // must be updated when range changes
-    void setEndRange(LocalDateTime endRange) { this.endRange = endRange; } 
+    public void setEndRange(LocalDateTime endRange) { this.endRange = endRange; } 
 
 
     public RecurrenceHelper(
@@ -74,6 +75,10 @@ public class RecurrenceHelper<R>
      */
     public List<R> makeRecurrences(VComponentLocatable<?> vComponentEdited)
     {
+        if ((startRange == null) || (endRange == null))
+        {
+            throw new DateTimeException("Both startRange and endRange must not be null (" + startRange + ", " + endRange + ")");
+        }
         List<R> newRecurrences = new ArrayList<>();
         Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
         
@@ -107,7 +112,7 @@ public class RecurrenceHelper<R>
           , Temporal startOriginalRecurrence
           , Temporal startRecurrence
           , Temporal endRecurrence
-//          , Collection<Object> allRecurrences
+//          , Collection<R> allRecurrences
 //          , Collection<Object> componentRecurrences
           , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
     {
@@ -214,7 +219,7 @@ public class RecurrenceHelper<R>
         if (incrementSequence) { vComponentEdited.incrementSequence(); }
         if (newRecurrences != null)
         {
-            allRecurrences.clear();
+//            allRecurrences.clear();
             allRecurrences.addAll(newRecurrences);
         }
         return true;
