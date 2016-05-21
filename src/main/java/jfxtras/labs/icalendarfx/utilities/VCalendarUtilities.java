@@ -16,8 +16,10 @@ import java.util.concurrent.Executors;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.VComponentBase;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 
-@Deprecated
+// TODO - COMBINE ICalendarUtilities and VCalendarUtilities
 public final class VCalendarUtilities
 {
     private VCalendarUtilities() { }
@@ -26,8 +28,9 @@ public final class VCalendarUtilities
      * Parse iCalendar ics and add its properties to vCalendar parameter
      * 
      * @param icsFilePath - URI of ics file
-     * @param vCalendar - vCalendar object with callbacks set for making components (e.g. makeVEventCallback)
+     * @param vCalendar - vCalendar obj2ect with callbacks set for making components (e.g. makeVEventCallback)
      */
+    @Deprecated
     public static void parseICalendarFile(Path icsFilePath, VCalendar vCalendar)
     {
         ExecutorService service = Executors.newSingleThreadExecutor();
@@ -70,11 +73,45 @@ public final class VCalendarUtilities
         }  
     }
     
+    public static boolean isEqualTo(VComponentBase<?> obj1, VComponentBase<?> obj2)
+    {
+        if (obj2 == obj1) return true;
+        if((obj2 == null) || (obj2.getClass() != obj1.getClass())) {
+            return false;
+        }
+        VComponentBase<?> testObj = obj2;
+        
+        final boolean propertiesEquals;
+        List<PropertyType> properties = obj1.propertyEnums(); // make properties local to avoid creating list multiple times
+        List<PropertyType> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
+        if (properties.size() == testProperties.size())
+        {
+            Iterator<PropertyType> i1 = properties.iterator();
+            Iterator<PropertyType> i2 = testProperties.iterator();
+            boolean isFailure = false;
+            while (i1.hasNext())
+            {
+                Object p1 = i1.next().getProperty(obj1);
+                Object p2 = i2.next().getProperty(testObj);
+                if (! p1.equals(p2))
+                {
+                    isFailure = true;
+                    break;
+                }
+            }
+            propertiesEquals = ! isFailure;
+        } else
+        {
+            propertiesEquals = false;
+        }
+        return propertiesEquals;
+    }
+    
     /**
      * Parses the property-value pair to the matching property, if a match is found.
      * If no matching property, does nothing.
      * 
-     * @param vCalendar - object to add property values
+     * @param vCalendar - obj2ect to add property values
      * @param propertyValuePair - property name-value pair (e.g. DTSTART and TZID=America/Los_Angeles:20160214T110000)
      */
     @Deprecated // make instance variable - implement ICalendarProperty

@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 
 import javafx.beans.property.ObjectProperty;
@@ -204,13 +203,13 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     @Override
     public void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
     {
+        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
         if (getDuration() != null)
         {
-            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
             setDuration(duration);
         } else if (getDateTimeEnd() != null)
         {
-            Temporal dtend = getDateTimeStart().getValue().with((TemporalAdjuster) endRecurrence);
+            Temporal dtend = getDateTimeStart().getValue().plus(duration);
             setDateTimeEnd(dtend);
         } else
         {

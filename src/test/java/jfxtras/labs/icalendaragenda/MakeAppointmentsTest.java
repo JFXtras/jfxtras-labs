@@ -30,7 +30,6 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.Callback2;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -156,7 +155,7 @@ public class MakeAppointmentsTest
     public void makeAppointmentsDailyTest4()
     {
         final Collection<Appointment> appointments = new ArrayList<>();
-        final Map<VComponentNew<?>, List<Appointment>> vComponentAppointmentMap = new HashMap<>();    
+        final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>();    
         final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VComponent that made it */
 
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(

@@ -289,7 +289,6 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         } else
         {
             Temporal cacheStart = recurrenceStreamer().getStartFromCache(start);
-//            System.out.println("cacheStart:" + cacheStart);
             stream1 = getRecurrenceRule().getValue().streamRecurrences(cacheStart);
         }
         
@@ -307,7 +306,9 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
                         .sorted(temporalComparator)
                 , temporalComparator);
         
-        return stream2.filter(t -> ! DateTimeUtilities.isBefore(t, start));
+        return stream2
+                .filter(t -> ! DateTimeUtilities.isBefore(t, start));
+//                .peek(t -> System.out.println("stream:" + t + " " + start))
     }
     
     /** Stream of recurrences starting at dateTimeStart (DTSTART) 
@@ -353,6 +354,27 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             lastT = t;
         }
         return lastT;
+    }
+    
+    /** Returns true if temporal is in vComponent's stream of start date-time
+     * values, false otherwise.
+     */
+    default boolean isRecurrence(Temporal temporal)
+    {
+        Iterator<Temporal> startInstanceIterator = streamRecurrences(temporal).iterator();
+        while (startInstanceIterator.hasNext())
+        {
+            Temporal myStartInstance = startInstanceIterator.next();
+            if (myStartInstance.equals(temporal))
+            {
+                return true;
+            }
+            if (DateTimeUtilities.isAfter(myStartInstance, temporal))
+            {
+                return false;
+            }
+        }
+        return false;
     }
 
     /** Returns true if VComponent has zero instances in recurrence set */

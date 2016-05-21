@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -36,11 +35,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.VComponentFactory;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.VEventOld;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -72,7 +68,7 @@ public class AppointmentEditController extends Pane
 //    private VComponentNew<?> vEventOld;
     private VEvent vEventOriginal;
     private Collection<Appointment> appointments;
-    private Collection<VComponentDisplayable<?>> vComponents;
+//    private Collection<VComponentDisplayable<?>> vComponents;
     private Callback<Collection<VComponentDisplayable<?>>, Void> vEventWriteCallback;
     private Stage popup;
 
@@ -128,7 +124,8 @@ public class AppointmentEditController extends Pane
             endInstance = LocalDate.from(endTextField.getLocalDateTime());
         } else
         {
-            endInstance = vEvent.getDateTimeType().from(endTextField.getLocalDateTime(), zone);
+//            endInstance = vEvent.getDateTimeType().from(endTextField.getLocalDateTime(), zone);
+            endInstance = vEvent.getDateTimeStart().getValue().with(endTextField.getLocalDateTime());
         }
     };
     private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
@@ -145,7 +142,8 @@ public class AppointmentEditController extends Pane
             startInstance = LocalDate.from(startTextField.getLocalDateTime());
         } else
         {
-            startInstance = vEvent.getDateTimeType().from(startTextField.getLocalDateTime(), zone);
+            startInstance = vEvent.getDateTimeStart().getValue().with(startTextField.getLocalDateTime());
+//            startInstance = vEvent.getDateTimeType().from(startTextField.getLocalDateTime(), zone);
         }
     };
     
@@ -163,16 +161,17 @@ public class AppointmentEditController extends Pane
             , Callback<Collection<VComponentDisplayable<?>>, Void> vEventWriteCallback
             , Stage popup)
     {
-        appointmentGroupGridPane.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET);
+//        this.getStylesheets()
+        appointmentGroupGridPane.getStylesheets().addAll(getStylesheets());
 
         startOriginalInstance = appointment.getStartTemporal();
         endInstanceOriginal = appointment.getEndTemporal();
         this.appointment = appointment;        
         this.appointments = appointments;
-        this.vComponents = vComponents;
+//        this.vComponents = vComponents;
         this.popup = popup;
         this.vEventWriteCallback = vEventWriteCallback;
-        vEvent = (VEventOld<Appointment,?>) vComponent;
+        vEvent = (VEvent) vComponent;
         
         // Disable repeat rules for events with recurrence-id
         if (vComponent.getRecurrenceDates() != null)
@@ -184,20 +183,25 @@ public class AppointmentEditController extends Pane
         // Convert duration to date/time end - this controller can't handle VEvents with duration
         if (vEvent.getDuration() != null)
         {
-            Temporal end = vEvent.getDateTimeStart().plus(vEvent.getDuration());
-            vEvent.setDuration(null);
+            Temporal end = vEvent.getDateTimeStart().getValue().plus(vEvent.getDuration().getValue());
+            vEvent.setDuration((Duration) null);
             vEvent.setDateTimeEnd(end);
         }
         
         // Copy original VEvent
-        vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent);
+//        vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent);
+        vEventOriginal = new VEvent(vEvent);
         
         // String bindings
         summaryTextField.textProperty().bindBidirectional(vEvent.getSummary().valueProperty());
 //        summaryTextField.textProperty().bindBidirectional(vEvent.summaryProperty());
 //        descriptionTextArea.textProperty().bindBidirectional(vEvent.getDescription().valueProperty());
-        descriptionTextArea.textProperty().bindBidirectional(vEvent.descriptionProperty());
-        locationTextField.textProperty().bindBidirectional(vEvent.locationProperty());
+        descriptionTextArea.textProperty().bindBidirectional(vEvent.getDescription().valueProperty());
+        if (vEvent.getLocation() == null)
+        {
+            vEvent.withLocation("");
+        }
+        locationTextField.textProperty().bindBidirectional(vEvent.getLocation().valueProperty());
         
         // WHOLE DAY
         wholeDayCheckBox.setSelected(vEvent.isWholeDay());       
@@ -211,11 +215,11 @@ public class AppointmentEditController extends Pane
                 lastStartTextFieldValue = startTextField.getLocalDateTime();
                 lastStartTime = lastStartTextFieldValue.toLocalTime();
                 lastDuration = Duration.between(lastStartTextFieldValue, endTextField.getLocalDateTime());
-                lastDateTimeStart = vEvent.getDateTimeStart();
+                lastDateTimeStart = vEvent.getDateTimeStart().getValue();
                 
-                LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart());
+                LocalDate newDateTimeStart = LocalDate.from(vEvent.getDateTimeStart().getValue());
                 vEvent.setDateTimeStart(newDateTimeStart);
-                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd()).plus(1, ChronoUnit.DAYS);
+                LocalDate newDateTimeEnd = LocalDate.from(vEvent.getDateTimeEnd().getValue()).plus(1, ChronoUnit.DAYS);
                 vEvent.setDateTimeEnd(newDateTimeEnd);
                 
                 LocalDateTime start = LocalDate.from(startTextField.getLocalDateTime()).atStartOfDay();
@@ -249,10 +253,10 @@ public class AppointmentEditController extends Pane
                 vEvent.setDateTimeStart(newDateTimeStart);
                 vEvent.setDateTimeEnd(newDateTimeEnd);
 
-                LocalDateTime newStartRange = LocalDate.from(vEvent.getStartRange()).atStartOfDay();
-                LocalDateTime newEndRange = LocalDate.from(vEvent.getEndRange()).atStartOfDay();
-                vEvent.setStartRange(newStartRange);
-                vEvent.setEndRange(newEndRange);
+//                LocalDateTime newStartRange = LocalDate.from(vEvent.getStartRange()).atStartOfDay();
+//                LocalDateTime newEndRange = LocalDate.from(vEvent.getEndRange()).atStartOfDay();
+//                vEvent.setStartRange(newStartRange);
+//                vEvent.setEndRange(newEndRange);
             }
             startTextField.localDateTimeProperty().addListener(startTextListener);
             endTextField.localDateTimeProperty().addListener(endTextlistener);
@@ -292,7 +296,7 @@ public class AppointmentEditController extends Pane
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
-            vEvent.getCategories().setValue(Arrays.asList(newSelection));
+            vEvent.withCategories(newSelection);
             // TODO - ensure groupTextField has unique description text
 //            groupNameEdited.set(true);
         });
@@ -320,10 +324,11 @@ public class AppointmentEditController extends Pane
      */
     private Runnable validateStartInstance()
     {
-        if (! vEvent.isStreamValue(startInstance))
+//        Temporal actualRecurrence = vEvent.streamRecurrences(startInstance).findFirst().get();
+        if (! vEvent.isRecurrence(startInstance))
         {
             Temporal instanceBefore = vEvent.previousStreamValue(startInstance);
-            Optional<Temporal> optionalAfter = vEvent.stream(startInstance).findFirst();
+            Optional<Temporal> optionalAfter = vEvent.streamRecurrences(startInstance).findFirst();
             Temporal newStartInstance = (optionalAfter.isPresent()) ? optionalAfter.get() : instanceBefore;
             TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
             Temporal newEndInstance = newStartInstance.plus(duration);
@@ -338,7 +343,7 @@ public class AppointmentEditController extends Pane
 
     private void updateZone()
     {
-        zone = (vEvent.getDateTimeStart() instanceof ZonedDateTime) ? ZoneId.from(vEvent.getDateTimeStart()) : null;
+        zone = (vEvent.getDateTimeStart().getValue() instanceof ZonedDateTime) ? ZoneId.from(vEvent.getDateTimeStart().getValue()) : null;
     }
     
     @FXML private void handleSave()
@@ -364,7 +369,8 @@ public class AppointmentEditController extends Pane
     
     @FXML private void handleCancelButton()
     {
-        vEventOriginal.copyTo(vEvent);
+//        vEventOriginal.copyTo(vEvent);
+        vEvent.copyComponentFrom(vEventOriginal);
         popup.close();
     }
 

@@ -421,7 +421,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     }
     default void incrementSequence()
     {
-        if (getSequence() == null)
+        if (getSequence() != null)
         {
             setSequence(getSequence().getValue()+1);            
         } else

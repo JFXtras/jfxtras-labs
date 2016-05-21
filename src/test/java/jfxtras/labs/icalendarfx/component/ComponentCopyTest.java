@@ -20,6 +20,7 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
                 .withDateTimeStart("20150831")
                 .withComments("comment1", "comment2");
         VEvent veventCopy = new VEvent(vevent);
+//        assertTrue(VCalendarUtilities.isEqualTo(vevent, veventCopy));
         assertEquals(vevent, veventCopy);
     }
     

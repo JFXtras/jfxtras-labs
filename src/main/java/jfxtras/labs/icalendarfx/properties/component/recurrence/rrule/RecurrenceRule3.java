@@ -831,7 +831,7 @@ public class RecurrenceRule3 implements VCalendarElement
      */
     public boolean isInfinite()
     {
-        return ((getCount().getValue() == 0) && (getUntil() == null));
+        return ((getCount() == null) && (getUntil() == null));
     }
     
     /** Stream of date/times made after applying all modification rules.

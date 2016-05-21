@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 
 import javafx.beans.property.ObjectProperty;
@@ -222,13 +221,13 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     @Override
     public void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
     {
+        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
         if (getDuration() != null)
         {
-            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
             setDuration(duration);
         } else if (getDateTimeDue() != null)
         {
-            Temporal dtdue = getDateTimeStart().getValue().with((TemporalAdjuster) endRecurrence);
+            Temporal dtdue = getDateTimeStart().getValue().plus(duration);
             setDateTimeDue(dtdue);
         } else
         {

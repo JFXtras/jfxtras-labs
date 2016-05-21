@@ -110,6 +110,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * alphabetical) Generally, this map shouldn't be modified.  Only modify it when you want
      * to force a specific property order (e.g. unit testing).
      */
+    @Override
     public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
     final private Map<String, Integer> propertySortOrder = new HashMap<>();
     private Integer propertyCounter = 0;
@@ -205,7 +206,23 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * @param string 
      */
     void parseSubComponents(CalendarElement subcomponentType, String subcomponentcontentLines) { }
-
+    
+    @Override
+    public String toContent()
+    {
+        StringBuilder builder = new StringBuilder(400);
+        builder.append(firstContentLine + System.lineSeparator());
+        appendMiddleContentLines(builder);
+        builder.append(lastContentLine);
+        return builder.toString();
+    }
+    
+    @Override
+    public String toString()
+    {
+        return super.toString() + System.lineSeparator() + toContent();
+    }
+    
     @Override
     public int hashCode()
     {
@@ -254,16 +271,6 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
             propertiesEquals = false;
         }
         return propertiesEquals;
-    }
-    
-    @Override
-    public String toContent()
-    {
-        StringBuilder builder = new StringBuilder(400);
-        builder.append(firstContentLine + System.lineSeparator());
-        appendMiddleContentLines(builder);
-        builder.append(lastContentLine);
-        return builder.toString();
     }
 
     void appendMiddleContentLines(StringBuilder builder)

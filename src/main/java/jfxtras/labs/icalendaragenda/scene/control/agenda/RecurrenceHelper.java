@@ -23,7 +23,6 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.StartEn
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -43,7 +42,8 @@ public class RecurrenceHelper<R>
 {   
     private final Collection<R> recurrences; // collection of recurrences
     private final Callback2<VComponentLocatable<?>, Temporal, R> recurrenceCallBack;
-    private final Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap;    
+//    public final Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap;    
+    public final Map<Integer, List<R>> vComponentRecurrencetMap;    
     private final Map<Integer, VComponentDisplayable<?>> recurrenceVComponentMap; /* map matches appointment to VComponent that made it */
     
     private LocalDateTime startRange; // must be updated when range changes
@@ -56,7 +56,8 @@ public class RecurrenceHelper<R>
     public RecurrenceHelper(
             Collection<R> recurrences,
             Callback2<VComponentLocatable<?>, Temporal, R>  recurrenceCallBack,
-            Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap,
+//            Map<VComponentNew<?>, List<R>> vComponentRecurrencetMap,
+            Map<Integer, List<R>> vComponentRecurrencetMap,
             Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap)
     {
         this.recurrences = recurrences;
@@ -107,7 +108,7 @@ public class RecurrenceHelper<R>
     /** Edit VEvent or VTodo */
     public boolean handleEdit(
             VComponentLocatable<?> vComponentEdited
-          , VComponentLocatable<?> vComponentOriginal
+          , VComponentLocatable<?> vComponentOriginalCopy
           , Collection<VComponentLocatable<?>> vComponents
           , Temporal startOriginalRecurrence
           , Temporal startRecurrence
@@ -117,7 +118,7 @@ public class RecurrenceHelper<R>
           , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback)
     {
         validateStartRecurrenceAndDTStart(vComponentEdited, startOriginalRecurrence, startRecurrence);
-        final RecurrenceHelper.RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentEdited.getRecurrenceRule(), vComponentOriginal.getRecurrenceRule());
+        final RecurrenceHelper.RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentEdited.getRecurrenceRule(), vComponentOriginalCopy.getRecurrenceRule());
         System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         Collection<R> newRecurrences = null;
@@ -125,12 +126,12 @@ public class RecurrenceHelper<R>
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
-            becomeNonRecurring(vComponentEdited, vComponentOriginal, startRecurrence, endRecurrence);
+            becomeNonRecurring(vComponentEdited, vComponentOriginalCopy, startRecurrence, endRecurrence);
             // fall through
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
             adjustDateTime(vComponentEdited, startOriginalRecurrence, startRecurrence, endRecurrence);
-            if (! vComponentEdited.equals(vComponentOriginal))
+            if (! vComponentEdited.equals(vComponentOriginalCopy))
             {
                 newRecurrences = updateRecurrences(vComponentEdited);
             }
@@ -139,7 +140,7 @@ public class RecurrenceHelper<R>
             // Find which properties changed
             List<PropertyType> changedProperties = findChangedProperties(
                     vComponentEdited,
-                    vComponentOriginal,
+                    vComponentOriginalCopy,
                     startOriginalRecurrence,
                     startRecurrence,
                     endRecurrence);
@@ -188,12 +189,12 @@ public class RecurrenceHelper<R>
                     }
                     break;
                 case CANCEL:
-                    vComponentEdited.copyComponentFrom(vComponentOriginal);  // return to original
+                    vComponentEdited.copyComponentFrom(vComponentOriginalCopy);  // return to original
                     return false;
                 case THIS_AND_FUTURE:
                     newRecurrences = editThisAndFuture(
                             vComponentEdited,
-                            vComponentOriginal,
+                            vComponentOriginalCopy,
                             vComponents,
                             startOriginalRecurrence,
                             startRecurrence,
@@ -203,7 +204,7 @@ public class RecurrenceHelper<R>
                 case ONE:
                     newRecurrences = editOne(
                             vComponentEdited,
-                            vComponentOriginal,
+                            vComponentOriginalCopy,
                             vComponents,
                             startOriginalRecurrence,
                             startRecurrence,
@@ -216,7 +217,10 @@ public class RecurrenceHelper<R>
             }
         }
         if (! vComponentEdited.isValid()) throw new RuntimeException("Invalid component"); // TODO - MAKE ERROR STRING
-        if (incrementSequence) { vComponentEdited.incrementSequence(); }
+        if (incrementSequence)
+        {
+            vComponentEdited.incrementSequence();
+        }
         if (newRecurrences != null)
         {
 //            allRecurrences.clear();
@@ -258,7 +262,7 @@ public class RecurrenceHelper<R>
                 startRecurrence,
                 endRecurrence);
         vComponentEdited.setDateTimeStart(newStart);
-        System.out.println("new DTSTART:" + newStart);
+//        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
         vComponentEdited.setEndOrDuration(startRecurrence, endRecurrence);
 //        endType().setDuration(this, startRecurrence, endRecurrence);
     }
@@ -288,14 +292,14 @@ public class RecurrenceHelper<R>
     
     private void becomeNonRecurring(
             VComponentLocatable<?> vComponentEdited,
-            VComponentRepeatable<?> vComponentOriginal,
+            VComponentRepeatable<?> vComponentOriginalCopy,
             Temporal startRecurrence,
             Temporal endRecurrence)
     {
         vComponentEdited.setRecurrenceRule((RecurrenceRule3) null);
         vComponentEdited.setRecurrenceDates(null);
         vComponentEdited.setExceptionDates(null);
-        if (vComponentOriginal.getRecurrenceRule() != null)
+        if (vComponentOriginalCopy.getRecurrenceRule() != null)
         { // RRULE was removed, update DTSTART, DTEND or DURATION
             vComponentEdited.setDateTimeStart(startRecurrence);
             if (vComponentEdited.getDuration() != null)
@@ -324,8 +328,11 @@ public class RecurrenceHelper<R>
 //        instances().clear(); // clear VEvent of outdated appointments
         List<R> newRecurrences = makeRecurrences(vComponentEdited);
         recurrencesTemp.addAll(newRecurrences); // make new recurrences and add to main collection (added to VEvent's collection in makeAppointments)
-        vComponentRecurrencetMap.put(vComponentEdited, newRecurrences);
-        return recurrencesTemp;
+//        System.out.println("puting:" + vComponentEdited.hashCode() + " " + newRecurrences);
+//        vComponentRecurrencetMap.put(vComponentEdited, newRecurrences);
+        vComponentRecurrencetMap.put(System.identityHashCode(vComponentEdited), newRecurrences);
+//        System.out.println("contains key:" + vComponentRecurrencetMap.containsKey(vComponentEdited));
+       return recurrencesTemp;
     }
 
 //    private Collection<?> updateRecurrences(VComponentLocatable<?> vComponentEdited, Collection<?> recurrences)
@@ -346,7 +353,7 @@ public class RecurrenceHelper<R>
      */
     public static List<PropertyType> findChangedProperties(
             VComponentLocatable<?> vComponentEdited,
-            VComponentLocatable<?> vComponentOriginal,
+            VComponentLocatable<?> vComponentOriginalCopy,
             Temporal startOriginalInstance,
             Temporal startInstance,
             Temporal endInstance)
@@ -358,7 +365,7 @@ public class RecurrenceHelper<R>
                 .forEach(t ->
                 {
                     Object p1 = t.getProperty(vComponentEdited);
-                    Object p2 = t.getProperty(vComponentOriginal);
+                    Object p2 = t.getProperty(vComponentOriginalCopy);
                     if (! p1.equals(p2))
                     {
                         changedProperties.add(t);
@@ -433,7 +440,7 @@ public class RecurrenceHelper<R>
     * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
     * 
     * @param vComponentEdited - has new settings
-    * @param vComponentOriginal - has former settings
+    * @param vComponentOriginalCopy - has former settings
     * @param vComponents - list of all components
     * @param startOriginalRecurrence - start date/time before edit
     * @param startRecurrence - edited start date/time
@@ -442,7 +449,7 @@ public class RecurrenceHelper<R>
     */
    private Collection<R> editThisAndFuture(
            VComponentLocatable<?> vComponentEdited,
-           VComponentLocatable<?> vComponentOriginal,
+           VComponentLocatable<?> vComponentOriginalCopy,
            Collection<VComponentLocatable<?>> vComponents,
            Temporal startOriginalRecurrence,
            Temporal startRecurrence,
@@ -451,9 +458,9 @@ public class RecurrenceHelper<R>
    {
        // adjust original VEvent
        // TODO - THIS DOESN'T MAKE SENSE - BELOW COUNT CHANGE CONTRADICTS
-       if (vComponentOriginal.getRecurrenceRule().getValue().getCount() != null)
+       if (vComponentOriginalCopy.getRecurrenceRule().getValue().getCount() != null)
        {
-           vComponentOriginal.getRecurrenceRule().getValue().setCount(null);
+           vComponentOriginalCopy.getRecurrenceRule().getValue().setCount(null);
        }
        final Temporal untilNew;
        if (vComponentEdited.isWholeDay())
@@ -477,7 +484,7 @@ public class RecurrenceHelper<R>
            untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(vComponentEdited.previousStreamValue(startRecurrence));
 //           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue(startInstance));
        }
-       vComponentOriginal.getRecurrenceRule().getValue().setUntil(untilNew);
+       vComponentOriginalCopy.getRecurrenceRule().getValue().setUntil(untilNew);
        
        
        vComponentEdited.setDateTimeStart(startRecurrence);
@@ -485,8 +492,8 @@ public class RecurrenceHelper<R>
 //       adjustDateTime(startRecurrence, startRecurrence, endInstance);
        vComponentEdited.setUniqueIdentifier(); // ADD UID CALLBACK
        // only supports one RELATED-TO value
-       String relatedUID = (vComponentOriginal.getRelatedTo() == null) ?
-               vComponentOriginal.getUniqueIdentifier().getValue() : vComponentOriginal.getRelatedTo().get(0).getValue();
+       String relatedUID = (vComponentOriginalCopy.getRelatedTo() == null) ?
+               vComponentOriginalCopy.getUniqueIdentifier().getValue() : vComponentOriginalCopy.getRelatedTo().get(0).getValue();
        vComponentEdited.withRelatedTo(relatedUID);
        vComponentEdited.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
        
@@ -507,9 +514,9 @@ public class RecurrenceHelper<R>
                }
            }
        }
-       if (vComponentOriginal.getExceptionDates() != null)
+       if (vComponentOriginalCopy.getExceptionDates() != null)
        {
-           final Iterator<Temporal> exceptionDateIterator = vComponentOriginal.getExceptionDates()
+           final Iterator<Temporal> exceptionDateIterator = vComponentOriginalCopy.getExceptionDates()
                    .stream()
                    .flatMap(e -> e.getValue().stream())
                    .iterator();
@@ -541,9 +548,9 @@ public class RecurrenceHelper<R>
                }
            }
        }
-       if (vComponentOriginal.getRecurrenceDates() != null)
+       if (vComponentOriginalCopy.getRecurrenceDates() != null)
        {
-           final Iterator<Temporal> recurrenceDateIterator = vComponentOriginal.getRecurrenceDates()
+           final Iterator<Temporal> recurrenceDateIterator = vComponentOriginalCopy.getRecurrenceDates()
                    .stream()
                    .flatMap(e -> e.getValue().stream())
                    .iterator();
@@ -575,9 +582,9 @@ public class RecurrenceHelper<R>
                }
            }
        }
-       if (vComponentOriginal.getRecurrenceDates() != null)
+       if (vComponentOriginalCopy.getRecurrenceDates() != null)
        {
-           final Iterator<Temporal> recurrenceIDIterator = vComponentOriginal.childComponentsWithRecurrenceIDs()
+           final Iterator<Temporal> recurrenceIDIterator = vComponentOriginalCopy.childComponentsWithRecurrenceIDs()
                    .stream()
                    .map(e -> (Temporal) e.getRecurrenceId().getValue())
                    .iterator();
@@ -595,20 +602,20 @@ public class RecurrenceHelper<R>
        // Modify COUNT for the edited vEvent
        if (vComponentEdited.getRecurrenceRule().getValue().getCount() != null)
        {
-           int countInOrginal = (int) vComponentOriginal.streamRecurrences().count();
+           int countInOrginal = (int) vComponentOriginalCopy.streamRecurrences().count();
            int countInNew = vComponentEdited.getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
            vComponentEdited.getRecurrenceRule().getValue().setCount(countInNew);
        }
        
-       if (! vComponentOriginal.isValid()) throw new RuntimeException("Invalid component");
-       vComponents.add(vComponentOriginal);
+       if (! vComponentOriginalCopy.isValid()) throw new RuntimeException("Invalid component");
+       vComponents.add(vComponentOriginalCopy);
 
        // Remove old appointments, add back ones
 //       Collection<R> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
 //       recurrencesTemp.addAll(recurrences);
-//       recurrencesTemp.removeIf(a -> vComponentOriginal.recurrences().stream().anyMatch(a2 -> a2 == a));
-//       vComponentOriginal.recurrences().clear(); // clear vEvent outdated collection of appointments
-//       recurrencesTemp.addAll(vComponentOriginal.makeInstances()); // make new appointments and add to main collection (added to vEvent's collection in makeAppointments)
+//       recurrencesTemp.removeIf(a -> vComponentOriginalCopy.recurrences().stream().anyMatch(a2 -> a2 == a));
+//       vComponentOriginalCopy.recurrences().clear(); // clear vEvent outdated collection of appointments
+//       recurrencesTemp.addAll(vComponentOriginalCopy.makeInstances()); // make new appointments and add to main collection (added to vEvent's collection in makeAppointments)
 //       recurrences().clear(); // clear vEvent's outdated collection of appointments
 //       recurrencesTemp.addAll(makeInstances()); // add vEventOld part of new appointments
 //       return recurrencesTemp;
@@ -621,8 +628,9 @@ public class RecurrenceHelper<R>
        recurrencesTemp.addAll(recurrences);
        recurrencesTemp.removeIf(a -> componentRecurrences.stream().anyMatch(a2 -> a2 == a));
 //       instances().clear(); // clear VEvent of outdated appointments
-       List<R> newRecurrences = makeRecurrences(vComponentOriginal);
-       vComponentRecurrencetMap.put(vComponentOriginal, newRecurrences);
+       List<R> newRecurrences = makeRecurrences(vComponentOriginalCopy);
+//       vComponentRecurrencetMap.put(vComponentOriginalCopy, newRecurrences);
+       vComponentRecurrencetMap.put(System.identityHashCode(vComponentOriginalCopy), newRecurrences);
        recurrencesTemp.addAll(newRecurrences); // make new recurrences and add to main collection (added to VEvent's collection in makeAppointments)
        
        return recurrencesTemp;
@@ -636,7 +644,7 @@ public class RecurrenceHelper<R>
     */
    private Collection<R> editOne(
            VComponentLocatable<?> vComponentEdited,
-           VComponentLocatable<?> vComponentOriginal,
+           VComponentLocatable<?> vComponentOriginalCopy,
            Collection<VComponentLocatable<?>> vComponents,
            Temporal startOriginalRecurrence,
            Temporal startRecurrence,
@@ -645,7 +653,7 @@ public class RecurrenceHelper<R>
    {
        // Remove RRule and set parent component
        vComponentEdited.setRecurrenceRule((RecurrenceRule3) null);
-//       setParent(vComponentOriginal);
+//       setParent(vComponentOriginalCopy);
 
        // Apply dayShift, account for editing recurrence beyond first
        Period dayShift = Period.between(LocalDate.from(vComponentEdited.getDateTimeStart().getValue()),
@@ -657,26 +665,27 @@ public class RecurrenceHelper<R>
        vComponentEdited.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
   
        // Add recurrence to original vEvent
-       vComponentOriginal.childComponentsWithRecurrenceIDs().add(vComponentEdited);
+       vComponentOriginalCopy.childComponentsWithRecurrenceIDs().add(vComponentEdited);
        
        // Check for validity
        if (! vComponentEdited.isValid()) { throw new RuntimeException("Invalid component"); }
-//       System.out.println("here:" + vComponentOriginal);
-       if (! vComponentOriginal.isValid()) { throw new RuntimeException("Invalid component"); }
+//       System.out.println("here:" + vComponentOriginalCopy);
+       if (! vComponentOriginalCopy.isValid()) { throw new RuntimeException("Invalid component"); }
        
        // Remove old recurrences, add back ones
        Collection<R> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
        recurrencesTemp.addAll(recurrences);
        Collection<R> componentRecurrences = vComponentRecurrencetMap.get(vComponentEdited);
        recurrencesTemp.removeIf(a -> componentRecurrences.stream().anyMatch(a2 -> a2 == a));
-//       vComponentOriginal.recurrences().clear(); // clear vEventOriginal outdated collection of recurrences
-       List<R> newRecurrences = makeRecurrences(vComponentOriginal);
-       vComponentRecurrencetMap.put(vComponentOriginal, newRecurrences);
+//       vComponentOriginalCopy.recurrences().clear(); // clear vEventOriginal outdated collection of recurrences
+       List<R> newRecurrences = makeRecurrences(vComponentOriginalCopy);
+//       vComponentRecurrencetMap.put(vComponentOriginalCopy, newRecurrences);
+       vComponentRecurrencetMap.put(System.identityHashCode(vComponentOriginalCopy), newRecurrences);
        recurrencesTemp.addAll(newRecurrences); // make new recurrences and add to main collection (added to VEvent's collection in makeAppointments)
 
 //       recurrences().clear(); // clear vEvent outdated collection of recurrences
 //       recurrencesTemp.addAll(makeRecurrences()); // add vEventOld part of new recurrences
-       vComponents.add(vComponentOriginal);
+       vComponents.add(vComponentOriginalCopy);
        return recurrencesTemp;
    }
    
@@ -757,15 +766,15 @@ public class RecurrenceHelper<R>
          {
              Map<ChangeDialogOption, StartEndRange> choices = new LinkedHashMap<>();
              choices.put(ChangeDialogOption.ONE, new StartEndRange(startInstance, startInstance));
-             Temporal end = vComponent.lastRecurrence();
+             Temporal lastRecurrence = vComponent.lastRecurrence();
              if (! (vComponent.getRecurrenceRule() == null))
              {
-                 if (! vComponent.lastRecurrence().equals(startInstance))
+                 if ((lastRecurrence == null) || (! lastRecurrence.equals(startInstance)))
                  {
                      Temporal start = (startInstance == null) ? vComponent.getDateTimeStart().getValue() : startInstance; // set initial start
-                     choices.put(ChangeDialogOption.THIS_AND_FUTURE, new StartEndRange(start, end));
+                     choices.put(ChangeDialogOption.THIS_AND_FUTURE, new StartEndRange(start, lastRecurrence));
                  }
-                 choices.put(ChangeDialogOption.ALL, new StartEndRange(vComponent.getDateTimeStart().getValue(), end));
+                 choices.put(ChangeDialogOption.ALL, new StartEndRange(vComponent.getDateTimeStart().getValue(), lastRecurrence));
              }
              return choices;
          }        

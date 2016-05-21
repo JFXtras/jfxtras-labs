@@ -31,8 +31,8 @@ import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -171,7 +171,24 @@ public class RepeatableTest //extends Application
         assertEquals(expectedRecurrences, madeRecurrences);
     }
 
-    
+    @Test
+    public void canStreamLaterStart()
+    {
+        VEvent component = new VEvent()
+                .withRecurrenceRule("RRULE:FREQ=DAILY")
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 22, 0))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 10, 2, 0));
+        List<Temporal> expectedRecurrences = Stream
+                .iterate(LocalDateTime.of(2016, 5, 31, 22, 0), a -> a.plus(1, ChronoUnit.DAYS))
+                .limit(10)
+                .collect(Collectors.toList());
+        List<Temporal> madeRecurrences = component
+                .streamRecurrences(LocalDateTime.of(2016, 5, 31, 22, 0))
+                .limit(10)
+                .collect(Collectors.toList());
+        assertEquals(expectedRecurrences, madeRecurrences);
+    }
+
     @Test //(expected = DateTimeException.class)
     @Ignore // can't catch exception in listener
     public void canHandleDTStartTypeChange()
@@ -1371,7 +1388,7 @@ public class RepeatableTest //extends Application
         assertEquals(LocalDate.of(2015, 11, 24), e2.recurrenceStreamer().previousValue(LocalDate.of(2015, 12, 31)));
     }
     
-    @Test
+    @Test // TODO - FOR CALENDAR
     public void canHandleExceptions()
     {
         
