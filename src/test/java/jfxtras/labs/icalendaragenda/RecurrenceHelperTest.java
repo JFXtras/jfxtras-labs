@@ -11,14 +11,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -28,30 +33,44 @@ public class RecurrenceHelperTest
     public void canEditAll()
     {
         final Collection<Appointment> appointments = new ArrayList<>();
-        final Collection<VComponentLocatable<?>> vComponents = new ArrayList<>();
-//        final Map<VComponentNew<?>, List<Appointment>> vComponentAppointmentMap = new WeakHashMap<>();    
-        final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>();    
+        final ObservableList<VComponentLocatable<?>> vComponents = FXCollections.observableArrayList();
+        ListChangeListener<? super VComponentLocatable<?>> listener  = (ListChangeListener.Change<? extends VComponentLocatable<?>> change) ->
+        {
+            while (change.next())
+            {
+                if (change.wasAdded())
+                {
+                    List<? extends VComponentLocatable<?>> added = change.getAddedSubList();
+                    System.out.println("ADDED:" + added);
+                    // TODO - MAKE APPOINTMENTS - UPDATE MAPS
+                }
+            }
+        };
+        vComponents.addListener(listener);
+        final Map<VComponentNew<?>, List<Appointment>> vComponentAppointmentMap = new WeakHashMap<>();
+//        final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>();    
         final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VComponent that made it */
 
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                appointments,
-                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK,
-                vComponentAppointmentMap,
-                appointmentVComponentMap
+//                appointments,
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK
+//                vComponentAppointmentMap,
+//                appointmentVComponentMap
                 );
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         
         // Note: All non-date/time properties are changed in component
-        VEvent vComponentEdited = ICalendarComponents.getDaily1();
-        vComponentAppointmentMap.put(System.identityHashCode(vComponentEdited), null);
-        vComponents.add(vComponentEdited);
-        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
+        VEvent vComponentOriginal = ICalendarComponents.getDaily1();
+        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vComponentOriginal);
+        vComponentAppointmentMap.put(vComponentOriginal, newAppointments);
+        vComponents.add(vComponentOriginal);
+        VEvent vComponentEditedCopy = new VEvent(vComponentOriginal);
         System.out.println("start hashes:" + 
-                " " + vComponentEdited.hashCode() + " " + vComponentOriginalCopy.hashCode());
-        System.out.println(vComponentAppointmentMap.containsKey(vComponentEdited));
-        vComponentEdited.setSummary("Edited summary");
-        System.out.println(vComponentAppointmentMap.containsKey(vComponentEdited));
+                " " + vComponentOriginal.hashCode() + " " + vComponentEditedCopy.hashCode());
+        System.out.println(vComponentAppointmentMap.containsKey(vComponentOriginal));
+        vComponentEditedCopy.setSummary("Edited summary");
+//        System.out.println(vComponentAppointmentMap.containsKey(vComponentEdited));
         
 //        Map<ObjectProperty<Integer>, String> testMap = new HashMap<>();
 //        ObjectProperty<Integer> i1 = new SimpleObjectProperty<>(6);
@@ -64,15 +83,14 @@ public class RecurrenceHelperTest
 //        
 //        System.exit(0);
         // Note: All date/time properties are changed in recurrence        
-        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vComponentEdited);
         Appointment appointment = newAppointments.get(0);
         Temporal startOriginalRecurrence = appointment.getStartTemporal();
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
 
         recurrenceHelper.handleEdit(
-                vComponentEdited,
-                vComponentOriginalCopy,
+                vComponentEditedCopy,
+                vComponentOriginal,
                 vComponents,
                 startOriginalRecurrence,
                 startRecurrence,
@@ -90,7 +108,7 @@ public class RecurrenceHelperTest
                 LocalDateTime.of(2016, 5, 20, 9, 0),
                 LocalDateTime.of(2016, 5, 21, 9, 0)
                 ));
-        List<Temporal> madeStartDates = vComponentEdited.streamRecurrences(
+        List<Temporal> madeStartDates = vComponentEditedCopy.streamRecurrences(
                 LocalDateTime.of(2016, 5, 15, 0, 0), LocalDateTime.of(2016, 5, 22, 0, 0))
                 .collect(Collectors.toList());
         assertEquals(expectedStartDates, madeStartDates);
@@ -104,26 +122,27 @@ public class RecurrenceHelperTest
                 LocalDateTime.of(2016, 5, 20, 10, 30),
                 LocalDateTime.of(2016, 5, 21, 10, 30)
                 ));
-        List<Temporal> madeEndDates = vComponentEdited.streamRecurrences(
+        List<Temporal> madeEndDates = vComponentEditedCopy.streamRecurrences(
                 LocalDateTime.of(2016, 5, 15, 0, 0), LocalDateTime.of(2016, 5, 22, 0, 0))
                 .map(t -> t.plus(Duration.ofMinutes(90)))
                 .collect(Collectors.toList());
         assertEquals(expectedEndDates, madeEndDates);
         
-        List<Appointment> a = recurrenceHelper.makeRecurrences(vComponentEdited);
+        List<Appointment> a = recurrenceHelper.makeRecurrences(vComponentEditedCopy);
         assertEquals(7, a.size());
-        System.out.println("vComponentAppointmentMap:" + vComponentAppointmentMap.size() +
-                " " + vComponentEdited.hashCode() + " " + vComponentOriginalCopy.hashCode());
+//        vComponents.
         vComponentAppointmentMap.keySet().forEach(k -> System.out.println(k.hashCode()));
 //        VComponentNew<?> i = vComponentAppointmentMap.entrySet().iterator().next().getKey();
-        Integer i = vComponentAppointmentMap.entrySet().iterator().next().getKey();
-        System.out.println("getting:" + vComponentAppointmentMap.containsKey(i) + " " + i.equals(vComponentEdited));
-        System.out.println("getting:" + (i.hashCode() == vComponentEdited.hashCode()));
-        assertEquals(7, vComponentAppointmentMap.get(System.identityHashCode(vComponentEdited)).size());
+        VComponentNew<?> i = vComponentAppointmentMap.entrySet().iterator().next().getKey();
+        System.out.println("vComponentAppointmentMap:" + vComponentAppointmentMap.size() +
+                " " + vComponentEditedCopy.hashCode() + " " + vComponentOriginal.hashCode() + " " + i.hashCode());
+        System.out.println("getting:" + vComponentAppointmentMap.containsKey(i) + " " + i.equals(vComponentEditedCopy));
+        System.out.println("getting:" + (i.hashCode() == vComponentEditedCopy.hashCode()));
+        assertEquals(7, vComponentAppointmentMap.get(System.identityHashCode(vComponentEditedCopy)).size());
         Integer hash = System.identityHashCode(a.get(0));
-        assertEquals(vComponentEdited, appointmentVComponentMap.get(hash));
+        assertEquals(vComponentEditedCopy, appointmentVComponentMap.get(hash));
         
-        System.out.println(vComponentEdited.hashCode());
-        System.out.println(vComponentOriginalCopy.hashCode());
+        System.out.println(vComponentEditedCopy.hashCode());
+        System.out.println(vComponentOriginal.hashCode());
     }
 }

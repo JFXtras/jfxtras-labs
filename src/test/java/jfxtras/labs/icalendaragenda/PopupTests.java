@@ -49,10 +49,10 @@ public class PopupTests extends JFXtrasGuiTest
         final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VComponent that made it */
 
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                appointments,
-                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK,
-                vComponentAppointmentMap,
-                appointmentVComponentMap
+//                appointments,
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK
+//                vComponentAppointmentMap,
+//                appointmentVComponentMap
                 );
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));

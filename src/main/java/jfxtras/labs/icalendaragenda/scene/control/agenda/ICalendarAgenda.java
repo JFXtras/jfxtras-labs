@@ -346,10 +346,10 @@ public class ICalendarAgenda extends Agenda
         super();
         this.vCalendar = vCalendar;
         recurrenceHelper = new RecurrenceHelper<Appointment>(
-                appointments(),
-                makeAppointmentCallback,
-                vComponentAppointmentMap,
-                appointmentVComponentMap
+//                appointments(),
+                makeAppointmentCallback
+//                vComponentAppointmentMap,
+//                appointmentVComponentMap
                 );
         System.out.println("here0:" + getVCalendar());
         getVCalendar().getVEvents().addListener((InvalidationListener) (obs) -> 
