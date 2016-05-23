@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -59,6 +60,18 @@ public class RecurrenceRuleTest
                                 new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1))));
         assertEquals(expectedProperty, madeProperty);
     }
+    
+    @Test
+    public void canCopyRecurrenceRule()
+    {
+        String content = "RRULE:FREQ=YEARLY;UNTIL=19730429T070000Z;BYMONTH=4;BYDAY=-1SU";
+        RecurrenceRuleNew r1 = RecurrenceRuleNew.parse(content);
+        RecurrenceRuleNew r2 = new RecurrenceRuleNew(r1);
+        assertEquals(r1, r2);
+        assertTrue(r1 != r2);
+        assertTrue(r1.getValue() != r2.getValue());
+    }
+ 
     
     /*
      * TEST RECURRENCE RULE ELEMENTS

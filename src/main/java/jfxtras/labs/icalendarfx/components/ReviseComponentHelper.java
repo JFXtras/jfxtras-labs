@@ -417,8 +417,7 @@ public final class ReviseComponentHelper
            untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(vComponentEditedCopy.previousStreamValue(startRecurrence));
 //           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue(startInstance));
        }
-       vComponentOriginal.getRecurrenceRule().getValue().setUntil(untilNew);
-       
+       vComponentOriginal.getRecurrenceRule().getValue().setUntil(untilNew);       
        
        vComponentEditedCopy.setDateTimeStart(startRecurrence);
        vComponentEditedCopy.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
@@ -542,6 +541,8 @@ public final class ReviseComponentHelper
        
        if (! vComponentOriginal.isValid()) throw new RuntimeException("Invalid component");
        vComponents.add(vComponentOriginal);
+       
+       vComponents.add(vComponentEditedCopy);
 
        // Remove old appointments, add back ones
 //       Collection<R> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
