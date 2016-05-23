@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -235,25 +236,45 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         }        
     }
     
-//    @Override
-//    public void becomeNonRecurring(VComponentRepeatable<VTodo> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence)
-//    {
-//        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
-//        if (vComponentOriginal.getRecurrenceRule() != null)
-//        { // RRULE was removed, update DTEND or DURATION
-//            if (getDuration() != null)
-//            {
-//                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-//                setDuration(duration);
-//            } else if (getDateTimeDue() != null)
-//            {
-//                setDateTimeDue(endRecurrence);
-//            } else
-//            {
-//                throw new RuntimeException("Either DTEND or DURATION must be set");
-//            }
-//        }
-//    }
+    /*
+     * METHODS FOR EDITING COMPONENTS
+     */
+    
+    @Override
+    void becomeNonRecurring(
+            VComponentDisplayableBase<?> vComponentOriginal,
+            Temporal startRecurrence,
+            Temporal endRecurrence)
+    {
+        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+        if (getDuration() == null)
+        {
+            setDateTimeDue(endRecurrence);
+        }
+    }
+    
+    @Override
+    <T extends VComponentDisplayableBase<?>> List<PropertyType> findChangedProperties(
+          T vComponentOriginal,
+          Temporal startOriginalInstance,
+          Temporal startInstance,
+          Temporal endInstance)
+    {
+        List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startOriginalInstance, startInstance, endInstance);
+        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
+        TemporalAmount durationOriginal = getActualDuration();
+        if (! durationOriginal.equals(durationNew))
+        {
+            if (getDateTimeDue() != null)
+            {
+                changedProperties.add(PropertyType.DATE_TIME_DUE);                    
+            } else if (getDuration() == null)
+            {
+                changedProperties.add(PropertyType.DURATION);                    
+            }
+        }      
+        return changedProperties;
+    }
     
 //    /** Stream recurrence dates with adjustment to include recurrences that are due before start */
 //    @Override

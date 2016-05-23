@@ -1,11 +1,12 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
 
+import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.util.Callback;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.StartEndRange;
+import javafx.util.Pair;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
 
 
@@ -22,7 +23,7 @@ public class DeleteChoiceDialog extends AppointmentChangeDialog
      * Callback to produce an edit choice dialog based on the options in the input argument choices.
      * Usually all or some of ONE, THIS_AND_FUTURE, and ALL.
      */
-    final static public Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> DELETE_DIALOG_CALLBACK = (choices) ->
+    final static public Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> DELETE_DIALOG_CALLBACK = (choices) ->
     {
         DeleteChoiceDialog dialog = new DeleteChoiceDialog(choices, Settings.resources);                
         Optional<ChangeDialogOption> result = dialog.showAndWait();
@@ -34,7 +35,7 @@ public class DeleteChoiceDialog extends AppointmentChangeDialog
      * @param choiceList - list of ChangeDialogOption representing the date/time range to be affected
      * @param resources
      */
-    public DeleteChoiceDialog(Map<ChangeDialogOption, StartEndRange> choiceList, ResourceBundle resources)
+    public DeleteChoiceDialog(Map<ChangeDialogOption, Pair<Temporal,Temporal>> choiceList, ResourceBundle resources)
     {
         super(choiceList, resources);
         getDialogPane().setId("deleteChoiceDialog");

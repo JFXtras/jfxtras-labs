@@ -5,7 +5,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.StartEndRange;
+import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 public class AgendaDateTimeUtilities
@@ -35,10 +35,10 @@ public class AgendaDateTimeUtilities
         }
         return startString + endString;
     }
-    public static String formatRange(StartEndRange range) //Temporal start, Temporal end)
+    public static String formatRange(Pair<Temporal,Temporal> range) //Temporal start, Temporal end)
     {
-        Temporal start = range.getDateTimeStart();
-        Temporal end = range.getDateTimeEnd();
+        Temporal start = range.getKey();
+        Temporal end = range.getValue();
         return formatRange(start, end);
     }
     

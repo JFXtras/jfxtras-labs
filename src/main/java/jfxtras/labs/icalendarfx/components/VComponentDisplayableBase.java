@@ -1,7 +1,9 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
@@ -461,5 +464,261 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         boolean repeatableIsValid = VComponentDisplayable.super.isValid();
         return super.isValid() && repeatableIsValid;
+    }
+    
+    /*
+     * METHODS FOR EDITING COMPONENTS
+     */
+//    /**
+//     * Handles edit functionality
+//     * 
+//     * @param vComponentOriginal
+//     * @param vComponents
+//     * @param startOriginalRecurrence
+//     * @param startRecurrence
+//     * @param endRecurrence
+//     * @param dialogCallback
+//     * @return
+//     */
+//    public <T extends VComponentDisplayableBase<?>> boolean handleEdit(
+////            T vComponentEditedCopy,
+//            T vComponentOriginal,
+//            Collection<T> vComponents,
+//            Temporal startOriginalRecurrence,
+//            Temporal startRecurrence,
+//            Temporal endRecurrence, // null for VJournal
+//            Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback)
+//    {
+//        validateStartRecurrenceAndDTStart(startOriginalRecurrence, startRecurrence);
+//        final ReviseComponentHelper.RRuleStatus rruleType = RRuleStatus.getRRuleType(getRecurrenceRule(), vComponentOriginal.getRecurrenceRule());
+//        System.out.println("rruleType:" + rruleType);
+//        boolean incrementSequence = true;
+////        Collection<R> newRecurrences = null;
+////        Collection<R> allRecurrences = recurrences;
+//        switch (rruleType)
+//        {
+//        case HAD_REPEAT_BECOMING_INDIVIDUAL:
+//            becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+//            // fall through
+//        case WITH_NEW_REPEAT: // no dialog
+//        case INDIVIDUAL:
+//            adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+////            if (! vComponentEditedCopy.equals(vComponentOriginal))
+////            {
+////                newRecurrences = updateRecurrences(vComponentEditedCopy);
+////            }
+//            break;
+//        case WITH_EXISTING_REPEAT:
+//            // Find which properties changed
+//            List<PropertyType> changedProperties = findChangedProperties(
+//                    vComponentOriginal,
+//                    startOriginalRecurrence,
+//                    startRecurrence,
+//                    endRecurrence);
+//            /* Note:
+//             * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
+//             * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
+//             * question is answered. */
+////            changedProperties.addAll(changedStartAndEndDateTime(startOriginalRecurrence, startRecurrence, endRecurrence));
+//            // determine if any changed properties warrant dialog
+////            changedPropertyNames.stream().forEach(a -> System.out.println("changed property:" + a));
+//            boolean provideDialog = changedProperties.stream()
+//                    .map(p -> DIALOG_REQUIRED_PROPERTIES.contains(p))
+//                    .anyMatch(b -> b == true);
+//            if (changedProperties.size() > 0) // if changes occurred
+//            {
+//                List<T> relatedVComponents = (List<T>) Arrays.asList(this); // TODO - support related components
+//                final ChangeDialogOption changeResponse;
+//                if (provideDialog)
+//                {
+//                    Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = ChangeDialogOption.makeDialogChoices(vComponentEditedCopy, startOriginalRecurrence);
+//                    changeResponse = dialogCallback.call(choices);
+//                } else
+//                {
+//                    changeResponse = ChangeDialogOption.ALL;
+//                }
+//                switch (changeResponse)
+//                {
+//                case ALL:
+//                    if (relatedVComponents.size() == 1)
+//                    {
+//                        vComponentEditedCopy.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+////                        if (vComponentEditedCopy.childComponentsWithRecurrenceIDs().size() > 0)
+////                        {
+//                        // Adjust children components with RecurrenceIDs
+//                        vComponentEditedCopy.childComponentsWithRecurrenceIDs()
+//                                .stream()
+////                                .map(c -> c.getRecurrenceId())
+//                                .forEach(v ->
+//                                {
+//                                    TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
+//                                    Temporal newRecurreneId = v.getRecurrenceId().getValue().plus(amount);
+//                                    v.setRecurrenceId(newRecurreneId);
+//                                });
+////                        }
+////                        newRecurrences = updateRecurrences(vComponentEditedCopy);
+//                    } else
+//                    {
+//                        throw new RuntimeException("Only 1 relatedVComponents currently supported");
+//                    }
+//                    break;
+//                case CANCEL:
+////                    vComponentEditedCopy.copyComponentFrom(vComponentOriginal);  // return to original
+//                    return false;
+//                case THIS_AND_FUTURE:
+//                    editThisAndFuture(
+//                            vComponentEditedCopy,
+//                            vComponentOriginal,
+//                            vComponents,
+//                            startOriginalRecurrence,
+//                            startRecurrence,
+//                            endRecurrence
+//                            );
+//                    break;
+//                case ONE:
+//                    editOne(
+//                            vComponentEditedCopy,
+//                            vComponentOriginal,
+//                            vComponents,
+//                            startOriginalRecurrence,
+//                            startRecurrence,
+//                            endRecurrence
+//                            );
+//                    break;
+//                default:
+//                    break;
+//                }
+//            }
+//        }
+//        if (! vComponentEditedCopy.isValid()) throw new RuntimeException("Invalid component"); // TODO - MAKE ERROR STRING
+//        if (incrementSequence)
+//        {
+//            vComponentEditedCopy.incrementSequence();
+//        }
+//        System.out.println(vComponents.size());
+//        vComponents.remove(vComponentOriginal);
+//        System.out.println(vComponents.size());
+//        vComponents.add(vComponentEditedCopy);
+//        System.out.println(vComponents.size());
+////        if (newRecurrences != null)
+////        {
+//////            allRecurrences.clear();
+////            allRecurrences.addAll(newRecurrences);
+////        }
+//        return true;
+//    }
+    
+    // TODO - DOUBLE CHECK THIS LIST - WHY NO DESCRIPTION, FOR EXAMPLE?
+    private final static List<PropertyType> DIALOG_REQUIRED_PROPERTIES = Arrays.asList(
+            PropertyType.CATEGORIES,
+            PropertyType.COMMENT,
+            PropertyType.DATE_TIME_START,
+            PropertyType.ORGANIZER,
+            PropertyType.SUMMARY
+            );
+    
+    /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
+     * endRecurrence to closest valid values
+     */
+    // TODO - VERITFY THIS WORKS - changed from old version
+    void validateStartRecurrenceAndDTStart(Temporal startOriginalRecurrence, Temporal startRecurrence)
+    {
+        if (getRecurrenceRule() != null)
+        {
+            Temporal firstTemporal = getRecurrenceRule().getValue()
+                    .streamRecurrences(getDateTimeStart().getValue())
+                    .findFirst()
+                    .get();
+            if (! firstTemporal.equals(getDateTimeStart().getValue()))
+            {
+                setDateTimeStart(firstTemporal);
+            }
+        }
+    }
+    
+    /**
+     * Make a component non-recurring and change start and end to match
+     * startRecurrence and endRecurrence.
+     * 
+     * This provides the functionality for editing only one recurrence.
+     * 
+     * @param vComponentEditedCopy
+     * @param vComponentOriginal
+     * @param startRecurrence
+     * @param endRecurrence
+     */
+    void becomeNonRecurring(
+            VComponentDisplayableBase<?> vComponentOriginal,
+            Temporal startRecurrence,
+            Temporal endRecurrence)
+    {
+        setRecurrenceRule((RecurrenceRule3) null);
+        setRecurrenceDates(null);
+        setExceptionDates(null);
+    }
+    
+    /** Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time */
+    void adjustDateTime(
+            Temporal startOriginalRecurrence,
+            Temporal startRecurrence,
+            Temporal endRecurrence)
+    {
+        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
+        Temporal newStart = getDateTimeStart().getValue().plus(amount);
+        setDateTimeStart(newStart);
+//        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
+        setEndOrDuration(startRecurrence, endRecurrence);
+//        endType().setDuration(this, startRecurrence, endRecurrence);
+    }
+    
+    /**
+     * Generates a list of iCalendar property names that have different values from the 
+     * input parameter
+     * 
+     * equal checks are encapsulated inside the enum VComponentProperty
+     * @param <T>
+     */
+    <T extends VComponentDisplayableBase<?>> List<PropertyType> findChangedProperties(
+//            T vComponentEditedCopy,
+            T vComponentOriginal,
+            Temporal startOriginalInstance,
+            Temporal startInstance,
+            Temporal endInstance)
+    {
+        List<PropertyType> changedProperties = new ArrayList<>();
+        properties()
+                .stream()
+                .map(p -> p.propertyType())
+                .forEach(t ->
+                {
+                    Object p1 = t.getProperty(this);
+                    Object p2 = t.getProperty(vComponentOriginal);
+                    if (! p1.equals(p2))
+                    {
+                        changedProperties.add(t);
+                    }
+                });
+        
+        /* Note:
+         * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
+         * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
+         * question is answered. */
+        if (! startOriginalInstance.equals(startInstance))
+        {
+            changedProperties.add(PropertyType.DATE_TIME_START);
+        }        
+        return changedProperties;
+    }
+    
+    
+    /** 
+     * Sets the appropriate end or duration value calculated from the parameters
+     * 
+     * @param startRecurrence - start of a recurrence
+     * @param endRecurrence - end of the same recurrence
+     */
+    void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
+    {
+        // no operation - override in subclasses for functionality
     }
 }

@@ -20,20 +20,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
+import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
-public class RecurrenceHelperTest
+public class EditAppointmentTest
 {
     @Test
     public void canEditAll()
     {
         final Collection<Appointment> appointments = new ArrayList<>();
-        final ObservableList<VComponentLocatable<?>> vComponents = FXCollections.observableArrayList();
+        final ObservableList<VEvent> vComponents = FXCollections.observableArrayList();
         ListChangeListener<? super VComponentLocatable<?>> listener  = (ListChangeListener.Change<? extends VComponentLocatable<?>> change) ->
         {
             while (change.next())
@@ -88,7 +89,7 @@ public class RecurrenceHelperTest
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
 
-        recurrenceHelper.handleEdit(
+        ReviseComponentHelper.handleEdit(
                 vComponentEditedCopy,
                 vComponentOriginal,
                 vComponents,
@@ -98,6 +99,7 @@ public class RecurrenceHelperTest
                 (m) -> ChangeDialogOption.ALL);
 
         assertEquals(1, vComponents.size());
+        assertEquals(vComponentEditedCopy, vComponents.get(0));
         
         List<Temporal> expectedStartDates = new ArrayList<>(Arrays.asList(
                 LocalDateTime.of(2016, 5, 15, 9, 0),

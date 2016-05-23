@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
 
+import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -9,8 +10,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda.StartEndRange;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
 
 
@@ -32,7 +33,7 @@ public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
      * @param choiceMap - map of ChangeDialogOption and StartEndRange pairs representing the choices available
      * @param resources
      */
-    public AppointmentChangeDialog(Map<ChangeDialogOption, StartEndRange> choiceMap, ResourceBundle resources)
+    public AppointmentChangeDialog(Map<ChangeDialogOption, Pair<Temporal,Temporal>> choiceMap, ResourceBundle resources)
     {
         Settings.REPEAT_CHANGE_CHOICES.get(this);
         if (! choiceMap.containsKey(initialSelection)) throw new RuntimeException("choicesAndDateRanges must contain: ChangeDialogOption." + initialSelection);

@@ -29,6 +29,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentEditLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
@@ -190,8 +191,8 @@ public class ICalendarAgenda extends Agenda
      * Callback for determing scope of edit change - defaults to always answering ALL
      * Add For choice dialog, change to different callback
      */
-    private Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> oneAllThisAndFutureDialogCallback = (m) -> ChangeDialogOption.ALL;
-    public void setOneAllThisAndFutureDialogCallback(Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> callback) { oneAllThisAndFutureDialogCallback = callback; }
+    private Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> oneAllThisAndFutureDialogCallback = (m) -> ChangeDialogOption.ALL;
+    public void setOneAllThisAndFutureDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> callback) { oneAllThisAndFutureDialogCallback = callback; }
     
     // Default edit popup callback - this callback replaces Agenda's default edit popup
     // It has controls for repeatable events
@@ -664,29 +665,29 @@ public class ICalendarAgenda extends Agenda
         return vComponent;
     }
     
-    /**
-     * A convenience class to represent start and end date-time pairs
-     * 
-     */
-    // TODO - FIND A BETTER PLACE FOR THIS CLASS
-   static public class StartEndRange
-   {
-       public StartEndRange(Temporal start, Temporal end)
-       {
-           if ((start != null) && (end != null) && (start.getClass() != end.getClass())) { throw new RuntimeException("Temporal classes of start and end must be the same."); }
-           this.start = start;
-           this.end = end;
-       }
-       
-       public Temporal getDateTimeStart() { return start; }
-       private final Temporal start;
-       
-       public Temporal getDateTimeEnd() { return end; }
-       private final Temporal end; 
-       
-       @Override
-       public String toString() { return super.toString() + " " + start + " to " + end; }
-   }
+//    /**
+//     * A convenience class to represent start and end date-time pairs
+//     * 
+//     */
+//    // TODO - FIND A BETTER PLACE FOR THIS CLASS
+//   static public class StartEndRange
+//   {
+//       public StartEndRange(Temporal start, Temporal end)
+//       {
+//           if ((start != null) && (end != null) && (start.getClass() != end.getClass())) { throw new RuntimeException("Temporal classes of start and end must be the same."); }
+//           this.start = start;
+//           this.end = end;
+//       }
+//       
+//       public Temporal getDateTimeStart() { return start; }
+//       private final Temporal start;
+//       
+//       public Temporal getDateTimeEnd() { return end; }
+//       private final Temporal end; 
+//       
+//       @Override
+//       public String toString() { return super.toString() + " " + start + " to " + end; }
+//   }
     
     /**
      * VComponent factory methods

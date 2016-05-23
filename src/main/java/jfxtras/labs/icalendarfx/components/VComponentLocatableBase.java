@@ -15,6 +15,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBase<T> implements VComponentLocatable<T>, VComponentDescribable2<T>
 {
@@ -234,5 +235,27 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         final TemporalAmount adjustment = getActualDuration();
         return super.streamRecurrences(start.minus(adjustment));
+    }
+    
+    /*
+     * METHODS FOR EDITING COMPONENTS
+     */
+    
+    @Override
+    void becomeNonRecurring(
+            VComponentDisplayableBase<?> vComponentOriginal,
+            Temporal startRecurrence,
+            Temporal endRecurrence)
+    {
+        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+        if (vComponentOriginal.getRecurrenceRule() != null)
+        { // RRULE was removed, update DTSTART, DTEND or DURATION
+            setDateTimeStart(startRecurrence);
+            if (getDuration() != null)
+            {
+                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+                setDuration(duration);
+            }
+        }
     }
 }
