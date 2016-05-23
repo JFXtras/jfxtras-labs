@@ -1,10 +1,11 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
@@ -19,7 +20,6 @@ import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 public final class ReviseComponentHelper
 {
@@ -124,7 +124,6 @@ public final class ReviseComponentHelper
                             );
                     break;
                 case ONE:
-                    System.out.println("ONE:");
                     editOne(
                             vComponentEditedCopy,
                             vComponentOriginal,
@@ -398,28 +397,32 @@ public final class ReviseComponentHelper
        final Temporal untilNew;
        if (vComponentEditedCopy.isWholeDay())
        {
-           untilNew = LocalDate.from(startOriginalRecurrence).minus(1, ChronoUnit.DAYS);
+           untilNew = vComponentEditedCopy.previousStreamValue(startRecurrence);
        } else
-       {
+       {           
 //           Temporal temporal = startOriginalInstance.minus(1, ChronoUnit.NANOS);
 //           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
-//           Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(startRecurrence);
-//           if (startRecurrence instanceof LocalDateTime)
-//           {
-//               LocalDateTime.from(previousRecurrence).atZone(DateTimeUtilities.DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
-//           } else if (startRecurrence instanceof ZonedDateTime)
-//           {
-//               
-//           }
+           Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(startRecurrence);
+           if (startRecurrence instanceof LocalDateTime)
+           {
+               untilNew = LocalDateTime.from(previousRecurrence).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+           } else if (startRecurrence instanceof ZonedDateTime)
+           {
+               untilNew = ((ZonedDateTime) previousRecurrence).withZoneSameInstant(ZoneId.of("Z"));
+           } else
+           {
+               throw new DateTimeException("Unsupported Temporal type:" + previousRecurrence.getClass());
+           }
 //           return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
 //       case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
 //           return ZonedDateTime.from(temporal).withZoneSameInstant(ZoneId.of("Z"));
-           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(vComponentEditedCopy.previousStreamValue(startRecurrence));
+//           Temporal previousStreamValue = vComponentEditedCopy.previousStreamValue(startRecurrence);
+//        untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue);
 //           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue(startInstance));
        }
        vComponentOriginal.getRecurrenceRule().getValue().setUntil(untilNew);       
        
-       vComponentEditedCopy.setDateTimeStart(startRecurrence);
+       vComponentEditedCopy.setDateTimeStart(startOriginalRecurrence);
        vComponentEditedCopy.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
 //       adjustDateTime(startRecurrence, startRecurrence, endInstance);
        vComponentEditedCopy.setUniqueIdentifier(); // ADD UID CALLBACK

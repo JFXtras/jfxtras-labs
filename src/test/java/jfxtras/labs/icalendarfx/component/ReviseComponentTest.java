@@ -3,6 +3,8 @@ package jfxtras.labs.icalendarfx.component;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +20,7 @@ import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 
 public class ReviseComponentTest
 {
@@ -156,7 +159,6 @@ public class ReviseComponentTest
         
         VEvent vComponentOriginal = ICalendarComponents.getDaily1();
         VEvent vComponentEditedCopy = new VEvent(vComponentOriginal);
-        System.out.println("same:" + (vComponentOriginal.getRecurrenceRule().getValue() == vComponentEditedCopy.getRecurrenceRule().getValue()));
         vComponentEditedCopy.setSummary("Edited summary");
 
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
@@ -173,17 +175,21 @@ public class ReviseComponentTest
                 (m) -> ChangeDialogOption.THIS_AND_FUTURE);
 
         assertEquals(2, vComponents.size());
-        VEvent myComponentIndividual = vComponents.get(1);
-        assertEquals(vComponentEditedCopy, myComponentIndividual);
-        VEvent myComponentRepeats = vComponents.get(0);
-        assertEquals(vComponentOriginal, myComponentRepeats);
-        System.out.println(vComponentEditedCopy.toContent());
-        System.out.println(vComponentOriginal.toContent());
-        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentIndividual.getDateTimeStart().getValue());        
-        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentIndividual.getDateTimeEnd().getValue());        
-        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentRepeats.getDateTimeStart().getValue());        
-        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentRepeats.getDateTimeEnd().getValue()); 
-        assertEquals("Edited summary", myComponentIndividual.getSummary().getValue());
+        VEvent myComponentFuture = vComponents.get(1);
+        assertEquals(vComponentEditedCopy, myComponentFuture);
+        VEvent myComponentOriginal = vComponents.get(0);
+        assertEquals(vComponentOriginal, myComponentOriginal);
+//        System.out.println(vComponentEditedCopy.toContent());
+//        System.out.println(vComponentOriginal.toContent());
+        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentFuture.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentFuture.getDateTimeEnd().getValue());        
+        assertEquals("Edited summary", myComponentFuture.getSummary().getValue());
+        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentOriginal.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
+        Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+        RecurrenceRule3 expectedRRule = ICalendarComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
+        assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
 
         List<String> expectedChanges = Arrays.asList(
                 "Added:Daily1 Summary",
