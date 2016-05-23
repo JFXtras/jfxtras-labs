@@ -199,6 +199,13 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
     {
         super();
     }
+    
+    public Frequency2(Frequency2 source)
+    {
+        this();
+        setValue(source.getValue());
+    }
+    
     /** STREAM 
      * Resulting stream of start date/times by applying Frequency temporal adjuster and all, if any,
      * Rules.

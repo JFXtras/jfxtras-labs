@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -108,6 +109,16 @@ public class DateTimeStartTest
         DateTimeStart<LocalDateTime>  expectedDateTimeStart = DateTimeStart.parse(expectedContentLine);
         assertEquals(expectedContentLine, dateTimeStart.toContent());
         assertEquals(expectedDateTimeStart, dateTimeStart);
+    }
+    
+    @Test
+    public void canCopyDateTimeStart()
+    {
+        DateTimeStart<LocalDateTime> dateTimeStart1 = new DateTimeStart<LocalDateTime>(LocalDateTime.of(2016, 3, 6, 4, 30));
+        DateTimeStart<LocalDateTime> dateTimeStart2 = new DateTimeStart<>(dateTimeStart1);
+        assertEquals(dateTimeStart1, dateTimeStart2);
+        assertTrue(dateTimeStart1 != dateTimeStart2);
+//        assertTrue(dateTimeStart1.getValue() != dateTimeStart2.getValue());
     }
     
     @Test (expected=ClassCastException.class)

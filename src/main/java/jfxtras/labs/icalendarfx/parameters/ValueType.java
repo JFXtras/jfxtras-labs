@@ -252,7 +252,7 @@ public enum ValueType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) new RecurrenceRule3(string);
+                    return (T) RecurrenceRule3.parse(string);
                 }
             };
         }

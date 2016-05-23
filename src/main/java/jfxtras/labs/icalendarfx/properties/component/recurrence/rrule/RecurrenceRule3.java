@@ -476,13 +476,13 @@ public class RecurrenceRule3 implements VCalendarElement
         
     }
 
-    /** construct new object by parsing property line */
-    @Deprecated
-    public RecurrenceRule3(String contentLine)
-    {
-        this();
-        parseContent(contentLine);
-    }
+//    /** construct new object by parsing property line */
+//    @Deprecated
+//    public RecurrenceRule3(String contentLine)
+//    {
+//        this();
+//        parseContent(contentLine);
+//    }
     
     /** Parse component from content line */
     @Override
@@ -507,12 +507,18 @@ public class RecurrenceRule3 implements VCalendarElement
         });
     }
 
-
     // Copy constructor
     public RecurrenceRule3(RecurrenceRule3 source)
     {
         this();
-        // TODO 
+        copyRecurrenceRuleFrom(source);
+    }
+    
+    /** Copy elements from source into this recurrence rule, making a copy of source */
+    public void copyRecurrenceRuleFrom(RecurrenceRule3 source)
+    {
+        elementSortOrder().putAll(source.elementSortOrder());
+        source.elements().forEach(p -> p.copyElement(source, this));
     }
     
 //    private void setupFrequencyListener()

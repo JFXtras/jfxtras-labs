@@ -80,9 +80,7 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<ObservableLi
     // Copy constructor
     ByRuleAbstract(ByRuleAbstract<T, U> source)
     {
-//        byRuleEnum = source.byRuleType();
-        setValue(source.getValue());
-//        source.copyTo(this);
+        setValue(FXCollections.observableArrayList(source.getValue()));
     }
 
     @Override

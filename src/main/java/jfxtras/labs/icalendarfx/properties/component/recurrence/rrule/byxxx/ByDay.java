@@ -100,9 +100,6 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
     public ByDay(ByDay source)
     {
         super(source);
-//        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
-//        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-//        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
     }
 
     /** Constructor that uses DayOfWeek values without a preceding integer.  All days of the 

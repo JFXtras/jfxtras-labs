@@ -29,6 +29,12 @@ public class Count extends RRuleElementBase<Integer, Count>
         });
     }
 
+    public Count(Count source)
+    {
+        this();
+        setValue(source.getValue());
+    }
+
     @Override
     public void parseContent(String content)
     {

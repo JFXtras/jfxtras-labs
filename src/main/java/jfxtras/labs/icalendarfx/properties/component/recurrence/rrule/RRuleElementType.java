@@ -37,6 +37,12 @@ public enum RRuleElementType
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.setFrequency(new Frequency2(source.getFrequency()));
+        }
     },
     INTERVAL ("INTERVAL", Interval.class, 0, null) {
         @Override
@@ -55,6 +61,12 @@ public enum RRuleElementType
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.setInterval(new Interval(source.getInterval()));
         }
     },
     UNTIL ("UNTIL", Until.class, 0, null) {
@@ -75,6 +87,12 @@ public enum RRuleElementType
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.setUntil(new Until(source.getUntil()));
+        }
     },
     COUNT ("COUNT", Count.class, 0, null) {
         @Override
@@ -93,6 +111,12 @@ public enum RRuleElementType
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.setCount(new Count(source.getCount()));
         }
     },
     WEEK_START ("WKST", WeekStart.class, 0, null) {
@@ -114,6 +138,12 @@ public enum RRuleElementType
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.setWeekStart(new WeekStart(source.getWeekStart()));
+        }
     },
     BY_MONTH ("BYMONTH", ByMonth.class, 100, ChronoUnit.MONTHS) {
         @Override
@@ -132,6 +162,12 @@ public enum RRuleElementType
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.byRules().add(new ByMonth((ByMonth) source.lookupByRule(ByMonth.class)));
         }
     },
     BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 110, ChronoUnit.DAYS) {
@@ -152,6 +188,12 @@ public enum RRuleElementType
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.byRules().add(new ByWeekNumber((ByWeekNumber) source.lookupByRule(ByWeekNumber.class)));
+        }
     },
     BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class, 120, ChronoUnit.DAYS) {
         @Override
@@ -170,6 +212,12 @@ public enum RRuleElementType
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.byRules().add(new ByYearDay((ByYearDay) source.lookupByRule(ByYearDay.class)));
         }
     },
     BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class, 130, ChronoUnit.DAYS) {
@@ -190,6 +238,12 @@ public enum RRuleElementType
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.byRules().add(new ByMonthDay((ByMonthDay) source.lookupByRule(ByMonthDay.class)));
+        }
     },
     BY_DAY ("BYDAY", ByDay.class, 140, ChronoUnit.DAYS) {
         @Override
@@ -208,6 +262,12 @@ public enum RRuleElementType
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.byRules().add(new ByDay((ByDay) source.lookupByRule(ByDay.class)));
         }
     },
     BY_HOUR ("BYHOUR", ByHour.class, 150, ChronoUnit.HOURS) {
@@ -228,6 +288,12 @@ public enum RRuleElementType
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.byRules().add(new ByWeekNumber((ByWeekNumber) source.lookupByRule(ByWeekNumber.class)));
+        }
     },
     BY_MINUTE ("BYMINUTE", ByMinute.class, 160, ChronoUnit.MINUTES) {
         @Override
@@ -246,6 +312,12 @@ public enum RRuleElementType
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.byRules().add(new ByMinute((ByMinute) source.lookupByRule(ByMinute.class)));
         }
     },
     BY_SECOND ("BYSECOND", BySecond.class, 170, ChronoUnit.SECONDS) {
@@ -266,6 +338,12 @@ public enum RRuleElementType
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.byRules().add(new BySecond((BySecond) source.lookupByRule(BySecond.class)));
+        }
     },
     BY_SET_POSITION ("BYSETPOS", BySetPosition.class, 180, null) {
         @Override
@@ -284,6 +362,12 @@ public enum RRuleElementType
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
+        }
+
+        @Override
+        public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination)
+        {
+            destination.byRules().add(new BySetPosition((BySetPosition) source.lookupByRule(BySetPosition.class)));
         }
     };
     
@@ -355,28 +439,6 @@ public enum RRuleElementType
     
     abstract public void parse(RecurrenceRule3 recurrenceRule, String content);
     
-//    public String elementToString(Object object)
-//    {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-    
-    /** return default String converter associated with property value type */
-//    @Deprecated
-//    public <T> StringConverter<T> getConverter() {
-//        return null; }
-
-
-
-    
-//    abstract public String elementToString(RecurrenceRule3 recurrenceRule);
-
-
-
-//    /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
-//    abstract public void parse(VComponentNew<?> vComponent, String propertyContent);
-//
-//    /** copies the associated property from the source component to the destination component */
-//    abstract public void copyProperty(VComponentNew<?> source, VComponentNew<?> destination);
-
+    /** copies the associated element from the source RecurrenceRule to the destination RecurrenceRule */
+    abstract public void copyElement(RecurrenceRule3 source, RecurrenceRule3 destination);
 }

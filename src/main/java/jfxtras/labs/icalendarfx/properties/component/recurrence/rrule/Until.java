@@ -55,6 +55,12 @@ public class Until extends RRuleElementBase<Temporal, Until>
         });
     }
 
+    public Until(Until source)
+    {
+        this();
+        setValue(source.getValue());
+    }
+
     @Override
     public String toContent()
     {

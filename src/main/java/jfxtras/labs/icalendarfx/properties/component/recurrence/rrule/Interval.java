@@ -37,6 +37,12 @@ public class Interval extends RRuleElementBase<Integer, Interval>
         setValue(interval);
     }
 
+    public Interval(Interval source)
+    {
+        this();
+        setValue(source.getValue());
+    }
+
     @Override
     public void parseContent(String content)
     {

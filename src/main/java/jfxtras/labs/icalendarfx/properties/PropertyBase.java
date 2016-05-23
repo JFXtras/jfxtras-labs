@@ -347,7 +347,10 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
     }
 
     /** Copy parameters and value from source into this property,
-     *  essentially making a copy of source */    
+     *  essentially making a copy of source
+     *  
+     *  Note: This method only works if the property value is immutable.  If it is not 
+     *  immutable this method must be overridden to provide a deep copy of the value (e.g. RRULE) */    
     public void copyPropertyFrom(PropertyBase<T,U> source)
     {
         setConverter(source.getConverter());

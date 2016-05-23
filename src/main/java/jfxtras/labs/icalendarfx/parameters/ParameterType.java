@@ -604,5 +604,5 @@ public enum ParameterType
     abstract public Parameter<?> getParameter(Property<?> parent);
     
     /** copies the associated parameter from the source property to the destination property */
-    public void copyParameter(Property<?>  source, Property<?> destination) {}
+    abstract public void copyParameter(Property<?>  source, Property<?> destination);
 }
