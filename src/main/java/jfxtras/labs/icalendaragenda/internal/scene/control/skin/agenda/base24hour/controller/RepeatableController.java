@@ -71,9 +71,8 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * Makes pane for selection some repeatable rules
  * @author David Bal
  *
- * @param <T> type of recurrence instance (such as Agenda.Appointment)
  */
-public class RepeatableController<T>
+public class RepeatableController
 {
 
 final public static int EXCEPTION_CHOICE_LIMIT = 50; // TODO - EXTEND WHEN BOTTOM OF LIST IS REACHED

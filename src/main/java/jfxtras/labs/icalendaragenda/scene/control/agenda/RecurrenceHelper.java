@@ -5,11 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 
 /**
@@ -733,35 +730,35 @@ public class RecurrenceHelper<R>
 //        }
 //    }
 //
-     /**
-      * Options available when editing or deleting a repeatable appointment.
-      * Sometimes all options are not available.  For example, a one-part repeating
-      * event doesn't have the SEGMENT option.
-      */
-     public enum ChangeDialogOption
-     {
-         ONE                  // individual instance
-       , ALL                  // entire series
-       , THIS_AND_FUTURE      // selected instance and all in the future
-       , CANCEL;              // do nothing
-         
-         public static Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(VComponentLocatable<?> vComponent, Temporal startInstance)
-         {
-             Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
-             choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
-             Temporal lastRecurrence = vComponent.lastRecurrence();
-             if (! (vComponent.getRecurrenceRule() == null))
-             {
-                 if ((lastRecurrence == null) || (! lastRecurrence.equals(startInstance)))
-                 {
-                     Temporal start = (startInstance == null) ? vComponent.getDateTimeStart().getValue() : startInstance; // set initial start
-                     choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));
-                 }
-                 choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponent.getDateTimeStart().getValue(), lastRecurrence));
-             }
-             return choices;
-         }        
-     }
+//     /**
+//      * Options available when editing or deleting a repeatable appointment.
+//      * Sometimes all options are not available.  For example, a one-part repeating
+//      * event doesn't have the SEGMENT option.
+//      */
+//     public enum ChangeDialogOption
+//     {
+//         ONE                  // individual instance
+//       , ALL                  // entire series
+//       , THIS_AND_FUTURE      // selected instance and all in the future
+//       , CANCEL;              // do nothing
+//         
+//         public static Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(VComponentLocatable<?> vComponent, Temporal startInstance)
+//         {
+//             Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
+//             choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
+//             Temporal lastRecurrence = vComponent.lastRecurrence();
+//             if (! (vComponent.getRecurrenceRule() == null))
+//             {
+//                 if ((lastRecurrence == null) || (! lastRecurrence.equals(startInstance)))
+//                 {
+//                     Temporal start = (startInstance == null) ? vComponent.getDateTimeStart().getValue() : startInstance; // set initial start
+//                     choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));
+//                 }
+//                 choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponent.getDateTimeStart().getValue(), lastRecurrence));
+//             }
+//             return choices;
+//         }        
+//     }
      
      /** Based on {@link Callback<P,R>} */
      @FunctionalInterface

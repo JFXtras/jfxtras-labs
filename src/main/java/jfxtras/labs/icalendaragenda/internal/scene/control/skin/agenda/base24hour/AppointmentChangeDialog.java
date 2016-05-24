@@ -12,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 
 
 /**

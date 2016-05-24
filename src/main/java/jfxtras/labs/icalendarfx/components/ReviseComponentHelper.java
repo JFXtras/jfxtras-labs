@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -27,17 +28,16 @@ public final class ReviseComponentHelper
     
     /** Edit VEvent or VTodo or VJournal
      * @param <T>*/
-    public static <T extends VComponentDisplayableBase<?>> boolean handleEdit(
+    public static <T extends VComponentDisplayableBase<?>> Collection<T> handleEdit(
             T vComponentEditedCopy,
             T vComponentOriginal,
-            Collection<T> vComponents,
             Temporal startOriginalRecurrence,
             Temporal startRecurrence,
             Temporal endRecurrence, // null for VJournal
-//          , Collection<R> allRecurrences
-//          , Collection<R> componentRecurrences
-            Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback)
+            Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback
+            )
     {
+        Collection<T> vComponents = new ArrayList<>(); // new components that should be added to main list
         vComponentEditedCopy.validateStartRecurrenceAndDTStart(startOriginalRecurrence, startRecurrence);
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginal.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
         System.out.println("rruleType:" + rruleType);
@@ -112,7 +112,7 @@ public final class ReviseComponentHelper
                     break;
                 case CANCEL:
 //                    vComponentEditedCopy.copyComponentFrom(vComponentOriginal);  // return to original
-                    return false;
+                    return null;
                 case THIS_AND_FUTURE:
                     editThisAndFuture(
                             vComponentEditedCopy,
@@ -149,14 +149,14 @@ public final class ReviseComponentHelper
 //        System.out.println(vComponents.size());
 //        vComponents.remove(vComponentOriginal);
 //        System.out.println(vComponents.size());
-//        vComponents.add(vComponentEditedCopy);
+        vComponents.add(vComponentEditedCopy);
 //        System.out.println(vComponents.size());
 //        if (newRecurrences != null)
 //        {
 ////            allRecurrences.clear();
 //            allRecurrences.addAll(newRecurrences);
 //        }
-        return true;
+        return vComponents;
     }
     
     /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
@@ -545,7 +545,6 @@ public final class ReviseComponentHelper
        if (! vComponentOriginal.isValid()) throw new RuntimeException("Invalid component");
        vComponents.add(vComponentOriginal);
        
-       vComponents.add(vComponentEditedCopy);
 
        // Remove old appointments, add back ones
 //       Collection<R> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
@@ -620,7 +619,6 @@ public final class ReviseComponentHelper
 //       recurrences().clear(); // clear vEvent outdated collection of recurrences
 //       recurrencesTemp.addAll(makeRecurrences()); // add vEventOld part of new recurrences
        vComponents.add(vComponentOriginal);
-       vComponents.add(vComponentEditedCopy);
 //       return recurrencesTemp;
    }
    
@@ -664,17 +662,17 @@ public final class ReviseComponentHelper
       
         public static RRuleStatus getRRuleType(RecurrenceRuleNew rruleEdited, RecurrenceRuleNew rruleOriginal)
         {
-            if (rruleEdited == null)
+            if (rruleOriginal == null)
             {
-                if (rruleOriginal == null)
-                { // doesn't have repeat or have old repeat either
+                if (rruleEdited == null)
+                { // edited doesn't have repeat or original have repeat either
                     return RRuleStatus.INDIVIDUAL;
                 } else {
                     return RRuleStatus.HAD_REPEAT_BECOMING_INDIVIDUAL;
                 }
             } else
             { // RRule != null
-                if (rruleOriginal == null)
+                if (rruleEdited == null)
                 {
                     return RRuleStatus.WITH_NEW_REPEAT;                
                 } else

@@ -5,14 +5,14 @@ import java.util.Collection;
 import java.util.List;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditController;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditDisplayableComponentController;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditVEventController;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -20,18 +20,19 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 /** Makes new stage for popup window to edit VEvent with Agenda.Appointment instances
  * 
  * @author David Bal
- * @see AppointmentEditController
+ * @see EditDisplayableComponentController
  */
-public class AppointmentEditLoader extends Stage
+public class EditVEventLoader extends Stage
 {
     // CONSTRUCTOR
-    public AppointmentEditLoader(
+    public EditVEventLoader(
             Appointment appointment, // selected instance
-            VComponentDisplayable<?> vComponent,
             Collection<Appointment> appointments,
-            List<AppointmentGroup> appointmentGroups,
-            Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback,
-            Callback<Collection<VComponentDisplayable<?>>, Void> veventWriteCallback
+            VEvent vComponent,
+            List<VEvent> components,
+            List<AppointmentGroup> appointmentGroups
+//            Callback<Collection<AppointmentGroup>, Void> appointmentGroupWriteCallback,
+//            Callback<Collection<VComponentDisplayable<?>>, Void> veventWriteCallback
             )
     {
         String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
@@ -42,19 +43,19 @@ public class AppointmentEditLoader extends Stage
         
         // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
-        appointmentMenuLoader.setLocation(AppointmentEditLoader.class.getResource("view/AppointmentEdit.fxml"));
+        appointmentMenuLoader.setLocation(EditVEventLoader.class.getResource("view/EditVEvent.fxml"));
         if (Settings.resources != null)
         {
             appointmentMenuLoader.setResources(Settings.resources);
         }
-        Control appointmentPopup = null;
+        Parent appointmentPopup = null;
         try {
             appointmentPopup = appointmentMenuLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
         
-        AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
+        EditVEventController appointmentEditController = appointmentMenuLoader.getController();
         Scene scene = new Scene(appointmentPopup);
         ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();
 //        System.out.println("sheet:" + ICalendarAgenda.ICALENDAR_STYLE_SHEET);
@@ -66,15 +67,21 @@ public class AppointmentEditLoader extends Stage
               appointment,
               vComponent,
               appointments,
+              components,
               appointmentGroups,
-              veventWriteCallback,
+//              veventWriteCallback,
               this
               );
 
         setResizable(false);
         setScene(scene);
     }
-
-    
+//
+//    public EditVEventLoader(Appointment appointment, VComponentDisplayable<?> vComponent,
+//            ObservableList<VEvent> vEvents, ObservableList<Appointment> appointments,
+//            ObservableList<AppointmentGroup> appointmentGroups)
+//    {
+//        // TODO Auto-generated constructor stub
+//    }
 }
  

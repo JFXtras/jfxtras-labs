@@ -7,8 +7,7 @@ import java.util.ResourceBundle;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
-
+import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 
 /**
  * Dialog to allow user to choice between ChangeDialogOption (ONE, THIS_AND_FUTURE, and ALL) delete options.

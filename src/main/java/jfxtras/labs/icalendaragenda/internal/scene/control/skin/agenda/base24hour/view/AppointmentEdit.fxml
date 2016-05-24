@@ -11,7 +11,7 @@
 <?import jfxtras.scene.control.*?>
 <?import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.*?>
 
-<TabPane fx:id="appointmentEditTabPane" prefHeight="600.0" prefWidth="400.0" styleClass="background3" stylesheets="@resources/PopupStyles.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditController">
+<TabPane fx:id="appointmentEditTabPane" prefHeight="600.0" prefWidth="400.0" styleClass="background3" stylesheets="@resources/PopupStyles.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditDisplayableComponentController">
   <tabs>
     <Tab fx:id="appointmentTab" closable="false" text="%appointment">
       <content>

@@ -31,13 +31,13 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentEditLoader;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectedOneAppointmentLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.Callback2;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
@@ -208,13 +208,15 @@ public class ICalendarAgenda extends Agenda
         } else
         {
             appointments().removeListener(appointmentsListChangeListener); // remove listener to prevent making extra vEvents during edit
-            Stage editPopup = new AppointmentEditLoader(
+            Stage editPopup = new EditVEventLoader(
                     appointment,
-                    vComponent,
                     appointments(),
-                    appointmentGroups(),
-                    appointmentGroupWriteCallback,
-                    repeatWriteCallback);
+                    (VEvent) vComponent,
+                    getVCalendar().getVEvents(),
+                    appointmentGroups()
+//                    appointmentGroupWriteCallback,
+//                    repeatWriteCallback
+                    );
     
             editPopup.getScene().getStylesheets().addAll(getUserAgentStylesheet(), ICALENDAR_STYLE_SHEET);
     

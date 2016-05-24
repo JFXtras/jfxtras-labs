@@ -89,14 +89,15 @@ public class EditAppointmentTest
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
 
-        ReviseComponentHelper.handleEdit(
+        Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEditedCopy,
                 vComponentOriginal,
-                vComponents,
+//                vComponents,
                 startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
                 (m) -> ChangeDialogOption.ALL);
+        vComponents.addAll(newVComponents);
 
         assertEquals(1, vComponents.size());
         assertEquals(vComponentEditedCopy, vComponents.get(0));
