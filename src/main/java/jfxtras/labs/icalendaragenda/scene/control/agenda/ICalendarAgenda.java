@@ -31,7 +31,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventLoader;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventPopupOld;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectedOneAppointmentLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
@@ -208,7 +208,7 @@ public class ICalendarAgenda extends Agenda
         } else
         {
             appointments().removeListener(appointmentsListChangeListener); // remove listener to prevent making extra vEvents during edit
-            Stage editPopup = new EditVEventLoader(
+            Stage editPopup = new EditVEventPopupOld(
                     appointment,
                     appointments(),
                     (VEvent) vComponent,

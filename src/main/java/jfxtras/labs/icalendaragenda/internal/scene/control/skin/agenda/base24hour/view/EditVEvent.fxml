@@ -11,6 +11,7 @@
 <?import jfxtras.scene.control.*?>
 <?import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.*?>
 
-<AnchorPane stylesheets="@resources/PopupStyles.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditVEventController">
-	<fx:include fx:id="appointmentEdit" source="AppointmentEdit.fxml" />
-</AnchorPane>
+<fx:root type="AppointmentEdit.fxml" stylesheets="@resources/PopupStyles.css"
+ xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
+ fx:controller="jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditVEventController">
+</fx:root>

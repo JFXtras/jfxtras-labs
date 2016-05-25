@@ -13,16 +13,19 @@ import org.junit.Test;
 
 import javafx.collections.ListChangeListener;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventLoader;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.JFXtrasGuiTest;
 import jfxtras.test.TestUtil;
@@ -78,15 +81,32 @@ public class PopupTests extends JFXtrasGuiTest
         calendar.getVEvents().add(vevent);
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
-
-        TestUtil.runThenWaitForPaintPulse( () -> {            
-        Stage editPopup = new EditVEventLoader(
-              appointment,
-              appointments,
-              vevent,
-              calendar.getVEvents(),
-              ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS
-              );
+        
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {            
+            
+            Stage editPopup = new Stage();
+//            EditVEventDescriptiveVBox appointmentPopup = new EditVEventDescriptiveVBox();
+//            EditRecurrenceRuleVBox appointmentPopup = new EditRecurrenceRuleVBox();
+            EditVEventTabPane appointmentPopup = new EditVEventTabPane();
+            Scene scene = new Scene(appointmentPopup);
+            String agendaSheet = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+            appointmentPopup.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET, agendaSheet);
+            editPopup.setScene(scene);
+            
+            appointmentPopup.setupData(
+                    appointment,
+                    vevent,
+                    calendar.getVEvents(),
+                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+            
+//        Stage editPopup = new EditVEventPopup(
+//              appointment,
+//              appointments,
+//              vevent,
+//              calendar.getVEvents(),
+//              ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS
+//              );
 
         editPopup.show();
         });

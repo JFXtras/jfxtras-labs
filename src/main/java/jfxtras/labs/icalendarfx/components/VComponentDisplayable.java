@@ -30,13 +30,12 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
- * Calendar component that is displayable in a graphic.  Has methods to generate recurrence
- * instances.
+ * Calendar component that is displayable in a graphic.
  * 
  * @author David Bal
  *
- * @see VEventOld
- * @see VTodoOld
+ * @see VEvent
+ * @see VTodo
  * @see VJournal
  */
 public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VComponentRepeatable<T>, VComponentDescribable<T>, VComponentLastModified<T>

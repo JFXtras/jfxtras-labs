@@ -22,10 +22,11 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * @author David Bal
  * @see EditDisplayableComponentController
  */
-public class EditVEventLoader extends Stage
+@Deprecated
+public class EditVEventPopupOld extends Stage
 {
     // CONSTRUCTOR
-    public EditVEventLoader(
+    public EditVEventPopupOld(
             Appointment appointment, // selected instance
             Collection<Appointment> appointments,
             VEvent vComponent,
@@ -43,7 +44,7 @@ public class EditVEventLoader extends Stage
         
         // LOAD FXML
         FXMLLoader appointmentMenuLoader = new FXMLLoader();
-        appointmentMenuLoader.setLocation(EditVEventLoader.class.getResource("view/EditVEvent.fxml"));
+        appointmentMenuLoader.setLocation(EditVEventPopupOld.class.getResource("view/EditVEvent.fxml"));
         if (Settings.resources != null)
         {
             appointmentMenuLoader.setResources(Settings.resources);
