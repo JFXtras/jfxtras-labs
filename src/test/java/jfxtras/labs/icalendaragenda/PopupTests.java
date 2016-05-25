@@ -1,7 +1,10 @@
 package jfxtras.labs.icalendaragenda;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +15,10 @@ import java.util.ResourceBundle;
 import org.junit.Test;
 
 import javafx.collections.ListChangeListener;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
@@ -25,8 +29,10 @@ import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.test.AssertNode;
 import jfxtras.test.JFXtrasGuiTest;
 import jfxtras.test.TestUtil;
 
@@ -38,17 +44,58 @@ import jfxtras.test.TestUtil;
  */
 public class PopupTests extends JFXtrasGuiTest
 {
+    EditVEventTabPane appointmentPopup;
     
     @Override
     public Parent getRootNode()
     {
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", Locale.getDefault());
         Settings.setup(resources);
-        return new Label("");
+        appointmentPopup = new EditVEventTabPane();
+        String agendaSheet = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+        appointmentPopup.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET, agendaSheet);
+        return appointmentPopup;
     }
     
     @Test
-    public void makeEditPopup()
+    public void canDisplayPopup()
+    {
+        Node n = find("#editDisplayableTabPane");
+        //AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 600.0, 0.01);
+    }
+    
+    @Test
+    public void canDisplayPopupWithVEvent()
+    {
+        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK
+                );
+        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
+        
+        VEvent vevent = ICalendarComponents.getDaily1();
+        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
+        Appointment appointment = newAppointments.get(0);
+        
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            appointmentPopup.setupData(
+                    appointment,
+                    vevent,
+                    Arrays.asList(vevent),
+                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        });
+
+        TextField summary = find("#summaryTextField");
+        assertEquals(vevent.getSummary().getValue(), summary.getText());
+
+        LocalDateTimeTextField start = find("#startTextField");
+        assertEquals(LocalDateTime.of(2016, 5, 15, 10, 0), start.getLocalDateTime());
+    }
+    
+    @Test
+    public void makeEditPopup2()
     {
         final VCalendar calendar = new VCalendar();
         ListChangeListener<? super VComponentLocatable<?>> listener  = (ListChangeListener.Change<? extends VComponentLocatable<?>> change) ->
@@ -110,6 +157,12 @@ public class PopupTests extends JFXtrasGuiTest
 
         editPopup.show();
         });
-        TestUtil.sleep(3000);
+        
+        Node n = find("#editDisplayableTabPane");
+        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 600.0, 0.01);
+//        closeCurrentWindow();
+        
+//        TestUtil.sleep(3000);
     }
 }

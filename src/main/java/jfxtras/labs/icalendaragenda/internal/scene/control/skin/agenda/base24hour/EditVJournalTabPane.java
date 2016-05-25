@@ -6,7 +6,9 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal>
 {
     public EditVJournalTabPane( )
     {
+        super();
         setEditDescriptive(new DescriptiveVJournalVBox());
         getDescriptiveAnchorPane().getChildren().add(getEditDescriptive());
+//        this.setId("editVJournalTabPane");
     }
 }

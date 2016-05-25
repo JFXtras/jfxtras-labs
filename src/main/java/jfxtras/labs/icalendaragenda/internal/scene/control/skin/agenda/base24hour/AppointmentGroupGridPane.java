@@ -42,10 +42,6 @@ public AppointmentGroupGridPane(VComponentDisplayable<?> vComponent, List<Appoin
  
  public void setupData(VComponentDisplayable<?> vComponent, List<AppointmentGroup> appointmentGroups)
  {
-//      myIcon = new SVGPath();
-//     myIcon.setFill(Color.rgb(0, 255, 0, .9));
-//     myIcon.setStroke(Color.WHITE);//
-//     myIcon.setContent("M2.379,14.729 5.208,11.899 12.958,19.648 25.877,6.733 28.707,9.56112.958,25.308z");
      setHgap(3);
      setVgap(3);
      icons = new Pane[appointmentGroups.size()];

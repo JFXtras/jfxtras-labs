@@ -30,7 +30,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.RepeatableControllerOld;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -50,13 +49,13 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //    public TabPane getAppointmentEditTabPane() { return appointmentEditTabPane; }
     @FXML private LocalDateTimeTextField startTextField; // start of recurrence
     
-    @FXML private Label endLabel;
-    Label getEndLabel() { return endLabel; }
-    void setEndLabel(Label endLabel) { this.endLabel = endLabel; }
+    @FXML protected Label endLabel;
+//    Label getEndLabel() { return endLabel; }
+//    void setEndLabel(Label endLabel) { this.endLabel = endLabel; }
 
-    @FXML private LocalDateTimeTextField endTextField; // end of recurrence
-    LocalDateTimeTextField getEndTextField() { return endTextField; }
-    void setEndTextField(LocalDateTimeTextField endTextField) { this.endTextField = endTextField; }
+    @FXML protected LocalDateTimeTextField endTextField; // end of recurrence
+//    LocalDateTimeTextField getEndTextField() { return endTextField; }
+//    void setEndTextField(LocalDateTimeTextField endTextField) { this.endTextField = endTextField; }
     
     @FXML private CheckBox wholeDayCheckBox;
     @FXML private TextField summaryTextField; // SUMMARY
@@ -69,7 +68,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML private Button saveRepeatButton;
     @FXML private Button cancelRepeatButton;
     @FXML private Button deleteAppointmentButton;
-    @FXML private RepeatableControllerOld repeatableController;
     @FXML private Tab appointmentTab;
     @FXML private Tab repeatableTab;
     

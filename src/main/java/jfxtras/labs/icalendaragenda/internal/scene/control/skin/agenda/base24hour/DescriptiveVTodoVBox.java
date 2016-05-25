@@ -7,6 +7,7 @@ public class DescriptiveVTodoVBox extends DescriptiveVBox<VTodo>
     public DescriptiveVTodoVBox()
     {
         super();
-        getEndLabel().setText( getResources().getString("due.time") );
+        endLabel.setText( getResources().getString("due.time") );
+//        getEndLabel().setText( getResources().getString("due.time") );
     }
 }

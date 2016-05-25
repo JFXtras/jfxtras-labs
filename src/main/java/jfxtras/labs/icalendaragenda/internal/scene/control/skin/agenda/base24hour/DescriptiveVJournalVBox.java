@@ -7,9 +7,13 @@ public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
     public DescriptiveVJournalVBox()
     {
         super();
-        getEndLabel().setVisible(false);
-        getEndTextField().setVisible(false);
-        setEndLabel(null);
-        setEndTextField(null);
+        endLabel.setVisible(false);
+        endTextField.setVisible(false);
+        endLabel = null;
+        endTextField = null;
+//        getEndLabel().setVisible(false);
+//        getEndTextField().setVisible(false);
+//        setEndLabel(null);
+//        setEndTextField(null);
     }
 }

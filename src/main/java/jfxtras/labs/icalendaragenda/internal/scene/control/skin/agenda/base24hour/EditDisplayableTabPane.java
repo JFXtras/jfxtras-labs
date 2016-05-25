@@ -10,15 +10,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditDisplayableComponentControllerOld;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-/** Makes new stage for popup window to edit VEvent with Agenda.Appointment instances
+/** 
+ * Makes a TabPane for editing a VEvent, VTodo or VJournal - to be specified by type
+ * T in a subclass
  * 
  * @author David Bal
- * @see EditDisplayableComponentControllerOld
  */
 public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>> extends TabPane
 {
