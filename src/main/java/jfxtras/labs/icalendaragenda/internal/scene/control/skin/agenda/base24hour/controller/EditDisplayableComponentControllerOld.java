@@ -53,9 +53,10 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  * 
  * @author David Bal
  * @param <T>
- * @see RepeatableController
+ * @see RepeatableControllerOld
  */
-public class EditDisplayableComponentController<T extends VComponentDisplayableBase<?>> extends Pane
+@Deprecated
+public class EditDisplayableComponentControllerOld<T extends VComponentDisplayableBase<?>> extends Pane
 {
 //    private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0); // default start time used when a whole-day event gets a time
     
@@ -99,7 +100,7 @@ public class EditDisplayableComponentController<T extends VComponentDisplayableB
     @FXML private Button saveRepeatButton;
     @FXML private Button cancelRepeatButton;
     @FXML private Button deleteAppointmentButton;
-    @FXML private RepeatableController repeatableController;
+    @FXML private RepeatableControllerOld repeatableController;
     @FXML private Tab appointmentTab;
     @FXML private Tab repeatableTab;
     

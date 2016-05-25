@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import org.junit.Test;
 
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AgendaDateTimeUtilities;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.RepeatableController;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.RepeatableControllerOld;
 import jfxtras.labs.icalendarfx.components.VEvent;
 
 public class AgendaStringConverstionTests
@@ -20,7 +20,7 @@ public class AgendaStringConverstionTests
     {
         VEvent v = ICalendarComponents.getDaily6();
 //        String summaryString = v.getRRule().summary(v.getDateTimeStart());
-        String summaryString = RepeatableController.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue()); 
+        String summaryString = RepeatableControllerOld.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue()); 
         String expectedString = "Every 2 days, until Dec 1, 2015";
         assertEquals(expectedString, summaryString);
     }
@@ -29,7 +29,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString2()
     {
         VEvent v = ICalendarComponents.getYearly1();
-        String summaryString = RepeatableController.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
+        String summaryString = RepeatableControllerOld.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
         String expectedString = "Yearly on November 9";
         assertEquals(expectedString, summaryString);
     }
@@ -38,7 +38,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString3()
     {
         VEvent v = ICalendarComponents.getMonthly1();
-        String summaryString = RepeatableController.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
+        String summaryString = RepeatableControllerOld.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
         String expectedString = "Monthly on day 9";
         assertEquals(expectedString, summaryString);
     }
@@ -47,7 +47,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString4()
     {
         VEvent v = ICalendarComponents.getMonthly7();
-        String summaryString = RepeatableController.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
+        String summaryString = RepeatableControllerOld.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
         String expectedString = "Monthly on the third Monday";
         assertEquals(expectedString, summaryString);
     }
@@ -56,7 +56,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString5()
     {
         VEvent v = ICalendarComponents.getWeekly1();
-        String summaryString = RepeatableController.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
+        String summaryString = RepeatableControllerOld.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
         String expectedString = "Weekly on Monday";
         assertEquals(expectedString, summaryString);
     }
@@ -65,7 +65,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString6()
     {
         VEvent v = ICalendarComponents.getWeekly2();
-        String summaryString = RepeatableController.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
+        String summaryString = RepeatableControllerOld.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
         String expectedString = "Every 2 weeks on Monday, Wednesday, Friday";
         assertEquals(expectedString, summaryString);
     }
@@ -74,7 +74,7 @@ public class AgendaStringConverstionTests
     public void canMakeRRuleSummaryString7()
     {
         VEvent v = ICalendarComponents.getWeekly4();
-        String summaryString = RepeatableController.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
+        String summaryString = RepeatableControllerOld.makeSummary(v.getRecurrenceRule().getValue(), v.getDateTimeStart().getValue());
         String expectedString = "Every 2 weeks on Monday, Wednesday, Friday, 11 times";
         assertEquals(expectedString, summaryString);
     }

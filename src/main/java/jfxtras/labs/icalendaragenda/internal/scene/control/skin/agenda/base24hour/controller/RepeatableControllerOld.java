@@ -72,7 +72,8 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * @author David Bal
  *
  */
-public class RepeatableController
+@Deprecated
+public class RepeatableControllerOld
 {
 
 final public static int EXCEPTION_CHOICE_LIMIT = 50; // TODO - EXTEND WHEN BOTTOM OF LIST IS REACHED

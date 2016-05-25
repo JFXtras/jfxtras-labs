@@ -16,7 +16,6 @@
     <Tab fx:id="descriptiveTab" closable="false" text="%appointment">
       <content>
         <AnchorPane fx:id="descriptiveAnchorPane" >
-		  <EditVEventDescriptiveVBox fx:id="editVEventDescriptive"/>
         </AnchorPane>
       </content>
     </Tab>
@@ -24,7 +23,7 @@
          <content>
             <AnchorPane>
                <children>
-                  <EditRecurrenceRuleVBox fx:id="repeatable"/>
+                  <RecurrenceRuleVBox fx:id="repeatable"/>
                   <HBox alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>
                         <Button fx:id="cancelRepeatButton" mnemonicParsing="false" onAction="#handleCancelButton" text="%cancel" />

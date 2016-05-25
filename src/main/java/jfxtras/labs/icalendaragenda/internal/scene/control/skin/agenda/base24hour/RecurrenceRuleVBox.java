@@ -68,7 +68,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRu
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
-public class EditRecurrenceRuleVBox extends VBox
+public class RecurrenceRuleVBox extends VBox
 {
     final public static int EXCEPTION_CHOICE_LIMIT = 50; // TODO - EXTEND WHEN BOTTOM OF LIST IS REACHED
     final public static int INITIAL_COUNT = 10;
@@ -120,10 +120,10 @@ public class EditRecurrenceRuleVBox extends VBox
     private Temporal exceptionFirstTemporal;
     private List<Temporal> exceptionMasterList = new ArrayList<>();
     
-    public EditRecurrenceRuleVBox( )
+    public RecurrenceRuleVBox( )
     {
         super();
-        loadFxml(EditDescriptiveVBox.class.getResource("view/RecurrenceRule.fxml"), this);
+        loadFxml(DescriptiveVBox.class.getResource("view/RecurrenceRule.fxml"), this);
     }
     
     private DateTimeFormatter getFormatter(Temporal t)

@@ -23,13 +23,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.RepeatableController;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.RepeatableControllerOld;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -41,17 +42,26 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  * 
  * @author David Bal
  */
-public abstract class EditDescriptiveVBox<T extends VComponentDisplayable<?>> extends VBox
+public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extends VBox
 {
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
+    ResourceBundle getResources() { return resources; }
     // TODO - TRY STACK PANE TO REPLACE LocalDateTimeTextField WITH LocalDateTextField WHEN WHOLE DAY
 //    public TabPane getAppointmentEditTabPane() { return appointmentEditTabPane; }
-    @FXML protected LocalDateTimeTextField startTextField; // start of instance
-    @FXML protected LocalDateTimeTextField endTextField; // end of instance
-    @FXML protected CheckBox wholeDayCheckBox;
+    @FXML private LocalDateTimeTextField startTextField; // start of recurrence
+    
+    @FXML private Label endLabel;
+    Label getEndLabel() { return endLabel; }
+    void setEndLabel(Label endLabel) { this.endLabel = endLabel; }
+
+    @FXML private LocalDateTimeTextField endTextField; // end of recurrence
+    LocalDateTimeTextField getEndTextField() { return endTextField; }
+    void setEndTextField(LocalDateTimeTextField endTextField) { this.endTextField = endTextField; }
+    
+    @FXML private CheckBox wholeDayCheckBox;
     @FXML private TextField summaryTextField; // SUMMARY
-    @FXML protected TextArea descriptionTextArea; // DESCRIPTION
-    @FXML protected TextField locationTextField; // LOCATION
+    @FXML private TextArea descriptionTextArea; // DESCRIPTION
+    @FXML private TextField locationTextField; // LOCATION
     @FXML private TextField groupTextField; // CATEGORIES
     @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
     @FXML private Button saveAppointmentButton;
@@ -59,14 +69,14 @@ public abstract class EditDescriptiveVBox<T extends VComponentDisplayable<?>> ex
     @FXML private Button saveRepeatButton;
     @FXML private Button cancelRepeatButton;
     @FXML private Button deleteAppointmentButton;
-    @FXML private RepeatableController repeatableController;
+    @FXML private RepeatableControllerOld repeatableController;
     @FXML private Tab appointmentTab;
     @FXML private Tab repeatableTab;
     
-    public EditDescriptiveVBox( )
+    public DescriptiveVBox( )
     {
         super();
-        loadFxml(EditDescriptiveVBox.class.getResource("view/EditDescriptive.fxml"), this);
+        loadFxml(DescriptiveVBox.class.getResource("view/EditDescriptive.fxml"), this);
         appointmentGroupGridPane.getStylesheets().addAll(getStylesheets());
     }
     
@@ -198,7 +208,7 @@ public abstract class EditDescriptiveVBox<T extends VComponentDisplayable<?>> ex
         
         // Disable repeat rules for events with recurrence-id
         if (vComponent.getRecurrenceDates() != null)
-        { // recurrence instances can't add repeat rules (only parent can have repeat rules)
+        { // recurrence recurrences can't add repeat rules (only parent can have repeat rules)
             repeatableTab.setDisable(true);
             repeatableTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
         }
@@ -341,9 +351,9 @@ public abstract class EditDescriptiveVBox<T extends VComponentDisplayable<?>> ex
 //        Temporal actualRecurrence = vEvent.streamRecurrences(startRecurrence).findFirst().get();
         if (! vComponent.isRecurrence(startRecurrence))
         {
-            Temporal instanceBefore = vComponent.previousStreamValue(startRecurrence);
+            Temporal recurrenceBefore = vComponent.previousStreamValue(startRecurrence);
             Optional<Temporal> optionalAfter = vComponent.streamRecurrences(startRecurrence).findFirst();
-            Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : instanceBefore;
+            Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : recurrenceBefore;
             TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
             Temporal newEndRecurrence = newStartRecurrence.plus(duration);
             Temporal startRecurrenceBeforeChange = startRecurrence;

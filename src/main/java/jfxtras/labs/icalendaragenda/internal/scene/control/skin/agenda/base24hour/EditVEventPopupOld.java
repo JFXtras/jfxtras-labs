@@ -9,8 +9,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditDisplayableComponentController;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditVEventController;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditDisplayableComponentControllerOld;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.controller.EditVEventControllerOld;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
@@ -20,7 +20,7 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 /** Makes new stage for popup window to edit VEvent with Agenda.Appointment instances
  * 
  * @author David Bal
- * @see EditDisplayableComponentController
+ * @see EditDisplayableComponentControllerOld
  */
 @Deprecated
 public class EditVEventPopupOld extends Stage
@@ -56,7 +56,7 @@ public class EditVEventPopupOld extends Stage
             e.printStackTrace();
         }
         
-        EditVEventController appointmentEditController = appointmentMenuLoader.getController();
+        EditVEventControllerOld appointmentEditController = appointmentMenuLoader.getController();
         Scene scene = new Scene(appointmentPopup);
         ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();
 //        System.out.println("sheet:" + ICalendarAgenda.ICALENDAR_STYLE_SHEET);

@@ -14,10 +14,11 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-public class EditVEventController extends EditDisplayableComponentController<VEvent>
+@Deprecated
+public class EditVEventControllerOld extends EditDisplayableComponentControllerOld<VEvent>
 {
 
-    @FXML private EditDisplayableComponentController<VEvent> displayableController;
+    @FXML private EditDisplayableComponentControllerOld<VEvent> displayableController;
 //    private VEvent vEventEditedCopy;
 
     @Override

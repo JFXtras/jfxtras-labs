@@ -36,7 +36,7 @@
               </rowConstraints>
                <children>
                   <Label text="%start.time" GridPane.halignment="RIGHT" />
-                  <Label text="%end.time" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                  <Label fx:id="endLabel" text="%end.time" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                   <CheckBox fx:id="wholeDayCheckBox" mnemonicParsing="false" text="%whole.day" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                   <LocalDateTimeTextField fx:id="startTextField" GridPane.columnIndex="1" />
                   <LocalDateTimeTextField fx:id="endTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
