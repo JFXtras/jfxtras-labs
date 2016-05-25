@@ -1,33 +1,28 @@
 package jfxtras.labs.icalendaragenda;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.junit.Test;
 
-import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
-import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda;
@@ -69,11 +64,9 @@ public class PopupTests extends JFXtrasGuiTest
     public void canDisplayPopupWithVEvent()
     {
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK
-                );
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK);
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
-        
         VEvent vevent = ICalendarComponents.getDaily1();
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
@@ -95,74 +88,114 @@ public class PopupTests extends JFXtrasGuiTest
     }
     
     @Test
-    public void makeEditPopup2()
+    public void canEditVEventWithPopup1()
     {
-        final VCalendar calendar = new VCalendar();
-        ListChangeListener<? super VComponentLocatable<?>> listener  = (ListChangeListener.Change<? extends VComponentLocatable<?>> change) ->
-        {
-            while (change.next())
-            {
-                if (change.wasAdded())
-                {
-                    change.getAddedSubList().forEach(c -> System.out.println("Added:" + c.getSummary().getValue()));
-                    // Note: making recurrences should be done here by a similar listener in production code
-                }
-            }
-        };
-        calendar.getVEvents().addListener(listener);
-        
-        final Collection<Appointment> appointments = new ArrayList<>();
-        final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>();    
-        final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VComponent that made it */
-
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-//                appointments,
-                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK
-//                vComponentAppointmentMap,
-//                appointmentVComponentMap
-                );
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK);
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
-        
+        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarComponents.getDaily1();
-        calendar.getVEvents().add(vevent);
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->
-        {            
-            
-            Stage editPopup = new Stage();
-//            EditVEventDescriptiveVBox appointmentPopup = new EditVEventDescriptiveVBox();
-//            EditRecurrenceRuleVBox appointmentPopup = new EditRecurrenceRuleVBox();
-            EditVEventTabPane appointmentPopup = new EditVEventTabPane();
-            Scene scene = new Scene(appointmentPopup);
-            String agendaSheet = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
-            appointmentPopup.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET, agendaSheet);
-            editPopup.setScene(scene);
-            
+        {
             appointmentPopup.setupData(
                     appointment,
                     vevent,
-                    calendar.getVEvents(),
+                    Arrays.asList(vevent),
                     ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-            
-//        Stage editPopup = new EditVEventPopup(
-//              appointment,
-//              appointments,
-//              vevent,
-//              calendar.getVEvents(),
-//              ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS
-//              );
-
-        editPopup.show();
         });
+
+        TextField summary = find("#summaryTextField");
+        assertEquals(vevent.getSummary().getValue(), summary.getText());
+
+        LocalDateTimeTextField start = find("#startTextField");
+        assertEquals(LocalDateTime.of(2016, 5, 15, 10, 0), start.getLocalDateTime());
+    }
+    
+    // edit non-repeatable elements
+    @Test
+    public void canEditDescriptibeProperties()
+    {
+        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK);
+        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
+        VEvent vevent = ICalendarComponents.getDaily1();
+        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
+        Appointment appointment = newAppointments.get(0);
+
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            appointmentPopup.setupData(
+                    appointment,
+                    vevent,
+                    Arrays.asList(vevent),
+                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        });
+
+        // Get properties
+        LocalDateTimeTextField startTextField = find("#startTextField");
+        LocalDateTimeTextField endTextField = find("#endTextField");
+        CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
+        TextField summaryTextField = find("#summaryTextField");
+        TextArea descriptionTextArea = find("#descriptionTextArea");
+        TextField locationTextField = find("#locationTextField");
+        TextField groupTextField = find("#groupTextField");
+        AppointmentGroupGridPane appointmentGroupGridPane = find("#appointmentGroupGridPane");
         
-        Node n = find("#editDisplayableTabPane");
-        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
-        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 600.0, 0.01);
+        // Check initial state
+        assertEquals(LocalDateTime.of(2016, 5, 15, 10, 00), startTextField.getLocalDateTime());
+        assertEquals(LocalDateTime.of(2016, 5, 15, 11, 00), endTextField.getLocalDateTime());
+        assertEquals("Individual Summary", summaryTextField.getText());
+        assertEquals("Individual Description", descriptionTextArea.getText());
+        assertEquals("group05", groupTextField.getText());
+        assertFalse(wholeDayCheckBox.isSelected());
+
+        // Edit and check properties
+        startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));        
+        endTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 9, 0));
+        
+        wholeDayCheckBox.setSelected(true);
+        assertEquals(LocalDate.of(2015, 11, 11), vevent.getDateTimeStart().getValue());
+        assertEquals(LocalDate.of(2015, 11, 12), vevent.getDateTimeEnd().getValue());
+        wholeDayCheckBox.setSelected(false);
+        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 30), vevent.getDateTimeStart().getValue());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 11, 30), vevent.getDateTimeEnd().getValue());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), startTextField.getLocalDateTime());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), endTextField.getLocalDateTime());
+        
+        summaryTextField.setText("new summary");
+        assertEquals("new summary", vevent.getSummary());
+
+        descriptionTextArea.setText("new description");
+        assertEquals("new description", vevent.getDescription());
+        
+        locationTextField.setText("new location");
+        assertEquals("new location", vevent.getLocation());
+
+        TestUtil.runThenWaitForPaintPulse(() -> appointmentGroupGridPane.setAppointmentGroupSelected(11));
+        assertEquals("group11", vevent.getCategories());
+        
+        groupTextField.setText("new group name");
+        assertEquals("new group name", vevent.getCategories());
+//        assertEquals("new group name", agenda.appointmentGroups().get(11).getDescription());
+        
+        click("#saveAppointmentButton");
+        // Check appointment edited after close
+        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), vevent.getDateTimeStart());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), vevent.getDateTimeEnd());
+        
+//        assertEquals(1, agenda.appointments().size());
+//        Appointment a = agenda.appointments().get(0);
+//        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), a.getStartLocalDateTime());
+//        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), a.getEndLocalDateTime());
+//        assertEquals("new summary", a.getSummary());
+//        assertEquals("new description", a.getDescription());
+//        assertEquals("new group name", a.getAppointmentGroup().getDescription());
+        
 //        closeCurrentWindow();
-        
-//        TestUtil.sleep(3000);
+        TestUtil.sleep(3000);
     }
 }

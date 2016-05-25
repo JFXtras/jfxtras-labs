@@ -47,7 +47,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     ResourceBundle getResources() { return resources; }
     // TODO - TRY STACK PANE TO REPLACE LocalDateTimeTextField WITH LocalDateTextField WHEN WHOLE DAY
 //    public TabPane getAppointmentEditTabPane() { return appointmentEditTabPane; }
-    @FXML private LocalDateTimeTextField startTextField; // start of recurrence
+    @FXML protected LocalDateTimeTextField startTextField; // start of recurrence
     
     @FXML protected Label endLabel;
 //    Label getEndLabel() { return endLabel; }
@@ -57,7 +57,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //    LocalDateTimeTextField getEndTextField() { return endTextField; }
 //    void setEndTextField(LocalDateTimeTextField endTextField) { this.endTextField = endTextField; }
     
-    @FXML private CheckBox wholeDayCheckBox;
+    @FXML protected CheckBox wholeDayCheckBox;
     @FXML private TextField summaryTextField; // SUMMARY
     @FXML private TextArea descriptionTextArea; // DESCRIPTION
     @FXML private TextField locationTextField; // LOCATION
@@ -128,11 +128,11 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     }    
     
     private Appointment appointment; // selected appointment
-    private Temporal startRecurrence; // bound to startTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in startTextListener
-    private Temporal endRecurrence; // bound to endTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in endTextListener
-    private Temporal startOriginalRecurrence;
-    private Temporal endRecurrenceOriginal;
-    private T vComponent;
+    protected Temporal startRecurrence; // bound to startTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in startTextListener
+//    private Temporal endRecurrence; // bound to endTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in endTextListener
+    protected Temporal startOriginalRecurrence;
+//    private Temporal endRecurrenceOriginal;
+    protected T vComponent;
     private List<T> vComponents;
     
     private final ChangeListener<? super LocalDateTime> startTextListener = (observable, oldSelection, newSelection) ->
@@ -155,7 +155,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     };
     
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
-    private final Callback<Throwable, Void> errorCallback = (throwable) ->
+    protected final Callback<Throwable, Void> errorCallback = (throwable) ->
     {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Date or Time");
@@ -199,7 +199,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             List<AppointmentGroup> appointmentGroups)
     {
         startOriginalRecurrence = appointment.getStartTemporal();
-        endRecurrenceOriginal = appointment.getEndTemporal();
+//        endRecurrenceOriginal = appointment.getEndTemporal();
         this.appointment = appointment;
         this.vComponents = vComponents;
         this.vComponent = vComponent;
@@ -247,7 +247,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //        updateZone(); // initialize
 //        vComponent.dateTimeStartProperty().addListener((obs) -> updateZone()); // setup listener to handle changes
         
-        // END DATE/TIME
+//        // END DATE/TIME
 //        Locale locale = Locale.getDefault();
 //        endTextField.setLocale(locale);
 //        endTextField.localDateTimeProperty().addListener(endTextlistener);
@@ -352,11 +352,11 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             Temporal recurrenceBefore = vComponent.previousStreamValue(startRecurrence);
             Optional<Temporal> optionalAfter = vComponent.streamRecurrences(startRecurrence).findFirst();
             Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : recurrenceBefore;
-            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-            Temporal newEndRecurrence = newStartRecurrence.plus(duration);
+//            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+//            Temporal newEndRecurrence = newStartRecurrence.plus(duration);
             Temporal startRecurrenceBeforeChange = startRecurrence;
             startTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartRecurrence));
-            endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndRecurrence));
+//            endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndRecurrence));
             startOriginalRecurrence = startRecurrence;
             return () -> startRecurrenceChangedAlert(startRecurrenceBeforeChange, newStartRecurrence);
         }
@@ -368,7 +368,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
      * The closest valid date is substituted.
     */
     // TODO - PUT COMMENTS IN RESOURCES
-    private void startRecurrenceChangedAlert(Temporal t1, Temporal t2)
+    protected void startRecurrenceChangedAlert(Temporal t1, Temporal t2)
     {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.getDialogPane().setId("startInstanceChangedAlert");
