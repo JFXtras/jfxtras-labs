@@ -110,6 +110,7 @@ public final class ICalendarComponents
     public static VEvent getDaily1()
     {
         return new VEvent()
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDescription("Daily1 Description")
@@ -124,7 +125,7 @@ public final class ICalendarComponents
     protected static VEvent getDaily2()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3).toString())
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(90))
                 .withDescription("Daily2 Description")

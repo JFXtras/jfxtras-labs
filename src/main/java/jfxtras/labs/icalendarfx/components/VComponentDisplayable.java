@@ -53,6 +53,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default T withCategories(ObservableList<Categories> categories) { setCategories(categories); return (T) this; }
     default T withCategories(String...categories)
     {
+        setCategories(null);
         Arrays.stream(categories).forEach(c -> PropertyType.CATEGORIES.parse(this, c));
         return (T) this;
     }

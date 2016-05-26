@@ -76,12 +76,18 @@ public AppointmentGroupGridPane(VComponentDisplayable<?> vComponent, List<Appoin
          lCnt++;
      }
 
-     // Select current group
-     AppointmentGroup myAppointmentGroup = appointmentGroups
-             .stream()
-             .filter(a -> a.getDescription().equals(vComponent.getCategories()))
-             .findFirst()
-             .orElse(appointmentGroups.get(0));
+     final AppointmentGroup myAppointmentGroup;
+     if ((vComponent.getCategories() != null) && (vComponent.getCategories().get(0).getValue() != null))
+     {
+         myAppointmentGroup = appointmentGroups
+                 .stream()
+                 .filter(a -> a.getDescription().equals(vComponent.getCategories().get(0).getValue().get(0)))
+                 .findFirst()
+                 .orElse(appointmentGroups.get(0));
+     } else
+     {
+         myAppointmentGroup = appointmentGroups.get(0);
+     }
      int index = appointmentGroups.indexOf(myAppointmentGroup);
      setAppointmentGroupSelected(index);
      setLPane(index);

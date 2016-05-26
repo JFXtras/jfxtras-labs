@@ -2,7 +2,7 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 
 import jfxtras.labs.icalendarfx.components.VTodo;
 
-public class DescriptiveVTodoVBox extends DescriptiveVBox<VTodo>
+public class DescriptiveVTodoVBox extends DescriptiveLocatableVBox<VTodo>
 {
     public DescriptiveVTodoVBox()
     {

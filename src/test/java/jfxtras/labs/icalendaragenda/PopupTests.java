@@ -123,6 +123,7 @@ public class PopupTests extends JFXtrasGuiTest
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarComponents.getDaily1();
+        System.out.println(vevent.getCategories().size());
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
 
@@ -148,13 +149,14 @@ public class PopupTests extends JFXtrasGuiTest
         // Check initial state
         assertEquals(LocalDateTime.of(2016, 5, 15, 10, 00), startTextField.getLocalDateTime());
         assertEquals(LocalDateTime.of(2016, 5, 15, 11, 00), endTextField.getLocalDateTime());
-        assertEquals("Individual Summary", summaryTextField.getText());
-        assertEquals("Individual Description", descriptionTextArea.getText());
+        assertEquals("Daily1 Summary", summaryTextField.getText());
+        assertEquals("Daily1 Description", descriptionTextArea.getText());
+        System.out.println(vevent.getCategories().size());
         assertEquals("group05", groupTextField.getText());
         assertFalse(wholeDayCheckBox.isSelected());
 
         // Edit and check properties
-        startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));        
+        startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));
         endTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 9, 0));
         
         wholeDayCheckBox.setSelected(true);

@@ -68,6 +68,8 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
 //            vComponent.setDateTimeEnd(end);
         }
         
+        descriptionTextArea.textProperty().bindBidirectional(vComponent.getDescription().valueProperty());
+        
         // END DATE/TIME
         Locale locale = Locale.getDefault();
         endTextField.setLocale(locale);

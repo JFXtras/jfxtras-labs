@@ -59,7 +59,8 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     
     @FXML protected CheckBox wholeDayCheckBox;
     @FXML private TextField summaryTextField; // SUMMARY
-    @FXML private TextArea descriptionTextArea; // DESCRIPTION
+    @FXML
+    protected TextArea descriptionTextArea; // DESCRIPTION
     @FXML private TextField locationTextField; // LOCATION
     @FXML private TextField groupTextField; // CATEGORIES
     @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
@@ -263,6 +264,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         startTextField.setParseErrorCallback(errorCallback);
         
         // APPOINTMENT GROUP
+//        System.out.println("cats1:" + vComponent.getCategories().size());
         appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
             (observable, oldSelection, newSelection) ->
             {
@@ -271,6 +273,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
                 groupTextField.setText(newText);
 //                groupNameEdited.set(true); // TODO - HANDLE APPOINTMENT GROUP I/O
             });
+//        System.out.println("cats2:" + vComponent.getCategories().size());
         // store group name changes by each character typed
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
@@ -278,10 +281,12 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
             vComponent.withCategories(newSelection);
+            System.out.println("cats4:" + vComponent.getCategories().size() + " " + newSelection);
             // TODO - ensure groupTextField has unique description text
 //            groupNameEdited.set(true);
         });
         appointmentGroupGridPane.setupData(vComponent, appointmentGroups);
+        System.out.println("cats3:" + vComponent.getCategories().size());
 
         // SETUP REPEATABLE CONTROLLER
 //        repeatableController.setupData(vComponent, startRecurrence, popup);
