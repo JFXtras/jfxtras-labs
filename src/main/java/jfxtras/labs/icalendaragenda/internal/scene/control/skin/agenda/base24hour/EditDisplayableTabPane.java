@@ -23,8 +23,8 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>> extends TabPane
 {
     protected DescriptiveVBox<T> editDescriptive;
-    void setEditDescriptive(DescriptiveVBox<T> editDescriptive) { this.editDescriptive = editDescriptive; }
-    DescriptiveVBox<T> getEditDescriptive() { return editDescriptive; }
+    void setDescriptiveVBox(DescriptiveVBox<T> descriptiveVBox) { this.editDescriptive = descriptiveVBox; }
+    DescriptiveVBox<T> getDescriptiveVBox() { return editDescriptive; }
 
     @FXML private AnchorPane descriptiveAnchorPane;
     AnchorPane getDescriptiveAnchorPane() { return descriptiveAnchorPane; }
@@ -59,14 +59,14 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>>
             List<T> vComponents,
             List<AppointmentGroup> appointmentGroups)
     {
-        getEditDescriptive().setupData(appointment, vComponent, vComponents, appointmentGroups);
+        getDescriptiveVBox().setupData(appointment, vComponent, vComponents, appointmentGroups);
         
         // When Appointment tab is selected make sure start and end times are valid, adjust if not
         editDisplayableTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
         {
             if (newValue == descriptiveTab)
             {
-                Runnable alertRunnable = getEditDescriptive().validateStartRecurrence();
+                Runnable alertRunnable = getDescriptiveVBox().validateStartRecurrence();
                 if (alertRunnable != null)
                 {
                     Platform.runLater(alertRunnable); // display alert after tab change refresh

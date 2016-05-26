@@ -3,7 +3,6 @@ package jfxtras.labs.icalendaragenda;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -158,13 +157,13 @@ public class PopupTests extends JFXtrasGuiTest
         // Edit and check properties
         startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));
         endTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 9, 0));
-        
+
         wholeDayCheckBox.setSelected(true);
-        assertEquals(LocalDate.of(2015, 11, 11), vevent.getDateTimeStart().getValue());
-        assertEquals(LocalDate.of(2015, 11, 12), vevent.getDateTimeEnd().getValue());
+        assertEquals(LocalDateTime.of(2015, 11, 11, 0, 0), startTextField.getLocalDateTime());
+        assertEquals(LocalDateTime.of(2015, 11, 12, 0, 0), endTextField.getLocalDateTime());
         wholeDayCheckBox.setSelected(false);
-        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 30), vevent.getDateTimeStart().getValue());
-        assertEquals(LocalDateTime.of(2015, 11, 11, 11, 30), vevent.getDateTimeEnd().getValue());
+//        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 30), vevent.getDateTimeStart().getValue());
+//        assertEquals(LocalDateTime.of(2015, 11, 11, 11, 30), vevent.getDateTimeEnd().getValue());
         assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), startTextField.getLocalDateTime());
         assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), endTextField.getLocalDateTime());
         

@@ -153,6 +153,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             startRecurrence = vComponent.getDateTimeStart().getValue().with(startTextField.getLocalDateTime());
 //            startRecurrence = vEvent.getDateTimeType().from(startTextField.getLocalDateTime(), zone);
         }
+        System.out.println("startRecurrence:" + startRecurrence);
     };
     
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
@@ -312,6 +313,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     
     void handleWholeDayChange(T vComponent, Boolean newSelection)
     {
+        System.out.println("whole day:" + newSelection);
         if (newSelection)
         {
             // save previous values to restore in case whole-day is toggled off
@@ -319,9 +321,10 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             lastStartTime = lastStartTextFieldValue.toLocalTime();
             lastDuration = Duration.between(lastStartTextFieldValue, endTextField.getLocalDateTime());
             lastDateTimeStart = vComponent.getDateTimeStart().getValue();
-            
             LocalDateTime start = LocalDate.from(startTextField.getLocalDateTime()).atStartOfDay();
+            System.out.println("dtstart1:" + vComponent.getDateTimeStart().getValue());
             startTextField.setLocalDateTime(start);
+            System.out.println("dtstart2:" + vComponent.getDateTimeStart().getValue());
         } else
         {
             final LocalDateTime start;

@@ -665,6 +665,7 @@ public class RecurrenceRuleVBox extends VBox
             // EXCEPTIONS
             // Note: exceptionComboBox string converter must be setup after the controller's initialization 
             // because the resource bundle isn't instantiated earlier.
+            // TODO - NEED TO MAKE SURE TEMPORAL CLASS MATCHES WHOLE DAY CHECKBOX
             exceptionFirstTemporal = vComponent.getDateTimeStart().getValue();
             exceptionComboBox.setConverter(new StringConverter<Temporal>()
             { // setup string converter
@@ -887,7 +888,8 @@ public class RecurrenceRuleVBox extends VBox
         private void makeExceptionDates()
         {
             final Temporal dateTimeStart = exceptionFirstTemporal; // vComponent.getDateTimeStart();
-            final Stream<Temporal> stream1 = vComponent.streamRecurrences();
+//            final Stream<Temporal> stream1 = vComponent.streamRecurrences();
+            final Stream<Temporal> stream1 = vComponent.getRecurrenceRule().getValue().streamRecurrences(dateTimeStart);
 //            Stream<Temporal> stream2 = (vComponent.getExceptions() == null) ? stream1
 //                    : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
             final Stream<Temporal> stream3; 
