@@ -43,25 +43,17 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
 public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extends VBox
 {
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
-    ResourceBundle getResources() { return resources; }
-    // TODO - TRY STACK PANE TO REPLACE LocalDateTimeTextField WITH LocalDateTextField WHEN WHOLE DAY
-//    public TabPane getAppointmentEditTabPane() { return appointmentEditTabPane; }
-    protected LocalDateTimeTextField startDateTimeTextField = new LocalDateTimeTextField(); // start of recurrence
-    protected LocalDateTextField startDateTextField = new LocalDateTextField();
-    
-    @FXML protected Label endLabel;
-//    Label getEndLabel() { return endLabel; }
-//    void setEndLabel(Label endLabel) { this.endLabel = endLabel; }
+    public ResourceBundle getResources() { return resources; }
 
-//    LocalDateTimeTextField getEndTextField() { return endTextField; }
-//    void setEndTextField(LocalDateTimeTextField endTextField) { this.endTextField = endTextField; }
-    
     @FXML GridPane timeGridPane;
+    LocalDateTimeTextField startDateTimeTextField = new LocalDateTimeTextField(); // start of recurrence
+    LocalDateTextField startDateTextField = new LocalDateTextField(); // start of recurrence when wholeDayCheckBox is selected
     
-    @FXML protected CheckBox wholeDayCheckBox;
+    @FXML Label endLabel;
+    
+    @FXML private CheckBox wholeDayCheckBox;
     @FXML private TextField summaryTextField; // SUMMARY
-    @FXML
-    protected TextArea descriptionTextArea; // DESCRIPTION
+    @FXML TextArea descriptionTextArea; // DESCRIPTION
     @FXML private TextField locationTextField; // LOCATION
     @FXML private TextField groupTextField; // CATEGORIES
     @FXML private AppointmentGroupGridPane appointmentGroupGridPane;

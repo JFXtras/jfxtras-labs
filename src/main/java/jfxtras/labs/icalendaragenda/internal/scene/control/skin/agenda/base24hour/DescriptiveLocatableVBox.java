@@ -35,8 +35,8 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  */
 public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>> extends DescriptiveVBox<T>
 {
-    protected LocalDateTimeTextField endDateTimeTextField = new LocalDateTimeTextField();; // end of recurrence
-    protected LocalDateTextField endDateTextField = new LocalDateTextField();
+    protected LocalDateTimeTextField endDateTimeTextField = new LocalDateTimeTextField(); // end of recurrence
+    protected LocalDateTextField endDateTextField = new LocalDateTextField(); // end of recurrence when wholeDayCheckBox is selected
 
     private ObjectProperty<Temporal> endOrDueProperty;
     private Temporal endRecurrence; // bound to endTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in endTextListener
@@ -57,7 +57,7 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
         if ((oldValue != null) && (end != null))
         {
             TemporalAmount duration = Duration.between(oldValue, end);
-            endDateTimeTextField.setLocalDateTime(oldValue.plus(duration));
+            endDateTimeTextField.setLocalDateTime(newValue.plus(duration));
         }
     }
     
@@ -69,7 +69,7 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
         if ((oldValue != null) && (end != null))
         {
             TemporalAmount duration = Period.between(oldValue, end);
-            endDateTextField.setLocalDate(oldValue.plus(duration));
+            endDateTextField.setLocalDate(newValue.plus(duration));
         }
     }
     
