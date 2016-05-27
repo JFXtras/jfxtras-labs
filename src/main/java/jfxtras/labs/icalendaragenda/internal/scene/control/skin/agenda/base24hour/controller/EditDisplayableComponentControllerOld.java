@@ -312,17 +312,17 @@ public class EditDisplayableComponentControllerOld<T extends VComponentDisplayab
 //            LocalDateTime end = start.plus(lastDuration);
 //            endTextField.setLocalDateTime(end);
             
-            final Temporal newDateTimeStart;
-            if (lastDateTimeStart != null)
-            {
-                newDateTimeStart = lastDateTimeStart;
-            } else
-            {
-                newDateTimeStart = DateTimeUtilities.DEFAULT_DATE_TIME_TYPE.from(start, ZoneId.systemDefault());
-            }
+//            final Temporal newDateTimeStart;
+//            if (lastDateTimeStart != null)
+//            {
+//                newDateTimeStart = lastDateTimeStart;
+//            } else
+//            {
+//                newDateTimeStart = DateTimeUtilities.DEFAULT_DATE_TIME_TYPE.from(start, ZoneId.systemDefault());
+//            }
             
 //            final Temporal newDateTimeEnd = newDateTimeStart.plus(lastDuration);
-            vComponent.setDateTimeStart(newDateTimeStart);
+//            vComponent.setDateTimeStart(newDateTimeStart);
 //            vComponent.setDateTimeEnd(newDateTimeEnd);
         }
     }

@@ -17,6 +17,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.trial.controller.CalendarController;
 
+/**
+ * Demo of Agenda with ICalendarFX integrated
+ * 
+ * @author David Bal
+ *
+ */
 public class ICalendarAgendaTrial1 extends Application
 {
     private static LocalDate firstDayOfWeekLocalDate = getFirstDayOfWeekLocalDate();

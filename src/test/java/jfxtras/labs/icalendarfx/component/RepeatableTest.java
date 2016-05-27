@@ -191,6 +191,7 @@ public class RepeatableTest //extends Application
 
     @Test //(expected = DateTimeException.class)
     @Ignore // can't catch exception in listener
+    // TODO - RELY ON isValid test instead of listener - change test
     public void canHandleDTStartTypeChange()
     {
         VEvent component = new VEvent()

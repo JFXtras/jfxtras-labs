@@ -24,7 +24,7 @@
                   <String fx:value="background3" />
                </styleClass>
             </Label>
-            <GridPane>
+            <GridPane fx:id="timeGridPane">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -38,8 +38,6 @@
                   <Label text="%start.time" GridPane.halignment="RIGHT" />
                   <Label fx:id="endLabel" text="%end.time" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                   <CheckBox fx:id="wholeDayCheckBox" mnemonicParsing="false" text="%whole.day" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
-                  <LocalDateTimeTextField fx:id="startTextField" GridPane.columnIndex="1" />
-                  <LocalDateTimeTextField fx:id="endTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
          </children>

@@ -52,7 +52,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         if (dateTimeStart == null)
         {
             dateTimeStart = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_START.toString());
-            dateTimeStartProperty().addListener((observable, oldValue, newValue) -> checkDateTimeStartConsistency() );
+//            dateTimeStartProperty().addListener((observable, oldValue, newValue) -> checkDateTimeStartConsistency() );
         }
         return dateTimeStart;
     }

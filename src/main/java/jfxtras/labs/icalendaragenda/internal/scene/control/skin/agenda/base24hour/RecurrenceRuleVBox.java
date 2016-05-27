@@ -662,10 +662,15 @@ public class RecurrenceRuleVBox extends VBox
                 throw new RuntimeException("Unsupported VComponent");
             }
             
-            // EXCEPTIONS
-            // Note: exceptionComboBox string converter must be setup after the controller's initialization 
-            // because the resource bundle isn't instantiated earlier.
-            // TODO - NEED TO MAKE SURE TEMPORAL CLASS MATCHES WHOLE DAY CHECKBOX
+            /* EXCEPTIONS
+             * Note: exceptionComboBox string converter must be setup after the controller's initialization 
+             * because the resource bundle isn't instantiated earlier.
+             *
+             * Note2:
+             * When exceptions change you can only on change ALL or CANCEL - a change is an addition or removal, not merely a TYPE change such as from toggling wholeDayCheckBoy
+             * TODO - NEED TO MAKE SURE TEMPORAL CLASS MATCHES WHOLE DAY CHECKBOX
+             * 
+             */
             exceptionFirstTemporal = vComponent.getDateTimeStart().getValue();
             exceptionComboBox.setConverter(new StringConverter<Temporal>()
             { // setup string converter

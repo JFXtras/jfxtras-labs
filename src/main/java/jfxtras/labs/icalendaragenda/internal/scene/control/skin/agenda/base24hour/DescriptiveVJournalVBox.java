@@ -8,9 +8,9 @@ public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
     {
         super();
         endLabel.setVisible(false);
-        endTextField.setVisible(false);
+//        endDateTimeTextField.setVisible(false);
         endLabel = null;
-        endTextField = null;
+//        endDateTimeTextField = null;
 //        getEndLabel().setVisible(false);
 //        getEndTextField().setVisible(false);
 //        setEndLabel(null);

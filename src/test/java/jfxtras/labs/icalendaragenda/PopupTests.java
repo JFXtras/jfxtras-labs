@@ -157,7 +157,7 @@ public class PopupTests extends JFXtrasGuiTest
         // Edit and check properties
         startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));
         endTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 9, 0));
-
+        TestUtil.sleep(3000);
         wholeDayCheckBox.setSelected(true);
         assertEquals(LocalDateTime.of(2015, 11, 11, 0, 0), startTextField.getLocalDateTime());
         assertEquals(LocalDateTime.of(2015, 11, 12, 0, 0), endTextField.getLocalDateTime());
