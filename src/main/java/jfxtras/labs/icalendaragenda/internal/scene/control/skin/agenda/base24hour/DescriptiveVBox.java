@@ -138,8 +138,28 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //    private Temporal endRecurrenceOriginal;
     protected T vComponent;
     private List<T> vComponents;
-    
-    protected ChangeListener<? super LocalDateTime> startTextListener;
+
+    final private ChangeListener<? super LocalDate> startDateTextListener = (observable, oldValue, newValue) -> synchStartDate(oldValue, newValue);
+
+    /** Update startDateTimeTextField when startDateTextField changes */
+    void synchStartDate(LocalDate oldValue, LocalDate newValue)
+    {
+        startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
+        LocalDateTime newDateTime = startDateTimeTextField.getLocalDateTime().with(newValue);
+        startDateTimeTextField.setLocalDateTime(newDateTime);
+        startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
+    }
+            
+    final private ChangeListener<? super LocalDateTime> startDateTimeTextListener = (observable, oldValue, newValue) -> synchStartDateTime(oldValue, newValue);
+
+    /** Update startDateTextField when startDateTimeTextField changes */
+    void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
+    {
+        startDateTextField.localDateProperty().removeListener(startDateTextListener);
+        LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
+        startDateTextField.setLocalDate(newDate);
+        startDateTextField.localDateProperty().addListener(startDateTextListener);
+    }
     
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
     protected final Callback<Throwable, Void> errorCallback = (throwable) ->
@@ -150,34 +170,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         alert.showAndWait();
         return null;
     };
-    // TODO - CONSIDER PUTTING THIS LISTENER IN SUBCLASS
-//    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
-//    private void tooEarlyDateAlert(Temporal t1, Temporal t2)
-//    {
-//        Alert alert = new Alert(AlertType.ERROR);
-//        alert.setTitle("Invalid Date Selection");
-//        alert.setHeaderText("End must be after start");
-//        alert.setContentText(Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t1) + " is not after" + System.lineSeparator() + Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t2));
-//        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
-//        alert.getButtonTypes().setAll(buttonTypeOk);
-//        alert.showAndWait();
-//    }
-//    protected final ChangeListener<? super LocalDateTime> endTextlistener = (observable, oldSelection, newSelection) ->
-//    {
-//        if ((startTextField.getLocalDateTime() != null) && newSelection.isBefore(startTextField.getLocalDateTime()))
-//        {
-//            tooEarlyDateAlert(newSelection, startTextField.getLocalDateTime());
-//            endTextField.setLocalDateTime(oldSelection);
-//        }
-//        if (wholeDayCheckBox.isSelected())
-//        {
-//            endRecurrence = LocalDate.from(endTextField.getLocalDateTime());
-//        } else
-//        {
-////            endRecurrence = vEvent.getDateTimeType().from(endTextField.getLocalDateTime(), zone);
-//            endRecurrence = vComponent.getDateTimeStart().getValue().with(endTextField.getLocalDateTime());
-//        }
-//    };
     
     public void setupData(
             Appointment appointment,
@@ -197,14 +189,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             repeatableTab.setDisable(true);
             repeatableTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
         }
-
-//        // Convert duration to date/time end - this controller can't handle VEvents with duration
-//        if (vComponent.getDuration() != null)
-//        {
-//            Temporal end = vComponent.getDateTimeStart().getValue().plus(vComponent.getDuration().getValue());
-//            vComponent.setDuration((Duration) null);
-//            vComponent.setDateTimeEnd(end);
-//        }
         
         // Copy original VEvent
 ////        vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent);
@@ -219,17 +203,17 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //        }
 //        locationTextField.textProperty().bindBidirectional(vComponent.getLocation().valueProperty());
         
-        startTextListener = (observable, oldSelection, newSelection) ->
-        {
-            if (wholeDayCheckBox.isSelected())
-            {
-                startRecurrence = LocalDate.from(startDateTimeTextField.getLocalDateTime());
-            } else
-            {
-                startRecurrence = vComponent.getDateTimeStart().getValue().with(startDateTimeTextField.getLocalDateTime());
-            }
-            System.out.println("startRecurrence:" + startRecurrence);
-        };
+//        startDateTimeTextListener = (observable, oldSelection, newSelection) ->
+//        {
+//            if (wholeDayCheckBox.isSelected())
+//            {
+//                startRecurrence = LocalDate.from(startDateTimeTextField.getLocalDateTime());
+//            } else
+//            {
+//                startRecurrence = vComponent.getDateTimeStart().getValue().with(startDateTimeTextField.getLocalDateTime());
+//            }
+//            System.out.println("startRecurrence:" + startRecurrence);
+//        };
 
         // TIME ZONE
 //        updateZone(); // initialize
@@ -245,7 +229,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         
         // START DATE/TIME
         startDateTimeTextField.setLocale(Locale.getDefault());
-        startDateTimeTextField.localDateTimeProperty().addListener(startTextListener);
+        startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
         final LocalDateTime start;
         if (startOriginalRecurrence.isSupported(ChronoUnit.NANOS))
         {
@@ -265,14 +249,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         // WHOLE DAY
         wholeDayCheckBox.setSelected(vComponent.isWholeDay());
         handleWholeDayChange(vComponent, wholeDayCheckBox.isSelected()); 
-        wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
-        {
-            startDateTimeTextField.localDateTimeProperty().removeListener(startTextListener);
-//            endTextField.localDateTimeProperty().removeListener(endTextlistener);
-            handleWholeDayChange(vComponent, newSelection);
-            startDateTimeTextField.localDateTimeProperty().addListener(startTextListener);
-//            endTextField.localDateTimeProperty().addListener(endTextlistener);
-        });
+        wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) -> handleWholeDayChange(vComponent, newSelection));
         
         // APPOINTMENT GROUP
 //        System.out.println("cats1:" + vComponent.getCategories().size());
@@ -316,7 +293,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //        });
     }
     
-//    private LocalDateTime lastStartTextFieldValue = null; // last LocalDateTime in startTextField
+    //    private LocalDateTime lastStartTextFieldValue = null; // last LocalDateTime in startTextField
     protected LocalTime defaultStartTime = LocalTime.of(10, 0); // default time
 //    protected TemporalAmount lastDuration = Duration.ofHours(1); // Default to one hour duration
 //    protected Temporal lastDateTimeStart;
@@ -326,43 +303,19 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
      */
     void handleWholeDayChange(T vComponent, Boolean newSelection)
     {
+        startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
+        startDateTextField.localDateProperty().removeListener(startDateTextListener);
         if (newSelection)
         {
             timeGridPane.getChildren().remove(startDateTimeTextField);
             timeGridPane.add(startDateTextField, 1, 0);
-            // save previous values to restore in case whole-day is toggled off
-//            lastStartTextFieldValue = startDateTimeTextField.getLocalDateTime();
-//            lastStartTime = lastStartTextFieldValue.toLocalTime();
-//            lastDuration = Duration.between(lastStartTextFieldValue, endTextField.getLocalDateTime());
-//            lastDateTimeStart = vComponent.getDateTimeStart().getValue();
-//            LocalDate start = LocalDate.from(startDateTimeTextField.getLocalDateTime());
-//            System.out.println("dtstart1:" + vComponent.getDateTimeStart().getValue());
-//            startDateTextField.setLocalDate(start);
-//            System.out.println("dtstart2:" + vComponent.getDateTimeStart().getValue());
         } else
         {
             timeGridPane.getChildren().remove(startDateTextField);
             timeGridPane.add(startDateTimeTextField, 1, 0);
-//            final LocalDateTime start;
-//            if (lastStartTextFieldValue != null)
-//            {
-//                start = lastStartTextFieldValue;
-//            } else
-//            {
-//                start = LocalDate.from(startDateTimeTextField.getLocalDateTime()).atTime(lastStartTime);
-//            }
-//            startDateTimeTextField.setLocalDateTime(start);
-//
-//            final Temporal newDateTimeStart;
-//            if (lastDateTimeStart != null)
-//            {
-//                newDateTimeStart = lastDateTimeStart;
-//            } else
-//            {
-//                newDateTimeStart = DateTimeUtilities.DEFAULT_DATE_TIME_TYPE.from(start, ZoneId.systemDefault());
-//            }            
-//            vComponent.setDateTimeStart(newDateTimeStart);
         }
+        startDateTextField.localDateProperty().addListener(startDateTextListener);
+        startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
     }
     
     /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and
