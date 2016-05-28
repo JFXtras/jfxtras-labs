@@ -12,6 +12,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +32,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -54,14 +57,14 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML private CheckBox wholeDayCheckBox;
     @FXML private TextField summaryTextField; // SUMMARY
     @FXML TextArea descriptionTextArea; // DESCRIPTION
-    @FXML private TextField locationTextField; // LOCATION
+    @FXML protected TextField locationTextField; // LOCATION
     @FXML private TextField groupTextField; // CATEGORIES
     @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
-    @FXML private Button saveAppointmentButton;
-    @FXML private Button cancelAppointmentButton;
+    @FXML private Button saveComponentButton;
+    @FXML private Button cancelComponentButton;
     @FXML private Button saveRepeatButton;
     @FXML private Button cancelRepeatButton;
-    @FXML private Button deleteAppointmentButton;
+    @FXML private Button deleteComponentButton;
     @FXML private Tab appointmentTab;
     @FXML private Tab repeatableTab;
     
@@ -74,29 +77,14 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         startDateTextField.setId("startDateTextField");
     }
     
-    @FXML private void handleSave()
+    ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
+    
+    @FXML
+    void handleSave()
     {
-//        System.out.println("summary text:" + vComponent.getSummary().getValue());
-//        System.out.println("summary text:" + vEventOriginal.getSummary().getValue());
-//        Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
-//                vComponent,
-//                vEventOriginal,
-////                vComponents,
-//                startOriginalRecurrence,
-//                startRecurrence,
-//                endRecurrence,
-//                EditChoiceDialog.EDIT_DIALOG_CALLBACK
-//                );
-//        vComponents.addAll(newVComponents);
-////        vEvent.handleEdit(
-////                vEventOriginal
-////              , vComponents
-////              , startOriginalRecurrence
-////              , startRecurrence
-////              , endRecurrence
-////              , appointments
-////              , EditChoiceDialog.EDIT_DIALOG_CALLBACK);
-//        popup.close();
+        // primary functionality added in subclasses
+        System.out.println("here6:");
+        isFinished.set(true);
     }
     
     // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
@@ -107,6 +95,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     
     @FXML private void handleCancelButton()
     {
+        isFinished.set(true);
 ////        vEventOriginal.copyTo(vEvent);
 //        vComponent.copyComponentFrom(vEventOriginal);
 //        popup.close();
@@ -114,6 +103,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 
     @FXML private void handleDeleteButton()
     {
+        isFinished.set(true);
 //        vEvent.handleDelete(
 //                vComponents
 //              , startRecurrence
@@ -123,19 +113,19 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //        popup.close();
     }    
     
-    private Appointment appointment; // selected appointment
-    protected Temporal startRecurrence; // bound to startTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in startTextListener
+//    private Appointment appointment; // selected appointment
+//    protected Temporal startRecurrence; // bound to startTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in startTextListener
 //    private Temporal endRecurrence; // bound to endTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in endTextListener
-    protected Temporal startOriginalRecurrence;
+//    protected Temporal startOriginalRecurrence;
 //    private Temporal endRecurrenceOriginal;
-    protected T vComponent;
-    private List<T> vComponents;
+    
 
     final private ChangeListener<? super LocalDate> startDateTextListener = (observable, oldValue, newValue) -> synchStartDate(oldValue, newValue);
 
     /** Update startDateTimeTextField when startDateTextField changes */
     void synchStartDate(LocalDate oldValue, LocalDate newValue)
     {
+        startRecurrence = newValue;
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
         LocalDateTime newDateTime = startDateTimeTextField.getLocalDateTime().with(newValue);
         startDateTimeTextField.setLocalDateTime(newDateTime);
@@ -147,6 +137,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTextField when startDateTimeTextField changes */
     void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
+        startRecurrence = newValue;
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
         startDateTextField.setLocalDate(newDate);
@@ -163,6 +154,12 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         return null;
     };
     
+    T vComponentEdited;
+    T vComponentOriginalCopy;
+    List<T> vComponents;
+    Temporal startOriginalRecurrence;
+    Temporal startRecurrence;
+
     public void setupData(
             Appointment appointment,
             T vComponent,
@@ -170,13 +167,12 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             List<AppointmentGroup> appointmentGroups)
     {
         startOriginalRecurrence = appointment.getStartTemporal();
-//        endRecurrenceOriginal = appointment.getEndTemporal();
-        this.appointment = appointment;
+//        this.appointment = appointment;
         this.vComponents = vComponents;
-        this.vComponent = vComponent;
+        vComponentEdited = vComponent;
         
         // Disable repeat rules for events with recurrence-id
-        if (vComponent.getRecurrenceDates() != null)
+        if (vComponentEdited.getRecurrenceDates() != null)
         { // recurrence recurrences can't add repeat rules (only parent can have repeat rules)
             repeatableTab.setDisable(true);
             repeatableTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
@@ -187,7 +183,12 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //        vEventOriginal = new VEvent(vComponent);
         
         // String bindings
-        summaryTextField.textProperty().bindBidirectional(vComponent.getSummary().valueProperty());
+        if (vComponentEdited.getSummary() == null)
+        {
+            vComponentEdited.setSummary(Summary.parse(""));
+        }
+        summaryTextField.textProperty().bindBidirectional(vComponentEdited.getSummary().valueProperty());
+        
 //        descriptionTextArea.textProperty().bindBidirectional(vComponent.getDescription().valueProperty());
 //        if (vComponent.getLocation() == null)
 //        {
@@ -239,8 +240,8 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         startDateTextField.setParseErrorCallback(errorCallback);
         
         // WHOLE DAY
-        wholeDayCheckBox.setSelected(vComponent.isWholeDay());
-        handleWholeDayChange(vComponent, wholeDayCheckBox.isSelected()); 
+        wholeDayCheckBox.setSelected(vComponentEdited.isWholeDay());
+        handleWholeDayChange(vComponentEdited, wholeDayCheckBox.isSelected()); 
         wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) -> handleWholeDayChange(vComponent, newSelection));
         
         // APPOINTMENT GROUP
@@ -260,13 +261,13 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
-            vComponent.withCategories(newSelection);
-            System.out.println("cats4:" + vComponent.getCategories().size() + " " + newSelection);
+            vComponentEdited.withCategories(newSelection);
+//            System.out.println("cats4:" + vComponent.getCategories().size() + " " + newSelection);
             // TODO - ensure groupTextField has unique description text
 //            groupNameEdited.set(true);
         });
-        appointmentGroupGridPane.setupData(vComponent, appointmentGroups);
-        System.out.println("cats3:" + vComponent.getCategories().size());
+        appointmentGroupGridPane.setupData(vComponentEdited, appointmentGroups);
+//        System.out.println("cats3:" + vComponent.getCategories().size());
 
         // SETUP REPEATABLE CONTROLLER
 //        repeatableController.setupData(vComponent, startRecurrence, popup);
@@ -313,13 +314,14 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and
      * endRecurrence to closest valid values
      */
+    // TODO - FIX THIS
     Runnable validateStartRecurrence()
     {
 //        Temporal actualRecurrence = vEvent.streamRecurrences(startRecurrence).findFirst().get();
-        if (! vComponent.isRecurrence(startRecurrence))
+        if (! vComponentEdited.isRecurrence(startRecurrence))
         {
-            Temporal recurrenceBefore = vComponent.previousStreamValue(startRecurrence);
-            Optional<Temporal> optionalAfter = vComponent.streamRecurrences(startRecurrence).findFirst();
+            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrence);
+            Optional<Temporal> optionalAfter = vComponentEdited.streamRecurrences(startRecurrence).findFirst();
             Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : recurrenceBefore;
 //            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
 //            Temporal newEndRecurrence = newStartRecurrence.plus(duration);

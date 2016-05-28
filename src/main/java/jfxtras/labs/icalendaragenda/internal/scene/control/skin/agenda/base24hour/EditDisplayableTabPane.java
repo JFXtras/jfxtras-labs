@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.List;
 
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
@@ -32,10 +34,15 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>>
     @FXML private Tab descriptiveTab;
     @FXML private Tab recurrenceRuleTab;
     
+    // Becomes true when pane should be closed
+    ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
+    public ObjectProperty<Boolean> isFinished() { return isFinished; }
+    
     public EditDisplayableTabPane( )
     {
         super();
         loadFxml(DescriptiveVBox.class.getResource("view/EditDisplayable.fxml"), this);
+//        System.out.println("editDescriptive:" + editDescriptive);
 //        editVEventDescriptive = new EditVEventDescriptiveVBox();
 //        descriptiveAnchorPane.getChildren().add(getEditDescriptive());
     }
@@ -43,7 +50,8 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>>
     // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
     @FXML private void handleRepeatSave()
     {
-
+        System.out.println("save finishe:");
+        isFinished.set(true);
     }
     
     @FXML private void handleCancelButton()

@@ -215,7 +215,8 @@ public final class DateTimeUtilities
     {
         if (! startInclusive.getClass().equals(endExclusive.getClass()))
         {
-            throw new DateTimeException("Temporal class of parameters startInclusive and endExclusive must be the same.");
+            throw new DateTimeException("Temporal class of parameters startInclusive and endExclusive must be the same - " + 
+                        startInclusive.getClass().getSimpleName() + ", " + endExclusive.getClass().getSimpleName());
         }
         final TemporalAmount duration;
         if (DateTimeType.of(startInclusive) == DateTimeType.DATE)

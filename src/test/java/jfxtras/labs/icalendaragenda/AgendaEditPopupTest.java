@@ -17,6 +17,7 @@ import jfxtras.test.TestUtil;
  *
  * @author David Bal
  */
+@Deprecated
 public class AgendaEditPopupTest extends AgendaTestAbstract
 {
     @Override
@@ -28,7 +29,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     @Test
     public void canProduceEditPopup()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarComponents.getDaily1()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getDaily1()));
 
         // Open edit popup
         move("#hourLine11");

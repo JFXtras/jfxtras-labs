@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendaragenda.trial;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import jfxtras.labs.icalendaragenda.ICalendarComponents;
+import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.MakeAppointmentsTest;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
@@ -40,7 +40,8 @@ public class ICalendarAgendaTrial2 extends Application
         Settings.setup(resources);
         
         EditVEventTabPane popup = new EditVEventTabPane();
-        VEvent vevent = ICalendarComponents.getDaily1();
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
+        List<VEvent> vEvents = new ArrayList<>();
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
                 MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK);
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
@@ -50,7 +51,7 @@ public class ICalendarAgendaTrial2 extends Application
         popup.setupData(
                 appointment,
                 vevent,
-                Arrays.asList(vevent),
+                vEvents,
                 ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         Scene scene = new Scene(popup);
         String agendaSheet = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
@@ -59,6 +60,6 @@ public class ICalendarAgendaTrial2 extends Application
         primaryStage.setScene(scene);
         primaryStage.setTitle("ICalendar Edit Popup Demo");
         primaryStage.show();
-        
+        popup.isFinished().addListener((obs, oldValue, newValue) -> primaryStage.hide());        
     }
 }

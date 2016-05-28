@@ -3,6 +3,7 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 
 import javafx.util.Pair;
@@ -21,7 +22,7 @@ public class AgendaDateTimeUtilities
             if (start == end)
             {
                 endString = "";
-            } else if (days.isZero()) // same day
+            } else if (days.isZero() && end.isSupported(ChronoUnit.NANOS)) // same day
             {
                 endString = " - " + Settings.TIME_FORMAT_END.format(end);
             } else

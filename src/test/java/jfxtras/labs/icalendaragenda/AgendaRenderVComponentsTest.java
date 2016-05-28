@@ -19,6 +19,7 @@ import javafx.scene.Parent;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.test.TestUtil;
 
+@Deprecated
 public class AgendaRenderVComponentsTest extends AgendaTestAbstract
 {
     @Override
@@ -34,11 +35,11 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getDaily2());
-            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getWeekly2());
-            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getWholeDayDaily3());
-            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getIndividual1());
-            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getIndividual2());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getDaily2());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getWeekly2());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getWholeDayDaily3());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getIndividual1());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getIndividual2());
         });
 
         List<LocalDateTime> startDates = agenda.appointments()
@@ -178,7 +179,7 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments
         TestUtil.runThenWaitForPaintPulse( () -> {
-            agenda.getVCalendar().getVEvents().add(ICalendarComponents.getIndividualZoned());
+            agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getIndividualZoned());
         });
         
         VEvent v = agenda.getVCalendar().getVEvents().get(0);

@@ -29,7 +29,7 @@ public final class ReviseComponentHelper
     /** Edit VEvent or VTodo or VJournal
      * @param <T>*/
     public static <T extends VComponentDisplayableBase<?>> Collection<T> handleEdit(
-            T vComponentEditedCopy,
+            T vComponentEdited,
             T vComponentOriginal,
             Temporal startOriginalRecurrence,
             Temporal startRecurrence,
@@ -38,8 +38,8 @@ public final class ReviseComponentHelper
             )
     {
         Collection<T> vComponents = new ArrayList<>(); // new components that should be added to main list
-        vComponentEditedCopy.validateStartRecurrenceAndDTStart(startOriginalRecurrence, startRecurrence);
-        final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginal.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
+        vComponentEdited.validateStartRecurrenceAndDTStart(startOriginalRecurrence, startRecurrence);
+        final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginal.getRecurrenceRule(), vComponentEdited.getRecurrenceRule());
         System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
 //        Collection<R> newRecurrences = null;
@@ -47,11 +47,11 @@ public final class ReviseComponentHelper
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
-            vComponentEditedCopy.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+            vComponentEdited.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
             // fall through
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
-            vComponentEditedCopy.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+            vComponentEdited.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
             
 //            if (! vComponentEditedCopy.equals(vComponentOriginal))
 //            {
@@ -60,7 +60,8 @@ public final class ReviseComponentHelper
             break;
         case WITH_EXISTING_REPEAT:
             // Find which properties changed
-            List<PropertyType> changedProperties = vComponentEditedCopy.findChangedProperties(
+            // TODO - PUT findChangedProperties IN STATIC
+            List<PropertyType> changedProperties = vComponentEdited.findChangedProperties(
                     vComponentOriginal,
                     startOriginalRecurrence,
                     startRecurrence,
@@ -75,26 +76,31 @@ public final class ReviseComponentHelper
             boolean provideDialog = requiresChangeDialog(changedProperties);
             if (changedProperties.size() > 0) // if changes occurred
             {
-                List<T> relatedVComponents = Arrays.asList(vComponentEditedCopy); // TODO - support related components
+                List<T> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
-                    Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = ChangeDialogOption.makeDialogChoices(vComponentEditedCopy, startOriginalRecurrence);
+                    Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = ChangeDialogOption.makeDialogChoices(vComponentEdited, startOriginalRecurrence);
+                    System.out.println("changeResponse4:" + provideDialog);
+                    choices.entrySet().stream().forEach(System.out::println);
                     changeResponse = dialogCallback.call(choices);
+                    System.out.println("changeResponse5:" + provideDialog);
                 } else
                 {
                     changeResponse = ChangeDialogOption.ALL;
                 }
+                System.out.println("changeResponse6:" + provideDialog);
+                System.out.println("changeResponse5:" + changeResponse);
                 switch (changeResponse)
                 {
                 case ALL:
                     if (relatedVComponents.size() == 1)
                     {
-                        vComponentEditedCopy.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+                        vComponentEdited.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
 //                        if (vComponentEditedCopy.childComponentsWithRecurrenceIDs().size() > 0)
 //                        {
                         // Adjust children components with RecurrenceIDs
-                        vComponentEditedCopy.childComponentsWithRecurrenceIDs()
+                        vComponentEdited.childComponentsWithRecurrenceIDs()
                                 .stream()
 //                                .map(c -> c.getRecurrenceId())
                                 .forEach(v ->
@@ -115,7 +121,7 @@ public final class ReviseComponentHelper
                     return null;
                 case THIS_AND_FUTURE:
                     editThisAndFuture(
-                            vComponentEditedCopy,
+                            vComponentEdited,
                             vComponentOriginal,
                             vComponents,
                             startOriginalRecurrence,
@@ -125,7 +131,7 @@ public final class ReviseComponentHelper
                     break;
                 case ONE:
                     editOne(
-                            vComponentEditedCopy,
+                            vComponentEdited,
                             vComponentOriginal,
                             vComponents,
                             startOriginalRecurrence,
@@ -134,22 +140,22 @@ public final class ReviseComponentHelper
                             );
                     break;
                 default:
-                    break;
+                    throw new RuntimeException("Unknown response:" + changeResponse);
                 }
             }
         }
-        if (! vComponentEditedCopy.isValid())
+        if (! vComponentEdited.isValid())
         {
             throw new RuntimeException("Invalid component"); // TODO - MAKE ERROR STRING
         }
         if (incrementSequence)
         {
-            vComponentEditedCopy.incrementSequence();
+            vComponentEdited.incrementSequence();
         }
-//        System.out.println(vComponents.size());
+        System.out.println("endedit:"+vComponents.size());
 //        vComponents.remove(vComponentOriginal);
 //        System.out.println(vComponents.size());
-        vComponents.add(vComponentEditedCopy);
+        vComponents.add(vComponentEdited);
 //        System.out.println(vComponents.size());
 //        if (newRecurrences != null)
 //        {

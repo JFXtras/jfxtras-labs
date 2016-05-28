@@ -38,6 +38,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDa
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
+@Deprecated
 public class MakeAppointmentsTest
 {
     /** Tests daily stream with FREQ=DAILY */
@@ -46,7 +47,7 @@ public class MakeAppointmentsTest
     {
 //        Arrays.stream(VComponentUtilities.VComponentPropertyOld.values())
 //        .forEach(p -> System.out.println(p + " " + p.isDialogRequired()));
-        VEvent vevent = ICalendarComponents.getDaily1();
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
         List<Appointment> newAppointments = makeAppointments(vevent, startRange, endRange);
@@ -167,7 +168,7 @@ public class MakeAppointmentsTest
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         
-        VEvent vevent = ICalendarComponents.getDaily1();
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
         System.out.println(appointments.size());
         newAppointments.stream().forEach(System.out::println);
@@ -192,7 +193,7 @@ public class MakeAppointmentsTest
     };
     
     /** Similar to {@link ICalendarAgenda#makeAppointments} */
-    @Deprecated
+    @Deprecated // replace with static in ReviseComponentHelper
     public static List<Appointment> makeAppointments(VEvent component, LocalDateTime startRange, LocalDateTime endRange)
     {
         List<Appointment> appointments = new ArrayList<>();

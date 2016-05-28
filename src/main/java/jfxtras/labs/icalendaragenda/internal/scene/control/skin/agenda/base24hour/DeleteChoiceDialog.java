@@ -16,7 +16,7 @@ import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOpt
  * @author David Bal
  *
  */
-public class DeleteChoiceDialog extends AppointmentChangeDialog
+public class DeleteChoiceDialog extends ComponentChangeDialog
 {
     /**
      * Callback to produce an edit choice dialog based on the options in the input argument choices.

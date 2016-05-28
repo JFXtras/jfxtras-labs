@@ -62,7 +62,7 @@ public class EditAppointmentTest
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         
         // Note: All non-date/time properties are changed in component
-        VEvent vComponentOriginal = ICalendarComponents.getDaily1();
+        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vComponentOriginal);
         vComponentAppointmentMap.put(vComponentOriginal, newAppointments);
         vComponents.add(vComponentOriginal);

@@ -18,9 +18,9 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDa
 /**
  * Static VEvents representing iCalendar components
  */
-public final class ICalendarComponents
+public final class ICalendarStaticComponents
 {   
-    private ICalendarComponents() { }
+    private ICalendarStaticComponents() { }
 
     /** FREQ=YEARLY; */
     protected static VEvent getYearly1()

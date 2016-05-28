@@ -8,6 +8,7 @@ import javafx.scene.input.MouseButton;
 import jfxtras.test.AssertNode;
 import jfxtras.test.TestUtil;
 
+@Deprecated
 public class AgendaSelectedOneAppointmentPopupTest extends AgendaTestAbstract
 {
     @Override
@@ -19,7 +20,7 @@ public class AgendaSelectedOneAppointmentPopupTest extends AgendaTestAbstract
     @Test
     public void canProduceSelectedOneAppointmentPopup()
     {
-        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarComponents.getDaily1()));
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getDaily1()));
 
         // Open popup
         move("#hourLine11");

@@ -7,17 +7,21 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
+import jfxtras.labs.icalendarfx.components.VComponentLocatableBase;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTextField;
@@ -33,14 +37,10 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  *
  * @param <T> subclass for VEvent or VTodo
  */
-public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>> extends DescriptiveVBox<T>
+public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase<?>> extends DescriptiveVBox<T>
 {
     protected LocalDateTimeTextField endDateTimeTextField = new LocalDateTimeTextField(); // end of recurrence
     protected LocalDateTextField endDateTextField = new LocalDateTextField(); // end of recurrence when wholeDayCheckBox is selected
-
-    private ObjectProperty<Temporal> endOrDueProperty;
-    private Temporal endRecurrence; // bound to endTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in endTextListener
-    private Temporal endRecurrenceOriginal;
     
     public DescriptiveLocatableVBox()
     {
@@ -49,6 +49,24 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
         endDateTextField.setId("endDateTextField");
     }
 
+    @Override
+    @FXML void handleSave()
+    {
+        super.handleSave();
+        System.out.println("start edit:" + startRecurrence + " " + endRecurrence);
+        Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
+                vComponentEdited,
+                vComponentOriginalCopy,
+                startOriginalRecurrence,
+                startRecurrence,
+                endRecurrence,
+                EditChoiceDialog.EDIT_DIALOG_CALLBACK
+                );
+        vComponents.addAll(newVComponents);
+        System.out.println("newVComponents:" + newVComponents.size());
+        System.out.println("contnen:" + vComponentEdited.toContent());
+    }
+    
     @Override
     void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
@@ -78,6 +96,7 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
     /** Update endDateTimeTextField when endDateTextField changes */
     void synchEndDate(LocalDate oldValue, LocalDate newValue)
     {
+        endRecurrence = newValue;
         endDateTimeTextField.localDateTimeProperty().removeListener(endDateTimeTextListener);
         LocalDateTime newDateTime = endDateTimeTextField.getLocalDateTime().with(newValue.minusDays(1));
         endDateTimeTextField.setLocalDateTime(newDateTime);
@@ -89,11 +108,15 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
     /** Update endDateTextField when endDateTimeTextField changes */
     void synchEndDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
+        endRecurrence = newValue;
         endDateTextField.localDateProperty().removeListener(endDateTextListener);
         LocalDate newDate = LocalDate.from(endDateTimeTextField.getLocalDateTime()).plusDays(1);
         endDateTextField.setLocalDate(newDate);
         endDateTextField.localDateProperty().addListener(endDateTextListener);
     }
+
+    private Temporal endRecurrence; // bound to endTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in endTextListener
+    private Temporal endRecurrenceOriginal;
 
     @Override
     public void setupData(
@@ -110,11 +133,20 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
         {
             Temporal end = vComponent.getDateTimeStart().getValue().plus(vComponent.getDuration().getValue());
             vComponent.setDuration((DurationProp) null);
-            endOrDueProperty.set(end);
+//            endOrDueProperty.set(end);
 //            vComponent.setDateTimeEnd(end);
         }
         
+        if (vComponent.getDescription() == null)
+        {
+            vComponent.setDescription(Description.parse(""));
+        }
         descriptionTextArea.textProperty().bindBidirectional(vComponent.getDescription().valueProperty());
+        if (vComponent.getLocation() == null)
+        {
+            vComponent.setLocation(Location.parse(""));
+        }
+        locationTextField.textProperty().bindBidirectional(vComponent.getLocation().valueProperty());
         
         /*
          * END DATE/TIME
@@ -206,10 +238,10 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
     Runnable validateStartRecurrence()
     {
 //        Temporal actualRecurrence = vEvent.streamRecurrences(startRecurrence).findFirst().get();
-        if (! vComponent.isRecurrence(startRecurrence))
+        if (! vComponentEdited.isRecurrence(startRecurrence))
         {
-            Temporal recurrenceBefore = vComponent.previousStreamValue(startRecurrence);
-            Optional<Temporal> optionalAfter = vComponent.streamRecurrences(startRecurrence).findFirst();
+            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrence);
+            Optional<Temporal> optionalAfter = vComponentEdited.streamRecurrences(startRecurrence).findFirst();
             Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : recurrenceBefore;
             TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
             Temporal newEndRecurrence = newStartRecurrence.plus(duration);

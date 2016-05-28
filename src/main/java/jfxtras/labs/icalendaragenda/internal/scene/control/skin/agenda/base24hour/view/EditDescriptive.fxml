@@ -111,9 +111,9 @@
       </VBox>
       <HBox alignment="CENTER" spacing="5.0">
          <children>
-            <Button fx:id="cancelAppointmentButton" mnemonicParsing="false" onAction="#handleCancelButton" text="%cancel" />
-            <Button fx:id="saveAppointmentButton" layoutX="170.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleSave" text="%save" />
-            <Button fx:id="deleteAppointmentButton" mnemonicParsing="false" onAction="#handleDeleteButton" text="%delete" />
+            <Button fx:id="cancelComponentButton" mnemonicParsing="false" onAction="#handleCancelButton" text="%cancel" />
+            <Button fx:id="saveComponentButton" layoutX="170.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleSave" text="%save" />
+            <Button fx:id="deleteComponentButton" mnemonicParsing="false" onAction="#handleDeleteButton" text="%delete" />
          </children>
       </HBox>
    </children>

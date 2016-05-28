@@ -21,6 +21,7 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.test.AssertNode;
 import jfxtras.test.TestUtil;
 
+@Deprecated
 public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
 {   
     @Override

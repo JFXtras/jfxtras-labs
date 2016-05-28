@@ -1,6 +1,10 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
 
+import java.util.List;
+
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
 {
@@ -10,25 +14,14 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
         endLabel.setText(getResources().getString("end.time"));
     }
     
-//    @Override
-//    void handleWholeDayChange(VEvent vComponent, Boolean newSelection)
-//    {
-////        System.out.println("whole day2:" + newSelection);
-//        super.handleWholeDayChange(vComponent, newSelection);
-//        if (newSelection)
-//        {
-////          LocalDate newDateTimeEnd = LocalDate.from(vComponent.getDateTimeEnd().getValue()).plus(1, ChronoUnit.DAYS);
-////          vComponent.setDateTimeEnd(newDateTimeEnd);          
-////          LocalDate end = LocalDate.from(endDateTextField.getLocalDate()).plus(1, ChronoUnit.DAYS);
-////          endDateTextField.setLocalDate(end);
-//        } else
-//        {
-////            LocalDateTime start = startDateTimeTextField.getLocalDateTime();
-////            final Temporal newDateTimeEnd = vComponent.getDateTimeStart().getValue().plus(lastDuration);
-////            LocalDateTime end = start.plus(lastDuration);
-////            endDateTimeTextField.setLocalDateTime(end);
-////            vComponent.setDateTimeEnd(newDateTimeEnd);
-//
-//        }
-//    }
+    @Override
+    public void setupData(
+            Appointment appointment,
+            VEvent vComponent,
+            List<VEvent> vComponents,
+            List<AppointmentGroup> appointmentGroups)
+    {
+        vComponentOriginalCopy = new VEvent(vComponent);
+        super.setupData(appointment, vComponent, vComponents, appointmentGroups);
+    }
 }

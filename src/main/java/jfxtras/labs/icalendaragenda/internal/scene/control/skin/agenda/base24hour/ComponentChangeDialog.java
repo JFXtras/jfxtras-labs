@@ -22,7 +22,7 @@ import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOpt
  * @author David Bal
  *
  */
-public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
+public class ComponentChangeDialog extends Dialog<ChangeDialogOption>
 {
         
     private final ChangeDialogOption initialSelection = ChangeDialogOption.ONE;
@@ -33,7 +33,7 @@ public class AppointmentChangeDialog extends Dialog<ChangeDialogOption>
      * @param choiceMap - map of ChangeDialogOption and StartEndRange pairs representing the choices available
      * @param resources
      */
-    public AppointmentChangeDialog(Map<ChangeDialogOption, Pair<Temporal,Temporal>> choiceMap, ResourceBundle resources)
+    public ComponentChangeDialog(Map<ChangeDialogOption, Pair<Temporal,Temporal>> choiceMap, ResourceBundle resources)
     {
         Settings.REPEAT_CHANGE_CHOICES.get(this);
         if (! choiceMap.containsKey(initialSelection)) throw new RuntimeException("choicesAndDateRanges must contain: ChangeDialogOption." + initialSelection);
