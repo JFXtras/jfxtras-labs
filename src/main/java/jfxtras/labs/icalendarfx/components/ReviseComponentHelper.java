@@ -81,16 +81,11 @@ public final class ReviseComponentHelper
                 if (provideDialog)
                 {
                     Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = ChangeDialogOption.makeDialogChoices(vComponentEdited, startOriginalRecurrence);
-                    System.out.println("changeResponse4:" + provideDialog);
-                    choices.entrySet().stream().forEach(System.out::println);
                     changeResponse = dialogCallback.call(choices);
-                    System.out.println("changeResponse5:" + provideDialog);
                 } else
                 {
                     changeResponse = ChangeDialogOption.ALL;
                 }
-                System.out.println("changeResponse6:" + provideDialog);
-                System.out.println("changeResponse5:" + changeResponse);
                 switch (changeResponse)
                 {
                 case ALL:

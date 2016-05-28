@@ -82,9 +82,12 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML
     void handleSave()
     {
-        // primary functionality added in subclasses
-        System.out.println("here6:");
+        if (summaryTextField.getText().isEmpty())
+        {
+            vComponentEdited.setSummary((Summary) null); 
+        }
         isFinished.set(true);
+        // additional functionality in subclasses
     }
     
     // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
@@ -125,7 +128,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTimeTextField when startDateTextField changes */
     void synchStartDate(LocalDate oldValue, LocalDate newValue)
     {
-        startRecurrence = newValue;
+        startRecurrenceProperty.set(newValue);
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
         LocalDateTime newDateTime = startDateTimeTextField.getLocalDateTime().with(newValue);
         startDateTimeTextField.setLocalDateTime(newDateTime);
@@ -137,7 +140,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTextField when startDateTimeTextField changes */
     void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
-        startRecurrence = newValue;
+        startRecurrenceProperty.set(newValue);
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
         startDateTextField.setLocalDate(newDate);
@@ -158,7 +161,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     T vComponentOriginalCopy;
     List<T> vComponents;
     Temporal startOriginalRecurrence;
-    Temporal startRecurrence;
+    ObjectProperty<Temporal> startRecurrenceProperty = new SimpleObjectProperty<>(); // bind this to related value in RecurrenceRuleVBox
 
     public void setupData(
             Appointment appointment,
@@ -318,17 +321,17 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     Runnable validateStartRecurrence()
     {
 //        Temporal actualRecurrence = vEvent.streamRecurrences(startRecurrence).findFirst().get();
-        if (! vComponentEdited.isRecurrence(startRecurrence))
+        if (! vComponentEdited.isRecurrence(startRecurrenceProperty.get()))
         {
-            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrence);
-            Optional<Temporal> optionalAfter = vComponentEdited.streamRecurrences(startRecurrence).findFirst();
+            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrenceProperty.get());
+            Optional<Temporal> optionalAfter = vComponentEdited.streamRecurrences(startRecurrenceProperty.get()).findFirst();
             Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : recurrenceBefore;
 //            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
 //            Temporal newEndRecurrence = newStartRecurrence.plus(duration);
-            Temporal startRecurrenceBeforeChange = startRecurrence;
+            Temporal startRecurrenceBeforeChange = startRecurrenceProperty.get();
             startDateTimeTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartRecurrence));
 //            endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndRecurrence));
-            startOriginalRecurrence = startRecurrence;
+            startOriginalRecurrence = startRecurrenceProperty.get();
             return () -> startRecurrenceChangedAlert(startRecurrenceBeforeChange, newStartRecurrence);
         }
         return null;

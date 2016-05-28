@@ -53,18 +53,27 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
     @FXML void handleSave()
     {
         super.handleSave();
-        System.out.println("start edit:" + startRecurrence + " " + endRecurrence);
+        if (descriptionTextArea.getText().isEmpty())
+        {
+            vComponentEdited.setDescription((Description) null); 
+        }
+        if (locationTextField.getText().isEmpty())
+        {
+            vComponentEdited.setLocation((Location) null); 
+        }
+        System.out.println("start edit:" + startRecurrenceProperty + " " + endRecurrence);
         Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
                 startOriginalRecurrence,
-                startRecurrence,
+                startRecurrenceProperty.get(),
                 endRecurrence,
                 EditChoiceDialog.EDIT_DIALOG_CALLBACK
                 );
+        vComponents.remove(vComponentEdited);
         vComponents.addAll(newVComponents);
-        System.out.println("newVComponents:" + newVComponents.size());
-        System.out.println("contnen:" + vComponentEdited.toContent());
+//        System.out.println("newVComponents:" + newVComponents.size());
+//        System.out.println("contnen:" + vComponentEdited.toContent());
     }
     
     @Override
@@ -238,17 +247,17 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
     Runnable validateStartRecurrence()
     {
 //        Temporal actualRecurrence = vEvent.streamRecurrences(startRecurrence).findFirst().get();
-        if (! vComponentEdited.isRecurrence(startRecurrence))
+        if (! vComponentEdited.isRecurrence(startRecurrenceProperty.get()))
         {
-            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrence);
-            Optional<Temporal> optionalAfter = vComponentEdited.streamRecurrences(startRecurrence).findFirst();
+            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrenceProperty.get());
+            Optional<Temporal> optionalAfter = vComponentEdited.streamRecurrences(startRecurrenceProperty.get()).findFirst();
             Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : recurrenceBefore;
-            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrenceProperty.get(), endRecurrence);
             Temporal newEndRecurrence = newStartRecurrence.plus(duration);
-            Temporal startRecurrenceBeforeChange = startRecurrence;
+            Temporal startRecurrenceBeforeChange = startRecurrenceProperty.get();
             startDateTimeTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartRecurrence));
             endDateTimeTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndRecurrence));
-            startOriginalRecurrence = startRecurrence;
+            startOriginalRecurrence = startRecurrenceProperty.get();
             return () -> startRecurrenceChangedAlert(startRecurrenceBeforeChange, newStartRecurrence);
         }
         return null;

@@ -7,8 +7,8 @@ public class EditVTodoTabPane extends EditDisplayableTabPane<VTodo>
     public EditVTodoTabPane( )
     {
         super();
-        setDescriptiveVBox(new DescriptiveVTodoVBox());
-        getDescriptiveAnchorPane().getChildren().add(getDescriptiveVBox());
-        isFinished.bind(getDescriptiveVBox().isFinished);
+        editDescriptiveVBox = new DescriptiveVTodoVBox();
+        getDescriptiveAnchorPane().getChildren().add(editDescriptiveVBox);
+        isFinished.bind(editDescriptiveVBox.isFinished);
     }
 }

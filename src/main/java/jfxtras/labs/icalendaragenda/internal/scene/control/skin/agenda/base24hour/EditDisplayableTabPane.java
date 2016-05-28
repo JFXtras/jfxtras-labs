@@ -3,6 +3,7 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -11,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -24,15 +26,17 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  */
 public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>> extends TabPane
 {
-    protected DescriptiveVBox<T> editDescriptive;
-    void setDescriptiveVBox(DescriptiveVBox<T> descriptiveVBox) { this.editDescriptive = descriptiveVBox; }
-    DescriptiveVBox<T> getDescriptiveVBox() { return editDescriptive; }
+    DescriptiveVBox<T> editDescriptiveVBox;
+//    void setDescriptiveVBox(DescriptiveVBox<T> descriptiveVBox) { this.editDescriptiveVBox = descriptiveVBox; }
+//    DescriptiveVBox<T> getDescriptiveVBox() { return editDescriptiveVBox; }
 
+    @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private AnchorPane descriptiveAnchorPane;
     AnchorPane getDescriptiveAnchorPane() { return descriptiveAnchorPane; }
     @FXML private TabPane editDisplayableTabPane;
     @FXML private Tab descriptiveTab;
     @FXML private Tab recurrenceRuleTab;
+    @FXML private RecurrenceRuleVBox recurrenceRuleVBox;
     
     // Becomes true when pane should be closed
     ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
@@ -65,16 +69,27 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>>
             Appointment appointment,
             T vComponent,
             List<T> vComponents,
-            List<AppointmentGroup> appointmentGroups)
+            List<AppointmentGroup> appointmentGroups
+//            Stage stage
+            )
     {
-        getDescriptiveVBox().setupData(appointment, vComponent, vComponents, appointmentGroups);
+        editDescriptiveVBox.setupData(appointment, vComponent, vComponents, appointmentGroups);
+        System.out.println("running here01:");
+        // recurrences can't add repeat rules (only parent can have repeat rules)
+        if (vComponent.getRecurrenceDates() != null)
+        {
+            recurrenceRuleTab.setDisable(true);
+            recurrenceRuleTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
+        }
+        System.out.println("running here02:" + recurrenceRuleVBox + " " + recurrenceRuleTab);
+        recurrenceRuleVBox.setupData(vComponent, editDescriptiveVBox.startRecurrenceProperty);
         
         // When Appointment tab is selected make sure start and end times are valid, adjust if not
         editDisplayableTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
         {
             if (newValue == descriptiveTab)
             {
-                Runnable alertRunnable = getDescriptiveVBox().validateStartRecurrence();
+                Runnable alertRunnable = editDescriptiveVBox.validateStartRecurrence();
                 if (alertRunnable != null)
                 {
                     Platform.runLater(alertRunnable); // display alert after tab change refresh

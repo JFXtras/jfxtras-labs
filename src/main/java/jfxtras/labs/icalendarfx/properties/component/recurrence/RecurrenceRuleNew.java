@@ -57,7 +57,6 @@ public class RecurrenceRuleNew extends PropertyBase<RecurrenceRule3, RecurrenceR
     @Override
     public void copyPropertyFrom(PropertyBase<RecurrenceRule3, RecurrenceRuleNew> source)
     {
-        System.out.println("running here4:");
         super.copyPropertyFrom(source);
         setValue(new RecurrenceRule3(source.getValue()));
     }

@@ -7,8 +7,8 @@ public class EditVEventTabPane extends EditDisplayableTabPane<VEvent>
     public EditVEventTabPane( )
     {
         super();
-        setDescriptiveVBox(new DescriptiveVEventVBox());
-        getDescriptiveAnchorPane().getChildren().add(getDescriptiveVBox());
-        isFinished.bind(getDescriptiveVBox().isFinished);
+        editDescriptiveVBox = new DescriptiveVEventVBox();
+        getDescriptiveAnchorPane().getChildren().add(editDescriptiveVBox);
+        isFinished.bind(editDescriptiveVBox.isFinished);
     }
 }

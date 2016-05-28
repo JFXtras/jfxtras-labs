@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -55,7 +56,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
@@ -77,7 +77,8 @@ public class RecurrenceRuleVBox extends VBox
         
     private VComponentDisplayable<?> vComponent;
     private RecurrenceRule3 rrule;
-    private Temporal dateTimeStartInstanceNew;
+//    private Temporal dateTimeStartRecurrenceNew;
+    private ObjectProperty<Temporal> dateTimeStartRecurrenceNew;
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
 
@@ -166,8 +167,8 @@ public class RecurrenceRuleVBox extends VBox
     {
         if (newSelection)
         {
-            int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(dateTimeStartInstanceNew);
-            DayOfWeek dayOfWeek = DayOfWeek.from(dateTimeStartInstanceNew);
+            int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(dateTimeStartRecurrenceNew.get());
+            DayOfWeek dayOfWeek = DayOfWeek.from(dateTimeStartRecurrenceNew.get());
             ByRule<?> byDayRuleMonthly = new ByDay(new ByDayPair(dayOfWeek, ordinalWeekNumber));
             rrule.byRules().add(byDayRuleMonthly);
         } else
@@ -206,7 +207,7 @@ public class RecurrenceRuleVBox extends VBox
         // Change Frequency if different.  Copy Interval, null ExDate
         if (rrule.getFrequency().getValue() != newSel)
         {
-//            Frequency newFrequency = newSel.newInstance();
+//            Frequency newFrequency = newSel.newRecurrence();
             Integer interval = rrule.getInterval().getValue();
 //            if (interval > 1) newFrequency.setInterval(interval);
             rrule.setFrequency(newSel);
@@ -231,7 +232,7 @@ public class RecurrenceRuleVBox extends VBox
             rrule.byRules().remove(r2);
             if (dayOfWeekList.isEmpty())
             {
-                DayOfWeek dayOfWeek = LocalDate.from(dateTimeStartInstanceNew).getDayOfWeek();
+                DayOfWeek dayOfWeek = LocalDate.from(dateTimeStartRecurrenceNew.get()).getDayOfWeek();
                 rrule.byRules().add(new ByDay(dayOfWeek)); // add days already clicked
                 dayOfWeekCheckBoxMap.get(dayOfWeek).set(true);
             } else
@@ -344,10 +345,10 @@ public class RecurrenceRuleVBox extends VBox
         {
             if (rrule.getUntil() == null)
             { // new selection - use date/time one month in the future as default
-                boolean isInstanceFarEnoughInFuture = DateTimeUtilities
-                        .isAfter(dateTimeStartInstanceNew, vComponent.getDateTimeStart().getValue().plus(DEFAULT_UNTIL_PERIOD));
-                LocalDate defaultEndOnDateTime = (isInstanceFarEnoughInFuture)
-                        ? LocalDate.from(dateTimeStartInstanceNew)
+                boolean isRecurrenceFarEnoughInFuture = DateTimeUtilities
+                        .isAfter(dateTimeStartRecurrenceNew.get(), vComponent.getDateTimeStart().getValue().plus(DEFAULT_UNTIL_PERIOD));
+                LocalDate defaultEndOnDateTime = (isRecurrenceFarEnoughInFuture)
+                        ? LocalDate.from(dateTimeStartRecurrenceNew.get())
                         : LocalDate.from(vComponent.getDateTimeStart().getValue().plus(DEFAULT_UNTIL_PERIOD));
                 Temporal until = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
                 rrule.setUntil(until);
@@ -363,7 +364,7 @@ public class RecurrenceRuleVBox extends VBox
     };
 
     /**
-     * Finds closest instance, at least one instance past DTSTART, from initialUntilDate
+     * Finds closest recurrence, at least one recurrence past DTSTART, from initialUntilDate
      * 
      * @param initialUntilDate - selected date from untilDatePicker
      * @return - best match for until
@@ -372,7 +373,7 @@ public class RecurrenceRuleVBox extends VBox
     {
         Temporal timeAdjustedSelection = vComponent.getDateTimeStart().getValue().with(initialUntilDate);
 
-        // find last instance that is not after initialUntilDate
+        // find last recurrence that is not after initialUntilDate
         Iterator<Temporal> i = vComponent.streamRecurrences().iterator();
         Temporal until = i.next();
         while (i.hasNext())
@@ -421,7 +422,6 @@ public class RecurrenceRuleVBox extends VBox
     // INITIALIZATION - runs when FXML is initialized
     @FXML public void initialize()
     {
-        
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
         {
@@ -433,7 +433,7 @@ public class RecurrenceRuleVBox extends VBox
                     // setup new default RRule
                     RecurrenceRule3 rRule = new RecurrenceRule3()
                             .withFrequency(FrequencyType.WEEKLY)
-                            .withByRules(new ByDay(DayOfWeek.from(dateTimeStartInstanceNew))); // default RRule
+                            .withByRules(new ByDay(DayOfWeek.from(dateTimeStartRecurrenceNew.get()))); // default RRule
                     vComponent.setRecurrenceRule(rRule);
                     setInitialValues(vComponent);
                 }
@@ -647,16 +647,21 @@ public class RecurrenceRuleVBox extends VBox
      * Add data that was unavailable at initialization time
      * 
      * @param vComponent
-     * @param dateTimeStartInstanceNew : start date-time for edited event
+     * @param dateTimeStartRecurrenceNew : start date-time for edited event
      */
+//        public void setupData(
+//                VComponentDisplayable<?> vComponent
+//              , Temporal dateTimeStartRecurrenceNew
+//              , Stage stage)
         public void setupData(
                 VComponentDisplayable<?> vComponent
-              , Temporal dateTimeStartInstanceNew
-              , Stage stage)
+              , ObjectProperty<Temporal> dateTimeStartRecurrenceNew)
+//              , Stage stage)
         {
+//            stage = this.
             this.vComponent = vComponent;
             rrule = vComponent.getRecurrenceRule().getValue();
-            this.dateTimeStartInstanceNew = dateTimeStartInstanceNew;
+            this.dateTimeStartRecurrenceNew = dateTimeStartRecurrenceNew;
             if (! isSupported(vComponent))
             {
                 throw new RuntimeException("Unsupported VComponent");
@@ -715,42 +720,91 @@ public class RecurrenceRuleVBox extends VBox
             };
             exceptionsListView.setCellFactory(temporalCellFactory);
 
-            // Handle exception scroll events - add and remove data when scrolling to top and bottom
-            stage.setOnShown(event ->
+            /*
+             * Make infinite scroll bars for exception dates
+             * 
+             * When node is attached to a scene an on-shown event handler is attached to the window
+             * to loop through all the vertical scroll bars to add value property listeners to them
+             * that adds data when scroll is near the extremes.
+             * 
+             * The scroll bars don't exist before the node is attached to the scene which is why
+             * the sceneProperty listener and the onShown event handler are required.
+             */
+            sceneProperty().addListener((obs, oldScene, newScene) ->
             {
-                for (Node node: exceptionComboBox.lookupAll(".scroll-bar")) {
-                    if (node instanceof ScrollBar) {
-                        final ScrollBar bar = (ScrollBar) node;
-                        if (bar.getOrientation() == Orientation.VERTICAL)
-                        {
-                            bar.valueProperty().addListener((ChangeListener<Number>) (value, oldValue, newValue) -> 
+                newScene.getWindow().setOnShown(event ->
+                {
+                    for (Node node: exceptionComboBox.lookupAll(".scroll-bar"))
+                    {
+                        if (node instanceof ScrollBar) {
+                            final ScrollBar bar = (ScrollBar) node;
+                            if (bar.getOrientation() == Orientation.VERTICAL)
                             {
-                                if (((double) newValue > 0.9) && ((double) oldValue < 0.9))
+                                bar.valueProperty().addListener((ChangeListener<Number>) (value, oldValue, newValue) -> 
                                 {
-                                    // add data to bottom
-                                    int elements = exceptionComboBox.getItems().size();
-                                    exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
-                                    makeExceptionDates();
-                                    bar.setValue(.5);
-                                } else if (((double) newValue < 0.1) && ((double) oldValue > 0.1))
-                                {
-                                    // add data to top
-                                    int elements = exceptionComboBox.getItems().size();
-                                    Temporal firstElement = exceptionComboBox.getItems().get(0);
-                                    int indexInMasterList = exceptionMasterList.indexOf(firstElement);
-                                    int newIndex = Math.max((indexInMasterList - elements/3), 0);
-                                    if (newIndex < indexInMasterList)
+                                    if (((double) newValue > 0.9) && ((double) oldValue < 0.9))
                                     {
-                                        exceptionFirstTemporal = exceptionMasterList.get(newIndex);
+                                        // add data to bottom
+                                        int elements = exceptionComboBox.getItems().size();
+                                        exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
                                         makeExceptionDates();
                                         bar.setValue(.5);
+                                    } else if (((double) newValue < 0.1) && ((double) oldValue > 0.1))
+                                    {
+                                        // add data to top
+                                        int elements = exceptionComboBox.getItems().size();
+                                        Temporal firstElement = exceptionComboBox.getItems().get(0);
+                                        int indexInMasterList = exceptionMasterList.indexOf(firstElement);
+                                        int newIndex = Math.max((indexInMasterList - elements/3), 0);
+                                        if (newIndex < indexInMasterList)
+                                        {
+                                            exceptionFirstTemporal = exceptionMasterList.get(newIndex);
+                                            makeExceptionDates();
+                                            bar.setValue(.5);
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
                     }
-                }
+                });
             });
+//            // Handle exception scroll events - add and remove data when scrolling to top and bottom
+//            stage.setOnShown(event ->
+//            {
+//                for (Node node: exceptionComboBox.lookupAll(".scroll-bar")) {
+//                    if (node instanceof ScrollBar) {
+//                        final ScrollBar bar = (ScrollBar) node;
+//                        if (bar.getOrientation() == Orientation.VERTICAL)
+//                        {
+//                            bar.valueProperty().addListener((ChangeListener<Number>) (value, oldValue, newValue) -> 
+//                            {
+//                                if (((double) newValue > 0.9) && ((double) oldValue < 0.9))
+//                                {
+//                                    // add data to bottom
+//                                    int elements = exceptionComboBox.getItems().size();
+//                                    exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
+//                                    makeExceptionDates();
+//                                    bar.setValue(.5);
+//                                } else if (((double) newValue < 0.1) && ((double) oldValue > 0.1))
+//                                {
+//                                    // add data to top
+//                                    int elements = exceptionComboBox.getItems().size();
+//                                    Temporal firstElement = exceptionComboBox.getItems().get(0);
+//                                    int indexInMasterList = exceptionMasterList.indexOf(firstElement);
+//                                    int newIndex = Math.max((indexInMasterList - elements/3), 0);
+//                                    if (newIndex < indexInMasterList)
+//                                    {
+//                                        exceptionFirstTemporal = exceptionMasterList.get(newIndex);
+//                                        makeExceptionDates();
+//                                        bar.setValue(.5);
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    }
+//                }
+//            });
 
                     
             // SETUP CONTROLLER'S INITIAL DATA FROM RRULE
@@ -763,6 +817,7 @@ public class RecurrenceRuleVBox extends VBox
             
             // DAY OF WEEK RAIO BUTTON LISTENER (FOR MONTHLY)
             dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekButtonListener);
+            System.out.println("running here3:");
 
             // LISTENERS TO BE ADDED AFTER INITIALIZATION
             addListeners(); // Listeners to update exception dates
