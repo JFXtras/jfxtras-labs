@@ -4,10 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,12 +18,16 @@ import java.util.ResourceBundle;
 
 import org.junit.Test;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.util.Pair;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventTabPane;
@@ -31,6 +37,10 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilitie
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda;
@@ -91,7 +101,7 @@ public class PopupTests extends JFXtrasGuiTest
         TextField summary = find("#summaryTextField");
         assertEquals(vevent.getSummary().getValue(), summary.getText());
 
-        LocalDateTimeTextField start = find("#startTextField");
+        LocalDateTimeTextField start = find("#startDateTimeTextField");
         assertEquals(LocalDateTime.of(2016, 5, 15, 10, 0), start.getLocalDateTime());
     }
     
@@ -131,6 +141,7 @@ public class PopupTests extends JFXtrasGuiTest
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
+        ObservableList<VEvent> vEvents = FXCollections.observableArrayList(vevent);
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
 
@@ -139,7 +150,7 @@ public class PopupTests extends JFXtrasGuiTest
             editComponentPopup.setupData(
                     appointment,
                     vevent,
-                    Arrays.asList(vevent),
+                    vEvents,
                     ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         });
 
@@ -174,7 +185,8 @@ public class PopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () -> wholeDayCheckBox.setSelected(false) );
         assertTrue(startDateTimeTextField.isVisible());
         assertTrue(endDateTimeTextField.isVisible());
-        
+        startDateTimeTextField.setLocalDateTime(LocalDateTime.of(2016, 5, 15, 8, 0));
+
         summaryTextField.setText("new summary");
         assertEquals("new summary", vevent.getSummary().getValue());
 
@@ -189,30 +201,164 @@ public class PopupTests extends JFXtrasGuiTest
         
         groupTextField.setText("new group name");
         assertEquals("new group name", vevent.getCategories().get(0).getValue().get(0));
-//        assertEquals("new group name", agenda.appointmentGroups().get(11).getDescription());
-//        TestUtil.runThenWaitForPaintPulse( () ->  EditChoiceDialog.EDIT_DIALOG_CALLBACK.call(EXAMPLE_MAP));
         
         click("#saveComponentButton");
         
         ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ONE));
         click("#changeDialogOkButton");
+
+        assertEquals(2, vEvents.size());
         
-//        // Check appointment edited after close
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), vevent.getDateTimeStart());
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), vevent.getDateTimeEnd());
+        // Check component after dialog close
+        assertEquals(LocalDateTime.of(2016, 5, 15, 8, 0), vevent.getDateTimeStart().getValue());
+        assertEquals(LocalDateTime.of(2016, 5, 15, 9, 0), vevent.getDateTimeEnd().getValue());
         
-//        assertEquals(1, agenda.appointments().size());
-//        Appointment a = agenda.appointments().get(0);
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), a.getStartLocalDateTime());
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), a.getEndLocalDateTime());
-//        assertEquals("new summary", a.getSummary());
-//        assertEquals("new description", a.getDescription());
-//        assertEquals("new group name", a.getAppointmentGroup().getDescription());
-        
-//        closeCurrentWindow();
-        TestUtil.sleep(3000);
+        assertEquals("new summary", vevent.getSummary().getValue());
+        assertEquals("new description", vevent.getDescription().getValue());
+        assertEquals("new location", vevent.getLocation().getValue());
+        assertEquals("new group name", vevent.getCategories().get(0).getValue().get(0));
+
+        assertEquals(ICalendarStaticComponents.getDaily1(), vEvents.get(0));
+        VEvent editedVEvent = new VEvent()
+                .withRecurrenceId(LocalDateTime.of(2016, 5, 15, 10, 0))
+                .withDescription("new description")
+                .withSummary("new summary")
+                .withLocation("new location")
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 15, 8, 0))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 15, 9, 0))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withSequence(1)
+                .withDateTimeStamp(vEvents.get(1).getDateTimeStamp())
+                .withCategories("new group name");
+        assertEquals(editedVEvent, vEvents.get(1));
     }
+    
+    @Test
+    public void canChangeFrequency()
+    {
+        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK);
+        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
+        ObservableList<VEvent> vEvents = FXCollections.observableArrayList(vevent);
+        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
+        Appointment appointment = newAppointments.get(0);
+
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            editComponentPopup.setupData(
+                    appointment,
+                    vevent,
+                    vEvents,
+                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        });
+
+        // Get properties
+        click("#recurrenceRuleTab");
+        ComboBox<FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+
+        // Check initial state
+        RecurrenceRule3 rrule = vevent.getRecurrenceRule().getValue();
+        Frequency2 f = rrule.getFrequency();
+        assertEquals(FrequencyType.DAILY, frequencyComboBox.getSelectionModel().getSelectedItem());
+        assertEquals(FrequencyType.DAILY, rrule.getFrequency().getValue());
+        
+        // Change property and verify state change
+        // WEEKLY
+        {
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyType.WEEKLY));
+TestUtil.sleep(3000);
+        // Days of the week properties
+        CheckBox su = (CheckBox) find("#sundayCheckBox");
+        CheckBox mo = (CheckBox) find("#mondayCheckBox");
+        CheckBox tu = (CheckBox) find("#tuesdayCheckBox");
+        CheckBox we = (CheckBox) find("#wednesdayCheckBox");
+        CheckBox th = (CheckBox) find("#thursdayCheckBox");
+        CheckBox fr = (CheckBox) find("#fridayCheckBox");
+        CheckBox sa = (CheckBox) find("#saturdayCheckBox");
+        
+        // Get weekly properties
+        assertEquals(FrequencyType.WEEKLY, f.getValue());
+        assertEquals(1, rrule.byRules().size());
+        ByDay rule = (ByDay) rrule.lookupByRule(ByDay.class);
+
+        // Check initial state
+        List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
+        assertEquals(expectedDOW, rule.dayOfWeekWithoutOrdinalList());
+        HBox weeklyHBox = find("#weeklyHBox");
+        assertTrue(weeklyHBox.isVisible());       
+        assertFalse(su.isSelected());
+        assertFalse(mo.isSelected());
+        assertFalse(tu.isSelected());
+        assertTrue(we.isSelected());
+        assertFalse(th.isSelected());
+        assertFalse(fr.isSelected());
+        assertFalse(sa.isSelected());
+        
+        // Toggle each day of week and check
+        TestUtil.runThenWaitForPaintPulse( () -> su.setSelected(true));
+        assertTrue(su.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.SUNDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> mo.setSelected(true));
+        assertTrue(mo.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.MONDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> tu.setSelected(true));
+        assertTrue(tu.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.TUESDAY));
+        // Wednesday already selected
+        TestUtil.runThenWaitForPaintPulse( () -> th.setSelected(true));
+        assertTrue(th.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.THURSDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> fr.setSelected(true));
+        assertTrue(fr.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.FRIDAY));
+        TestUtil.runThenWaitForPaintPulse( () -> sa.setSelected(true));
+        assertTrue(sa.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.SATURDAY));
+        List<DayOfWeek> allDaysOfWeek = Arrays.asList(DayOfWeek.values());
+        List<DayOfWeek> daysOfWeek = rule.dayOfWeekWithoutOrdinalList();
+        Collections.sort(daysOfWeek);
+        assertEquals(allDaysOfWeek, daysOfWeek);
+        }
+
+        // MONTHLY
+        {
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyType.MONTHLY));
+        
+        // Monthly properties
+        RadioButton dayOfMonth = find("#dayOfMonthRadioButton");
+        RadioButton dayOfWeek = find("#dayOfWeekRadioButton");
+//        Frequency2 f = rrule.getFrequency(); // refresh reference
+        
+        // Check initial state
+        assertTrue(dayOfMonth.isSelected());
+        assertFalse(dayOfWeek.isSelected());
+        assertEquals(FrequencyType.MONTHLY, f.getValue());
+        assertEquals(0, rrule.byRules().size());
+        
+        // Toggle monthly options and check
+        TestUtil.runThenWaitForPaintPulse(() -> dayOfWeek.setSelected(true));
+        assertFalse(dayOfMonth.isSelected());
+        assertTrue(dayOfWeek.isSelected());
+        assertEquals(1, rrule.byRules().size());
+        ByDay rule = (ByDay) rrule.lookupByRule(ByDay.class);
+        assertEquals("BYDAY=2WE", rule.toString()); // 2nd Wednesday of the month
+        }
+        
+        // YEARLY
+        {
+        TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyType.YEARLY));
+//        Frequency f = v.getRRule().getFrequency(); // refresh reference
+
+        // Check initial state
+        assertEquals(FrequencyType.YEARLY, f.getValue());
+        assertEquals(0, rrule.byRules().size());
+        }
+        closeCurrentWindow();
+    }
+    
     private static final Map<ChangeDialogOption, Pair<Temporal,Temporal>> EXAMPLE_MAP = makeExampleMap();
     private static Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeExampleMap()
     {

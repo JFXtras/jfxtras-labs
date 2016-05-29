@@ -82,6 +82,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML
     void handleSave()
     {
+        System.out.println("handlesave1:");
         if (summaryTextField.getText().isEmpty())
         {
             vComponentEdited.setSummary((Summary) null); 

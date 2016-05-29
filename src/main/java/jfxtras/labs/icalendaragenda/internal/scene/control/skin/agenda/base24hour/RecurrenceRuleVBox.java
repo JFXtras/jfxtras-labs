@@ -732,80 +732,46 @@ public class RecurrenceRuleVBox extends VBox
              */
             sceneProperty().addListener((obs, oldScene, newScene) ->
             {
-                newScene.getWindow().setOnShown(event ->
+                if (newScene != null)
                 {
-                    for (Node node: exceptionComboBox.lookupAll(".scroll-bar"))
+                    newScene.getWindow().setOnShown(event ->
                     {
-                        if (node instanceof ScrollBar) {
-                            final ScrollBar bar = (ScrollBar) node;
-                            if (bar.getOrientation() == Orientation.VERTICAL)
-                            {
-                                bar.valueProperty().addListener((ChangeListener<Number>) (value, oldValue, newValue) -> 
+                        for (Node node: exceptionComboBox.lookupAll(".scroll-bar"))
+                        {
+                            if (node instanceof ScrollBar) {
+                                final ScrollBar bar = (ScrollBar) node;
+                                if (bar.getOrientation() == Orientation.VERTICAL)
                                 {
-                                    if (((double) newValue > 0.9) && ((double) oldValue < 0.9))
+                                    bar.valueProperty().addListener((ChangeListener<Number>) (value, oldValue, newValue) -> 
                                     {
-                                        // add data to bottom
-                                        int elements = exceptionComboBox.getItems().size();
-                                        exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
-                                        makeExceptionDates();
-                                        bar.setValue(.5);
-                                    } else if (((double) newValue < 0.1) && ((double) oldValue > 0.1))
-                                    {
-                                        // add data to top
-                                        int elements = exceptionComboBox.getItems().size();
-                                        Temporal firstElement = exceptionComboBox.getItems().get(0);
-                                        int indexInMasterList = exceptionMasterList.indexOf(firstElement);
-                                        int newIndex = Math.max((indexInMasterList - elements/3), 0);
-                                        if (newIndex < indexInMasterList)
+                                        if (((double) newValue > 0.9) && ((double) oldValue < 0.9))
                                         {
-                                            exceptionFirstTemporal = exceptionMasterList.get(newIndex);
+                                            // add data to bottom
+                                            int elements = exceptionComboBox.getItems().size();
+                                            exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
                                             makeExceptionDates();
                                             bar.setValue(.5);
+                                        } else if (((double) newValue < 0.1) && ((double) oldValue > 0.1))
+                                        {
+                                            // add data to top
+                                            int elements = exceptionComboBox.getItems().size();
+                                            Temporal firstElement = exceptionComboBox.getItems().get(0);
+                                            int indexInMasterList = exceptionMasterList.indexOf(firstElement);
+                                            int newIndex = Math.max((indexInMasterList - elements/3), 0);
+                                            if (newIndex < indexInMasterList)
+                                            {
+                                                exceptionFirstTemporal = exceptionMasterList.get(newIndex);
+                                                makeExceptionDates();
+                                                bar.setValue(.5);
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             });
-//            // Handle exception scroll events - add and remove data when scrolling to top and bottom
-//            stage.setOnShown(event ->
-//            {
-//                for (Node node: exceptionComboBox.lookupAll(".scroll-bar")) {
-//                    if (node instanceof ScrollBar) {
-//                        final ScrollBar bar = (ScrollBar) node;
-//                        if (bar.getOrientation() == Orientation.VERTICAL)
-//                        {
-//                            bar.valueProperty().addListener((ChangeListener<Number>) (value, oldValue, newValue) -> 
-//                            {
-//                                if (((double) newValue > 0.9) && ((double) oldValue < 0.9))
-//                                {
-//                                    // add data to bottom
-//                                    int elements = exceptionComboBox.getItems().size();
-//                                    exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
-//                                    makeExceptionDates();
-//                                    bar.setValue(.5);
-//                                } else if (((double) newValue < 0.1) && ((double) oldValue > 0.1))
-//                                {
-//                                    // add data to top
-//                                    int elements = exceptionComboBox.getItems().size();
-//                                    Temporal firstElement = exceptionComboBox.getItems().get(0);
-//                                    int indexInMasterList = exceptionMasterList.indexOf(firstElement);
-//                                    int newIndex = Math.max((indexInMasterList - elements/3), 0);
-//                                    if (newIndex < indexInMasterList)
-//                                    {
-//                                        exceptionFirstTemporal = exceptionMasterList.get(newIndex);
-//                                        makeExceptionDates();
-//                                        bar.setValue(.5);
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    }
-//                }
-//            });
-
                     
             // SETUP CONTROLLER'S INITIAL DATA FROM RRULE
             boolean isRepeatable = (rrule != null);

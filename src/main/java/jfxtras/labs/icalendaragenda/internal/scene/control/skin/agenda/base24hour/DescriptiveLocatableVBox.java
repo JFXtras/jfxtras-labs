@@ -53,6 +53,7 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
     @FXML void handleSave()
     {
         super.handleSave();
+//        System.out.println("handlesave2:");
         if (descriptionTextArea.getText().isEmpty())
         {
             vComponentEdited.setDescription((Description) null); 
@@ -61,7 +62,6 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
         {
             vComponentEdited.setLocation((Location) null); 
         }
-        System.out.println("start edit:" + startRecurrenceProperty + " " + endRecurrence);
         Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
@@ -72,8 +72,6 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
                 );
         vComponents.remove(vComponentEdited);
         vComponents.addAll(newVComponents);
-//        System.out.println("newVComponents:" + newVComponents.size());
-//        System.out.println("contnen:" + vComponentEdited.toContent());
     }
     
     @Override

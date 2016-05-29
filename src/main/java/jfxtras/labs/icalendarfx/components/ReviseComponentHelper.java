@@ -147,10 +147,13 @@ public final class ReviseComponentHelper
         {
             vComponentEdited.incrementSequence();
         }
-        System.out.println("endedit:"+vComponents.size());
+        System.out.println("endedit:" +vComponents.size());
 //        vComponents.remove(vComponentOriginal);
 //        System.out.println(vComponents.size());
+//        if (! vComponents.isEmpty())
+//        {
         vComponents.add(vComponentEdited);
+//        }
 //        System.out.println(vComponents.size());
 //        if (newRecurrences != null)
 //        {
