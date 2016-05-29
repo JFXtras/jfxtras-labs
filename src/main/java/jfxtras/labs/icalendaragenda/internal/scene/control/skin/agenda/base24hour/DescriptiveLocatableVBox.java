@@ -53,7 +53,7 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
     @FXML void handleSave()
     {
         super.handleSave();
-//        System.out.println("handlesave2:");
+        System.out.println("handlesave2:");
         if (descriptionTextArea.getText().isEmpty())
         {
             vComponentEdited.setDescription((Description) null); 

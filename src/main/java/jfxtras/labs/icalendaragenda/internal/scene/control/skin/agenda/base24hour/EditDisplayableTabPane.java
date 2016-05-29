@@ -54,8 +54,7 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>>
     // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
     @FXML private void handleRepeatSave()
     {
-        System.out.println("save finishe:");
-        isFinished.set(true);
+        editDescriptiveVBox.handleSave();
     }
     
     @FXML private void handleCancelButton()
@@ -74,14 +73,12 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>>
             )
     {
         editDescriptiveVBox.setupData(appointment, vComponent, vComponents, appointmentGroups);
-        System.out.println("running here01:");
         // recurrences can't add repeat rules (only parent can have repeat rules)
         if (vComponent.getRecurrenceDates() != null)
         {
             recurrenceRuleTab.setDisable(true);
             recurrenceRuleTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
         }
-        System.out.println("running here02:" + recurrenceRuleVBox + " " + recurrenceRuleTab);
         recurrenceRuleVBox.setupData(vComponent, editDescriptiveVBox.startRecurrenceProperty);
         
         // When Appointment tab is selected make sure start and end times are valid, adjust if not

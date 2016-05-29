@@ -72,15 +72,21 @@ public final class ReviseComponentHelper
              * question is answered. */
 //            changedProperties.addAll(changedStartAndEndDateTime(startOriginalRecurrence, startRecurrence, endRecurrence));
             // determine if any changed properties warrant dialog
-//            changedPropertyNames.stream().forEach(a -> System.out.println("changed property:" + a));
-            boolean provideDialog = requiresChangeDialog(changedProperties);
+            changedProperties.stream().forEach(a -> System.out.println("changed property:" + a));
+            boolean provideDialog = changedProperties.stream()
+                .map(p -> DIALOG_REQUIRED_PROPERTIES.contains(p))
+                .anyMatch(b -> b == true);
+//            boolean provideDialog = requiresChangeDialog(changedProperties);
             if (changedProperties.size() > 0) // if changes occurred
             {
                 List<T> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
-                    Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = ChangeDialogOption.makeDialogChoices(vComponentEdited, startOriginalRecurrence);
+                    Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = ChangeDialogOption.makeDialogChoices(
+                            vComponentEdited,
+                            startOriginalRecurrence,
+                            changedProperties);
                     changeResponse = dialogCallback.call(choices);
                 } else
                 {
@@ -343,15 +349,6 @@ public final class ReviseComponentHelper
 //        return changedProperties;
 //    }
 
-
-   // TODO - DOUBLE CHECK THIS LIST - WHY NO DESCRIPTION, FOR EXAMPLE?
-   private final static List<PropertyType> DIALOG_REQUIRED_PROPERTIES = Arrays.asList(
-           PropertyType.CATEGORIES,
-           PropertyType.COMMENT,
-           PropertyType.DATE_TIME_START,
-           PropertyType.ORGANIZER,
-           PropertyType.SUMMARY
-           );
    
    /**
     * Return true if ANY changed property requires a dialog, false otherwise
@@ -687,6 +684,38 @@ public final class ReviseComponentHelper
         }
     }
 
+     /*
+      * When one of these properties the change-scope dialog should be activated to determine if the changes should be applied
+      * to ONE, ALL, or THIS_AND_FUTURE recurrences.  If other properties are modified the changes should be applied without a dialog.
+      * 
+      * Currently, only the following are implemented in the control:
+      * DATE_TIME_START
+      * DATE_TIME_END
+      * DESCRIPTION
+      * LOCATION
+      * RECURRENCE_RULE
+      * SUMMARY
+      */
+     private final static List<PropertyType> DIALOG_REQUIRED_PROPERTIES = Arrays.asList(             
+             PropertyType.ATTACHMENT,
+             PropertyType.ATTENDEE,
+             PropertyType.CATEGORIES,
+             PropertyType.COMMENT,
+             PropertyType.CONTACT,
+             PropertyType.DATE_TIME_START,
+             PropertyType.DATE_TIME_END,
+             PropertyType.DESCRIPTION,
+             PropertyType.DURATION,
+             PropertyType.GEOGRAPHIC_POSITION,
+             PropertyType.LOCATION,
+             PropertyType.PRIORITY,
+             PropertyType.RESOURCES,
+             PropertyType.RECURRENCE_RULE,
+             PropertyType.STATUS,
+             PropertyType.SUMMARY,
+             PropertyType.UNIFORM_RESOURCE_LOCATOR
+             );
+     
      /**
       * Options available when editing or deleting a repeatable appointment.
       * Sometimes all options are not available.  For example, a one-part repeating
@@ -699,11 +728,20 @@ public final class ReviseComponentHelper
        , THIS_AND_FUTURE      // selected instance and all in the future
        , CANCEL;              // do nothing
          
-         public static <T extends VComponentDisplayableBase<?>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(T vComponent, Temporal startInstance)
+         /** Produce the map of change dialog options and the date range the option affects */
+         public static <T extends VComponentDisplayableBase<?>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(
+                 T vComponent,
+                 Temporal startInstance,
+                 List<PropertyType> changedProperties)
          {
              Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
-             choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
              Temporal lastRecurrence = vComponent.lastRecurrence();
+
+             if (! changedProperties.contains(PropertyType.RECURRENCE_RULE))
+             {
+                 choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
+             }
+             
              if (! (vComponent.getRecurrenceRule() == null))
              {
                  if ((lastRecurrence == null) || (! lastRecurrence.equals(startInstance)))

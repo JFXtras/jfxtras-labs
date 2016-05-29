@@ -91,11 +91,11 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         // additional functionality in subclasses
     }
     
-    // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
-    @FXML private void handleRepeatSave()
-    {
-        handleSave();
-    }
+//    // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
+//    @FXML private void handleRepeatSave()
+//    {
+//        handleSave();
+//    }
     
     @FXML private void handleCancelButton()
     {

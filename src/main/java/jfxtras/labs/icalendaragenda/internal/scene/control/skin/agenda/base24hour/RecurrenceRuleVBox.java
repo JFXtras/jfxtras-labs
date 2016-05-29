@@ -61,6 +61,7 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
@@ -209,7 +210,6 @@ public class RecurrenceRuleVBox extends VBox
         {
 //            Frequency newFrequency = newSel.newRecurrence();
             Integer interval = rrule.getInterval().getValue();
-//            if (interval > 1) newFrequency.setInterval(interval);
             rrule.setFrequency(newSel);
             exceptionsListView.getItems().clear();
             vComponent.setExceptionDates(null);
@@ -643,6 +643,8 @@ public class RecurrenceRuleVBox extends VBox
         untilRadioButton.setToggleGroup(endGroup);
     }
 
+    
+    
     /**
      * Add data that was unavailable at initialization time
      * 
@@ -658,14 +660,14 @@ public class RecurrenceRuleVBox extends VBox
               , ObjectProperty<Temporal> dateTimeStartRecurrenceNew)
 //              , Stage stage)
         {
-//            stage = this.
+            rrule = (vComponent.getRecurrenceRule() != null) ? vComponent.getRecurrenceRule().getValue() : null;
             this.vComponent = vComponent;
-            rrule = vComponent.getRecurrenceRule().getValue();
             this.dateTimeStartRecurrenceNew = dateTimeStartRecurrenceNew;
             if (! isSupported(vComponent))
             {
                 throw new RuntimeException("Unsupported VComponent");
             }
+            
             
             /* EXCEPTIONS
              * Note: exceptionComboBox string converter must be setup after the controller's initialization 
@@ -692,7 +694,7 @@ public class RecurrenceRuleVBox extends VBox
             {
                 removeExceptionButton.setDisable(false); // turn on add button when exception date is selected in combobox
             });
-            
+
             // Format Temporal in exceptionsListView to LocalDate or LocalDateTime
             final Callback<ListView<Temporal>, ListCell<Temporal>> temporalCellFactory = new Callback<ListView<Temporal>,  ListCell<Temporal>>()
             {
@@ -807,9 +809,15 @@ public class RecurrenceRuleVBox extends VBox
         /* Set controls to values in rRule */
         private void setInitialValues(VComponentDisplayable<?> vComponent)
         {
-            int initialInterval = (rrule.getInterval() != null) ?
-                    rrule.getInterval().getValue() : INITIAL_INTERVAL;
+            if (rrule.getInterval() == null)
+            {
+                rrule.setInterval(new Interval(1));
+            }
+            int initialInterval = rrule.getInterval().getValue();
             intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, initialInterval));
+            rrule.getInterval().valueProperty().bind(intervalSpinner.valueProperty());
+            // TODO - OTHER LISTENERS MAY BE OBSOLETE WITH ABOVE BINDING
+
             FrequencyType frequencyType = rrule.getFrequency().getValue();
             frequencyComboBox.setValue(frequencyType); // will trigger frequencyListener
             switch(frequencyType)
@@ -842,7 +850,6 @@ public class RecurrenceRuleVBox extends VBox
                         .collect(Collectors.toList());
                 exceptionsListView.getItems().addAll(collect);
             }
-            
             int initialCount = (rrule.getCount() != null) ? rrule.getCount().getValue() : INITIAL_COUNT;
             endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, initialCount));
             if (rrule.getCount() != null)
@@ -855,7 +862,6 @@ public class RecurrenceRuleVBox extends VBox
             {
                 endNeverRadioButton.selectedProperty().set(true);
             }
-            
             startDatePicker.setValue(LocalDate.from(vComponent.getDateTimeStart().getValue()));
             refreshSummary();
             refreshExceptionDates(); // Should this be here? - TODO - CHECK # OF CALLS
@@ -1050,9 +1056,9 @@ public class RecurrenceRuleVBox extends VBox
             {
                 return (Settings.resources == null) ? "Once" : Settings.resources.getString("rrule.summary.once");
             }
-            
+
             final String frequencyText;
-            if (rRule.getInterval() == null)
+            if (rRule.getInterval().getValue() == 1)
             {
                 frequencyText = Settings.REPEAT_FREQUENCIES.get(rRule.getFrequency().getValue());
             } else if (rRule.getInterval().getValue() > 1)

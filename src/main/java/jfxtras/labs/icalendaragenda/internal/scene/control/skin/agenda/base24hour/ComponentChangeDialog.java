@@ -25,7 +25,7 @@ import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOpt
 public class ComponentChangeDialog extends Dialog<ChangeDialogOption>
 {
         
-    private final ChangeDialogOption initialSelection = ChangeDialogOption.ONE;
+//    private final ChangeDialogOption initialSelection = ChangeDialogOption.ONE;
     
     /**
      * Parent of both edit and delete dialogs
@@ -36,7 +36,8 @@ public class ComponentChangeDialog extends Dialog<ChangeDialogOption>
     public ComponentChangeDialog(Map<ChangeDialogOption, Pair<Temporal,Temporal>> choiceMap, ResourceBundle resources)
     {
         Settings.REPEAT_CHANGE_CHOICES.get(this);
-        if (! choiceMap.containsKey(initialSelection)) throw new RuntimeException("choicesAndDateRanges must contain: ChangeDialogOption." + initialSelection);
+        ChangeDialogOption initialSelection = choiceMap.entrySet().iterator().next().getKey();
+//        if (! choiceMap.containsKey(initialSelection)) throw new RuntimeException("choicesAndDateRanges must contain: ChangeDialogOption." + initialSelection);
         getDialogPane().getStyleClass().add("choice-dialog");
 
         // Buttons
