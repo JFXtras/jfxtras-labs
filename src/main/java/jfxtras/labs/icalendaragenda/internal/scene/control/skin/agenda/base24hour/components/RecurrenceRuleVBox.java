@@ -384,8 +384,7 @@ public class RecurrenceRuleVBox extends VBox
         untilDatePicker.valueProperty().removeListener(untilListener);
         untilDatePicker.setValue(LocalDate.from(until));
         untilDatePicker.valueProperty().addListener(untilListener);
-        System.out.println("until:" + until);
-        return (until instanceof ZonedDateTime) ? DateTimeType.DATE_WITH_UTC_TIME.from(until) : until; // ensure type is DATE_WITH_UTC_TIME
+        return (until instanceof LocalDate) ? until : DateTimeType.DATE_WITH_UTC_TIME.from(until); // ensure type is DATE_WITH_UTC_TIME
     }
 
     // listen for changes to start date/time (type may change requiring new exception date choices)
