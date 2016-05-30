@@ -1,10 +1,7 @@
 package jfxtras.labs.icalendarfx.utilities;
 
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,9 +17,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponent.StartEndRange;
-import jfxtras.labs.icalendarfx.components.VComponentUtilities.VComponentPropertyOld;
 
 /**
  * Static utility methods used throughout iCalendar
@@ -34,91 +28,82 @@ public final class ICalendarUtilities
 {
     private ICalendarUtilities() { };
     
-    @Deprecated
-    final private static Comparator<? super Pair<String, String>> DTSTART_FIRST_COMPARATOR_PAIR = (p1, p2) ->
-        (p1.getKey().equals(VComponentPropertyOld.DATE_TIME_START.toString())) ? -1 : 1;
-    final private static Comparator<? super String> DTSTART_FIRST_COMPARATOR = (p1, p2) ->
-    {
-        int endIndex = VComponentPropertyOld.DATE_TIME_START.toString().length();
-        String myString = p1.substring(0, endIndex);
-        return (myString.equals(VComponentPropertyOld.DATE_TIME_START.toString())) ? -1 : 1;
-    };
     public final static String PROPERTY_VALUE_KEY = ":";
 
 
     
-    /**
-     * Starting with lines-separated list of content lines, the lines are unwrapped and 
-     * converted into a list of property name and property value list wrapped in a Pair.
-     * DTSTART property is put on top, if present.
-     * 
-     * This method unwraps multi-line content lines as defined in iCalendar RFC5545 3.1, page 9
-     * 
-     * For example:
-     * string is
-     * BEGIN:VEVENT
-     * SUMMARY:test1
-     * DTSTART;TZID=Etc/GMT:20160306T080000Z
-     * DTEND;TZID=Etc/GMT:20160306T093000Z
-     * RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
-     * UID:fc3577e0-8155-4fa2-a085-a15bdc50a5b4
-     * DTSTAMP:20160313T053147Z
-     * END:VEVENT
-     *  
-     *  results in list of Pair<String,String>
-     *  Pair 1, key = SUMMARY, value = test1
-     *  Pair 2, key = DTSTART, value = TZID=Etc/GMT:20160306T080000Z
-     *  Pair 3, key = DTEND, value = TZID=Etc/GMT:20160306T093000Z
-     *  Pair 4, key = RRULE, value = FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
-     *  Pair 5, key = UID, value = fc3577e0-8155-4fa2-a085-a15bdc50a5b4
-     *  Pair 6, key = DTSTAMP, value = 20160313T053147Z
-     *  
-     *  Note: the list of Pair<String,String> is used instead of a Map<String,String> because some properties
-     *  can appear more than once resulting in duplicate key values.
-     *  
-     * @param componentString
-     * @return
-     */
-    public static List<String> componentStringToPropertyList(String componentString)
-    {
-//        List<Pair<String,String>> propertyPairs = new ArrayList<>();
-        List<String> propertyLines = new ArrayList<>();
-        String storedLine = "";
-        Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
-        while (lineIterator.hasNext())
-        {
-            // unwrap lines by storing previous line, adding to it if next is a continuation
-            // when no more continuation lines are found loop back and start with last storedLine
-            String startLine;
-            if (storedLine.isEmpty())
-            {
-                startLine = lineIterator.next();
-            } else
-            {
-                startLine = storedLine;
-                storedLine = "";
-            }
-            StringBuilder builder = new StringBuilder(startLine);
-            while (lineIterator.hasNext())
-            {
-                String anotherLine = lineIterator.next();
-                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
-                { // unwrap anotherLine into line
-                    builder.append(anotherLine.substring(1, anotherLine.length()));
-                } else
-                {
-                    storedLine = anotherLine; // save for next iteration
-                    break;  // no continuation line, exit while loop
-                }
-            }
-            String line = builder.toString();
-            propertyLines.add(line);
-//            Pair<String, String> pair = parsePropertyLine(line);
-//            if (pair != null) { propertyPairs.add(pair); }
-        }
-        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list
-        return propertyLines;
-    }
+//    /**
+//     * Starting with lines-separated list of content lines, the lines are unwrapped and 
+//     * converted into a list of property name and property value list wrapped in a Pair.
+//     * DTSTART property is put on top, if present.
+//     * 
+//     * This method unwraps multi-line content lines as defined in iCalendar RFC5545 3.1, page 9
+//     * 
+//     * For example:
+//     * string is
+//     * BEGIN:VEVENT
+//     * SUMMARY:test1
+//     * DTSTART;TZID=Etc/GMT:20160306T080000Z
+//     * DTEND;TZID=Etc/GMT:20160306T093000Z
+//     * RRULE:FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
+//     * UID:fc3577e0-8155-4fa2-a085-a15bdc50a5b4
+//     * DTSTAMP:20160313T053147Z
+//     * END:VEVENT
+//     *  
+//     *  results in list of Pair<String,String>
+//     *  Pair 1, key = SUMMARY, value = test1
+//     *  Pair 2, key = DTSTART, value = TZID=Etc/GMT:20160306T080000Z
+//     *  Pair 3, key = DTEND, value = TZID=Etc/GMT:20160306T093000Z
+//     *  Pair 4, key = RRULE, value = FREQ=DAILY;UNTIL=20160417T235959Z;INTERVAL=1
+//     *  Pair 5, key = UID, value = fc3577e0-8155-4fa2-a085-a15bdc50a5b4
+//     *  Pair 6, key = DTSTAMP, value = 20160313T053147Z
+//     *  
+//     *  Note: the list of Pair<String,String> is used instead of a Map<String,String> because some properties
+//     *  can appear more than once resulting in duplicate key values.
+//     *  
+//     * @param componentString
+//     * @return
+//     */
+//    public static List<String> componentStringToPropertyList(String componentString)
+//    {
+////        List<Pair<String,String>> propertyPairs = new ArrayList<>();
+//        List<String> propertyLines = new ArrayList<>();
+//        String storedLine = "";
+//        Iterator<String> lineIterator = Arrays.stream( componentString.split(System.lineSeparator()) ).iterator();
+//        while (lineIterator.hasNext())
+//        {
+//            // unwrap lines by storing previous line, adding to it if next is a continuation
+//            // when no more continuation lines are found loop back and start with last storedLine
+//            String startLine;
+//            if (storedLine.isEmpty())
+//            {
+//                startLine = lineIterator.next();
+//            } else
+//            {
+//                startLine = storedLine;
+//                storedLine = "";
+//            }
+//            StringBuilder builder = new StringBuilder(startLine);
+//            while (lineIterator.hasNext())
+//            {
+//                String anotherLine = lineIterator.next();
+//                if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
+//                { // unwrap anotherLine into line
+//                    builder.append(anotherLine.substring(1, anotherLine.length()));
+//                } else
+//                {
+//                    storedLine = anotherLine; // save for next iteration
+//                    break;  // no continuation line, exit while loop
+//                }
+//            }
+//            String line = builder.toString();
+//            propertyLines.add(line);
+////            Pair<String, String> pair = parsePropertyLine(line);
+////            if (pair != null) { propertyPairs.add(pair); }
+//        }
+//        Collections.sort(propertyLines, DTSTART_FIRST_COMPARATOR); // put DTSTART property on top of list
+//        return propertyLines;
+//    }
     
     /**
      * parse property content line into a parameter name/value map
@@ -583,18 +568,18 @@ public final class ICalendarUtilities
                 .collect(Collectors.joining(";"));
     }
     
-    @Deprecated
-    public static List<Pair<String,String>> componentStringToPropertyNameAndValueListNoUnwrap(String string)
-    {
-        return Arrays
-                .stream(string.split(System.lineSeparator()))
-                .map(line -> {
-                    return parsePropertyLine(line);
-                })
-                .filter(p -> p != null)
-                .sorted(DTSTART_FIRST_COMPARATOR_PAIR)
-                .collect(Collectors.toList());        
-    }
+//    @Deprecated
+//    public static List<Pair<String,String>> componentStringToPropertyNameAndValueListNoUnwrap(String string)
+//    {
+//        return Arrays
+//                .stream(string.split(System.lineSeparator()))
+//                .map(line -> {
+//                    return parsePropertyLine(line);
+//                })
+//                .filter(p -> p != null)
+//                .sorted(DTSTART_FIRST_COMPARATOR_PAIR)
+//                .collect(Collectors.toList());        
+//    }
 
     /**
      * Splits a content line into its property name/value pair
@@ -653,36 +638,36 @@ public final class ICalendarUtilities
      * MAKE STRING METHODS
      */
     
-    /**
-     * Options available when editing or deleting a repeatable appointment.
-     * Sometimes all options are not available.  For example, a one-part repeating
-     * event doesn't have the SEGMENT option.
-     */
-    @Deprecated
-    public enum ChangeDialogOption
-    {
-        ONE                  // individual instance
-      , ALL                  // entire series
-      , THIS_AND_FUTURE      // selected instance and all in the future
-      , CANCEL;              // do nothing
-        
-        public static Map<ChangeDialogOption, StartEndRange> makeDialogChoices(VComponent<?> vComponent, Temporal startInstance)
-        {
-            Map<ChangeDialogOption, StartEndRange> choices = new LinkedHashMap<>();
-            choices.put(ChangeDialogOption.ONE, new StartEndRange(startInstance, startInstance));
-            Temporal end = vComponent.lastRecurrence();
-            if (! vComponent.isIndividual())
-            {
-                if (! vComponent.isLastRecurrence(startInstance))
-                {
-                    Temporal start = (startInstance == null) ? vComponent.getDateTimeStart() : startInstance; // set initial start
-                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, new StartEndRange(start, end));
-                }
-                choices.put(ChangeDialogOption.ALL, new StartEndRange(vComponent.getDateTimeStart(), end));
-            }
-            return choices;
-        }        
-    }
+//    /**
+//     * Options available when editing or deleting a repeatable appointment.
+//     * Sometimes all options are not available.  For example, a one-part repeating
+//     * event doesn't have the SEGMENT option.
+//     */
+//    @Deprecated
+//    public enum ChangeDialogOption
+//    {
+//        ONE                  // individual instance
+//      , ALL                  // entire series
+//      , THIS_AND_FUTURE      // selected instance and all in the future
+//      , CANCEL;              // do nothing
+//        
+//        public static Map<ChangeDialogOption, StartEndRange> makeDialogChoices(VComponent<?> vComponent, Temporal startInstance)
+//        {
+//            Map<ChangeDialogOption, StartEndRange> choices = new LinkedHashMap<>();
+//            choices.put(ChangeDialogOption.ONE, new StartEndRange(startInstance, startInstance));
+//            Temporal end = vComponent.lastRecurrence();
+//            if (! vComponent.isIndividual())
+//            {
+//                if (! vComponent.isLastRecurrence(startInstance))
+//                {
+//                    Temporal start = (startInstance == null) ? vComponent.getDateTimeStart() : startInstance; // set initial start
+//                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, new StartEndRange(start, end));
+//                }
+//                choices.put(ChangeDialogOption.ALL, new StartEndRange(vComponent.getDateTimeStart(), end));
+//            }
+//            return choices;
+//        }        
+//    }
     
     // takeWhile - From http://stackoverflow.com/questions/20746429/limit-a-stream-by-a-predicate
     // will be obsolete with Java 9

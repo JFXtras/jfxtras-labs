@@ -27,9 +27,10 @@ import org.junit.Test;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.Callback2;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.CallbackTwoParameters;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -161,7 +162,7 @@ public class MakeAppointmentsTest
 
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
 //                appointments,
-                MAKE_APPOINTMENT_TEST_CALLBACK
+                MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE
 //                vComponentAppointmentMap,
 //               appointmentVComponentMap
                 );
@@ -175,19 +176,20 @@ public class MakeAppointmentsTest
     }
     
     /** Callback to make appointment from VComponent and Temporal */
-    public static final Callback2<VComponentLocatable<?>, Temporal, Appointment> MAKE_APPOINTMENT_TEST_CALLBACK = (vComponentEdited, startTemporal) ->
+    public static final CallbackTwoParameters<VComponentRepeatable<?>, Temporal, Appointment> MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE = (vComponentEdited, startTemporal) ->
     {
         Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
-        final TemporalAmount adjustment = vComponentEdited.getActualDuration();
+        VComponentLocatable<?> vComponentLocatable = (VComponentLocatable<?>) vComponentEdited;
+        final TemporalAmount adjustment = vComponentLocatable.getActualDuration();
         Temporal endTemporal = startTemporal.plus(adjustment);
 
         // Make appointment
         Appointment appt = new Agenda.AppointmentImplTemporal()
                 .withStartTemporal(startTemporal)
                 .withEndTemporal(endTemporal)
-                .withDescription( (vComponentEdited.getDescription() != null) ? vComponentEdited.getDescription().getValue() : null )
-                .withSummary( (vComponentEdited.getSummary() != null) ? vComponentEdited.getSummary().getValue() : null)
-                .withLocation( (vComponentEdited.getLocation() != null) ? vComponentEdited.getLocation().getValue() : null)
+                .withDescription( (vComponentLocatable.getDescription() != null) ? vComponentLocatable.getDescription().getValue() : null )
+                .withSummary( (vComponentLocatable.getSummary() != null) ? vComponentLocatable.getSummary().getValue() : null)
+                .withLocation( (vComponentLocatable.getLocation() != null) ? vComponentLocatable.getLocation().getValue() : null)
                 .withWholeDay(isWholeDay);
         return appt;
     };

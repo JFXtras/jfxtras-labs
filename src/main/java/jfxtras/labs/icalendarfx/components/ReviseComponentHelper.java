@@ -147,7 +147,7 @@ public final class ReviseComponentHelper
         }
         if (! vComponentEdited.isValid())
         {
-            throw new RuntimeException("Invalid component"); // TODO - MAKE ERROR STRING
+            throw new RuntimeException("Invalid component" + vComponentEdited.toContent()); // TODO - MAKE ERROR STRING
         }
         if (incrementSequence)
         {

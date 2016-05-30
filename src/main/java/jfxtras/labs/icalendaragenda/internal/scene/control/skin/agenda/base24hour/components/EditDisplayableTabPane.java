@@ -61,7 +61,7 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
         {
             vComponent.setSummary((Summary) null); 
         }
-        if (recurrenceRuleVBox.intervalSpinner.getValue() == 1)
+        if ((vComponent.getRecurrenceRule() != null) && (recurrenceRuleVBox.intervalSpinner.getValue() == 1))
         {
             vComponent.getRecurrenceRule().getValue().setInterval((Interval) null); 
         }

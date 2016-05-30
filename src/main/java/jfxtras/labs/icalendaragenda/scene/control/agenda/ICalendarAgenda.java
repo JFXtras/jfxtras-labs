@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -35,15 +34,14 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectedOneAppointmentLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.Callback2;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.CallbackTwoParameters;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentNew;
+import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.VEventOld;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda;
@@ -86,19 +84,20 @@ public class ICalendarAgenda extends Agenda
     final private VCalendar vCalendar;
     
     /** Callback to make appointment from VComponent and Temporal */
-    public final Callback2<VComponentLocatable<?>, Temporal, Appointment> makeAppointmentCallback = (vComponentEdited, startTemporal) ->
+    private final CallbackTwoParameters<VComponentRepeatable<?>, Temporal, Appointment> makeAppointmentCallback = (vComponentEdited, startTemporal) ->
     {
         Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
-        final TemporalAmount adjustment = vComponentEdited.getActualDuration();
+        VComponentLocatable<?> vComponentLocatable = (VComponentLocatable<?>) vComponentEdited;
+        final TemporalAmount adjustment = vComponentLocatable.getActualDuration();
         Temporal endTemporal = startTemporal.plus(adjustment);
 
         /* Find AppointmentGroup
          * control can only handle one category.  Checks only first category
          */
         final AppointmentGroup appointmentGroup;
-        if (vComponentEdited.getCategories() != null)
+        if (vComponentLocatable.getCategories() != null)
         {
-            String firstCategory = vComponentEdited.getCategories().get(0).getValue().get(0);
+            String firstCategory = vComponentLocatable.getCategories().get(0).getValue().get(0);
             Optional<AppointmentGroup> myGroup = appointmentGroups()
                     .stream()
                     .filter(g -> g.getDescription().equals(firstCategory))
@@ -112,9 +111,9 @@ public class ICalendarAgenda extends Agenda
         Appointment appt = new Agenda.AppointmentImplTemporal()
                 .withStartTemporal(startTemporal)
                 .withEndTemporal(endTemporal)
-                .withDescription( (vComponentEdited.getDescription() != null) ? vComponentEdited.getDescription().getValue() : null )
-                .withSummary( (vComponentEdited.getSummary() != null) ? vComponentEdited.getSummary().getValue() : null)
-                .withLocation( (vComponentEdited.getLocation() != null) ? vComponentEdited.getLocation().getValue() : null)
+                .withDescription( (vComponentLocatable.getDescription() != null) ? vComponentLocatable.getDescription().getValue() : null )
+                .withSummary( (vComponentLocatable.getSummary() != null) ? vComponentLocatable.getSummary().getValue() : null)
+                .withLocation( (vComponentLocatable.getLocation() != null) ? vComponentLocatable.getLocation().getValue() : null)
                 .withWholeDay(isWholeDay)
                 .withAppointmentGroup(appointmentGroup);
         return appt;
@@ -295,8 +294,8 @@ public class ICalendarAgenda extends Agenda
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
         // TODO - NEED ANOTHER VERSION OF THIS CODE FOR VTODO
-        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
-        VEventOld<Appointment,?> vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
+//        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
+//        VEventOld<Appointment,?> vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
         Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
         final Temporal startInstance;
         final Temporal endInstance;
@@ -595,8 +594,8 @@ public class ICalendarAgenda extends Agenda
                 {
                     Appointment appointment = selectedAppointments().get(0);
                     getSelectedOneAppointmentCallback().call(appointment);
-                    VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
-                    System.out.println("selected vEvent:" + vEvent);
+//                    VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
+//                    System.out.println("selected vEvent:" + vEvent);
                 }
             }
         };
@@ -710,39 +709,39 @@ public class ICalendarAgenda extends Agenda
          * @param appointmentGroups - list of AppointmentGroups
          * @return
          */
-        public static <U extends Appointment> VComponent<U> newVComponent(
-                Class<? extends VComponent<U>> vComponentClass
-              , U appointment
-              , ObservableList<AppointmentGroup> appointmentGroups)
-        {
-            try {
-                return vComponentClass
-                        .getConstructor(Appointment.class, ObservableList.class)
-                        .newInstance(appointment, appointmentGroups);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
+//        public static <U extends Appointment> VComponent<U> newVComponent(
+//                Class<? extends VComponent<U>> vComponentClass
+//              , U appointment
+//              , ObservableList<AppointmentGroup> appointmentGroups)
+//        {
+//            try {
+//                return vComponentClass
+//                        .getConstructor(Appointment.class, ObservableList.class)
+//                        .newInstance(appointment, appointmentGroups);
+//            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
         
         public static VComponentDisplayable<?> newVComponent(Appointment a,
                 ObservableList<AppointmentGroup> appointmentGroups)
         {
             // TODO Auto-generated method stub
-            return null;
+            throw new RuntimeException("not implemented");
         }
 
-        @SuppressWarnings("unchecked")
-        public static <U extends Appointment> VComponent<U> newVComponent(VComponent<U> vComponent)
-        {
-            try {
-                return vComponent.getClass()
-                        .getConstructor(vComponent.getClass())
-                        .newInstance(vComponent);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
+//        @SuppressWarnings("unchecked")
+//        public static <U extends Appointment> VComponent<U> newVComponent(VComponent<U> vComponent)
+//        {
+//            try {
+//                return vComponent.getClass()
+//                        .getConstructor(vComponent.getClass())
+//                        .newInstance(vComponent);
+//            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
     }       
 }

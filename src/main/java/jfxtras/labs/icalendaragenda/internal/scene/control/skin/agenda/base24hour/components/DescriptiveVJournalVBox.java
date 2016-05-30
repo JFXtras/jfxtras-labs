@@ -11,8 +11,13 @@ public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
     public DescriptiveVJournalVBox()
     {
         super();
+        // remove unavailable elements
         endLabel.setVisible(false);
         endLabel = null;
+        locationLabel.setVisible(false);
+        locationLabel = null;
+        locationTextField.setVisible(false);
+        locationTextField = null;
     }
     
     @Override

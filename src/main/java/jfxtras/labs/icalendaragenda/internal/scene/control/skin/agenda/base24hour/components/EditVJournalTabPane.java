@@ -16,7 +16,7 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, Descri
     {
         super();
         editDescriptiveVBox = new DescriptiveVJournalVBox();
-        getDescriptiveAnchorPane().getChildren().add(editDescriptiveVBox);
+        getDescriptiveAnchorPane().getChildren().add(0, editDescriptiveVBox);
     }
     
     @Override

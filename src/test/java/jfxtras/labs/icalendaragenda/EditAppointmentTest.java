@@ -54,7 +54,7 @@ public class EditAppointmentTest
 
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
 //                appointments,
-                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE
 //                vComponentAppointmentMap,
 //                appointmentVComponentMap
                 );

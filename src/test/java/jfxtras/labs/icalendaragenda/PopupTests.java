@@ -82,7 +82,7 @@ public class PopupTests extends JFXtrasGuiTest
     public void canDisplayPopupWithVEvent()
     {
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK);
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -109,7 +109,7 @@ public class PopupTests extends JFXtrasGuiTest
     public void canEditVEventWithPopup1()
     {
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK);
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -137,7 +137,7 @@ public class PopupTests extends JFXtrasGuiTest
     public void canEditDescriptibeProperties()
     {
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK);
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -238,7 +238,7 @@ public class PopupTests extends JFXtrasGuiTest
     public void canChangeFrequency()
     {
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK);
+                MakeAppointmentsTest.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();

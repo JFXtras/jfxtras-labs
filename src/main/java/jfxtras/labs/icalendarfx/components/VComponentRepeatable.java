@@ -21,7 +21,6 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecurrence;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
