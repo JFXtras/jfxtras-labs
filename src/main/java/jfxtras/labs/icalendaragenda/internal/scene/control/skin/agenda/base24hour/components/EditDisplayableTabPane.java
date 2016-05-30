@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,7 +14,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -24,57 +27,89 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
  * 
  * @author David Bal
  */
-public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>> extends TabPane
+public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>, U extends DescriptiveVBox<T>> extends TabPane
 {
-    DescriptiveVBox<T> editDescriptiveVBox;
+    U editDescriptiveVBox;
+
 //    void setDescriptiveVBox(DescriptiveVBox<T> descriptiveVBox) { this.editDescriptiveVBox = descriptiveVBox; }
 //    DescriptiveVBox<T> getDescriptiveVBox() { return editDescriptiveVBox; }
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private AnchorPane descriptiveAnchorPane;
+    @FXML private AnchorPane recurrenceRuleAnchorPane;
     AnchorPane getDescriptiveAnchorPane() { return descriptiveAnchorPane; }
     @FXML private TabPane editDisplayableTabPane;
     @FXML private Tab descriptiveTab;
     @FXML private Tab recurrenceRuleTab;
-    @FXML private RecurrenceRuleVBox recurrenceRuleVBox;
-    
-    // Becomes true when pane should be closed
+    private RecurrenceRuleVBox recurrenceRuleVBox = new RecurrenceRuleVBox();
+
+    // Becomes true when control should be closed
     ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
     public ObjectProperty<Boolean> isFinished() { return isFinished; }
     
     public EditDisplayableTabPane( )
     {
         super();
-        loadFxml(DescriptiveVBox.class.getResource("view/EditDisplayable.fxml"), this);
-//        System.out.println("editDescriptive:" + editDescriptive);
-//        editVEventDescriptive = new EditVEventDescriptiveVBox();
-//        descriptiveAnchorPane.getChildren().add(getEditDescriptive());
+        loadFxml(DescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
+        recurrenceRuleAnchorPane.getChildren().add(0, recurrenceRuleVBox);
     }
     
-    // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
-    @FXML private void handleRepeatSave()
+    @FXML
+    void handleSaveButton()
     {
-        editDescriptiveVBox.handleSave();
+        if (editDescriptiveVBox.summaryTextField.getText().isEmpty())
+        {
+            vComponent.setSummary((Summary) null); 
+        }
+        if (recurrenceRuleVBox.intervalSpinner.getValue() == 1)
+        {
+            vComponent.getRecurrenceRule().getValue().setInterval((Interval) null); 
+        }
+        isFinished.set(true);
+        // additional functionality in subclasses
     }
     
     @FXML private void handleCancelButton()
     {
+        System.out.println("handlecancel:");
+        isFinished.set(true);
 ////        vEventOriginal.copyTo(vEvent);
 //        vComponent.copyComponentFrom(vEventOriginal);
 //        popup.close();
     }
     
+    @FXML private void handleDeleteButton()
+    {
+        isFinished.set(true);
+//        vEvent.handleDelete(
+//                vComponents
+//              , startRecurrence
+//              , appointment
+//              , appointments
+//              , DeleteChoiceDialog.DELETE_DIALOG_CALLBACK);
+//        popup.close();
+    } 
+    
+    T vComponent;
+    T vComponentOriginalCopy;
+    List<T> vComponents;
+
     public void setupData(
             Appointment appointment,
             T vComponent,
             List<T> vComponents,
             List<AppointmentGroup> appointmentGroups
-//            Stage stage
             )
     {
-        editDescriptiveVBox.setupData(appointment, vComponent, vComponents, appointmentGroups);
-        // recurrences can't add repeat rules (only parent can have repeat rules)
-        if (vComponent.getRecurrenceDates() != null)
+        this.vComponent = vComponent;
+        this.vComponents = vComponents;
+        editDescriptiveVBox.setupData(appointment, vComponent, appointmentGroups);
+        
+        /* 
+         * Shut off repeat tab if vComponent is not a parent
+         * Components with RECURRENCE-ID can't add repeat rules (only parent can have repeat rules)
+         */
+        if (vComponent.getRecurrenceId() != null)
         {
             recurrenceRuleTab.setDisable(true);
             recurrenceRuleTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));

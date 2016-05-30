@@ -9,10 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<fx:root type="javafx.scene.layout.VBox" stylesheets="@resources/PopupStyles.css"
-xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
-prefHeight="560.0" prefWidth="392.0" spacing="7.0" AnchorPane.bottomAnchor="2.0"
-AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="5.0">
+<fx:root prefHeight="530.0" prefWidth="392.0" spacing="7.0" stylesheets="@resources/PopupStyles.css" type="javafx.scene.layout.VBox" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox>
          <children>

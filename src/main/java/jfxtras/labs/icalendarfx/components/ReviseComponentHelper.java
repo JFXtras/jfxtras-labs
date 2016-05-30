@@ -169,25 +169,25 @@ public final class ReviseComponentHelper
         return vComponents;
     }
     
-    /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
-     * endRecurrence to closest valid values
-     */
-    // TODO - VERITFY THIS WORKS - changed from old version
-    private static void validateStartRecurrenceAndDTStart(VComponentLocatable<?> vComponentEditedCopy, Temporal startOriginalRecurrence, Temporal startRecurrence)
-    {
-//        boolean isStreamedValue;
-        if (vComponentEditedCopy.getRecurrenceRule() != null)
-        {
-            Temporal firstTemporal = vComponentEditedCopy.getRecurrenceRule().getValue()
-                    .streamRecurrences(vComponentEditedCopy.getDateTimeStart().getValue())
-                    .findFirst()
-                    .get();
-            if (! firstTemporal.equals(vComponentEditedCopy.getDateTimeStart().getValue()))
-            {
-                vComponentEditedCopy.setDateTimeStart(firstTemporal);
-            }
-        }
-    }
+//    /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
+//     * endRecurrence to closest valid values
+//     */
+//    // TODO - VERITFY THIS WORKS - changed from old version
+//    private static void validateStartRecurrenceAndDTStart(VComponentLocatable<?> vComponentEditedCopy, Temporal startOriginalRecurrence, Temporal startRecurrence)
+//    {
+////        boolean isStreamedValue;
+//        if (vComponentEditedCopy.getRecurrenceRule() != null)
+//        {
+//            Temporal firstTemporal = vComponentEditedCopy.getRecurrenceRule().getValue()
+//                    .streamRecurrences(vComponentEditedCopy.getDateTimeStart().getValue())
+//                    .findFirst()
+//                    .get();
+//            if (! firstTemporal.equals(vComponentEditedCopy.getDateTimeStart().getValue()))
+//            {
+//                vComponentEditedCopy.setDateTimeStart(firstTemporal);
+//            }
+//        }
+//    }
     
 //    /* Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time */
 //    private static void adjustDateTime(

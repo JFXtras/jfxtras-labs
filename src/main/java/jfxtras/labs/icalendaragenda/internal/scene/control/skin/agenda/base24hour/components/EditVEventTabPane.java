@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
 import java.util.List;
 
@@ -6,12 +6,13 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
+public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
 {
-    public DescriptiveVEventVBox()
+    public EditVEventTabPane( )
     {
         super();
-        endLabel.setText(getResources().getString("end.time"));
+        editDescriptiveVBox = new DescriptiveVEventVBox();
+        getDescriptiveAnchorPane().getChildren().add(0, editDescriptiveVBox);
     }
     
     @Override
@@ -21,7 +22,8 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
             List<VEvent> vComponents,
             List<AppointmentGroup> appointmentGroups)
     {
-        vComponentOriginalCopy = new VEvent(vComponent);
         super.setupData(appointment, vComponent, vComponents, appointmentGroups);
+        vComponentOriginalCopy = new VEvent(vComponent);
     }
+
 }

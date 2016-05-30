@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
 import java.util.List;
 
@@ -19,10 +19,15 @@ public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
     public void setupData(
             Appointment appointment,
             VJournal vComponent,
-            List<VJournal> vComponents,
             List<AppointmentGroup> appointmentGroups)
     {
-        vComponentOriginalCopy = new VJournal(vComponent);
-        super.setupData(appointment, vComponent, vComponents, appointmentGroups);
+        super.setupData(appointment, vComponent, appointmentGroups);
+
+        // Journal supports multiple descriptions, but this control only supports one description
+        if (vComponent.getDescriptions() == null)
+        {
+            vComponent.withDescriptions("");
+        }
+        descriptionTextArea.textProperty().bind(vComponent.getDescriptions().get(0).valueProperty());
     }
 }

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +31,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.scene.control.LocalDateTextField;
@@ -55,7 +57,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML Label endLabel;
     
     @FXML private CheckBox wholeDayCheckBox;
-    @FXML private TextField summaryTextField; // SUMMARY
+    @FXML TextField summaryTextField; // SUMMARY
     @FXML TextArea descriptionTextArea; // DESCRIPTION
     @FXML protected TextField locationTextField; // LOCATION
     @FXML private TextField groupTextField; // CATEGORIES
@@ -71,58 +73,11 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     public DescriptiveVBox( )
     {
         super();
-        loadFxml(DescriptiveVBox.class.getResource("view/EditDescriptive.fxml"), this);
+        loadFxml(DescriptiveVBox.class.getResource("EditDescriptive.fxml"), this);
         appointmentGroupGridPane.getStylesheets().addAll(getStylesheets());
         startDateTimeTextField.setId("startDateTimeTextField");
         startDateTextField.setId("startDateTextField");
-    }
-    
-    ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
-    
-    @FXML
-    void handleSave()
-    {
-        System.out.println("handlesave1:");
-        if (summaryTextField.getText().isEmpty())
-        {
-            vComponentEdited.setSummary((Summary) null); 
-        }
-        isFinished.set(true);
-        // additional functionality in subclasses
-    }
-    
-//    // Checks to see if start date has been changed, and a date shift is required, and then runs ordinary handleSave method.
-//    @FXML private void handleRepeatSave()
-//    {
-//        handleSave();
-//    }
-    
-    @FXML private void handleCancelButton()
-    {
-        isFinished.set(true);
-////        vEventOriginal.copyTo(vEvent);
-//        vComponent.copyComponentFrom(vEventOriginal);
-//        popup.close();
-    }
-
-    @FXML private void handleDeleteButton()
-    {
-        isFinished.set(true);
-//        vEvent.handleDelete(
-//                vComponents
-//              , startRecurrence
-//              , appointment
-//              , appointments
-//              , DeleteChoiceDialog.DELETE_DIALOG_CALLBACK);
-//        popup.close();
-    }    
-    
-//    private Appointment appointment; // selected appointment
-//    protected Temporal startRecurrence; // bound to startTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in startTextListener
-//    private Temporal endRecurrence; // bound to endTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in endTextListener
-//    protected Temporal startOriginalRecurrence;
-//    private Temporal endRecurrenceOriginal;
-    
+    }   
 
     final private ChangeListener<? super LocalDate> startDateTextListener = (observable, oldValue, newValue) -> synchStartDate(oldValue, newValue);
 
@@ -159,20 +114,19 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     };
     
     T vComponentEdited;
-    T vComponentOriginalCopy;
-    List<T> vComponents;
+//    List<T> vComponents;
     Temporal startOriginalRecurrence;
     ObjectProperty<Temporal> startRecurrenceProperty = new SimpleObjectProperty<>(); // bind this to related value in RecurrenceRuleVBox
 
     public void setupData(
             Appointment appointment,
             T vComponent,
-            List<T> vComponents,
+//            List<T> vComponents,
             List<AppointmentGroup> appointmentGroups)
     {
         startOriginalRecurrence = appointment.getStartTemporal();
 //        this.appointment = appointment;
-        this.vComponents = vComponents;
+//        this.vComponents = vComponents;
         vComponentEdited = vComponent;
         
         // Disable repeat rules for events with recurrence-id

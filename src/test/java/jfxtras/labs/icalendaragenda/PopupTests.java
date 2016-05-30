@@ -30,8 +30,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
@@ -269,7 +269,6 @@ public class PopupTests extends JFXtrasGuiTest
         // WEEKLY
         {
         TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyType.WEEKLY));
-TestUtil.sleep(3000);
         // Days of the week properties
         CheckBox su = (CheckBox) find("#sundayCheckBox");
         CheckBox mo = (CheckBox) find("#mondayCheckBox");
@@ -285,29 +284,29 @@ TestUtil.sleep(3000);
         ByDay rule = (ByDay) rrule.lookupByRule(ByDay.class);
 
         // Check initial state
-        List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.WEDNESDAY);
+        List<DayOfWeek> expectedDOW = Arrays.asList(DayOfWeek.SUNDAY);
         assertEquals(expectedDOW, rule.dayOfWeekWithoutOrdinalList());
         HBox weeklyHBox = find("#weeklyHBox");
         assertTrue(weeklyHBox.isVisible());       
-        assertFalse(su.isSelected());
+        assertTrue(su.isSelected());
         assertFalse(mo.isSelected());
         assertFalse(tu.isSelected());
-        assertTrue(we.isSelected());
+        assertFalse(we.isSelected());
         assertFalse(th.isSelected());
         assertFalse(fr.isSelected());
         assertFalse(sa.isSelected());
         
         // Toggle each day of week and check
-        TestUtil.runThenWaitForPaintPulse( () -> su.setSelected(true));
-        assertTrue(su.isSelected());
-        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.SUNDAY));
+        // Sunday already selected
         TestUtil.runThenWaitForPaintPulse( () -> mo.setSelected(true));
         assertTrue(mo.isSelected());
         assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.MONDAY));
         TestUtil.runThenWaitForPaintPulse( () -> tu.setSelected(true));
         assertTrue(tu.isSelected());
         assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.TUESDAY));
-        // Wednesday already selected
+        TestUtil.runThenWaitForPaintPulse( () -> we.setSelected(true));
+        assertTrue(we.isSelected());
+        assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.WEDNESDAY));
         TestUtil.runThenWaitForPaintPulse( () -> th.setSelected(true));
         assertTrue(th.isSelected());
         assertTrue(rule.dayOfWeekWithoutOrdinalList().contains(DayOfWeek.THURSDAY));
@@ -344,7 +343,7 @@ TestUtil.sleep(3000);
         assertTrue(dayOfWeek.isSelected());
         assertEquals(1, rrule.byRules().size());
         ByDay rule = (ByDay) rrule.lookupByRule(ByDay.class);
-        assertEquals("BYDAY=2WE", rule.toString()); // 2nd Wednesday of the month
+        assertEquals("BYDAY=3SU", rule.toContent()); // 3nd Sunday of the month
         }
         
         // YEARLY
@@ -354,9 +353,8 @@ TestUtil.sleep(3000);
 
         // Check initial state
         assertEquals(FrequencyType.YEARLY, f.getValue());
-        assertEquals(0, rrule.byRules().size());
+        assertEquals(1, rrule.byRules().size());
         }
-        closeCurrentWindow();
     }
     
     private static final Map<ChangeDialogOption, Pair<Temporal,Temporal>> EXAMPLE_MAP = makeExampleMap();

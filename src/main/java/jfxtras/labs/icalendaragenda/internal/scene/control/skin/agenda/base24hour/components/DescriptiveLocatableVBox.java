@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -7,22 +7,18 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
 import jfxtras.labs.icalendarfx.components.VComponentLocatableBase;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
-import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -47,31 +43,6 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
         super();
         endDateTimeTextField.setId("endDateTimeTextField");
         endDateTextField.setId("endDateTextField");
-    }
-
-    @Override
-    @FXML void handleSave()
-    {
-        super.handleSave();
-        System.out.println("handlesave2:");
-        if (descriptionTextArea.getText().isEmpty())
-        {
-            vComponentEdited.setDescription((Description) null); 
-        }
-        if (locationTextField.getText().isEmpty())
-        {
-            vComponentEdited.setLocation((Location) null); 
-        }
-        Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentEdited,
-                vComponentOriginalCopy,
-                startOriginalRecurrence,
-                startRecurrenceProperty.get(),
-                endRecurrence,
-                EditChoiceDialog.EDIT_DIALOG_CALLBACK
-                );
-        vComponents.remove(vComponentEdited);
-        vComponents.addAll(newVComponents);
     }
     
     @Override
@@ -122,27 +93,18 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
         endDateTextField.localDateProperty().addListener(endDateTextListener);
     }
 
-    private Temporal endRecurrence; // bound to endTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in endTextListener
+    Temporal endRecurrence; // bound to endTextField, but adjusted to be DateTimeType identical to VComponent DTSTART, updated in endTextListener
     private Temporal endRecurrenceOriginal;
 
     @Override
     public void setupData(
             Appointment appointment,
             T vComponent,
-            List<T> vComponents,
+//            List<T> vComponents,
             List<AppointmentGroup> appointmentGroups)
     {
-        super.setupData(appointment, vComponent, vComponents, appointmentGroups);
+        super.setupData(appointment, vComponent, appointmentGroups);
         endRecurrenceOriginal = appointment.getEndTemporal();
-        
-        // Convert duration to date/time end - this controller can't handle VEvents with duration
-        if (vComponent.getDuration() != null)
-        {
-            Temporal end = vComponent.getDateTimeStart().getValue().plus(vComponent.getDuration().getValue());
-            vComponent.setDuration((DurationProp) null);
-//            endOrDueProperty.set(end);
-//            vComponent.setDateTimeEnd(end);
-        }
         
         if (vComponent.getDescription() == null)
         {
