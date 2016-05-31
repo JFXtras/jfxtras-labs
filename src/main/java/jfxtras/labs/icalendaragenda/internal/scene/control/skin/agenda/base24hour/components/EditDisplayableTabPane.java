@@ -35,13 +35,12 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
 //    DescriptiveVBox<T> getDescriptiveVBox() { return editDescriptiveVBox; }
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
-    @FXML private AnchorPane descriptiveAnchorPane;
-    @FXML private AnchorPane recurrenceRuleAnchorPane;
-    AnchorPane getDescriptiveAnchorPane() { return descriptiveAnchorPane; }
+    @FXML AnchorPane descriptiveAnchorPane;
+    @FXML AnchorPane recurrenceRuleAnchorPane;
     @FXML private TabPane editDisplayableTabPane;
     @FXML private Tab descriptiveTab;
     @FXML private Tab recurrenceRuleTab;
-    private RecurrenceRuleVBox recurrenceRuleVBox = new RecurrenceRuleVBox();
+    RecurrenceRuleVBox<T> recurrenceRuleVBox;
 
     // Becomes true when control should be closed
     ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
@@ -51,7 +50,6 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     {
         super();
         loadFxml(DescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
-        recurrenceRuleAnchorPane.getChildren().add(0, recurrenceRuleVBox);
     }
     
     @FXML

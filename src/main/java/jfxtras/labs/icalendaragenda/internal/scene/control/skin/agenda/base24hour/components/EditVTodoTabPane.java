@@ -12,7 +12,9 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
     {
         super();
         editDescriptiveVBox = new DescriptiveVTodoVBox();
-        getDescriptiveAnchorPane().getChildren().add(0, editDescriptiveVBox);
+        descriptiveAnchorPane.getChildren().add(0, editDescriptiveVBox);
+        recurrenceRuleVBox = new RecurrenceRuleVTodoVBox();
+        recurrenceRuleAnchorPane.getChildren().add(0, recurrenceRuleVBox);
     }
     
     @Override

@@ -70,14 +70,14 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRu
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
-public class RecurrenceRuleVBox extends VBox
+public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> extends VBox
 {
     final public static int EXCEPTION_CHOICE_LIMIT = 50;
     final public static int INITIAL_COUNT = 10;
     final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on) 
 //    final private static int INITIAL_INTERVAL = 1;
         
-    private VComponentDisplayable<?> vComponent;
+    T vComponent;
     private RecurrenceRule2 rrule;
     private ObjectProperty<Temporal> dateTimeStartRecurrenceNew;
 
@@ -106,7 +106,7 @@ public class RecurrenceRuleVBox extends VBox
     private ToggleGroup monthlyGroup;
     @FXML private RadioButton dayOfMonthRadioButton;
     @FXML private RadioButton dayOfWeekRadioButton;
-    @FXML private DatePicker startDatePicker;
+    @FXML DatePicker startDatePicker;
     @FXML private RadioButton endNeverRadioButton;
     @FXML private RadioButton endAfterRadioButton;
     @FXML private RadioButton untilRadioButton;
@@ -125,7 +125,7 @@ public class RecurrenceRuleVBox extends VBox
     public RecurrenceRuleVBox( )
     {
         super();
-        loadFxml(DescriptiveVBox.class.getResource("RecurrenceRule.fxml"), this);
+//        loadFxml(DescriptiveVBox.class.getResource("RecurrenceRule.fxml"), this);
     }
     
     private DateTimeFormatter getFormatter(Temporal t)
@@ -417,6 +417,14 @@ public class RecurrenceRuleVBox extends VBox
             exceptionsListView.setItems(FXCollections.observableArrayList(newItems));
         }
     };
+    
+    /** Synch startDatePicker with DTSTART component.  In subclass DTEND or DUE are synched too */
+    void synchStartDatePickerAndComponent(LocalDate oldValue, LocalDate newValue)
+    {
+        Period shift = Period.between(oldValue, newValue);
+        Temporal newStart = vComponent.getDateTimeStart().getValue().plus(shift);
+        vComponent.setDateTimeStart(newStart);
+    }
 
     // INITIALIZATION - runs when FXML is initialized
     @FXML public void initialize()
@@ -520,16 +528,7 @@ public class RecurrenceRuleVBox extends VBox
         {
             if (oldValue != null)
             {
-                if (vComponent.getDateTimeStart().getValue().isSupported(ChronoUnit.NANOS))
-                {
-                    long d = ChronoUnit.DAYS.between(oldValue, newValue);
-                    Temporal start = vComponent.getDateTimeStart().getValue().plus(d, ChronoUnit.DAYS);
-                    vComponent.setDateTimeStart(start);
-                } else
-                {
-                    vComponent.setDateTimeStart(newValue);                
-                }
-                refreshExceptionDates();
+                synchStartDatePickerAndComponent(oldValue, newValue);
             }
         });
         startDatePicker.focusedProperty().addListener((obs, wasFocused, isNowFocused) ->
@@ -650,7 +649,7 @@ public class RecurrenceRuleVBox extends VBox
      * @param dateTimeStartRecurrenceNew : start date-time for edited event
      */
     public void setupData(
-            VComponentDisplayable<?> vComponent
+            T vComponent
           , ObjectProperty<Temporal> dateTimeStartRecurrenceNew)
     {
         rrule = (vComponent.getRecurrenceRule() != null) ? vComponent.getRecurrenceRule().getValue() : null;

@@ -12,7 +12,9 @@ public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
     {
         super();
         editDescriptiveVBox = new DescriptiveVEventVBox();
-        getDescriptiveAnchorPane().getChildren().add(0, editDescriptiveVBox);
+        descriptiveAnchorPane.getChildren().add(0, editDescriptiveVBox);
+        recurrenceRuleVBox = new RecurrenceRuleVEventVBox();
+        recurrenceRuleAnchorPane.getChildren().add(0, recurrenceRuleVBox);
     }
     
     @Override
