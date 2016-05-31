@@ -867,9 +867,7 @@ public class RecurrenceRule2 implements VCalendarElement
                 .map(e -> 
                 {
                     RRuleElement<?> element = e.getElement(this);
-                    System.out.println("element:" + this.hashCode());
                     return element.toContent();
-//                    return e.getConverter().toString(element);
                 })
                 .collect(Collectors.joining(";"));
     }

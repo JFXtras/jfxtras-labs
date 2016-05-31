@@ -228,8 +228,6 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         {
             errors.add("DTSTART is not present.  DTSTART is REQUIRED and MUST NOT occur more than once");
         }
-        boolean isDateTimeEndPresent = getDateTimeEnd() != null;
-        boolean isDurationPresent = getDuration() != null;
         
         if (getDateTimeEnd() != null)
         {
@@ -245,14 +243,29 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
             }
         }
         
-        if ((! isDateTimeEndPresent) && (! isDurationPresent))
+        boolean isDateTimeEndPresent = getDateTimeEnd() != null;
+        boolean isDurationPresent = getDuration() != null;       
+        if (! isDateTimeEndPresent && ! isDurationPresent)
         {
             errors.add("Neither DTEND or DURATION is present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once");
-        }
-        if (isDateTimeEndPresent && isDurationPresent)
+        } else if (isDateTimeEndPresent && isDurationPresent)
         {
             errors.add("Both DTEND and DURATION are present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once");
+        } else if (isDateTimeEndPresent)
+        {
+            if (! DateTimeUtilities.isAfter(getDateTimeEnd().getValue(), getDateTimeStart().getValue()))
+            {
+                errors.add("DTEND is not after DTSTART.  DTEND MUST be after DTSTART");                
+            }
+        } else // duration is present
+        {
+            Temporal actualEnd = getDateTimeStart().getValue().plus(getDuration().getValue());
+            if (! DateTimeUtilities.isAfter(actualEnd, getDateTimeStart().getValue()))
+            {
+                errors.add("DURATION is negative.  DURATION MUST be positive");                
+            }            
         }
+        
         return Collections.unmodifiableList(errors);
     }
     

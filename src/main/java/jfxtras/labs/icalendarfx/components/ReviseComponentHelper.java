@@ -38,6 +38,19 @@ public final class ReviseComponentHelper
             Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback
             )
     {
+        if (! vComponentEdited.isValid())
+        {
+            throw new RuntimeException("Can't revise. Edited component is invalid:" + System.lineSeparator() + 
+                    vComponentEdited.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                    vComponentEdited.toContent());
+        }
+        if (! vComponentOriginal.isValid())
+        {
+            throw new RuntimeException("Can't revise. Original component is invalid:" + System.lineSeparator() + 
+                    vComponentEdited.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                    vComponentEdited.toContent());
+        }
+        
         Collection<T> vComponents = new ArrayList<>(); // new components that should be added to main list
         vComponentEdited.validateStartRecurrenceAndDTStart(startOriginalRecurrence, startRecurrence);
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginal.getRecurrenceRule(), vComponentEdited.getRecurrenceRule());
@@ -375,7 +388,7 @@ public final class ReviseComponentHelper
     * 
     * @see VComponent#handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection)
     * 
-    * @param vComponentEditedCopy - has new settings
+    * @param vComponentEdited - has new settings
     * @param vComponentOriginal - has former settings
     * @param vComponents - list of all components
     * @param startOriginalRecurrence - start date/time before edit
@@ -384,7 +397,7 @@ public final class ReviseComponentHelper
     * @return
     */
    private static <T extends VComponentDisplayableBase<?>> void editThisAndFuture(
-           T vComponentEditedCopy,
+           T vComponentEdited,
            T vComponentOriginal,
            Collection<T> vComponents,
            Temporal startOriginalRecurrence,
@@ -392,23 +405,22 @@ public final class ReviseComponentHelper
            Temporal endRecurrence
            )
    {
-       // adjust original VEvent
-       // TODO - THIS DOESN'T MAKE SENSE - BELOW COUNT CHANGE CONTRADICTS
+       // adjust original VEvent - remove COUNT, replace with UNTIL
        if (vComponentOriginal.getRecurrenceRule().getValue().getCount() != null)
        {
            vComponentOriginal.getRecurrenceRule().getValue().setCount(null);
        }
        final Temporal untilNew;
-       if (vComponentEditedCopy.isWholeDay())
+       if (vComponentEdited.isWholeDay())
        {
-           untilNew = vComponentEditedCopy.previousStreamValue(startRecurrence);
+           untilNew = vComponentEdited.previousStreamValue(startRecurrence);
        } else
-       {           
-//           Temporal temporal = startOriginalInstance.minus(1, ChronoUnit.NANOS);
-//           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(temporal);
-           Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(startRecurrence);
+       {
+           Temporal previousRecurrence = vComponentEdited.previousStreamValue(startRecurrence);
            if (startRecurrence instanceof LocalDateTime)
            {
+               System.out.println("temps:" + previousRecurrence + " " + startRecurrence + " " + startOriginalRecurrence);
+               System.out.println(vComponentEdited.toContent());
                untilNew = LocalDateTime.from(previousRecurrence).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
            } else if (startRecurrence instanceof ZonedDateTime)
            {
@@ -417,29 +429,25 @@ public final class ReviseComponentHelper
            {
                throw new DateTimeException("Unsupported Temporal type:" + previousRecurrence.getClass());
            }
-//           return LocalDateTime.from(temporal).atZone(DEFAULT_ZONE).withZoneSameInstant(ZoneId.of("Z"));
-//       case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
-//           return ZonedDateTime.from(temporal).withZoneSameInstant(ZoneId.of("Z"));
-//           Temporal previousStreamValue = vComponentEditedCopy.previousStreamValue(startRecurrence);
-//        untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue);
-//           untilNew = DateTimeType.DATE_WITH_UTC_TIME.from(previousStreamValue(startInstance));
        }
        vComponentOriginal.getRecurrenceRule().getValue().setUntil(untilNew);       
        
-       vComponentEditedCopy.setDateTimeStart(startOriginalRecurrence);
-       vComponentEditedCopy.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+       
+       // Adjust start and end
+       vComponentEdited.setDateTimeStart(startOriginalRecurrence);
+       vComponentEdited.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
 //       adjustDateTime(startRecurrence, startRecurrence, endInstance);
-       vComponentEditedCopy.setUniqueIdentifier(); // ADD UID CALLBACK
+       vComponentEdited.setUniqueIdentifier(); // ADD UID CALLBACK
        // only supports one RELATED-TO value
        String relatedUID = (vComponentOriginal.getRelatedTo() == null) ?
                vComponentOriginal.getUniqueIdentifier().getValue() : vComponentOriginal.getRelatedTo().get(0).getValue();
-       vComponentEditedCopy.withRelatedTo(relatedUID);
-       vComponentEditedCopy.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
+       vComponentEdited.withRelatedTo(relatedUID);
+       vComponentEdited.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
        
        // remove EXDATEs that are out of bounds
-       if (vComponentEditedCopy.getExceptionDates() != null)
+       if (vComponentEdited.getExceptionDates() != null)
        {
-           final Iterator<Temporal> exceptionDateIterator = vComponentEditedCopy.getExceptionDates()
+           final Iterator<Temporal> exceptionDateIterator = vComponentEdited.getExceptionDates()
                    .stream()
                    .flatMap(e -> e.getValue().stream())
                    .iterator();
@@ -471,9 +479,9 @@ public final class ReviseComponentHelper
        }
        
        // remove RDATEs that are out of bounds
-       if (vComponentEditedCopy.getRecurrenceDates() != null)
+       if (vComponentEdited.getRecurrenceDates() != null)
        {
-           final Iterator<Temporal> recurrenceDateIterator = vComponentEditedCopy.getRecurrenceDates()
+           final Iterator<Temporal> recurrenceDateIterator = vComponentEdited.getRecurrenceDates()
                    .stream()
                    .flatMap(e -> e.getValue().stream())
                    .iterator();
@@ -505,9 +513,9 @@ public final class ReviseComponentHelper
        }
        
        // remove RECURRENCE-ID components that are out of bounds
-       if (vComponentEditedCopy.childComponentsWithRecurrenceIDs() != null)
+       if (vComponentEdited.childComponentsWithRecurrenceIDs() != null)
        {
-           final Iterator<Temporal> recurrenceIDIterator = vComponentEditedCopy.childComponentsWithRecurrenceIDs()
+           final Iterator<Temporal> recurrenceIDIterator = vComponentEdited.childComponentsWithRecurrenceIDs()
                    .stream()
                    .map(e -> (Temporal) e.getRecurrenceId().getValue())
                    .iterator();
@@ -538,21 +546,22 @@ public final class ReviseComponentHelper
            }
        }
        
-       // Modify COUNT for the edited vEvent
-       if (vComponentEditedCopy.getRecurrenceRule().getValue().getCount() != null)
-       {
-           int countInOrginal = (int) vComponentOriginal.streamRecurrences().count();
-           int countInNew = vComponentEditedCopy.getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
-           // TODO - FIX THIS
-           System.out.println("new count:" + countInNew);
-           if (countInNew < 1)
-           {
-               throw new RuntimeException("count too low");
-           }
-           vComponentEditedCopy.getRecurrenceRule().getValue().setCount(countInNew);
-       }
+//       // Modify COUNT for the edited vEvent
+////       System.out.println(vComponentOriginal.getRecurrenceRule().getValue());
+////       System.out.println(vComponentEdited.getRecurrenceRule().getValue());
+//       if (vComponentOriginal.getRecurrenceRule().getValue().getCount() != null)
+//       {
+//           int countInOrginal = (int) vComponentOriginal.streamRecurrences().count();
+//           int countInNew = vComponentEdited.getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
+//           vComponentOriginal.getRecurrenceRule().getValue().setCount(countInNew);
+//       }
        
-       if (! vComponentOriginal.isValid()) throw new RuntimeException("Invalid component");
+       if (! vComponentOriginal.isValid())
+       {
+           throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
+                   vComponentOriginal.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                   vComponentOriginal.toContent());
+       }
        vComponents.add(vComponentOriginal);
        
 

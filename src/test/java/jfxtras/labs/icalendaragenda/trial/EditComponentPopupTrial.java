@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendaragenda.trial;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -12,13 +14,14 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
-import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -41,7 +44,17 @@ public class EditComponentPopupTrial extends Application
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", Locale.getDefault());
         Settings.setup(resources);
 
-        VEvent vevent = ICalendarStaticComponents.getDaily1();
+        VEvent vevent = new VEvent()
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 15, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 15, 11, 0))
+                .withDescription("Daily1 Description")
+                .withSummary("Daily1 Summary")
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withRecurrenceRule(new RecurrenceRule2()
+                        .withFrequency(FrequencyType.DAILY)
+                        .withCount(10));
 //        VJournal vevent = new VJournal()
 //                .withDateTimeStart("20160518T110000")
 //                .withSummary("test journal")

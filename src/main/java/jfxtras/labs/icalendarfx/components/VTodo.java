@@ -335,11 +335,24 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         if ((! isDateTimeDuePresent) && (! isDurationPresent))
         {
             errors.add("Neither DUE or DURATION is present.  DUE or DURATION is REQUIRED and MUST NOT occur more than once");
-        }
-        if (isDateTimeDuePresent && isDurationPresent)
+        } else if (isDateTimeDuePresent && isDurationPresent)
         {
             errors.add("Both DUE and DURATION are present.  DUE or DURATION is REQUIRED and MUST NOT occur more than once");
+        }  else if (isDateTimeDuePresent)
+        {
+            if (! DateTimeUtilities.isAfter(getDateTimeDue().getValue(), getDateTimeStart().getValue()))
+            {
+                errors.add("DUE is not after DTSTART.  DUE MUST be after DTSTART");                
+            }
+        } else // duration is present
+        {
+            Temporal actualEnd = getDateTimeStart().getValue().plus(getDuration().getValue());
+            if (! DateTimeUtilities.isAfter(actualEnd, getDateTimeStart().getValue()))
+            {
+                errors.add("DURATION is negative.  DURATION MUST be positive");                
+            }            
         }
+            
         return Collections.unmodifiableList(errors);
     }
     
