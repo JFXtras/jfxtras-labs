@@ -35,10 +35,10 @@ import java.util.stream.Stream;
  * 
  * @see FrequencyType
  */
-public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
+public class Frequency extends RRuleElementBase<FrequencyType, Frequency>
 {
     void setValue(String frequency) { parseContent(frequency); }
-    public Frequency2 withValue(String frequency) { setValue(frequency); return this; }
+    public Frequency withValue(String frequency) { setValue(frequency); return this; }
 
 //    /**
 //     * FREQUENCY value
@@ -146,7 +146,7 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
 //    public FrequencyType frequencyType() { return frequencyType; }
 //    private FrequencyType frequencyType;
     
-    /** TemporalAdjuster to enable frequency stream in {@link RecurrenceRule3#streamRecurrences(Temporal)} */
+    /** TemporalAdjuster to enable frequency stream in {@link RecurrenceRule2#streamRecurrences(Temporal)} */
     TemporalAdjuster adjuster(int interval)
     {
         return (temporal) -> temporal.plus(interval, getValue().getChronoUnit());
@@ -155,7 +155,7 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
     /*
      * CONSTRUCTORS
      */
-    public Frequency2(FrequencyType frequencyType)
+    public Frequency(FrequencyType frequencyType)
     {
         this();
         setValue(frequencyType);
@@ -195,12 +195,12 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
 //        source.byRules().stream().forEach(b -> byRules().add(b.byRuleType().newInstance(b))); // copy each ByRule
 //    }
     
-    public Frequency2()
+    public Frequency()
     {
         super();
     }
     
-    public Frequency2(Frequency2 source)
+    public Frequency(Frequency source)
     {
         this();
         setValue(source.getValue());
@@ -302,9 +302,9 @@ public class Frequency2 extends RRuleElementBase<FrequencyType, Frequency2>
         setValue(FrequencyType.valueOf(content.toUpperCase()));
     }
     
-    public static Frequency2 parse(String content)
+    public static Frequency parse(String content)
     {
-        Frequency2 element = new Frequency2();
+        Frequency element = new Frequency();
         element.parseContent(content);
         return element;
     }

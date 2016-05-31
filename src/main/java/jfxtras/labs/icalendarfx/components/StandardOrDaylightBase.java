@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.util.List;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -94,12 +96,27 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
     }
     
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
+        List<String> errors = super.errors();
         boolean isDateTimeStartPresent = getDateTimeStart() != null;
+        if (! isDateTimeStartPresent)
+        {
+            errors.add("DTSTART is not present.  DTSTART is REQUIRED and MUST NOT occur more than once");
+        }
+        
         boolean isTimeZoneOffsetFromPresent = getTimeZoneOffsetFrom() != null;
+        if (isTimeZoneOffsetFromPresent)
+        {
+            errors.add("TZOFFSETFROM is not present.  TZOFFSETFROM is REQUIRED and MUST NOT occur more than once");
+        }
+        
         boolean isTimeZoneOffsetToPresent = getTimeZoneOffsetTo() != null;
-        return isTimeZoneOffsetFromPresent && isTimeZoneOffsetToPresent && isDateTimeStartPresent;
+        if (isTimeZoneOffsetToPresent)
+        {
+            errors.add("TZOFFSETTO is not present.  TZOFFSETTO is REQUIRED and MUST NOT occur more than once");
+        }
+        return errors;
     }
     
     // Recurrence streamer - produces recurrence set

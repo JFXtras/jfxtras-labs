@@ -2,6 +2,8 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -134,9 +136,9 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         VComponentAttendee<VAlarm>, VComponentDuration<VAlarm>
 {
     @Override
-    public CalendarElement componentType()
+    public CalendarElementType componentType()
     {
-        return CalendarElement.VALARM;
+        return CalendarElementType.VALARM;
     }
  
     /**
@@ -312,6 +314,34 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         super(source);
     }
 
+    @Override
+    public List<String> errors()
+    {
+        List<String> errors = new ArrayList<>();
+        boolean isActionPresent = getAction() != null;
+        if (isActionPresent)
+        {
+            errors.add("ACTION is not present.  ACTION is REQUIRED and MUST NOT occur more than once");
+        }
+        boolean isTriggerPresent = getTrigger() != null;
+        if (isTriggerPresent)
+        {
+            errors.add("TRIGGER is not present.  TRIGGER is REQUIRED and MUST NOT occur more than once");
+        }
+        boolean isDurationNull = getDuration() == null;
+        boolean isRepeatNull = getRepeatCount() == null;
+        
+        if (isDurationNull && ! isRepeatNull)
+        {
+            errors.add("DURATION is present but REPEAT is not present.  DURATION and REPEAT are both OPTIONAL, and MUST NOT occur more than once each, but if one occurs, so MUST the other.");
+        }
+        if (! isDurationNull && isRepeatNull)
+        {
+            errors.add("REPEAT is present but DURATION is not present.  DURATION and REPEAT are both OPTIONAL, and MUST NOT occur more than once each, but if one occurs, so MUST the other.");
+        }
+        return errors;
+    }
+    
     @Override
     public boolean isValid()
     {

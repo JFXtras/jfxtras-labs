@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @see VFreeBusy
  * @see VTimeZone
  *  */
-public interface VComponentPrimary<T> extends VComponentNew<T>
+public interface VComponentPrimary<T> extends VComponent<T>
 {
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83

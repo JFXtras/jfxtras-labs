@@ -91,9 +91,9 @@ A "VFREEBUSY" calendar component is a grouping of
 public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VComponentDateTimeEnd<VFreeBusy>
 {
     @Override
-    public CalendarElement componentType()
+    public CalendarElementType componentType()
     {
-        return CalendarElement.VFREEBUSY;
+        return CalendarElementType.VFREEBUSY;
     }
     
     /**
@@ -206,14 +206,15 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     {
         super(source);
     }
-    
+        
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
-        boolean isDateTimeEndTypeOk = VComponentDateTimeEnd.super.isValid();
-        return super.isValid() && isDateTimeEndTypeOk;
+        List<String> errors = super.errors();
+        errors.addAll(VComponentDateTimeEnd.super.errors());
+        return errors;
     }
-    
+        
     @Override
     public void checkDateTimeStartConsistency()
     {

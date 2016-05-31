@@ -22,8 +22,8 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecurrence;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -202,11 +202,11 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    ObjectProperty<RecurrenceRuleNew> recurrenceRuleProperty();
-    RecurrenceRuleNew getRecurrenceRule();
-    default void setRecurrenceRule(RecurrenceRuleNew recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
-    default void setRecurrenceRule(RecurrenceRule3 rrule) { setRecurrenceRule(new RecurrenceRuleNew(rrule)); }
-    default void setRecurrenceRule(String rrule) { setRecurrenceRule(RecurrenceRuleNew.parse(rrule)); }
+    ObjectProperty<RecurrenceRule> recurrenceRuleProperty();
+    RecurrenceRule getRecurrenceRule();
+    default void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
+    default void setRecurrenceRule(RecurrenceRule2 rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
+    default void setRecurrenceRule(String rrule) { setRecurrenceRule(RecurrenceRule.parse(rrule)); }
     default T withRecurrenceRule(String rrule)
     {
         if (getRecurrenceRule() == null)
@@ -218,7 +218,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
-    default T withRecurrenceRule(RecurrenceRuleNew rrule)
+    default T withRecurrenceRule(RecurrenceRule rrule)
     {
         if (getRecurrenceRule() == null)
         {
@@ -229,7 +229,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
-    default T withRecurrenceRule(RecurrenceRule3 rrule)
+    default T withRecurrenceRule(RecurrenceRule2 rrule)
     {
         if (getRecurrenceRule() == null)
         {
@@ -326,24 +326,6 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     default Temporal previousStreamValue(Temporal value)
     {
         Temporal cacheStart = recurrenceStreamer().getStartFromCache(value);
-
-//        final Temporal start; 
-//        if (cacheEnd == 0)
-//        {
-//            start = getDateTimeStart();
-//        } else
-//        { // try to get start from cache
-//            Temporal m  = null;
-//            for (int i=cacheEnd; i>cacheStart; i--)
-//            {
-//                if (DateTimeUtilities.isBefore(temporalCache[i], value))
-//                {
-//                    m = temporalCache[i];
-//                    break;
-//                }
-//            }
-//            start = (m != null) ? m : getDateTimeStart();
-//        }
         Iterator<Temporal> i = streamRecurrences(cacheStart).iterator();
         Temporal lastT = null;
         while (i.hasNext())
@@ -401,64 +383,29 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         }       
     }
     
-    /**
-     * Handles how an edited VComponent is processed.  For a VComponent with a recurrence rule (RRULE)
-     * the user is given a dialog to select ONE, THIS_AND_FUTURE, or ALL instances to edit.
-     * For a VComponent without a RRULE there is no dialog.
-     * 
-     * This VComponent should have all changes made to it by the controller, except date-time changes
-     * that depend on the answer to the dialog question
-     * 
-     * @param vComponentOriginal - copy of this VComponent before changes
-     * @param vComponents - collection of all VComponents
-     * @param startOriginalInstance - date or date/time of selected instance before changes
-     * @param startInstance - date or date/time of selected instance after changes
-     * @param endInstance - date or date/time of selected instance after changes (null for VTODO and VJOURNAL)
-     * @param instances - all instances being rendered by all VComponents
-     * @param dialogCallback - callback to generate dialog to select ONE, THIS_AND_FUTURE, or ALL.
-     *    Note: Can use a stub for testing (e.g. (m) -> ChangeDialogOption.ALL).
-     * @return - true if changed, false otherwise
-     */
-//    boolean handleEdit(
-//            VComponentRepeatable<T> vComponentOriginal
-//          , Collection<VComponentRepeatable<T>> vComponents
-//          , Temporal startOriginalInstance
-//          , Temporal startInstance
-//          , Temporal endInstance
-////          , Collection<Object> instances
-//          , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback);
-    
-    /**
-     * Deletes a VComponent.  For a VComponent with a recurrence rule (RRULE) the user is given a dialog
-     * to select ONE, THIS_AND_FUTURE, or ALL instances to delete.
-     * 
-     * @param vComponents - collection of all VComponents
-     * @param startInstance - start date or date/time of instance
-     * @param instance - selected recurrence instance
-     * @param instances - collection of all instances across all VComponents
-     * @param dialogCallback - callback to generate dialog to select ONE, THIS_AND_FUTURE, or ALL.
-     *    Note: Can use a stub for testing (e.g. (m) -> ChangeDialogOption.ALL).
-     */
-//    boolean handleDelete(
-//            Collection<VComponentRepeatable<T>> vComponents
-//          , Temporal startInstance
-////          , Object instance
-////          , Collection<Object> instances
-//          , Callback<Map<ChangeDialogOption, StartEndRange>, ChangeDialogOption> dialogCallback);
-//    
-    
-    @Override
-    default boolean isValid()
-    {
-        if (getRecurrenceDates() != null)
-        {
-            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            Temporal r1 = getRecurrenceDates().get(0).getValue().iterator().next();
-            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
-            return startType == recurrenceType;
-        }
-        return true;
-    }
+//    @Override
+//    default List<String> errors()
+//    {
+////        List<String> errors = new ArrayList<>();
+//        List<String> errors = VComponentPrimary.super.errors();
+//        boolean isRecurrenceRulePresent = getRecurrenceRule() != null;
+//        if (! isRecurrenceRulePresent)
+//        {
+//            errors.addAll(getRecurrenceRule().errors());
+//        }
+//        if (getRecurrenceDates() != null)
+//        {
+//            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//            Temporal r1 = getRecurrenceDates().get(0).getValue().iterator().next();
+//            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
+//            boolean isRecurrenceTypeMatch = startType == recurrenceType;
+//            if (! isRecurrenceTypeMatch)
+//            {
+//                errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
+//            }
+//        }
+//        return errors;
+//    }
     
     @Deprecated // may not be used - if not remove or move to utility class
     public static <T> Stream<T> merge(Stream<T> stream1, Stream<T> stream2, Comparator<T> comparator)

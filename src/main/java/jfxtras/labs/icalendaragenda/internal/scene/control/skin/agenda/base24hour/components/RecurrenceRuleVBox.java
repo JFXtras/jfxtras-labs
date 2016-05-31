@@ -60,10 +60,10 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
@@ -78,7 +78,7 @@ public class RecurrenceRuleVBox extends VBox
 //    final private static int INITIAL_INTERVAL = 1;
         
     private VComponentDisplayable<?> vComponent;
-    private RecurrenceRule3 rrule;
+    private RecurrenceRule2 rrule;
     private ObjectProperty<Temporal> dateTimeStartRecurrenceNew;
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -429,7 +429,7 @@ public class RecurrenceRuleVBox extends VBox
                 if (rrule == null)
                 {
                     // setup new default RRule
-                    RecurrenceRule3 rRule = new RecurrenceRule3()
+                    RecurrenceRule2 rRule = new RecurrenceRule2()
                             .withFrequency(FrequencyType.WEEKLY)
                             .withByRules(new ByDay(DayOfWeek.from(dateTimeStartRecurrenceNew.get()))); // default RRule
                     vComponent.setRecurrenceRule(rRule);
@@ -442,7 +442,7 @@ public class RecurrenceRuleVBox extends VBox
             } else
             {
                 vComponent.getDateTimeStart().valueProperty().removeListener(dateTimeStartToExceptionChangeListener);
-                vComponent.setRecurrenceRule((RecurrenceRuleNew) null);
+                vComponent.setRecurrenceRule((RecurrenceRule) null);
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
@@ -861,7 +861,7 @@ public class RecurrenceRuleVBox extends VBox
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 
      * This method is called only during setup */
-    private void setDayOfWeek(RecurrenceRule3 rRule)
+    private void setDayOfWeek(RecurrenceRule2 rRule)
     {
         // Set day of week properties
         if (rRule.getFrequency().getValue() == FrequencyType.WEEKLY)
@@ -1041,7 +1041,7 @@ public class RecurrenceRuleVBox extends VBox
      * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
      * @return Easy to read summary of repeat rule
      */
-    public static String makeSummary(RecurrenceRule3 rRule, Temporal startTemporal)
+    public static String makeSummary(RecurrenceRule2 rRule, Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();
         if ((rRule.getCount() != null) && (rRule.getCount().getValue() == 1))

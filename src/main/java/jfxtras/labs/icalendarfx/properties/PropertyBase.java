@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -469,19 +470,37 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
     }
     
     
+//    @Override
+//    public boolean isValid()
+//    {
+//        if (getValueParameter() == null)
+//        {
+//            return Property.super.isValid();
+//        } else
+//        {
+//            boolean isValueTypeOK = isValueParameterValid(getValueParameter().getValue());
+////            System.out.println("PropertyBase isValid:" + Property.super.isValid() + " " + isValueTypeOK);
+//            return (Property.super.isValid()) && isValueTypeOK;
+//        }
+//    }
+    
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
-        if (getValueParameter() == null)
+        List<String> errors = new ArrayList<>();
+        if (getValue() == null)
         {
-            return Property.super.isValid();
-        } else
-        {
-            boolean isValueTypeOK = isValueParameterValid(getValueParameter().getValue());
-//            System.out.println("PropertyBase isValid:" + Property.super.isValid() + " " + isValueTypeOK);
-            return (Property.super.isValid()) && isValueTypeOK;
+            errors.add(getPropertyName() + " value is null.  The property MUST have a value."); 
         }
+        boolean isValueTypeOK = isValueParameterValid(getValueParameter().getValue());
+        if (! isValueTypeOK)
+        {
+            errors.add(getPropertyName() + " value type " + getValueParameter().getValue() + " is not supported.  Supported types include:" +
+                    propertyType().allowedValueTypes().stream().map(v -> v.toString()).collect(Collectors.joining(",")));
+        }
+        return errors;
     }
+    
     /* test if value type is valid */
     private boolean isValueParameterValid(ValueType value)
     {

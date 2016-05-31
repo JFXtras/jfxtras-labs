@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -261,9 +263,9 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
 public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLastModified<VTimeZone>, VCalendarElement
 {
     @Override
-    public CalendarElement componentType()
+    public CalendarElementType componentType()
     {
-        return CalendarElement.VTIMEZONE;
+        return CalendarElementType.VTIMEZONE;
     }
  
     /**
@@ -398,9 +400,15 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     }
     
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
-        return getTimeZoneIdentifier() != null;
+        List<String> errors = new ArrayList<>();
+        boolean isTimeZoneIdentifierPresent = getTimeZoneIdentifier() != null;
+        if (isTimeZoneIdentifierPresent)
+        {
+            errors.add("TZID is REQUIRED and MUST NOT occur more than once");
+        }
+        return errors;
     }
 
     /** include Standard and Daylight sub-components in content lines */
@@ -416,9 +424,9 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     
     /** parse Standard and Daylight sub-components */
     @Override
-    void parseSubComponents(CalendarElement subcomponentType, String contentLines)
+    void parseSubComponents(CalendarElementType subcomponentType, String contentLines)
     {
-        if (subcomponentType == CalendarElement.STANDARD_TIME || subcomponentType == CalendarElement.DAYLIGHT_SAVING_TIME)
+        if (subcomponentType == CalendarElementType.STANDARD_TIME || subcomponentType == CalendarElementType.DAYLIGHT_SAVING_TIME)
         {
             final ObservableList<StandardOrDaylight<?>> list;
             if (getStandardOrDaylight() == null)
@@ -429,7 +437,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
             {
                 list = getStandardOrDaylight();
             }
-            StandardOrDaylight<?> subcomponent = (subcomponentType == CalendarElement.STANDARD_TIME) ? StandardTime.parse(contentLines) : DaylightSavingTime.parse(contentLines);
+            StandardOrDaylight<?> subcomponent = (subcomponentType == CalendarElementType.STANDARD_TIME) ? StandardTime.parse(contentLines) : DaylightSavingTime.parse(contentLines);
             list.add(subcomponent);
         } else
         {

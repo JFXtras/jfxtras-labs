@@ -8,7 +8,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
-import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
@@ -26,8 +25,8 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifi
  * @see VJournalInt
  * @see VFreeBusy
  */
-public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentAttendee<T>, VCalendarElement
-{ 
+public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentAttendee<T>
+{
     /**
      * DTSTAMP: Date-Time Stamp
      * RFC 5545 iCalendar 3.8.7.2 page 137

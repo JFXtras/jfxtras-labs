@@ -18,7 +18,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
  * @see VJournal
  * @see VAlarm
  *  */
-public interface VComponentDescribable<T> extends VComponentNew<T>
+public interface VComponentDescribable<T> extends VComponent<T>
 {
     /**
      * ATTACH: Attachment

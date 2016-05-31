@@ -45,10 +45,11 @@ public interface Parameter<T> extends Comparable<Parameter<T>>, VCalendarElement
      */
     ParameterType parameterType();
     
-//    /**
-//     * return parameter name-value pair string separated by an "="
-//     * for example:
-//     * LANGUAGE=en-US
-//     */
-//    String toContent();
+    /**
+     * return parameter name-value pair string separated by an "="
+     * for example:
+     * LANGUAGE=en-US
+     */
+    @Override
+    String toContent();
 }

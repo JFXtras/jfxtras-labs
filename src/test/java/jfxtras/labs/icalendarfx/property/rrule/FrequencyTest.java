@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 
 public class FrequencyTest
@@ -21,7 +21,7 @@ public class FrequencyTest
     public void canParseFrequency()
     {
         String content = "DAILY";
-        Frequency2 element = Frequency2.parse(content);
+        Frequency element = Frequency.parse(content);
         assertEquals(FrequencyType.DAILY, element.getValue());
         assertEquals("FREQ=DAILY", element.toContent());
     }
@@ -33,7 +33,7 @@ public class FrequencyTest
     @Test
     public void canStreamYearly()
     {
-        Frequency2 element = new Frequency2(FrequencyType.YEARLY);
+        Frequency element = new Frequency(FrequencyType.YEARLY);
         LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 27, 10, 0);
         Stream<Temporal> recurrenceStream = element.streamRecurrences(dateTimeStart, 1);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
@@ -54,7 +54,7 @@ public class FrequencyTest
     @Test
     public void canStreamMonthly()
     {
-        Frequency2 element = new Frequency2(FrequencyType.MONTHLY);
+        Frequency element = new Frequency(FrequencyType.MONTHLY);
         LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 27, 10, 0);
         Stream<Temporal> recurrenceStream = element.streamRecurrences(dateTimeStart, 1);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
@@ -75,7 +75,7 @@ public class FrequencyTest
     @Test
     public void canStreamWeekly()
     {
-        Frequency2 element = new Frequency2(FrequencyType.WEEKLY);
+        Frequency element = new Frequency(FrequencyType.WEEKLY);
         LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 27, 10, 0);
         Stream<Temporal> recurrenceStream = element.streamRecurrences(dateTimeStart, 1);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
@@ -96,7 +96,7 @@ public class FrequencyTest
     @Test
     public void canStreamDaily()
     {
-        Frequency2 element = new Frequency2(FrequencyType.DAILY);
+        Frequency element = new Frequency(FrequencyType.DAILY);
         LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 27, 10, 0);
         Stream<Temporal> recurrenceStream = element.streamRecurrences(dateTimeStart, 1);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
@@ -117,7 +117,7 @@ public class FrequencyTest
     @Test
     public void canStreamHourly()
     {
-        Frequency2 element = new Frequency2(FrequencyType.HOURLY);
+        Frequency element = new Frequency(FrequencyType.HOURLY);
         LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 27, 10, 0);
         Stream<Temporal> recurrenceStream = element.streamRecurrences(dateTimeStart, 1);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
@@ -138,7 +138,7 @@ public class FrequencyTest
     @Test
     public void canStreamMinutely()
     {
-        Frequency2 element = new Frequency2(FrequencyType.MINUTELY);
+        Frequency element = new Frequency(FrequencyType.MINUTELY);
         LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 27, 10, 0);
         Stream<Temporal> recurrenceStream = element.streamRecurrences(dateTimeStart, 1);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(
@@ -159,7 +159,7 @@ public class FrequencyTest
     @Test
     public void canStreamSecondly()
     {
-        Frequency2 element = new Frequency2(FrequencyType.SECONDLY);
+        Frequency element = new Frequency(FrequencyType.SECONDLY);
         LocalDateTime dateTimeStart = LocalDateTime.of(2015, 12, 27, 10, 0);
         Stream<Temporal> recurrenceStream = element.streamRecurrences(dateTimeStart, 1);
         List<LocalDateTime> expectedRecurrences = new ArrayList<>(Arrays.asList(

@@ -58,9 +58,9 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
@@ -82,7 +82,7 @@ final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount 
 final private static int INITIAL_INTERVAL = 1;
     
 private VComponentDisplayable<?> vComponent;
-private RecurrenceRule3 rrule;
+private RecurrenceRule2 rrule;
 private Temporal dateTimeStartInstanceNew;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -431,7 +431,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
             if (rrule == null)
             {
                 // setup new default RRule
-                RecurrenceRule3 rRule = new RecurrenceRule3()
+                RecurrenceRule2 rRule = new RecurrenceRule2()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.from(dateTimeStartInstanceNew))); // default RRule
                 vComponent.setRecurrenceRule(rRule);
@@ -444,7 +444,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
         } else
         {
             vComponent.getDateTimeStart().valueProperty().removeListener(dateTimeStartToExceptionChangeListener);
-            vComponent.setRecurrenceRule((RecurrenceRuleNew) null);
+            vComponent.setRecurrenceRule((RecurrenceRule) null);
             repeatableGridPane.setDisable(true);
             startDatePicker.setDisable(true);
         }
@@ -836,7 +836,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
 
     /** Set day of week properties if FREQ=WEEKLY and has BYDAY rule 
      * This method is called only during setup */
-    private void setDayOfWeek(RecurrenceRule3 rRule)
+    private void setDayOfWeek(RecurrenceRule2 rRule)
     {
         // Set day of week properties
         if (rRule.getFrequency().getValue() == FrequencyType.WEEKLY)
@@ -1015,7 +1015,7 @@ private final ChangeListener<? super Temporal> dateTimeStartToExceptionChangeLis
      * @param startTemporal LocalDate or LocalDateTime of start date/time (DTSTART)
      * @return Easy to read summary of repeat rule
      */
-    public static String makeSummary(RecurrenceRule3 rRule, Temporal startTemporal)
+    public static String makeSummary(RecurrenceRule2 rRule, Temporal startTemporal)
     {
         StringBuilder builder = new StringBuilder();
         if ((rRule.getCount() != null) && (rRule.getCount().getValue() == 1))

@@ -6,7 +6,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 
 /**
  * RRULE
@@ -25,39 +25,39 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
  * @see DaylightSavingTime
  * @see StandardTime
  */
-public class RecurrenceRuleNew extends PropertyBase<RecurrenceRule3, RecurrenceRuleNew>
+public class RecurrenceRule extends PropertyBase<RecurrenceRule2, RecurrenceRule>
 {
 //    public RecurrenceRule(CharSequence contentLine)
 //    {
 //        super(contentLine);
 //    }
 
-    public RecurrenceRuleNew(RecurrenceRule3 value)
+    public RecurrenceRule(RecurrenceRule2 value)
     {
         super(value);
     }
     
-    public RecurrenceRuleNew()
+    public RecurrenceRule()
     {
         super();
     }
 
-    public RecurrenceRuleNew(RecurrenceRuleNew source)
+    public RecurrenceRule(RecurrenceRule source)
     {
         super(source);
     }
 
-    public static RecurrenceRuleNew parse(String propertyContent)
+    public static RecurrenceRule parse(String propertyContent)
     {
-        RecurrenceRuleNew property = new RecurrenceRuleNew();
+        RecurrenceRule property = new RecurrenceRule();
         property.parseContent(propertyContent);
         return property;
     }
     
     @Override
-    public void copyPropertyFrom(PropertyBase<RecurrenceRule3, RecurrenceRuleNew> source)
+    public void copyPropertyFrom(PropertyBase<RecurrenceRule2, RecurrenceRule> source)
     {
         super.copyPropertyFrom(source);
-        setValue(new RecurrenceRule3(source.getValue()));
+        setValue(new RecurrenceRule2(source.getValue()));
     }
 }

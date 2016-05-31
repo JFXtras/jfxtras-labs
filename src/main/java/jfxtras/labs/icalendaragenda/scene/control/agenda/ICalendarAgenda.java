@@ -39,7 +39,7 @@ import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VComponentNew;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -182,9 +182,9 @@ public class ICalendarAgenda extends Agenda
     public void setAppointmentsListChangeListener(ListChangeListener<Appointment> listener) { appointmentsListChangeListener = listener; }
     public ListChangeListener<Appointment> getAppointmentsListChangeListener() { return appointmentsListChangeListener; }
     
-    private ListChangeListener<VComponentNew<?>> vComponentsChangeListener; // listen for changes to vComponents.
-    public void setVComponentsChangeListener(ListChangeListener<VComponentNew<?>> listener) { vComponentsChangeListener = listener; }
-    public ListChangeListener<VComponentNew<?>> getVComponentsChangeListener() { return vComponentsChangeListener; }
+    private ListChangeListener<VComponent<?>> vComponentsChangeListener; // listen for changes to vComponents.
+    public void setVComponentsChangeListener(ListChangeListener<VComponent<?>> listener) { vComponentsChangeListener = listener; }
+    public ListChangeListener<VComponent<?>> getVComponentsChangeListener() { return vComponentsChangeListener; }
 
     /*
      * Callback for determing scope of edit change - defaults to always answering ALL
@@ -369,7 +369,7 @@ public class ICalendarAgenda extends Agenda
                 {
                     if (event.getCode().equals(KeyCode.DELETE) && (! selectedAppointments().isEmpty()))
                     {
-                        VComponentNew<?> v = appointmentVComponentMap.get(System.identityHashCode(selectedAppointments().get(0)));
+                        VComponent<?> v = appointmentVComponentMap.get(System.identityHashCode(selectedAppointments().get(0)));
                         appointments().removeAll(selectedAppointments());
                     }
                 });
@@ -464,7 +464,7 @@ public class ICalendarAgenda extends Agenda
         };
 
         // fires when VComponents are added outside the edit popup, such as initialization
-        vComponentsChangeListener = (ListChangeListener.Change<? extends VComponentNew<?>> change) ->
+        vComponentsChangeListener = (ListChangeListener.Change<? extends VComponent<?>> change) ->
         {
             System.out.println("vcomponents changed:" + getVCalendar().getVEvents().size());
             while (change.next())

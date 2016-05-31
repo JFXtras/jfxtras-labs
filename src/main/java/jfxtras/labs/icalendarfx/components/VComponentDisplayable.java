@@ -525,30 +525,49 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
 //     */
 //    void becomeNonRecurring(VComponentRepeatable<T> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence);
     
-    @Override
-    default boolean isValid()
-    {
-        final boolean isExceptionTypeMatch;
-        if (getExceptionDates() != null)
-        {
-            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            Temporal e1 = getExceptionDates().get(0).getValue().iterator().next();
-            DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(e1);
-            isExceptionTypeMatch = startType == exceptionType;
-        } else
-        {
-            isExceptionTypeMatch = true;
-        }
-        final boolean isRecurrenceIdTypeMatch;
-        if (getRecurrenceId() != null)
-        {
-            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
-            isRecurrenceIdTypeMatch = startType == recurrenceIdType;
-        } else
-        {
-            isRecurrenceIdTypeMatch = true;
-        }
-        return isExceptionTypeMatch && isRecurrenceIdTypeMatch & VComponentRepeatable.super.isValid();
-    }
+//    @Override
+//    default List<String> errors()
+//    {
+//        List<String> errors = VComponentRepeatable.super.errors();
+////        List<String> errors = VComponentPersonal.super.errors();
+//        DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//        if (getExceptionDates() != null)
+//        {
+//            // assumes all exceptions are same Temporal type.  There is a listener to guarantee that assumption.
+//            Temporal e1 = getExceptionDates().get(0).getValue().iterator().next();
+//            DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(e1);
+//            boolean isExceptionTypeMatch = startType == exceptionType;
+//            if (! isExceptionTypeMatch)
+//            {
+//                errors.add("The value type of EXDATE elements MUST be the same as the DTSTART property (" + exceptionType + ", " + startType);
+//            }
+//        }
+//
+//        if (getRecurrenceId() != null)
+//        {
+//            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
+//            boolean isRecurrenceIdTypeMatch = startType == recurrenceIdType;
+//            if (! isRecurrenceIdTypeMatch)
+//            {
+//                errors.add("The value type of RECURRENCE-ID MUST be the same as the DTSTART property (" + recurrenceIdType + ", " + startType);
+//            }
+//        }
+////        errors.addAll(VComponentRepeatable.super.errors());
+////        if (getRecurrenceDates() != null)
+////        {
+////            Temporal r1 = getRecurrenceDates().get(0).getValue().iterator().next();
+////            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
+////            boolean isRecurrenceTypeMatch = startType == recurrenceType;
+////            if (! isRecurrenceTypeMatch)
+////            {
+////                errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
+////            }
+////        }
+//        
+////        if (getRecurrenceRule() != null)
+////        {
+////            errors.addAll(getRecurrenceRule().errors());
+////        }      
+//        return errors;
+//    }
 }

@@ -41,7 +41,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public abstract class VComponentBase<T> implements VComponentNew<T>
+public abstract class VComponentBase<T> implements VComponent<T>
 {
     /**
      * 3.8.8.2.  Non-Standard Properties
@@ -157,7 +157,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
                 boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentType().toString());
                 if  (! isMainComponent)
                 {
-                    CalendarElement subcomponentType = CalendarElement.enumFromName(line.substring(nameEndIndex+1));
+                    CalendarElementType subcomponentType = CalendarElementType.enumFromName(line.substring(nameEndIndex+1));
                     StringBuilder subcomponentContentBuilder = new StringBuilder(200);
                     subcomponentContentBuilder.append(line + System.lineSeparator());
                     boolean isEndFound = false;
@@ -205,7 +205,7 @@ public abstract class VComponentBase<T> implements VComponentNew<T>
      * @param subcomponentType 
      * @param string 
      */
-    void parseSubComponents(CalendarElement subcomponentType, String subcomponentcontentLines) { }
+    void parseSubComponents(CalendarElementType subcomponentType, String subcomponentcontentLines) { }
     
     @Override
     public String toContent()

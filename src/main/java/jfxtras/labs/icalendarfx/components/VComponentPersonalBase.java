@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -173,11 +175,29 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         super(source);
     }
 
+//    @Override
+//    public boolean isValid()
+//    {
+//        boolean isDateTimeStampPresent = getDateTimeStamp() != null;
+//        boolean isUniqueIdentifier = getUniqueIdentifier() != null;
+//        return isDateTimeStampPresent && isUniqueIdentifier;
+//    }
+    
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
+        List<String> errors = new ArrayList<>();
+//        List<String> errors = super.errors();
         boolean isDateTimeStampPresent = getDateTimeStamp() != null;
+        if (isDateTimeStampPresent)
+        {
+            errors.add("DTSTAMP: DTSTAMP is REQUIRED and MUST NOT occur more than once");
+        }
         boolean isUniqueIdentifier = getUniqueIdentifier() != null;
-        return isDateTimeStampPresent && isUniqueIdentifier;
+        if (isUniqueIdentifier)
+        {
+            errors.add("UID: UID is REQUIRED and MUST NOT occur more than once");
+        }
+        return errors;
     }
 }

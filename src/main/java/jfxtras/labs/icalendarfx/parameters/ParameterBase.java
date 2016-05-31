@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.parameters;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
@@ -104,6 +106,17 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
     {
         this();
         setValue(source.getValue());
+    }
+    
+    @Override
+    public List<String> errors()
+    {
+        List<String> errors = new ArrayList<>();
+        if (getValue() == null)
+        {
+            errors.add(parameterType() + " value is null.  The parameter MUST have a value."); 
+        }
+        return errors;
     }
     
     /*

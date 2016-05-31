@@ -18,9 +18,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.components.CalendarElement;
+import jfxtras.labs.icalendarfx.components.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.VComponentNew;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
@@ -81,7 +81,7 @@ public class VCalendar
     {
         if (calendarScale == null)
         {
-            calendarScale = new SimpleObjectProperty<CalendarScale>(this, CalendarElement.CALENDAR_SCALE.toString());
+            calendarScale = new SimpleObjectProperty<CalendarScale>(this, CalendarElementType.CALENDAR_SCALE.toString());
         }
         return calendarScale;
     }
@@ -96,7 +96,7 @@ public class VCalendar
             setCalendarScale(calendarScale);
         } else
         {
-            throw new IllegalArgumentException(CalendarElement.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarElementType.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -107,7 +107,7 @@ public class VCalendar
             setCalendarScale(calendarScale);
         } else
         {
-            throw new IllegalArgumentException(CalendarElement.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarElementType.CALENDAR_SCALE.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -124,7 +124,7 @@ public class VCalendar
     {
         if (method == null)
         {
-            method = new SimpleObjectProperty<Method>(this, CalendarElement.METHOD.toString());
+            method = new SimpleObjectProperty<Method>(this, CalendarElementType.METHOD.toString());
         }
         return method;
     }
@@ -139,7 +139,7 @@ public class VCalendar
             setMethod(method);
         } else
         {
-            throw new IllegalArgumentException(CalendarElement.METHOD.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarElementType.METHOD.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -150,7 +150,7 @@ public class VCalendar
             setMethod(method);
         } else
         {
-            throw new IllegalArgumentException(CalendarElement.METHOD.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarElementType.METHOD.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -169,7 +169,7 @@ public class VCalendar
     {
         if (productIdentifier == null)
         {
-            productIdentifier = new SimpleObjectProperty<ProductIdentifier>(this, CalendarElement.PRODUCT_IDENTIFIER.toString());
+            productIdentifier = new SimpleObjectProperty<ProductIdentifier>(this, CalendarElementType.PRODUCT_IDENTIFIER.toString());
         }
         return productIdentifier;
     }
@@ -184,7 +184,7 @@ public class VCalendar
             setProductIdentifier(productIdentifier);
         } else
         {
-            throw new IllegalArgumentException(CalendarElement.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarElementType.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -195,7 +195,7 @@ public class VCalendar
             setProductIdentifier(productIdentifier);
         } else
         {
-            throw new IllegalArgumentException(CalendarElement.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarElementType.PRODUCT_IDENTIFIER.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -216,7 +216,7 @@ public class VCalendar
     {
         if (version == null)
         {
-            version = new SimpleObjectProperty<Version>(this, CalendarElement.VERSION.toString());
+            version = new SimpleObjectProperty<Version>(this, CalendarElementType.VERSION.toString());
         }
         return version;
     }
@@ -231,7 +231,7 @@ public class VCalendar
             setVersion(version);
         } else
         {
-            throw new IllegalArgumentException(CalendarElement.VERSION.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarElementType.VERSION.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -242,7 +242,7 @@ public class VCalendar
             setVersion(version);
         } else
         {
-            throw new IllegalArgumentException(CalendarElement.VERSION.toString() + " can only occur once in a calendar component");
+            throw new IllegalArgumentException(CalendarElementType.VERSION.toString() + " can only occur once in a calendar component");
         }
         return this;
     }
@@ -422,14 +422,14 @@ public class VCalendar
      * 
      * @return - the list of components
      */
-    public List<VComponentNew<?>> components()
+    public List<VComponent<?>> components()
     {
-        List<VComponentNew<?>> allComponents = new ArrayList<>();
-        Iterator<CalendarElement> i = Arrays.stream(CalendarElement.values()).iterator();
+        List<VComponent<?>> allComponents = new ArrayList<>();
+        Iterator<CalendarElementType> i = Arrays.stream(CalendarElementType.values()).iterator();
         while (i.hasNext())
         {
-            CalendarElement componentType = i.next();
-            List<? extends VComponentNew<?>> myComponents = componentType.getComponents(this);
+            CalendarElementType componentType = i.next();
+            List<? extends VComponent<?>> myComponents = componentType.getComponents(this);
             if (myComponents != null)
             {
                 allComponents.addAll(myComponents);
@@ -553,7 +553,7 @@ public class VCalendar
                     myLines.add(line);
                 } while (! line.equals(endLine));
                 
-                CalendarElement elementType = CalendarElement.valueOf(componentName);
+                CalendarElementType elementType = CalendarElementType.valueOf(componentName);
                 VCalendarElement element = elementType.parse(this, myLines);
                 elementSortOrder().put(element, componentCounter);
                 componentCounter += 100;
@@ -561,7 +561,7 @@ public class VCalendar
             // parse calendar properties (ignores unknown properties)
             } else
             {
-                CalendarElement elementType = CalendarElement.enumFromName(propertyName);
+                CalendarElementType elementType = CalendarElementType.enumFromName(propertyName);
                 if (elementType != null)
                 {
                     VCalendarElement element = elementType.parse(this, Arrays.asList(line));

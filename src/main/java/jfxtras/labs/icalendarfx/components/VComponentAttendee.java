@@ -15,7 +15,7 @@ import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
  * @see VComponentPersonal
  * @see VAlarm
  */
-public interface VComponentAttendee<T> extends VComponentNew<T>
+public interface VComponentAttendee<T> extends VComponent<T>
 {
     /**
      * ATTENDEE: Attendee

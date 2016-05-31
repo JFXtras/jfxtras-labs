@@ -24,12 +24,13 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBase<T> implements VComponentDisplayable<T>, VComponentRepeatable<T>, VComponentDescribable<T>
 {
@@ -261,7 +262,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    @Override public ObjectProperty<RecurrenceRuleNew> recurrenceRuleProperty()
+    @Override public ObjectProperty<RecurrenceRule> recurrenceRuleProperty()
     {
         if (recurrenceRule == null)
         {
@@ -270,8 +271,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         return recurrenceRule;
     }
     @Override
-    public RecurrenceRuleNew getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
-    private ObjectProperty<RecurrenceRuleNew> recurrenceRule;
+    public RecurrenceRule getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
+    private ObjectProperty<RecurrenceRule> recurrenceRule;
  
     /**
      * SEQUENCE:
@@ -459,11 +460,56 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs() { return childComponentsWithRecurrenceIDs; }
     private List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs = new ArrayList<>();    
     
+//    @Override
+//    public boolean isValid()
+//    {
+//        boolean repeatableIsValid = VComponentDisplayable.super.isValid();
+//        return super.isValid() && repeatableIsValid;
+//    }
+    
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
-        boolean repeatableIsValid = VComponentDisplayable.super.isValid();
-        return super.isValid() && repeatableIsValid;
+        List<String> errors = super.errors();
+        DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+        if (getExceptionDates() != null)
+        {
+            // assumes all exceptions are same Temporal type.  There is a listener to guarantee that assumption.
+            Temporal e1 = getExceptionDates().get(0).getValue().iterator().next();
+            DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(e1);
+            boolean isExceptionTypeMatch = startType == exceptionType;
+            if (! isExceptionTypeMatch)
+            {
+                errors.add("The value type of EXDATE elements MUST be the same as the DTSTART property (" + exceptionType + ", " + startType);
+            }
+        }
+
+        if (getRecurrenceId() != null)
+        {
+            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
+            boolean isRecurrenceIdTypeMatch = startType == recurrenceIdType;
+            if (! isRecurrenceIdTypeMatch)
+            {
+                errors.add("The value type of RECURRENCE-ID MUST be the same as the DTSTART property (" + recurrenceIdType + ", " + startType);
+            }
+        }
+        
+        if (getRecurrenceDates() != null)
+        {
+            Temporal r1 = getRecurrenceDates().get(0).getValue().iterator().next();
+            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
+            boolean isRecurrenceTypeMatch = startType == recurrenceType;
+            if (! isRecurrenceTypeMatch)
+            {
+                errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
+            }
+        }
+        
+        if (getRecurrenceRule() != null)
+        {
+            errors.addAll(getRecurrenceRule().errors());
+        }      
+        return errors;
     }
     
     /*
@@ -652,7 +698,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             Temporal startRecurrence,
             Temporal endRecurrence)
     {
-        setRecurrenceRule((RecurrenceRule3) null);
+        setRecurrenceRule((RecurrenceRule2) null);
         setRecurrenceDates(null);
         setExceptionDates(null);
     }

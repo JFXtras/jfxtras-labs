@@ -133,8 +133,8 @@ public interface Property<T> extends VCalendarElement, Comparable<Property<T>>
 //    /** Parse content line into calendar property */
 //    public void parseContent(String contentLine);
     
-    /**
-     * tests if property's value and parameters are valid
-     */
-    default boolean isValid() { return getValue() != null; }
+//    /**
+//     * tests if property's value and parameters are valid
+//     */
+//    default boolean isValid() { return getValue() != null; }
 }

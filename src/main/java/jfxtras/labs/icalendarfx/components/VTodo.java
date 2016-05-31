@@ -16,6 +16,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeCompleted;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeDue;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * VTODO
@@ -58,9 +59,9 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentDescribable2<VTodo>
 {
     @Override
-    public CalendarElement componentType()
+    public CalendarElementType componentType()
     {
-        return CalendarElement.VTODO;
+        return CalendarElementType.VTODO;
     }
     
     /**
@@ -294,15 +295,52 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
 //        return super.streamRecurrences(start.minus(adjustment));
 //    }
     
+//    @Override
+//    public boolean isValid()
+//    {
+//        boolean isDuePresent = getDateTimeDue() != null;
+//        boolean isDurationPresent = getDuration() != null;
+//        boolean ok1 = isDuePresent && ! isDurationPresent;
+//        boolean ok2 = ! isDuePresent && isDurationPresent;
+//        boolean isDueAndDurationOk = ok1 || ok2;
+//        return super.isValid() && isDueAndDurationOk;
+//    }
+    
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
-        boolean isDuePresent = getDateTimeDue() != null;
+        List<String> errors = super.errors();
+        boolean isDateTimeStartPresent = getDateTimeStart() != null;
+        if (isDateTimeStartPresent)
+        {
+            errors.add("DTSTART is REQUIRED and MUST NOT occur more than once");
+        }
+        boolean isDateTimeDuePresent = getDateTimeDue() != null;
         boolean isDurationPresent = getDuration() != null;
-        boolean ok1 = isDuePresent && ! isDurationPresent;
-        boolean ok2 = ! isDuePresent && isDurationPresent;
-        boolean isDueAndDurationOk = ok1 || ok2;
-        return super.isValid() && isDueAndDurationOk;
+        
+        if (getDateTimeDue() != null)
+        {
+            if (getDateTimeStart() != null)
+            {
+                DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+                DateTimeType dueType = DateTimeUtilities.DateTimeType.of(getDateTimeDue().getValue());
+                boolean isDateTimeDueMatch = startType == dueType;
+                if (! isDateTimeDueMatch)
+                {
+                    errors.add("The value type of DUE MUST be the same as the DTSTART property (" + dueType + ", " + startType);
+                }
+            }
+        }
+        
+        if ((! isDateTimeDuePresent) && (! isDurationPresent))
+        {
+            errors.add("Neither DUE or DURATION is present.  DUE or DURATION is REQUIRED and MUST NOT occur more than once");
+        }
+        if (isDateTimeDuePresent && isDurationPresent)
+        {
+            errors.add("Both DUE and DURATION are present.  DUE or DURATION is REQUIRED and MUST NOT occur more than once");
+        }
+        return errors;
     }
     
     /** Parse content lines into calendar component object */

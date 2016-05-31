@@ -17,7 +17,7 @@ import javafx.scene.input.MouseButton;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.test.TestUtil;
 
 @Deprecated
@@ -59,7 +59,7 @@ public class AgendaChangeTest extends AgendaTestAbstract
         assertEquals(Arrays.asList(v1), v0.childComponentsWithRecurrenceIDs()); // has recurrence ID in child list
         
         VEvent expectedV1 = ICalendarStaticComponents.getDaily1()
-                .withRecurrenceRule((RecurrenceRule3) null)
+                .withRecurrenceRule((RecurrenceRule2) null)
                 .withRecurrenceId(LocalDateTime.of(2015, 11, 11, 10, 0))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 14, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 15, 0))

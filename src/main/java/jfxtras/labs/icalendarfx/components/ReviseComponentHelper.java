@@ -19,7 +19,7 @@ import java.util.Map;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public final class ReviseComponentHelper
@@ -588,7 +588,7 @@ public final class ReviseComponentHelper
            )
    {
        // Remove RRule and set parent component
-       vComponentEditedCopy.setRecurrenceRule((RecurrenceRuleNew) null);
+       vComponentEditedCopy.setRecurrenceRule((RecurrenceRule) null);
 //       setParent(vComponentOriginal);
 
        // Apply dayShift, account for editing recurrence beyond first
@@ -661,7 +661,7 @@ public final class ReviseComponentHelper
         WITH_NEW_REPEAT, 
         HAD_REPEAT_BECOMING_INDIVIDUAL;
       
-        public static RRuleStatus getRRuleType(RecurrenceRuleNew rruleEdited, RecurrenceRuleNew rruleOriginal)
+        public static RRuleStatus getRRuleType(RecurrenceRule rruleEdited, RecurrenceRule rruleOriginal)
         {
             if (rruleOriginal == null)
             {

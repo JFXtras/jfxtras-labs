@@ -79,9 +79,9 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     VComponentDescribable2<VEvent>, VComponentRepeatable<VEvent>
 {
     @Override
-    public CalendarElement componentType()
+    public CalendarElementType componentType()
     {
-        return CalendarElement.VEVENT;
+        return CalendarElementType.VEVENT;
     }
 
     /**
@@ -219,17 +219,41 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     }
     
     @Override
-    public boolean isValid()
+    public List<String> errors()
     {
+        List<String> errors = super.errors();
         boolean isDateTimeStartPresent = getDateTimeStart() != null;
+        if (isDateTimeStartPresent)
+        {
+            errors.add("DTSTART is not present.  DTSTART is REQUIRED and MUST NOT occur more than once");
+        }
         boolean isDateTimeEndPresent = getDateTimeEnd() != null;
         boolean isDurationPresent = getDuration() != null;
-        boolean ok1 = isDateTimeEndPresent && ! isDurationPresent;
-        boolean ok2 = ! isDateTimeEndPresent && isDurationPresent;
-        boolean isDateTimeEndAndDurationOk = ok1 || ok2;
-        boolean isDateTimeEndTypeOk = VComponentDateTimeEnd.super.isValid();
-        return super.isValid() && isDateTimeStartPresent && isDateTimeEndAndDurationOk && isDateTimeEndTypeOk;
+        errors.addAll(VComponentDateTimeEnd.super.errors());
+        
+        if ((! isDateTimeEndPresent) && (! isDurationPresent))
+        {
+            errors.add("Neither DTEND or DURATION is present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once");
+        }
+        if (isDateTimeEndPresent && isDurationPresent)
+        {
+            errors.add("Both DTEND and DURATION are present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once");
+        }
+        return errors;
     }
+    
+//    @Override
+//    public boolean isValid()
+//    {
+//        boolean isDateTimeStartPresent = getDateTimeStart() != null;
+//        boolean isDateTimeEndPresent = getDateTimeEnd() != null;
+//        boolean isDurationPresent = getDuration() != null;
+//        boolean ok1 = isDateTimeEndPresent && ! isDurationPresent;
+//        boolean ok2 = ! isDateTimeEndPresent && isDurationPresent;
+//        boolean isDateTimeEndAndDurationOk = ok1 || ok2;
+//        boolean isDateTimeEndTypeOk = VComponentDateTimeEnd.super.isValid();
+//        return super.isValid() && isDateTimeStartPresent && isDateTimeEndAndDurationOk && isDateTimeEndTypeOk;
+//    }
     
     /** Parse content lines into calendar component object */
     public static VEvent parse(String contentLines)

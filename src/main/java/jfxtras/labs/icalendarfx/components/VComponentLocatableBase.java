@@ -192,9 +192,9 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     
     /** parse VAlarms */
     @Override
-    void parseSubComponents(CalendarElement subcomponentType, String contentLines)
+    void parseSubComponents(CalendarElementType subcomponentType, String contentLines)
     {
-        if (subcomponentType == CalendarElement.VALARM)
+        if (subcomponentType == CalendarElementType.VALARM)
         {
             final ObservableList<VAlarm> list;
             if (getVAlarms() == null)

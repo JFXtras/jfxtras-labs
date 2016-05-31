@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByHour;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMinute;
@@ -77,7 +79,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  */
 // TODO - PRESERVE ORDER OF PARAMETERS FROM PARSED STRING
 // TODO - LISTENER TO PREVENT COUNT AND LISTENER FROM BOTH BEING SET
-public class RecurrenceRule3 implements VCalendarElement
+public class RecurrenceRule2 implements VCalendarElement
 {
     /** 
      * BYxxx Rules
@@ -95,7 +97,7 @@ public class RecurrenceRule3 implements VCalendarElement
     final private ObservableList<ByRule<?>> byRules; // = FXCollections.observableArrayList();
 //    public void setByRules(ObservableList<ByRule<?>> byRules) { this.byRules = byRules; }
 //    public RecurrenceRule3 withByRules(ObservableList<ByRule<?>> byRules) { setByRules(byRules); return this; }
-    public RecurrenceRule3 withByRules(ByRule<?>...byRules)
+    public RecurrenceRule2 withByRules(ByRule<?>...byRules)
     {
         for (ByRule<?> myByRule : byRules)
         {
@@ -103,7 +105,7 @@ public class RecurrenceRule3 implements VCalendarElement
         }
         return this;
     }
-    public RecurrenceRule3 withByRules(String...byRules)
+    public RecurrenceRule2 withByRules(String...byRules)
     {
         Arrays.stream(byRules).forEach(c -> parseContent(c));
         return this;
@@ -142,7 +144,7 @@ public class RecurrenceRule3 implements VCalendarElement
     public Count getCount() { return (count == null) ? null : countProperty().get(); }
     public void setCount(Count count) { countProperty().set(count); }
     public void setCount(int count) { setCount(new Count(count)); }
-    public RecurrenceRule3 withCount(Count count)
+    public RecurrenceRule2 withCount(Count count)
     {
         if (getCount() == null)
         {
@@ -152,7 +154,7 @@ public class RecurrenceRule3 implements VCalendarElement
         {
             throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
         }
-    }    public RecurrenceRule3 withCount(int count)
+    }    public RecurrenceRule2 withCount(int count)
     {
         if (getCount() == null)
         {
@@ -183,13 +185,13 @@ public class RecurrenceRule3 implements VCalendarElement
      * month or more; and YEARLY, to specify repeating events based on an
      * interval of a year or more.
      */
-    public ObjectProperty<Frequency2> frequencyProperty() { return frequency; }
-    final private ObjectProperty<Frequency2> frequency = new SimpleObjectProperty<>(this, RRuleElementType.FREQUENCY.toString());
-    public Frequency2 getFrequency() { return frequency.get(); }
-    public void setFrequency(Frequency2 frequency) { this.frequency.set(frequency); }
-    public void setFrequency(String frequency) { setFrequency(Frequency2.parse(frequency)); }
-    public void setFrequency(FrequencyType frequency) { setFrequency(new Frequency2(frequency)); }
-    public RecurrenceRule3 withFrequency(Frequency2 frequency)
+    public ObjectProperty<Frequency> frequencyProperty() { return frequency; }
+    final private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, RRuleElementType.FREQUENCY.toString());
+    public Frequency getFrequency() { return frequency.get(); }
+    public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
+    public void setFrequency(String frequency) { setFrequency(Frequency.parse(frequency)); }
+    public void setFrequency(FrequencyType frequency) { setFrequency(new Frequency(frequency)); }
+    public RecurrenceRule2 withFrequency(Frequency frequency)
     {
         if (getFrequency() == null)
         {
@@ -200,7 +202,7 @@ public class RecurrenceRule3 implements VCalendarElement
             throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
         }
     }
-    public RecurrenceRule3 withFrequency(String frequency)
+    public RecurrenceRule2 withFrequency(String frequency)
     {
         if (getFrequency() == null)
         {
@@ -211,7 +213,7 @@ public class RecurrenceRule3 implements VCalendarElement
             throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
         }
     }
-    public RecurrenceRule3 withFrequency(FrequencyType frequency)
+    public RecurrenceRule2 withFrequency(FrequencyType frequency)
     {
         if (getFrequency() == null)
         {
@@ -247,7 +249,7 @@ public class RecurrenceRule3 implements VCalendarElement
     public Interval getInterval() { return (intervalProperty() == null) ? null : intervalProperty().get(); }
     public void setInterval(Interval interval) { intervalProperty().set(interval); }
     public void setInterval(Integer interval) { setInterval(new Interval(interval)); }
-    public RecurrenceRule3 withInterval(int interval)
+    public RecurrenceRule2 withInterval(int interval)
     {
         if (getInterval() == null)
         {
@@ -258,7 +260,7 @@ public class RecurrenceRule3 implements VCalendarElement
             throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
         }
     }
-    public RecurrenceRule3 withInterval(Interval interval)
+    public RecurrenceRule2 withInterval(Interval interval)
     {
         if (getInterval() == null)
         {
@@ -307,7 +309,7 @@ public class RecurrenceRule3 implements VCalendarElement
     public void setUntil(Until until) { untilProperty().set(until); }
     public void setUntil(Temporal until) { setUntil(new Until(until)); }
     public void setUntil(String until) { setUntil(DateTimeUtilities.temporalFromString(until)); }
-    public RecurrenceRule3 withUntil(Temporal until)
+    public RecurrenceRule2 withUntil(Temporal until)
     {
         if (getUntil() == null)
         {
@@ -318,7 +320,7 @@ public class RecurrenceRule3 implements VCalendarElement
             throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
         }
     }
-    public RecurrenceRule3 withUntil(String until)
+    public RecurrenceRule2 withUntil(String until)
     {
         if (getUntil() == null)
         {
@@ -329,7 +331,7 @@ public class RecurrenceRule3 implements VCalendarElement
             throw new IllegalArgumentException("Property previously set.  It can only occur once in the calendar component");
         }
     }
-    public RecurrenceRule3 withUntil(Until until)
+    public RecurrenceRule2 withUntil(Until until)
     {
         if (getUntil() == null)
         {
@@ -371,8 +373,8 @@ public class RecurrenceRule3 implements VCalendarElement
     public WeekStart getWeekStart() { return (weekStart == null) ? null : weekStartProperty().get(); }
     public void setWeekStart(WeekStart weekStart) { weekStartProperty().set(weekStart); }
     public void setWeekStart(DayOfWeek weekStart) { weekStartProperty().set(new WeekStart(weekStart)); }
-    public RecurrenceRule3 withWeekStart(WeekStart weekStart) { setWeekStart(weekStart); return this; }
-    public RecurrenceRule3 withWeekStart(DayOfWeek weekStart) { setWeekStart(weekStart); return this; }
+    public RecurrenceRule2 withWeekStart(WeekStart weekStart) { setWeekStart(weekStart); return this; }
+    public RecurrenceRule2 withWeekStart(DayOfWeek weekStart) { setWeekStart(weekStart); return this; }
     
    // bind to values in the Byxxx rules that use Week Start
     private void addWeekStartBindings(ByRule<?> rule)
@@ -440,7 +442,7 @@ public class RecurrenceRule3 implements VCalendarElement
      * CONSTRUCTORS
      */
     
-    public RecurrenceRule3()
+    public RecurrenceRule2()
     {
         byRules = FXCollections.observableArrayList();
         
@@ -507,14 +509,14 @@ public class RecurrenceRule3 implements VCalendarElement
     }
 
     // Copy constructor
-    public RecurrenceRule3(RecurrenceRule3 source)
+    public RecurrenceRule2(RecurrenceRule2 source)
     {
         this();
         copyRecurrenceRuleFrom(source);
     }
     
     /** Copy elements from source into this recurrence rule, making a copy of source */
-    public void copyRecurrenceRuleFrom(RecurrenceRule3 source)
+    public void copyRecurrenceRuleFrom(RecurrenceRule2 source)
     {
         elementSortOrder().putAll(source.elementSortOrder());
         source.elements().forEach(p -> p.copyElement(source, this));
@@ -675,55 +677,6 @@ public class RecurrenceRule3 implements VCalendarElement
     private ChronoUnit chronoUnit; // must be field instead of local variable due to use in lambda expression
     private Stream<Temporal> myStream; // must be field instead of local variable due to use in lambda expression
     
-    @Override
-    public boolean equals(Object obj)
-    {
-//        System.out.println("rrule equal:" + obj + " " + (obj.getClass() != getClass()));
-        if (obj == this) return true;
-//        System.out.println("rrule equal:" + obj + " " + obj.getClass() + " " + getClass());
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        RecurrenceRule3 testObj = (RecurrenceRule3) obj;
-
-        List<RRuleElementType> myElements = elements();
-        List<RRuleElementType> testElements = testObj.elements();
-//        System.out.println("rrule equal:" + obj + " " + (obj.getClass() != getClass()));
-        
-//        System.out.println("rrule equal:" + myElements.size() + " " + testElements.size());
-        boolean isSameNumberOfElements = myElements.size() == testElements.size();
-        if (! isSameNumberOfElements)
-        {
-            return false;
-        }
-        boolean elementsEqual = true;
-        for (int i=0; i<myElements.size(); i++)
-        {
-            if (! myElements.get(i).getElement(this).equals(testElements.get(i).getElement(testObj)))
-            {
-                System.out.println("Recurrence rule not equal:" + myElements.get(i).getElement(this).toContent() +
-                        " " + testElements.get(i).getElement(testObj).toContent());
-                elementsEqual = false;
-            }
-        }
-        return elementsEqual;
-        
-//        boolean propertiesEquals = Arrays.stream(RRuleEnum.values())
-////                .peek(e -> System.out.println(e.toString() + " equals:" + e.isPropertyEqual(this, testObj)))
-//                .map(e -> e.isPropertyEqual(this, testObj))
-//                .allMatch(b -> b == true);
-//        boolean recurrencesEquals = (recurrences() == null) ? (testObj.recurrences() == null) : recurrences().equals(testObj.recurrences());
-//        return propertiesEquals && recurrencesEquals;
-//        System.out.println("propertiesEquals" + propertiesEquals);
-//        boolean countEquals = getCount().equals(testObj.getCount());
-//        boolean frequencyEquals = getFrequency().equals(testObj.getFrequency()); // RRule requires a frequency
-//        System.out.println("untils:" + getUntil() + " " + testObj.getUntil() + ((getUntil() != null) ? getUntil().hashCode() : "")
-//                + " " + ((testObj.getUntil() != null) ? testObj.getUntil().hashCode() : ""));
-//        boolean untilEquals = (getUntil() == null) ? (testObj.getUntil() == null) : getUntil().equals(testObj.getUntil());
-//
-//        System.out.println("RRule " + countEquals + " " + frequencyEquals + " " + recurrencesEquals + " " + untilEquals);
-//        return countEquals && frequencyEquals && recurrencesEquals && untilEquals;
-    }
 //    
 //    @Override
 //    public int hashCode()
@@ -921,12 +874,57 @@ public class RecurrenceRule3 implements VCalendarElement
     }
     
     @Override
+    public List<String> errors()
+    {
+        List<String> errors = new ArrayList<>();
+        if (getFrequency() == null)
+        {
+            errors.add("FREQ is not present.  FREQ is REQUIRED and MUST NOT occur more than once");
+        }
+        boolean isUntilPresent = getUntil() != null;
+        boolean isCountPresent = getCount() != null;
+        if (isUntilPresent && isCountPresent)
+        {
+            errors.add("UNTIL and COUNT are both present.  UNTIL or COUNT rule parts are OPTIONAL, but they MUST NOT both occur.");
+        }
+        return errors;
+    }
+    
+    @Override
     public String toString()
     {
         return super.toString() + ", " + toContent();
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        RecurrenceRule2 testObj = (RecurrenceRule2) obj;
 
+        List<RRuleElementType> myElements = elements();
+        List<RRuleElementType> testElements = testObj.elements();
+        boolean isSameNumberOfElements = myElements.size() == testElements.size();
+        if (! isSameNumberOfElements)
+        {
+            return false;
+        }
+        boolean elementsEqual = true;
+        for (int i=0; i<myElements.size(); i++)
+        {
+            if (! myElements.get(i).getElement(this).equals(testElements.get(i).getElement(testObj)))
+            {
+                System.out.println("Recurrence rule not equal:" + myElements.get(i).getElement(this).toContent() +
+                        " " + testElements.get(i).getElement(testObj).toContent());
+                elementsEqual = false;
+            }
+        }
+        return elementsEqual;
+    }
+    
     @Override
     public int hashCode()
     {
@@ -940,6 +938,7 @@ public class RecurrenceRule3 implements VCalendarElement
         result = prime * result + ((weekStart == null) ? 0 : weekStart.hashCode());
         return result;
     }
+    
 //    @Override
 //    public boolean equals(Object obj)
 //    {
@@ -949,7 +948,7 @@ public class RecurrenceRule3 implements VCalendarElement
 //            return false;
 //        if (getClass() != obj.getClass())
 //            return false;
-//        RecurrenceRule3 other = (RecurrenceRule3) obj;
+//        RecurrenceRule2 other = (RecurrenceRule2) obj;
 //        if (byRules == null)
 //        {
 //            if (other.byRules != null)
@@ -989,9 +988,9 @@ public class RecurrenceRule3 implements VCalendarElement
 //        return true;
 //    }
     
-    public static RecurrenceRule3 parse(String propertyContent)
+    public static RecurrenceRule2 parse(String propertyContent)
     {
-        RecurrenceRule3 property = new RecurrenceRule3();
+        RecurrenceRule2 property = new RecurrenceRule2();
         property.parseContent(propertyContent);
         return property;
     }

@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
@@ -9,7 +11,9 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 /**
  * Contains following properties:
  * @see RecurrenceRule
@@ -55,7 +59,7 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
      * RRULE:FREQ=DAILY;COUNT=10
      * RRULE:FREQ=WEEKLY;UNTIL=19971007T000000Z;WKST=SU;BYDAY=TU,TH
      */
-    @Override public ObjectProperty<RecurrenceRuleNew> recurrenceRuleProperty()
+    @Override public ObjectProperty<RecurrenceRule> recurrenceRuleProperty()
     {
         if (recurrenceRule == null)
         {
@@ -64,8 +68,8 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         return recurrenceRule;
     }
     @Override
-    public RecurrenceRuleNew getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
-    private ObjectProperty<RecurrenceRuleNew> recurrenceRule;
+    public RecurrenceRule getRecurrenceRule() { return (recurrenceRule == null) ? null : recurrenceRuleProperty().get(); }
+    private ObjectProperty<RecurrenceRule> recurrenceRule;
     
     /*
      * CONSTRUCTORS
@@ -76,27 +80,6 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
     {
         super(contentLines);
     }    
-    
-//    /**
-//     * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
-//     * This property is not a part of the iCalendar standard
-//     */
-//    @Override
-//    public Temporal getStartRange() { return startRange; }
-//    private Temporal startRange;
-//    @Override
-//    public void setStartRange(Temporal startRange) { this.startRange = startRange; }
-//    public T withStartRange(Temporal startRange) { setStartRange(startRange); return (T) this; }
-//    
-//    /**
-//     * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
-//     */
-//    @Override
-//    public Temporal getEndRange() { return endRange; }
-//    private Temporal endRange;
-//    @Override
-//    public void setEndRange(Temporal endRange) { this.endRange = endRange; }
-//    public T withEndRange(Temporal endRange) { setEndRange(endRange); return (T) this; }
     
     @Override
     public Stream<Temporal> streamRecurrences(Temporal start)
@@ -109,13 +92,28 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         return recurrenceStreamer().makeCache(inStream);   // make cache of start date/times
     }
     
-//    /**
-//     * Recurrence instances, represented as type R, that are bounded by {@link #startRange} and {@link #endRange}
-//     * The elements of the list are created by calling {@link #makeRecurrences()}
-//     */
-//    @Override
-//    public List<R> recurrences() { return recurrences; }
-//    final private List<R> recurrences = new ArrayList<>();
+    @Override
+    public List<String> errors()
+    {
+        List<String> errors = new ArrayList<>();
+        if (getRecurrenceDates() != null)
+        {
+            Temporal r1 = getRecurrenceDates().get(0).getValue().iterator().next();
+            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
+            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+            boolean isRecurrenceTypeMatch = startType == recurrenceType;
+            if (! isRecurrenceTypeMatch)
+            {
+                errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
+            }
+        }
+        
+        if (getRecurrenceRule() != null)
+        {
+            errors.addAll(getRecurrenceRule().errors());
+        }      
+        return errors;
+    }
 
     /*
      *  RECURRENCE STREAMER
@@ -124,4 +122,5 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
     private RecurrenceRuleCache streamer = new RecurrenceRuleCache(this);
     @Override
     public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
+    
 }

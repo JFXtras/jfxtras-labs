@@ -59,9 +59,9 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 public class VJournal extends VComponentDisplayableBase<VJournal>
 {
     @Override
-    public CalendarElement componentType()
+    public CalendarElementType componentType()
     {
-        return CalendarElement.VJOURNAL;
+        return CalendarElementType.VJOURNAL;
     }
 
     /**

@@ -21,7 +21,7 @@ import java.util.Map;
 
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VCalendarElement;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public enum ValueType
@@ -235,7 +235,7 @@ public enum ValueType
             };
         }
     },
-    RECURRENCE_RULE ("RECUR", Arrays.asList(RecurrenceRule3.class))
+    RECURRENCE_RULE ("RECUR", Arrays.asList(RecurrenceRule2.class))
     {
         @Override
         public <T> StringConverter<T> getConverter()
@@ -252,7 +252,7 @@ public enum ValueType
                 @Override
                 public T fromString(String string)
                 {
-                    return (T) RecurrenceRule3.parse(string);
+                    return (T) RecurrenceRule2.parse(string);
                 }
             };
         }

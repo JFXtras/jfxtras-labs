@@ -1,5 +1,8 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -38,6 +41,17 @@ abstract public class RRuleElementBase<T, U> implements RRuleElement<T>
     }
     
     @Override
+    public List<String> errors()
+    {
+        List<String> errors = new ArrayList<>();
+        if (getValue() == null)
+        {
+            errors.add(elementType() + " value is null.  The element MUST have a value."); 
+        }
+        return errors;
+    }
+    
+    @Override
     public String toString()
     {
         return super.toString() + ", " + toContent();
@@ -59,7 +73,7 @@ abstract public class RRuleElementBase<T, U> implements RRuleElement<T>
             return false;
         if (getClass() != obj.getClass())
             return false;
-        RRuleElementBase other = (RRuleElementBase) obj;
+        RRuleElementBase<?,?> other = (RRuleElementBase) obj;
         if (getValue() == null)
         {
             if (other.getValue() != null)

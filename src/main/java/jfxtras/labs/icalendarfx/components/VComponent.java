@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
@@ -30,7 +31,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public interface VComponentNew<T>
+public interface VComponent<T> extends VCalendarElement
 {
     /**
      * Returns the enum for the component as it would appear in the iCalendar content line
@@ -40,7 +41,7 @@ public interface VComponentNew<T>
      * 
      * @return - the component enum
      */
-    CalendarElement componentType();
+    CalendarElementType componentType();
     
     /**
      * 3.8.8.2.  Non-Standard Properties
@@ -151,7 +152,7 @@ public interface VComponentNew<T>
      * Note: this method only overwrites properties found in source.  If there are properties in
      * this component that are not present in source then those will remain unchanged.
      * */
-    default void copyComponentFrom(VComponentNew<?> source)
+    default void copyComponentFrom(VComponent<?> source)
     {
         source.propertyEnums().forEach(p -> p.copyProperty(source, this));
         propertySortOrder().putAll(source.propertySortOrder());
@@ -173,26 +174,6 @@ public interface VComponentNew<T>
      * 
      * @return - the component content lines
      */
-    CharSequence toContent();
-    
-    /**
-     * Checks component to determine if necessary properties are set.
-     * 
-     * @return - true if component is valid, false otherwise
-     */
-    @Deprecated // replace with list of problems instead
-    boolean isValid();
-    
-    /** Indicates the calendar component is top-level and can be a member of the VCalendar directly.
-     * Components not implementing this interface, such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
-     * must be embedded inside other components.
-     * 
-     * @author David Bal
-     *
-     */
-    @Deprecated // maybe there is a better way to mark main components (as opposed to sub-components)
-    public interface VComponentMain
-    {
-        
-    }
+    @Override
+    String toContent();
 }

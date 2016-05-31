@@ -19,7 +19,7 @@ import org.junit.Test;
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
@@ -91,7 +91,7 @@ public class VEventTest extends ICalendarTestAbstract2
         VEvent e = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 20, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 10, 2, 0))
-                .withRecurrenceRule(new RecurrenceRule3()
+                .withRecurrenceRule(new RecurrenceRule2()
                         .withCount(6)
                         .withFrequency("DAILY")
                         .withInterval(3));
@@ -112,7 +112,7 @@ public class VEventTest extends ICalendarTestAbstract2
         VEvent e = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 20, 0))
                 .withDuration(Duration.ofHours(6))
-                .withRecurrenceRule(new RecurrenceRule3()
+                .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency("DAILY")
                         .withInterval(3));
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(

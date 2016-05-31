@@ -1,17 +1,38 @@
 package jfxtras.labs.icalendarfx;
 
+import java.util.List;
+
 /**
  * Interface for all calendar elements.  These include
- * calendar components (e.g. VEVENT) and calendar properties (e.g. VERSION).
+ * calendar components (e.g. VEVENT), calendar properties (e.g. VERSION) and parameters (i.e. VALUE).
  * 
  * @author David Bal
  *
  */
 public interface VCalendarElement
 {
+    /**
+     * Produce iCalendar content string
+     * 
+     * @return the content string
+     */
     String toContent();
     
+    /** Parse content line into calendar element */
     void parseContent(String content);
     
-    //TODO - ADD isValid - that returns a list of errors - empty list means its valid
+    /**
+     * Checks element to determine if necessary properties are set.
+     * 
+     * @return - true if component is valid, false otherwise
+     */
+    default boolean isValid() { return errors().isEmpty(); }
+    
+    /**
+     * Produces a list of error messages indicating problems with calendar element
+     * 
+     * @return - list of error messages
+     */
+//    default List<String> errors() { return new ArrayList<>(); }
+    List<String> errors();
 }

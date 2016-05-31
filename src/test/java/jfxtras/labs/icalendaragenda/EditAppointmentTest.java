@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VComponentNew;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -48,7 +48,7 @@ public class EditAppointmentTest
             }
         };
         vComponents.addListener(listener);
-        final Map<VComponentNew<?>, List<Appointment>> vComponentAppointmentMap = new WeakHashMap<>();
+        final Map<VComponent<?>, List<Appointment>> vComponentAppointmentMap = new WeakHashMap<>();
 //        final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>();    
         final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VComponent that made it */
 
@@ -136,7 +136,7 @@ public class EditAppointmentTest
 //        vComponents.
         vComponentAppointmentMap.keySet().forEach(k -> System.out.println(k.hashCode()));
 //        VComponentNew<?> i = vComponentAppointmentMap.entrySet().iterator().next().getKey();
-        VComponentNew<?> i = vComponentAppointmentMap.entrySet().iterator().next().getKey();
+        VComponent<?> i = vComponentAppointmentMap.entrySet().iterator().next().getKey();
         System.out.println("vComponentAppointmentMap:" + vComponentAppointmentMap.size() +
                 " " + vComponentEditedCopy.hashCode() + " " + vComponentOriginal.hashCode() + " " + i.hashCode());
         System.out.println("getting:" + vComponentAppointmentMap.containsKey(i) + " " + i.equals(vComponentEditedCopy));

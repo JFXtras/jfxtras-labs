@@ -26,7 +26,7 @@ import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOpt
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 
 /**
@@ -202,7 +202,7 @@ public class ReviseComponentTest
         assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentOriginal.getDateTimeStart().getValue());        
         assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
         Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
-        RecurrenceRule3 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
+        RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
         assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
 
         List<String> expectedChanges = Arrays.asList(
@@ -233,7 +233,7 @@ public class ReviseComponentTest
         VEvent vComponentOriginal = ICalendarStaticComponents.getIndividual1();
         VEvent vComponentEdited = new VEvent(vComponentOriginal);
         vComponentEdited.setSummary("Edited summary");
-        vComponentEdited.setRecurrenceRule(new RecurrenceRule3()
+        vComponentEdited.setRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
 

@@ -15,11 +15,11 @@ import java.util.TreeMap;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleNew;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Count;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.WeekStart;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -50,10 +50,10 @@ public class RecurrenceRuleTest
     public void canParseRecurrenceRule()
     {
         String content = "RRULE:FREQ=YEARLY;UNTIL=19730429T070000Z;BYMONTH=4;BYDAY=-1SU";
-        RecurrenceRuleNew madeProperty = RecurrenceRuleNew.parse(content);
+        RecurrenceRule madeProperty = RecurrenceRule.parse(content);
         assertEquals(content, madeProperty.toContent());
-        RecurrenceRuleNew expectedProperty = new RecurrenceRuleNew(
-                new RecurrenceRule3()
+        RecurrenceRule expectedProperty = new RecurrenceRule(
+                new RecurrenceRule2()
                     .withUntil("19730429T070000Z")
                     .withFrequency(FrequencyType.YEARLY)
                     .withByRules(new ByMonth(Month.APRIL),
@@ -65,8 +65,8 @@ public class RecurrenceRuleTest
     public void canCopyRecurrenceRule()
     {
         String content = "RRULE:FREQ=YEARLY;UNTIL=19730429T070000Z;BYMONTH=4;BYDAY=-1SU";
-        RecurrenceRuleNew r1 = RecurrenceRuleNew.parse(content);
-        RecurrenceRuleNew r2 = new RecurrenceRuleNew(r1);
+        RecurrenceRule r1 = RecurrenceRule.parse(content);
+        RecurrenceRule r2 = new RecurrenceRule(r1);
         assertEquals(r1, r2);
         assertTrue(r1 != r2);
         assertTrue(r1.getValue() != r2.getValue());

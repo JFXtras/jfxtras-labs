@@ -37,9 +37,9 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilitie
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule3;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -260,8 +260,8 @@ public class PopupTests extends JFXtrasGuiTest
         ComboBox<FrequencyType> frequencyComboBox = find("#frequencyComboBox");
 
         // Check initial state
-        RecurrenceRule3 rrule = vevent.getRecurrenceRule().getValue();
-        Frequency2 f = rrule.getFrequency();
+        RecurrenceRule2 rrule = vevent.getRecurrenceRule().getValue();
+        Frequency f = rrule.getFrequency();
         assertEquals(FrequencyType.DAILY, frequencyComboBox.getSelectionModel().getSelectedItem());
         assertEquals(FrequencyType.DAILY, rrule.getFrequency().getValue());
         
