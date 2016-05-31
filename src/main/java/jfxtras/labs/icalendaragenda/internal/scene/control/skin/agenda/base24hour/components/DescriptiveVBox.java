@@ -57,11 +57,11 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML Label endLabel;
     
     @FXML private CheckBox wholeDayCheckBox;
-    @FXML TextField summaryTextField; // SUMMARY
-    @FXML TextArea descriptionTextArea; // DESCRIPTION
+    @FXML TextField summaryTextField;
+    @FXML TextArea descriptionTextArea;
     @FXML Label locationLabel;
-    @FXML TextField locationTextField; // LOCATION
-    @FXML private TextField groupTextField; // CATEGORIES
+    @FXML TextField locationTextField;
+    @FXML private TextField groupTextField;
     @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
     @FXML private Button saveComponentButton;
     @FXML private Button cancelComponentButton;

@@ -188,15 +188,13 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     {
         List<String> errors = new ArrayList<>();
 //        List<String> errors = super.errors();
-        boolean isDateTimeStampPresent = getDateTimeStamp() != null;
-        if (isDateTimeStampPresent)
+        if (getDateTimeStamp() == null)
         {
-            errors.add("DTSTAMP: DTSTAMP is REQUIRED and MUST NOT occur more than once");
+            errors.add("DTSTAMP is not present.  DTSTAMP is REQUIRED and MUST NOT occur more than once");
         }
-        boolean isUniqueIdentifier = getUniqueIdentifier() != null;
-        if (isUniqueIdentifier)
+        if (getUniqueIdentifier() == null)
         {
-            errors.add("UID: UID is REQUIRED and MUST NOT occur more than once");
+            errors.add("UID is not present.  UID is REQUIRED and MUST NOT occur more than once");
         }
         return errors;
     }

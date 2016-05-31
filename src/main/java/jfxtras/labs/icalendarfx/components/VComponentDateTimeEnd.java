@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
@@ -93,23 +91,23 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
         }
     }
     
-    @Override
-    default List<String> errors()
-    {
-        List<String> errors = new ArrayList<>();
-        if (getDateTimeEnd() != null)
-        {
-            if (getDateTimeStart() != null)
-            {
-                DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-                DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
-                boolean isDateTimeEndMatch = startType == endType;
-                if (! isDateTimeEndMatch)
-                {
-                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType);
-                }
-            }
-        }
-        return errors();
-    }
+//    @Override
+//    default List<String> errors()
+//    {
+//        List<String> errors = new ArrayList<>();
+//        if (getDateTimeEnd() != null)
+//        {
+//            if (getDateTimeStart() != null)
+//            {
+//                DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//                DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+//                boolean isDateTimeEndMatch = startType == endType;
+//                if (! isDateTimeEndMatch)
+//                {
+//                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType);
+//                }
+//            }
+//        }
+//        return errors();
+//    }
 }

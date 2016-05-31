@@ -13,6 +13,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency;
 import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeTransparencyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
  * VEVENT
@@ -222,14 +223,26 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     public List<String> errors()
     {
         List<String> errors = super.errors();
-        boolean isDateTimeStartPresent = getDateTimeStart() != null;
-        if (isDateTimeStartPresent)
+        if (getDateTimeStart() == null)
         {
             errors.add("DTSTART is not present.  DTSTART is REQUIRED and MUST NOT occur more than once");
         }
         boolean isDateTimeEndPresent = getDateTimeEnd() != null;
         boolean isDurationPresent = getDuration() != null;
-        errors.addAll(VComponentDateTimeEnd.super.errors());
+        
+        if (getDateTimeEnd() != null)
+        {
+            if (getDateTimeStart() != null)
+            {
+                DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+                DateTimeType endType = DateTimeUtilities.DateTimeType.of(getDateTimeEnd().getValue());
+                boolean isDateTimeEndMatch = startType == endType;
+                if (! isDateTimeEndMatch)
+                {
+                    errors.add("The value type of DTEND MUST be the same as the DTSTART property (" + endType + ", " + startType);
+                }
+            }
+        }
         
         if ((! isDateTimeEndPresent) && (! isDurationPresent))
         {

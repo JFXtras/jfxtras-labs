@@ -492,11 +492,14 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         {
             errors.add(getPropertyName() + " value is null.  The property MUST have a value."); 
         }
-        boolean isValueTypeOK = isValueParameterValid(getValueParameter().getValue());
-        if (! isValueTypeOK)
+        if (getValueParameter() != null)
         {
-            errors.add(getPropertyName() + " value type " + getValueParameter().getValue() + " is not supported.  Supported types include:" +
-                    propertyType().allowedValueTypes().stream().map(v -> v.toString()).collect(Collectors.joining(",")));
+            boolean isValueTypeOK = isValueParameterValid(getValueParameter().getValue());
+            if (! isValueTypeOK)
+            {
+                errors.add(getPropertyName() + " value type " + getValueParameter().getValue() + " is not supported.  Supported types include:" +
+                        propertyType().allowedValueTypes().stream().map(v -> v.toString()).collect(Collectors.joining(",")));
+            }
         }
         return errors;
     }

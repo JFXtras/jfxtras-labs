@@ -3,6 +3,7 @@ package jfxtras.labs.icalendaragenda.trial;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -19,6 +20,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.CallbackTwoParameters;
+import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.scene.control.agenda.Agenda;
@@ -42,13 +44,17 @@ public class EditComponentPopupTrial extends Application
 	{
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", Locale.getDefault());
         Settings.setup(resources);
-        
+
 //        VEvent vevent = ICalendarStaticComponents.getDaily1();
         VJournal vevent = new VJournal()
                 .withDateTimeStart("20160518T110000")
-                .withSummary("test journal");
+                .withSummary("test journal")
+                .withDateTimeStamp("20160518T232502Z")
+                .withUniqueIdentifier("20160518T232502-0@jfxtras.org");
+//        ObservableList<VEvent> vEvents = FXCollections.observableArrayList(vevent);
         ObservableList<VJournal> vEvents = FXCollections.observableArrayList(vevent);
         RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(MAKE_APPOINTMENT_TEST_CALLBACK_VJOURNAL);
+//        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
@@ -97,6 +103,25 @@ public class EditComponentPopupTrial extends Application
 //                .withEndTemporal(endTemporal)
                 .withDescription( (vComponent.getDescriptions() != null) ? vComponent.getDescriptions().get(0).getValue() : null )
                 .withSummary( (vComponent.getSummary() != null) ? vComponent.getSummary().getValue() : null)
+                .withWholeDay(isWholeDay);
+        return appt;
+    };
+    
+    /** Callback to make appointment from VComponent and Temporal */
+    public static final CallbackTwoParameters<VComponentRepeatable<?>, Temporal, Appointment> MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE = (vComponentEdited, startTemporal) ->
+    {
+        Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
+        VComponentLocatable<?> vComponentLocatable = (VComponentLocatable<?>) vComponentEdited;
+        final TemporalAmount adjustment = vComponentLocatable.getActualDuration();
+        Temporal endTemporal = startTemporal.plus(adjustment);
+
+        // Make appointment
+        Appointment appt = new Agenda.AppointmentImplTemporal()
+                .withStartTemporal(startTemporal)
+                .withEndTemporal(endTemporal)
+                .withDescription( (vComponentLocatable.getDescription() != null) ? vComponentLocatable.getDescription().getValue() : null )
+                .withSummary( (vComponentLocatable.getSummary() != null) ? vComponentLocatable.getSummary().getValue() : null)
+                .withLocation( (vComponentLocatable.getLocation() != null) ? vComponentLocatable.getLocation().getValue() : null)
                 .withWholeDay(isWholeDay);
         return appt;
     };

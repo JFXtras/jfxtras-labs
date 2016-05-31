@@ -33,6 +33,6 @@ public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
         {
             vComponent.withDescriptions("");
         }
-        descriptionTextArea.textProperty().bind(vComponent.getDescriptions().get(0).valueProperty());
+        descriptionTextArea.textProperty().bindBidirectional(vComponent.getDescriptions().get(0).valueProperty());
     }
 }

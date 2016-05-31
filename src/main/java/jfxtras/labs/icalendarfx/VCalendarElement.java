@@ -33,6 +33,5 @@ public interface VCalendarElement
      * 
      * @return - list of error messages
      */
-//    default List<String> errors() { return new ArrayList<>(); }
     List<String> errors();
 }

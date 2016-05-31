@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
@@ -147,7 +148,8 @@ public final class ReviseComponentHelper
         }
         if (! vComponentEdited.isValid())
         {
-            throw new RuntimeException("Invalid component" + vComponentEdited.toContent()); // TODO - MAKE ERROR STRING
+            throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
+                    vComponentEdited.errors().stream().collect(Collectors.joining(System.lineSeparator())));
         }
         if (incrementSequence)
         {

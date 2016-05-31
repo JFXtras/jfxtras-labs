@@ -99,20 +99,17 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
     public List<String> errors()
     {
         List<String> errors = super.errors();
-        boolean isDateTimeStartPresent = getDateTimeStart() != null;
-        if (! isDateTimeStartPresent)
+        if (getDateTimeStart() == null)
         {
             errors.add("DTSTART is not present.  DTSTART is REQUIRED and MUST NOT occur more than once");
         }
         
-        boolean isTimeZoneOffsetFromPresent = getTimeZoneOffsetFrom() != null;
-        if (isTimeZoneOffsetFromPresent)
+        if (getTimeZoneOffsetFrom() == null)
         {
             errors.add("TZOFFSETFROM is not present.  TZOFFSETFROM is REQUIRED and MUST NOT occur more than once");
         }
         
-        boolean isTimeZoneOffsetToPresent = getTimeZoneOffsetTo() != null;
-        if (isTimeZoneOffsetToPresent)
+        if (getTimeZoneOffsetTo() == null)
         {
             errors.add("TZOFFSETTO is not present.  TZOFFSETTO is REQUIRED and MUST NOT occur more than once");
         }

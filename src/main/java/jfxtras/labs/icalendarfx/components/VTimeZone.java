@@ -403,8 +403,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     public List<String> errors()
     {
         List<String> errors = new ArrayList<>();
-        boolean isTimeZoneIdentifierPresent = getTimeZoneIdentifier() != null;
-        if (isTimeZoneIdentifierPresent)
+        if (getTimeZoneIdentifier() == null)
         {
             errors.add("TZID is REQUIRED and MUST NOT occur more than once");
         }

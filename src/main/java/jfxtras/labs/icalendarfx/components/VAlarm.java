@@ -318,13 +318,11 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
     public List<String> errors()
     {
         List<String> errors = new ArrayList<>();
-        boolean isActionPresent = getAction() != null;
-        if (isActionPresent)
+        if (getAction() == null)
         {
             errors.add("ACTION is not present.  ACTION is REQUIRED and MUST NOT occur more than once");
         }
-        boolean isTriggerPresent = getTrigger() != null;
-        if (isTriggerPresent)
+        if (getTrigger() == null)
         {
             errors.add("TRIGGER is not present.  TRIGGER is REQUIRED and MUST NOT occur more than once");
         }
