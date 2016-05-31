@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
@@ -215,7 +216,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
             duration = DateTimeUtilities.temporalAmountBetween(dtstart, dtdue);
         } else
         {
-            throw new RuntimeException("Either DUE or DURATION must be set");
+            throw new RuntimeException("Invalid VTodo: Either DUE or DURATION must be set");
         }
         return duration;
     }
@@ -233,7 +234,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
             setDateTimeDue(dtdue);
         } else
         {
-            throw new RuntimeException("Either DUE or DURATION must be set");
+            throw new RuntimeException("Invalid VTodo: Either DUE or DURATION must be set");
         }        
     }
     
@@ -310,8 +311,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     public List<String> errors()
     {
         List<String> errors = super.errors();
-        boolean isDateTimeStartPresent = getDateTimeStart() != null;
-        if (isDateTimeStartPresent)
+        if (getDateTimeStart() == null)
         {
             errors.add("DTSTART is REQUIRED and MUST NOT occur more than once");
         }
@@ -340,7 +340,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         {
             errors.add("Both DUE and DURATION are present.  DUE or DURATION is REQUIRED and MUST NOT occur more than once");
         }
-        return errors;
+        return Collections.unmodifiableList(errors);
     }
     
     /** Parse content lines into calendar component object */

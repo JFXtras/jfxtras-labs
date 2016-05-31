@@ -24,7 +24,7 @@ public class Count extends RRuleElementBase<Integer, Count>
             if ((newValue != null) && (newValue < 1))
             {
                 setValue(oldValue);
-                throw new IllegalArgumentException(elementType() + " can't be less than 1");
+                throw new IllegalArgumentException(elementType() + " is " + newValue + ".  It can't be less than 1");
             }
         });
     }

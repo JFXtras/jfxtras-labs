@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
@@ -226,7 +227,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
                 }
             }
         }
-        return errors;
+        return Collections.unmodifiableList(errors);
     }
         
     @Override

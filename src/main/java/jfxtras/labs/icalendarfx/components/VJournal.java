@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -111,6 +113,12 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
     public VJournal(VJournal source)
     {
         super(source);
+    }
+    
+    @Override
+    public List<String> errors()
+    {
+        return Collections.unmodifiableList(super.errors());
     }
     
     /** Parse content lines into calendar component object */

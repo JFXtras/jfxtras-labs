@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.util.Collections;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
@@ -113,7 +114,7 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
         {
             errors.add("TZOFFSETTO is not present.  TZOFFSETTO is REQUIRED and MUST NOT occur more than once");
         }
-        return errors;
+        return Collections.unmodifiableList(errors);
     }
     
     // Recurrence streamer - produces recurrence set

@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javafx.beans.property.ObjectProperty;
@@ -227,6 +228,17 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
             }
             castSource.getVAlarms().forEach(a -> this.getVAlarms().add(new VAlarm(a)));            
         }
+    }
+    
+    @Override
+    public List<String> errors()
+    {
+        List<String> errors = super.errors();
+        if (getVAlarms() != null)
+        {
+            getVAlarms().forEach(v -> errors.addAll(v.errors()));
+        }
+        return errors;
     }
     
     /** Stream recurrence dates with adjustment to include recurrences don't end before start parameter */

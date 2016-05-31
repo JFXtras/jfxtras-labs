@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import java.time.DateTimeException;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
@@ -252,21 +253,8 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         {
             errors.add("Both DTEND and DURATION are present.  DTEND or DURATION is REQUIRED and MUST NOT occur more than once");
         }
-        return errors;
+        return Collections.unmodifiableList(errors);
     }
-    
-//    @Override
-//    public boolean isValid()
-//    {
-//        boolean isDateTimeStartPresent = getDateTimeStart() != null;
-//        boolean isDateTimeEndPresent = getDateTimeEnd() != null;
-//        boolean isDurationPresent = getDuration() != null;
-//        boolean ok1 = isDateTimeEndPresent && ! isDurationPresent;
-//        boolean ok2 = ! isDateTimeEndPresent && isDurationPresent;
-//        boolean isDateTimeEndAndDurationOk = ok1 || ok2;
-//        boolean isDateTimeEndTypeOk = VComponentDateTimeEnd.super.isValid();
-//        return super.isValid() && isDateTimeStartPresent && isDateTimeEndAndDurationOk && isDateTimeEndTypeOk;
-//    }
     
     /** Parse content lines into calendar component object */
     public static VEvent parse(String contentLines)

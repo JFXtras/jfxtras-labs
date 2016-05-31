@@ -149,7 +149,8 @@ public final class ReviseComponentHelper
         if (! vComponentEdited.isValid())
         {
             throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
-                    vComponentEdited.errors().stream().collect(Collectors.joining(System.lineSeparator())));
+                    vComponentEdited.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                    vComponentEdited.toContent());
         }
         if (incrementSequence)
         {
@@ -542,6 +543,12 @@ public final class ReviseComponentHelper
        {
            int countInOrginal = (int) vComponentOriginal.streamRecurrences().count();
            int countInNew = vComponentEditedCopy.getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
+           // TODO - FIX THIS
+           System.out.println("new count:" + countInNew);
+           if (countInNew < 1)
+           {
+               throw new RuntimeException("count too low");
+           }
            vComponentEditedCopy.getRecurrenceRule().getValue().setCount(countInNew);
        }
        

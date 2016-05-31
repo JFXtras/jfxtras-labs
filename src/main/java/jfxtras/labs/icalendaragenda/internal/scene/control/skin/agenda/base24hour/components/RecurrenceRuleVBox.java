@@ -351,6 +351,7 @@ public class RecurrenceRuleVBox extends VBox
                         : LocalDate.from(vComponent.getDateTimeStart().getValue().plus(DEFAULT_UNTIL_PERIOD));
                 Temporal until = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
                 rrule.setUntil(until);
+//                rrule.setCount(null); 
             }
             untilDatePicker.setValue(LocalDate.from(rrule.getUntil().getValue()));
             untilDatePicker.setDisable(false);
@@ -578,7 +579,8 @@ public class RecurrenceRuleVBox extends VBox
                 refreshExceptionDates();
             } else
             {
-                rrule.setCount(0);
+                rrule.setCount(null);
+                System.out.println("newcount:" + rrule.getCount());
                 endAfterEventsSpinner.setValueFactory(null);
                 endAfterEventsSpinner.setDisable(true);
                 eventLabel.setDisable(true);

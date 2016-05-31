@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
@@ -337,7 +338,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         {
             errors.add("REPEAT is present but DURATION is not present.  DURATION and REPEAT are both OPTIONAL, and MUST NOT occur more than once each, but if one occurs, so MUST the other.");
         }
-        return errors;
+        return Collections.unmodifiableList(errors);
     }
     
     @Override

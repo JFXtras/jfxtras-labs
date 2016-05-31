@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
@@ -407,7 +408,14 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
         {
             errors.add("TZID is REQUIRED and MUST NOT occur more than once");
         }
-        return errors;
+        if (getStandardOrDaylight() != null && (getStandardOrDaylight().size() > 0))
+        {
+            getStandardOrDaylight().forEach(c -> errors.addAll(c.errors()));
+        } else
+        {
+            errors.add("No STANDARD or DAYLIGHT subcomponents exist.  At least one STANDARD or DAYLIGHT subcomponent MUST occur");
+        }
+        return Collections.unmodifiableList(errors);
     }
 
     /** include Standard and Daylight sub-components in content lines */
