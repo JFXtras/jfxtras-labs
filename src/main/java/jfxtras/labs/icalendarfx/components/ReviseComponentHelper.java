@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -134,7 +133,8 @@ public final class ReviseComponentHelper
                     break;
                 case CANCEL:
 //                    vComponentEdited.copyComponentFrom(vComponentOriginal);  // return to original
-                    return Arrays.asList(vComponentOriginal); // return original
+//                    return Arrays.asList(vComponentOriginal); // return original
+                    return null;
                 case THIS_AND_FUTURE:
                     editThisAndFuture(
                             vComponentEdited,
@@ -411,26 +411,27 @@ public final class ReviseComponentHelper
        {
            vComponentOriginal.getRecurrenceRule().getValue().setCount(null);
        }
-       final Temporal untilNew;
-       if (vComponentEdited.isWholeDay())
-       {
-           untilNew = vComponentEdited.previousStreamValue(startRecurrence);
-       } else
-       {
-           Temporal previousRecurrence = vComponentEdited.previousStreamValue(startRecurrence);
-           if (startRecurrence instanceof LocalDateTime)
-           {
-               System.out.println("temps:" + previousRecurrence + " " + startRecurrence + " " + startOriginalRecurrence);
-               System.out.println(vComponentEdited.toContent());
-               untilNew = LocalDateTime.from(previousRecurrence).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
-           } else if (startRecurrence instanceof ZonedDateTime)
-           {
-               untilNew = ((ZonedDateTime) previousRecurrence).withZoneSameInstant(ZoneId.of("Z"));
-           } else
-           {
-               throw new DateTimeException("Unsupported Temporal type:" + previousRecurrence.getClass());
-           }
-       }
+       final Temporal untilNew = LocalDateTime.from(startRecurrence).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+//       if (vComponentEdited.isWholeDay())
+//       {
+//           untilNew = vComponentEdited.previousStreamValue(startRecurrence);
+//       } else
+//       {
+//           Temporal previousRecurrence = vComponentEdited.previousStreamValue(startRecurrence);
+//           if (startRecurrence instanceof LocalDateTime)
+//           {
+//               System.out.println("temps:" + previousRecurrence + " " + startRecurrence + " " + startOriginalRecurrence);
+//               System.out.println(vComponentEdited.toContent());
+//               untilNew = LocalDateTime.from(previousRecurrence).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+//           } else if (startRecurrence instanceof ZonedDateTime)
+//           {
+//               untilNew = ((ZonedDateTime) previousRecurrence).withZoneSameInstant(ZoneId.of("Z"));
+//           } else
+//           {
+//               throw new DateTimeException("Unsupported Temporal type:" + previousRecurrence.getClass());
+//           }
+//       }
+       System.out.println("untilNew:" + untilNew);
        vComponentOriginal.getRecurrenceRule().getValue().setUntil(untilNew);       
        
        
@@ -547,15 +548,15 @@ public final class ReviseComponentHelper
            }
        }
        
-//       // Modify COUNT for the edited vEvent
-////       System.out.println(vComponentOriginal.getRecurrenceRule().getValue());
-////       System.out.println(vComponentEdited.getRecurrenceRule().getValue());
-//       if (vComponentOriginal.getRecurrenceRule().getValue().getCount() != null)
-//       {
-//           int countInOrginal = (int) vComponentOriginal.streamRecurrences().count();
-//           int countInNew = vComponentEdited.getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
-//           vComponentOriginal.getRecurrenceRule().getValue().setCount(countInNew);
-//       }
+       // Modify COUNT for the edited vEvent
+//       System.out.println(vComponentOriginal.getRecurrenceRule().getValue());
+//       System.out.println(vComponentEdited.getRecurrenceRule().getValue());
+       if (vComponentEdited.getRecurrenceRule().getValue().getCount() != null)
+       {
+           int countInOrginal = (int) vComponentOriginal.streamRecurrences().count();
+           int countInNew = vComponentEdited.getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
+           vComponentEdited.getRecurrenceRule().getValue().setCount(countInNew);
+       }
        
        if (! vComponentOriginal.isValid())
        {
@@ -760,20 +761,21 @@ public final class ReviseComponentHelper
                 choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
             }
              
-            if (! (vComponent.getRecurrenceRule() == null))
-            {
-                Temporal lastRecurrence = vComponent.lastRecurrence();
-                Temporal firstRecurrence = vComponent.streamRecurrences().findFirst().get();
+//            if (! (vComponent.getRecurrenceRule() == null))
+//            {
+            Temporal lastRecurrence = vComponent.lastRecurrence();
+            Temporal firstRecurrence = vComponent.streamRecurrences().findFirst().get();
 //                boolean isInifite = lastRecurrence == null;
-                boolean isLastRecurrence = ! lastRecurrence.equals(startInstance);
-                boolean isFirstRecurrence = startInstance.equals(firstRecurrence);
-                if (! (isLastRecurrence || isFirstRecurrence))
-                {
-                    Temporal start = (startInstance == null) ? vComponent.getDateTimeStart().getValue() : startInstance; // set initial start
-                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));
-                }
-                choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponent.getDateTimeStart().getValue(), lastRecurrence));
+            boolean isLastRecurrence = lastRecurrence.equals(startInstance);
+            boolean isFirstRecurrence = startInstance.equals(firstRecurrence);
+            System.out.println("last,first:" + isLastRecurrence + " " + isFirstRecurrence + " " + lastRecurrence);
+            if (! (isLastRecurrence || isFirstRecurrence))
+            {
+                Temporal start = (startInstance == null) ? vComponent.getDateTimeStart().getValue() : startInstance; // set initial start
+                choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));
             }
+            choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponent.getDateTimeStart().getValue(), lastRecurrence));
+//            }
             return choices;
          }        
      }

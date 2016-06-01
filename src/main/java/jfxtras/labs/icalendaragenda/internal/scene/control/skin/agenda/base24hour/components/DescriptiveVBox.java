@@ -99,11 +99,13 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTextField when startDateTimeTextField changes */
     void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
+        System.out.println("new value:" + newValue);
         startRecurrenceProperty.set(newValue);
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
         startDateTextField.setLocalDate(newDate);
         startDateTextField.localDateProperty().addListener(startDateTextListener);
+//        throw new RuntimeException("hre:");
     }
     
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
@@ -119,7 +121,8 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     T vComponentEdited;
 //    List<T> vComponents;
     Temporal startOriginalRecurrence;
-    ObjectProperty<Temporal> startRecurrenceProperty = new SimpleObjectProperty<>(); // bind this to related value in RecurrenceRuleVBox
+    /** Contains the start recurrence Temporal LocalDate or LocalDateTime */
+    ObjectProperty<Temporal> startRecurrenceProperty = new SimpleObjectProperty<>();
 
     public void setupData(
             Appointment appointment,
@@ -128,8 +131,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             List<AppointmentGroup> appointmentGroups)
     {
         startOriginalRecurrence = appointment.getStartTemporal();
-//        this.appointment = appointment;
-//        this.vComponents = vComponents;
         vComponentEdited = vComponent;
         
         // Disable repeat rules for events with recurrence-id
@@ -139,47 +140,12 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             repeatableTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
         }
         
-        // Copy original VEvent
-////        vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent);
-//        vEventOriginal = new VEvent(vComponent);
-        
         // String bindings
         if (vComponentEdited.getSummary() == null)
         {
             vComponentEdited.setSummary(Summary.parse(""));
         }
         summaryTextField.textProperty().bindBidirectional(vComponentEdited.getSummary().valueProperty());
-        
-//        descriptionTextArea.textProperty().bindBidirectional(vComponent.getDescription().valueProperty());
-//        if (vComponent.getLocation() == null)
-//        {
-//            vComponent.withLocation("");
-//        }
-//        locationTextField.textProperty().bindBidirectional(vComponent.getLocation().valueProperty());
-        
-//        startDateTimeTextListener = (observable, oldSelection, newSelection) ->
-//        {
-//            if (wholeDayCheckBox.isSelected())
-//            {
-//                startRecurrence = LocalDate.from(startDateTimeTextField.getLocalDateTime());
-//            } else
-//            {
-//                startRecurrence = vComponent.getDateTimeStart().getValue().with(startDateTimeTextField.getLocalDateTime());
-//            }
-//            System.out.println("startRecurrence:" + startRecurrence);
-//        };
-
-        // TIME ZONE
-//        updateZone(); // initialize
-//        vComponent.dateTimeStartProperty().addListener((obs) -> updateZone()); // setup listener to handle changes
-        
-//        // END DATE/TIME
-//        Locale locale = Locale.getDefault();
-//        endTextField.setLocale(locale);
-//        endTextField.localDateTimeProperty().addListener(endTextlistener);
-////        endTextField.setLocalDateTime(DateTimeType.localDateTimeFromTemporal(endRecurrenceOriginal));
-//        endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(endRecurrenceOriginal));
-//        endTextField.setParseErrorCallback(errorCallback);
         
         // START DATE/TIME
         startDateTimeTextField.setLocale(Locale.getDefault());
@@ -192,11 +158,10 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         {
             start = LocalDate.from(startOriginalRecurrence).atTime(defaultStartTime);
         }
+        System.out.println("start:" + start + " " + startOriginalRecurrence + " " + appointment.getStartTemporal());
         startDateTimeTextField.setLocalDateTime(start);
         startDateTimeTextField.setParseErrorCallback(errorCallback);
         startDateTextField.setLocale(Locale.getDefault());
-//        ChangeListener<? super LocalDate> startDateTextListener;
-//        startDateTextField.localDateProperty().addListener(startDateTextListener);
         startDateTextField.setLocalDate(LocalDate.from(startOriginalRecurrence));
         startDateTextField.setParseErrorCallback(errorCallback);
         
@@ -206,7 +171,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) -> handleWholeDayChange(vComponent, newSelection));
         
         // APPOINTMENT GROUP
-//        System.out.println("cats1:" + vComponent.getCategories().size());
         appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
             (observable, oldSelection, newSelection) ->
             {
@@ -215,7 +179,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
                 groupTextField.setText(newText);
 //                groupNameEdited.set(true); // TODO - HANDLE APPOINTMENT GROUP I/O
             });
-//        System.out.println("cats2:" + vComponent.getCategories().size());
+
         // store group name changes by each character typed
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
@@ -223,16 +187,18 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
             vComponentEdited.withCategories(newSelection);
-//            System.out.println("cats4:" + vComponent.getCategories().size() + " " + newSelection);
-            // TODO - ensure groupTextField has unique description text
-//            groupNameEdited.set(true);
         });
         appointmentGroupGridPane.setupData(vComponentEdited, appointmentGroups);
         
-//        System.out.println("add DTSTART listener:" + System.identityHashCode(vComponentEdited));
+        /** Synch recurrence dates when DTSTART is modified (can occur when {@link synchStartDatePickerAndComponent#startDatePicker} changes */
         vComponentEdited.getDateTimeStart().valueProperty().addListener((obs, oldValue, newValue) -> 
         {
-            validateRecurrenceDates(oldValue, newValue);
+//            synchRecurrenceDates(oldValue, newValue);
+            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
+            LocalDateTime startNew = startDateTimeTextField.getLocalDateTime().plus(duration);
+            startDateTimeTextField.setLocalDateTime(startNew);
+            startOriginalRecurrence = startOriginalRecurrence.plus(duration);
+            System.out.println("new start:" + startDateTimeTextField.getLocalDateTime());
             System.out.println("DTSTART changed:" + vComponentEdited.getDateTimeStart().getValue() +
                     startDateTimeTextField.getLocalDateTime() + " " + startDateTextField.getLocalDate()
                     );
@@ -292,7 +258,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and
      * endRecurrence to closest valid values
      */
-    void validateRecurrenceDates(Temporal oldValue, Temporal newValue)
+    void synchRecurrenceDates(Temporal oldValue, Temporal newValue)
     {
         if (! vComponentEdited.isRecurrence(startRecurrenceProperty.get()))
         {

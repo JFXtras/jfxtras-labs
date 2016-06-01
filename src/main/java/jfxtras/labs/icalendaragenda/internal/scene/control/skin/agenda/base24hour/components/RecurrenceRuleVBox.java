@@ -90,6 +90,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     @FXML private Label frequencyLabel;
     @FXML private Label eventLabel;
     @FXML private Label weeklyLabel;
+    // TODO - CHANGE ORDER OF DAYS OF WEEK FOR OTHER LOCALE
     @FXML private HBox weeklyHBox;
     @FXML private CheckBox sundayCheckBox;
     @FXML private CheckBox mondayCheckBox;
@@ -98,8 +99,8 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     @FXML private CheckBox thursdayCheckBox;
     @FXML private CheckBox fridayCheckBox;
     @FXML private CheckBox saturdayCheckBox;
-    private final ObservableList<DayOfWeek> dayOfWeekList = FXCollections.observableArrayList();
     private final Map<BooleanProperty, DayOfWeek> checkBoxDayOfWeekMap = new HashMap<>();
+    private final ObservableList<DayOfWeek> dayOfWeekList = FXCollections.observableArrayList();
     private Map<DayOfWeek, BooleanProperty> dayOfWeekCheckBoxMap;
     @FXML private VBox monthlyVBox;
     @FXML private Label monthlyLabel;
@@ -121,11 +122,19 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     @FXML private Button removeExceptionButton;
     private Temporal exceptionFirstTemporal;
     private List<Temporal> exceptionMasterList = new ArrayList<>();
-    
+
+//    private Map<FrequencyType, ChangeListener<? super Temporal>> dtStartRecurrenceFrequencyListenerMap = new HashMap<>();
+
     public RecurrenceRuleVBox( )
     {
         super();
     }
+    
+//    /** Called to remove listeners */
+//    public void dispose()
+//    {
+//        removeListeners();
+//    }
     
     private DateTimeFormatter getFormatter(Temporal t)
     {
@@ -198,20 +207,37 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             refreshExceptionDates();
         }
     };
-
+    
+    /* When recurrence start date changes switch day of week to new value */
+    private final ChangeListener<? super Temporal> weeklyRecurrenceListener = (obs, oldValue, newValue) ->
+    {
+        DayOfWeek oldDayOfWeek = DayOfWeek.from(oldValue);
+        DayOfWeek newDayOfWeek = DayOfWeek.from(newValue);
+        if (! dayOfWeekCheckBoxMap.get(newDayOfWeek).get())
+        {
+            dayOfWeekCheckBoxMap.get(oldDayOfWeek).set(false);
+            dayOfWeekCheckBoxMap.get(newDayOfWeek).set(true);
+        }
+    };
+    
     // FREQUENCY CHANGE LISTENER
     private final ChangeListener<? super FrequencyType> frequencyListener = (obs, oldSel, newSel) -> 
     {
         // Change Frequency if different.  Copy Interval, null ExDate
         if (rrule.getFrequency().getValue() != newSel)
         {
-//            Frequency newFrequency = newSel.newRecurrence();
-//            Integer interval = rrule.getInterval().getValue();
-//            rrule.setFrequency(newSel);
             exceptionsListView.getItems().clear();
             vComponent.setExceptionDates(null);
         }
-
+        
+        if (oldSel == FrequencyType.WEEKLY)
+        {
+            dateTimeStartRecurrenceNew.removeListener(weeklyRecurrenceListener);
+        }
+        
+        ByRule<?> r = rrule.lookupByRule(ByDay.class);
+        rrule.byRules().remove(r);
+        
         // Setup monthlyVBox and weeklyHBox setting visibility
         switch (newSel)
         {
@@ -219,14 +245,16 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         case YEARLY:
             break;
         case MONTHLY:
-            ByRule<?> r = rrule.lookupByRule(ByDay.class);
-            rrule.byRules().remove(r);
+//            ByRule<?> r = rrule.lookupByRule(ByDay.class);
+//            rrule.byRules().remove(r);
             dayOfMonthRadioButton.selectedProperty().set(true);
             dayOfWeekRadioButton.selectedProperty().set(false);
             break;
         case WEEKLY:
-            ByRule<?> r2 = rrule.lookupByRule(ByDay.class);
-            rrule.byRules().remove(r2);
+            System.out.println("ADD weekly recurrence listener:");
+            dateTimeStartRecurrenceNew.addListener(weeklyRecurrenceListener);
+//            ByRule<?> r2 = rrule.lookupByRule(ByDay.class);
+//            rrule.byRules().remove(r2);
             if (dayOfWeekList.isEmpty())
             {
                 DayOfWeek dayOfWeek = LocalDate.from(dateTimeStartRecurrenceNew.get()).getDayOfWeek();
@@ -467,7 +495,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         checkBoxDayOfWeekMap.put(saturdayCheckBox.selectedProperty(), DayOfWeek.SATURDAY);
         dayOfWeekCheckBoxMap = checkBoxDayOfWeekMap.entrySet().stream().collect(Collectors.toMap(e -> e.getValue(), e -> e.getKey()));
         checkBoxDayOfWeekMap.entrySet().stream().forEach(entry -> entry.getKey().addListener(dayOfWeekCheckBoxListener));
-
+        
         // Setup frequencyComboBox items
         
         FrequencyType[] supportedFrequencyProperties = new FrequencyType[] { FrequencyType.DAILY,
@@ -660,6 +688,10 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             throw new RuntimeException("Unsupported VComponent");
         }
         
+//        if (rrule.getInterval() == null)
+//        {
+//            rrule.setInterval(new Interval());
+//        }
         
         /* EXCEPTIONS
          * Note: exceptionComboBox string converter must be setup after the controller's initialization 
@@ -826,6 +858,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             break;
         case WEEKLY:
             setDayOfWeek(rrule);
+            dateTimeStartRecurrenceNew.addListener(weeklyRecurrenceListener);
             break;
         default:
             break;
@@ -867,7 +900,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         // Set day of week properties
         if (rRule.getFrequency().getValue() == FrequencyType.WEEKLY)
         {
-            ByRule rule = rRule.lookupByRule(ByDay.class);
+            ByRule<?> rule = rRule.lookupByRule(ByDay.class);
             ((ByDay) rule).dayOfWeekWithoutOrdinalList()
                     .stream()
                     .forEach(d -> 
@@ -1051,7 +1084,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         }
 
         final String frequencyText;
-        if (rRule.getInterval().getValue() == 1)
+        if ((rRule.getInterval() == null) || (rRule.getInterval().getValue() == 1))
         {
             frequencyText = Settings.REPEAT_FREQUENCIES.get(rRule.getFrequency().getValue());
         } else if (rRule.getInterval().getValue() > 1)

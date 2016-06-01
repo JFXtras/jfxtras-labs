@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javafx.fxml.FXML;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
@@ -37,7 +39,15 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatableBase<?>>
                 editDescriptiveVBox.endRecurrence,
                 EditChoiceDialog.EDIT_DIALOG_CALLBACK
                 );
-        vComponents.remove(vComponent);
-        vComponents.addAll(newVComponents);
+        if (newVComponents != null)
+        {
+            // vComponentsTemp ensures listeners attached to vComponents to make recurrences are called only once
+            List<T> vComponentsTemp = new ArrayList<>(vComponents);
+            vComponentsTemp.remove(vComponent);
+            vComponentsTemp.addAll(newVComponents);
+            vComponents.clear();
+            vComponents.addAll(vComponentsTemp);
+            isFinished.set(true);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendaragenda.trial;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -8,7 +9,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
-import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -22,6 +22,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -46,16 +47,20 @@ public class EditComponentPopupTrial extends Application
 
         VEvent vevent = new VEvent()
                 .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
-                .withDateTimeStart(LocalDateTime.of(2016, 5, 15, 10, 0))
-                .withDateTimeEnd(LocalDateTime.of(2016, 5, 15, 11, 0))
+                .withDateTimeStart(LocalDateTime.of(2016, 5, 16, 10, 0))
+                .withDateTimeEnd(LocalDateTime.of(2016, 5, 16, 11, 0))
                 .withDescription("Daily1 Description")
                 .withSummary("Daily1 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
-                        .withFrequency(FrequencyType.DAILY)
-                        .withInterval(3)
+                        .withFrequency(FrequencyType.WEEKLY)
+                        .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))
                         .withCount(10));
+//                .withRecurrenceRule(new RecurrenceRule2()
+//                        .withFrequency(FrequencyType.DAILY)
+//                        .withInterval(3)
+//                        .withCount(10));
 //        VJournal vevent = new VJournal()
 //                .withDateTimeStart("20160518T110000")
 //                .withSummary("test journal")
@@ -76,7 +81,8 @@ public class EditComponentPopupTrial extends Application
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
-        Appointment appointment = newAppointments.get(0);
+        Appointment appointment = newAppointments.get(2);
+        System.out.println("appoingment:" + appointment.getStartLocalDateTime());
 
         EditVEventTabPane popup = new EditVEventTabPane();
 //        EditVJournalTabPane popup = new EditVJournalTabPane();
@@ -98,14 +104,14 @@ public class EditComponentPopupTrial extends Application
         
         popup.isFinished().addListener((obs, oldValue, newValue) -> 
         {
-            System.out.println("hide:"+ vEvents.size());
+//            System.out.println("hide:"+ vEvents.size());
             vEvents.stream().forEach(System.out::println);
             primaryStage.hide();
         });
-        vEvents.addListener((InvalidationListener) (obs) ->
-        {
-            System.out.println("VEVENTS:" + vEvents.size());
-            vEvents.stream().forEach(System.out::println);
-        });
+//        vEvents.addListener((InvalidationListener) (obs) ->
+//        {
+//            System.out.println("VEVENTS:" + vEvents.size());
+//            vEvents.stream().forEach(System.out::println);
+//        });
     }
 }

@@ -29,7 +29,8 @@ import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>, U extends DescriptiveVBox<T>> extends TabPane
 {
     U editDescriptiveVBox;
-
+    RecurrenceRuleVBox<T> recurrenceRuleVBox;
+    
 //    void setDescriptiveVBox(DescriptiveVBox<T> descriptiveVBox) { this.editDescriptiveVBox = descriptiveVBox; }
 //    DescriptiveVBox<T> getDescriptiveVBox() { return editDescriptiveVBox; }
 
@@ -39,7 +40,6 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     @FXML private TabPane editDisplayableTabPane;
     @FXML private Tab descriptiveTab;
     @FXML private Tab recurrenceRuleTab;
-    RecurrenceRuleVBox<T> recurrenceRuleVBox;
 
     // Becomes true when control should be closed
     ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
@@ -62,13 +62,13 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
         {
             vComponent.getRecurrenceRule().getValue().setInterval((Interval) null); 
         }
-        isFinished.set(true);
         // additional functionality in subclasses
     }
     
     @FXML private void handleCancelButton()
     {
         System.out.println("handlecancel:");
+        vComponent.copyComponentFrom(vComponentOriginalCopy);
         isFinished.set(true);
 ////        vEventOriginal.copyTo(vEvent);
 //        vComponent.copyComponentFrom(vEventOriginal);
