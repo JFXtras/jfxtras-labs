@@ -20,21 +20,21 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
      * Can't be used if DURATION is used.  Must be one or the other.
      * Must be same Temporal type as dateTimeStart (DTSTART)
      */
-    ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty();
-    DateTimeEnd<? extends Temporal> getDateTimeEnd();
+    ObjectProperty<DateTimeEnd> dateTimeEndProperty();
+    DateTimeEnd getDateTimeEnd();
     default void setDateTimeEnd(String dtEnd) { setDateTimeEnd(DateTimeEnd.parse(dtEnd)); }
-    default void setDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd) { dateTimeEndProperty().set(dtEnd); }
+    default void setDateTimeEnd(DateTimeEnd dtEnd) { dateTimeEndProperty().set(dtEnd); }
     default void setDateTimeEnd(Temporal temporal)
     {
         if (temporal instanceof LocalDate)
         {
-            setDateTimeEnd(new DateTimeEnd<LocalDate>((LocalDate) temporal));            
+            setDateTimeEnd(new DateTimeEnd(temporal));            
         } else if (temporal instanceof LocalDateTime)
         {
-            setDateTimeEnd(new DateTimeEnd<LocalDateTime>((LocalDateTime) temporal));            
+            setDateTimeEnd(new DateTimeEnd(temporal));            
         } else if (temporal instanceof ZonedDateTime)
         {
-            setDateTimeEnd(new DateTimeEnd<ZonedDateTime>((ZonedDateTime) temporal));            
+            setDateTimeEnd(new DateTimeEnd(temporal));            
         } else
         {
             throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
@@ -63,7 +63,7 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
-    default T withDateTimeEnd(DateTimeEnd<? extends Temporal> dtEnd)
+    default T withDateTimeEnd(DateTimeEnd dtEnd)
     {
         if (getDateTimeEnd() == null)
         {

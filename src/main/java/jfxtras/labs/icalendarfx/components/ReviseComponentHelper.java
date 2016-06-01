@@ -86,7 +86,7 @@ public final class ReviseComponentHelper
              * question is answered. */
 //            changedProperties.addAll(changedStartAndEndDateTime(startOriginalRecurrence, startRecurrence, endRecurrence));
             // determine if any changed properties warrant dialog
-            changedProperties.stream().forEach(a -> System.out.println("changed property:" + a));
+//            changedProperties.stream().forEach(a -> System.out.println("changed property:" + a));
             boolean provideDialog = changedProperties.stream()
                 .map(p -> DIALOG_REQUIRED_PROPERTIES.contains(p))
                 .anyMatch(b -> b == true);
@@ -102,6 +102,7 @@ public final class ReviseComponentHelper
                             startOriginalRecurrence,
                             changedProperties);
                     changeResponse = dialogCallback.call(choices);
+                    System.out.println("changeResponse:" + changeResponse);
                 } else
                 {
                     changeResponse = ChangeDialogOption.ALL;
@@ -132,8 +133,8 @@ public final class ReviseComponentHelper
                     }
                     break;
                 case CANCEL:
-//                    vComponentEditedCopy.copyComponentFrom(vComponentOriginal);  // return to original
-                    return null;
+//                    vComponentEdited.copyComponentFrom(vComponentOriginal);  // return to original
+                    return Arrays.asList(vComponentOriginal); // return original
                 case THIS_AND_FUTURE:
                     editThisAndFuture(
                             vComponentEdited,
@@ -517,7 +518,7 @@ public final class ReviseComponentHelper
        {
            final Iterator<Temporal> recurrenceIDIterator = vComponentEdited.childComponentsWithRecurrenceIDs()
                    .stream()
-                   .map(e -> (Temporal) e.getRecurrenceId().getValue())
+                   .map(e -> e.getRecurrenceId().getValue())
                    .iterator();
            while (recurrenceIDIterator.hasNext())
            {
@@ -533,7 +534,7 @@ public final class ReviseComponentHelper
        {
            final Iterator<Temporal> recurrenceIDIterator = vComponentOriginal.childComponentsWithRecurrenceIDs()
                    .stream()
-                   .map(e -> (Temporal) e.getRecurrenceId().getValue())
+                   .map(e -> e.getRecurrenceId().getValue())
                    .iterator();
            while (recurrenceIDIterator.hasNext())
            {
@@ -746,30 +747,34 @@ public final class ReviseComponentHelper
        , THIS_AND_FUTURE      // selected instance and all in the future
        , CANCEL;              // do nothing
          
-         /** Produce the map of change dialog options and the date range the option affects */
-         public static <T extends VComponentDisplayableBase<?>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(
+        /** Produce the map of change dialog options and the date range the option affects */
+        public static <T extends VComponentDisplayableBase<?>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(
                  T vComponent,
                  Temporal startInstance,
                  List<PropertyType> changedProperties)
-         {
-             Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
-             Temporal lastRecurrence = vComponent.lastRecurrence();
+        {
+            Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
 
-             if (! changedProperties.contains(PropertyType.RECURRENCE_RULE))
-             {
-                 choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
-             }
+            if (! changedProperties.contains(PropertyType.RECURRENCE_RULE))
+            {
+                choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
+            }
              
-             if (! (vComponent.getRecurrenceRule() == null))
-             {
-                 if ((lastRecurrence == null) || (! lastRecurrence.equals(startInstance)))
-                 {
-                     Temporal start = (startInstance == null) ? vComponent.getDateTimeStart().getValue() : startInstance; // set initial start
-                     choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));
-                 }
-                 choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponent.getDateTimeStart().getValue(), lastRecurrence));
-             }
-             return choices;
+            if (! (vComponent.getRecurrenceRule() == null))
+            {
+                Temporal lastRecurrence = vComponent.lastRecurrence();
+                Temporal firstRecurrence = vComponent.streamRecurrences().findFirst().get();
+//                boolean isInifite = lastRecurrence == null;
+                boolean isLastRecurrence = ! lastRecurrence.equals(startInstance);
+                boolean isFirstRecurrence = startInstance.equals(firstRecurrence);
+                if (! (isLastRecurrence || isFirstRecurrence))
+                {
+                    Temporal start = (startInstance == null) ? vComponent.getDateTimeStart().getValue() : startInstance; // set initial start
+                    choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));
+                }
+                choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponent.getDateTimeStart().getValue(), lastRecurrence));
+            }
+            return choices;
          }        
      }
      

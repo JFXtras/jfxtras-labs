@@ -20,7 +20,7 @@ public class DateTimeStartTest
     @Test
     public void canParseDateTimeStart1()
     {
-        DateTimeStart<LocalDateTime> dateTimeStart =  DateTimeStart.parse(LocalDateTime.class, "20160322T174422");
+        DateTimeStart dateTimeStart = DateTimeStart.parse(LocalDateTime.class, "20160322T174422");
         String expectedContentLine = "DTSTART:20160322T174422";
         String madeContentLine = dateTimeStart.toContent();
         assertEquals(expectedContentLine, madeContentLine);
@@ -30,12 +30,12 @@ public class DateTimeStartTest
     @Test
     public void canParseDateTimeStart2()
     {
-        DateTimeStart<LocalDate> dateTimeStart = DateTimeStart.parse(LocalDate.class, "DTSTART;VALUE=DATE:20160322");
+        DateTimeStart dateTimeStart = DateTimeStart.parse(LocalDate.class, "DTSTART;VALUE=DATE:20160322");
         String expectedContentLine = "DTSTART;VALUE=DATE:20160322";
         String madeContentLine = dateTimeStart.toContent();
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(LocalDate.of(2016, 3, 22), dateTimeStart.getValue());
-        DateTimeStart<LocalDate> dateTimeStart2 = new DateTimeStart<>(LocalDate.of(2016, 3, 22));
+        DateTimeStart dateTimeStart2 = new DateTimeStart(LocalDate.of(2016, 3, 22));
         assertEquals(dateTimeStart, dateTimeStart2);
         assertEquals(dateTimeStart.toContent(), dateTimeStart2.toContent());
     }
@@ -43,7 +43,7 @@ public class DateTimeStartTest
     @Test
     public void canParseDateTimeStart3()
     {
-        DateTimeStart<ZonedDateTime> dateTimeStart = DateTimeStart.parse(ZonedDateTime.class, "DTSTART;TZID=America/Los_Angeles:20160306T043000");
+        DateTimeStart dateTimeStart = DateTimeStart.parse(ZonedDateTime.class, "DTSTART;TZID=America/Los_Angeles:20160306T043000");
         String expectedContentLine = "DTSTART;TZID=America/Los_Angeles:20160306T043000";
         String madeContentLine = dateTimeStart.toContent();
         assertEquals(expectedContentLine, madeContentLine);
@@ -53,11 +53,11 @@ public class DateTimeStartTest
     @Test
     public void canParseDateTimeStart4()
     {
-        DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
+        DateTimeStart dateTimeStart = new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
                 .withTimeZoneIdentifier("America/Los_Angeles")
                 .withValueParameter(ValueType.DATE_TIME);;
         String expectedContentLine = "DTSTART;TZID=America/Los_Angeles;VALUE=DATE-TIME:20160306T043000";
-        DateTimeStart<ZonedDateTime> expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
+        DateTimeStart expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
         assertEquals(expectedDateTimeStart, dateTimeStart);
         String madeContentLine = dateTimeStart.toContent();
         assertEquals(expectedContentLine, madeContentLine);
@@ -66,27 +66,27 @@ public class DateTimeStartTest
     @Test
     public void canBuildDateTimeStartZoned()
     {
-        DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
+        DateTimeStart dateTimeStart = new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
                 .withTimeZoneIdentifier("America/Los_Angeles")
                 .withValueParameter(ValueType.DATE_TIME);
-        DateTimeStart<ZonedDateTime> expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, "DTSTART;TZID=America/Los_Angeles;VALUE=DATE-TIME:20160306T043000");
+        DateTimeStart expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, "DTSTART;TZID=America/Los_Angeles;VALUE=DATE-TIME:20160306T043000");
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
     
     @Test
     public void canBuildDateTimeStartZoned2()
     {
-        DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
-        DateTimeStart<ZonedDateTime> expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, "DTSTART;TZID=America/Los_Angeles:20160306T043000");
+        DateTimeStart dateTimeStart = new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
+        DateTimeStart expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, "DTSTART;TZID=America/Los_Angeles:20160306T043000");
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
 
     @Test
     public void canBuildDateTimeStartZonedUTC()
     {
-        DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z")));
+        DateTimeStart dateTimeStart = new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z")));
         String expectedContentLine = "DTSTART:20160306T043000Z";
-        DateTimeStart<ZonedDateTime> expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
+        DateTimeStart expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
         assertEquals(expectedContentLine, dateTimeStart.toContent());
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
@@ -94,9 +94,9 @@ public class DateTimeStartTest
     @Test
     public void canBuildDateTimeStartZonedUTC2()
     {
-        DateTimeStart<ZonedDateTime> dateTimeStart = new DateTimeStart<ZonedDateTime>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 6, 0), ZoneId.of("Etc/GMT")));
+        DateTimeStart dateTimeStart = new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 6, 0), ZoneId.of("Etc/GMT")));
         String expectedContentLine = "DTSTART;TZID=Etc/GMT:20160306T060000Z";
-        DateTimeStart<ZonedDateTime> expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
+        DateTimeStart expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
         assertEquals(expectedContentLine, dateTimeStart.toContent());
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
@@ -104,9 +104,9 @@ public class DateTimeStartTest
     @Test
     public void canBuildDateTimeStartLocal()
     {
-        DateTimeStart<LocalDateTime> dateTimeStart = new DateTimeStart<LocalDateTime> (LocalDateTime.of(2016, 3, 6, 4, 30));
+        DateTimeStart dateTimeStart = new DateTimeStart(LocalDateTime.of(2016, 3, 6, 4, 30));
         String expectedContentLine = "DTSTART:20160306T043000";
-        DateTimeStart<LocalDateTime>  expectedDateTimeStart = DateTimeStart.parse(expectedContentLine);
+        DateTimeStart expectedDateTimeStart = DateTimeStart.parse(expectedContentLine);
         assertEquals(expectedContentLine, dateTimeStart.toContent());
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }
@@ -114,8 +114,8 @@ public class DateTimeStartTest
     @Test
     public void canCopyDateTimeStart()
     {
-        DateTimeStart<LocalDateTime> dateTimeStart1 = new DateTimeStart<LocalDateTime>(LocalDateTime.of(2016, 3, 6, 4, 30));
-        DateTimeStart<LocalDateTime> dateTimeStart2 = new DateTimeStart<>(dateTimeStart1);
+        DateTimeStart dateTimeStart1 = new DateTimeStart(LocalDateTime.of(2016, 3, 6, 4, 30));
+        DateTimeStart dateTimeStart2 = new DateTimeStart(dateTimeStart1);
         assertEquals(dateTimeStart1, dateTimeStart2);
         assertTrue(dateTimeStart1 != dateTimeStart2);
 //        assertTrue(dateTimeStart1.getValue() != dateTimeStart2.getValue());
@@ -130,6 +130,6 @@ public class DateTimeStartTest
     @Test (expected=DateTimeException.class)
     public void canCatchWrongType()
     {
-        new DateTimeStart<>(LocalTime.of(5, 10));        
+        new DateTimeStart(LocalTime.of(5, 10));        
     }
 }

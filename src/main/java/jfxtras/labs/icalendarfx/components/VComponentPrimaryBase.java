@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.temporal.Temporal;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -47,7 +45,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
      * Can contain either a LocalDate (DATE) or LocalDateTime (DATE-TIME)
      */
     @Override
-    public ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStartProperty()
+    public ObjectProperty<DateTimeStart> dateTimeStartProperty()
     {
         if (dateTimeStart == null)
         {
@@ -57,8 +55,8 @@ public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> impleme
         return dateTimeStart;
     }
     @Override
-    public DateTimeStart<? extends Temporal> getDateTimeStart() { return (dateTimeStart == null) ? null : dateTimeStartProperty().get(); }
-    private ObjectProperty<DateTimeStart<? extends Temporal>> dateTimeStart;
+    public DateTimeStart getDateTimeStart() { return (dateTimeStart == null) ? null : dateTimeStartProperty().get(); }
+    private ObjectProperty<DateTimeStart> dateTimeStart;
 
     /*
      * CONSTRUCTORS

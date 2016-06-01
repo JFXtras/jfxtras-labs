@@ -54,6 +54,7 @@ public class EditComponentPopupTrial extends Application
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY)
+                        .withInterval(3)
                         .withCount(10));
 //        VJournal vevent = new VJournal()
 //                .withDateTimeStart("20160518T110000")
@@ -97,7 +98,8 @@ public class EditComponentPopupTrial extends Application
         
         popup.isFinished().addListener((obs, oldValue, newValue) -> 
         {
-            System.out.println("hide:");
+            System.out.println("hide:"+ vEvents.size());
+            vEvents.stream().forEach(System.out::println);
             primaryStage.hide();
         });
         vEvents.addListener((InvalidationListener) (obs) ->

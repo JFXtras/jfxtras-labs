@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -114,18 +113,18 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
         }
         recurrenceRuleVBox.setupData(vComponent, editDescriptiveVBox.startRecurrenceProperty);
         
-        // When Appointment tab is selected make sure start and end times are valid, adjust if not
-        editDisplayableTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-        {
-            if (newValue == descriptiveTab)
-            {
-                Runnable alertRunnable = editDescriptiveVBox.validateStartRecurrence();
-                if (alertRunnable != null)
-                {
-                    Platform.runLater(alertRunnable); // display alert after tab change refresh
-                }
-            }
-        });
+//        // When Appointment tab is selected make sure start and end times are valid, adjust if not
+//        editDisplayableTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+//        {
+//            if (newValue == descriptiveTab)
+//            {
+//                Runnable alertRunnable = editDescriptiveVBox.validateStartRecurrence();
+//                if (alertRunnable != null)
+//                {
+//                    Platform.runLater(alertRunnable); // display alert after tab change refresh
+//                }
+//            }
+//        });
     }
     
     protected static void loadFxml(URL fxmlFile, Object rootController)

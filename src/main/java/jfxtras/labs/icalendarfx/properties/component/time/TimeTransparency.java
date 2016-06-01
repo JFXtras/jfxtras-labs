@@ -25,7 +25,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.TimeTransparency.TimeT
  * The property can be specified in following components:
  * @see VEvent
  */
-public class TimeTransparency extends PropertyBase<TimeTransparencyType,TimeTransparency>
+public class TimeTransparency extends PropertyBase<TimeTransparencyType, TimeTransparency>
 {
     private final static StringConverter<TimeTransparencyType> CONVERTER = new StringConverter<TimeTransparencyType>()
     {

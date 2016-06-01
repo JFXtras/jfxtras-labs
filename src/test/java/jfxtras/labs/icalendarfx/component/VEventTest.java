@@ -78,8 +78,8 @@ public class VEventTest extends ICalendarTestAbstract2
         VEvent builtComponent = new VEvent()
              .withDateTimeEnd(LocalDate.of(1997, 3, 1));
         assertEquals(LocalDate.of(1997, 3, 1), builtComponent.getDateTimeEnd().getValue());
-        builtComponent.setDateTimeEnd((DateTimeEnd<?>) null);
-        builtComponent.withDateTimeEnd((DateTimeEnd<? extends Temporal>) null).withDuration("PT15M");
+        builtComponent.setDateTimeEnd((DateTimeEnd) null);
+        builtComponent.withDateTimeEnd((DateTimeEnd) null).withDuration("PT15M");
         assertEquals(Duration.ofMinutes(15), builtComponent.getDuration().getValue());
         assertNull(builtComponent.getDateTimeEnd());
     }

@@ -34,7 +34,7 @@ public class VFreeBusyTest
         
         builtComponent.setDateTimeStamp(DateTimeStamp.parse("20160210T100000Z"));
         builtComponent.setUniqueIdentifier("66761d56-d248-4c12-a807-350e95abea66");
-        builtComponent.setDateTimeStart(new DateTimeStart<>(LocalDate.of(2016, 4, 25)));
+        builtComponent.setDateTimeStart(new DateTimeStart(LocalDate.of(2016, 4, 25)));
         assertTrue(builtComponent.isValid());
     }
 }

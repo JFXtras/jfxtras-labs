@@ -80,7 +80,7 @@ public class DateTimeEndTest
     public void canCatchWrongDateType3()
     {
         VEvent builtComponent = new VEvent();
-        builtComponent.setDateTimeEnd(new DateTimeEnd<LocalDateTime>(LocalDateTime.of(2016, 3, 6, 8, 0)));
-        builtComponent.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(1997, 3, 1)));
+        builtComponent.setDateTimeEnd(new DateTimeEnd(LocalDateTime.of(2016, 3, 6, 8, 0)));
+        builtComponent.setDateTimeStart(new DateTimeStart(LocalDate.of(1997, 3, 1)));
     }
 }

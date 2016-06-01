@@ -34,6 +34,7 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Status.StatusTy
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
@@ -250,7 +251,7 @@ public class DisplayableTest // extends FxExceptionPropagatorTest
                         .withFrequency(FrequencyType.DAILY)
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2016, 5, 12, 19, 30, 0), ZoneId.of("Z"))));
         e.setExceptionDates(null);
-        e.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(2016, 2, 7)));
+        e.setDateTimeStart(new DateTimeStart(LocalDate.of(2016, 2, 7)));
         e.setExceptionDates(FXCollections.observableArrayList(new ExceptionDates(
                             LocalDate.of(2016, 2, 10)
                           , LocalDate.of(2016, 2, 12)
@@ -318,8 +319,8 @@ public class DisplayableTest // extends FxExceptionPropagatorTest
 //            try
 //            {
             VEvent builtComponent = new VEvent();
-            builtComponent.setDateTimeStart(new DateTimeStart<LocalDate>(LocalDate.of(1997, 3, 1)));
-            builtComponent.setRecurrenceId(new RecurrenceId<LocalDateTime>(LocalDateTime.of(2016, 3, 6, 8, 0)));
+            builtComponent.setDateTimeStart(new DateTimeStart(LocalDate.of(1997, 3, 1)));
+            builtComponent.setRecurrenceId(new RecurrenceId(LocalDateTime.of(2016, 3, 6, 8, 0)));
 //            } catch (Exception e)
 //            {
 //                System.out.println("got something" + e.getMessage());

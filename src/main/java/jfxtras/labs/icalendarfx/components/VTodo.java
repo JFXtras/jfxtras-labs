@@ -102,7 +102,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
      * Example:
      * DUE:TZID=America/Los_Angeles:19970512T090000
      */
-    public ObjectProperty<DateTimeDue<? extends Temporal>> dateTimeDueProperty()
+    public ObjectProperty<DateTimeDue> dateTimeDueProperty()
     {
         if (dateTimeDue == null)
         {
@@ -118,21 +118,21 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         }
         return dateTimeDue;
     }
-    private ObjectProperty<DateTimeDue<? extends Temporal>> dateTimeDue;
-    public DateTimeDue<? extends Temporal> getDateTimeDue() { return dateTimeDueProperty().get(); }
+    private ObjectProperty<DateTimeDue> dateTimeDue;
+    public DateTimeDue getDateTimeDue() { return dateTimeDueProperty().get(); }
     public void setDateTimeDue(String due) { setDateTimeDue(DateTimeUtilities.temporalFromString(due)); }
-    public void setDateTimeDue(DateTimeDue<? extends Temporal> due) { dateTimeDueProperty().set(due); }
+    public void setDateTimeDue(DateTimeDue due) { dateTimeDueProperty().set(due); }
     public void setDateTimeDue(Temporal due)
     {
         if (due instanceof LocalDate)
         {
-            setDateTimeDue(new DateTimeDue<LocalDate>((LocalDate) due));            
+            setDateTimeDue(new DateTimeDue(due));            
         } else if (due instanceof LocalDateTime)
         {
-            setDateTimeDue(new DateTimeDue<LocalDateTime>((LocalDateTime) due));            
+            setDateTimeDue(new DateTimeDue(due));            
         } else if (due instanceof ZonedDateTime)
         {
-            setDateTimeDue(new DateTimeDue<ZonedDateTime>((ZonedDateTime) due));            
+            setDateTimeDue(new DateTimeDue(due));            
         } else
         {
             throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
@@ -141,7 +141,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     }
     public VTodo withDateTimeDue(Temporal due) { setDateTimeDue(due); return this; }
     public VTodo withDateTimeDue(String due) { setDateTimeDue(due); return this; }
-    public VTodo withDateTimeDue(DateTimeDue<? extends Temporal> due) { setDateTimeDue(due); return this; }
+    public VTodo withDateTimeDue(DateTimeDue due) { setDateTimeDue(due); return this; }
 
     /** Ensures DateTimeDue and Duration are not both used. */
     @Override public ObjectProperty<DurationProp> durationProperty()

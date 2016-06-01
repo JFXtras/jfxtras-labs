@@ -100,7 +100,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
      * DTEND;VALUE=DATE:19980704
      */
     @Override
-    public ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty()
+    public ObjectProperty<DateTimeEnd> dateTimeEndProperty()
     {
         if (dateTimeEnd == null)
         {
@@ -110,8 +110,8 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         return dateTimeEnd;
     }
     @Override
-    public DateTimeEnd<? extends Temporal> getDateTimeEnd() { return (dateTimeEnd == null) ? null : dateTimeEndProperty().get(); }
-    private ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEnd;
+    public DateTimeEnd getDateTimeEnd() { return (dateTimeEnd == null) ? null : dateTimeEndProperty().get(); }
+    private ObjectProperty<DateTimeEnd> dateTimeEnd;
     /** Ensures DateTimeEnd has same date-time type as DateTimeStart.  Should be called by listener
      *  after dateTimeEndProperty() is initialized */
     @Override

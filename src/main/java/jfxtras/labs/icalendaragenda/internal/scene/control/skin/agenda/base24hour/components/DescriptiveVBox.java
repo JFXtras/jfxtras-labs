@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -35,6 +36,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -226,7 +228,24 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //            groupNameEdited.set(true);
         });
         appointmentGroupGridPane.setupData(vComponentEdited, appointmentGroups);
-//        System.out.println("cats3:" + vComponent.getCategories().size());
+        
+//        System.out.println("add DTSTART listener:" + System.identityHashCode(vComponentEdited));
+        vComponentEdited.getDateTimeStart().valueProperty().addListener((obs, oldValue, newValue) -> 
+        {
+            validateRecurrenceDates(oldValue, newValue);
+            System.out.println("DTSTART changed:" + vComponentEdited.getDateTimeStart().getValue() +
+                    startDateTimeTextField.getLocalDateTime() + " " + startDateTextField.getLocalDate()
+                    );
+        });
+
+//        vComponentEdited.dateTimeStartProperty().addListener((obs, oldValue, newValue) -> 
+//        {
+//            System.out.println("DTSTART changed:");
+//            validateRecurrenceDates();
+//        });
+
+        
+        //        System.out.println("cats3:" + vComponent.getCategories().size());
 
         // SETUP REPEATABLE CONTROLLER
 //        repeatableController.setupData(vComponent, startRecurrence, popup);
@@ -273,7 +292,27 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and
      * endRecurrence to closest valid values
      */
+    void validateRecurrenceDates(Temporal oldValue, Temporal newValue)
+    {
+        if (! vComponentEdited.isRecurrence(startRecurrenceProperty.get()))
+        {
+            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
+            LocalDateTime startNew = startDateTimeTextField.getLocalDateTime().plus(duration);
+            startDateTimeTextField.setLocalDateTime(startNew);
+            startOriginalRecurrence = startOriginalRecurrence.plus(duration);
+//            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrenceProperty.get());
+//            Optional<Temporal> optionalAfter = vComponentEdited.streamRecurrences(startRecurrenceProperty.get()).findFirst();
+//            Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : recurrenceBefore;
+//            startDateTimeTextField.setLocalDateTime((LocalDateTime) DateTimeUtilities.DateTimeType.DATE_WITH_LOCAL_TIME.from(newStartRecurrence));
+//            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
+//            Temporal endNew = endDateTimeTextField.getLocalDateTime().plus(duration);
+            System.out.println("new start:" + startDateTimeTextField.getLocalDateTime());
+        }
+    }
+    
+    
     // TODO - FIX THIS
+    @Deprecated
     Runnable validateStartRecurrence()
     {
 //        Temporal actualRecurrence = vEvent.streamRecurrences(startRecurrence).findFirst().get();

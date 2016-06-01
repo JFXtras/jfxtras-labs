@@ -24,9 +24,9 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
  * @see VTodo
  * @see VFreeBusy
  */
-public class DateTimeStart<T extends Temporal> extends PropertyBaseDateTime<T,DateTimeStart<T>>
+public class DateTimeStart extends PropertyBaseDateTime<Temporal, DateTimeStart>
 {
-   public DateTimeStart(T temporal)
+   public DateTimeStart(Temporal temporal)
     {
         super(temporal);
     }
@@ -36,7 +36,7 @@ public class DateTimeStart<T extends Temporal> extends PropertyBaseDateTime<T,Da
 //        super(clazz, contentLine);
 //    }
     
-    public DateTimeStart(DateTimeStart<T> source)
+    public DateTimeStart(DateTimeStart source)
     {
         super(source);
     }
@@ -48,17 +48,17 @@ public class DateTimeStart<T extends Temporal> extends PropertyBaseDateTime<T,Da
 
     /** Parse string to Temporal.  Not type safe.  Implementation must
      * ensure parameterized type is the same as date-time represented by String parameter */
-    public static <U extends Temporal> DateTimeStart<U> parse(String value)
+    public static DateTimeStart parse(String value)
     {
-        DateTimeStart<U> property = new DateTimeStart<U>();
+        DateTimeStart property = new DateTimeStart();
         property.parseContent(value);
         return property;
     }
     
     /** Parse string with Temporal class explicitly provided as parameter */
-    public static <U extends Temporal> DateTimeStart<U> parse(Class<U> clazz, String value)
+    public static DateTimeStart parse(Class<? extends Temporal> clazz, String value)
     {
-        DateTimeStart<U> property = new DateTimeStart<U>();
+        DateTimeStart property = new DateTimeStart();
         property.parseContent(value);
         clazz.cast(property.getValue()); // class check
         return property;

@@ -271,22 +271,28 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * Example:
      * RECURRENCE-ID;VALUE=DATE:19960401
      */
-    ObjectProperty<RecurrenceId<? extends Temporal>> recurrenceIdProperty();
-    RecurrenceId<? extends Temporal> getRecurrenceId();
-    default void setRecurrenceId(RecurrenceId<? extends Temporal> recurrenceId) { recurrenceIdProperty().set(recurrenceId); }
+    ObjectProperty<RecurrenceId> recurrenceIdProperty();
+    RecurrenceId getRecurrenceId();
+    default void setRecurrenceId(RecurrenceId recurrenceId) { recurrenceIdProperty().set(recurrenceId); }
     default void setRecurrenceId(String recurrenceId) { setRecurrenceId(RecurrenceId.parse(recurrenceId)); }
     default void setRecurrenceId(Temporal temporal)
     {
         if ((temporal instanceof LocalDate) || (temporal instanceof LocalDateTime) || (temporal instanceof ZonedDateTime))
         {
-            setRecurrenceId(new RecurrenceId<Temporal>(temporal));
+            if (getRecurrenceId() == null)
+            {
+                setRecurrenceId(new RecurrenceId(temporal));
+            } else
+            {
+                getRecurrenceId().setValue(temporal);
+            }
         } else
         {
             throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
                     + temporal.getClass().getSimpleName() + " is not supported");
         }
     }
-    default T withRecurrenceId(RecurrenceId<? extends Temporal> recurrenceId)
+    default T withRecurrenceId(RecurrenceId recurrenceId)
     {
         if (getRecurrenceId() == null)
         {

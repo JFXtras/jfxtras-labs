@@ -23,9 +23,9 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseDateTime;
  * The property can be specified in following components:
  * @see VTodo
  */
-public class DateTimeDue<T extends Temporal> extends PropertyBaseDateTime<T, DateTimeDue<T>>
+public class DateTimeDue extends PropertyBaseDateTime<Temporal, DateTimeDue>
 {    
-   public DateTimeDue(T temporal)
+   public DateTimeDue(Temporal temporal)
     {
         super(temporal);
     }
@@ -35,7 +35,7 @@ public class DateTimeDue<T extends Temporal> extends PropertyBaseDateTime<T, Dat
 //        super(clazz, contentLine);
 //    }
     
-    public DateTimeDue(DateTimeDue<T> source)
+    public DateTimeDue(DateTimeDue source)
     {
         super(source);
     }
@@ -47,17 +47,17 @@ public class DateTimeDue<T extends Temporal> extends PropertyBaseDateTime<T, Dat
 
     /** Parse string to Temporal.  Not type safe.  Implementation must
      * ensure parameterized type is the same as date-time represented by String parameter */
-    public static <U extends Temporal> DateTimeDue<U> parse(String value)
+    public static DateTimeDue parse(String value)
     {
-        DateTimeDue<U> property = new DateTimeDue<U>();
+        DateTimeDue property = new DateTimeDue();
         property.parseContent(value);
         return property;
     }
     
     /** Parse string with Temporal class explicitly provided as parameter */
-    public static <U extends Temporal> DateTimeDue<U> parse(Class<U> clazz, String value)
+    public static DateTimeDue parse(Class<? extends Temporal> clazz, String value)
     {
-        DateTimeDue<U> property = new DateTimeDue<U>();
+        DateTimeDue property = new DateTimeDue();
         property.parseContent(value);
         clazz.cast(property.getValue()); // class check
         return property;

@@ -16,7 +16,7 @@ public class DateTimeEndTest
     @Test
     public void canParseDateTimeEnd1()
     {
-        DateTimeEnd<LocalDateTime> property = DateTimeEnd.parse("20160322T174422");
+        DateTimeEnd property = DateTimeEnd.parse("20160322T174422");
         String expectedContentLine = "DTEND:20160322T174422";
         String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);
@@ -26,7 +26,7 @@ public class DateTimeEndTest
     @Test
     public void canParseDateTimeEnd2()
     {
-        DateTimeEnd<LocalDate> property = DateTimeEnd.parse("20160322");
+        DateTimeEnd property = DateTimeEnd.parse("20160322");
         String expectedContentLine = "DTEND;VALUE=DATE:20160322";
         String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);
@@ -36,7 +36,7 @@ public class DateTimeEndTest
     @Test
     public void canParseDateTimeEnd3()
     {
-        DateTimeEnd<ZonedDateTime> property = new DateTimeEnd<>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
+        DateTimeEnd property = new DateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
         String expectedContentLine = "DTEND;TZID=America/Los_Angeles:20160306T043000";
         String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);

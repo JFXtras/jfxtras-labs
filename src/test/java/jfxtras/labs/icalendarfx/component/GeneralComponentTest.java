@@ -55,7 +55,7 @@ public class GeneralComponentTest
     {
         VEvent builtComponent = new VEvent()
                 .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
-                .withDateTimeStart(new DateTimeStart<LocalDateTime>(LocalDateTime.of(2016, 4, 15, 12, 0)))
+                .withDateTimeStart(new DateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0)))
                 .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
                 .withAttendees(Attendee.parse("ATTENDEE;PARTSTAT=DECLINED:mailto:jsmith@example.com"))
                 .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com");

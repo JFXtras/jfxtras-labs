@@ -125,7 +125,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     public RecurrenceRuleVBox( )
     {
         super();
-//        loadFxml(DescriptiveVBox.class.getResource("RecurrenceRule.fxml"), this);
     }
     
     private DateTimeFormatter getFormatter(Temporal t)
@@ -136,7 +135,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     // DAY OF WEEK CHECKBOX LISTENER
     private final ChangeListener<? super Boolean> dayOfWeekCheckBoxListener = (obs, oldSel, newSel) -> 
     {
-//        System.out.println("trigger day of week:");
         DayOfWeek dayOfWeek = checkBoxDayOfWeekMap.get(obs);
         ByDay rule = (ByDay) vComponent
                 .getRecurrenceRule()
@@ -423,7 +421,9 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     {
         Period shift = Period.between(oldValue, newValue);
         Temporal newStart = vComponent.getDateTimeStart().getValue().plus(shift);
+//        vComponent.getDateTimeStart().setValue(newStart);
         vComponent.setDateTimeStart(newStart);
+        System.out.println("new start picker:" + newStart + " " + System.identityHashCode(vComponent));
     }
 
     // INITIALIZATION - runs when FXML is initialized

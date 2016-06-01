@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.ZonedDateTime;
-import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Collections;
 import java.util.List;
@@ -142,7 +141,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
      * Example:
      * DTEND;VALUE=DATE:19980704
      */
-    @Override public ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEndProperty()
+    @Override public ObjectProperty<DateTimeEnd> dateTimeEndProperty()
     {
         if (dateTimeEnd == null)
         {
@@ -152,8 +151,8 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
         return dateTimeEnd;
     }
     @Override
-    public DateTimeEnd<? extends Temporal> getDateTimeEnd() { return (dateTimeEnd == null) ? null : dateTimeEndProperty().get(); }
-    private ObjectProperty<DateTimeEnd<? extends Temporal>> dateTimeEnd;
+    public DateTimeEnd getDateTimeEnd() { return (dateTimeEnd == null) ? null : dateTimeEndProperty().get(); }
+    private ObjectProperty<DateTimeEnd> dateTimeEnd;
     
     /**
      * FREEBUSY

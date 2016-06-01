@@ -16,7 +16,7 @@ public class DateTimeDueTest
     @Test
     public void canParseDateTimeDue1()
     {
-        DateTimeDue<LocalDateTime> property = DateTimeDue.parse(LocalDateTime.class, "20160322T174422");
+        DateTimeDue property = DateTimeDue.parse(LocalDateTime.class, "20160322T174422");
         String expectedContentLine = "DUE:20160322T174422";
         String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);
@@ -26,7 +26,7 @@ public class DateTimeDueTest
     @Test
     public void canParseDateTimeDue2()
     {
-        DateTimeDue<LocalDate> property = DateTimeDue.parse(LocalDate.class, "20160322");
+        DateTimeDue property = DateTimeDue.parse(LocalDate.class, "20160322");
         String expectedContentLine = "DUE;VALUE=DATE:20160322";
         String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);
@@ -36,7 +36,7 @@ public class DateTimeDueTest
     @Test
     public void canParseDateTimeDue3()
     {
-        DateTimeDue<ZonedDateTime> property = new DateTimeDue<>(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
+        DateTimeDue property = new DateTimeDue(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")));
         String expectedContentLine = "DUE;TZID=America/Los_Angeles:20160306T043000";
         String madeContentLine = property.toContent();
         assertEquals(expectedContentLine, madeContentLine);

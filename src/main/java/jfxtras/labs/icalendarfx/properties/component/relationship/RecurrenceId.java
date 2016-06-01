@@ -40,7 +40,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
  * @see VTodo
  * @see VJournal
  */
-public class RecurrenceId<T extends Temporal> extends PropertyBaseDateTime<T, RecurrenceId<T>> implements PropertyRecurrenceID<T>
+public class RecurrenceId extends PropertyBaseDateTime<Temporal, RecurrenceId> implements PropertyRecurrenceID<Temporal>
 {
     /**
      * RANGE
@@ -78,14 +78,14 @@ public class RecurrenceId<T extends Temporal> extends PropertyBaseDateTime<T, Re
         }
     }
     public void setRange(String value) { setRange(new Range(value)); }
-    public RecurrenceId<T> withRange(Range altrep) { setRange(altrep); return this; }
-    public RecurrenceId<T> withRange(RangeType value) { setRange(new Range(value)); return this; }
-    public RecurrenceId<T> withRange(String content) { setRange(content); return this; }
+    public RecurrenceId withRange(Range altrep) { setRange(altrep); return this; }
+    public RecurrenceId withRange(RangeType value) { setRange(new Range(value)); return this; }
+    public RecurrenceId withRange(String content) { setRange(content); return this; }
 
     /*
      * CONSTRUCTORS
      */
-   public RecurrenceId(T temporal)
+   public RecurrenceId(Temporal temporal)
     {
         super(temporal);
     }
@@ -95,7 +95,7 @@ public class RecurrenceId<T extends Temporal> extends PropertyBaseDateTime<T, Re
 //        super(clazz, contentLine);
 //    }
     
-    public RecurrenceId(RecurrenceId<T> source)
+    public RecurrenceId(RecurrenceId source)
     {
         super(source);
     }
@@ -107,17 +107,17 @@ public class RecurrenceId<T extends Temporal> extends PropertyBaseDateTime<T, Re
     
     /** Parse string to Temporal.  Not type safe.  Implementation must
      * ensure parameterized type is the same as date-time represented by String parameter */
-    public static <U extends Temporal> RecurrenceId<U> parse(String value)
+    public static RecurrenceId parse(String value)
     {
-        RecurrenceId<U> property = new RecurrenceId<U>();
+        RecurrenceId property = new RecurrenceId();
         property.parseContent(value);
         return property;
     }
     
     /** Parse string with Temporal class explicitly provided as parameter */
-    public static <U extends Temporal> RecurrenceId<U> parse(Class<U> clazz, String value)
+    public static RecurrenceId parse(Class<? extends Temporal> clazz, String value)
     {
-        RecurrenceId<U> property = new RecurrenceId<U>();
+        RecurrenceId property = new RecurrenceId();
         property.parseContent(value);
         clazz.cast(property.getValue()); // class check
         return property;

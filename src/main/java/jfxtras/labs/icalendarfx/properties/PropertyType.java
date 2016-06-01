@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.properties;
 
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.VAlarm;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
@@ -20,7 +20,6 @@ import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentDuration;
 import jfxtras.labs.icalendarfx.components.VComponentLastModified;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
@@ -524,7 +523,7 @@ public enum PropertyType
         {
             VTodo castSource = (VTodo) source;
             VTodo castDestination = (VTodo) destination;
-            DateTimeDue<? extends Temporal> property = new DateTimeDue<>(castSource.getDateTimeDue());
+            DateTimeDue property = new DateTimeDue(castSource.getDateTimeDue());
             castDestination.setDateTimeDue(property);
         }
     },
@@ -559,7 +558,7 @@ public enum PropertyType
         {
             VComponentDateTimeEnd<?> castSource = (VComponentDateTimeEnd<?>) source;
             VComponentDateTimeEnd<?> castDestination = (VComponentDateTimeEnd<?>) destination;
-            DateTimeEnd<? extends Temporal> property = new DateTimeEnd<>(castSource.getDateTimeEnd());
+            DateTimeEnd property = new DateTimeEnd(castSource.getDateTimeEnd());
             castDestination.setDateTimeEnd(property);
         }
     },
@@ -628,7 +627,7 @@ public enum PropertyType
         {
             VComponentPrimary<?> castSource = (VComponentPrimary<?>) source;
             VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
-            DateTimeStart<? extends Temporal> property = new DateTimeStart<>(castSource.getDateTimeStart());
+            DateTimeStart property = new DateTimeStart(castSource.getDateTimeStart());
             castDestination.setDateTimeStart(property);
         }
     },
@@ -1223,7 +1222,7 @@ public enum PropertyType
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            RecurrenceId<? extends Temporal> property = new RecurrenceId<>(castSource.getRecurrenceId());
+            RecurrenceId property = new RecurrenceId(castSource.getRecurrenceId());
             castDestination.setRecurrenceId(property);
         }
     },

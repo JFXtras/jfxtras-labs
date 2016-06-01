@@ -32,4 +32,20 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
         
         super.setupData(appointment, vComponent, appointmentGroups);
     }
+    
+//    /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and
+//     * endRecurrence to closest valid values
+//     */
+//    @Override
+//    void validateRecurrenceDates(Temporal oldValue, Temporal newValue)
+//    {
+//        super.validateRecurrenceDates(oldValue, newValue);
+//        if (! vComponentEdited.isRecurrence(startRecurrenceProperty.get()))
+//        {
+//            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
+//            LocalDateTime endNew = endDateTimeTextField.getLocalDateTime().plus(duration);
+//            endDateTimeTextField.setLocalDateTime(endNew);
+//            System.out.println("new end:" + endDateTimeTextField.getLocalDateTime());
+//        }
+//    }
 }

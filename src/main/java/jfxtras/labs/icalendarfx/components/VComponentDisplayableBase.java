@@ -23,8 +23,8 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Status;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
@@ -221,7 +221,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * RECURRENCE-ID;VALUE=DATE:19960401
      */
     @Override
-    public ObjectProperty<RecurrenceId<? extends Temporal>> recurrenceIdProperty()
+    public ObjectProperty<RecurrenceId> recurrenceIdProperty()
     {
         if (recurrenceId == null)
         {
@@ -231,8 +231,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         return recurrenceId;
     }
     @Override
-    public RecurrenceId<? extends Temporal> getRecurrenceId() { return (recurrenceId == null) ? null : recurrenceIdProperty().get(); }
-    private ObjectProperty<RecurrenceId<? extends Temporal>> recurrenceId;
+    public RecurrenceId getRecurrenceId() { return (recurrenceId == null) ? null : recurrenceIdProperty().get(); }
+    private ObjectProperty<RecurrenceId> recurrenceId;
 
     /**
      * RELATED-TO:

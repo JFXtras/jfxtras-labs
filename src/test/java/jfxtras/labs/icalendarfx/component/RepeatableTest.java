@@ -32,6 +32,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -146,7 +147,7 @@ public class RepeatableTest //extends Application
             assertEquals(parsedComponent, builtComponent);
             assertEquals(expectedContent, builtComponent.toContent());
             
-            builtComponent.setDateTimeStart(new DateTimeStart<>(LocalDate.of(2016, 4, 13)));
+            builtComponent.setDateTimeStart(new DateTimeStart(LocalDate.of(2016, 4, 13)));
             List<Temporal> madeDates = builtComponent                    
                     .streamRecurrences()
                     .limit(12)
@@ -1218,7 +1219,7 @@ public class RepeatableTest //extends Application
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule2()
                 .withFrequency(FrequencyType.DAILY));
-        e.setDateTimeStart(new DateTimeStart<>(LocalDate.of(2015, 11, 9))); // change to whole-day
+        e.setDateTimeStart(new DateTimeStart(LocalDate.of(2015, 11, 9))); // change to whole-day
         {
             List<Temporal> madeDates = e
                     .streamRecurrences()
@@ -1236,7 +1237,7 @@ public class RepeatableTest //extends Application
         }
         
         // Change back to date/time
-        e.setDateTimeStart(new DateTimeStart<>(LocalDateTime.of(2015, 11, 9, 10, 0))); // change to date/time
+        e.setDateTimeStart(new DateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))); // change to date/time
         { // start date/time
             List<Temporal> madeDates = e                
                     .streamRecurrences()
@@ -1275,7 +1276,7 @@ public class RepeatableTest //extends Application
             assertEquals(expectedDates, madeDates);
         }
         
-        e.setDateTimeStart(new DateTimeStart<>(LocalDateTime.of(2015, 11, 10, 10, 0))); // change start
+        e.setDateTimeStart(new DateTimeStart(LocalDateTime.of(2015, 11, 10, 10, 0))); // change start
         { // make new stream
             List<Temporal> madeDates = e
                     .streamRecurrences(LocalDateTime.of(2015, 12, 9, 10, 0))
