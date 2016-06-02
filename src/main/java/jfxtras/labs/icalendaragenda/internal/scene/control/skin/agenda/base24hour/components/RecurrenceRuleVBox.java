@@ -465,7 +465,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             // if recurrence is after DTSTART don't adjust it
             Period shift = Period.between(oldValue, newValue);
             Temporal newStart = vComponent.getDateTimeStart().getValue().plus(shift);
-    //        vComponent.getDateTimeStart().setValue(newStart);
             vComponent.setDateTimeStart(newStart);
             System.out.println("new start picker:" + newStart + " " + System.identityHashCode(vComponent));
         } else
@@ -718,23 +717,14 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         {
             if (newValue != null)
             {
-//                repeatableGridPane.setDisable(false);
-//                startDatePicker.setDisable(false);
                 addListeners();
                 vComponent.getDateTimeStart().valueProperty().addListener(dateTimeStartToExceptionChangeListener);
             } else
             {
-//                repeatableGridPane.setDisable(true);
-//                startDatePicker.setDisable(true);
                 removeListeners();
                 vComponent.getDateTimeStart().valueProperty().removeListener(dateTimeStartToExceptionChangeListener);                
             }
         });
-        
-//        if (rrule.getInterval() == null)
-//        {
-//            rrule.setInterval(new Interval());
-//        }
         
         /* EXCEPTIONS
          * Note: exceptionComboBox string converter must be setup after the controller's initialization 

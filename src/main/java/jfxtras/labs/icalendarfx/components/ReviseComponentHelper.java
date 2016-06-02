@@ -1,8 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
@@ -31,12 +29,14 @@ public final class ReviseComponentHelper
     public static <T extends VComponentDisplayableBase<?>> Collection<T> handleEdit(
             T vComponentEdited,
             T vComponentOriginal,
-            Temporal startOriginalRecurrence,
+//            Temporal startOriginalRecurrence,
             Temporal startRecurrence,
             Temporal endRecurrence, // null for VJournal
+            TemporalAmount shiftAmount,
             Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback
             )
     {
+        System.out.println("shiftAmout:" + shiftAmount);
         if (! vComponentEdited.isValid())
         {
             throw new RuntimeException("Can't revise. Edited component is invalid:" + System.lineSeparator() + 
@@ -51,7 +51,7 @@ public final class ReviseComponentHelper
         }
         
         Collection<T> vComponents = new ArrayList<>(); // new components that should be added to main list
-        vComponentEdited.validateStartRecurrenceAndDTStart(startOriginalRecurrence, startRecurrence);
+        vComponentEdited.validateStartRecurrenceAndDTStart(startRecurrence);
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginal.getRecurrenceRule(), vComponentEdited.getRecurrenceRule());
         System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
@@ -64,7 +64,7 @@ public final class ReviseComponentHelper
             // fall through
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
-            vComponentEdited.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+            vComponentEdited.adjustDateTime(startRecurrence, endRecurrence, shiftAmount);
             
 //            if (! vComponentEditedCopy.equals(vComponentOriginal))
 //            {
@@ -76,9 +76,9 @@ public final class ReviseComponentHelper
             // TODO - PUT findChangedProperties IN STATIC
             List<PropertyType> changedProperties = vComponentEdited.findChangedProperties(
                     vComponentOriginal,
-                    startOriginalRecurrence,
                     startRecurrence,
-                    endRecurrence);
+                    endRecurrence,
+                    shiftAmount);
             /* Note:
              * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
              * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
@@ -98,7 +98,7 @@ public final class ReviseComponentHelper
                 {
                     Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = ChangeDialogOption.makeDialogChoices(
                             vComponentEdited,
-                            startOriginalRecurrence,
+                            startRecurrence.minus(shiftAmount),
                             changedProperties);
                     changeResponse = dialogCallback.call(choices);
                     System.out.println("changeResponse:" + changeResponse);
@@ -111,7 +111,7 @@ public final class ReviseComponentHelper
                 case ALL:
                     if (relatedVComponents.size() == 1)
                     {
-                        vComponentEdited.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+                        vComponentEdited.adjustDateTime(startRecurrence, endRecurrence, shiftAmount);
 //                        if (vComponentEditedCopy.childComponentsWithRecurrenceIDs().size() > 0)
 //                        {
                         // Adjust children components with RecurrenceIDs
@@ -120,8 +120,8 @@ public final class ReviseComponentHelper
 //                                .map(c -> c.getRecurrenceId())
                                 .forEach(v ->
                                 {
-                                    TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
-                                    Temporal newRecurreneId = v.getRecurrenceId().getValue().plus(amount);
+//                                    TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
+                                    Temporal newRecurreneId = v.getRecurrenceId().getValue().plus(shiftAmount);
                                     v.setRecurrenceId(newRecurreneId);
                                 });
 //                        }
@@ -140,9 +140,9 @@ public final class ReviseComponentHelper
                             vComponentEdited,
                             vComponentOriginal,
                             vComponents,
-                            startOriginalRecurrence,
                             startRecurrence,
-                            endRecurrence
+                            endRecurrence,
+                            shiftAmount
                             );
                     break;
                 case ONE:
@@ -150,9 +150,9 @@ public final class ReviseComponentHelper
                             vComponentEdited,
                             vComponentOriginal,
                             vComponents,
-                            startOriginalRecurrence,
                             startRecurrence,
-                            endRecurrence
+                            endRecurrence,
+                            shiftAmount
                             );
                     break;
                 default:
@@ -163,8 +163,8 @@ public final class ReviseComponentHelper
         if (! vComponentEdited.isValid())
         {
             throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
-                    vComponentEdited.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() );
-//                    vComponentEdited.toContent());
+                    vComponentEdited.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                    vComponentEdited.toContent());
         }
         if (incrementSequence)
         {
@@ -401,9 +401,10 @@ public final class ReviseComponentHelper
            T vComponentEdited,
            T vComponentOriginal,
            Collection<T> vComponents,
-           Temporal startOriginalRecurrence,
+//           Temporal startOriginalRecurrence,
            Temporal startRecurrence,
-           Temporal endRecurrence
+           Temporal endRecurrence,
+           TemporalAmount shiftAmount
            )
    {
        // adjust original VEvent - remove COUNT, replace with UNTIL
@@ -436,8 +437,9 @@ public final class ReviseComponentHelper
        
        
        // Adjust start and end
+       Temporal startOriginalRecurrence = startRecurrence.plus(shiftAmount);
        vComponentEdited.setDateTimeStart(startOriginalRecurrence);
-       vComponentEdited.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+       vComponentEdited.adjustDateTime(startRecurrence, endRecurrence, shiftAmount);
 //       adjustDateTime(startRecurrence, startRecurrence, endInstance);
        vComponentEdited.setUniqueIdentifier(); // ADD UID CALLBACK
        // only supports one RELATED-TO value
@@ -602,9 +604,10 @@ public final class ReviseComponentHelper
            T vComponentEditedCopy,
            T vComponentOriginal,
            Collection<T> vComponents,
-           Temporal startOriginalRecurrence,
+//           Temporal startOriginalRecurrence,
            Temporal startRecurrence,
-           Temporal endRecurrence
+           Temporal endRecurrence,
+           TemporalAmount shiftAmount
            )
    {
        // Remove RRule and set parent component
@@ -612,11 +615,12 @@ public final class ReviseComponentHelper
 //       setParent(vComponentOriginal);
 
        // Apply dayShift, account for editing recurrence beyond first
-       Period dayShift = Period.between(LocalDate.from(vComponentEditedCopy.getDateTimeStart().getValue()),
-               LocalDate.from(startOriginalRecurrence));
-       Temporal newStart = vComponentEditedCopy.getDateTimeStart().getValue().plus(dayShift);
+//       Period dayShift = Period.between(LocalDate.from(vComponentEditedCopy.getDateTimeStart().getValue()),
+//               LocalDate.from(startOriginalRecurrence));
+       Temporal newStart = vComponentEditedCopy.getDateTimeStart().getValue().plus(shiftAmount);
        vComponentEditedCopy.setDateTimeStart(newStart);
-       vComponentEditedCopy.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+       vComponentEditedCopy.adjustDateTime(startRecurrence, endRecurrence, shiftAmount);
+       Temporal startOriginalRecurrence = startRecurrence.plus(shiftAmount);
        vComponentEditedCopy.setRecurrenceId(startOriginalRecurrence);
        vComponentEditedCopy.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
   
@@ -756,7 +760,7 @@ public final class ReviseComponentHelper
         {
             Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
 
-            if (! changedProperties.equals(Arrays.asList(PropertyType.RECURRENCE_RULE)))
+            if (! changedProperties.contains(PropertyType.RECURRENCE_RULE))
             {
                 choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
             }

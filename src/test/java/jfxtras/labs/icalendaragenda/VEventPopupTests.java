@@ -92,9 +92,11 @@ public class VEventPopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
-                    appointment,
+//                    appointment,
                     vevent,
                     Arrays.asList(vevent),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
                     ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         });
 
@@ -119,9 +121,11 @@ public class VEventPopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
-                    appointment,
+//                    appointment,
                     vevent,
                     Arrays.asList(vevent),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
                     ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         });
 
@@ -148,9 +152,11 @@ public class VEventPopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
-                    appointment,
+//                    appointment,
                     vevent,
                     vEvents,
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
                     ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         });
 
@@ -249,9 +255,11 @@ public class VEventPopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
-                    appointment,
+//                    appointment,
                     vevent,
                     vEvents,
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
                     ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         });
 

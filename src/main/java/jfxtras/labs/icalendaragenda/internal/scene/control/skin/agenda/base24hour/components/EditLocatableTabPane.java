@@ -34,9 +34,9 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatableBase<?>>
         Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponent,
                 vComponentOriginalCopy,
-                editDescriptiveVBox.startOriginalRecurrence,
                 editDescriptiveVBox.startRecurrenceProperty.get(),
-                editDescriptiveVBox.endRecurrence,
+                editDescriptiveVBox.endNewRecurrence,
+                editDescriptiveVBox.shiftAmount,
                 EditChoiceDialog.EDIT_DIALOG_CALLBACK
                 );
         if (newVComponents != null)

@@ -2,6 +2,7 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -17,7 +18,6 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /** 
@@ -92,15 +92,17 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     List<T> vComponents;
 
     public void setupData(
-            Appointment appointment,
+//            Appointment appointment,
             T vComponent,
             List<T> vComponents,
+            Temporal startRecurrence,
+            Temporal endRecurrence,
             List<AppointmentGroup> appointmentGroups
             )
     {
         this.vComponent = vComponent;
         this.vComponents = vComponents;
-        editDescriptiveVBox.setupData(appointment, vComponent, appointmentGroups);
+        editDescriptiveVBox.setupData(vComponent, startRecurrence, endRecurrence, appointmentGroups);
         
         /* 
          * Shut off repeat tab if vComponent is not a parent

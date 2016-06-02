@@ -258,11 +258,11 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     @Override
     <T extends VComponentDisplayableBase<?>> List<PropertyType> findChangedProperties(
           T vComponentOriginal,
-          Temporal startOriginalInstance,
           Temporal startInstance,
-          Temporal endInstance)
+          Temporal endInstance,
+          TemporalAmount shiftAmount)
     {
-        List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startOriginalInstance, startInstance, endInstance);
+        List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startInstance, endInstance, shiftAmount);
         TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
         TemporalAmount durationOriginal = getActualDuration();
         if (! durationOriginal.equals(durationNew))

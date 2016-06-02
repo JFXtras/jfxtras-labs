@@ -5,7 +5,6 @@ import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
@@ -18,8 +17,10 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
     
     @Override
     public void setupData(
-            Appointment appointment,
+//            Appointment appointment,
             VEvent vComponent,
+            Temporal startRecurrence,
+            Temporal endRecurrence,
             List<AppointmentGroup> appointmentGroups)
     {
         // Convert duration to date/time end - this controller can't handle VEvents with duration
@@ -30,7 +31,7 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
             vComponent.setDateTimeEnd(end);
         }
         
-        super.setupData(appointment, vComponent, appointmentGroups);
+        super.setupData(vComponent, startRecurrence, endRecurrence, appointmentGroups);
     }
     
 //    /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and

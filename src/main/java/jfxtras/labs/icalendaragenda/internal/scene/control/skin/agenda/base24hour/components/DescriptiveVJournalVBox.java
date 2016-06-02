@@ -1,9 +1,9 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
+import java.time.temporal.Temporal;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
@@ -22,11 +22,13 @@ public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
     
     @Override
     public void setupData(
-            Appointment appointment,
+//            Appointment appointment,
             VJournal vComponent,
+            Temporal startRecurrence,
+            Temporal endRecurrence,
             List<AppointmentGroup> appointmentGroups)
     {
-        super.setupData(appointment, vComponent, appointmentGroups);
+        super.setupData(vComponent, startRecurrence, endRecurrence, appointmentGroups);
 
         // Journal supports multiple descriptions, but this control only supports one description
         if (vComponent.getDescriptions() == null)

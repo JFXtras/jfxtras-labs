@@ -667,7 +667,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * endRecurrence to closest valid values
      */
     // TODO - VERITFY THIS WORKS - changed from old version
-    void validateStartRecurrenceAndDTStart(Temporal startOriginalRecurrence, Temporal startRecurrence)
+    void validateStartRecurrenceAndDTStart(Temporal startRecurrence)
     {
         if (getRecurrenceRule() != null)
         {
@@ -703,14 +703,28 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         setExceptionDates(null);
     }
     
+//    /** Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time */
+//    void adjustDateTime(
+//            Temporal startOriginalRecurrence,
+//            Temporal startRecurrence,
+//            Temporal endRecurrence)
+//    {
+//        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
+//        Temporal newStart = getDateTimeStart().getValue().plus(amount);
+//        setDateTimeStart(newStart);
+////        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
+//        setEndOrDuration(startRecurrence, endRecurrence);
+////        endType().setDuration(this, startRecurrence, endRecurrence);
+//    }
+    
     /** Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time */
     void adjustDateTime(
-            Temporal startOriginalRecurrence,
             Temporal startRecurrence,
-            Temporal endRecurrence)
+            Temporal endRecurrence,
+            TemporalAmount shiftAmount)
     {
-        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
-        Temporal newStart = getDateTimeStart().getValue().plus(amount);
+//        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
+        Temporal newStart = getDateTimeStart().getValue().plus(shiftAmount);
         setDateTimeStart(newStart);
 //        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
         setEndOrDuration(startRecurrence, endRecurrence);
@@ -727,9 +741,9 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     <T extends VComponentDisplayableBase<?>> List<PropertyType> findChangedProperties(
 //            T vComponentEditedCopy,
             T vComponentOriginal,
-            Temporal startOriginalInstance,
             Temporal startInstance,
-            Temporal endInstance)
+            Temporal endInstance,
+            TemporalAmount shiftAmount)
     {
         List<PropertyType> changedProperties = new ArrayList<>();
         properties()
@@ -749,7 +763,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
          * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
          * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
          * question is answered. */
-        if (! startOriginalInstance.equals(startInstance))
+        if (shiftAmount != null)
         {
             changedProperties.add(PropertyType.DATE_TIME_START);
         }        

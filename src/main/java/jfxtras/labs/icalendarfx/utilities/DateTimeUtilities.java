@@ -848,7 +848,6 @@ public final class DateTimeUtilities
         public abstract Temporal from(Temporal temporal, ZoneId zone);
         
         /** Convert temporal to new DateTimeType  - for all types, but DATE_WITH_LOCAL_TIME_AND_TIME_ZONE */
-        @Deprecated
         public abstract Temporal from(Temporal temporal);
     }
 }

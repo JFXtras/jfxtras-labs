@@ -33,9 +33,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -358,16 +356,16 @@ public class EditDisplayableComponentControllerOld<T extends VComponentDisplayab
     {
         System.out.println("summary text:" + vComponent.getSummary().getValue());
         System.out.println("summary text:" + vEventOriginal.getSummary().getValue());
-        Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponent,
-                vEventOriginal,
-//                vComponents,
-                startOriginalInstance,
-                startInstance,
-                endInstance,
-                EditChoiceDialog.EDIT_DIALOG_CALLBACK
-                );
-        vComponents.addAll(newVComponents);
+//        Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
+//                vComponent,
+//                vEventOriginal,
+////                vComponents,
+//                startOriginalInstance,
+//                startInstance,
+//                endInstance,
+//                EditChoiceDialog.EDIT_DIALOG_CALLBACK
+//                );
+///        vComponents.addAll(newVComponents);
 //        vEvent.handleEdit(
 //                vEventOriginal
 //              , vComponents

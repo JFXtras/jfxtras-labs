@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,13 +52,14 @@ public class ReviseComponentTest
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
+        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
-                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
+                shift,
                 (m) -> ChangeDialogOption.ALL);
         vComponents.addAll(newVComponents);
 
@@ -94,13 +96,14 @@ public class ReviseComponentTest
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
+        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
-                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
+                shift,
                 (m) -> ChangeDialogOption.ONE);
         vComponents.addAll(newVComponents);
 
@@ -135,14 +138,14 @@ public class ReviseComponentTest
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
+        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
-//                vComponents,
-                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
+                shift,
                 (m) -> ChangeDialogOption.CANCEL);
         assertNull(newVComponents);
 
@@ -179,14 +182,14 @@ public class ReviseComponentTest
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
+        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
-//                vComponents,
-                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
+                shift,
                 (m) -> ChangeDialogOption.THIS_AND_FUTURE);
         vComponents.addAll(newVComponents);
 
@@ -240,13 +243,14 @@ public class ReviseComponentTest
         Temporal startOriginalRecurrence = LocalDateTime.of(2015, 11, 11, 10, 30);
         Temporal startRecurrence = LocalDateTime.of(2015, 11, 13, 10, 30);
         Temporal endRecurrence = LocalDateTime.of(2015, 11, 13, 11, 30);
+        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginal,
-                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
+                shift,
                 (m) -> ChangeDialogOption.ALL);
         vComponents.addAll(newVComponents);
 

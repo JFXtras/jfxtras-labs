@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,9 +23,9 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -88,14 +89,16 @@ public class EditAppointmentTest
         Temporal startOriginalRecurrence = appointment.getStartTemporal();
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
+        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEditedCopy,
                 vComponentOriginal,
 //                vComponents,
-                startOriginalRecurrence,
+//                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
+                shift,
                 (m) -> ChangeDialogOption.ALL);
         vComponents.addAll(newVComponents);
 

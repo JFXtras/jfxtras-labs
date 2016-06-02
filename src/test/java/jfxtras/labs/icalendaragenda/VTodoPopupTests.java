@@ -65,9 +65,11 @@ public class VTodoPopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
-                    appointment,
+//                    appointment,
                     vtodo,
                     Arrays.asList(vtodo),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
                     ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         });
 

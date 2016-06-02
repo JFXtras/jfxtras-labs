@@ -63,9 +63,11 @@ public class VJournalPopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
-                    appointment,
+//                    appointment,
                     vjournal,
                     Arrays.asList(vjournal),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
                     ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
         });
 

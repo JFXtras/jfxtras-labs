@@ -1,9 +1,9 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
+import java.time.temporal.Temporal;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
@@ -19,12 +19,14 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
     
     @Override
     public void setupData(
-            Appointment appointment,
+//            Appointment appointment,
             VTodo vComponent,
             List<VTodo> vComponents,
+            Temporal startRecurrence,
+            Temporal endRecurrence,
             List<AppointmentGroup> appointmentGroups)
     {
-        super.setupData(appointment, vComponent, vComponents, appointmentGroups);
+        super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, appointmentGroups);
         vComponentOriginalCopy = new VTodo(vComponent);
     }
 }
