@@ -163,8 +163,8 @@ public final class ReviseComponentHelper
         if (! vComponentEdited.isValid())
         {
             throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
-                    vComponentEdited.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-                    vComponentEdited.toContent());
+                    vComponentEdited.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() );
+//                    vComponentEdited.toContent());
         }
         if (incrementSequence)
         {
@@ -756,7 +756,7 @@ public final class ReviseComponentHelper
         {
             Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
 
-            if (! changedProperties.contains(PropertyType.RECURRENCE_RULE))
+            if (! changedProperties.equals(Arrays.asList(PropertyType.RECURRENCE_RULE)))
             {
                 choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
             }

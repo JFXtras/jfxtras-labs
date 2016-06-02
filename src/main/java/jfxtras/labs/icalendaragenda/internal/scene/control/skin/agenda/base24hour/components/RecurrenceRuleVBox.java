@@ -60,7 +60,6 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
@@ -403,7 +402,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         Temporal timeAdjustedSelection = vComponent.getDateTimeStart().getValue().with(initialUntilDate);
 
         // find last recurrence that is not after initialUntilDate
-        RecurrenceRule2 rruleCopy = new RecurrenceRule2(vComponent.getRecurrenceRule().getValue());
+        RecurrenceRule2 rruleCopy = new RecurrenceRule2(rrule);
         rruleCopy.setUntil((Until) null);
         Iterator<Temporal> i = rruleCopy.streamRecurrences(vComponent.getDateTimeStart().getValue()).iterator();
         Temporal until = i.next();
@@ -449,11 +448,30 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     /** Synch startDatePicker with DTSTART component.  In subclass DTEND or DUE are synched too */
     void synchStartDatePickerAndComponent(LocalDate oldValue, LocalDate newValue)
     {
-        Period shift = Period.between(oldValue, newValue);
-        Temporal newStart = vComponent.getDateTimeStart().getValue().plus(shift);
-//        vComponent.getDateTimeStart().setValue(newStart);
-        vComponent.setDateTimeStart(newStart);
-        System.out.println("new start picker:" + newStart + " " + System.identityHashCode(vComponent));
+        final boolean isValid;
+        if (rrule.getFrequency().getValue() == FrequencyType.WEEKLY)
+        { // ensure picked date is valid for weekly frequency
+            DayOfWeek dayOfWeek = DayOfWeek.from(newValue);
+            ByDay byDay = (ByDay) rrule.lookupByRule(ByDay.class);
+            isValid = byDay.dayOfWeekWithoutOrdinalList().contains(dayOfWeek);
+        } else 
+        {
+            isValid = true;
+        }
+        if (isValid)
+        {
+            // TODO 
+            // If recurrence before or equal to DTSTART adjust to match DTSTART
+            // if recurrence is after DTSTART don't adjust it
+            Period shift = Period.between(oldValue, newValue);
+            Temporal newStart = vComponent.getDateTimeStart().getValue().plus(shift);
+    //        vComponent.getDateTimeStart().setValue(newStart);
+            vComponent.setDateTimeStart(newStart);
+            System.out.println("new start picker:" + newStart + " " + System.identityHashCode(vComponent));
+        } else
+        {
+            notOccurrenceDateAlert(newValue);
+        }
     }
 
     // INITIALIZATION - runs when FXML is initialized
@@ -464,28 +482,33 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         {
             if (newSelection)
             {
-                removeListeners();
+//                removeListeners();
                 if (rrule == null)
                 {
                     // setup new default RRule
-                    RecurrenceRule2 rRule = new RecurrenceRule2()
+                    rrule = new RecurrenceRule2()
                             .withFrequency(FrequencyType.WEEKLY)
                             .withByRules(new ByDay(DayOfWeek.from(dateTimeStartRecurrenceNew.get()))); // default RRule
-                    vComponent.setRecurrenceRule(rRule);
+                    vComponent.setRecurrenceRule(rrule);
                     setInitialValues(vComponent);
                 }
-                vComponent.getDateTimeStart().valueProperty().addListener(dateTimeStartToExceptionChangeListener);
+//                vComponent.getDateTimeStart().valueProperty().addListener(dateTimeStartToExceptionChangeListener);
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
-                addListeners();
+//                addListeners();
             } else
             {
-                vComponent.getDateTimeStart().valueProperty().removeListener(dateTimeStartToExceptionChangeListener);
-                vComponent.setRecurrenceRule((RecurrenceRule) null);
+//                vComponent.getDateTimeStart().valueProperty().removeListener(dateTimeStartToExceptionChangeListener);
+//                vComponent.setRecurrenceRule((RecurrenceRule) null);
+                rrule = null;
+//                System.out.println(vComponent.getRecurrenceRule());
+//                System.out.println(vComponent.getRecurrenceRule().getValue());
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
         });
+        
+        
         
         // DAY OF WEEK CHECK BOX LISTENERS (FOR WEEKLY)
         checkBoxDayOfWeekMap.put(sundayCheckBox.selectedProperty(), DayOfWeek.SUNDAY);
@@ -689,6 +712,24 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         {
             throw new RuntimeException("Unsupported VComponent");
         }
+        
+        // Add or remove functionality and listeners when RRULE changes
+        vComponent.recurrenceRuleProperty().addListener((obs, oldValue, newValue) ->
+        {
+            if (newValue != null)
+            {
+//                repeatableGridPane.setDisable(false);
+//                startDatePicker.setDisable(false);
+                addListeners();
+                vComponent.getDateTimeStart().valueProperty().addListener(dateTimeStartToExceptionChangeListener);
+            } else
+            {
+//                repeatableGridPane.setDisable(true);
+//                startDatePicker.setDisable(true);
+                removeListeners();
+                vComponent.getDateTimeStart().valueProperty().removeListener(dateTimeStartToExceptionChangeListener);                
+            }
+        });
         
 //        if (rrule.getInterval() == null)
 //        {

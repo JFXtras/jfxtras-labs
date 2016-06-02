@@ -193,15 +193,23 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         /** Synch recurrence dates when DTSTART is modified (can occur when {@link synchStartDatePickerAndComponent#startDatePicker} changes */
         vComponentEdited.getDateTimeStart().valueProperty().addListener((obs, oldValue, newValue) -> 
         {
-//            synchRecurrenceDates(oldValue, newValue);
-            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
-            LocalDateTime startNew = startDateTimeTextField.getLocalDateTime().plus(duration);
-            startDateTimeTextField.setLocalDateTime(startNew);
-            startOriginalRecurrence = startOriginalRecurrence.plus(duration);
-            System.out.println("new start:" + startDateTimeTextField.getLocalDateTime());
-            System.out.println("DTSTART changed:" + vComponentEdited.getDateTimeStart().getValue() +
-                    startDateTimeTextField.getLocalDateTime() + " " + startDateTextField.getLocalDate()
-                    );
+            // If recurrence before or equal to DTSTART adjust to match DTSTART
+            // if recurrence is after DTSTART don't adjust it
+            LocalDate d1 = LocalDate.from(startRecurrenceProperty.get());
+            LocalDate d2 = LocalDate.from(newValue);
+            LocalDate d3 = LocalDate.from(oldValue);
+            if ((! DateTimeUtilities.isAfter(d1, d2)) || d1.equals(d3))
+            {
+                Temporal r = newValue.with(startDateTextField.getLocalDate());
+                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(r, newValue);
+                LocalDateTime startNew = startDateTimeTextField.getLocalDateTime().plus(duration);
+                startDateTimeTextField.setLocalDateTime(startNew);
+                startOriginalRecurrence = startOriginalRecurrence.plus(duration);
+//                System.out.println("new start:" + startDateTimeTextField.getLocalDateTime());
+//                System.out.println("DTSTART changed:" + vComponentEdited.getDateTimeStart().getValue() +
+//                        startDateTimeTextField.getLocalDateTime() + " " + startDateTextField.getLocalDate()
+//                        );
+            }
         });
 
 //        vComponentEdited.dateTimeStartProperty().addListener((obs, oldValue, newValue) -> 
