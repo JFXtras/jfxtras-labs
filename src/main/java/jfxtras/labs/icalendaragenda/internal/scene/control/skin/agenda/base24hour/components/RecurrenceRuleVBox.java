@@ -64,6 +64,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay.ByDayPair;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRule;
@@ -353,14 +354,16 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         } else
         {
             Temporal until = findUntil(newSelection);
-            if (! LocalDate.from(until).equals(newSelection))
+            if (LocalDate.from(until).equals(newSelection))
             {
-                notOccurrenceDateAlert(until);
-                untilDatePicker.setValue(LocalDate.from(until));
+                rrule.setUntil(until);
+                refreshSummary();
+                refreshExceptionDates();
+            } else
+            {
+                notOccurrenceDateAlert(newSelection);
+                untilDatePicker.setValue(oldSelection);               
             }
-            rrule.setUntil(until);
-            refreshSummary();
-            refreshExceptionDates();
         }
     };
 
@@ -377,13 +380,13 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
                         : LocalDate.from(vComponent.getDateTimeStart().getValue().plus(DEFAULT_UNTIL_PERIOD));
                 Temporal until = findUntil(defaultEndOnDateTime); // adjust to actual occurrence
                 rrule.setUntil(until);
-//                rrule.setCount(null); 
             }
             untilDatePicker.setValue(LocalDate.from(rrule.getUntil().getValue()));
             untilDatePicker.setDisable(false);
             untilDatePicker.show();
             refreshExceptionDates();
-        } else {
+        } else
+        {
             rrule.setUntil((Temporal) null);
             untilDatePicker.setDisable(true);
         }
@@ -400,7 +403,9 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         Temporal timeAdjustedSelection = vComponent.getDateTimeStart().getValue().with(initialUntilDate);
 
         // find last recurrence that is not after initialUntilDate
-        Iterator<Temporal> i = vComponent.streamRecurrences().iterator();
+        RecurrenceRule2 rruleCopy = new RecurrenceRule2(vComponent.getRecurrenceRule().getValue());
+        rruleCopy.setUntil((Until) null);
+        Iterator<Temporal> i = rruleCopy.streamRecurrences(vComponent.getDateTimeStart().getValue()).iterator();
         Temporal until = i.next();
         while (i.hasNext())
         {
@@ -408,9 +413,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             if (DateTimeUtilities.isAfter(temporal, timeAdjustedSelection)) break;
             until = temporal;
         }
-        untilDatePicker.valueProperty().removeListener(untilListener);
-        untilDatePicker.setValue(LocalDate.from(until));
-        untilDatePicker.valueProperty().addListener(untilListener);
         return (until instanceof LocalDate) ? until : DateTimeType.DATE_WITH_UTC_TIME.from(until); // ensure type is DATE_WITH_UTC_TIME
     }
 
@@ -1021,13 +1023,25 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         alert.showAndWait();
     }
     
+//    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
+//    private static void notOccurrenceDateAlert(Temporal temporal)
+//    {
+//        Alert alert = new Alert(AlertType.ERROR);
+//        alert.setTitle("Invalid Date Selection");
+//        alert.setHeaderText("Not an occurrence date");
+//        alert.setContentText("Date has been changed to  " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(temporal));
+//        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+//        alert.getButtonTypes().setAll(buttonTypeOk);
+//        alert.showAndWait();
+//    }
+
     // Displays an alert notifying UNTIL date is not an occurrence and changed to 
     private static void notOccurrenceDateAlert(Temporal temporal)
     {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Date Selection");
-        alert.setHeaderText("Not an occurrence date");
-        alert.setContentText("Date has been changed to  " + Settings.DATE_FORMAT_AGENDA_DATEONLY.format(temporal));
+        alert.setHeaderText(Settings.DATE_FORMAT_AGENDA_DATEONLY.format(temporal) + " is not an occurrence date");
+        alert.setContentText("Please select a date following repeat rules");
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
