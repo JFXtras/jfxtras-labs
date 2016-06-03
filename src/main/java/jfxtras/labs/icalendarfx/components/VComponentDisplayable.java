@@ -81,9 +81,28 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObjectProperty<Classification> classificationProperty();
     Classification getClassification();
-    default void setClassification(String classification) { setClassification(Classification.parse(classification)); }
+    default void setClassification(String classification)
+    {
+        if (getClassification() == null)
+        {
+            setClassification(Classification.parse(classification));
+        } else
+        {
+            Classification temp = Classification.parse(classification);
+            getClassification().setValue(temp.getValue());
+        }
+    }
     default void setClassification(Classification classification) { classificationProperty().set(classification); }
-    default void setClassification(ClassificationType classification) { setClassification(new Classification(classification)); }
+    default void setClassification(ClassificationType classification)
+    {
+        if (getClassification() != null)
+        {
+            setClassification(new Classification(classification));            
+        } else
+        {
+            getClassification().setValue(classification);
+        }
+    }
     default T withClassification(Classification classification)
     {
         if (getClassification() == null)
@@ -162,9 +181,28 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObjectProperty<DateTimeCreated> dateTimeCreatedProperty();
     DateTimeCreated getDateTimeCreated();
-    default void setDateTimeCreated(String dtCreated) { setDateTimeCreated(DateTimeCreated.parse(dtCreated)); }
+    default void setDateTimeCreated(String dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(DateTimeCreated.parse(dtCreated));
+        } else
+        {
+            DateTimeCreated temp = DateTimeCreated.parse(dtCreated);
+            setDateTimeCreated(temp);
+        }
+    }
     default void setDateTimeCreated(DateTimeCreated dtCreated) { dateTimeCreatedProperty().set(dtCreated); }
-    default void setDateTimeCreated(ZonedDateTime dtCreated) { setDateTimeCreated(new DateTimeCreated(dtCreated)); }
+    default void setDateTimeCreated(ZonedDateTime dtCreated)
+    {
+        if (getDateTimeCreated() == null)
+        {
+            setDateTimeCreated(new DateTimeCreated(dtCreated));
+        } else
+        {
+            getDateTimeCreated().setValue(dtCreated);
+        }
+    }
     default T withDateTimeCreated(ZonedDateTime dtCreated)
     {
         if (getDateTimeCreated() == null)
@@ -232,21 +270,8 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         {
             list = getExceptionDates();
         }
-        // below code ensures all exceptions are of the same Temporal class
-//        Temporal t = exceptions[0];
         Set<Temporal> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
         getExceptionDates().add(new ExceptionDates(FXCollections.observableSet(exceptions2)));
-//        if (t instanceof LocalDate)
-//        {
-//            Set<LocalDate> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
-//            getExceptions().add(new Exceptions<LocalDate>(FXCollections.observableSet(exceptions2)));
-//        } else if (t instanceof LocalDateTime)
-//        {
-//            getExceptions().add(new Exceptions<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) exceptions)));
-//        } else if (t instanceof ZonedDateTime)
-//        {
-//            getExceptions().add(new Exceptions<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) exceptions)));
-//        }
         return (T) this;
     }
     default T withExceptionDates(ExceptionDates...exceptions)
@@ -274,22 +299,44 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     ObjectProperty<RecurrenceId> recurrenceIdProperty();
     RecurrenceId getRecurrenceId();
     default void setRecurrenceId(RecurrenceId recurrenceId) { recurrenceIdProperty().set(recurrenceId); }
-    default void setRecurrenceId(String recurrenceId) { setRecurrenceId(RecurrenceId.parse(recurrenceId)); }
-    default void setRecurrenceId(Temporal temporal)
+    default void setRecurrenceId(String recurrenceId)
     {
-        if ((temporal instanceof LocalDate) || (temporal instanceof LocalDateTime) || (temporal instanceof ZonedDateTime))
+        if (getRecurrenceId() == null)
         {
-            if (getRecurrenceId() == null)
+            setRecurrenceId(RecurrenceId.parse(recurrenceId));
+        } else
+        {
+            RecurrenceId temp = RecurrenceId.parse(recurrenceId);
+            if (temp.getValue().getClass().equals(getRecurrenceId().getValue().getClass()))
             {
-                setRecurrenceId(new RecurrenceId(temporal));
+                getRecurrenceId().setValue(temp.getValue());
             } else
             {
-                getRecurrenceId().setValue(temporal);
+                setRecurrenceId(temp);
+            }
+        }
+    }
+    default void setRecurrenceId(Temporal temporal)
+    {
+        if ((getRecurrenceId() == null) || ! getRecurrenceId().getValue().getClass().equals(temporal.getClass()))
+        {
+            if ((temporal instanceof LocalDate) || (temporal instanceof LocalDateTime) || (temporal instanceof ZonedDateTime))
+            {
+                if (getRecurrenceId() == null)
+                {
+                    setRecurrenceId(new RecurrenceId(temporal));
+                } else
+                {
+                    getRecurrenceId().setValue(temporal);
+                }
+            } else
+            {
+                throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+                        + temporal.getClass().getSimpleName() + " is not supported");
             }
         } else
         {
-            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
-                    + temporal.getClass().getSimpleName() + " is not supported");
+            getRecurrenceId().setValue(temporal);
         }
     }
     default T withRecurrenceId(RecurrenceId recurrenceId)
@@ -389,8 +436,27 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObjectProperty<Sequence> sequenceProperty();
     Sequence getSequence();
-    default void setSequence(String sequence) { setSequence(Sequence.parse(sequence)); }
-    default void setSequence(Integer sequence) { setSequence(new Sequence(sequence)); }
+    default void setSequence(String sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(Sequence.parse(sequence));
+        } else
+        {
+            Sequence temp = Sequence.parse(sequence);
+            getSequence().setValue(temp.getValue());
+        }
+    }
+    default void setSequence(Integer sequence)
+    {
+        if (getSequence() == null)
+        {
+            setSequence(new Sequence(sequence));
+        } else
+        {
+            getSequence().setValue(sequence);
+        }
+    }
     default void setSequence(Sequence sequence) { sequenceProperty().set(sequence); }
     default T withSequence(Sequence sequence)
     {
@@ -447,9 +513,28 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      */
     ObjectProperty<Status> statusProperty();
     Status getStatus();
-    default void setStatus(String status) { setStatus(Status.parse(status)); }
+    default void setStatus(String status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(Status.parse(status));
+        } else
+        {
+            Status temp = Status.parse(status);
+            getStatus().setValue(temp.getValue());
+        }
+    }
     default void setStatus(Status status) { statusProperty().set(status); }
-    default void setStatus(StatusType status) { setStatus(new Status(status)); }
+    default void setStatus(StatusType status)
+    {
+        if (getStatus() == null)
+        {
+            setStatus(new Status(status));
+        } else
+        {
+            getStatus().setValue(status);
+        }
+    }
     default T withStatus(Status status)
     {
         if (getStatus() == null)
@@ -519,61 +604,4 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * @return - list of child components having RecurrenceIDs
      */
     List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs();
-    
-//    /**
-//     * Part of {@link EditDeleteHelper#handleEdit}
-//     * Changes a VComponent with a RRULE to become a non-recurring component
-//     * 
-//     * @param vComponentOriginal - unmodified component
-//     * @param startRecurrence - start date/time of edited recurrence
-//     * @param endRecurrence - end date/time of edited recurrence
-//     * @see #handleEdit(VComponent, Collection, Temporal, Temporal, Temporal, Collection, Callback)
-//     */
-//    void becomeNonRecurring(VComponentRepeatable<T> vComponentOriginal, Temporal startRecurrence, Temporal endRecurrence);
-    
-//    @Override
-//    default List<String> errors()
-//    {
-//        List<String> errors = VComponentRepeatable.super.errors();
-////        List<String> errors = VComponentPersonal.super.errors();
-//        DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-//        if (getExceptionDates() != null)
-//        {
-//            // assumes all exceptions are same Temporal type.  There is a listener to guarantee that assumption.
-//            Temporal e1 = getExceptionDates().get(0).getValue().iterator().next();
-//            DateTimeType exceptionType = DateTimeUtilities.DateTimeType.of(e1);
-//            boolean isExceptionTypeMatch = startType == exceptionType;
-//            if (! isExceptionTypeMatch)
-//            {
-//                errors.add("The value type of EXDATE elements MUST be the same as the DTSTART property (" + exceptionType + ", " + startType);
-//            }
-//        }
-//
-//        if (getRecurrenceId() != null)
-//        {
-//            DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
-//            boolean isRecurrenceIdTypeMatch = startType == recurrenceIdType;
-//            if (! isRecurrenceIdTypeMatch)
-//            {
-//                errors.add("The value type of RECURRENCE-ID MUST be the same as the DTSTART property (" + recurrenceIdType + ", " + startType);
-//            }
-//        }
-////        errors.addAll(VComponentRepeatable.super.errors());
-////        if (getRecurrenceDates() != null)
-////        {
-////            Temporal r1 = getRecurrenceDates().get(0).getValue().iterator().next();
-////            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
-////            boolean isRecurrenceTypeMatch = startType == recurrenceType;
-////            if (! isRecurrenceTypeMatch)
-////            {
-////                errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
-////            }
-////        }
-//        
-////        if (getRecurrenceRule() != null)
-////        {
-////            errors.addAll(getRecurrenceRule().errors());
-////        }      
-//        return errors;
-//    }
 }

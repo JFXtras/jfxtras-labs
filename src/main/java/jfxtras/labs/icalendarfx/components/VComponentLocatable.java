@@ -39,8 +39,27 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     public ObjectProperty<GeographicPosition> geographicPositionProperty();
     default GeographicPosition getGeographicPosition() { return geographicPositionProperty().get(); }
     default void setGeographicPosition(GeographicPosition geographicPosition) { geographicPositionProperty().set(geographicPosition); }
-    default void setGeographicPosition(String geographicPosition) { setGeographicPosition(GeographicPosition.parse(geographicPosition)); }
-    default void setGeographicPosition(double latitude, double longitude) { setGeographicPosition(new GeographicPosition(latitude, longitude)); }
+    default void setGeographicPosition(String geographicPosition)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(GeographicPosition.parse(geographicPosition));
+        } else
+        {
+            getGeographicPosition().setValue(geographicPosition);
+        }
+    }
+    default void setGeographicPosition(double latitude, double longitude)
+    {
+        if (getGeographicPosition() == null)
+        {
+            setGeographicPosition(new GeographicPosition(latitude, longitude));
+        } else
+        {
+            getGeographicPosition().setLatitude(latitude);
+            getGeographicPosition().setLongitude(longitude);
+        }
+    }
     default T withGeographicPosition(GeographicPosition geographicPosition)
     {
         if (getGeographicPosition() == null)
@@ -86,7 +105,17 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     public ObjectProperty<Location> locationProperty();
     default Location getLocation() { return locationProperty().get(); }
     default void setLocation(Location location) { locationProperty().set(location); }
-    default void setLocation(String location) { setLocation(Location.parse(location)); }
+    default void setLocation(String location)
+    {
+        if (getLocation() == null)
+        {
+            setLocation(Location.parse(location));
+        } else
+        {
+            Location temp = Location.parse(location);
+            getLocation().setValue(temp.getValue());
+        }
+    }
     default T withLocation(Location location)
     {
         if (getLocation() == null)
@@ -122,8 +151,27 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     public ObjectProperty<Priority> priorityProperty();
     default Priority getPriority() { return priorityProperty().get(); }
     default void setPriority(Priority priority) { priorityProperty().set(priority); }
-    default void setPriority(String priority) { setPriority(Priority.parse(priority)); }
-    default void setPriority(int priority) { setPriority(new Priority(priority)); }
+    default void setPriority(String priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(Priority.parse(priority));
+        } else
+        {
+            Priority temp = Priority.parse(priority);
+            getPriority().setValue(temp.getValue());
+        }
+    }
+    default void setPriority(int priority)
+    {
+        if (getPriority() == null)
+        {
+            setPriority(new Priority(priority));
+        } else
+        {
+            getPriority().setValue(priority);
+        }
+    }
     default T withPriority(Priority priority)
     {
         if (getPriority() == null)

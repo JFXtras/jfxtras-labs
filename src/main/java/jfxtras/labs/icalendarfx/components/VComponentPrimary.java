@@ -63,7 +63,23 @@ public interface VComponentPrimary<T> extends VComponent<T>
      */
     ObjectProperty<DateTimeStart> dateTimeStartProperty();
     DateTimeStart getDateTimeStart();
-    default void setDateTimeStart(String dtStart) { setDateTimeStart(DateTimeStart.parse(dtStart)); }
+    default void setDateTimeStart(String dtStart)
+    {
+        if (getDateTimeStart() == null)
+        {
+            setDateTimeStart(DateTimeStart.parse(dtStart));
+        } else
+        {
+            DateTimeStart temp = DateTimeStart.parse(dtStart);
+            if (temp.getValue().getClass().equals(getDateTimeStart().getValue().getClass()))
+            {
+                getDateTimeStart().setValue(temp.getValue());
+            } else
+            {
+                setDateTimeStart(temp);
+            }
+        }
+    }
     default void setDateTimeStart(DateTimeStart dtStart) { dateTimeStartProperty().set(dtStart); }
 //    default void setDateTimeStart(Temporal temporal) { setDateTimeStart(new DateTimeStart(temporal)); }
     default void setDateTimeStart(Temporal temporal)

@@ -39,9 +39,34 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
      */
     ObjectProperty<DateTimeStamp> dateTimeStampProperty();
     default DateTimeStamp getDateTimeStamp() { return dateTimeStampProperty().get(); }
-    default void setDateTimeStamp(String dtStamp) { setDateTimeStamp(DateTimeStamp.parse(dtStamp)); }
+    default void setDateTimeStamp(String dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(DateTimeStamp.parse(dtStamp));
+        } else
+        {
+            DateTimeStamp temp = DateTimeStamp.parse(dtStamp);
+            if (temp.getValue().getClass().equals(getDateTimeStamp().getValue().getClass()))
+            {
+                getDateTimeStamp().setValue(temp.getValue());
+            } else
+            {
+                setDateTimeStamp(temp);
+            }
+        }
+    }
     default void setDateTimeStamp(DateTimeStamp dtStamp) { dateTimeStampProperty().set(dtStamp); }
-    default void setDateTimeStamp(ZonedDateTime dtStamp) { setDateTimeStamp(new DateTimeStamp(dtStamp)); }
+    default void setDateTimeStamp(ZonedDateTime dtStamp)
+    {
+        if (getDateTimeStamp() == null)
+        {
+            setDateTimeStamp(new DateTimeStamp(dtStamp));
+        } else
+        {
+            getDateTimeStamp().setValue(dtStamp);
+        }
+    }
     default T withDateTimeStamp(ZonedDateTime dtStamp)
     {
         if (getDateTimeStamp() == null)
@@ -87,7 +112,17 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     ObjectProperty<Organizer> organizerProperty();
     Organizer getOrganizer();
     default void setOrganizer(Organizer organizer) { organizerProperty().set(organizer); }
-    default void setOrganizer(String organizer) { setOrganizer(Organizer.parse(organizer)); }
+    default void setOrganizer(String organizer)
+    {
+        if (getOrganizer() == null)
+        {
+            setOrganizer(Organizer.parse(organizer));
+        } else
+        {
+            Organizer temp = Organizer.parse(organizer);
+            getOrganizer().setValue(temp.getValue());
+        }
+    }
     default T withOrganizer(String organizer)
     {
         if (getOrganizer() == null)
@@ -154,7 +189,17 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     ObjectProperty<UniqueIdentifier> uniqueIdentifierProperty();
     default UniqueIdentifier getUniqueIdentifier() { return uniqueIdentifierProperty().get(); }
     default void setUniqueIdentifier(UniqueIdentifier uniqueIdentifier) { uniqueIdentifierProperty().set(uniqueIdentifier); }
-    default void setUniqueIdentifier(String uniqueIdentifier) { setUniqueIdentifier(UniqueIdentifier.parse(uniqueIdentifier)); }
+    default void setUniqueIdentifier(String uniqueIdentifier)
+    {
+        if (getUniqueIdentifier() == null)
+        {
+            setUniqueIdentifier(UniqueIdentifier.parse(uniqueIdentifier));
+        } else
+        {
+            UniqueIdentifier temp = UniqueIdentifier.parse(uniqueIdentifier);
+            getUniqueIdentifier().setValue(temp.getValue());
+        }
+    }
     /** Set uniqueIdentifier by calling uidGeneratorCallback */
     default void setUniqueIdentifier() { setUniqueIdentifier(getUidGeneratorCallback().call(null)); }
     default T withUniqueIdentifier(String uniqueIdentifier)
@@ -196,7 +241,17 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
     ObjectProperty<UniformResourceLocator> uniformResourceLocatorProperty();
     UniformResourceLocator getUniformResourceLocator();
     default void setUniformResourceLocator(UniformResourceLocator url) { uniformResourceLocatorProperty().set(url); };
-    default void setUniformResourceLocator(String url) { setUniformResourceLocator(UniformResourceLocator.parse(url)); };
+    default void setUniformResourceLocator(String url)
+    {
+        if (getUniformResourceLocator() == null)
+        {
+            setUniformResourceLocator(UniformResourceLocator.parse(url));
+        } else
+        {
+            UniformResourceLocator temp = UniformResourceLocator.parse(url);
+            getUniformResourceLocator().setValue(temp.getValue());
+        }
+    }
     default void setUniformResourceLocator(URI url) { setUniformResourceLocator(new UniformResourceLocator(url)); };
     default T withUniformResourceLocator(String url)
     {

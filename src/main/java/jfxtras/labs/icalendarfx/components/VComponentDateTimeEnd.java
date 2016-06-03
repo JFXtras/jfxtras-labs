@@ -22,23 +22,45 @@ public interface VComponentDateTimeEnd<T> extends VComponentPersonal<T>
      */
     ObjectProperty<DateTimeEnd> dateTimeEndProperty();
     DateTimeEnd getDateTimeEnd();
-    default void setDateTimeEnd(String dtEnd) { setDateTimeEnd(DateTimeEnd.parse(dtEnd)); }
+    default void setDateTimeEnd(String dtEnd)
+    {
+        if (getDateTimeEnd() == null)
+        {
+            setDateTimeEnd(DateTimeEnd.parse(dtEnd));
+        } else
+        {
+            DateTimeEnd temp = DateTimeEnd.parse(dtEnd);
+            if (temp.getValue().getClass().equals(getDateTimeEnd().getValue().getClass()))
+            {
+                getDateTimeEnd().setValue(temp.getValue());
+            } else
+            {
+                setDateTimeEnd(temp);
+            }
+        }
+    }
     default void setDateTimeEnd(DateTimeEnd dtEnd) { dateTimeEndProperty().set(dtEnd); }
     default void setDateTimeEnd(Temporal temporal)
     {
-        if (temporal instanceof LocalDate)
+        if ((getDateTimeEnd() == null) || ! getDateTimeEnd().getValue().getClass().equals(temporal.getClass()))
         {
-            setDateTimeEnd(new DateTimeEnd(temporal));            
-        } else if (temporal instanceof LocalDateTime)
-        {
-            setDateTimeEnd(new DateTimeEnd(temporal));            
-        } else if (temporal instanceof ZonedDateTime)
-        {
-            setDateTimeEnd(new DateTimeEnd(temporal));            
+            if (temporal instanceof LocalDate)
+            {
+                setDateTimeEnd(new DateTimeEnd(temporal));            
+            } else if (temporal instanceof LocalDateTime)
+            {
+                setDateTimeEnd(new DateTimeEnd(temporal));            
+            } else if (temporal instanceof ZonedDateTime)
+            {
+                setDateTimeEnd(new DateTimeEnd(temporal));            
+            } else
+            {
+                throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
+                        + temporal.getClass().getSimpleName() + " is not supported");
+            }
         } else
         {
-            throw new DateTimeException("Only LocalDate, LocalDateTime and ZonedDateTime supported. "
-                    + temporal.getClass().getSimpleName() + " is not supported");
+            getDateTimeEnd().setValue(temporal);
         }
     }
     default T withDateTimeEnd(Temporal dtEnd)

@@ -28,7 +28,16 @@ public interface VComponentDescribable2<T> extends VComponentDescribable<T>
      */
     public ObjectProperty<Description> descriptionProperty();
     Description getDescription();
-    default void setDescription(String description) { setDescription(Description.parse(description)); }
+    default void setDescription(String description)
+    {
+        if (getDescription() == null)
+        {
+            setDescription(Description.parse(description));
+        } else
+        {
+            getDescription().setValue(description);
+        }
+    }
     default void setDescription(Description description) { descriptionProperty().set(description); }
     default T withDescription(Description description)
     {

@@ -21,8 +21,8 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.PropertyBaseRecurrence;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -205,8 +205,27 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     ObjectProperty<RecurrenceRule> recurrenceRuleProperty();
     RecurrenceRule getRecurrenceRule();
     default void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
-    default void setRecurrenceRule(RecurrenceRule2 rrule) { setRecurrenceRule(new RecurrenceRule(rrule)); }
-    default void setRecurrenceRule(String rrule) { setRecurrenceRule(RecurrenceRule.parse(rrule)); }
+    default void setRecurrenceRule(RecurrenceRule2 rrule)
+    {
+        if (getRecurrenceRule() == null)
+        {
+            setRecurrenceRule(new RecurrenceRule(rrule));
+        } else
+        {
+            setRecurrenceRule(rrule);
+        }
+    }
+    default void setRecurrenceRule(String rrule)
+    {
+        if (getRecurrenceRule() == null)
+        {
+            setRecurrenceRule(RecurrenceRule.parse(rrule));
+        } else
+        {
+            RecurrenceRule temp = RecurrenceRule.parse(rrule);
+            getRecurrenceRule().setValue(temp.getValue());
+        }
+    }
     default T withRecurrenceRule(String rrule)
     {
         if (getRecurrenceRule() == null)
@@ -284,7 +303,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         final Stream<Temporal> stream1;
         if (getRecurrenceRule() == null)
         {
-            stream1 = Arrays.asList((Temporal) getDateTimeStart().getValue()).stream();
+            stream1 = Arrays.asList(getDateTimeStart().getValue()).stream();
         } else
         {
             Temporal cacheStart = recurrenceStreamer().getStartFromCache(start);
