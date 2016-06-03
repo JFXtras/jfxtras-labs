@@ -92,8 +92,8 @@ public class EditAppointmentTest
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentEditedCopy,
                 vComponentOriginal,
+                vComponentEditedCopy,
 //                vComponents,
                 startOriginalRecurrence,
                 startRecurrence,

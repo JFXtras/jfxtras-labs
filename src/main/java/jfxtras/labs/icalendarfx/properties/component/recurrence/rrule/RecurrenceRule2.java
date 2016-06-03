@@ -307,7 +307,16 @@ public class RecurrenceRule2 implements VCalendarElement
     private SimpleObjectProperty<Until> until;
     public Until getUntil() { return (until == null) ? null : untilProperty().getValue(); }
     public void setUntil(Until until) { untilProperty().set(until); }
-    public void setUntil(Temporal until) { setUntil(new Until(until)); }
+    public void setUntil(Temporal until)
+    {
+        if (getUntil() == null)
+        {
+            setUntil(new Until(until));
+        } else
+        {
+            getUntil().setValue(until);
+        }
+    }
     public void setUntil(String until) { setUntil(DateTimeUtilities.temporalFromString(until)); }
     public RecurrenceRule2 withUntil(Temporal until)
     {

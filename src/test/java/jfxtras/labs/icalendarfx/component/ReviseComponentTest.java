@@ -55,8 +55,8 @@ public class ReviseComponentTest
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentEdited,
                 vComponentOriginalCopy,
+                vComponentEdited,
                 startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
@@ -100,8 +100,8 @@ public class ReviseComponentTest
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentEdited,
                 vComponentOriginalCopy,
+                vComponentEdited,
                 startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
@@ -143,8 +143,8 @@ public class ReviseComponentTest
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentEdited,
                 vComponentOriginalCopy,
+                vComponentEdited,
                 startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
@@ -188,8 +188,8 @@ public class ReviseComponentTest
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentEdited,
                 vComponentOriginalCopy,
+                vComponentEdited,
                 startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
@@ -250,8 +250,8 @@ public class ReviseComponentTest
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentEdited,
                 vComponentOriginal,
+                vComponentEdited,
                 startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,

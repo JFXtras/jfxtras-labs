@@ -32,8 +32,8 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatableBase<?>>
         super.handleSaveButton();
         
         Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponent,
                 vComponentOriginalCopy,
+                vComponent,
                 editDescriptiveVBox.startOriginalRecurrence,
                 editDescriptiveVBox.startRecurrenceProperty.get(),
                 editDescriptiveVBox.endNewRecurrence,
