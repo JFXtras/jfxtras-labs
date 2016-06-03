@@ -2,11 +2,9 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -38,7 +36,6 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -93,6 +90,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTimeTextField when startDateTextField changes */
     void synchStartDate(LocalDate oldValue, LocalDate newValue)
     {
+        System.out.println("new value2:" + newValue);
         startRecurrenceProperty.set(newValue);
 //        shiftAmount = Period.between(LocalDate.from(startOriginalRecurrence), newValue);
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
@@ -109,7 +107,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         System.out.println("new value:" + newValue);
         startRecurrenceProperty.set(newValue);
 //        shiftAmount = Duration.between(DateTimeType.DATE_WITH_LOCAL_TIME.from(startOriginalRecurrence), newValue);
-//        shiftAmount = Duration.between(LocalDate.from(startOriginalRecurrence), newValue);
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
         startDateTextField.setLocalDate(newDate);
@@ -129,8 +126,8 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     
     T vComponentEdited;
 //    List<T> vComponents;
-    TemporalAmount shiftAmount = Duration.ZERO; // shift amount to apply to edited component
-    private Temporal startOriginalRecurrence;
+//    TemporalAmount shiftAmount = Duration.ZERO; // shift amount to apply to edited component
+    Temporal startOriginalRecurrence;
     /** Contains the start recurrence Temporal LocalDate or LocalDateTime */
     ObjectProperty<Temporal> startRecurrenceProperty = new SimpleObjectProperty<>();
 
@@ -162,9 +159,9 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         // START DATE/TIME
         startDateTimeTextField.setLocale(Locale.getDefault());
         startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
-        startDateTimeTextField.localDateTimeProperty().addListener(shiftAmountListener);
+//        startDateTimeTextField.localDateTimeProperty().addListener(shiftAmountListener);
         startDateTextField.localDateProperty().addListener(startDateTextListener);
-        startDateTextField.localDateProperty().addListener(shiftAmountListener);
+//        startDateTextField.localDateProperty().addListener(shiftAmountListener);
         final LocalDateTime start;
         if (startRecurrence.isSupported(ChronoUnit.NANOS))
         {
@@ -233,24 +230,23 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //        });
     }
     
-    final private ChangeListener<? super Temporal> shiftAmountListener = (observable, oldValue, newValue) ->
-    {
-        if (newValue instanceof LocalDate)
-        {
-            shiftAmount = Period.between(LocalDate.from(startOriginalRecurrence), LocalDate.from(newValue));            
-        } else if (newValue instanceof LocalDateTime)
-        {
-            shiftAmount = Duration.between(DateTimeType.DATE_WITH_LOCAL_TIME.from(startOriginalRecurrence), newValue);
-        }
-//        throw new RuntimeException("bad code:");
-    };
+//    final private ChangeListener<? super Temporal> shiftAmountListener = (observable, oldValue, newValue) ->
+//    {
+//        if (newValue instanceof LocalDate)
+//        {
+//            shiftAmount = Period.between(LocalDate.from(startOriginalRecurrence), LocalDate.from(newValue));            
+//        } else if (newValue instanceof LocalDateTime)
+//        {
+//            shiftAmount = Duration.between(DateTimeType.DATE_WITH_LOCAL_TIME.from(startOriginalRecurrence), newValue);
+//        }
+////        throw new RuntimeException("bad code:");
+//    };
     
     /** Synch recurrence dates when DTSTART is modified (can occur when {@link synchStartDatePickerAndComponent#startDatePicker} changes */
     ChangeListener<? super Temporal> dateTimeStartListener = (obs, oldValue, newValue) -> 
     {
         // If recurrence before or equal to DTSTART adjust to match DTSTART
         // if recurrence is after DTSTART don't adjust it
-        System.out.println("dtstart changed:" + oldValue + " " + newValue);
         LocalDate d1 = LocalDate.from(startRecurrenceProperty.get());
         LocalDate d2 = LocalDate.from(newValue);
         LocalDate d3 = LocalDate.from(oldValue);
@@ -259,11 +255,15 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             Temporal r = newValue.with(startDateTextField.getLocalDate());
             TemporalAmount shift = DateTimeUtilities.temporalAmountBetween(r, newValue);
             LocalDateTime startNew = startDateTimeTextField.getLocalDateTime().plus(shift);
-            startDateTimeTextField.localDateTimeProperty().removeListener(shiftAmountListener);
-            startDateTextField.localDateProperty().removeListener(shiftAmountListener);
+//            startDateTimeTextField.localDateTimeProperty().removeListener(shiftAmountListener);
+//            startDateTextField.localDateProperty().removeListener(shiftAmountListener);
+//            TemporalAmount shiftAmountSave = shiftAmount;
             startDateTimeTextField.setLocalDateTime(startNew);
-            startDateTimeTextField.localDateTimeProperty().addListener(shiftAmountListener);
-            startDateTextField.localDateProperty().addListener(shiftAmountListener);
+//            System.out.println("dtstart changed:" + oldValue + " " + newValue + " " + shiftAmount);
+
+//            shiftAmount = shiftAmountSave;
+//            startDateTimeTextField.localDateTimeProperty().addListener(shiftAmountListener);
+//            startDateTextField.localDateProperty().addListener(shiftAmountListener);
 //            System.out.println("recurrence:" + startRecurrenceProperty.get() + " " + shift);
 //            startOriginalRecurrence = startOriginalRecurrence.plus(duration);
 //            System.out.println("recurrence:" + startRecurrenceProperty.get() + " " + startOriginalRecurrence);
@@ -271,6 +271,9 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //            System.out.println("DTSTART changed:" + vComponentEdited.getDateTimeStart().getValue() +
 //                    startDateTimeTextField.getLocalDateTime() + " " + startDateTextField.getLocalDate()
 //                    );
+        } else
+        {
+//            shiftAmount = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
         }
     };
     
@@ -310,11 +313,13 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             TemporalAmount shift = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
 //            System.out.println("synch amount:" + oldValue + " " + newValue + " " + shiftAmount);
             LocalDateTime startNew = startDateTimeTextField.getLocalDateTime().plus(shift);
-            startDateTextField.localDateProperty().removeListener(startDateTextListener);
-            startDateTextField.localDateProperty().removeListener(shiftAmountListener);
+//            startDateTextField.localDateProperty().removeListener(startDateTextListener);
+//            startDateTextField.localDateProperty().removeListener(shiftAmountListener);
+//            TemporalAmount shiftAmountSave = shiftAmount;
             startDateTimeTextField.setLocalDateTime(startNew);
-            startDateTextField.localDateProperty().addListener(startDateTextListener);
-            startDateTextField.localDateProperty().addListener(shiftAmountListener);
+//            shiftAmount = shiftAmountSave;
+//            startDateTextField.localDateProperty().addListener(startDateTextListener);
+//            startDateTextField.localDateProperty().addListener(shiftAmountListener);
 //            startDateTimeTextField.setLocalDateTime(startNew);
 //            startOriginalRecurrence = startOriginalRecurrence.plus(duration);
 //            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrenceProperty.get());

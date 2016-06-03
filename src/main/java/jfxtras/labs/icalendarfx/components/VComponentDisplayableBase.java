@@ -687,16 +687,16 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * startRecurrence and endRecurrence.
      * 
      * This provides the functionality for editing only one recurrence.
+     * @param <U>
      * 
-     * @param vComponentEditedCopy
      * @param vComponentOriginal
      * @param startRecurrence
      * @param endRecurrence
      */
-    void becomeNonRecurring(
+    <U extends Temporal> void becomeNonRecurring(
             VComponentDisplayableBase<?> vComponentOriginal,
-            Temporal startRecurrence,
-            Temporal endRecurrence)
+            U startRecurrence,
+            U endRecurrence)
     {
         setRecurrenceRule((RecurrenceRule2) null);
         setRecurrenceDates(null);
@@ -717,14 +717,17 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
 ////        endType().setDuration(this, startRecurrence, endRecurrence);
 //    }
     
-    /** Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time */
-    void adjustDateTime(
-            Temporal startRecurrence,
-            Temporal endRecurrence,
-            TemporalAmount shiftAmount)
+    /** Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time 
+     * @param <U>*/
+    @Deprecated // inline?
+    <U extends Temporal> void adjustDateTime(
+            Temporal startOriginalRecurrence,
+            U startRecurrence,
+            U endRecurrence)
+//            TemporalAmount shiftAmount)
     {
-//        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
-        Temporal newStart = getDateTimeStart().getValue().plus(shiftAmount);
+        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
+        Temporal newStart = getDateTimeStart().getValue().plus(amount);
         setDateTimeStart(newStart);
 //        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
         setEndOrDuration(startRecurrence, endRecurrence);
@@ -737,13 +740,15 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * 
      * equal checks are encapsulated inside the enum VComponentProperty
      * @param <T>
+     * @param <U>
      */
-    <T extends VComponentDisplayableBase<?>> List<PropertyType> findChangedProperties(
+    <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
 //            T vComponentEditedCopy,
             T vComponentOriginal,
-            Temporal startInstance,
-            Temporal endInstance,
-            TemporalAmount shiftAmount)
+            Temporal startOriginalRecurrence,
+            U startRecurrence,
+            U endRecurrence)
+//            TemporalAmount shiftAmount)
     {
         List<PropertyType> changedProperties = new ArrayList<>();
         properties()
@@ -763,7 +768,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
          * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
          * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
          * question is answered. */
-        if (shiftAmount != null)
+        if (! startOriginalRecurrence.equals(startRecurrence))
         {
             changedProperties.add(PropertyType.DATE_TIME_START);
         }        

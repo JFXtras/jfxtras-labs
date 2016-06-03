@@ -254,10 +254,10 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      */
     
     @Override
-    void becomeNonRecurring(
+    <U extends Temporal> void becomeNonRecurring(
             VComponentDisplayableBase<?> vComponentOriginal,
-            Temporal startRecurrence,
-            Temporal endRecurrence)
+            U startRecurrence,
+            U endRecurrence)
     {
         super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
         if (vComponentOriginal.getRecurrenceRule() != null)

@@ -57,9 +57,10 @@ public class ReviseComponentTest
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
+                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
-                shift,
+//                shift,
                 (m) -> ChangeDialogOption.ALL);
         vComponents.addAll(newVComponents);
 
@@ -101,9 +102,10 @@ public class ReviseComponentTest
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
+                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
-                shift,
+//                shift,
                 (m) -> ChangeDialogOption.ONE);
         vComponents.addAll(newVComponents);
 
@@ -143,9 +145,10 @@ public class ReviseComponentTest
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
+                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
-                shift,
+//                shift,
                 (m) -> ChangeDialogOption.CANCEL);
         assertNull(newVComponents);
 
@@ -187,9 +190,10 @@ public class ReviseComponentTest
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginalCopy,
+                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
-                shift,
+//                shift,
                 (m) -> ChangeDialogOption.THIS_AND_FUTURE);
         vComponents.addAll(newVComponents);
 
@@ -248,9 +252,10 @@ public class ReviseComponentTest
         Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentEdited,
                 vComponentOriginal,
+                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
-                shift,
+//                shift,
                 (m) -> ChangeDialogOption.ALL);
         vComponents.addAll(newVComponents);
 

@@ -243,10 +243,10 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
      */
     
     @Override
-    void becomeNonRecurring(
+    <U extends Temporal> void becomeNonRecurring(
             VComponentDisplayableBase<?> vComponentOriginal,
-            Temporal startRecurrence,
-            Temporal endRecurrence)
+            U startRecurrence,
+            U endRecurrence)
     {
         super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
         if (getDuration() == null)
@@ -256,14 +256,14 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     }
     
     @Override
-    <T extends VComponentDisplayableBase<?>> List<PropertyType> findChangedProperties(
+    <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
           T vComponentOriginal,
-          Temporal startInstance,
-          Temporal endInstance,
-          TemporalAmount shiftAmount)
+          Temporal startOriginalRecurrence,
+          U startRecurrence,
+          U endRecurrence)
     {
-        List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startInstance, endInstance, shiftAmount);
-        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
+        List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startOriginalRecurrence, startRecurrence, endRecurrence);
+        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
         TemporalAmount durationOriginal = getActualDuration();
         if (! durationOriginal.equals(durationNew))
         {

@@ -33,9 +33,10 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, Descri
         Collection<VJournal> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponent,
                 vComponentOriginalCopy,
+                editDescriptiveVBox.startOriginalRecurrence,
                 editDescriptiveVBox.startRecurrenceProperty.get(),
                 null,
-                editDescriptiveVBox.shiftAmount,
+//                editDescriptiveVBox.shiftAmount,
                 EditChoiceDialog.EDIT_DIALOG_CALLBACK
                 );
         vComponents.remove(vComponent);

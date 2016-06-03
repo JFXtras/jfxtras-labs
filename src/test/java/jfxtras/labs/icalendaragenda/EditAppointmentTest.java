@@ -95,10 +95,10 @@ public class EditAppointmentTest
                 vComponentEditedCopy,
                 vComponentOriginal,
 //                vComponents,
-//                startOriginalRecurrence,
+                startOriginalRecurrence,
                 startRecurrence,
                 endRecurrence,
-                shift,
+//                shift,
                 (m) -> ChangeDialogOption.ALL);
         vComponents.addAll(newVComponents);
 
