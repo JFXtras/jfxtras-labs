@@ -4,6 +4,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities;
@@ -11,6 +12,7 @@ import jfxtras.labs.icalendarfx.utilities.VCalendarUtilities;
 public class ICalendarReadICSTest
 {
     @Test
+    @Ignore
     public void canReadYahooICS()
     {
         VCalendar vCalendar = new VCalendar();

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Parent;
@@ -31,6 +32,7 @@ public class AgendaChangeTest extends AgendaTestAbstract
     
     /* Moves appointment to new time */
     @Test
+    @Ignore
     public void canDragAndDropAppointment()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getDaily1()));

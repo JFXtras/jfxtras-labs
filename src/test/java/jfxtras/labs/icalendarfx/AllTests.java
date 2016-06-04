@@ -7,9 +7,13 @@ import org.junit.runners.Suite.SuiteClasses;
 import jfxtras.labs.icalendarfx.calendar.GeneralCalendarTest;
 import jfxtras.labs.icalendarfx.component.BaseTest;
 import jfxtras.labs.icalendarfx.component.ComponentCopyTest;
+import jfxtras.labs.icalendarfx.component.DaylightSavingsTimeTest;
+import jfxtras.labs.icalendarfx.component.DisplayableTest;
 import jfxtras.labs.icalendarfx.component.GeneralComponentTest;
+import jfxtras.labs.icalendarfx.component.ICalendarParseVEventTest;
 import jfxtras.labs.icalendarfx.component.PersonalTest;
 import jfxtras.labs.icalendarfx.component.PrimaryTest;
+import jfxtras.labs.icalendarfx.component.RepeatableTest;
 import jfxtras.labs.icalendarfx.component.StandardOrDaylightTimeTest;
 import jfxtras.labs.icalendarfx.component.VAlarmTest;
 import jfxtras.labs.icalendarfx.component.VEventTest;
@@ -78,6 +82,8 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
         BaseTest.class,
         PrimaryTest.class,
         PersonalTest.class,
+        DisplayableTest.class,
+        RepeatableTest.class,
         VEventTest.class,
         VTodoTest.class,
         VJournalTest.class,
@@ -85,6 +91,8 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
         VTimeZoneTest.class,
         VAlarmTest.class,
         StandardOrDaylightTimeTest.class,
+        DaylightSavingsTimeTest.class,
+        ICalendarParseVEventTest.class,
        
        // property tests
         GeneralPropertyTest.class,

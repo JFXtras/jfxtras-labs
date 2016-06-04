@@ -136,6 +136,7 @@ public abstract class VComponentBase<T> implements VComponent<T>
     }
 
     /** Parse content lines into calendar component */
+    @Override
     public void parseContent(String contentLines)
     {
 //        parseContent(Arrays.asList(contentLines.split(System.lineSeparator())));
@@ -258,11 +259,11 @@ public abstract class VComponentBase<T> implements VComponent<T>
             {
                 Object p1 = i1.next().getProperty(this);
                 Object p2 = i2.next().getProperty(testObj);
-//                System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
                 if (! p1.equals(p2))
                 {
+                    System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
                     isFailure = true;
-                    break;
+//                    break;
                 }
             }
             propertiesEquals = ! isFailure;

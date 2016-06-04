@@ -2,7 +2,6 @@ package jfxtras.labs.icalendarfx;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,8 +18,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.CalendarElementType;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
@@ -374,20 +373,27 @@ public class VCalendar
                 change.getAddedSubList().forEach(e -> 
                 {
 //                    System.out.println("change:" + e.getSummary());
-                    if (e.getRecurrenceId() == null)
-                    { // is a parent component
-                        displayableComponentMap.put(e.getUniqueIdentifier().getValue(), e);
-                    } else
-                    { // is a child component
-                        String uid = e.getUniqueIdentifier().getValue();
-                        VComponentDisplayable<?> parent = displayableComponentMap.get(uid);
-                        if (parent != null)
-                        {
-                            parent.childComponentsWithRecurrenceIDs().add(e);
+                    if ((e.getUniqueIdentifier() != null))
+                    {
+                        if (e.getRecurrenceId() == null)
+                        { // is a parent component
+                            displayableComponentMap.put(e.getUniqueIdentifier().getValue(), e);
                         } else
-                        {
-                            throw new RuntimeException("Parent component not found for UID:" + uid);
+                        { // is a child component
+                            String uid = e.getUniqueIdentifier().getValue();
+                            VComponentDisplayable<?> parent = displayableComponentMap.get(uid);
+                            if (parent != null)
+                            {
+                                parent.childComponentsWithRecurrenceIDs().add(e);
+                            } else
+                            {
+//                                throw new RuntimeException("Error: Parent component not found for UID:" + uid);
+                                // TODO - THERE IS A PROBLEM IS CHILD COMES BEFORE PARENT IN LIST
+                            }
                         }
+                    } else
+                    {
+//                        throw new RuntimeException("Error: UID value is not present.  Component MUST have a UID value");                        
                     }
                 });
             }
@@ -471,7 +477,7 @@ public class VCalendar
         {
             elements.add(getMethod());
         }
-        elements.addAll((Collection<? extends VCalendarElement>) components());
+        elements.addAll(components());
 
         StringBuilder builder = new StringBuilder(elements.size()*300);
         builder.append(firstContentLine + System.lineSeparator());

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.collections.FXCollections;
@@ -33,6 +34,7 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 public class EditAppointmentTest
 {
     @Test
+    @Ignore
     public void canEditAll()
     {
         final Collection<Appointment> appointments = new ArrayList<>();

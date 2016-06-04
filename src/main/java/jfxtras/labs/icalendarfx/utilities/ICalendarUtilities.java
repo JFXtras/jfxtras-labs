@@ -309,7 +309,6 @@ public final class ICalendarUtilities
      * @param componentString
      * @return
      */
-    // TODO - MOVE THIS TO A UTILITY CLASS
 //    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
 //    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', 'n'};
     public static List<String> unfoldLines(String componentString)
@@ -334,6 +333,7 @@ public final class ICalendarUtilities
             while (lineIterator.hasNext())
             {
                 String anotherLine = lineIterator.next();
+                if (anotherLine.isEmpty()) continue; // ignore blank lines
                 if ((anotherLine.charAt(0) == ' ') || (anotherLine.charAt(0) == '\t'))
                 { // unwrap anotherLine into line
                     builder.append(anotherLine.substring(1, anotherLine.length()));

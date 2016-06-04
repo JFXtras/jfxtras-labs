@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -216,7 +217,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
             duration = DateTimeUtilities.temporalAmountBetween(dtstart, dtdue);
         } else
         {
-            throw new RuntimeException("Invalid VTodo: Either DUE or DURATION must be set");
+            return Duration.ZERO;
         }
         return duration;
     }

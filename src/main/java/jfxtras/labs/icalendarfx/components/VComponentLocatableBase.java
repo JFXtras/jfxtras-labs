@@ -241,7 +241,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         return errors;
     }
     
-    /** Stream recurrence dates with adjustment to include recurrences don't end before start parameter */
+    /** Stream recurrence dates with adjustment to include recurrences that don't end before start parameter */
     @Override
     public Stream<Temporal> streamRecurrences(Temporal start)
     {

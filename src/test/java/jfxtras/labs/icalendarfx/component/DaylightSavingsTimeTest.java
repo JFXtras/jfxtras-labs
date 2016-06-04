@@ -57,10 +57,10 @@ public class DaylightSavingsTimeTest
         String componentName = builtComponent.componentType().toString();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
-                "DTSTART:20160306T080000Z" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
                 "COMMENT:My third comment" + System.lineSeparator() +
+                "DTSTART:20160306T080000Z" + System.lineSeparator() +
                 "END:" + componentName;
                 
         DaylightSavingTime madeComponent = new DaylightSavingTime(content);

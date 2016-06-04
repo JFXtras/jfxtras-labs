@@ -606,20 +606,38 @@ public abstract class ICalendarTestAbstract2
     /* Example Google individual appointment */
     protected static VEvent getGoogleIndividual()
     {
-        return new VEvent()
+        VEvent v = new VEvent()
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 15, 0), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 12, 30), ZoneOffset.UTC))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
                 .withSummary("test1")
+                .withTimeTransparency("OPAQUE")
+                .withSequence(0)
+                .withStatus("CONFIRMED")
+                .withLocation("")
+                .withDescription("")
                 .withUniqueIdentifier("vpqej26mlpg3adcncqqs7t7a34@google.com");
+        v.propertySortOrder().put("DTSTART", 0);
+        v.propertySortOrder().put("DTEND", 10);
+        v.propertySortOrder().put("DTSTAMP", 20);
+        v.propertySortOrder().put("UID", 30);
+        v.propertySortOrder().put("CREATED", 40);
+        v.propertySortOrder().put("DESCRIPTION", 50);
+        v.propertySortOrder().put("LAST-MODIFIED", 60);
+        v.propertySortOrder().put("LOCATION", 70);
+        v.propertySortOrder().put("SEQUENCE", 80);
+        v.propertySortOrder().put("STATUS", 90);
+        v.propertySortOrder().put("SUMMARY", 100);
+        v.propertySortOrder().put("TRANSP", 110);
+        return v;
     }
     
     /* Example Google repeatable appointment */
     public static VEvent getGoogleRepeatable()
     {
-        return new VEvent()
+        VEvent v = new VEvent()
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 11, 0), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 25), ZoneOffset.UTC))
@@ -630,6 +648,20 @@ public abstract class ICalendarTestAbstract2
                         .withByRules(new ByDay(DayOfWeek.SUNDAY, DayOfWeek.TUESDAY, DayOfWeek.FRIDAY)))
                 .withSummary("test2")
                 .withUniqueIdentifier("im8hmpakeigu3d85j3vq9q8bcc@google.com");
+//        v.propertySortOrder().put("DTSTART", 0);
+//        v.propertySortOrder().put("DTEND", 10);
+//        v.propertySortOrder().put("DTSTAMP", 20);
+//        v.propertySortOrder().put("UID", 30);
+//        v.propertySortOrder().put("CREATED", 40);
+//        v.propertySortOrder().put("DESCRIPTION", 50);
+//        v.propertySortOrder().put("LAST-MODIFIED", 60);
+//        v.propertySortOrder().put("LOCATION", 70);
+//        v.propertySortOrder().put("SEQUENCE", 80);
+//        v.propertySortOrder().put("STATUS", 90);
+//        v.propertySortOrder().put("SUMMARY", 100);
+//        v.propertySortOrder().put("LAST-MODIFIED", 110);
+//        v.propertySortOrder().put("TRANSP", 120);
+        return v;
     }
     
     /* Example Google repeatable appointment with EXDATE*/

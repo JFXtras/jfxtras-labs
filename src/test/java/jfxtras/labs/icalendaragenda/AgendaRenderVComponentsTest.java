@@ -175,6 +175,8 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
     }
 
     @Test
+    @Ignore
+
     public void canRenderVComponentZoned()
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments

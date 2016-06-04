@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Collections;
@@ -198,7 +199,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
             duration = DateTimeUtilities.temporalAmountBetween(dtstart, dtend);
         } else
         {
-            throw new RuntimeException("Either DTEND or DURATION must be set");
+            return Duration.ZERO;
         }
         return duration;
     }

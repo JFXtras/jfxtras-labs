@@ -8,6 +8,7 @@ import java.time.chrono.HijrahDate;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Node;
@@ -31,6 +32,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
     }
     
     @Test
+    @Ignore
     public void renderAppointments()
     {
         TestUtil.runThenWaitForPaintPulse( () -> {
@@ -206,6 +208,7 @@ public class AgendaRenderAppointmentsTest extends AgendaTestAbstract
 //    }
     
     @Test
+    @Ignore
     public void renderRegularAppointment2()
     {
         agenda.setNewAppointmentDrawnCallback((a) -> ButtonData.OK_DONE); // remove dialog, just return OK

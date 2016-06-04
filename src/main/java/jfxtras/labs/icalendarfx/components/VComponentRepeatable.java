@@ -212,7 +212,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             setRecurrenceRule(new RecurrenceRule(rrule));
         } else
         {
-            setRecurrenceRule(rrule);
+            getRecurrenceRule().setValue(rrule);
         }
     }
     default void setRecurrenceRule(String rrule)

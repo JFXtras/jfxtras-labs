@@ -84,7 +84,6 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
                         .withDateTimeDue("TZID=America/Los_Angeles:19960401T050000")
                         .withPercentComplete(35))
                 .withVEvents(getMonthly6());
-        System.out.println(c.toContent());
     }
     
     @Test

@@ -476,7 +476,7 @@ public class RecurrenceRule2 implements VCalendarElement
                         }
                         addWeekStartBindings(newByRule);
                     });
-                    Collections.sort(byRules()); // sort additions
+//                    Collections.sort(byRules()); // sort additions
                 }
             }
         });

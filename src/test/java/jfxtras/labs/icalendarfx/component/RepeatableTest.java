@@ -1315,12 +1315,13 @@ public class RepeatableTest //extends Application
                     .collect(Collectors.toList());
             assertEquals(expectedDates, madeDates);
         }
-
+System.out.println("here1:");
         // Change RRule
         e.setRecurrenceRule(new RecurrenceRule2()
                 .withFrequency(FrequencyType.WEEKLY)
                 .withInterval(2)
                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
+        System.out.println("here2:");
 
         { // check new repeatable stream
             List<Temporal> madeDates = e
@@ -1342,6 +1343,7 @@ public class RepeatableTest //extends Application
                     .collect(Collectors.toList());
             assertEquals(expectedDates, madeDates);
         }
+        System.out.println("here3:");
 
         // request date beyond first cached date to test cache system
         Temporal date = e.streamRecurrences(LocalDateTime.of(2015, 12, 9, 10, 0)).findFirst().get();

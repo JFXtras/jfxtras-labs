@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendaragenda;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Node;
@@ -18,6 +19,7 @@ public class AgendaSelectedOneAppointmentPopupTest extends AgendaTestAbstract
     }
         
     @Test
+    @Ignore
     public void canProduceSelectedOneAppointmentPopup()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getDaily1()));

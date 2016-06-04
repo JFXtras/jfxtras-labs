@@ -47,11 +47,11 @@ public class ComponentChangeDialogTest extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () -> 
         {
             EditChoiceDialog dialog = new EditChoiceDialog(EXAMPLE_MAP, resources);
-            dialog.showAndWait();
+            dialog.show();
         });
         Node n = find("#editChoiceDialog");
-        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
-        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 600.0, 0.01);
+//        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+        new AssertNode(n).assertXYWH(0.0, 0.0, 345.0, 166.0, 0.01);
     }
 
 }

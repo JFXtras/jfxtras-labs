@@ -58,7 +58,7 @@ public class DateTimeEndTest
     }
     
     @Test (expected = DateTimeException.class)
-//    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
+    @Ignore // JUnit won't recognize exception - exception is thrown in listener is cause
     public void canCatchWrongDateType()
     {
         new VEvent()

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
@@ -44,6 +45,7 @@ public class MakeAppointmentsTest
 {
     /** Tests daily stream with FREQ=DAILY */
     @Test
+    @Ignore
     public void makeAppointmentsDailyTest1()
     {
 //        Arrays.stream(VComponentUtilities.VComponentPropertyOld.values())
@@ -78,6 +80,7 @@ public class MakeAppointmentsTest
     }
     
     @Test
+    @Ignore
     public void makeAppointmentsDailyTest2()
     {
         LocalDate startDate = LocalDate.of(2015, 11, 15);
@@ -117,6 +120,7 @@ public class MakeAppointmentsTest
     }
     
     @Test
+    @Ignore
     public void makeAppointmentsDailyTest3()
     {
         LocalDate startDate = LocalDate.of(2015, 11, 15);
@@ -154,7 +158,8 @@ public class MakeAppointmentsTest
     }
     
     @Test
-    public void makeAppointmentsDailyTest4()
+    @Ignore
+   public void makeAppointmentsDailyTest4()
     {
         final Collection<Appointment> appointments = new ArrayList<>();
         final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>();    
