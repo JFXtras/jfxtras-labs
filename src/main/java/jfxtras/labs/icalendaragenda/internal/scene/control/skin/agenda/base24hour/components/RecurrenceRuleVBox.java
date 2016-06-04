@@ -507,8 +507,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             }
         });
         
-        
-        
         // DAY OF WEEK CHECK BOX LISTENERS (FOR WEEKLY)
         checkBoxDayOfWeekMap.put(sundayCheckBox.selectedProperty(), DayOfWeek.SUNDAY);
         checkBoxDayOfWeekMap.put(mondayCheckBox.selectedProperty(), DayOfWeek.MONDAY);
@@ -868,7 +866,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     {
         if (rrule.getInterval() == null)
         {
-            rrule.setInterval(new Interval(1));
+            rrule.setInterval(new Interval(Interval.DEFAULT_INTERVAL));
         }
         int initialInterval = rrule.getInterval().getValue();
         intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, initialInterval));

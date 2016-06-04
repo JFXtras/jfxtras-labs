@@ -772,21 +772,16 @@ public final class ReviseComponentHelper
                  List<PropertyType> changedProperties)
         {
             Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
-
             if (! changedProperties.contains(PropertyType.RECURRENCE_RULE))
             {
                 choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startInstance, startInstance));
             }
              
-//            if (! (vComponent.getRecurrenceRule() == null))
-//            {
             Temporal lastRecurrence = vComponentEdited.lastRecurrence();
             Temporal firstRecurrence = vComponentEdited.streamRecurrences().findFirst().get();
-//                boolean isInifite = lastRecurrence == null;
-            boolean isLastRecurrence = lastRecurrence.equals(startInstance);
+            boolean isLastRecurrence = (lastRecurrence == null) ? false : startInstance.equals(lastRecurrence);
             boolean isFirstRecurrence = startInstance.equals(firstRecurrence);
             boolean isDTStartChanged = ! vComponentEdited.getDateTimeStart().equals(vComponentOriginal.getDateTimeStart());
-            System.out.println("last,first:" + isLastRecurrence + " " + isFirstRecurrence + " " + lastRecurrence);
             boolean isFirstOrLastChanged = ! (isLastRecurrence || isFirstRecurrence);
             if (isFirstOrLastChanged || isDTStartChanged)
             {
@@ -797,7 +792,6 @@ public final class ReviseComponentHelper
                 choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));
             }
             choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponentEdited.getDateTimeStart().getValue(), lastRecurrence));
-//            }
             return choices;
          }        
      }

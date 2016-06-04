@@ -95,7 +95,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default void setClassification(Classification classification) { classificationProperty().set(classification); }
     default void setClassification(ClassificationType classification)
     {
-        if (getClassification() != null)
+        if (getClassification() == null)
         {
             setClassification(new Classification(classification));            
         } else

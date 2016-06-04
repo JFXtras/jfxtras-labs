@@ -42,9 +42,6 @@ public class EditComponentPopupTrial extends Application
 	@Override
 	public void start(Stage primaryStage)
 	{
-//	    LocalDate d = LocalDate.now();
-//	    LocalDateTime d2 = LocalDateTime.now().plusDays(1);
-//	    System.out.println(d.with(d2));
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", Locale.getDefault());
         Settings.setup(resources);
 

@@ -14,13 +14,14 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
  */
 public class Interval extends RRuleElementBase<Integer, Interval>
 {
-    static final Integer DEFAULT_INTERVAL = 1;
-    @Override
-    public Integer getValue() { return (valueProperty() == null) ? DEFAULT_INTERVAL : valueProperty().get(); }
+    public static final int DEFAULT_INTERVAL = 1;
+//    @Override
+//    public Integer getValue() { return (valueProperty().get() == null) ? DEFAULT_INTERVAL : valueProperty().get(); }
     
     public Interval()
     {
         super();
+        setValue(DEFAULT_INTERVAL);
         valueProperty().addListener((obs, oldValue, newValue) ->
         {
             if ((newValue != null) && (newValue < 1))
@@ -54,5 +55,29 @@ public class Interval extends RRuleElementBase<Integer, Interval>
         Interval element = new Interval();
         element.parseContent(content);
         return element;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((getValue() == null) ? 0 : getValue().hashCode());
+        return result;
+    }
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Interval other = (Interval) obj;
+        
+        Integer value = (getValue() == null) ? DEFAULT_INTERVAL : getValue();
+        Integer otherValue = (other.getValue() == null) ? DEFAULT_INTERVAL : getValue();
+        return value.equals(otherValue);
     }
 }

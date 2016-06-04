@@ -914,23 +914,39 @@ public class RecurrenceRule2 implements VCalendarElement
         RecurrenceRule2 testObj = (RecurrenceRule2) obj;
 
         List<RRuleElementType> myElements = elements();
-        List<RRuleElementType> testElements = testObj.elements();
-        boolean isSameNumberOfElements = myElements.size() == testElements.size();
-        if (! isSameNumberOfElements)
+        // elements only found in testObj.  Some may be equal because default value may match assigned value
+        List<RRuleElementType> testElements = testObj.elements()
+                .stream()
+                .filter(e -> ! myElements.contains(e))
+                .collect(Collectors.toList());
+        
+        for (RRuleElementType t : myElements)
         {
-            return false;
-        }
-        boolean elementsEqual = true;
-        for (int i=0; i<myElements.size(); i++)
-        {
-            if (! myElements.get(i).getElement(this).equals(testElements.get(i).getElement(testObj)))
+            RRuleElement<?> myElement = t.getElement(this);
+            RRuleElement<?> otherElement = t.getElement(testObj);
+            testElements.remove(t);
+            if (! myElement.equals(otherElement))
             {
-                System.out.println("Recurrence rule not equal:" + myElements.get(i).getElement(this).toContent() +
-                        " " + testElements.get(i).getElement(testObj).toContent());
-                elementsEqual = false;
+                return false;
             }
         }
-        return elementsEqual;
+        // check elements matching default values
+        for (RRuleElementType t : testElements)
+        {
+            RRuleElement<?> otherElement = t.getElement(testObj);
+            try
+            {
+                RRuleElement<?> defaultElement = otherElement.getClass().newInstance();
+                if (! otherElement.equals(defaultElement))
+                {
+                    return false;
+                }
+            } catch (InstantiationException | IllegalAccessException e1)
+            {
+                e1.printStackTrace();
+            }
+        }
+        return true;
     }
     
     @Override

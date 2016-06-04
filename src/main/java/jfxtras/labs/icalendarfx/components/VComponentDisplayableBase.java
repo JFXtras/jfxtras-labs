@@ -758,6 +758,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
                 {
                     Object p1 = t.getProperty(this);
                     Object p2 = t.getProperty(vComponentOriginal);
+//                    System.out.println("prop:" + p1 + " " + p2);
                     if (! p1.equals(p2))
                     {
                         changedProperties.add(t);

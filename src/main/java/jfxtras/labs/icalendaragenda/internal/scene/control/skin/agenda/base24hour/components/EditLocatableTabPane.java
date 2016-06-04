@@ -30,7 +30,7 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatableBase<?>>
             vComponent.setLocation((Location) null); 
         }
         super.handleSaveButton();
-        
+
         Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
                 vComponentOriginalCopy,
                 vComponent,

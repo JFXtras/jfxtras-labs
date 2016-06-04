@@ -68,14 +68,6 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
-//                ICalendarDateTest.class,
-//                ICalendarDeleteTest.class,
-//                ICalendarEditTest.class,
-//                ICalendarEqualsTest.class,
-//                ICalendarMakeInstancesTest.class,
-//              , ICalendarParseVEventTest.class
-//                ICalendarVEventToStringTest.class,
-//              , ICalendarReadICSTest.class,
         
         // calendar tests
         GeneralCalendarTest.class,
