@@ -6,11 +6,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
-                AgendaRenderVComponentsTest.class
-              , AgendaRenderAppointmentsTest.class
-              , AgendaChangeTest.class
-              , AgendaEditPopupTest.class
-              , AgendaStringConverstionTests.class
+    VEventPopupTests.class,
+    VJournalPopupTests.class,
+    VTodoPopupTests.class,
               })
 public class AllTests {
 

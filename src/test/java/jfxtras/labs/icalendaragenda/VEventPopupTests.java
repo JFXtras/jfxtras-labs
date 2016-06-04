@@ -74,8 +74,8 @@ public class VEventPopupTests extends JFXtrasGuiTest
     public void canDisplayPopup()
     {
         Node n = find("#editDisplayableTabPane");
-        //AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
-        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 600.0, 0.01);
+        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);
     }
     
     @Test
@@ -337,7 +337,6 @@ public class VEventPopupTests extends JFXtrasGuiTest
         // Monthly properties
         RadioButton dayOfMonth = find("#dayOfMonthRadioButton");
         RadioButton dayOfWeek = find("#dayOfWeekRadioButton");
-//        Frequency2 f = rrule.getFrequency(); // refresh reference
         
         // Check initial state
         assertTrue(dayOfMonth.isSelected());
@@ -357,11 +356,10 @@ public class VEventPopupTests extends JFXtrasGuiTest
         // YEARLY
         {
         TestUtil.runThenWaitForPaintPulse(() -> frequencyComboBox.getSelectionModel().select(FrequencyType.YEARLY));
-//        Frequency f = v.getRRule().getFrequency(); // refresh reference
 
         // Check initial state
         assertEquals(FrequencyType.YEARLY, f.getValue());
-        assertEquals(1, rrule.byRules().size());
+        assertEquals(0, rrule.byRules().size());
         }
     }
     

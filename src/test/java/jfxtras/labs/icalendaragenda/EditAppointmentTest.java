@@ -29,6 +29,7 @@ import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
+@Deprecated // do in icalendarfx
 public class EditAppointmentTest
 {
     @Test

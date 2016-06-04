@@ -17,7 +17,6 @@ import jfxtras.test.TestUtil;
  *
  * @author David Bal
  */
-@Deprecated
 public class AgendaEditPopupTest extends AgendaTestAbstract
 {
     @Override
@@ -27,6 +26,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
         
     @Test
+    // TODO - fix listener in Agenda to make appointments
     public void canProduceEditPopup()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getDaily1()));
@@ -36,7 +36,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
         
-        Node n = find("#appointmentEditTabPane");
+        Node n = find("#editDisplayableTabPane");
         AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
         new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 600.0, 0.01);
         closeCurrentWindow();
