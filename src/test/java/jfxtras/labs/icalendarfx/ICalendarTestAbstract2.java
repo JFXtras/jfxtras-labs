@@ -77,6 +77,23 @@ public abstract class ICalendarTestAbstract2
                 .withRecurrenceId(LocalDateTime.of(2016, 11, 9, 10, 0))
                 .withSequence(1);
     }
+    
+    /** FREQ=YEARLY; */
+    protected VEvent getRecurrenceForYearly2()
+    {
+        return new VEvent()
+                .withCategories("group13")
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 6, 0))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
+                .withUniqueIdentifier("20151109T082900-0@jfxtras.org")
+                .withDuration(Duration.ofHours(2))
+                .withDescription("Yearly1 Description-edited")
+                .withSummary("Yearly1 Summary-edited")
+                .withRecurrenceId(LocalDateTime.of(2018, 11, 9, 10, 0))
+                .withSequence(1);
+    }
 
     /** FREQ=YEARLY;BYDAY=FR; */
     protected VEvent getYearly2()

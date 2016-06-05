@@ -457,9 +457,10 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
 
     /*
-     * CHILDREN COMPONENTS WITH RECURRENCE-IDs AND MATCHING UID
+     * CHILDREN COMPONENTS - (RECURRENCE-IDs AND MATCHING UID)
      */
-    /**  Callback assigned in {@link VCalendar#displayableListChangeListener } */
+    /**  Callback to make list of child components (those with RECURRENCE-ID and same UID)
+     * Callback assigned in {@link VCalendar#displayableListChangeListener } */
     private Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> makeChildComponentsListCallBack;
     @Override
     public Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> getChildComponentsListCallBack()
@@ -479,13 +480,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             if (getChildComponentsListCallBack() != null)
             {
                 childComponents = getChildComponentsListCallBack().call(this);
-                System.out.println("found2:" + childComponents.size());
             } else
             {
                 return Collections.emptyList();
             }
         }
-        System.out.println("found2b:" + childComponents.size());
         return childComponents;
     }
     @Override
@@ -495,14 +494,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         return childComponents.isEmpty();
     }
     private List<VComponentDisplayable<?>> childComponents; // = new ArrayList<>();    
-    
-//    @Override
-//    public boolean isValid()
-//    {
-//        boolean repeatableIsValid = VComponentDisplayable.super.isValid();
-//        return super.isValid() && repeatableIsValid;
-//    }
-    
+        
     @Override
     public List<String> errors()
     {

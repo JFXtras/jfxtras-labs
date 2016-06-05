@@ -613,5 +613,6 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     /** Callback to make list of child components (those with RECURRENCE-ID and same UID) 
      * Callback assigned in {@link VCalendar#displayableListChangeListener }.  It should not be assigned elsewhere. */
     Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> getChildComponentsListCallBack();
+    /** Callback to make list of child components (those with RECURRENCE-ID and same UID) */
     void setChildComponentsListCallBack(Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> childComponentsListCallBack);
 }
