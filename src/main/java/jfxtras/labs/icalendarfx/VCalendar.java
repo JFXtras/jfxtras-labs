@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -31,6 +31,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
+import jfxtras.labs.icalendarfx.properties.component.relationship.UniqueIdentifier;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
@@ -358,7 +359,9 @@ public class VCalendar
     /* Map of displayable parent components.  Key is UID string, value is component reference.
      * Used to find parent components when a component with a recurrenceID is added
      */
-    private Map<String, VComponentDisplayable<?>> displayableComponentMap = new WeakHashMap<String, VComponentDisplayable<?>>();
+    // NOTE: Can't use WeakHashMap - String key is never garbage collectable
+    private Map<String, VComponentDisplayable<?>> displayableComponentMap = new HashMap<String, VComponentDisplayable<?>>();
+    private List<? extends VComponentDisplayable<?>> list;
     /**
      * RecurrenceID listener
      * notifies parents when a child component with recurrenceID is created or removed
@@ -378,17 +381,29 @@ public class VCalendar
                         if (e.getRecurrenceId() == null)
                         { // is a parent component
                             displayableComponentMap.put(e.getUniqueIdentifier().getValue(), e);
+                            e.setChildComponentsListCallBack( (c) ->
+                            {
+                                UniqueIdentifier uid = c.getUniqueIdentifier();
+                                System.out.println("uid:" + uid);
+                                List<VComponentDisplayable<?>> ll = change.getList().stream()
+                                        .filter(t -> t.getUniqueIdentifier().equals(uid))
+                                        .filter(t -> t != c)
+                                        .peek(t -> System.out.println(t.getSummary().toContent() + " " + (t != c) + " " + System.identityHashCode(t) + " " + System.identityHashCode(c)))
+                                        .collect(Collectors.toList());
+                                System.out.println("found callback:" + ll.size());
+                                return ll;
+                            });
                         } else
                         { // is a child component
+                            System.out.println("added child:");
                             String uid = e.getUniqueIdentifier().getValue();
                             VComponentDisplayable<?> parent = displayableComponentMap.get(uid);
                             if (parent != null)
                             {
-                                parent.childComponentsWithRecurrenceIDs().add(e);
-                            } else
-                            {
-//                                throw new RuntimeException("Error: Parent component not found for UID:" + uid);
-                                // TODO - THERE IS A PROBLEM IS CHILD COMES BEFORE PARENT IN LIST
+                                if (! parent.isChildComponentsEmpty())
+                                {
+                                    parent.childComponents().add(e);
+                                }
                             }
                         }
                     } else
@@ -396,6 +411,29 @@ public class VCalendar
 //                        throw new RuntimeException("Error: UID value is not present.  Component MUST have a UID value");                        
                     }
                 });
+            } else
+            {
+                if (change.wasRemoved())
+                {
+                    change.getRemoved().forEach(e -> 
+                    {
+                        if (e.getRecurrenceId() == null)
+                        {
+                            displayableComponentMap.remove(e.getUniqueIdentifier().getValue(), e);
+                        } else
+                        {
+                            String uid = e.getUniqueIdentifier().getValue();
+                            VComponentDisplayable<?> parent = displayableComponentMap.get(uid);
+                            if (parent != null)
+                            {
+                                if (! parent.isChildComponentsEmpty())
+                                {
+                                    parent.childComponents().remove(e);
+                                }
+                            }
+                        }
+                    });
+                }                
             }
         }
     };

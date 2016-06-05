@@ -119,7 +119,7 @@ public final class ReviseComponentHelper
 //                        if (vComponentEditedCopy.childComponentsWithRecurrenceIDs().size() > 0)
 //                        {
                         // Adjust children components with RecurrenceIDs
-                        vComponentEdited.childComponentsWithRecurrenceIDs()
+                        vComponentEdited.childComponents()
                                 .stream()
 //                                .map(c -> c.getRecurrenceId())
                                 .forEach(v ->
@@ -528,9 +528,9 @@ public final class ReviseComponentHelper
        }
        
        // remove RECURRENCE-ID components that are out of bounds
-       if (vComponentEdited.childComponentsWithRecurrenceIDs() != null)
+       if (vComponentEdited.childComponents() != null)
        {
-           final Iterator<Temporal> recurrenceIDIterator = vComponentEdited.childComponentsWithRecurrenceIDs()
+           final Iterator<Temporal> recurrenceIDIterator = vComponentEdited.childComponents()
                    .stream()
                    .map(e -> e.getRecurrenceId().getValue())
                    .iterator();
@@ -546,7 +546,7 @@ public final class ReviseComponentHelper
        }
        if (vComponentOriginal.getRecurrenceDates() != null)
        {
-           final Iterator<Temporal> recurrenceIDIterator = vComponentOriginal.childComponentsWithRecurrenceIDs()
+           final Iterator<Temporal> recurrenceIDIterator = vComponentOriginal.childComponents()
                    .stream()
                    .map(e -> e.getRecurrenceId().getValue())
                    .iterator();
@@ -637,7 +637,7 @@ public final class ReviseComponentHelper
        vComponentEditedCopy.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
   
        // Add recurrence to original vEvent
-       vComponentOriginal.childComponentsWithRecurrenceIDs().add(vComponentEditedCopy);
+       vComponentOriginal.childComponents().add(vComponentEditedCopy);
        
        // Check for validity
        if (! vComponentEditedCopy.isValid()) { throw new RuntimeException("Invalid component"); }

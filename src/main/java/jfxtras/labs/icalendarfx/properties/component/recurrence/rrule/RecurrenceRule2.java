@@ -476,6 +476,7 @@ public class RecurrenceRule2 implements VCalendarElement
                         }
                         addWeekStartBindings(newByRule);
                     });
+                    // TODO - FIX SORT - DOESN'T COMPILE WITH GRADLE. IS IT NEEDED?
 //                    Collections.sort(byRules()); // sort additions
                 }
             }

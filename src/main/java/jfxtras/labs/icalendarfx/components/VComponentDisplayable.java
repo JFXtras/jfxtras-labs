@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
@@ -597,11 +598,20 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     }
     
     /**
-     * List of child components having RecurrenceIDs.
+     * List of child components having RecurrenceIDs and matching UID to a parent component
      * Note: This list is maintained by a listener in {@link VCalendar#displayableListChangeListener}
      * Do not modify the list.
      * 
      * @return - list of child components having RecurrenceIDs
      */
-    List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs();
+    List<VComponentDisplayable<?>> childComponents();
+    /** Returns true is there are no child components currently in list.  Run this method instead of childComponents().size() because
+     * the latter will generate the list if it doesn't exist which may not be desired.
+     */
+    boolean isChildComponentsEmpty();
+    
+    /** Callback to make list of child components (those with RECURRENCE-ID and same UID) 
+     * Callback assigned in {@link VCalendar#displayableListChangeListener }.  It should not be assigned elsewhere. */
+    Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> getChildComponentsListCallBack();
+    void setChildComponentsListCallBack(Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> childComponentsListCallBack);
 }

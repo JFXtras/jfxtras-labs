@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +13,8 @@ import java.util.stream.Stream;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
@@ -401,10 +404,10 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         
         // Handle Recurrence IDs
         final Stream<Temporal> stream2;
-        if (childComponentsWithRecurrenceIDs() != null)
+        if (childComponents() != null)
         {
             // If present, remove recurrence ID original values
-            List<Temporal> recurrenceIDTemporals = childComponentsWithRecurrenceIDs()
+            List<Temporal> recurrenceIDTemporals = childComponents()
                     .stream()
                     .map(c -> c.getRecurrenceId().getValue())
                     .collect(Collectors.toList());
@@ -454,11 +457,44 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
 
     /*
-     * COMPONENTS WITH RECURRENCE-IDs
+     * CHILDREN COMPONENTS WITH RECURRENCE-IDs AND MATCHING UID
      */
+    /**  Callback assigned in {@link VCalendar#displayableListChangeListener } */
+    private Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> makeChildComponentsListCallBack;
     @Override
-    public List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs() { return childComponentsWithRecurrenceIDs; }
-    private List<VComponentDisplayable<?>> childComponentsWithRecurrenceIDs = new ArrayList<>();    
+    public Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> getChildComponentsListCallBack()
+    {
+        return makeChildComponentsListCallBack;
+    }
+    @Override
+    public void setChildComponentsListCallBack(Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> makeChildComponentsListCallBack)
+    {
+        this.makeChildComponentsListCallBack = makeChildComponentsListCallBack;
+    }
+    @Override
+    public List<VComponentDisplayable<?>> childComponents()
+    {
+        if (childComponents == null)
+        {
+            if (getChildComponentsListCallBack() != null)
+            {
+                childComponents = getChildComponentsListCallBack().call(this);
+                System.out.println("found2:" + childComponents.size());
+            } else
+            {
+                return Collections.emptyList();
+            }
+        }
+        System.out.println("found2b:" + childComponents.size());
+        return childComponents;
+    }
+    @Override
+    public boolean isChildComponentsEmpty()
+    {
+        if (childComponents == null) return true;
+        return childComponents.isEmpty();
+    }
+    private List<VComponentDisplayable<?>> childComponents; // = new ArrayList<>();    
     
 //    @Override
 //    public boolean isValid()
