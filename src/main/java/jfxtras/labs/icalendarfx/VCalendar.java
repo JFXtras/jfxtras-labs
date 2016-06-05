@@ -356,12 +356,11 @@ public class VCalendar
         return this;
     }
     
-    /* Map of displayable parent components.  Key is UID string, value is component reference.
+    /* Map of displayable parent components.  Key is UID string, value is parent component.
      * Used to find parent components when a component with a recurrenceID is added
      */
-    // NOTE: Can't use WeakHashMap - String key is never garbage collectable
+    // NOTE: Can't use WeakHashMap - String key always has a strong reference
     private Map<String, VComponentDisplayable<?>> uidToComponentMap = new HashMap<String, VComponentDisplayable<?>>();
-//    private List<? extends VComponentDisplayable<?>> list;
     /**
      * RecurrenceID listener
      * notifies parents when a child component with recurrenceID is created or removed

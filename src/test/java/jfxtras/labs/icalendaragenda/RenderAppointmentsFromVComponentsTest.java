@@ -12,15 +12,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javafx.scene.Parent;
-import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.test.TestUtil;
 
-@Deprecated
-public class AgendaRenderVComponentsTest extends AgendaTestAbstract
+public class RenderAppointmentsFromVComponentsTest extends AgendaTestAbstract
 {
     @Override
     public Parent getRootNode()
@@ -30,7 +27,6 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
     }
     
     @Test
-    @Ignore // TODO FIX THIS
     public void canRenderVComponents()
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments
@@ -48,15 +44,15 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
                 .sorted()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedStartDates = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 9, 0, 0)
+                LocalDateTime.of(2015, 11, 8, 0, 0)
               , LocalDateTime.of(2015, 11, 9, 10, 0)
+              , LocalDateTime.of(2015, 11, 11, 0, 0)
               , LocalDateTime.of(2015, 11, 11, 0, 0)
               , LocalDateTime.of(2015, 11, 11, 10, 0)
               , LocalDateTime.of(2015, 11, 11, 10, 30)
-              , LocalDateTime.of(2015, 11, 12, 0, 0)
               , LocalDateTime.of(2015, 11, 12, 10, 0)
               , LocalDateTime.of(2015, 11, 13, 10, 0)
-              , LocalDateTime.of(2015, 11, 15, 0, 0)
+              , LocalDateTime.of(2015, 11, 14, 0, 0)
                 ));
         assertEquals(expectedStartDates, startDates);
 
@@ -67,14 +63,14 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedEndDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 11, 30)
-              , LocalDateTime.of(2015, 11, 11, 0, 0)
+              , LocalDateTime.of(2015, 11, 10, 0, 0)
               , LocalDateTime.of(2015, 11, 11, 10, 45)
               , LocalDateTime.of(2015, 11, 11, 11, 30)
               , LocalDateTime.of(2015, 11, 12, 0, 0)
               , LocalDateTime.of(2015, 11, 12, 11, 30)
+              , LocalDateTime.of(2015, 11, 13, 0, 0)
               , LocalDateTime.of(2015, 11, 13, 10, 45)
-              , LocalDateTime.of(2015, 11, 14, 0, 0)
-              , LocalDateTime.of(2015, 11, 17, 0, 0)
+              , LocalDateTime.of(2015, 11, 16, 0, 0)
                 ));
         assertEquals(expectedEndDates, endDates);
         
@@ -89,13 +85,14 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
                 .sorted()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedStartDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 15, 0, 0)
+                LocalDateTime.of(2015, 11, 14, 0, 0)
               , LocalDateTime.of(2015, 11, 15, 10, 0)
-              , LocalDateTime.of(2015, 11, 18, 0, 0)
+              , LocalDateTime.of(2015, 11, 17, 0, 0)
               , LocalDateTime.of(2015, 11, 18, 10, 0)
-              , LocalDateTime.of(2015, 11, 21, 0, 0)
+              , LocalDateTime.of(2015, 11, 20, 0, 0)
               , LocalDateTime.of(2015, 11, 21, 10, 0)
                 ));
+
         assertEquals(expectedStartDates2, startDates2);
         List<LocalDateTime> endDates2 = agenda.appointments()
                 .stream()
@@ -104,11 +101,11 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedEndDates2 = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 15, 11, 30)
-              , LocalDateTime.of(2015, 11, 17, 0, 0)
+              , LocalDateTime.of(2015, 11, 16, 0, 0)
               , LocalDateTime.of(2015, 11, 18, 11, 30)
-              , LocalDateTime.of(2015, 11, 20, 0, 0)
+              , LocalDateTime.of(2015, 11, 19, 0, 0)
               , LocalDateTime.of(2015, 11, 21, 11, 30)
-              , LocalDateTime.of(2015, 11, 23, 0, 0)
+              , LocalDateTime.of(2015, 11, 22, 0, 0)
                 ));
         assertEquals(expectedEndDates2, endDates2);
         
@@ -123,11 +120,12 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
                 .sorted()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedStartDates3 = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 23, 10, 0)
-              , LocalDateTime.of(2015, 11, 24, 0, 0)
-              , LocalDateTime.of(2015, 11, 24, 10, 0)
-              , LocalDateTime.of(2015, 11, 25, 10, 0)
-              , LocalDateTime.of(2015, 11, 27, 10, 0)
+                LocalDateTime.of(2015, 11, 20, 0, 0),
+                LocalDateTime.of(2015, 11, 23, 0, 0),
+                LocalDateTime.of(2015, 11, 23, 10, 0),
+                LocalDateTime.of(2015, 11, 24, 10, 0),
+                LocalDateTime.of(2015, 11, 25, 10, 0),
+                LocalDateTime.of(2015, 11, 27, 10, 0)
                 ));
         assertEquals(expectedStartDates3, startDates3);
         List<LocalDateTime> endDates3 = agenda.appointments()
@@ -136,11 +134,12 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
                 .sorted()
                 .collect(Collectors.toList());
         List<LocalDateTime> expectedEndDates3 = new ArrayList<LocalDateTime>(Arrays.asList(
-                LocalDateTime.of(2015, 11, 23, 10, 45)
-              , LocalDateTime.of(2015, 11, 24, 11, 30)
-              , LocalDateTime.of(2015, 11, 25, 10, 45)
-              , LocalDateTime.of(2015, 11, 26, 0, 0)
-              , LocalDateTime.of(2015, 11, 27, 10, 45)
+                LocalDateTime.of(2015, 11, 22, 0, 0),
+                LocalDateTime.of(2015, 11, 23, 10, 45),
+                LocalDateTime.of(2015, 11, 24, 11, 30),
+                LocalDateTime.of(2015, 11, 25, 0, 0),
+                LocalDateTime.of(2015, 11, 25, 10, 45),
+                LocalDateTime.of(2015, 11, 27, 10, 45)
                 ));
         assertEquals(expectedEndDates3, endDates3);
 
@@ -171,12 +170,9 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
               , LocalDateTime.of(2025, 11, 28, 10, 45)
                 ));
         assertEquals(expectedEndDates4, endDates4);
-//        TestUtil.sleep(3000);
     }
 
     @Test
-    @Ignore
-
     public void canRenderVComponentZoned()
     {
         // Add VComponents, listener in ICalendarAgenda makes Appointments
@@ -184,8 +180,7 @@ public class AgendaRenderVComponentsTest extends AgendaTestAbstract
             agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getIndividualZoned());
         });
         
-        VEvent v = agenda.getVCalendar().getVEvents().get(0);
-        System.out.println("v:" + v + " " + agenda.appointments().size());
+//        VEvent v = agenda.getVCalendar().getVEvents().get(0);
         List<Temporal> startZoneDates = agenda.appointments()
                 .stream()
                 .map(a -> a.getStartTemporal())

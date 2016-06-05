@@ -11,10 +11,11 @@ import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 
 /**
- * Handles edit and delete functionality of VEvents and VTodos
+ * Handles making recurrences
  * 
  * @author David Bal
  *
+ * @param <R> - class of recurrence (Appointment for Agenda)
  */
 public class RecurrenceHelper<R>
 {   

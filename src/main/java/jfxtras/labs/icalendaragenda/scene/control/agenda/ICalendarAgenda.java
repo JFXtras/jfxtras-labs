@@ -37,9 +37,9 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.CallbackTwoParameters;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
@@ -182,9 +182,9 @@ public class ICalendarAgenda extends Agenda
     public void setAppointmentsListChangeListener(ListChangeListener<Appointment> listener) { appointmentsListChangeListener = listener; }
     public ListChangeListener<Appointment> getAppointmentsListChangeListener() { return appointmentsListChangeListener; }
     
-    private ListChangeListener<VComponent<?>> vComponentsChangeListener; // listen for changes to vComponents.
-    public void setVComponentsChangeListener(ListChangeListener<VComponent<?>> listener) { vComponentsChangeListener = listener; }
-    public ListChangeListener<VComponent<?>> getVComponentsChangeListener() { return vComponentsChangeListener; }
+    private ListChangeListener<VComponentDisplayable<?>> vComponentsChangeListener; // listen for changes to vComponents.
+    public void setVComponentsChangeListener(ListChangeListener<VComponentDisplayable<?>> listener) { vComponentsChangeListener = listener; }
+    public ListChangeListener<VComponentDisplayable<?>> getVComponentsChangeListener() { return vComponentsChangeListener; }
 
     /*
      * Callback for determing scope of edit change - defaults to always answering ALL
@@ -353,7 +353,6 @@ public class ICalendarAgenda extends Agenda
 //                vComponentAppointmentMap,
 //                appointmentVComponentMap
                 );
-        System.out.println("here0:" + getVCalendar());
         getVCalendar().getVEvents().addListener((InvalidationListener) (obs) -> 
         {
 //            System.out.println("vComponents chagned:******************************" + vComponents.size());
@@ -463,10 +462,10 @@ public class ICalendarAgenda extends Agenda
             }
         };
 
-        // fires when VComponents are added outside the edit popup, such as initialization
-        vComponentsChangeListener = (ListChangeListener.Change<? extends VComponent<?>> change) ->
+        // fires when VComponents are added or removed
+        vComponentsChangeListener = (ListChangeListener.Change<? extends VComponentDisplayable<?>> change) ->
         {
-            System.out.println("vcomponents changed:" + getVCalendar().getVEvents().size());
+//            System.out.println("vcomponents changed:" + getVCalendar().getVEvents().size());
             while (change.next())
             {
                 if (change.wasAdded()) // can't make appointment if range is not set
@@ -490,6 +489,7 @@ public class ICalendarAgenda extends Agenda
                                 .forEach(v -> 
                                 {
 //                                    System.out.println("add instances:");
+                                    newAppointments.addAll(recurrenceHelper.makeRecurrences(v));
 //                                    if (v.instances().isEmpty()) newAppointments.addAll(v.makeInstances(start, end));
     
                                     // add recurrence-id Temporal to parents (required to skip recurrences when making appointments)
@@ -618,8 +618,8 @@ public class ICalendarAgenda extends Agenda
                 getVCalendar().getVEvents().stream().forEach(v ->
                 {
 //                    v.instances().clear(); // Remove instances and appointments
-                    LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
-                    LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
+//                    LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
+//                    LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
 //                    System.out.println("range:" + start + " " + end);
 //                    List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(v, start, end, appointmentGroups());
 //                    List<Appointment> newAppointments = makeRecurrences(v);

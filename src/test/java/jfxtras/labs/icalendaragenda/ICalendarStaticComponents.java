@@ -31,7 +31,7 @@ public final class ICalendarStaticComponents
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
-                .withUniqueIdentifier("20151109T082900-0@jfxtras.org")
+                .withUniqueIdentifier("20151109T082900-001@jfxtras.org")
                 .withDuration(Duration.ofHours(1))
                 .withDescription("Yearly1 Description")
                 .withSummary("Yearly1 Summary")
@@ -76,7 +76,7 @@ public final class ICalendarStaticComponents
                 .withDescription("Weekly1 Description")
                 .withSummary("Weekly1 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withUniqueIdentifier("20150110T080000-002@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withInterval(2)
@@ -103,7 +103,7 @@ public final class ICalendarStaticComponents
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
                 .withSummary("WeeklyZoned Summary")
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+                .withUniqueIdentifier("20150110T080000-003@jfxtras.org");
     }
     
     /** FREQ=DAILY, Basic daily stream */
@@ -116,7 +116,7 @@ public final class ICalendarStaticComponents
                 .withDescription("Daily1 Description")
                 .withSummary("Daily1 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withUniqueIdentifier("20150110T080000-004@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.DAILY));
     }
@@ -131,7 +131,7 @@ public final class ICalendarStaticComponents
                 .withDescription("Daily2 Description")
                 .withSummary("Daily2 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withUniqueIdentifier("20150110T080000-005@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withCount(6)
                         .withFrequency(FrequencyType.DAILY)
@@ -148,7 +148,7 @@ public final class ICalendarStaticComponents
                 .withDescription("Daily6 Description")
                 .withSummary("Daily6 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withUniqueIdentifier("20150110T080000-006@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 9, 59, 59), ZoneOffset.systemDefault())
                                 .withZoneSameInstant(ZoneId.of("Z")))
@@ -165,7 +165,7 @@ public final class ICalendarStaticComponents
                 .withDescription("Individual Description")
                 .withSummary("Individual Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+                .withUniqueIdentifier("20150110T080000-007@jfxtras.org");
     }
     
     // Whole day events
@@ -176,7 +176,7 @@ public final class ICalendarStaticComponents
                 .withDateTimeStart(LocalDate.of(2015, 11, 11))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+                .withUniqueIdentifier("20150110T080000-008@jfxtras.org");
     }
     
     public static VEvent getIndividualZoned()
@@ -186,7 +186,7 @@ public final class ICalendarStaticComponents
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+                .withUniqueIdentifier("20150110T080000-009@jfxtras.org");
     }
     
     /** FREQ=DAILY;INVERVAL=3;COUNT=6
@@ -204,10 +204,10 @@ public final class ICalendarStaticComponents
     {
         return new VEvent()
                 .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6).toString())
-                .withDateTimeStart(LocalDate.of(2015, 11, 9))
-                .withDateTimeEnd(LocalDate.of(2015, 11, 11))
+                .withDateTimeStart(LocalDate.of(2015, 11, 8))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 10))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withUniqueIdentifier("20150110T080000-010@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withUntil(LocalDate.of(2015, 11, 24))
                         .withFrequency(FrequencyType.DAILY)
