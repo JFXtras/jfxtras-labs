@@ -1,10 +1,10 @@
 package jfxtras.labs.icalendarfx.properties.component.descriptive;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -29,24 +29,26 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  * @see VTodo
  * @see VJournal
  */
-public class Categories extends PropertyBaseLanguage<List<String>, Categories>
+public class Categories extends PropertyBaseLanguage<List<SimpleStringProperty>, Categories>
 {
-    private final static StringConverter<List<String>> CONVERTER = new StringConverter<List<String>>()
+    private final static StringConverter<List<SimpleStringProperty>> CONVERTER = new StringConverter<List<SimpleStringProperty>>()
     {
         @Override
-        public String toString(List<String> object)
+        public String toString(List<SimpleStringProperty> object)
         {
             return object.stream()
+                    .map(p -> p.get())
                     .map(v -> ValueType.TEXT.getConverter().toString(v)) // escape special characters
                     .collect(Collectors.joining(","));
         }
 
         @Override
-        public List<String> fromString(String string)
+        public List<SimpleStringProperty> fromString(String string)
         {
             return Arrays.stream(string.replace("\\,", "~~").split(",")) // change comma escape sequence to avoid splitting by it
                     .map(s -> s.replace("~~", "\\,"))
                     .map(v -> (String) ValueType.TEXT.getConverter().fromString(v)) // unescape special characters
+                    .map(s -> new SimpleStringProperty(s))
                     .collect(Collectors.toList());
         }
     };
@@ -58,7 +60,7 @@ public class Categories extends PropertyBaseLanguage<List<String>, Categories>
 //        parseContent(contentLine);
 //    }
     
-    public Categories(List<String> values)
+    public Categories(List<SimpleStringProperty> values)
     {
         this();
         setValue(values);
@@ -69,7 +71,10 @@ public class Categories extends PropertyBaseLanguage<List<String>, Categories>
     public Categories(String...values)
     {
         this();
-        setValue(new ArrayList<>(Arrays.asList(values)));
+        List<SimpleStringProperty> value = Arrays.stream(values)
+                .map(s -> new SimpleStringProperty(s))
+                .collect(Collectors.toList());
+        setValue(value);
     }
     
     public Categories(Categories source)

@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,14 +32,13 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
 /** Makes new TabPane for editing a {@link VComponentDisplayable} component
@@ -62,7 +62,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML Label locationLabel;
     @FXML TextField locationTextField;
     @FXML private TextField groupTextField;
-    @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
+    @FXML private CategorySelectionGridPane categorySelectionGridPane;
     @FXML private Button saveComponentButton;
     @FXML private Button cancelComponentButton;
     @FXML private Button saveRepeatButton;
@@ -75,7 +75,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     {
         super();
         loadFxml(DescriptiveVBox.class.getResource("EditDescriptive.fxml"), this);
-        appointmentGroupGridPane.getStylesheets().addAll(getStylesheets());
+        categorySelectionGridPane.getStylesheets().addAll(getStylesheets());
         startDateTimeTextField.setId("startDateTimeTextField");
         startDateTextField.setId("startDateTextField");
     }
@@ -137,7 +137,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             Temporal startRecurrence,
             Temporal endRecurrence,
 //            List<T> vComponents,
-            List<AppointmentGroup> appointmentGroups)
+            List<SimpleStringProperty> categoryList)
     {
         startOriginalRecurrence = startRecurrence;
         vComponentEdited = vComponent;
@@ -183,11 +183,11 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) -> handleWholeDayChange(vComponent, newSelection));
         
         // APPOINTMENT GROUP
-        appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
+        categorySelectionGridPane.categorySelectedProperty().addListener(
             (observable, oldSelection, newSelection) ->
             {
-                Integer i = appointmentGroupGridPane.getAppointmentGroupSelected();
-                String newText = appointmentGroups.get(i).getDescription();
+                Integer i = categorySelectionGridPane.getCategorySelected();
+                String newText = categoryList.get(i).get();
                 groupTextField.setText(newText);
 //                groupNameEdited.set(true); // TODO - HANDLE APPOINTMENT GROUP I/O
             });
@@ -195,12 +195,14 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         // store group name changes by each character typed
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
-            int i = appointmentGroupGridPane.getAppointmentGroupSelected();
-            appointmentGroups.get(i).setDescription(newSelection);
-            appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
+            int i = categorySelectionGridPane.getCategorySelected();
+            groupTextField.textProperty().bind(categoryList.get(i));
+//            categoryList.get(i).set(newSelection);
+//            categoryList.get(i).setDescription(newSelection);
+            categorySelectionGridPane.updateToolTip(i, categoryList.get(i).get());
             vComponentEdited.withCategories(newSelection);
         });
-        appointmentGroupGridPane.setupData(vComponentEdited, appointmentGroups);
+        categorySelectionGridPane.setupData(vComponentEdited, categoryList);
         
         vComponentEdited.getDateTimeStart().valueProperty().addListener(dateTimeStartListener);
 

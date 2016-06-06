@@ -100,8 +100,7 @@
             </GridPane>
             <HBox alignment="CENTER">
                <children>
-                 <AppointmentGroupGridPane fx:id="appointmentGroupGridPane">
-                 </AppointmentGroupGridPane>
+                 <CategorySelectionGridPane fx:id="categorySelectionGridPane" />
                </children>
             </HBox>
          </children>

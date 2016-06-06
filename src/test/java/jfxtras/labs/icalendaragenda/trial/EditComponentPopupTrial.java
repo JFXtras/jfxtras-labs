@@ -88,7 +88,6 @@ public class EditComponentPopupTrial extends Application
 //        EditVJournalTabPane popup = new EditVJournalTabPane();
 //        EditVTodoTabPane popup = new EditVTodoTabPane();
         popup.setupData(
-//                appointment,
                 vevent,
                 vEvents,
                 appointment.getStartTemporal(),

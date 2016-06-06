@@ -17,11 +17,12 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
     
     @Override
     public void setupData(
-//            Appointment appointment,
             VEvent vComponent,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<AppointmentGroup> appointmentGroups)
+    // TODO - TRY TO REMOVE appointmentGroups - USE A LISTENER TO MATCH UP CATEGORY TO APPOINTMENT GROUP?
+    // USE LIST<STRING> INSTEAD - JUST THE DESCRIPTIONS?
     {
         // Convert duration to date/time end - this controller can't handle VEvents with duration
         if (vComponent.getDuration() != null)

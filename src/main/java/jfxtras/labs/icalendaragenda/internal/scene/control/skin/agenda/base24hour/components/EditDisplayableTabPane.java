@@ -18,7 +18,6 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /** 
  * Makes a TabPane for editing a VEvent, VTodo or VJournal - to be specified by type
@@ -98,7 +97,8 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
             List<T> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<AppointmentGroup> appointmentGroups
+            List<String> categoryList
+//            List<AppointmentGroup> appointmentGroups
             )
     {
         this.vComponent = vComponent;
