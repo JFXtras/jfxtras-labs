@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -87,12 +88,13 @@ public class EditComponentPopupTrial extends Application
         EditVEventTabPane popup = new EditVEventTabPane();
 //        EditVJournalTabPane popup = new EditVJournalTabPane();
 //        EditVTodoTabPane popup = new EditVTodoTabPane();
+        List<String> categories = ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.stream().map(a -> a.getDescription()).collect(Collectors.toList());
         popup.setupData(
                 vevent,
                 vEvents,
                 appointment.getStartTemporal(),
                 appointment.getEndTemporal(),
-                ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS
+                categories
                 );
 
         String agendaSheet = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();

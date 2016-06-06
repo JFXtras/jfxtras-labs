@@ -587,6 +587,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
             return false;
         }
         PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
+//        boolean valueEquals = isValueEqual(getValue(), testObj.getValue());
         boolean valueEquals = (getValue() == null) ? (testObj.getValue() == null) : getValue().equals(testObj.getValue());
         System.out.println("VALUES:" + getValue() + " " + testObj.getValue() + " " + valueEquals);
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());

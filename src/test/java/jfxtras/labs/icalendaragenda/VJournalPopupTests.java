@@ -68,7 +68,7 @@ public class VJournalPopupTests extends JFXtrasGuiTest
                     Arrays.asList(vjournal),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+                    ICalendarAgendaUtilities.CATEGORIES);
         });
 
         TextField summary = find("#summaryTextField");

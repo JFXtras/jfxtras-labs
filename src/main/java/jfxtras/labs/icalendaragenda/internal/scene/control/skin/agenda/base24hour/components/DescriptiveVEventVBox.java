@@ -5,7 +5,6 @@ import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
 {
@@ -20,7 +19,7 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
             VEvent vComponent,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<AppointmentGroup> appointmentGroups)
+            List<String> categories)
     // TODO - TRY TO REMOVE appointmentGroups - USE A LISTENER TO MATCH UP CATEGORY TO APPOINTMENT GROUP?
     // USE LIST<STRING> INSTEAD - JUST THE DESCRIPTIONS?
     {
@@ -32,7 +31,7 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
             vComponent.setDateTimeEnd(end);
         }
         
-        super.setupData(vComponent, startRecurrence, endRecurrence, appointmentGroups);
+        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
     }
     
 //    /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and

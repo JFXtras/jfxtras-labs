@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, DescriptiveVJournalVBox>
 {
@@ -50,9 +49,9 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, Descri
             List<VJournal> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<AppointmentGroup> appointmentGroups)
+            List<String> categories)
     {
-        super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, appointmentGroups);
+        super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
         vComponentOriginalCopy = new VJournal(vComponent);
     }
 }

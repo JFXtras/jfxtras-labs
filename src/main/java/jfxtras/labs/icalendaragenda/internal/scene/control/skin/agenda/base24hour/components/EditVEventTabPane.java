@@ -4,7 +4,6 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
 {
@@ -23,10 +22,10 @@ public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
             List<VEvent> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<AppointmentGroup> appointmentGroups)
+            List<String> categories)
     {
         vComponentOriginalCopy = new VEvent(vComponent);
-        super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, appointmentGroups);
+        super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
     }
 
 }

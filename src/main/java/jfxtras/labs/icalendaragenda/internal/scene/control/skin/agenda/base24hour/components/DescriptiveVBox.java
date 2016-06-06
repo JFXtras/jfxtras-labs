@@ -14,7 +14,6 @@ import java.util.ResourceBundle;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -132,12 +131,10 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     ObjectProperty<Temporal> startRecurrenceProperty = new SimpleObjectProperty<>();
 
     public void setupData(
-//            Appointment appointment,
             T vComponent,
             Temporal startRecurrence,
             Temporal endRecurrence,
-//            List<T> vComponents,
-            List<SimpleStringProperty> categoryList)
+            List<String> categories)
     {
         startOriginalRecurrence = startRecurrence;
         vComponentEdited = vComponent;
@@ -187,7 +184,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             (observable, oldSelection, newSelection) ->
             {
                 Integer i = categorySelectionGridPane.getCategorySelected();
-                String newText = categoryList.get(i).get();
+                String newText = categories.get(i);
                 groupTextField.setText(newText);
 //                groupNameEdited.set(true); // TODO - HANDLE APPOINTMENT GROUP I/O
             });
@@ -196,13 +193,19 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
             int i = categorySelectionGridPane.getCategorySelected();
-            groupTextField.textProperty().bind(categoryList.get(i));
-//            categoryList.get(i).set(newSelection);
-//            categoryList.get(i).setDescription(newSelection);
-            categorySelectionGridPane.updateToolTip(i, categoryList.get(i).get());
+            if (! categories.get(i).equals(newSelection))
+            {
+                // ideally, categories list will be a LinkedList to reduce cost of expensive element removal and addition
+                categories.remove(i);
+                categories.add(i, newSelection);
+            }
+//            groupTextField.textProperty().bind(categories.get(i));
+//            categories.get(i).set(newSelection);
+//            categories.get(i).setDescription(newSelection);
+            categorySelectionGridPane.updateToolTip(i, categories.get(i));
             vComponentEdited.withCategories(newSelection);
         });
-        categorySelectionGridPane.setupData(vComponentEdited, categoryList);
+        categorySelectionGridPane.setupData(vComponentEdited, categories);
         
         vComponentEdited.getDateTimeStart().valueProperty().addListener(dateTimeStartListener);
 

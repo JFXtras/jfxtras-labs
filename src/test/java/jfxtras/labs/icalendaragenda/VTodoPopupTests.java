@@ -70,7 +70,7 @@ public class VTodoPopupTests extends JFXtrasGuiTest
                     Arrays.asList(vtodo),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+                    ICalendarAgendaUtilities.CATEGORIES);
         });
 
         TextField summary = find("#summaryTextField");

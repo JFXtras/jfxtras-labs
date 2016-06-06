@@ -5,7 +5,6 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /** Makes new stage for popup window to edit VEvent with Agenda.Appointment recurrences
  * 
@@ -28,10 +27,10 @@ public class EditVEventPopupStage extends EditComponentPopupStage<VEvent>
             List<VEvent> vEvents,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<AppointmentGroup> appointmentGroups)
+            List<String> categories)
     {
         super(new EditVEventTabPane());
-        getEditDisplayableTabPane().setupData(vComponent, vEvents, startRecurrence, endRecurrence, appointmentGroups);
+        getEditDisplayableTabPane().setupData(vComponent, vEvents, startRecurrence, endRecurrence, categories);
     }
 }
  

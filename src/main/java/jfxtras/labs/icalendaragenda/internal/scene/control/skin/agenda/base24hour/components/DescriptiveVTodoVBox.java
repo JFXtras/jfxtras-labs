@@ -5,7 +5,6 @@ import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class DescriptiveVTodoVBox extends DescriptiveLocatableVBox<VTodo>
 {
@@ -21,7 +20,7 @@ public class DescriptiveVTodoVBox extends DescriptiveLocatableVBox<VTodo>
             VTodo vComponent,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<AppointmentGroup> appointmentGroups)
+            List<String> categories)
     {        
         // Convert duration to date/time end - this controller can't handle VEvents with duration
         if (vComponent.getDuration() != null)
@@ -31,6 +30,6 @@ public class DescriptiveVTodoVBox extends DescriptiveLocatableVBox<VTodo>
             vComponent.setDateTimeDue(end);
         }
         
-        super.setupData(vComponent, startRecurrence, endRecurrence, appointmentGroups);
+        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
     }
 }

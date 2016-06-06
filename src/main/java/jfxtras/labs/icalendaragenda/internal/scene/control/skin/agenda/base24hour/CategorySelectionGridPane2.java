@@ -4,6 +4,7 @@ import java.util.List;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -16,7 +17,7 @@ import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 
 /** makes a group of colored squares used to select appointment group */
-public class CategorySelectionGridPane extends GridPane
+public class CategorySelectionGridPane2 extends GridPane
 {
 private Pane[] icons;
 final private ImageView checkIcon = new ImageView();
@@ -28,25 +29,25 @@ private IntegerProperty categorySelected = new SimpleIntegerProperty(-1);
 public void setCategorySelected(Integer i) { categorySelected.set(i); }
 public Integer getCategorySelected() { return categorySelected.getValue(); }   
  
-public CategorySelectionGridPane()
+public CategorySelectionGridPane2()
 {
     checkIcon.getStyleClass().add("check-icon");
 }
 
-public CategorySelectionGridPane(VComponentDisplayable<?> vComponent, List<String> categories)
+public CategorySelectionGridPane2(VComponentDisplayable<?> vComponent, List<SimpleStringProperty> categoryList)
 {
     this();
-    setupData(vComponent, categories);
+    setupData(vComponent, categoryList);
 }
  
- public void setupData(VComponentDisplayable<?> vComponent, List<String> categories)
+ public void setupData(VComponentDisplayable<?> vComponent, List<SimpleStringProperty> categoryList)
  {
      setHgap(3);
      setVgap(3);
-     icons = new Pane[categories.size()];
+     icons = new Pane[categoryList.size()];
      
      int lCnt = 0;
-     for (String category : categories)
+     for (SimpleStringProperty category : categoryList)
      {
          Pane icon = new Pane();
          icon.setPrefSize(24, 24);
@@ -59,21 +60,17 @@ public CategorySelectionGridPane(VComponentDisplayable<?> vComponent, List<Strin
          this.add(icons[lCnt], lCnt % 12, lCnt / 12 );
 
          // tooltip
-         updateToolTip(lCnt, categories.get(lCnt));
-//         Tooltip tooltip = new Tooltip();
-//         tooltip.textProperty().bind(category);
-//         Tooltip.install(icons[lCnt], tooltip);
+//         updateToolTip(lCnt, categoryList.get(lCnt));
 
          // mouse 
          setupMouseOverAsBusy(icons[lCnt]);
          icons[lCnt].setOnMouseClicked( (mouseEvent) ->
          {
              mouseEvent.consume(); // consume before anything else, in case there is a problem in the handling
-             System.out.println("selected:" + category + " " + categories.indexOf(category) + " "+ categories.size());
-             categorySelected.set(categories.indexOf(category));
+             categorySelected.set(categoryList.indexOf(category));
 
              // assign appointment group, store description in CATEGORIES field
-             String g = categories.get(categorySelected.getValue());
+             String g = categoryList.get(categorySelected.getValue()).get();
              vComponent.setCategories(FXCollections.observableArrayList(Categories.parse(g)));
          });
          lCnt++;
@@ -82,17 +79,17 @@ public CategorySelectionGridPane(VComponentDisplayable<?> vComponent, List<Strin
      final String myCategory;
      if ((vComponent.getCategories() != null) && (vComponent.getCategories().get(0).getValue() != null))
      {
-         myCategory = categories
+         myCategory = categoryList
                  .stream()
-//                 .map(p -> p.get())
+                 .map(p -> p.get())
                  .filter(a -> a.equals(vComponent.getCategories().get(0).getValue().get(0)))
                  .findFirst()
-                 .orElse(categories.get(0));
+                 .orElse(categoryList.get(0).get());
      } else
      {
-         myCategory = categories.get(0);
+         myCategory = categoryList.get(0).get();
      }
-     int index = categories.indexOf(myCategory);
+     int index = categoryList.indexOf(myCategory);
      setCategorySelected(index);
      setLPane(index);
      
@@ -100,7 +97,6 @@ public CategorySelectionGridPane(VComponentDisplayable<?> vComponent, List<Strin
      categorySelectedProperty().addListener((observable, oldSelection, newSelection) ->  {
        int oldS = (int) oldSelection;
        int newS = (int) newSelection;
-       System.out.println("icon:" + oldS + " " + newS);
        setLPane(newS);
        unsetLPane(oldS);
      });

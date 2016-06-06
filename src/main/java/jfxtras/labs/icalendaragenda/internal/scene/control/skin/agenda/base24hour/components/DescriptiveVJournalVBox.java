@@ -4,7 +4,6 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
 {
@@ -26,9 +25,9 @@ public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
             VJournal vComponent,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<AppointmentGroup> appointmentGroups)
+            List<String> categories)
     {
-        super.setupData(vComponent, startRecurrence, endRecurrence, appointmentGroups);
+        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
 
         // Journal supports multiple descriptions, but this control only supports one description
         if (vComponent.getDescriptions() == null)

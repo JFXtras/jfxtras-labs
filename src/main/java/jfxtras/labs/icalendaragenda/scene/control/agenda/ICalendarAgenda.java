@@ -82,6 +82,14 @@ public class ICalendarAgenda extends Agenda
     public VCalendar getVCalendar() { return vCalendar; }
     final private VCalendar vCalendar;
     
+//    private List<SimpleStringProperty> categoryProperties;
+    private List<String> categories;
+    public void setCategories(List<String> categories)
+    {
+        this.categories = categories;
+//        categoryProperties = categories.stream().map(s -> new SimpleStringProperty(s)).collect(Collectors.toList());
+    }
+    
     /** Callback to make appointment from VComponent and Temporal */
     private final CallbackTwoParameters<VComponentRepeatable<?>, Temporal, Appointment> makeAppointmentCallback = (vComponentEdited, startTemporal) ->
     {
@@ -210,12 +218,13 @@ public class ICalendarAgenda extends Agenda
         {
             appointments().removeListener(appointmentsListChangeListener); // remove listener to prevent making extra vEvents during edit
 //            EditComponentPopupStage<?> editPopup = EditComponentPopupStage.editComponentPopupStageFactory(vComponent.getClass());
+//            this.appointmentGroups().stream().map(a -> a.de)
             EditComponentPopupStage<?> editPopup = EditComponentPopupStage.editComponentPopupStageFactory(
                     vComponent,
                     getVCalendar(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS
+                    categories
                     );
 
 //            EditComponentPopupStage<?> editPopup = new EditComponentPopupStage(

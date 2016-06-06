@@ -20,7 +20,6 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
 /**
@@ -100,9 +99,9 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
             Temporal startRecurrence,
             Temporal endRecurrence,
 //            List<T> vComponents,
-            List<AppointmentGroup> appointmentGroups)
+            List<String> categories)
     {
-        super.setupData(vComponent, startRecurrence, endRecurrence, appointmentGroups);
+        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
 //        endRecurrenceOriginal = appointment.getEndTemporal();
         
         if (vComponent.getDescription() == null)

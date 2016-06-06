@@ -4,7 +4,6 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
 {
@@ -24,9 +23,9 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
             List<VTodo> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<AppointmentGroup> appointmentGroups)
+            List<String> categories)
     {
-        super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, appointmentGroups);
+        super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
         vComponentOriginalCopy = new VTodo(vComponent);
     }
 }

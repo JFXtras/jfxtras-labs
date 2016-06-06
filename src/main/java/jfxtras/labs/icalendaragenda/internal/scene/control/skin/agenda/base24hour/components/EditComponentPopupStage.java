@@ -13,7 +13,6 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.scene.control.agenda.Agenda;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends Stage
 {
@@ -57,7 +56,7 @@ public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends
             List<T> vComponents,
             Temporal startTemporal,
             Temporal endTemporal,
-            List<AppointmentGroup> defaultAppointmentGroups)
+            List<String> categories)
     {
         // TODO Auto-generated constructor stub
     }
@@ -67,7 +66,7 @@ public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends
             VCalendar vCalendar,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<AppointmentGroup> appointmentGroups)
+            List<String> categories)
 //            U vComponent, VCalendar vCalendar)
     {
         if (vComponent instanceof VEvent)
@@ -77,7 +76,7 @@ public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends
                     vCalendar.getVEvents(),
                     startRecurrence,
                     endRecurrence,
-                    appointmentGroups);
+                    categories);
         } else if (vComponent instanceof VTodo)
         {
             return (EditComponentPopupStage<U>) new EditVTodoPopupStage(
@@ -85,7 +84,7 @@ public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends
                     vCalendar.getVTodos(),
                     startRecurrence,
                     endRecurrence,
-                    appointmentGroups);
+                    categories);
         } else if (vComponent instanceof VJournal)
         {
             return (EditComponentPopupStage<U>) new EditVJournalPopupStage(
@@ -93,7 +92,7 @@ public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends
                     vCalendar.getVJournals(),
                     startRecurrence,
                     endRecurrence,
-                    appointmentGroups);
+                    categories);
         } else
         {
             throw new RuntimeException("Unsupported VComponent class:" + vComponent.getClass());

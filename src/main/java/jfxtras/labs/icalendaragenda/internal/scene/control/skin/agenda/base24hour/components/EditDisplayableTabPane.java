@@ -97,13 +97,13 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
             List<T> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
-            List<String> categoryList
+            List<String> categories
 //            List<AppointmentGroup> appointmentGroups
             )
     {
         this.vComponent = vComponent;
         this.vComponents = vComponents;
-        editDescriptiveVBox.setupData(vComponent, startRecurrence, endRecurrence, appointmentGroups);
+        editDescriptiveVBox.setupData(vComponent, startRecurrence, endRecurrence, categories);
         
         /* 
          * Shut off repeat tab if vComponent is not a parent

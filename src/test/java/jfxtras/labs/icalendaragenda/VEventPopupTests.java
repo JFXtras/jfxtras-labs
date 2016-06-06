@@ -97,7 +97,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
                     Arrays.asList(vevent),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+                    ICalendarAgendaUtilities.CATEGORIES);
         });
 
         TextField summary = find("#summaryTextField");
@@ -126,7 +126,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
                     Arrays.asList(vevent),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+                    ICalendarAgendaUtilities.CATEGORIES);
         });
 
         TextField summary = find("#summaryTextField");
@@ -157,7 +157,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
                     vEvents,
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+                    ICalendarAgendaUtilities.CATEGORIES);
         });
 
         // Get properties
@@ -260,7 +260,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
                     vEvents,
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+                    ICalendarAgendaUtilities.CATEGORIES);
         });
 
         // Get properties
