@@ -16,9 +16,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -82,12 +84,11 @@ public class ICalendarAgenda extends Agenda
     public VCalendar getVCalendar() { return vCalendar; }
     final private VCalendar vCalendar;
     
-//    private List<SimpleStringProperty> categoryProperties;
-    private List<String> categories;
-    public void setCategories(List<String> categories)
+    private ObservableList<String> categories; // initialized in constructor
+    public ObservableList<String> getCategories() { return categories; }
+    public void setCategories(ObservableList<String> categories)
     {
         this.categories = categories;
-//        categoryProperties = categories.stream().map(s -> new SimpleStringProperty(s)).collect(Collectors.toList());
     }
     
     /** Callback to make appointment from VComponent and Temporal */
@@ -406,6 +407,30 @@ public class ICalendarAgenda extends Agenda
 //            System.out.println("vComponents chagned:******************************" + vComponents.size());
 //            vComponents.stream().forEach(System.out::println);
         });
+        
+        // setup default categories from appointment groups
+        categories = FXCollections.observableArrayList(
+                appointmentGroups().stream()
+                    .map(a -> a.getDescription())
+                    .collect(Collectors.toList())
+                    );
+        
+        // update appointmentGroup descriptions with changed categories
+        getCategories().addListener((ListChangeListener.Change<? extends String> change) ->
+        {
+            while (change.next())
+            {
+                if (change.wasAdded())
+                {
+                    change.getAddedSubList().forEach(c ->
+                    {
+                        int index = change.getList().indexOf(c);
+                        appointmentGroups().get(index).setDescription(c);
+                        System.out.println("updated apointmentgroup: " + index + " " + c);
+                    });
+                }
+            }
+        });
 
         // setup event listener to delete selected appointments when Agenda is added to a scene
         sceneProperty().addListener((obs, oldValue, newValue) ->
@@ -604,7 +629,7 @@ public class ICalendarAgenda extends Agenda
         // Keeps appointmentRecurrenceIDMap and appointmentVComponentMap synched with appointments
         ListChangeListener<Appointment> appointmentsListener2 = (ListChangeListener.Change<? extends Appointment> change) ->
         {
-            System.out.println("appointmentsListener2:");
+//            System.out.println("appointmentsListener2:");
             while (change.next())
             {
                 if (change.wasAdded())

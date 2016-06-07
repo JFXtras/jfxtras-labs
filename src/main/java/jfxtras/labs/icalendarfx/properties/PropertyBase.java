@@ -589,7 +589,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
 //        boolean valueEquals = isValueEqual(getValue(), testObj.getValue());
         boolean valueEquals = (getValue() == null) ? (testObj.getValue() == null) : getValue().equals(testObj.getValue());
-        System.out.println("VALUES:" + getValue() + " " + testObj.getValue() + " " + valueEquals);
+//        System.out.println("VALUES:" + getValue() + " " + testObj.getValue() + " " + valueEquals);
         boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
         boolean nameEquals = getPropertyName().equals(testObj.getPropertyName());
         final boolean parametersEquals;
@@ -604,7 +604,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
             {
                 Parameter<?> p1 = i1.next().getParameter(this);
                 Parameter<?> p2 = i2.next().getParameter(testObj);
-                System.out.println("p1,p2:" + p1 + " " + p2);
+//                System.out.println("p1,p2:" + p1 + " " + p2);
                 if (! p1.equals(p2))
                 {
                     isFailure = true;
@@ -616,7 +616,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         {
             parametersEquals = false;
         }
-        System.out.println("equals:" + valueEquals + " " + otherParametersEquals + " " + parametersEquals + " " + nameEquals);
+//        System.out.println("equals:" + valueEquals + " " + otherParametersEquals + " " + parametersEquals + " " + nameEquals);
         return valueEquals && otherParametersEquals && parametersEquals && nameEquals;
     }
     

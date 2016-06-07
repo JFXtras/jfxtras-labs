@@ -1,10 +1,11 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
@@ -12,13 +13,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 
 /** makes a group of colored squares used to select appointment group */
 public class CategorySelectionGridPane extends GridPane
 {
 private Pane[] icons;
+private List<String> originalCategories;
+//private List<Integer> categoriesIndices;
 final private ImageView checkIcon = new ImageView();
 //SVGPath myIcon;
 
@@ -32,22 +33,34 @@ public CategorySelectionGridPane()
 {
     checkIcon.getStyleClass().add("check-icon");
 }
-
-public CategorySelectionGridPane(VComponentDisplayable<?> vComponent, List<String> categories)
+//
+//public CategorySelectionGridPane(VComponentDisplayable<?> vComponent, List<String> categories)
+//{
+//    this();
+//    setupData(vComponent, categories);
+//}
+// 
+ public void setupData(String initialCategory, List<String> categories)
+// public void setupData()
 {
-    this();
-    setupData(vComponent, categories);
-}
- 
- public void setupData(VComponentDisplayable<?> vComponent, List<String> categories)
- {
+//     List<String> categoriesIndices = IntStream.range(0, categories.size()).mapToObj(i -> Integer.toString(i)).collect(Collectors.toList());
+//     List<Integer> categoriesIndices = Collections.unmodifiableList(IntStream.range(0, categories.size()).mapToObj(i -> new Integer(i)).collect(Collectors.toList()));
+     List<Integer> categoriesIndices = IntStream.range(0, categories.size()).mapToObj(i -> new Integer(i)).collect(Collectors.toList());
+//     originalCategories = categories.stream().map(c -> c + c.hashCode())
      setHgap(3);
      setVgap(3);
      icons = new Pane[categories.size()];
      
-     int lCnt = 0;
-     for (String category : categories)
+//     int lCnt = 0;
+//     for (String category : categoriesIndices)
+     for (Integer lCnt : categoriesIndices)
+//     Iterator<Integer> iter = categoriesIndices.iterator();
+//     while (iter.hasNext())
+//     for (Integer lCnt : categoriesIndices)
+//     for (int lCnt=0; lCnt < categories.size(); lCnt++)
      {
+//         Integer lCnt = iter.next();
+//         String category = categories.get(lCnt);
          Pane icon = new Pane();
          icon.setPrefSize(24, 24);
          Rectangle rectangle = new Rectangle(24, 24);
@@ -69,32 +82,37 @@ public CategorySelectionGridPane(VComponentDisplayable<?> vComponent, List<Strin
          icons[lCnt].setOnMouseClicked( (mouseEvent) ->
          {
              mouseEvent.consume(); // consume before anything else, in case there is a problem in the handling
-             System.out.println("selected:" + category + " " + categories.indexOf(category) + " "+ categories.size());
-             categorySelected.set(categories.indexOf(category));
+             System.out.println("selected cat:" + lCnt + " " + categories.indexOf(lCnt) + " "+ categories.size() + " ");
+//             categories.stream().limit(5).forEach(System.out::println);
+//             categorySelected.set(categories.indexOf(category));
+             categorySelected.set(lCnt);
 
-             // assign appointment group, store description in CATEGORIES field
-             String g = categories.get(categorySelected.getValue());
-             vComponent.setCategories(FXCollections.observableArrayList(Categories.parse(g)));
+//             // assign category
+//             String g = categories.get(categorySelected.getValue());
+//             vComponent.setCategories(FXCollections.observableArrayList(Categories.parse(g)));
          });
-         lCnt++;
+//         lCnt++;
      }
 
-     final String myCategory;
-     if ((vComponent.getCategories() != null) && (vComponent.getCategories().get(0).getValue() != null))
+//     final String myCategory;
+//     if ((vComponent.getCategories() != null) && (vComponent.getCategories().get(0).getValue() != null))
+//     {
+//         myCategory = categories
+//                 .stream()
+////                 .map(p -> p.get())
+//                 .filter(a -> a.equals(vComponent.getCategories().get(0).getValue().get(0)))
+//                 .findFirst()
+//                 .orElse(categories.get(0));
+//     } else
+//     {
+//         myCategory = categories.get(0);
+//     }
+     int index = categories.indexOf(initialCategory);
+     if (index >= 0)
      {
-         myCategory = categories
-                 .stream()
-//                 .map(p -> p.get())
-                 .filter(a -> a.equals(vComponent.getCategories().get(0).getValue().get(0)))
-                 .findFirst()
-                 .orElse(categories.get(0));
-     } else
-     {
-         myCategory = categories.get(0);
+         setCategorySelected(index);
+         setLPane(index);
      }
-     int index = categories.indexOf(myCategory);
-     setCategorySelected(index);
-     setLPane(index);
      
      // change listener - fires when new icon is selected
      categorySelectedProperty().addListener((observable, oldSelection, newSelection) ->  {

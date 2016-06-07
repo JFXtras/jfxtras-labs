@@ -22,7 +22,7 @@ public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends
     EditComponentPopupStage(EditDisplayableTabPane<T,?> tabPane)
     {
         super();
-//        this.tabPane = tabPane;
+        this.tabPane = tabPane;
         initModality(Modality.APPLICATION_MODAL);
         Scene scene = new Scene(getEditDisplayableTabPane());
         ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();

@@ -8,6 +8,8 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -124,6 +126,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     };
     
     T vComponentEdited;
+    private String initialCategory;
 //    List<T> vComponents;
 //    TemporalAmount shiftAmount = Duration.ZERO; // shift amount to apply to edited component
     Temporal startOriginalRecurrence;
@@ -179,7 +182,12 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         handleWholeDayChange(vComponentEdited, wholeDayCheckBox.isSelected()); 
         wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) -> handleWholeDayChange(vComponent, newSelection));
         
-        // APPOINTMENT GROUP
+        // CATEGORIES
+        // initialize with empty category, to be removed later if not populated with other value.
+        if (vComponentEdited.getCategories() == null)
+        {
+            vComponentEdited.withCategories("");
+        }
         categorySelectionGridPane.categorySelectedProperty().addListener(
             (observable, oldSelection, newSelection) ->
             {
@@ -198,54 +206,47 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
                 // ideally, categories list will be a LinkedList to reduce cost of expensive element removal and addition
                 categories.remove(i);
                 categories.add(i, newSelection);
+                System.out.println("new cat:" + i + " " + newSelection);
             }
 //            groupTextField.textProperty().bind(categories.get(i));
 //            categories.get(i).set(newSelection);
 //            categories.get(i).setDescription(newSelection);
             categorySelectionGridPane.updateToolTip(i, categories.get(i));
-            vComponentEdited.withCategories(newSelection);
+            vComponentEdited.getCategories().get(0).setValue(new ArrayList<String>(Arrays.asList(newSelection)));
         });
-        categorySelectionGridPane.setupData(vComponentEdited, categories);
+        // verify category is unique
+        groupTextField.focusedProperty().addListener((obs, oldValue, newValue) ->
+        {
+            if (newValue)
+            {
+                // save initial value
+                initialCategory = groupTextField.getText();
+            } else
+            {
+                int selectedIndex = categorySelectionGridPane.getCategorySelected();
+                int otherMatch = -1;
+                for (int i=0; i<categories.size(); i++)
+                {
+                    if (i == selectedIndex) continue;
+                    if (categories.get(i).equals(groupTextField.getText()))
+                    {
+                        otherMatch = ++i;
+                        break;
+                    }
+                }
+                if (otherMatch >= 0)
+                {
+                    invalidCategoryAlert(groupTextField.getText(), otherMatch);
+                    groupTextField.setText(initialCategory);
+                }
+            }
+        });
+        String initialCategory = vComponentEdited.getCategories().get(0).getValue().get(0);
+        categorySelectionGridPane.setupData(initialCategory, categories);
         
         vComponentEdited.getDateTimeStart().valueProperty().addListener(dateTimeStartListener);
 
-//        vComponentEdited.dateTimeStartProperty().addListener((obs, oldValue, newValue) -> 
-//        {
-//            System.out.println("DTSTART changed:");
-//            validateRecurrenceDates();
-//        });
-
-        
-        //        System.out.println("cats3:" + vComponent.getCategories().size());
-
-        // SETUP REPEATABLE CONTROLLER
-//        repeatableController.setupData(vComponent, startRecurrence, popup);
-        
-//        // When Appointment tab is selected make sure start and end times are valid, adjust if not
-//        appointmentEditTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-//        {
-//            if (newValue == appointmentTab)
-//            {
-//                Runnable alertRunnable = validateStartRecurrence();
-//                if (alertRunnable != null)
-//                {
-//                    Platform.runLater(alertRunnable); // display alert after tab change refresh
-//                }
-//            }
-//        });
     }
-    
-//    final private ChangeListener<? super Temporal> shiftAmountListener = (observable, oldValue, newValue) ->
-//    {
-//        if (newValue instanceof LocalDate)
-//        {
-//            shiftAmount = Period.between(LocalDate.from(startOriginalRecurrence), LocalDate.from(newValue));            
-//        } else if (newValue instanceof LocalDateTime)
-//        {
-//            shiftAmount = Duration.between(DateTimeType.DATE_WITH_LOCAL_TIME.from(startOriginalRecurrence), newValue);
-//        }
-////        throw new RuntimeException("bad code:");
-//    };
     
     /** Synch recurrence dates when DTSTART is modified (can occur when {@link synchStartDatePickerAndComponent#startDatePicker} changes */
     ChangeListener<? super Temporal> dateTimeStartListener = (obs, oldValue, newValue) -> 
@@ -337,33 +338,12 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         }
     }
     
-    
-//    // TODO - FIX THIS
-//    @Deprecated
-//    Runnable validateStartRecurrence()
-//    {
-////        Temporal actualRecurrence = vEvent.streamRecurrences(startRecurrence).findFirst().get();
-//        if (! vComponentEdited.isRecurrence(startRecurrenceProperty.get()))
-//        {
-//            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrenceProperty.get());
-//            Optional<Temporal> optionalAfter = vComponentEdited.streamRecurrences(startRecurrenceProperty.get()).findFirst();
-//            Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : recurrenceBefore;
-////            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-////            Temporal newEndRecurrence = newStartRecurrence.plus(duration);
-//            Temporal startRecurrenceBeforeChange = startRecurrenceProperty.get();
-//            startDateTimeTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newStartRecurrence));
-////            endTextField.setLocalDateTime(TemporalUtilities.toLocalDateTime(newEndRecurrence));
-//            startOriginalRecurrence = startRecurrenceProperty.get();
-//            return () -> startRecurrenceChangedAlert(startRecurrenceBeforeChange, newStartRecurrence);
-//        }
-//        return null;
-//    }
-    
     /* Displays an alert notifying that startInstance has changed due to changes in the Repeat tab.
      * These changes can include the day of the week is not valid or the start date has shifted.
      * The closest valid date is substituted.
     */
     // TODO - PUT COMMENTS IN RESOURCES
+    @Deprecated // possibly remove - just update without alert
     protected void startRecurrenceChangedAlert(Temporal t1, Temporal t2)
     {
         Alert alert = new Alert(AlertType.INFORMATION);
@@ -372,6 +352,19 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         alert.setHeaderText("Time not valid due to repeat rule change");
         alert.setContentText(Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t1) + " is no longer valid." + System.lineSeparator()
                     + "It has been replaced by " + Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t2));
+        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOk);
+        alert.showAndWait();
+    }
+    
+    protected void invalidCategoryAlert(String newString, int otherMatch)
+    {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.getDialogPane().setId("invalidCategoryAlert");
+        alert.getDialogPane().lookupButton(ButtonType.OK).setId("invalidCategoryAlertOkButton");
+        alert.setTitle("Edit Component Error");
+        alert.setHeaderText("Invalid Category Name.");
+        alert.setContentText("The Category name must be unique." + System.lineSeparator() +  "The name \"" + newString + "\" matches category #" + otherMatch);
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
