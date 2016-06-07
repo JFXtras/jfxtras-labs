@@ -79,7 +79,7 @@
       </VBox>
       <VBox prefHeight="120.0" prefWidth="100.0" spacing="5.0" styleClass="simple-border">
          <children>
-            <Label text="Group">
+            <Label text="%category">
                <styleClass>
                   <String fx:value="bordered-titled-title" />
                   <String fx:value="background3" />

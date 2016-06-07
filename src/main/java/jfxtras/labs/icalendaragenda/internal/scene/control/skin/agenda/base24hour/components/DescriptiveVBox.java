@@ -194,7 +194,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
                 Integer i = categorySelectionGridPane.getCategorySelected();
                 String newText = categories.get(i);
                 groupTextField.setText(newText);
-//                groupNameEdited.set(true); // TODO - HANDLE APPOINTMENT GROUP I/O
             });
 
         // store group name changes by each character typed
@@ -203,14 +202,10 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             int i = categorySelectionGridPane.getCategorySelected();
             if (! categories.get(i).equals(newSelection))
             {
-                // ideally, categories list will be a LinkedList to reduce cost of expensive element removal and addition
+                // ideally, categories list will be a LinkedList to reduce cost of element removal and addition
                 categories.remove(i);
                 categories.add(i, newSelection);
-                System.out.println("new cat:" + i + " " + newSelection);
             }
-//            groupTextField.textProperty().bind(categories.get(i));
-//            categories.get(i).set(newSelection);
-//            categories.get(i).setDescription(newSelection);
             categorySelectionGridPane.updateToolTip(i, categories.get(i));
             vComponentEdited.getCategories().get(0).setValue(new ArrayList<String>(Arrays.asList(newSelection)));
         });

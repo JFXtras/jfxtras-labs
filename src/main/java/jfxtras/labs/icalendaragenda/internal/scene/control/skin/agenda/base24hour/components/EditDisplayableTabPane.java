@@ -13,6 +13,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
@@ -85,7 +87,15 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
 //              , appointments
 //              , DeleteChoiceDialog.DELETE_DIALOG_CALLBACK);
 //        popup.close();
-    } 
+    }
+    
+    @FXML private void handlePressEnter(KeyEvent e)
+    {
+        if (e.getCode().equals(KeyCode.ENTER))
+        {
+            handleSaveButton();
+        }
+    }
     
     T vComponent;
     T vComponentOriginalCopy;
