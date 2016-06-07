@@ -47,7 +47,7 @@ public class EditComponentPopupTrial extends Application
         Settings.setup(resources);
 
         VEvent vevent = new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
+//                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
                 .withDateTimeStart(LocalDateTime.of(2016, 5, 16, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2016, 5, 16, 11, 0))
                 .withDescription("Daily1 Description")
