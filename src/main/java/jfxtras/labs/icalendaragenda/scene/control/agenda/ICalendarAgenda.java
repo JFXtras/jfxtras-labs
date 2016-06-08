@@ -30,12 +30,14 @@ import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectedOneAppointmentLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditComponentPopupStage;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.CallbackTwoParameters;
 import jfxtras.labs.icalendarfx.VCalendar;
+import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
 import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
@@ -292,13 +294,13 @@ public class ICalendarAgenda extends Agenda
      */
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
-        System.out.println("drag-n-drop");
         // TODO - NEED ANOTHER VERSION OF THIS CODE FOR VTODO
 //        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
 //        VEventOld<Appointment,?> vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
         Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
         final Temporal startInstance;
         final Temporal endInstance;
+
         boolean wasDateType = DateTimeType.of(startOriginalInstance).equals(DateTimeType.DATE);
         boolean isNotDateType = ! DateTimeType.of(appointment.getStartTemporal()).equals(DateTimeType.DATE);
         boolean isChangedToTimeBased = wasDateType && isNotDateType;
@@ -318,11 +320,22 @@ public class ICalendarAgenda extends Agenda
             endInstance = appointment.getEndTemporal();            
         }
 
-//        System.out.println("change instances:" + startOriginalInstance + " " + startInstance + " " + endInstance);
+        System.out.println("drag-n-drop" + startOriginalInstance + " " + startInstance + " " + endInstance);
 //        System.out.println("change localdatetime:" + appointment.getStartLocalDateTime() + " " + appointment.getEndLocalDateTime() + " " + appointment.isWholeDay());
         appointments().removeListener(appointmentsListChangeListener);
         getVCalendar().getVEvents().removeListener(vComponentsChangeListener);
-        boolean changed = false; // temp
+        
+        Collection<VComponentDisplayable<?>> newVComponents = ReviseComponentHelper.handleEdit(
+                vComponentOriginalCopy,
+                vComponent,
+                startOriginalInstance,
+                startInstance,
+                endInstance,
+//                editDescriptiveVBox.shiftAmount,
+                EditChoiceDialog.EDIT_DIALOG_CALLBACK
+                );
+        
+        boolean changed = newVComponents.isEmpty(); // temp
 //        boolean changed = vEvent.handleEdit(
 //                vEventOriginal
 //              , vComponents
@@ -515,10 +528,16 @@ public class ICalendarAgenda extends Agenda
                                 .forEach(v -> 
                                 {
 //                                    System.out.println("add instances:");
-                                    List<Appointment> myAppointments = recurrenceHelper.makeRecurrences(v);
-                                    newAppointments.addAll(recurrenceHelper.makeRecurrences(v));
-                                    myAppointments.forEach(a -> appointmentVComponentMap.put(System.identityHashCode(a), v));
-                                    vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
+                                    makeAppointments(v);
+//                                    List<Appointment> myAppointments = recurrenceHelper.makeRecurrences(v);
+//                                    newAppointments.addAll(recurrenceHelper.makeRecurrences(v));
+//                                    myAppointments.forEach(a -> 
+//                                    {
+//                                        appointmentVComponentMap.put(System.identityHashCode(a), v);
+//                                        appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
+//                                    });
+//                                    vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
+                                    
 //                                    appointmentVComponentMap.put(key, value)
 //                                    if (v.instances().isEmpty()) newAppointments.addAll(v.makeInstances(start, end));
     
@@ -647,6 +666,7 @@ public class ICalendarAgenda extends Agenda
                 appointments().removeListener(appointmentsListChangeListener); // remove appointmentListener to prevent making extra vEvents during refresh
                 appointments().clear();
                 vComponentAppointmentMap.clear();
+                appointmentStartOriginalMap.clear();
                 getVCalendar().getVEvents().stream().forEach(v ->
                 {
 //                    v.instances().clear(); // Remove instances and appointments
@@ -657,10 +677,7 @@ public class ICalendarAgenda extends Agenda
 //                    List<Appointment> newAppointments = makeRecurrences(v);
 //                    vComponentAppointmentMap.put(v, newAppointments);
 
-                    List<Appointment> myAppointments = recurrenceHelper.makeRecurrences(v);
-                    appointments().addAll(myAppointments);
-                    myAppointments.forEach(a -> appointmentVComponentMap.put(System.identityHashCode(a), v));
-                    vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
+                    makeAppointments(v);
                     
 //                    vComponentAppointmentMap.entrySet().stream().forEach(System.out::println);
                     
@@ -676,6 +693,18 @@ public class ICalendarAgenda extends Agenda
             return null; // return argument for the Callback
         });
     } // end of constructor
+    
+    private void makeAppointments(VComponentDisplayable<?> v)
+    {
+        List<Appointment> myAppointments = recurrenceHelper.makeRecurrences(v);
+        appointments().addAll(myAppointments);
+        myAppointments.forEach(a -> 
+        {
+            appointmentVComponentMap.put(System.identityHashCode(a), v);
+            appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
+        });
+        vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
+    }
     
     
     // TODO - SHOULD THESE LISTENERS AND BACKING MAPS GO TO NEW CLASS?
