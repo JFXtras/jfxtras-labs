@@ -2,6 +2,7 @@ package jfxtras.labs.icalendaragenda.trial;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -48,8 +49,8 @@ public class EditComponentPopupTrial extends Application
 
         VEvent vevent = new VEvent()
 //                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
-                .withDateTimeStart(LocalDateTime.of(2016, 5, 16, 10, 0))
-                .withDateTimeEnd(LocalDateTime.of(2016, 5, 16, 11, 0))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 16, 10, 0), ZoneId.of("America/Los_Angeles")))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 16, 11, 0), ZoneId.of("America/Los_Angeles")))
                 .withDescription("Daily1 Description")
                 .withSummary("Daily1 Summary")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -83,7 +84,7 @@ public class EditComponentPopupTrial extends Application
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(2);
-        System.out.println("appoingment:" + appointment.getStartLocalDateTime());
+//        System.out.println("appoingment:" + appointment.getStartLocalDateTime());
 
         EditVEventTabPane popup = new EditVEventTabPane();
 //        EditVJournalTabPane popup = new EditVJournalTabPane();
@@ -110,7 +111,10 @@ public class EditComponentPopupTrial extends Application
 //            System.out.println("hide:"+ vEvents.size());
             vEvents.stream().forEach(System.out::println);
             primaryStage.hide();
+            System.out.println("child components:" + vEvents.get(0).childComponents());
+            System.out.println("child components:" + vEvents.get(1).childComponents());
         });
+        
 //        vEvents.addListener((InvalidationListener) (obs) ->
 //        {
 //            System.out.println("VEVENTS:" + vEvents.size());

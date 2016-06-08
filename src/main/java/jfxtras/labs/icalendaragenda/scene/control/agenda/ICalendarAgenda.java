@@ -15,7 +15,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import javafx.application.Platform;
@@ -154,8 +153,7 @@ public class ICalendarAgenda extends Agenda
 //    private final Map<Integer, VTodo> appointmentVTodoMap = new HashMap<>(); /* map matches appointment to VTodo that made it */
 //    private final Map<Integer, VJournal> appointmentVJournalMap = new HashMap<>(); /* map matches appointment to VJournal that made it */
 
-    // TODO - CAN'T BE WEAK - INTEGER KEY IS ALWAYS STRONG
-    private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new WeakHashMap<>(); /* map matches VComponent to their appointments */
+    private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>(); /* map matches VComponent to their appointments */
 //    private final Map<VComponentNew<?>, List<Appointment>> vComponentAppointmentMap = new WeakHashMap<>(); /* map matches VComponent to their appointments */
 
     
@@ -217,9 +215,7 @@ public class ICalendarAgenda extends Agenda
             System.out.println("ERROR: no component found - popup can'b be displayed");
         } else
         {
-            appointments().removeListener(appointmentsListChangeListener); // remove listener to prevent making extra vEvents during edit
-//            EditComponentPopupStage<?> editPopup = EditComponentPopupStage.editComponentPopupStageFactory(vComponent.getClass());
-//            this.appointmentGroups().stream().map(a -> a.de)
+//            appointments().removeListener(appointmentsListChangeListener); // remove listener to prevent making extra vEvents during edit
             EditComponentPopupStage<?> editPopup = EditComponentPopupStage.editComponentPopupStageFactory(
                     vComponent,
                     getVCalendar(),
@@ -227,59 +223,15 @@ public class ICalendarAgenda extends Agenda
                     appointment.getEndTemporal(),
                     categories
                     );
-
-//            EditComponentPopupStage<?> editPopup = new EditComponentPopupStage(
-//                    vComponent,
-//                    vCalendar,
-//                    appointment.getStartTemporal(),
-//                    appointment.getEndTemporal(),
-//                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS
-//                    );
-            
-//            EditVEventPopupStage editPopup = (EditVEventPopupStage) EditComponentPopupStage.editComponentPopupStageFactory(vComponent.getClass());
-//            EditVEventTabPane popup = new EditVEventTabPane();
-//            editPopup.getEditDisplayableTabPane().setupData(
-//                    (VEvent) vComponent,
-//                    vCalendar.getVEvents(),
-//                    appointment.getStartTemporal(),
-//                    appointment.getEndTemporal(),
-//                    ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS
-//                    );
-
-//            String agendaSheet = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
-//            popup.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET, agendaSheet);
-//
-//            Stage popupStage = new Stage();
-//            Scene scene = new Scene(popup);
-//
-//            primaryStage.setScene(scene);
-//            primaryStage.setTitle("ICalendar Edit Popup Demo");
-//            popupStage.show();
-            
-            //            Stage editPopup = new EditVEventPopupOld(
-//                    appointment,
-//                    appointments(),
-//                    (VEvent) vComponent,
-//                    getVCalendar().getVEvents(),
-//                    appointmentGroups()
-////                    appointmentGroupWriteCallback,
-////                    repeatWriteCallback
-//                    );
     
             editPopup.getScene().getStylesheets().addAll(getUserAgentStylesheet(), ICALENDAR_STYLE_SHEET);
     
             // remove listeners during edit (to prevent creating extra vEvents when making appointments)
-            editPopup.setOnShowing((windowEvent) -> 
-            {
-                appointments().removeListener(appointmentsListChangeListener);
-                getVCalendar().getVEvents().removeListener(vComponentsChangeListener);
-            });
+            editPopup.setOnShowing((windowEvent) -> appointments().removeListener(appointmentsListChangeListener));
             
-            /*
-             * POSITION POPUP
+            /* POSITION POPUP
              * Position popup to left or right of bodyPane, where there is room.
-             * Note: assumes the control is displayed at its preferred height and width
-             */
+             * Note: assumes the control is displayed at its preferred height and width */
             Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
             double prefHeightControl = ((Control) editPopup.getScene().getRoot()).getPrefHeight();
             double prefWidthControl = ((Control) editPopup.getScene().getRoot()).getPrefWidth();
@@ -291,11 +243,9 @@ public class ICalendarAgenda extends Agenda
             editPopup.setY(y);
             editPopup.show();
             
-            editPopup.setOnHiding((windowEvent) -> 
-            {
-                appointments().addListener(appointmentsListChangeListener);
-                getVCalendar().getVEvents().addListener(vComponentsChangeListener);
-            });
+            editPopup.getEditDisplayableTabPane().isFinished().addListener((obs) -> editPopup.hide());
+            // return listener after edit
+            editPopup.setOnHiding((windowEvent) ->  appointments().addListener(appointmentsListChangeListener));
         }
         return null;
     };
@@ -342,6 +292,7 @@ public class ICalendarAgenda extends Agenda
      */
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
+        System.out.println("drag-n-drop");
         // TODO - NEED ANOTHER VERSION OF THIS CODE FOR VTODO
 //        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
 //        VEventOld<Appointment,?> vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
@@ -555,8 +506,8 @@ public class ICalendarAgenda extends Agenda
 //                    System.out.println("was added:" + dateTimeRange + " " +  getDateTimeRange());
                     if (dateTimeRange != null)
                     {
-                        Temporal start = getDateTimeRange().getStartLocalDateTime();
-                        Temporal end = getDateTimeRange().getEndLocalDateTime();
+//                        Temporal start = getDateTimeRange().getStartLocalDateTime();
+//                        Temporal end = getDateTimeRange().getEndLocalDateTime();
                         List<Appointment> newAppointments = new ArrayList<>();
                         // add new appointments
                         change.getAddedSubList()
@@ -567,6 +518,7 @@ public class ICalendarAgenda extends Agenda
                                     List<Appointment> myAppointments = recurrenceHelper.makeRecurrences(v);
                                     newAppointments.addAll(recurrenceHelper.makeRecurrences(v));
                                     myAppointments.forEach(a -> appointmentVComponentMap.put(System.identityHashCode(a), v));
+                                    vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
 //                                    appointmentVComponentMap.put(key, value)
 //                                    if (v.instances().isEmpty()) newAppointments.addAll(v.makeInstances(start, end));
     
@@ -597,12 +549,13 @@ public class ICalendarAgenda extends Agenda
                         .stream()
                         .forEach(v -> 
                         {
-                            List<Appointment> remove = vComponentAppointmentMap.get(v);
+                            List<Appointment> remove = vComponentAppointmentMap.get(System.identityHashCode(v));
+                            appointments().removeAll(remove);
+//                            throw new RuntimeException("here4:");
 //                            List<Appointment> remove = appointments()
 //                                    .stream()
 //                                    .filter(a -> v.instances().stream().anyMatch(a2 -> a2 == a))
 //                                    .collect(Collectors.toList());
-                            appointments().removeAll(remove);
                             
 //                            // move deleted recurrence-id into ExDates (ensure deleted instance stays deleted)
 //                            if (v.getDateTimeRecurrence() != null)
@@ -693,6 +646,7 @@ public class ICalendarAgenda extends Agenda
             {        
                 appointments().removeListener(appointmentsListChangeListener); // remove appointmentListener to prevent making extra vEvents during refresh
                 appointments().clear();
+                vComponentAppointmentMap.clear();
                 getVCalendar().getVEvents().stream().forEach(v ->
                 {
 //                    v.instances().clear(); // Remove instances and appointments
@@ -703,9 +657,12 @@ public class ICalendarAgenda extends Agenda
 //                    List<Appointment> newAppointments = makeRecurrences(v);
 //                    vComponentAppointmentMap.put(v, newAppointments);
 
-                    List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(v);
-                    appointments().addAll(newAppointments);
-                    newAppointments.forEach(a -> appointmentVComponentMap.put(System.identityHashCode(a), v));
+                    List<Appointment> myAppointments = recurrenceHelper.makeRecurrences(v);
+                    appointments().addAll(myAppointments);
+                    myAppointments.forEach(a -> appointmentVComponentMap.put(System.identityHashCode(a), v));
+                    vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
+                    
+//                    vComponentAppointmentMap.entrySet().stream().forEach(System.out::println);
                     
 //                    newAppointments.stream().forEach(a ->
 //                    {

@@ -113,6 +113,7 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     {
         this.vComponent = vComponent;
         this.vComponents = vComponents;
+        System.out.println("recurrence:" + startRecurrence + " " + endRecurrence);
         editDescriptiveVBox.setupData(vComponent, startRecurrence, endRecurrence, categories);
         
         /* 

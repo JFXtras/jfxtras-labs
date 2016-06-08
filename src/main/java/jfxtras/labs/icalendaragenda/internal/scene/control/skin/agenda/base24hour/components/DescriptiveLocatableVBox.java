@@ -82,7 +82,7 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase
     /** Update endDateTextField when endDateTimeTextField changes */
     void synchEndDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
-        endNewRecurrence = newValue;
+        endNewRecurrence = startOriginalRecurrence.with(newValue);
         endDateTextField.localDateProperty().removeListener(endDateTextListener);
         LocalDate newDate = LocalDate.from(endDateTimeTextField.getLocalDateTime()).plusDays(1);
         endDateTextField.setLocalDate(newDate);

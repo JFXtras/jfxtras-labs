@@ -91,7 +91,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTimeTextField when startDateTextField changes */
     void synchStartDate(LocalDate oldValue, LocalDate newValue)
     {
-        System.out.println("new value2:" + newValue);
+//        System.out.println("new value2:" + newValue);
         startRecurrenceProperty.set(newValue);
 //        shiftAmount = Period.between(LocalDate.from(startOriginalRecurrence), newValue);
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
@@ -105,8 +105,8 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTextField when startDateTimeTextField changes */
     void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
-        System.out.println("new value:" + newValue);
-        startRecurrenceProperty.set(newValue);
+//        System.out.println("new value:" + newValue);
+        startRecurrenceProperty.set(startOriginalRecurrence.with(newValue));
 //        shiftAmount = Duration.between(DateTimeType.DATE_WITH_LOCAL_TIME.from(startOriginalRecurrence), newValue);
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
@@ -131,7 +131,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 //    TemporalAmount shiftAmount = Duration.ZERO; // shift amount to apply to edited component
     Temporal startOriginalRecurrence;
     /** Contains the start recurrence Temporal LocalDate or LocalDateTime */
-    ObjectProperty<Temporal> startRecurrenceProperty = new SimpleObjectProperty<>();
+    ObjectProperty<Temporal> startRecurrenceProperty;
 
     public void setupData(
             T vComponent,
@@ -139,7 +139,9 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             Temporal endRecurrence,
             List<String> categories)
     {
+        System.out.println("startRecurrence:" + startRecurrence);
         startOriginalRecurrence = startRecurrence;
+        startRecurrenceProperty = new SimpleObjectProperty<>(startRecurrence);
         vComponentEdited = vComponent;
         
         // Disable repeat rules for events with recurrence-id

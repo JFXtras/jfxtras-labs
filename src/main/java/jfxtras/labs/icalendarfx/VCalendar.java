@@ -375,7 +375,7 @@ public class VCalendar
 //                System.out.println("displayableListChangeListener:");
                 change.getAddedSubList().forEach(e -> 
                 {
-//                    System.out.println("change:" + e.getSummary());
+//                    System.out.println("change added:" + e.getRecurrenceId());
                     if ((e.getUniqueIdentifier() != null))
                     {
                         if (e.getRecurrenceId() == null)
@@ -404,7 +404,7 @@ public class VCalendar
                         }
                     } else
                     {
-                        // Do nothing - component MUST have a UID                
+                        // Do nothing - component MUST have a UID (should I throw an exception?)             
                     }
                 });
             } else
@@ -449,6 +449,7 @@ public class VCalendar
     public VCalendar(VCalendar source)
     {
         this();
+        throw new RuntimeException("not implemented");
         // TODO Auto-generated method stub        
     }
 

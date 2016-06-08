@@ -77,5 +77,29 @@ public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract2
             assertEquals(expectedRecurrences, madeRecurrences);
         }
     }
+    
+    @Test
+    public void canHandleRecurrenceID3()
+    {
+        VEvent parent = getYearly1();
+        VEvent child = getRecurrenceForYearly1();
+        VEvent child2 = getRecurrenceForYearly2();
+        VCalendar c = new VCalendar();
+        
+        // add components all at once
+        c.getVEvents().addAll(child, parent, child2);
+        assertEquals(2, parent.childComponents().size());
+        {
+            List<Temporal> expectedRecurrences = Arrays.asList(
+                    LocalDateTime.of(2015, 11, 9, 10, 0),
+                    LocalDateTime.of(2017, 11, 9, 10, 0),
+                    LocalDateTime.of(2019, 11, 9, 10, 0),
+                    LocalDateTime.of(2020, 11, 9, 10, 0),
+                    LocalDateTime.of(2021, 11, 9, 10, 0)
+                    );
+            List<Temporal> madeRecurrences = parent.streamRecurrences().limit(5).collect(Collectors.toList());
+            assertEquals(expectedRecurrences, madeRecurrences);
+        }
+    }
 
 }

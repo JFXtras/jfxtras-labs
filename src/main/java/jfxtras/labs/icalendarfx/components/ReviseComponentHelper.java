@@ -113,6 +113,7 @@ public final class ReviseComponentHelper
                 switch (changeResponse)
                 {
                 case ALL:
+                    System.out.println("components size:" + relatedVComponents.size());
                     if (relatedVComponents.size() == 1)
                     {
                         vComponentEdited.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
@@ -636,8 +637,8 @@ public final class ReviseComponentHelper
        vComponentEditedCopy.setRecurrenceId(startOriginalRecurrence);
        vComponentEditedCopy.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
   
-       // Add recurrence to original vEvent
-       vComponentOriginal.childComponents().add(vComponentEditedCopy);
+       // Add recurrence to original vEvent - done automatically
+//       vComponentOriginal.childComponents().add(vComponentEditedCopy);
        
        // Check for validity
        if (! vComponentEditedCopy.isValid()) { throw new RuntimeException("Invalid component"); }

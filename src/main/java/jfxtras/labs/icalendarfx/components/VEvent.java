@@ -310,6 +310,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
           U endRecurrence)
     {
         List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startOriginalRecurrence, startRecurrence, endRecurrence);
+        System.out.println("duration temporals:" + startRecurrence + " + " + endRecurrence);
         TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
         TemporalAmount durationOriginal = getActualDuration();
         if (! durationOriginal.equals(durationNew))
