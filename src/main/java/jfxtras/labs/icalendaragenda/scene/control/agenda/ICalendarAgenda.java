@@ -18,7 +18,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -37,13 +36,12 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditComponentPopupStage;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.CallbackTwoParameters;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
-import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.editors.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda;
@@ -297,61 +295,71 @@ public class ICalendarAgenda extends Agenda
         // TODO - NEED ANOTHER VERSION OF THIS CODE FOR VTODO
 //        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
 //        VEventOld<Appointment,?> vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
-        Temporal startOriginalInstance = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
-        final Temporal startInstance;
-        final Temporal endInstance;
+        Temporal startOriginalRecurrence = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
+        final Temporal startRecurrence;
+        final Temporal endRecurrence;
 
-        boolean wasDateType = DateTimeType.of(startOriginalInstance).equals(DateTimeType.DATE);
+        boolean wasDateType = DateTimeType.of(startOriginalRecurrence).equals(DateTimeType.DATE);
         boolean isNotDateType = ! DateTimeType.of(appointment.getStartTemporal()).equals(DateTimeType.DATE);
         boolean isChangedToTimeBased = wasDateType && isNotDateType;
         boolean isChangedToWholeDay = appointment.isWholeDay() && isNotDateType;
         if (isChangedToTimeBased)
         {
-            startInstance = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getStartTemporal(), ZoneId.systemDefault());
-            endInstance = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getEndTemporal(), ZoneId.systemDefault());
+            startRecurrence = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getStartTemporal(), ZoneId.systemDefault());
+            endRecurrence = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getEndTemporal(), ZoneId.systemDefault());
         } else if (isChangedToWholeDay)
         {
-            startInstance = LocalDate.from(appointment.getStartTemporal());
+            startRecurrence = LocalDate.from(appointment.getStartTemporal());
             Temporal endInstanceTemp = LocalDate.from(appointment.getEndTemporal());
-            endInstance = (endInstanceTemp.equals(startInstance)) ? endInstanceTemp.plus(1, ChronoUnit.DAYS) : endInstanceTemp; // make period between start and end at least one day
+            endRecurrence = (endInstanceTemp.equals(startRecurrence)) ? endInstanceTemp.plus(1, ChronoUnit.DAYS) : endInstanceTemp; // make period between start and end at least one day
         } else
         {
-            startInstance = appointment.getStartTemporal();
-            endInstance = appointment.getEndTemporal();            
+            startRecurrence = appointment.getStartTemporal();
+            endRecurrence = appointment.getEndTemporal();            
         }
 
-        System.out.println("drag-n-drop" + startOriginalInstance + " " + startInstance + " " + endInstance);
+        System.out.println("drag-n-drop" + startOriginalRecurrence + " " + startRecurrence + " " + endRecurrence);
 //        System.out.println("change localdatetime:" + appointment.getStartLocalDateTime() + " " + appointment.getEndLocalDateTime() + " " + appointment.isWholeDay());
         appointments().removeListener(appointmentsListChangeListener);
         getVCalendar().getVEvents().removeListener(vComponentsChangeListener);
         
-        Collection<VComponentDisplayable<?>> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentOriginalCopy,
-                vComponent,
-                startOriginalInstance,
-                startInstance,
-                endInstance,
-//                editDescriptiveVBox.shiftAmount,
-                EditChoiceDialog.EDIT_DIALOG_CALLBACK
-                );
+        VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(appointment);
+        try
+        {
+            VComponentDisplayable<?> vComponentOriginalCopy = vComponent.getClass().newInstance();
+            vComponentOriginalCopy.copyComponentFrom(vComponent);
+            vComponent.getRevisor().handleEdit(
+                    vComponentOriginalCopy,
+                    startOriginalRecurrence,
+                    startRecurrence,
+                    endRecurrence,
+                    EditChoiceDialog.EDIT_DIALOG_CALLBACK);
+//            Collection<VComponentDisplayable<?>> newVComponents = ReviseComponentHelper.handleEdit(
+////                    vComponentOriginalCopy,
+//                    vComponent,
+//                    startOriginalRecurrence,
+//                    startRecurrence,
+//                    endRecurrence,
+////                    editDescriptiveVBox.shiftAmount,
+//                    EditChoiceDialog.EDIT_DIALOG_CALLBACK
+//                    );
+            boolean changed = newVComponents.isEmpty(); // temp
+            appointments().addListener(appointmentsListChangeListener);
+            getVCalendar().getVEvents().addListener(vComponentsChangeListener);
+            
+//            System.out.println("vComponents changed - added:******************************" + vComponents.size());       
+            
+            if (! changed) refresh(); // refresh if canceled (undo drag effect, if edited a refresh occurred when updating Appointments)
+//            System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
+            appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
+            
+        } catch (InstantiationException | IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+
         
-        boolean changed = newVComponents.isEmpty(); // temp
-//        boolean changed = vEvent.handleEdit(
-//                vEventOriginal
-//              , vComponents
-//              , startOriginalInstance
-//              , startInstance
-//              , endInstance
-//              , appointments()
-//              , oneAllThisAndFutureDialogCallback);
-        appointments().addListener(appointmentsListChangeListener);
-        getVCalendar().getVEvents().addListener(vComponentsChangeListener);
-        
-//        System.out.println("vComponents changed - added:******************************" + vComponents.size());       
-        
-        if (! changed) refresh(); // refresh if canceled (undo drag effect, if edited a refresh occurred when updating Appointments)
-//        System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
-        appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
+
         return null;
     };
     
@@ -360,18 +368,13 @@ public class ICalendarAgenda extends Agenda
     {
         super();
         this.vCalendar = vCalendar;
-        recurrenceHelper = new RecurrenceHelper<Appointment>(
-//                appointments(),
-                makeAppointmentCallback
-//                vComponentAppointmentMap,
-//                appointmentVComponentMap
-                );
-        getVCalendar().getVEvents().addListener((InvalidationListener) (obs) -> 
-        {
-//            System.out.println("vComponents chagned:******************************" + vComponents.size());
-//            vComponents.stream().forEach(System.out::println);
-        });
-        
+        recurrenceHelper = new RecurrenceHelper<Appointment>(makeAppointmentCallback);
+//        getVCalendar().getVEvents().addListener((InvalidationListener) (obs) -> 
+//        {
+////            System.out.println("vComponents chagned:******************************" + vComponents.size());
+////            vComponents.stream().forEach(System.out::println);
+//        });
+
         // setup default categories from appointment groups
         categories = FXCollections.observableArrayList(
                 appointmentGroups().stream()
@@ -598,36 +601,36 @@ public class ICalendarAgenda extends Agenda
         // Listen for changes to appointments (additions and deletions)
         appointments().addListener(appointmentsListChangeListener);
         
-        // Keeps appointmentRecurrenceIDMap and appointmentVComponentMap synched with appointments
-        ListChangeListener<Appointment> appointmentsListener2 = (ListChangeListener.Change<? extends Appointment> change) ->
-        {
-//            System.out.println("appointmentsListener2:");
-            while (change.next())
-            {
-                if (change.wasAdded())
-                {
-                    change.getAddedSubList()
-                            .stream()
-                            .forEach(a -> 
-                            {
-                                appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
-//                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
-                                // TODO - IF I MOVE INSTANCE MAKING TO HERE - EITHER CALLBACK OR LISTENER THEN I CAN UPDATE
-                                // BOTH MAPS HERE
-                            });
-                } else if (change.wasRemoved())
-                {
-                    change.getRemoved()
-                            .stream()
-                            .forEach(a -> 
-                            { // remove map entries
-                                appointmentStartOriginalMap.remove(System.identityHashCode(a));
-                                appointmentVComponentMap.remove(System.identityHashCode(a));
-                            });
-                }
-            }
-        };
-        appointments().addListener(appointmentsListener2);
+//        // Keeps appointmentRecurrenceIDMap and appointmentVComponentMap synched with appointments
+//        ListChangeListener<Appointment> appointmentsListener2 = (ListChangeListener.Change<? extends Appointment> change) ->
+//        {
+////            System.out.println("appointmentsListener2:");
+//            while (change.next())
+//            {
+//                if (change.wasAdded())
+//                {
+//                    change.getAddedSubList()
+//                            .stream()
+//                            .forEach(a -> 
+//                            {
+//                                appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
+////                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
+//                                // TODO - IF I MOVE INSTANCE MAKING TO HERE - EITHER CALLBACK OR LISTENER THEN I CAN UPDATE
+//                                // BOTH MAPS HERE
+//                            });
+//                } else if (change.wasRemoved())
+//                {
+//                    change.getRemoved()
+//                            .stream()
+//                            .forEach(a -> 
+//                            { // remove map entries
+//                                appointmentStartOriginalMap.remove(System.identityHashCode(a));
+//                                appointmentVComponentMap.remove(System.identityHashCode(a));
+//                            });
+//                }
+//            }
+//        };
+//        appointments().addListener(appointmentsListener2);
 
         // Listen for changes to vComponents (additions and deletions)
         getVCalendar().getVEvents().addListener(vComponentsChangeListener);

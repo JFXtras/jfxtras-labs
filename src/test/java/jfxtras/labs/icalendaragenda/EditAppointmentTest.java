@@ -22,12 +22,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
-import jfxtras.labs.icalendarfx.components.ReviseComponentHelper;
-import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.editors.ReviseComponentHelper;
+import jfxtras.labs.icalendarfx.components.editors.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 @Deprecated // do in icalendarfx

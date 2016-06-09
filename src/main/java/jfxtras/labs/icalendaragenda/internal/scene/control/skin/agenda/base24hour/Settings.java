@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.editors.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 
 // TODO - MAKE SEPARATE RESOURCE FILE FOR THESE

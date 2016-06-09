@@ -9,6 +9,8 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendarfx.components.editors.Editable;
+import jfxtras.labs.icalendarfx.components.editors.VEventEditor;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
@@ -288,6 +290,9 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     /*
      * METHODS FOR EDITING COMPONENTS
      */
+    
+    @Override
+    public Editable<VEvent> newRevisor() { return new VEventEditor(); }
     
     @Override
     <U extends Temporal> void becomeNonRecurring(

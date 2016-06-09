@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.components;
+package jfxtras.labs.icalendarfx.components.editors;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -19,18 +19,47 @@ import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
+@Deprecated
 public final class ReviseComponentHelper
 {
     private ReviseComponentHelper() { }
     
+//    public static <T extends VComponentDisplayableBase<?>, U extends Temporal> Collection<T> handleEdit(
+//            T vComponentEdited,
+//            Temporal startOriginalRecurrence,
+//            U startRecurrence,
+//            U endRecurrence, // null for VJournal
+////            TemporalAmount shiftAmount,
+//            Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback
+//            )
+//    {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+
+    public static <T extends Temporal> Collection<VComponentDisplayable<?>> handleEdit(
+            VComponentDisplayable<?> vComponent,
+            Temporal startOriginalInstance,
+            T startInstance,
+            T endInstance,
+            Callback<Map<ChangeDialogOption,
+            Pair<Temporal, Temporal>>, ChangeDialogOption> editDialogCallback)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
     /** Edit VEvent or VTodo or VJournal
      * @param <T>*/
     public static <T extends VComponentDisplayableBase<?>, U extends Temporal> Collection<T> handleEdit(
-            T vComponentOriginal,
+            T vComponentOriginal, // TODO - TRY TO REMOVE
             T vComponentEdited,
             Temporal startOriginalRecurrence,
             U startRecurrence,
@@ -796,6 +825,7 @@ public final class ReviseComponentHelper
             return choices;
          }        
      }
+
      
 //     /**
 //      * A convenience class to represent start and end date-time pairs

@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.components.ReviseComponentHelper.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.editors.ReviseComponentHelper.ChangeDialogOption;
 
 
 /**
