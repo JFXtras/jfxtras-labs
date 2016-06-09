@@ -694,7 +694,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
      * endRecurrence to closest valid values
      */
-    // TODO - VERITFY THIS WORKS - changed from old version
+    @Deprecated
+    public // TODO - VERITFY THIS WORKS - changed from old version
     void validateStartRecurrenceAndDTStart(Temporal startRecurrence)
     {
         if (getRecurrenceRule() != null)
@@ -721,7 +722,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * @param startRecurrence
      * @param endRecurrence
      */
-    <U extends Temporal> void becomeNonRecurring(
+    @Deprecated
+    public <U extends Temporal> void becomeNonRecurring(
             VComponentDisplayableBase<?> vComponentOriginal,
             U startRecurrence,
             U endRecurrence)

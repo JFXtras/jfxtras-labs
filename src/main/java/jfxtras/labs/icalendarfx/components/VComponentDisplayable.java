@@ -598,7 +598,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         }        
     }
     
-    Editable<T> newRevisor();
+    <U extends VComponent<U>> Editable<T, U> newRevisor();
 //    void setRevisable(Revisable revisable);
     
     /**

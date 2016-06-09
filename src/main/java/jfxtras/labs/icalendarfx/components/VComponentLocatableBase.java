@@ -254,7 +254,8 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      */
     
     @Override
-    <U extends Temporal> void becomeNonRecurring(
+    @Deprecated
+    public <U extends Temporal> void becomeNonRecurring(
             VComponentDisplayableBase<?> vComponentOriginal,
             U startRecurrence,
             U endRecurrence)

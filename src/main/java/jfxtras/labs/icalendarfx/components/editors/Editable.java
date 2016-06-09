@@ -9,19 +9,24 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 
 /**
+ * Interface defining the edit behavior of a VComponent
  * 
- * @author david
+ * @author David Bal
  *
  * @param <T> - subclass
  */
-public interface Editable<T>
+public interface Editable<T, U extends VComponent<U>>
 {
-    /** Revise component based on properties set in subclasses */
-    Collection<T> edit();
+    /** Revise component based on properties set in subclasses
+     * 
+     * @return - new VComponents based on changed
+     */
+    Collection<U> edit();
     
     /**
      * Options available when editing or deleting a repeatable appointment.

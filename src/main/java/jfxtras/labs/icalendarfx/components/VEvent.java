@@ -292,7 +292,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
      */
     
     @Override
-    public Editable<VEvent> newRevisor() { return new VEventEditor(); }
+    public Editable<VEventEditor, VEvent> newRevisor() { return new VEventEditor(); }
     
     @Override
     <U extends Temporal> void becomeNonRecurring(

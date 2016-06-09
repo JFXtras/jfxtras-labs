@@ -29,7 +29,6 @@ import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.SelectedOneAppointmentLoader;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
@@ -328,12 +327,7 @@ public class ICalendarAgenda extends Agenda
         {
             VComponentDisplayable<?> vComponentOriginalCopy = vComponent.getClass().newInstance();
             vComponentOriginalCopy.copyComponentFrom(vComponent);
-            vComponent.getRevisor().handleEdit(
-                    vComponentOriginalCopy,
-                    startOriginalRecurrence,
-                    startRecurrence,
-                    endRecurrence,
-                    EditChoiceDialog.EDIT_DIALOG_CALLBACK);
+            vComponent.newRevisor();
 //            Collection<VComponentDisplayable<?>> newVComponents = ReviseComponentHelper.handleEdit(
 ////                    vComponentOriginalCopy,
 //                    vComponent,

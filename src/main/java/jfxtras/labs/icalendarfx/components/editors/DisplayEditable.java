@@ -15,7 +15,7 @@ import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
  * @param <U> - VComponent class
  * @param <V> - Temporal class of recurrence start and end
  */
-public interface DisplayEditable<T extends VComponentDisplayable<T>, U, V extends Temporal> extends Editable<T>
+public interface DisplayEditable<T, U extends VComponentDisplayable<U>> extends Editable<T, U>
 {
     U getVComponentEdited();
     void setVComponentEdited(U vComponentEdited);
@@ -25,9 +25,9 @@ public interface DisplayEditable<T extends VComponentDisplayable<T>, U, V extend
     void setVComponentOriginal(U vComponentOriginal);
     default T withVComponentOriginal(U vComponentOriginal) { setVComponentOriginal(vComponentOriginal); return (T) this; }
 
-    V getStartRecurrence();
-    void setStartRecurrence(V startRecurrence);
-    default T withStartRecurrence(V startRecurrence) { setStartRecurrence(startRecurrence); return (T) this; }
+    Temporal getStartRecurrence();
+    void setStartRecurrence(Temporal startRecurrence);
+    default T withStartRecurrence(Temporal startRecurrence) { setStartRecurrence(startRecurrence); return (T) this; }
     
     Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> getDialogCallback();
     void setDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback);
