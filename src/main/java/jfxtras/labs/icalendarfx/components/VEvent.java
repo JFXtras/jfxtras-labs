@@ -188,6 +188,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     }
 
     @Override
+    @Deprecated
     public TemporalAmount getActualDuration()
     {
         final TemporalAmount duration;
@@ -207,6 +208,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     }
     
     @Override
+    @Deprecated
     void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
     {
         TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);

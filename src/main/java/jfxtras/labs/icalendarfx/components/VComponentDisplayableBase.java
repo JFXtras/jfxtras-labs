@@ -750,6 +750,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     /** Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time 
      * @param <U>*/
     @Deprecated // inline?
+    public
     <U extends Temporal> void adjustDateTime(
             Temporal startOriginalRecurrence,
             U startRecurrence,
@@ -813,6 +814,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * @param startRecurrence - start of a recurrence
      * @param endRecurrence - end of the same recurrence
      */
+    @Deprecated // use proper method for end or duration
     void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
     {
         // no operation - override in subclasses for functionality

@@ -27,6 +27,10 @@ public abstract class DisplayableEditor<T, U extends VComponentDisplayable<U>> i
     private U vComponentOriginal;
     @Override public void setVComponentOriginal(U vComponentOriginal) { this.vComponentOriginal = vComponentOriginal; }
 
+    @Override public Temporal getStartOriginalRecurrence() { return startOriginalRecurrence; }
+    private Temporal startOriginalRecurrence;
+    @Override public void setStartOriginalRecurrence(Temporal startOriginalRecurrence) { this.startOriginalRecurrence = startOriginalRecurrence; }
+    
     @Override public Temporal getStartRecurrence() { return startRecurrence; }
     private Temporal startRecurrence;
     @Override public void setStartRecurrence(Temporal startRecurrence) { this.startRecurrence = startRecurrence; }
@@ -39,6 +43,8 @@ public abstract class DisplayableEditor<T, U extends VComponentDisplayable<U>> i
     @Override
     public Collection<U> edit()
     {
+        // TODO - CHECK IF FIELDS ARE SET
+        
         U vComponentEdited = getVComponentEdited();
         U vComponentOriginal = getVComponentOriginal();
         Temporal startRecurrence = getStartRecurrence();
@@ -71,7 +77,8 @@ public abstract class DisplayableEditor<T, U extends VComponentDisplayable<U>> i
             // fall through
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
-            vComponentEdited.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
+            adjustDateTime();
+//            vComponentEdited.adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
             
 //            if (! vComponentEditedCopy.equals(vComponentOriginal))
 //            {
@@ -221,5 +228,15 @@ public abstract class DisplayableEditor<T, U extends VComponentDisplayable<U>> i
         getVComponentEdited().setRecurrenceRule((RecurrenceRule2) null);
         getVComponentEdited().setRecurrenceDates(null);
         getVComponentEdited().setExceptionDates(null);
+    }
+    
+    public void adjustDateTime()
+    {
+        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
+        Temporal newStart = getVComponentEdited().getDateTimeStart().getValue().plus(amount);
+        getVComponentEdited().setDateTimeStart(newStart);
+//        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
+//        getVComponentEdited().setEndOrDuration(getStartRecurrence(), endRecurrence);
+//        endType().setDuration(this, startRecurrence, endRecurrence);
     }
 }

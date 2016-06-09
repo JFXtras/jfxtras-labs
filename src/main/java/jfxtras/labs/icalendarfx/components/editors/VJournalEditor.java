@@ -1,6 +1,8 @@
 package jfxtras.labs.icalendarfx.components.editors;
 
-public class VJournalEditor extends DisplayableEditor
+import jfxtras.labs.icalendarfx.components.VJournal;
+
+public class VJournalEditor extends DisplayableEditor<VJournalEditor, VJournal>
 {
 
 

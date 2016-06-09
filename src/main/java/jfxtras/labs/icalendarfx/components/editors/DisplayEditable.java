@@ -25,6 +25,10 @@ public interface DisplayEditable<T, U extends VComponentDisplayable<U>> extends 
     void setVComponentOriginal(U vComponentOriginal);
     default T withVComponentOriginal(U vComponentOriginal) { setVComponentOriginal(vComponentOriginal); return (T) this; }
 
+    Temporal getStartOriginalRecurrence();
+    void setStartOriginalRecurrence(Temporal startOriginalRecurrence);
+    default T withStartOriginalRecurrence(Temporal startOriginalRecurrence) { setStartRecurrence(startOriginalRecurrence); return (T) this; }
+    
     Temporal getStartRecurrence();
     void setStartRecurrence(Temporal startRecurrence);
     default T withStartRecurrence(Temporal startRecurrence) { setStartRecurrence(startRecurrence); return (T) this; }
