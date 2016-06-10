@@ -1,11 +1,13 @@
 package jfxtras.labs.icalendarfx.components.editors;
 
 import java.time.temporal.Temporal;
+import java.util.List;
 import java.util.Map;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.properties.PropertyType;
 
 /**
  * 
@@ -40,4 +42,6 @@ public interface DisplayEditable<T, U extends VComponentDisplayable<U>> extends 
         setDialogCallback(dialogCallback);
         return (T) this;
     }
+    
+    List<PropertyType> dialogRequiredProperties();
 }

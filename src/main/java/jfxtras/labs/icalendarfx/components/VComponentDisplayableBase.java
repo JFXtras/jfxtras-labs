@@ -773,7 +773,8 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      * @param <T>
      * @param <U>
      */
-    <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
+    @Deprecated
+    public <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
 //            T vComponentEditedCopy,
             T vComponentOriginal,
             Temporal startOriginalRecurrence,

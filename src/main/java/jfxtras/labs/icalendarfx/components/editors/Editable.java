@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayableBase;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 
 /**
@@ -41,9 +41,9 @@ public interface Editable<T, U extends VComponent<U>>
       , CANCEL;              // do nothing
         
        /** Produce the map of change dialog options and the date range the option affects */
-       public static <T extends VComponentDisplayableBase<?>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(
-                T vComponentOriginal,
-                T vComponentEdited,
+       public static <U extends VComponentDisplayable<U>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(
+                U vComponentOriginal,
+                U vComponentEdited,
                 Temporal startInstance,
                 List<PropertyType> changedProperties)
        {

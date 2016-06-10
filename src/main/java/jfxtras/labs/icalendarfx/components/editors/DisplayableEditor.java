@@ -87,12 +87,11 @@ public abstract class DisplayableEditor<T, U extends VComponentDisplayable<U>> i
             break;
         case WITH_EXISTING_REPEAT:
             // Find which properties changed
-            // TODO - PUT findChangedProperties IN STATIC
-            List<PropertyType> changedProperties = vComponentEdited.findChangedProperties(
-                    vComponentOriginal,
-                    startOriginalRecurrence,
-                    startRecurrence,
-                    endRecurrence);
+            List<PropertyType> changedProperties = findChangedProperties();
+//                    vComponentOriginal,
+//                    startOriginalRecurrence,
+//                    startRecurrence,
+//                    endRecurrence);
             /* Note:
              * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
              * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
@@ -101,12 +100,12 @@ public abstract class DisplayableEditor<T, U extends VComponentDisplayable<U>> i
             // determine if any changed properties warrant dialog
 //            changedProperties.stream().forEach(a -> System.out.println("changed property:" + a));
             boolean provideDialog = changedProperties.stream()
-                .map(p -> DIALOG_REQUIRED_PROPERTIES.contains(p))
+                .map(p -> dialogRequiredProperties().contains(p))
                 .anyMatch(b -> b == true);
 //            boolean provideDialog = requiresChangeDialog(changedProperties);
             if (changedProperties.size() > 0) // if changes occurred
             {
-                List<T> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
+                List<U> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
@@ -230,7 +229,7 @@ public abstract class DisplayableEditor<T, U extends VComponentDisplayable<U>> i
         getVComponentEdited().setExceptionDates(null);
     }
     
-    public void adjustDateTime()
+    void adjustDateTime()
     {
         TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
         Temporal newStart = getVComponentEdited().getDateTimeStart().getValue().plus(amount);
@@ -238,5 +237,69 @@ public abstract class DisplayableEditor<T, U extends VComponentDisplayable<U>> i
 //        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
 //        getVComponentEdited().setEndOrDuration(getStartRecurrence(), endRecurrence);
 //        endType().setDuration(this, startRecurrence, endRecurrence);
+    }
+    
+    /**
+     * Generates a list of iCalendar property names that have different values from the 
+     * input parameter
+     * 
+     * equal checks are encapsulated inside the enum VComponentProperty
+     * @param <T>
+     * @param <U>
+     */
+    List<PropertyType> findChangedProperties()
+//            T vComponentEditedCopy,
+//            T vComponentOriginal,
+//            Temporal startOriginalRecurrence,
+//            U startRecurrence,
+//            U endRecurrence)
+//            TemporalAmount shiftAmount)
+    {
+        List<PropertyType> changedProperties = new ArrayList<>();
+        getVComponentEdited().properties()
+                .stream()
+                .map(p -> p.propertyType())
+                .forEach(t ->
+                {
+                    Object p1 = t.getProperty(getVComponentEdited());
+                    Object p2 = t.getProperty(getVComponentOriginal());
+//                    System.out.println("prop:" + p1 + " " + p2);
+                    if (! p1.equals(p2))
+                    {
+                        changedProperties.add(t);
+                    }
+                });
+        
+        /* Note:
+         * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
+         * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
+         * question is answered. */
+        if (! startOriginalRecurrence.equals(startRecurrence))
+        {
+            changedProperties.add(PropertyType.DATE_TIME_START);
+        }        
+        return changedProperties;
+    }
+    
+    /*
+     * When one of these properties the change-scope dialog should be activated to determine if the changes should be applied
+     * to ONE, ALL, or THIS_AND_FUTURE recurrences.  If other properties are modified the changes should be applied without a dialog.
+     */
+    @Override
+    public List<PropertyType> dialogRequiredProperties()
+    {
+        return new ArrayList<>(Arrays.asList(             
+            PropertyType.ATTACHMENT,
+            PropertyType.ATTENDEE,
+            PropertyType.CATEGORIES,
+            PropertyType.COMMENT,
+            PropertyType.CONTACT,
+            PropertyType.DATE_TIME_START,
+            PropertyType.DATE_TIME_END,
+            PropertyType.RECURRENCE_RULE,
+            PropertyType.STATUS,
+            PropertyType.SUMMARY,
+            PropertyType.UNIFORM_RESOURCE_LOCATOR
+            ));
     }
 }

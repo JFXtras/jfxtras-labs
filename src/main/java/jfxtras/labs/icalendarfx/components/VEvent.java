@@ -297,6 +297,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     public Editable<VEventEditor, VEvent> newRevisor() { return new VEventEditor(); }
     
     @Override
+    public
     <U extends Temporal> void becomeNonRecurring(
             VComponentDisplayableBase<?> vComponentOriginal,
             U startRecurrence,
@@ -310,6 +311,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     }
     
     @Override
+    public
     <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
           T vComponentOriginal,
           Temporal startOriginalRecurrence,
