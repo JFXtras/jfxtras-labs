@@ -6,6 +6,8 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.components.revisors.Revisable;
+import jfxtras.labs.icalendarfx.components.revisors.VJournalRevisor;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 
@@ -114,6 +116,9 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
     {
         super(source);
     }
+    
+    @Override
+    public Revisable<VJournalRevisor, VJournal> newRevisor() { return new VJournalRevisor(this); }
     
     @Override
     public List<String> errors()

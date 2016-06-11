@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.components.editors;
+package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -21,8 +21,13 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public abstract class LocatableEditor<T, U extends VComponentLocatable<U>> extends DisplayableEditor<T, U> implements LocateEditable<T, U>
+public abstract class LocatableRevisor<T, U extends VComponentLocatable<U>> extends DisplayableRevisor<T, U> implements LocateRevisable<T, U>
 {
+    public LocatableRevisor(U component)
+    {
+        super(component);
+    }
+
     @Override public Temporal getEndRecurrence() { return endRecurrence; }
     private Temporal endRecurrence;
     @Override public void setEndRecurrence(Temporal startRecurrence) { this.endRecurrence = startRecurrence; }

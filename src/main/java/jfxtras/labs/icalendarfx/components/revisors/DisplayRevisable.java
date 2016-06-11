@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.components.editors;
+package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.temporal.Temporal;
 import java.util.List;
@@ -15,9 +15,8 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
  *
  * @param <T> - subclass
  * @param <U> - VComponent class
- * @param <V> - Temporal class of recurrence start and end
  */
-public interface DisplayEditable<T, U extends VComponentDisplayable<U>> extends Editable<T, U>
+public interface DisplayRevisable<T, U extends VComponentDisplayable<U>> extends Revisable<T, U>
 {
     U getVComponentEdited();
     void setVComponentEdited(U vComponentEdited);

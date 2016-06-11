@@ -15,7 +15,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.editors.Editable;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.DateTimeCreated;
 import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
@@ -597,9 +596,9 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
             }
         }        
     }
-    
-    <U extends VComponent<U>> Editable<T, U> newRevisor();
-//    void setRevisable(Revisable revisable);
+
+//    @Override
+//    DisplayRevisable<?, T> newRevisor();
     
     /**
      * List of child components having RecurrenceIDs and matching UID to a parent component

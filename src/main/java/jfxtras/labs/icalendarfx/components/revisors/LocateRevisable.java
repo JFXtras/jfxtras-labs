@@ -1,10 +1,10 @@
-package jfxtras.labs.icalendarfx.components.editors;
+package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 
-public interface LocateEditable<T, U extends VComponentDisplayable<U>> extends DisplayEditable<T, U>
+public interface LocateRevisable<T, U extends VComponentDisplayable<U>> extends DisplayRevisable<T, U>
 {
     Temporal getEndRecurrence();
     void setEndRecurrence(Temporal endRecurrence);

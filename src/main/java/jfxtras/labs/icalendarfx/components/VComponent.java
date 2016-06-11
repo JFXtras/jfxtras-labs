@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
@@ -132,6 +133,9 @@ public interface VComponent<T> extends VCalendarElement
         })
         .collect(Collectors.toList()));
     }
+    
+    /** Component editor */
+    Revisable<?, T> newRevisor();
     
     /** 
      * SORT ORDER

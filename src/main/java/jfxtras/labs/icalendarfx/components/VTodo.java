@@ -12,6 +12,8 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendarfx.components.revisors.Revisable;
+import jfxtras.labs.icalendarfx.components.revisors.VTodoRevisor;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.PercentComplete;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeCompleted;
@@ -244,6 +246,10 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
      */
     
     @Override
+    public Revisable<VTodoRevisor, VTodo> newRevisor() { return new VTodoRevisor(this); }
+    
+    @Override
+    public
     <U extends Temporal> void becomeNonRecurring(
             VComponentDisplayableBase<?> vComponentOriginal,
             U startRecurrence,
@@ -257,6 +263,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     }
     
     @Override
+    public
     <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
           T vComponentOriginal,
           Temporal startOriginalRecurrence,

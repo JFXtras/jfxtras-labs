@@ -36,7 +36,7 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.editors.ReviseComponentHelper.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.revisors.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;

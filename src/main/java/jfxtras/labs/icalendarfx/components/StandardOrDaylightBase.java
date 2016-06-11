@@ -96,6 +96,11 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
         super(contentLines);
     }
     
+    public StandardOrDaylightBase(StandardOrDaylightBase<T> source)
+    {
+        super(source);
+    }
+
     @Override
     public List<String> errors()
     {

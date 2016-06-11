@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.components.editors;
+package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;

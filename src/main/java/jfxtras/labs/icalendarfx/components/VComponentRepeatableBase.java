@@ -10,8 +10,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 /**
@@ -81,6 +81,11 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         super(contentLines);
     }    
     
+    public VComponentRepeatableBase(StandardOrDaylightBase<T> source)
+    {
+        super(source);
+    }
+
     @Override
     public Stream<Temporal> streamRecurrences(Temporal start)
     {

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendarfx.components.editors;
+package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -6,8 +6,13 @@ import java.time.temporal.TemporalAmount;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public class VTodoEditor extends LocatableEditor<VTodoEditor, VTodo>
+public class VTodoRevisor extends LocatableRevisor<VTodoRevisor, VTodo>
 {
+    public VTodoRevisor(VTodo component)
+    {
+        super(component);
+    }
+    
     @Override
     public void adjustDateTime()
     {

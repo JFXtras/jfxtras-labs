@@ -34,13 +34,19 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditComponentPopupStage;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper.CallbackTwoParameters;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.behavior.Behavior;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.behavior.VEventBehavior;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.behavior.VJournalBehavior;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.behavior.VTodoBehavior;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.editors.ReviseComponentHelper.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.revisors.ReviseComponentHelper.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda;
@@ -88,6 +94,11 @@ public class ICalendarAgenda extends Agenda
     {
         this.categories = categories;
     }
+
+//    // Component Behaviors
+//    VEventBehavior vEventBehavior;
+//    VTodoBehavior vTodoBehavior;
+//    VJournalBehavior vJournalBehavior;
     
     /** Callback to make appointment from VComponent and Temporal */
     private final CallbackTwoParameters<VComponentRepeatable<?>, Temporal, Appointment> makeAppointmentCallback = (vComponentEdited, startTemporal) ->
@@ -147,7 +158,9 @@ public class ICalendarAgenda extends Agenda
     @Deprecated // Is there another way?
     private final Map<Integer, Temporal> appointmentStartOriginalMap = new HashMap<>();
 
-    private final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VEvent that made it */
+    // TODO - CAN THESE MAPS GOTO THE BEHAVIOR CLASSES???
+    @Deprecated
+    public final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VEvent that made it */
 //    private final Map<Integer, VEvent> appointmentVEventMap = new HashMap<>(); /* map matches appointment to VEvent that made it */
 //    private final Map<Integer, VTodo> appointmentVTodoMap = new HashMap<>(); /* map matches appointment to VTodo that made it */
 //    private final Map<Integer, VJournal> appointmentVJournalMap = new HashMap<>(); /* map matches appointment to VJournal that made it */
@@ -155,6 +168,7 @@ public class ICalendarAgenda extends Agenda
     private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>(); /* map matches VComponent to their appointments */
 //    private final Map<VComponentNew<?>, List<Appointment>> vComponentAppointmentMap = new WeakHashMap<>(); /* map matches VComponent to their appointments */
 
+    private final Map<Class<? extends VComponent<?>>, Behavior> vComponentClassBehaviorMap = new HashMap<>();
     
     // not here - in VEventImpl
 //    // Extended appointment class used by the implementor - used to instantiate new appointment objects
@@ -187,7 +201,9 @@ public class ICalendarAgenda extends Agenda
      * listen for additions to appointments from agenda. This listener must be removed and added back when a change
      * in the time range  occurs.
      */
-    private ListChangeListener<Appointment> appointmentsListChangeListener;
+    // TODO - move to behavior classes
+    @Deprecated
+    public ListChangeListener<Appointment> appointmentsListChangeListener;
     public void setAppointmentsListChangeListener(ListChangeListener<Appointment> listener) { appointmentsListChangeListener = listener; }
     public ListChangeListener<Appointment> getAppointmentsListChangeListener() { return appointmentsListChangeListener; }
     
@@ -205,6 +221,23 @@ public class ICalendarAgenda extends Agenda
     // Default edit popup callback - this callback replaces Agenda's default edit popup
     // It has controls for repeatable events
     private Callback<Appointment, Void> iCalendarEditPopupCallback = (Appointment appointment) ->
+    {
+        VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
+        if (vComponent == null)
+        {
+            // NOTE: Can't throw exception here because in Agenda there is a mouse event that isn't consumed.
+            // Throwing an exception will leave the mouse unresponsive.
+            System.out.println("ERROR: no component found - popup can'b be displayed");
+        } else
+        {
+            // make popup
+            vComponentClassBehaviorMap.get(vComponent.getClass()).editPopup(appointment);
+        }
+        return null;
+    };
+
+        @Deprecated
+    private Callback<Appointment, Void> iCalendarEditPopupCallbackOld = (Appointment appointment) ->
     {
         VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
         if (vComponent == null)
@@ -327,7 +360,9 @@ public class ICalendarAgenda extends Agenda
         {
             VComponentDisplayable<?> vComponentOriginalCopy = vComponent.getClass().newInstance();
             vComponentOriginalCopy.copyComponentFrom(vComponent);
-            vComponent.newRevisor();
+            Collection<?> newVComponents = vComponent.newRevisor()
+                    .revise();
+
 //            Collection<VComponentDisplayable<?>> newVComponents = ReviseComponentHelper.handleEdit(
 ////                    vComponentOriginalCopy,
 //                    vComponent,
@@ -363,12 +398,19 @@ public class ICalendarAgenda extends Agenda
         super();
         this.vCalendar = vCalendar;
         recurrenceHelper = new RecurrenceHelper<Appointment>(makeAppointmentCallback);
+//        vEventBehavior = new VEventBehavior(this);
+        
+        // Populate component class to behavior map with required behaviors
+        vComponentClassBehaviorMap.put(VEvent.class, new VEventBehavior(this));
+        vComponentClassBehaviorMap.put(VJournal.class, new VJournalBehavior(this));
+        vComponentClassBehaviorMap.put(VTodo.class, new VTodoBehavior(this));
+
 //        getVCalendar().getVEvents().addListener((InvalidationListener) (obs) -> 
 //        {
 ////            System.out.println("vComponents chagned:******************************" + vComponents.size());
 ////            vComponents.stream().forEach(System.out::println);
 //        });
-
+        
         // setup default categories from appointment groups
         categories = FXCollections.observableArrayList(
                 appointmentGroups().stream()

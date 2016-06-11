@@ -1,8 +1,9 @@
-package jfxtras.labs.icalendarfx.components.editors;
+package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -15,8 +16,13 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
-public class VEventEditor extends LocatableEditor<VEventEditor, VEvent>
+public class VEventRevisor extends LocatableRevisor<VEventRevisor, VEvent>
 {
+    public VEventRevisor(VEvent component)
+    {
+        super(component);
+    }
+    
     @Override
     public void adjustDateTime()
     {
@@ -70,4 +76,12 @@ public class VEventEditor extends LocatableEditor<VEventEditor, VEvent>
                         ));
         return list;
     }
+    
+    @Override
+    void editThisAndFuture(Collection<VEvent> vComponents)
+    {
+        adjustDateTime();
+        super.editThisAndFuture(vComponents);
+    }
+
 }

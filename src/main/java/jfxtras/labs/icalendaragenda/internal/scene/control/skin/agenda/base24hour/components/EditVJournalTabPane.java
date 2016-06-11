@@ -7,7 +7,7 @@ import java.util.List;
 import javafx.fxml.FXML;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.editors.ReviseComponentHelper;
+import jfxtras.labs.icalendarfx.components.revisors.ReviseComponentHelper;
 
 public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, DescriptiveVJournalVBox>
 {

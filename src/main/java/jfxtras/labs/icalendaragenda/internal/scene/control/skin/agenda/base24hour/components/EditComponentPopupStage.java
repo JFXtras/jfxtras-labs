@@ -19,7 +19,7 @@ public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends
     private EditDisplayableTabPane<T,?> tabPane;
     public EditDisplayableTabPane<T,?> getEditDisplayableTabPane() { return tabPane; }   
     
-    EditComponentPopupStage(EditDisplayableTabPane<T,?> tabPane)
+    public EditComponentPopupStage(EditDisplayableTabPane<T,?> tabPane)
     {
         super();
         this.tabPane = tabPane;
@@ -33,7 +33,6 @@ public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends
         setScene(scene);
     }
 
-    
 //    public static <U extends VComponentDisplayable<?>> EditComponentPopupStage<U> editComponentPopupStageFactory(Class<U> clazz)
 //    {
 //        if (clazz.equals(VEvent.class))
@@ -51,16 +50,17 @@ public class EditComponentPopupStage<T extends VComponentDisplayable<?>> extends
 //        }
 //    }
     
-    public EditComponentPopupStage(
-            T vComponent,
-            List<T> vComponents,
-            Temporal startTemporal,
-            Temporal endTemporal,
-            List<String> categories)
-    {
-        // TODO Auto-generated constructor stub
-    }
+//    public EditComponentPopupStage(
+//            T vComponent,
+//            List<T> vComponents,
+//            Temporal startTemporal,
+//            Temporal endTemporal,
+//            List<String> categories)
+//    {
+//        // TODO Auto-generated constructor stub
+//    }
 
+    @Deprecated
     public static <U extends VComponentDisplayable<?>> EditComponentPopupStage<U> editComponentPopupStageFactory(
             U vComponent,
             VCalendar vCalendar,

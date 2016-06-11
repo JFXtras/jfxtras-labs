@@ -9,8 +9,8 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.editors.Editable;
-import jfxtras.labs.icalendarfx.components.editors.VEventEditor;
+import jfxtras.labs.icalendarfx.components.revisors.Revisable;
+import jfxtras.labs.icalendarfx.components.revisors.VEventRevisor;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
@@ -226,6 +226,9 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     }
     
     @Override
+    public Revisable<VEventRevisor, VEvent> newRevisor() { return new VEventRevisor(this); }
+    
+    @Override
     public List<String> errors()
     {
         List<String> errors = super.errors();
@@ -293,9 +296,8 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
      * METHODS FOR EDITING COMPONENTS
      */
     
-    @Override
-    public Editable<VEventEditor, VEvent> newRevisor() { return new VEventEditor(); }
     
+    @Deprecated
     @Override
     public
     <U extends Temporal> void becomeNonRecurring(
@@ -309,7 +311,8 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
             setDateTimeEnd(endRecurrence);
         }
     }
-    
+
+    @Deprecated
     @Override
     public
     <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
