@@ -2,9 +2,9 @@ package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.temporal.Temporal;
 
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 
-public interface LocateRevisable<T, U extends VComponentDisplayable<U>> extends DisplayRevisable<T, U>
+public interface LocateRevisable<T, U extends VComponentLocatable<U>> extends DisplayRevisable<T, U>
 {
     Temporal getEndRecurrence();
     void setEndRecurrence(Temporal endRecurrence);

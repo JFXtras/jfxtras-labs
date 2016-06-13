@@ -3,6 +3,7 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.io.IOException;
 import java.net.URL;
 import java.time.temporal.Temporal;
+import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -52,6 +53,9 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
         loadFxml(DescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
     }
     
+    /** make new reviser, provide its data, produce revised components */
+    abstract Collection<T> callRevisor();
+
     @FXML
     void handleSaveButton()
     {

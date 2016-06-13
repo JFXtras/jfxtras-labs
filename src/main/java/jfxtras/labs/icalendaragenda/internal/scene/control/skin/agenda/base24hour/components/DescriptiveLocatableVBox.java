@@ -15,7 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import jfxtras.labs.icalendarfx.components.VComponentLocatableBase;
+import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.scene.control.LocalDateTextField;
@@ -29,7 +29,7 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  *
  * @param <T> subclass for VEvent or VTodo
  */
-public abstract class DescriptiveLocatableVBox<T extends VComponentLocatableBase<?>> extends DescriptiveVBox<T>
+public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>> extends DescriptiveVBox<T>
 {
     protected LocalDateTimeTextField endDateTimeTextField = new LocalDateTimeTextField(); // end of recurrence
     protected LocalDateTextField endDateTextField = new LocalDateTextField(); // end of recurrence when wholeDayCheckBox is selected

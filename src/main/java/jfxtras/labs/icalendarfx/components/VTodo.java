@@ -13,7 +13,7 @@ import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
-import jfxtras.labs.icalendarfx.components.revisors.VTodoRevisor;
+import jfxtras.labs.icalendarfx.components.revisors.VTodoReviser;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.PercentComplete;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeCompleted;
@@ -246,7 +246,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
      */
     
     @Override
-    public Revisable<VTodoRevisor, VTodo> newRevisor() { return new VTodoRevisor(this); }
+    public Revisable<VTodoReviser, VTodo> newRevisor() { return new VTodoReviser(this); }
     
     @Override
     public

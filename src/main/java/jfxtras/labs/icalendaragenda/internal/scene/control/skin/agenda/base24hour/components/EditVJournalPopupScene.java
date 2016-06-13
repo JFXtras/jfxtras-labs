@@ -9,9 +9,9 @@ import jfxtras.labs.icalendarfx.components.VJournal;
  * 
  * @author David Bal
  */
-public class EditVJournalPopupStage extends EditComponentPopupStage<VJournal>
+public class EditVJournalPopupScene extends EditComponentPopupScene
 {
-    public EditVJournalPopupStage()
+    public EditVJournalPopupScene()
     {
         super(new EditVJournalTabPane());
     }
@@ -21,7 +21,7 @@ public class EditVJournalPopupStage extends EditComponentPopupStage<VJournal>
 //        super(new EditVEventTabPane());
 //    }
 
-    public EditVJournalPopupStage(
+    public EditVJournalPopupScene(
             VJournal vComponent,
             List<VJournal> vJournals,
             Temporal startRecurrence,
@@ -29,7 +29,7 @@ public class EditVJournalPopupStage extends EditComponentPopupStage<VJournal>
             List<String> categories)
     {
         super(new EditVJournalTabPane());
-        getEditDisplayableTabPane().setupData(vComponent, vJournals, startRecurrence, endRecurrence, categories);
+        ((EditVJournalTabPane) getRoot()).setupData(vComponent, vJournals, startRecurrence, endRecurrence, categories);
     }
 }
  

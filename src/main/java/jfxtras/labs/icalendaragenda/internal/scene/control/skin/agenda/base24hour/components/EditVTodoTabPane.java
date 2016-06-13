@@ -1,9 +1,12 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
 import java.time.temporal.Temporal;
+import java.util.Collection;
 import java.util.List;
 
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.revisors.VTodoReviser;
 
 public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
 {
@@ -27,5 +30,18 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
     {
         super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
         vComponentOriginalCopy = new VTodo(vComponent);
+    }
+
+    @Override
+    Collection<VTodo> callRevisor()
+    {
+        VTodoReviser reviser = ((VTodoReviser) vComponentOriginalCopy.newRevisor())
+                .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
+                .withEndRecurrence(editDescriptiveVBox.endNewRecurrence)
+                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
+                .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
+                .withVComponentEdited(vComponent)
+                .withVComponentOriginal(vComponentOriginalCopy);
+        return reviser.revise();
     }
 }

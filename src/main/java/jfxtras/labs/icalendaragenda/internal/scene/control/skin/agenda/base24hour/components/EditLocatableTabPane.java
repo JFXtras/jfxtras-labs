@@ -3,19 +3,17 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.util.Collection;
 
 import javafx.fxml.FXML;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
-import jfxtras.labs.icalendarfx.components.VComponentLocatableBase;
-import jfxtras.labs.icalendarfx.components.revisors.ReviseComponentHelper;
+import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 
-public abstract class EditLocatableTabPane<T extends VComponentLocatableBase<?>> extends EditDisplayableTabPane<T, DescriptiveLocatableVBox<T>>
+public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> extends EditDisplayableTabPane<T, DescriptiveLocatableVBox<T>>
 {
     public EditLocatableTabPane( )
     {
         super();
     }
-    
+        
     @Override
     @FXML void handleSaveButton()
     {
@@ -28,16 +26,17 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatableBase<?>>
             vComponent.setLocation((Location) null); 
         }
         super.handleSaveButton();
+        Collection<T> newVComponents = callRevisor();
 
-        Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentOriginalCopy,
-                vComponent,
-                editDescriptiveVBox.startOriginalRecurrence,
-                editDescriptiveVBox.startRecurrenceProperty.get(),
-                editDescriptiveVBox.endNewRecurrence,
-//                editDescriptiveVBox.shiftAmount,
-                EditChoiceDialog.EDIT_DIALOG_CALLBACK
-                );
+//        Collection<T> newVComponents = ReviseComponentHelper.handleEdit(
+//                vComponentOriginalCopy,
+//                vComponent,
+//                editDescriptiveVBox.startOriginalRecurrence,
+//                editDescriptiveVBox.startRecurrenceProperty.get(),
+//                editDescriptiveVBox.endNewRecurrence,
+////                editDescriptiveVBox.shiftAmount,
+//                EditChoiceDialog.EDIT_DIALOG_CALLBACK
+//                );
         if (newVComponents != null)
         {
             vComponents.remove(vComponent);

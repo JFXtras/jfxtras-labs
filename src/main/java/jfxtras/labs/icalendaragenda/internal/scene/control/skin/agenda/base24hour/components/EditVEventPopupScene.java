@@ -10,19 +10,19 @@ import jfxtras.labs.icalendarfx.components.VEvent;
  * 
  * @author David Bal
  */
-public class EditVEventPopupStage extends EditComponentPopupStage<VEvent>
+public class EditVEventPopupScene extends EditComponentPopupScene
 {
-    public EditVEventPopupStage()
+    public EditVEventPopupScene()
     {
         super(new EditVEventTabPane());
     }
 
-    public EditVEventPopupStage(VEvent vComponent, ObservableList<VEvent> vEvents)
+    public EditVEventPopupScene(VEvent vComponent, ObservableList<VEvent> vEvents)
     {
         super(new EditVEventTabPane());
     }
 
-    public EditVEventPopupStage(
+    public EditVEventPopupScene(
             VEvent vComponent,
             List<VEvent> vEvents,
             Temporal startRecurrence,
@@ -30,7 +30,7 @@ public class EditVEventPopupStage extends EditComponentPopupStage<VEvent>
             List<String> categories)
     {
         super(new EditVEventTabPane());
-        getEditDisplayableTabPane().setupData(vComponent, vEvents, startRecurrence, endRecurrence, categories);
+        ((EditVEventTabPane) getRoot()).setupData(vComponent, vEvents, startRecurrence, endRecurrence, categories);
     }
 }
  

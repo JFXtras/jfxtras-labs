@@ -9,9 +9,9 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * 
  * @author David Bal
  */
-public class EditVTodoPopupStage extends EditComponentPopupStage<VTodo>
+public class EditVTodoPopupScene extends EditComponentPopupScene
 {
-    public EditVTodoPopupStage()
+    public EditVTodoPopupScene()
     {
         super(new EditVTodoTabPane());
     }
@@ -21,7 +21,7 @@ public class EditVTodoPopupStage extends EditComponentPopupStage<VTodo>
 //        super(new EditVEventTabPane());
 //    }
 
-    public EditVTodoPopupStage(
+    public EditVTodoPopupScene(
             VTodo vComponent,
             List<VTodo> vTodos,
             Temporal startRecurrence,
@@ -29,7 +29,7 @@ public class EditVTodoPopupStage extends EditComponentPopupStage<VTodo>
             List<String> categories)
     {
         super(new EditVTodoTabPane());
-        getEditDisplayableTabPane().setupData(vComponent, vTodos, startRecurrence, endRecurrence, categories);
+        ((EditVTodoTabPane) getRoot()).setupData(vComponent, vTodos, startRecurrence, endRecurrence, categories);
     }
 }
  

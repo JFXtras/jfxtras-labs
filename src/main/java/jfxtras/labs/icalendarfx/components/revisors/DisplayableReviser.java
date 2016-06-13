@@ -19,15 +19,15 @@ import java.util.stream.Collectors;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.revisors.LocatableRevisor.RRuleStatus;
+import jfxtras.labs.icalendarfx.components.revisors.LocatableReviser.RRuleStatus;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public abstract class DisplayableRevisor<T, U extends VComponentDisplayable<U>> implements DisplayRevisable<T, U>
+public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> implements DisplayRevisable<T, U>
 { 
-    public DisplayableRevisor(U component)
+    public DisplayableReviser(U component)
     {
         setVComponentEdited(component);
     }
@@ -52,11 +52,44 @@ public abstract class DisplayableRevisor<T, U extends VComponentDisplayable<U>> 
     private Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback;    
     @Override public void setDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback) { this.dialogCallback = dialogCallback; }
 
+    boolean isValid()
+    {
+        if (getVComponentEdited() == null)
+        {
+            System.out.println("vComponentEdited must not be null");
+            return false;
+        }
+        if (getVComponentOriginal() == null)
+        {
+            System.out.println("vComponentOriginal must not be null");
+            return false;
+        }
+        if (getStartOriginalRecurrence() == null)
+        {
+            System.out.println("startOriginalRecurrence must not be null");
+            return false;
+        }
+        if (getStartRecurrence() == null)
+        {
+            System.out.println("startRecurrence must not be null");
+            return false;
+        }
+        if (getDialogCallback() == null)
+        {
+            System.out.println("dialogCallback must not be null");
+            return false;
+        }
+        return true;   
+    }
+    
     /** Edit VEvent or VTodo or VJournal */
     @Override
     public Collection<U> revise()
     {
-        // TODO - CHECK IF FIELDS ARE SET
+        if (! isValid())
+        {
+            throw new RuntimeException("Invalid parameters for component revision:");
+        }
         
         U vComponentEdited = getVComponentEdited();
         U vComponentOriginal = getVComponentOriginal();

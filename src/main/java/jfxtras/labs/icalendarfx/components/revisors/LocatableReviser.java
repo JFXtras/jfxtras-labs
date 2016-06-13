@@ -21,9 +21,9 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public abstract class LocatableRevisor<T, U extends VComponentLocatable<U>> extends DisplayableRevisor<T, U> implements LocateRevisable<T, U>
+public abstract class LocatableReviser<T, U extends VComponentLocatable<U>> extends DisplayableReviser<T, U> implements LocateRevisable<T, U>
 {
-    public LocatableRevisor(U component)
+    public LocatableReviser(U component)
     {
         super(component);
     }
@@ -31,6 +31,17 @@ public abstract class LocatableRevisor<T, U extends VComponentLocatable<U>> exte
     @Override public Temporal getEndRecurrence() { return endRecurrence; }
     private Temporal endRecurrence;
     @Override public void setEndRecurrence(Temporal startRecurrence) { this.endRecurrence = startRecurrence; }
+    
+    @Override
+    boolean isValid()
+    {
+        if (getEndRecurrence() == null)
+        {
+            System.out.println("endRecurrence must not be null");
+            return false;
+        }
+        return super.isValid();
+    }
     
     @Override
     void becomeNonRecurring()
@@ -46,186 +57,6 @@ public abstract class LocatableRevisor<T, U extends VComponentLocatable<U>> exte
             }
         }
     }
-//    /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
-//     * endRecurrence to closest valid values
-//     */
-//    // TODO - VERITFY THIS WORKS - changed from old version
-//    private static void validateStartRecurrenceAndDTStart(VComponentLocatable<?> vComponentEditedCopy, Temporal startOriginalRecurrence, Temporal startRecurrence)
-//    {
-////        boolean isStreamedValue;
-//        if (vComponentEditedCopy.getRecurrenceRule() != null)
-//        {
-//            Temporal firstTemporal = vComponentEditedCopy.getRecurrenceRule().getValue()
-//                    .streamRecurrences(vComponentEditedCopy.getDateTimeStart().getValue())
-//                    .findFirst()
-//                    .get();
-//            if (! firstTemporal.equals(vComponentEditedCopy.getDateTimeStart().getValue()))
-//            {
-//                vComponentEditedCopy.setDateTimeStart(firstTemporal);
-//            }
-//        }
-//    }
-    
-//    /* Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time */
-//    private static void adjustDateTime(
-//            VComponentLocatable<?> vComponentEditedCopy,
-//            Temporal startOriginalRecurrence,
-//            Temporal startRecurrence,
-//            Temporal endRecurrence)
-//    {
-//        Temporal newStart = adjustStart(
-//                vComponentEditedCopy.getDateTimeStart().getValue(),
-//                startOriginalRecurrence,
-//                startRecurrence,
-//                endRecurrence);
-//        vComponentEditedCopy.setDateTimeStart(newStart);
-////        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
-//        vComponentEditedCopy.setEndOrDuration(startRecurrence, endRecurrence);
-////        endType().setDuration(this, startRecurrence, endRecurrence);
-//    }
-//
-//    /* Adjust DTSTART of RECURRENCE-ID */
-//    private static Temporal adjustStart(Temporal initialStart
-//            , Temporal startOriginalRecurrence
-//            , Temporal startRecurrence
-//            , Temporal endRecurrence)
-//    {
-//        DateTimeType newDateTimeType = DateTimeType.of(startRecurrence);
-//        ZoneId zone = (startRecurrence instanceof ZonedDateTime) ? ZoneId.from(startRecurrence) : null;
-//        Temporal startAdjusted = newDateTimeType.from(initialStart, zone);
-//        Temporal startOriginalRecurrenceAdjusted = newDateTimeType.from(startOriginalRecurrence, zone);
-//
-//        // Calculate shift from startAdjusted to make new DTSTART
-//        final TemporalAmount startShift;
-//        if (newDateTimeType == DateTimeType.DATE)
-//        {
-//            startShift = Period.between(LocalDate.from(startOriginalRecurrence), LocalDate.from(startRecurrence));
-//        } else
-//        {
-//            startShift = Duration.between(startOriginalRecurrenceAdjusted, startRecurrence);
-//        }
-//        return startAdjusted.plus(startShift);
-//    }
-    
-//    private static <T extends VComponentDisplayableBase<?>> void becomeNonRecurring(
-//            T vComponentEditedCopy,
-//            T vComponentOriginal,
-//            Temporal startRecurrence,
-//            Temporal endRecurrence)
-//    {
-//        vComponentEditedCopy.setRecurrenceRule((RecurrenceRule3) null);
-//        vComponentEditedCopy.setRecurrenceDates(null);
-//        vComponentEditedCopy.setExceptionDates(null);
-//        if (vComponentOriginal.getRecurrenceRule() != null)
-//        { // RRULE was removed, update DTSTART, DTEND or DURATION
-//            vComponentEditedCopy.setDateTimeStart(startRecurrence);
-//            if (vComponentEditedCopy.getDuration() != null)
-//            {
-//                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-//                vComponentEditedCopy.setDuration(duration);
-//            } else
-//            {
-//                if (vComponentEditedCopy instanceof VTodo)
-//                {
-//                    ((VTodo) vComponentEditedCopy).setDateTimeDue(endRecurrence);
-//                } else if (vComponentEditedCopy instanceof VEvent)
-//                {
-//                    ((VEvent) vComponentEditedCopy).setDateTimeEnd(endRecurrence);
-//                }
-//            }
-//        }
-//    }
-    
-//    private Collection<R> updateRecurrences(VComponentLocatable<?> vComponentEditedCopy)
-//    {
-//        Collection<R> componentRecurrences = vComponentRecurrencetMap.get(vComponentEditedCopy);
-//        Collection<R> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
-//        recurrencesTemp.addAll(recurrences);
-//        recurrencesTemp.removeIf(a -> componentRecurrences.stream().anyMatch(a2 -> a2 == a));
-////        instances().clear(); // clear VEvent of outdated appointments
-//        List<R> newRecurrences = makeRecurrences(vComponentEditedCopy);
-//        recurrencesTemp.addAll(newRecurrences); // make new recurrences and add to main collection (added to VEvent's collection in makeAppointments)
-////        System.out.println("puting:" + vComponentEditedCopy.hashCode() + " " + newRecurrences);
-////        vComponentRecurrencetMap.put(vComponentEditedCopy, newRecurrences);
-//        vComponentRecurrencetMap.put(System.identityHashCode(vComponentEditedCopy), newRecurrences);
-////        System.out.println("contains key:" + vComponentRecurrencetMap.containsKey(vComponentEditedCopy));
-//       return recurrencesTemp;
-//    }
-
-//    private Collection<?> updateRecurrences(VComponentLocatable<?> vComponentEditedCopy, Collection<?> recurrences)
-//   {
-//       Collection<Object> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
-//       recurrencesTemp.addAll(recurrences);
-//       recurrencesTemp.removeIf(a -> updateInstances().stream().anyMatch(a2 -> a2 == a));
-//       recurrences().clear(); // clear VEvent of outdated appointments
-//       recurrencesTemp.addAll(makeRecurrences(vComponentEditedCopy)); // make new appointments and add to main collection (added to VEvent's collection in makeAppointments)
-//       return recurrencesTemp;
-//   }
-    
-//    /**
-//     * Generates a list of iCalendar property names that have different values from the 
-//     * input parameter
-//     * 
-//     * equal checks are encapsulated inside the enum VComponentProperty
-//     * @param <T>
-//     */
-//    public static <T extends VComponentDisplayableBase<?>> List<PropertyType> findChangedProperties(
-//            T vComponentEditedCopy,
-//            T vComponentOriginal,
-//            Temporal startOriginalInstance,
-//            Temporal startInstance,
-//            Temporal endInstance)
-//    {
-//        List<PropertyType> changedProperties = new ArrayList<>();
-//        vComponentEditedCopy.properties()
-//                .stream()
-//                .map(p -> p.propertyType())
-//                .forEach(t ->
-//                {
-//                    Object p1 = t.getProperty(vComponentEditedCopy);
-//                    Object p2 = t.getProperty(vComponentOriginal);
-//                    if (! p1.equals(p2))
-//                    {
-//                        changedProperties.add(t);
-//                    }
-//                });
-//        
-//        /* Note:
-//         * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
-//         * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
-//         * question is answered. */
-//        if (! startOriginalInstance.equals(startInstance))
-//        {
-//            changedProperties.add(PropertyType.DATE_TIME_START);
-//        }
-//        
-//        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startInstance, endInstance);
-//        TemporalAmount durationOriginal = vComponentEditedCopy.getActualDuration();
-//        if (! durationOriginal.equals(durationNew))
-//        {
-//            if (vComponentEditedCopy instanceof VEvent)
-//            {
-//                if (! (((VEvent) vComponentEditedCopy).getDateTimeEnd() == null))
-//                {
-//                    changedProperties.add(PropertyType.DATE_TIME_END);                    
-//                }
-//            } else if (vComponentEditedCopy instanceof VTodo)
-//            {
-//                if (! (((VTodo) vComponentEditedCopy).getDateTimeDue() == null))
-//                {
-//                    changedProperties.add(PropertyType.DATE_TIME_DUE);                    
-//                }                
-//            }
-//            boolean isDurationNull = vComponentEditedCopy.getDuration() == null;
-//            if (! isDurationNull)
-//            {
-//                changedProperties.add(PropertyType.DURATION);                    
-//            }
-//        }   
-//        
-//        return changedProperties;
-//    }
-
    
    /**
     * Return true if ANY changed property requires a dialog, false otherwise

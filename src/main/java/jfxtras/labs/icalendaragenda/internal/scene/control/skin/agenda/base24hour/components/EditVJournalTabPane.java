@@ -7,7 +7,7 @@ import java.util.List;
 import javafx.fxml.FXML;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.revisors.ReviseComponentHelper;
+import jfxtras.labs.icalendarfx.components.revisors.VJournalReviser;
 
 public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, DescriptiveVJournalVBox>
 {
@@ -28,16 +28,16 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, Descri
             vComponent.setDescriptions(null);
         }
         super.handleSaveButton();
-        
-        Collection<VJournal> newVComponents = ReviseComponentHelper.handleEdit(
-                vComponentOriginalCopy,
-                vComponent,
-                editDescriptiveVBox.startOriginalRecurrence,
-                editDescriptiveVBox.startRecurrenceProperty.get(),
-                null,
-//                editDescriptiveVBox.shiftAmount,
-                EditChoiceDialog.EDIT_DIALOG_CALLBACK
-                );
+        Collection<VJournal> newVComponents = callRevisor();
+//        Collection<VJournal> newVComponents = ReviseComponentHelper.handleEdit(
+//                vComponentOriginalCopy,
+//                vComponent,
+//                editDescriptiveVBox.startOriginalRecurrence,
+//                editDescriptiveVBox.startRecurrenceProperty.get(),
+//                null,
+////                editDescriptiveVBox.shiftAmount,
+//                EditChoiceDialog.EDIT_DIALOG_CALLBACK
+//                );
         vComponents.remove(vComponent);
         vComponents.addAll(newVComponents);
     }
@@ -53,5 +53,17 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, Descri
     {
         super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
         vComponentOriginalCopy = new VJournal(vComponent);
+    }
+
+    @Override
+    Collection<VJournal> callRevisor()
+    {
+        VJournalReviser reviser = ((VJournalReviser) vComponentOriginalCopy.newRevisor())
+                .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
+                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
+                .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
+                .withVComponentEdited(vComponent)
+                .withVComponentOriginal(vComponentOriginalCopy);
+        return reviser.revise();
     }
 }

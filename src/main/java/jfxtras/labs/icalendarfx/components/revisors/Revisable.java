@@ -9,11 +9,14 @@ import java.util.Collection;
  *
  * @param <T> - subclass
  */
+//public interface Revisable<T, U extends VComponent<U>>
 public interface Revisable<T, U>
 {
     /** Revise component based on properties set in subclasses
+     * Adds new components to vComponents argument
      * 
-     * @return - new VComponents based on changed
      */
+//    void revise(Collection<U> VComponents);
     Collection<U> revise();
+
 }

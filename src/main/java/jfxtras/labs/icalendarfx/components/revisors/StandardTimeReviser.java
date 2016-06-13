@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.StandardTime;
 
-public class StandardTimeRevisor implements Revisable<StandardTimeRevisor, StandardTime>
+public class StandardTimeReviser implements Revisable<StandardTimeReviser, StandardTime>
 {
-    public StandardTimeRevisor(StandardTime component)
+    public StandardTimeReviser(StandardTime component)
     {
         throw new RuntimeException("not implemented");
     }

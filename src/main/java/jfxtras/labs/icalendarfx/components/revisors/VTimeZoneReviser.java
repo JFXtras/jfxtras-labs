@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 
-public class VTimeZoneRevisor implements Revisable<VTimeZoneRevisor, VTimeZone>
+public class VTimeZoneReviser implements Revisable<VTimeZoneReviser, VTimeZone>
 {
-    public VTimeZoneRevisor(VTimeZone component)
+    public VTimeZoneReviser(VTimeZone component)
     {
         throw new RuntimeException("not implemented");
     }

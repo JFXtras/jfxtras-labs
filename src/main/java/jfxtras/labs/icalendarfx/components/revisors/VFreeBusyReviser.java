@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 
-public class VFreeBusyRevisor implements Revisable<VFreeBusyRevisor, VFreeBusy>
+public class VFreeBusyReviser implements Revisable<VFreeBusyReviser, VFreeBusy>
 {
-    public VFreeBusyRevisor(VFreeBusy component)
+    public VFreeBusyReviser(VFreeBusy component)
     {
         throw new RuntimeException("not implemented");
     }

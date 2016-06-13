@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
 
-public class VAlarmRevisor implements Revisable<VAlarmRevisor, VAlarm>
+public class VAlarmReviser implements Revisable<VAlarmReviser, VAlarm>
 {
-    public VAlarmRevisor(VAlarm component)
+    public VAlarmReviser(VAlarm component)
     {
         throw new RuntimeException("not implemented");
     }

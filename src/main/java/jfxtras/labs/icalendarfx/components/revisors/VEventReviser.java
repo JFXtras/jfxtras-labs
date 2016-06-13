@@ -16,9 +16,9 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  * @author David Bal
  *
  */
-public class VEventRevisor extends LocatableRevisor<VEventRevisor, VEvent>
+public class VEventReviser extends LocatableReviser<VEventReviser, VEvent>
 {
-    public VEventRevisor(VEvent component)
+    public VEventReviser(VEvent component)
     {
         super(component);
     }

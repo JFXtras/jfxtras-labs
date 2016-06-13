@@ -2,9 +2,9 @@ package jfxtras.labs.icalendarfx.components.revisors;
 
 import jfxtras.labs.icalendarfx.components.VJournal;
 
-public class VJournalRevisor extends DisplayableRevisor<VJournalRevisor, VJournal>
+public class VJournalReviser extends DisplayableReviser<VJournalReviser, VJournal>
 {    
-    public VJournalRevisor(VJournal component)
+    public VJournalReviser(VJournal component)
     {
         super(component);
     }
