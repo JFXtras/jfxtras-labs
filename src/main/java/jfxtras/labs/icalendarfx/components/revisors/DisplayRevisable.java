@@ -28,7 +28,7 @@ public interface DisplayRevisable<T, U extends VComponentDisplayable<U>> extends
 
     Temporal getStartOriginalRecurrence();
     void setStartOriginalRecurrence(Temporal startOriginalRecurrence);
-    default T withStartOriginalRecurrence(Temporal startOriginalRecurrence) { setStartRecurrence(startOriginalRecurrence); return (T) this; }
+    default T withStartOriginalRecurrence(Temporal startOriginalRecurrence) { setStartOriginalRecurrence(startOriginalRecurrence); return (T) this; }
     
     Temporal getStartRecurrence();
     void setStartRecurrence(Temporal startRecurrence);

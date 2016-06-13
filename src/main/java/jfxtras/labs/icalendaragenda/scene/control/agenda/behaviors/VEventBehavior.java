@@ -56,6 +56,7 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
         } else
         {
             Temporal startOriginalRecurrence = agenda.appointmentStartOriginalMap().get(System.identityHashCode(appointment));
+            System.out.println("startOriginalRecurrence:" + startOriginalRecurrence);
             final Temporal startRecurrence;
             final Temporal endRecurrence;
 
