@@ -7,6 +7,7 @@ import javafx.stage.Popup;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
+@Deprecated
 public class NewAppointmentController extends Popup
 {
     private Collection<Appointment> appointments;

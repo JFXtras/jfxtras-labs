@@ -43,6 +43,7 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
         }
     }
 
+    // TODO - TRY TO MOVE MOST OF BELOW METHOD TO SUPER
     @Override
     public void callRevisor(Appointment appointment)
     {
@@ -56,7 +57,6 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
         } else
         {
             Temporal startOriginalRecurrence = agenda.appointmentStartOriginalMap().get(System.identityHashCode(appointment));
-            System.out.println("startOriginalRecurrence:" + startOriginalRecurrence);
             final Temporal startRecurrence;
             final Temporal endRecurrence;
 
@@ -87,7 +87,9 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
                     .withVComponentEdited(vComponent)
                     .withVComponentOriginal(vComponentOriginal);
             Collection<VEvent> newVComponents = newRevisor.revise();
+            System.out.println("about to remove:");
             agenda.getVCalendar().getVEvents().remove(vComponent);
+            System.out.println("about to add:" + newVComponents.size());
             agenda.getVCalendar().getVEvents().addAll(newVComponents);
         }
         

@@ -3,7 +3,6 @@ package jfxtras.labs.icalendarfx.components.revisors;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -27,6 +26,11 @@ public class VEventReviser extends LocatableReviser<VEventReviser, VEvent>
     public void adjustDateTime()
     {
         super.adjustDateTime();
+        adjustDateTimeEndOrDuration();
+    }
+
+    private void adjustDateTimeEndOrDuration()
+    {
         TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());
         if (getVComponentEdited().getDuration() != null)
         {
@@ -78,10 +82,9 @@ public class VEventReviser extends LocatableReviser<VEventReviser, VEvent>
     }
     
     @Override
-    void editThisAndFuture(Collection<VEvent> vComponents)
+    void editOne()
     {
-        adjustDateTime();
-        super.editThisAndFuture(vComponents);
+        super.editOne();
+        adjustDateTimeEndOrDuration();
     }
-
 }

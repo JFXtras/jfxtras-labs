@@ -19,6 +19,7 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
  * @author David Bal
  *
  */
+@Deprecated
 public class SelectedOneAppointmentController extends Rectangle
 {
     private ICalendarAgenda agenda;

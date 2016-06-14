@@ -38,7 +38,7 @@ public class AgendaDateTimeUtilities
     }
     public static String formatRange(Pair<Temporal,Temporal> range) //Temporal start, Temporal end)
     {
-        System.out.println("range:" + range);
+//        System.out.println("range:" + range);
         Temporal start = range.getKey();
         Temporal end = range.getValue();
         return formatRange(start, end);

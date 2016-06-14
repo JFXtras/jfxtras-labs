@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.revisors.LocatableReviser.RRuleStatus;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
@@ -95,7 +94,6 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
         U vComponentOriginal = getVComponentOriginal();
         Temporal startRecurrence = getStartRecurrence();
         Temporal startOriginalRecurrence = getStartOriginalRecurrence();
-//        System.out.println("shiftAmout:" + shiftAmount + " " + getVComponentEdited().getDateTimeStart().getValue() + " " + ((VEvent) vComponentEdited).getDateTimeEnd().getValue());
         if (! getVComponentEdited().isValid())
         {
             throw new RuntimeException("Can't revise. Edited component is invalid:" + System.lineSeparator() + 
@@ -162,7 +160,6 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
                             startOriginalRecurrence,
                             changedProperties);
                     changeResponse = dialogCallback.call(choices);
-                    System.out.println("changeResponse:" + changeResponse);
                 } else
                 {
                     changeResponse = ChangeDialogOption.ALL;
@@ -170,7 +167,7 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
                 switch (changeResponse)
                 {
                 case ALL:
-                    System.out.println("components size:" + relatedVComponents.size());
+//                    System.out.println("components size:" + relatedVComponents.size());
                     if (relatedVComponents.size() == 1)
                     {
                         adjustDateTime();
@@ -192,16 +189,20 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
                     {
                         throw new RuntimeException("Only 1 relatedVComponents currently supported");
                     }
+                    vComponents.add(vComponentEdited);
                     break;
                 case CANCEL:
 //                    getVComponentEdited().copyComponentFrom(vComponentOriginal);  // return to original
 //                    return Arrays.asList(vComponentOriginal); // return original
                     return null;
                 case THIS_AND_FUTURE:
-                    editThisAndFuture(vComponents);
+                    vComponents.add(editThisAndFuture());
+                    vComponents.add(vComponentEdited);
                     break;
                 case ONE:
-                    editOne(vComponents);
+                    editOne();
+                    vComponents.add(vComponentOriginal);
+                    vComponents.add(vComponentEdited);
                     break;
                 default:
                     throw new RuntimeException("Unknown response:" + changeResponse);
@@ -218,12 +219,12 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
         {
             getVComponentEdited().incrementSequence();
         }
-        System.out.println("endedit:" +vComponents.size());
 //        vComponents.remove(vComponentOriginal);
 //        System.out.println(vComponents.size());
 //        if (! vComponents.isEmpty())
 //        {
-        vComponents.add(vComponentEdited);
+//        vComponents.add(vComponentEdited);
+        System.out.println("endedit:" +vComponents.size());
 //        }
 //        System.out.println(vComponents.size());
 //        if (newRecurrences != null)
@@ -260,6 +261,7 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
         getVComponentEdited().setExceptionDates(null);
     }
     
+    // TODO - CONSIDER INLINING
     void adjustDateTime()
     {
         TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
@@ -341,7 +343,8 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
      * VComponents.  vEventNew has new settings, vEvent has former settings.
      * 
      */
-    void editThisAndFuture(Collection<U> vComponents)
+//    void editThisAndFuture(Collection<U> vComponents)
+    U editThisAndFuture()
     {
         // adjust original VEvent - remove COUNT, replace with UNTIL
         if (getVComponentOriginal().getRecurrenceRule().getValue().getCount() != null)
@@ -505,7 +508,8 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
                     getVComponentOriginal().errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
                     getVComponentOriginal().toContent());
         }
-        vComponents.add(getVComponentOriginal());
+        return getVComponentOriginal();
+//        vComponents.add(getVComponentOriginal());
         
 
         // Remove old appointments, add back ones
@@ -538,29 +542,32 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
      * as with the same UID as the parent and a recurrence-id for the replaced date or date/time.
      * 
      */
-    void editOne(Collection<U> vComponents)
+//    void editOne(Collection<U> vComponents)
+    void editOne()
     {
         // Remove RRule and set parent component
+//        adjustDateTime();
         getVComponentEdited().setRecurrenceRule((RecurrenceRule) null);
 //        setParent(vComponentOriginal);
 
         // Apply dayShift, account for editing recurrence beyond first
-        Period shiftAmount = Period.between(LocalDate.from(getVComponentEdited().getDateTimeStart().getValue()),
-                  LocalDate.from(startOriginalRecurrence));
-        Temporal newStart = getVComponentEdited().getDateTimeStart().getValue().plus(shiftAmount);
-        getVComponentEdited().setDateTimeStart(newStart);
+//        Period shiftAmount = Period.between(LocalDate.from(getVComponentEdited().getDateTimeStart().getValue()),
+//                  LocalDate.from(startOriginalRecurrence));
+//        Temporal newStart = getVComponentEdited().getDateTimeStart().getValue().plus(shiftAmount);
+        getVComponentEdited().setDateTimeStart(getStartRecurrence());
+//        getVComponentEdited().setDateTimeEnd(getStartRecurrence().plus(shiftAmount));
 //        getVComponentEdited().adjustDateTime(startOriginalRecurrence, startRecurrence, endRecurrence);
 //        Temporal startOriginalRecurrence = startRecurrence.plus(shiftAmount);
         getVComponentEdited().setRecurrenceId(startOriginalRecurrence);
         getVComponentEdited().setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
-   
+//        return getVComponentEdited();
         // Add recurrence to original vEvent - done automatically
 //        vComponentOriginal.childComponents().add(vComponentEditedCopy);
         
         // Check for validity
-        if (! getVComponentEdited().isValid()) { throw new RuntimeException("Invalid component"); }
+//        if (! getVComponentEdited().isValid()) { throw new RuntimeException("Invalid component"); }
 //        System.out.println("here:" + vComponentOriginal);
-        if (! vComponentOriginal.isValid()) { throw new RuntimeException("Invalid component"); }
+//        if (! vComponentOriginal.isValid()) { throw new RuntimeException("Invalid component"); }
         
         // Remove old recurrences, add back ones
 //        Collection<R> recurrencesTemp = new ArrayList<>(); // use temp array to avoid unnecessary firing of Agenda change listener attached to appointments
@@ -573,7 +580,37 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
 
 //        recurrences().clear(); // clear vEvent outdated collection of recurrences
 //        recurrencesTemp.addAll(makeRecurrences()); // add vEventOld part of new recurrences
-        vComponents.add(vComponentOriginal);
+//        vComponents.add(vComponentOriginal);
 //        return recurrencesTemp;
     }
+    
+    enum RRuleStatus
+   {
+       INDIVIDUAL ,
+       WITH_EXISTING_REPEAT ,
+       WITH_NEW_REPEAT, 
+       HAD_REPEAT_BECOMING_INDIVIDUAL;
+     
+       public static RRuleStatus getRRuleType(RecurrenceRule rruleEdited, RecurrenceRule rruleOriginal)
+       {
+           if (rruleOriginal == null)
+           {
+               if (rruleEdited == null)
+               { // edited doesn't have repeat or original have repeat either
+                   return RRuleStatus.INDIVIDUAL;
+               } else {
+                   return RRuleStatus.HAD_REPEAT_BECOMING_INDIVIDUAL;
+               }
+           } else
+           { // RRule != null
+               if (rruleEdited == null)
+               {
+                   return RRuleStatus.WITH_NEW_REPEAT;                
+               } else
+               {
+                   return RRuleStatus.WITH_EXISTING_REPEAT;
+               }
+           }
+       }
+   }
 }

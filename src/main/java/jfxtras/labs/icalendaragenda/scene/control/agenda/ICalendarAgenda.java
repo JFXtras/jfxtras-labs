@@ -200,8 +200,6 @@ public class ICalendarAgenda extends Agenda
      * listen for additions to appointments from agenda. This listener must be removed and added back when a change
      * in the time range  occurs.
      */
-    // TODO - move to behavior classes
-    @Deprecated
     public ListChangeListener<Appointment> appointmentsListChangeListener;
     public void setAppointmentsListChangeListener(ListChangeListener<Appointment> listener) { appointmentsListChangeListener = listener; }
     public ListChangeListener<Appointment> getAppointmentsListChangeListener() { return appointmentsListChangeListener; }
@@ -241,7 +239,7 @@ public class ICalendarAgenda extends Agenda
             popupStage.getScene().getStylesheets().addAll(getUserAgentStylesheet(), ICalendarAgenda.ICALENDAR_STYLE_SHEET);
 
             // remove listeners during edit (to prevent creating extra vEvents when making appointments)
-            popupStage.setOnShowing((windowEvent) -> appointments().removeListener(appointmentsListChangeListener));
+//            popupStage.setOnShowing((windowEvent) -> appointments().removeListener(appointmentsListChangeListener));
             
             /* POSITION POPUP
              * Position popup to left or right of bodyPane, where there is room.
@@ -259,7 +257,7 @@ public class ICalendarAgenda extends Agenda
             
             popupScene.getEditDisplayableTabPane().isFinished().addListener((obs) -> popupStage.hide());
             // return listener after edit
-            popupStage.setOnHiding((windowEvent) ->  appointments().addListener(appointmentsListChangeListener));
+//            popupStage.setOnHiding((windowEvent) ->  appointments().addListener(appointmentsListChangeListener));
 //            vComponentClassBehaviorMap.get(vComponent.getClass()).iCalendarEditBehavior(appointment);
         }
         return null;
@@ -306,67 +304,24 @@ public class ICalendarAgenda extends Agenda
      */
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
-        // TODO - NEED ANOTHER VERSION OF THIS CODE FOR VTODO
-//        VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
-//        VEventOld<Appointment,?> vEventOriginal = (VEventOld<Appointment,?>) VComponentFactory.newVComponent(vEvent); // copy original vEvent.  If change is canceled its copied back.
-//        Temporal startOriginalRecurrence = appointmentStartOriginalMap.get(System.identityHashCode(appointment));
-//        final Temporal startRecurrence;
-//        final Temporal endRecurrence;
-//
-//        boolean wasDateType = DateTimeType.of(startOriginalRecurrence).equals(DateTimeType.DATE);
-//        boolean isNotDateType = ! DateTimeType.of(appointment.getStartTemporal()).equals(DateTimeType.DATE);
-//        boolean isChangedToTimeBased = wasDateType && isNotDateType;
-//        boolean isChangedToWholeDay = appointment.isWholeDay() && isNotDateType;
-//        if (isChangedToTimeBased)
-//        {
-//            startRecurrence = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getStartTemporal(), ZoneId.systemDefault());
-//            endRecurrence = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getEndTemporal(), ZoneId.systemDefault());
-//        } else if (isChangedToWholeDay)
-//        {
-//            startRecurrence = LocalDate.from(appointment.getStartTemporal());
-//            Temporal endInstanceTemp = LocalDate.from(appointment.getEndTemporal());
-//            endRecurrence = (endInstanceTemp.equals(startRecurrence)) ? endInstanceTemp.plus(1, ChronoUnit.DAYS) : endInstanceTemp; // make period between start and end at least one day
-//        } else
-//        {
-//            startRecurrence = appointment.getStartTemporal();
-//            endRecurrence = appointment.getEndTemporal();            
-//        }
-
-//        System.out.println("drag-n-drop" + startOriginalRecurrence + " " + startRecurrence + " " + endRecurrence);
-//        System.out.println("change localdatetime:" + appointment.getStartLocalDateTime() + " " + appointment.getEndLocalDateTime() + " " + appointment.isWholeDay());
-        appointments().removeListener(appointmentsListChangeListener);
-        getVCalendar().getVEvents().removeListener(vComponentsChangeListener);
+//        appointments().removeListener(appointmentsListChangeListener);
+//        getVCalendar().getVEvents().removeListener(vComponentsChangeListener);
         
         VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
         
         System.out.println("about to revise:" + vComponent + " " + appointmentVComponentMap.size());
         vComponentClassBehaviorMap.get(vComponent.getClass()).callRevisor(appointment);
 
-//        try
-//        {
-//            VComponentDisplayable<?> vComponentOriginalCopy = vComponent.getClass().newInstance();
-//            vComponentOriginalCopy.copyComponentFrom(vComponent);
-//            Collection<?> newVComponents = vComponent.newRevisor()
-//                    .revise();
-
-//            Collection<VComponentDisplayable<?>> newVComponents = ReviseComponentHelper.handleEdit(
-////                    vComponentOriginalCopy,
-//                    vComponent,
-//                    startOriginalRecurrence,
-//                    startRecurrence,
-//                    endRecurrence,
-////                    editDescriptiveVBox.shiftAmount,
-//                    EditChoiceDialog.EDIT_DIALOG_CALLBACK
-//                    );
-//            boolean changed = newVComponents.isEmpty(); // temp
-            appointments().addListener(appointmentsListChangeListener);
-            getVCalendar().getVEvents().addListener(vComponentsChangeListener);
+        //  TODO - handle VTODO, VJOURNAL
+//        System.out.println("about to add back listeners:");
+//        appointments().addListener(appointmentsListChangeListener);
+//            getVCalendar().getVEvents().addListener(vComponentsChangeListener);
             
 //            System.out.println("vComponents changed - added:******************************" + vComponents.size());       
             
 //            if (! changed) refresh(); // refresh if canceled (undo drag effect, if edited a refresh occurred when updating Appointments)
 //            System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
-            appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
+        appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
             
 //        } catch (InstantiationException | IllegalAccessException e)
 //        {
@@ -500,7 +455,7 @@ public class ICalendarAgenda extends Agenda
                         {
                             iCalendarEditPopupCallback.call(a);
                         }
-                    } else throw new RuntimeException("Adding multiple appointments at once not supported");
+                    } else throw new RuntimeException("Adding multiple appointments at once is not supported (" + change.getAddedSubList().size() + ")");
                 }
                 if (change.wasRemoved())
                 {
@@ -547,38 +502,7 @@ public class ICalendarAgenda extends Agenda
                         // add new appointments
                         change.getAddedSubList()
                                 .stream()
-                                .forEach(v -> 
-                                {
-//                                    System.out.println("add instances:");
-                                    makeAppointments(v);
-//                                    List<Appointment> myAppointments = recurrenceHelper.makeRecurrences(v);
-//                                    newAppointments.addAll(recurrenceHelper.makeRecurrences(v));
-//                                    myAppointments.forEach(a -> 
-//                                    {
-//                                        appointmentVComponentMap.put(System.identityHashCode(a), v);
-//                                        appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
-//                                    });
-//                                    vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
-                                    
-//                                    appointmentVComponentMap.put(key, value)
-//                                    if (v.instances().isEmpty()) newAppointments.addAll(v.makeInstances(start, end));
-    
-                                    // add recurrence-id Temporal to parents (required to skip recurrences when making appointments)
-                                    // HANDLED by VCalendar listeners
-//                                    if (v.getDateTimeRecurrence() != null)
-//                                    {
-//                                        VComponentNew<?> parent = vComponents().stream()
-//                                                .filter(v2 -> 
-//                                                {
-//                                                    boolean isParent1 = v2.getUniqueIdentifier().equals(v.getUniqueIdentifier());
-//                                                    boolean isParent2 = v2.getDateTimeRecurrence() == null;
-//                                                    return isParent1 && isParent2;
-//                                                })
-//                                                .findFirst()
-//                                                .get();
-//                                        parent.getRRule().recurrences().add(v);
-//                                    }
-                                });
+                                .forEach(v -> newAppointments.addAll(makeAppointments(v)));
                         appointments().removeListener(appointmentsListChangeListener);
                         appointments().addAll(newAppointments);
                         appointments().addListener(appointmentsListChangeListener);
@@ -679,12 +603,13 @@ public class ICalendarAgenda extends Agenda
         // LISTEN FOR AGENDA RANGE CHANGES
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
+            List<Appointment> newAppointments = new ArrayList<>();
             setDateTimeRange(dateTimeRange);
             getRecurrenceHelper().setStartRange(dateTimeRange.getStartLocalDateTime());
             getRecurrenceHelper().setEndRange(dateTimeRange.getEndLocalDateTime());
 //            System.out.println("range0:" + dateTimeRange);
             if (dateTimeRange != null)
-            {        
+            {
                 appointments().removeListener(appointmentsListChangeListener); // remove appointmentListener to prevent making extra vEvents during refresh
                 appointments().clear();
                 vComponentAppointmentMap.clear();
@@ -694,12 +619,11 @@ public class ICalendarAgenda extends Agenda
 //                    v.instances().clear(); // Remove instances and appointments
 //                    LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
 //                    LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
-//                    System.out.println("range:" + start + " " + end);
 //                    List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(v, start, end, appointmentGroups());
 //                    List<Appointment> newAppointments = makeRecurrences(v);
 //                    vComponentAppointmentMap.put(v, newAppointments);
 
-                    makeAppointments(v);
+                    newAppointments.addAll(makeAppointments(v));
                     
 //                    vComponentAppointmentMap.entrySet().stream().forEach(System.out::println);
                     
@@ -710,22 +634,23 @@ public class ICalendarAgenda extends Agenda
 //                        appointmentVComponentMap.put(System.identityHashCode(a), v); // populate appointment-vComponent map
 //                    });
                 });
+                appointments().addAll(newAppointments);
                 appointments().addListener(appointmentsListChangeListener); // add back appointmentListener
             }
             return null; // return argument for the Callback
         });
     } // end of constructor
     
-    private void makeAppointments(VComponentDisplayable<?> v)
+    private Collection<Appointment> makeAppointments(VComponentDisplayable<?> v)
     {
         List<Appointment> myAppointments = recurrenceHelper.makeRecurrences(v);
-        appointments().addAll(myAppointments);
         myAppointments.forEach(a -> 
         {
             appointmentVComponentMap.put(System.identityHashCode(a), v);
             appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
         });
         vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
+        return myAppointments;
     }
     
     

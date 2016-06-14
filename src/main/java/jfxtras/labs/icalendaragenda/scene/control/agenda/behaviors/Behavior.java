@@ -6,8 +6,6 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public interface Behavior<T extends VComponent<?>>
 {
-//    void iCalendarEditBehavior(Appointment appointment);
-    
     EditComponentPopupScene getEditScene(Appointment appointment);
 
     void callRevisor(Appointment appointment);
