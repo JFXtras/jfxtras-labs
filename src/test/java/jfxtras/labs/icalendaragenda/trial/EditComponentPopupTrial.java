@@ -1,14 +1,9 @@
 package jfxtras.labs.icalendaragenda.trial;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -16,15 +11,13 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
+import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -47,18 +40,19 @@ public class EditComponentPopupTrial extends Application
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", Locale.getDefault());
         Settings.setup(resources);
 
-        VEvent vevent = new VEvent()
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
+//        VEvent vevent = new VEvent()
 //                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
-                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 16, 10, 0), ZoneId.of("America/Los_Angeles")))
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 16, 11, 0), ZoneId.of("America/Los_Angeles")))
-                .withDescription("Daily1 Description")
-                .withSummary("Daily1 Summary")
-                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
-                .withRecurrenceRule(new RecurrenceRule2()
-                        .withFrequency(FrequencyType.WEEKLY)
-                        .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))
-                        .withCount(10));
+//                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 16, 10, 0), ZoneId.of("America/Los_Angeles")))
+//                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 5, 16, 11, 0), ZoneId.of("America/Los_Angeles")))
+//                .withDescription("Daily1 Description")
+//                .withSummary("Daily1 Summary")
+//                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+//                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+//                .withRecurrenceRule(new RecurrenceRule2()
+//                        .withFrequency(FrequencyType.WEEKLY)
+//                        .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY))
+//                        .withCount(10));
 //                .withRecurrenceRule(new RecurrenceRule2()
 //                        .withFrequency(FrequencyType.DAILY)
 //                        .withInterval(3)
@@ -89,13 +83,13 @@ public class EditComponentPopupTrial extends Application
         EditVEventTabPane popup = new EditVEventTabPane();
 //        EditVJournalTabPane popup = new EditVJournalTabPane();
 //        EditVTodoTabPane popup = new EditVTodoTabPane();
-        List<String> categories = ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.stream().map(a -> a.getDescription()).collect(Collectors.toList());
+//        List<String> categories = ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.stream().map(a -> a.getDescription()).collect(Collectors.toList());
         popup.setupData(
                 vevent,
                 vEvents,
                 appointment.getStartTemporal(),
                 appointment.getEndTemporal(),
-                categories
+                ICalendarAgendaUtilities.CATEGORIES
                 );
 
         String agendaSheet = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
@@ -106,14 +100,14 @@ public class EditComponentPopupTrial extends Application
         primaryStage.setTitle("ICalendar Edit Popup Demo");
         primaryStage.show();
         
-        popup.isFinished().addListener((obs, oldValue, newValue) -> 
-        {
-//            System.out.println("hide:"+ vEvents.size());
-            vEvents.stream().forEach(System.out::println);
-            primaryStage.hide();
-            System.out.println("child components:" + vEvents.get(0).childComponents());
-            System.out.println("child components:" + vEvents.get(1).childComponents());
-        });
+//        popup.isFinished().addListener((obs, oldValue, newValue) -> 
+//        {
+////            System.out.println("hide:"+ vEvents.size());
+//            vEvents.stream().forEach(System.out::println);
+//            primaryStage.hide();
+//            System.out.println("child components:" + vEvents.get(0).childComponents());
+//            System.out.println("child components:" + vEvents.get(1).childComponents());
+//        });
         
 //        vEvents.addListener((InvalidationListener) (obs) ->
 //        {

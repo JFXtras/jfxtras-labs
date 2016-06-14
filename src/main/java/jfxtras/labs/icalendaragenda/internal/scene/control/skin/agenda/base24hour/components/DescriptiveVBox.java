@@ -62,7 +62,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML TextArea descriptionTextArea;
     @FXML Label locationLabel;
     @FXML TextField locationTextField;
-    @FXML private TextField groupTextField;
+    @FXML private TextField categoryTextField;
     @FXML private CategorySelectionGridPane categorySelectionGridPane;
     @FXML private Button saveComponentButton;
     @FXML private Button cancelComponentButton;
@@ -80,20 +80,13 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         startDateTimeTextField.setId("startDateTimeTextField");
         startDateTextField.setId("startDateTextField");
     }
-    
-//    public void dispose()
-//    {
-//        vComponentEdited.getDateTimeStart().valueProperty().removeListener(dateTimeStartListener);
-//    }
 
     final private ChangeListener<? super LocalDate> startDateTextListener = (observable, oldValue, newValue) -> synchStartDate(oldValue, newValue);
 
     /** Update startDateTimeTextField when startDateTextField changes */
     void synchStartDate(LocalDate oldValue, LocalDate newValue)
     {
-//        System.out.println("new value2:" + newValue);
         startRecurrenceProperty.set(newValue);
-//        shiftAmount = Period.between(LocalDate.from(startOriginalRecurrence), newValue);
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
         LocalDateTime newDateTime = startDateTimeTextField.getLocalDateTime().with(newValue);
         startDateTimeTextField.setLocalDateTime(newDateTime);
@@ -105,14 +98,11 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTextField when startDateTimeTextField changes */
     void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
-//        System.out.println("new value:" + newValue);
         startRecurrenceProperty.set(startOriginalRecurrence.with(newValue));
-//        shiftAmount = Duration.between(DateTimeType.DATE_WITH_LOCAL_TIME.from(startOriginalRecurrence), newValue);
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
         startDateTextField.setLocalDate(newDate);
         startDateTextField.localDateProperty().addListener(startDateTextListener);
-//        throw new RuntimeException("hre:");
     }
     
     // Callback for LocalDateTimeTextField that is called when invalid date/time is entered
@@ -127,8 +117,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     
     T vComponentEdited;
     private String initialCategory;
-//    List<T> vComponents;
-//    TemporalAmount shiftAmount = Duration.ZERO; // shift amount to apply to edited component
     Temporal startOriginalRecurrence;
     /** Contains the start recurrence Temporal LocalDate or LocalDateTime */
     ObjectProperty<Temporal> startRecurrenceProperty;
@@ -195,11 +183,11 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             {
                 Integer i = categorySelectionGridPane.getCategorySelected();
                 String newText = categories.get(i);
-                groupTextField.setText(newText);
+                categoryTextField.setText(newText);
             });
 
         // store group name changes by each character typed
-        groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
+        categoryTextField.textProperty().addListener((observable, oldSelection, newSelection) ->
         {
             int i = categorySelectionGridPane.getCategorySelected();
             if (! categories.get(i).equals(newSelection))
@@ -212,12 +200,12 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             vComponentEdited.getCategories().get(0).setValue(new ArrayList<String>(Arrays.asList(newSelection)));
         });
         // verify category is unique
-        groupTextField.focusedProperty().addListener((obs, oldValue, newValue) ->
+        categoryTextField.focusedProperty().addListener((obs, oldValue, newValue) ->
         {
             if (newValue)
             {
                 // save initial value
-                initialCategory = groupTextField.getText();
+                initialCategory = categoryTextField.getText();
             } else
             {
                 int selectedIndex = categorySelectionGridPane.getCategorySelected();
@@ -225,7 +213,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
                 for (int i=0; i<categories.size(); i++)
                 {
                     if (i == selectedIndex) continue;
-                    if (categories.get(i).equals(groupTextField.getText()))
+                    if (categories.get(i).equals(categoryTextField.getText()))
                     {
                         otherMatch = ++i;
                         break;
@@ -233,8 +221,8 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
                 }
                 if (otherMatch >= 0)
                 {
-                    invalidCategoryAlert(groupTextField.getText(), otherMatch);
-                    groupTextField.setText(initialCategory);
+                    invalidCategoryAlert(categoryTextField.getText(), otherMatch);
+                    categoryTextField.setText(initialCategory);
                 }
             }
         });

@@ -106,13 +106,11 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     List<T> vComponents;
 
     public void setupData(
-//            Appointment appointment,
             T vComponent,
             List<T> vComponents,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories
-//            List<AppointmentGroup> appointmentGroups
             )
     {
         this.vComponent = vComponent;

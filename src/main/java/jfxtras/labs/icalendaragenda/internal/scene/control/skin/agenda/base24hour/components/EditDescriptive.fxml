@@ -95,7 +95,7 @@
               </rowConstraints>
                <children>
                   <Label text="%name" GridPane.halignment="RIGHT" />
-                  <TextField fx:id="groupTextField" GridPane.columnIndex="1" />
+                  <TextField fx:id="categoryTextField" GridPane.columnIndex="1" />
                </children>
             </GridPane>
             <HBox alignment="CENTER">

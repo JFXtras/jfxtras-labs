@@ -18,7 +18,7 @@ public final class ICalendarAgendaUtilities
                .collect(Collectors.toList());
     
     final public static List<String> CATEGORIES = IntStream.range(0, 24)
-            .mapToObj(i -> new String("group" + i))
+            .mapToObj(i -> new String("group" + (i < 10 ? "0" : "") + i))
             .collect(Collectors.toList());
 }
     

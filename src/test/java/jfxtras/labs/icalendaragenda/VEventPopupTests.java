@@ -29,7 +29,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
@@ -114,21 +114,21 @@ public class VEventPopupTests extends JFXtrasGuiTest
                 AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
         recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
-        VEvent vevent = ICalendarStaticComponents.getDaily1();
+        VEvent vevent = ICalendarStaticComponents.getDaily1()
+                .withLocation("Here");
         List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
-//                    appointment,
                     vevent,
                     Arrays.asList(vevent),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
                     ICalendarAgendaUtilities.CATEGORIES);
         });
-
+        TestUtil.sleep(3000);
         TextField summary = find("#summaryTextField");
         assertEquals(vevent.getSummary().getValue(), summary.getText());
 
@@ -152,7 +152,6 @@ public class VEventPopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
-//                    appointment,
                     vevent,
                     vEvents,
                     appointment.getStartTemporal(),
@@ -167,8 +166,8 @@ public class VEventPopupTests extends JFXtrasGuiTest
         TextField summaryTextField = find("#summaryTextField");
         TextArea descriptionTextArea = find("#descriptionTextArea");
         TextField locationTextField = find("#locationTextField");
-        TextField groupTextField = find("#groupTextField");
-        AppointmentGroupGridPane appointmentGroupGridPane = find("#appointmentGroupGridPane");
+        TextField categoryTextField = find("#categoryTextField");
+        CategorySelectionGridPane categorySelectionGridPane = find("#categorySelectionGridPane");
         
         // Check initial state
         assertEquals(LocalDateTime.of(2016, 5, 15, 10, 00), startDateTimeTextField.getLocalDateTime());
@@ -177,7 +176,8 @@ public class VEventPopupTests extends JFXtrasGuiTest
         assertTrue(endDateTimeTextField.isVisible());
         assertEquals("Daily1 Summary", summaryTextField.getText());
         assertEquals("Daily1 Description", descriptionTextArea.getText());
-        assertEquals("group05", groupTextField.getText());
+        TestUtil.sleep(3000);
+        assertEquals("group05", categoryTextField.getText());
         assertFalse(wholeDayCheckBox.isSelected());
 
         // Edit and check properties
@@ -202,10 +202,10 @@ public class VEventPopupTests extends JFXtrasGuiTest
         locationTextField.setText("new location");
         assertEquals("new location", vevent.getLocation().getValue());
 
-        TestUtil.runThenWaitForPaintPulse(() -> appointmentGroupGridPane.setAppointmentGroupSelected(11));
+        TestUtil.runThenWaitForPaintPulse(() -> categorySelectionGridPane.setCategorySelected(11));
         assertEquals("group11", vevent.getCategories().get(0).getValue().get(0));
         
-        groupTextField.setText("new group name");
+        categoryTextField.setText("new group name");
         assertEquals("new group name", vevent.getCategories().get(0).getValue().get(0));
         
         click("#saveComponentButton");
