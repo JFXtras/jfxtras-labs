@@ -9,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -23,7 +25,7 @@ public class OneSelectedAppointmentVBox extends VBox
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
 
     @FXML private VBox popupVBox;
-    @FXML private Button editAppointmentButton;
+    @FXML Button editAppointmentButton;
     @FXML private Button deleteAppointmentButton;
     @FXML private Button attendanceButton;
     @FXML private Label appointmentTimeLabel;
@@ -50,7 +52,9 @@ public class OneSelectedAppointmentVBox extends VBox
         nameLabel.textProperty().addListener((observable, oldValue, newValue) ->  {
             appointment.setSummary(newValue);
         });
-        editAppointmentButton.requestFocus();
+//        editAppointmentButton.requestFocus(); // TODO - put in onshowing listener
+//        System.out.println(appointment.getAppointmentGroup().getStyleClass());
+        getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());
     }
     
     @FXML private void handleEditAppointment()
@@ -74,6 +78,17 @@ public class OneSelectedAppointmentVBox extends VBox
     
     @FXML private void handleClose()
     {
+        System.out.println("close");
         isFinished.set(true);
     }
+    
+    @FXML private void handleEnterClose(KeyEvent event)
+    {
+        if (event.getCode() == KeyCode.ENTER)
+        {
+            System.out.println("close");
+            isFinished.set(true);
+        }
+    }
+
 }

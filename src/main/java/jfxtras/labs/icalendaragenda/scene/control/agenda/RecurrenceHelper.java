@@ -17,6 +17,7 @@ import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
  *
  * @param <R> - class of recurrence (Appointment for Agenda)
  */
+@Deprecated // consider putting inside a store
 public class RecurrenceHelper<R>
 {   
 //    private final Collection<R> recurrences; // collection of recurrences

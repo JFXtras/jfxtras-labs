@@ -72,6 +72,7 @@ public class ICalendarAgenda extends Agenda
 //    private ObjectProperty<LocalDateTime> startRange = new SimpleObjectProperty<>(); // must be updated when range changes
 //    private ObjectProperty<LocalDateTime> endRange = new SimpleObjectProperty<>();
     private LocalDateTimeRange dateTimeRange; // date range of current skin, set when localDateTimeRangeCallback fires
+
     public void setDateTimeRange(LocalDateTimeRange dateTimeRange)
     {
         this.dateTimeRange = dateTimeRange;
@@ -83,6 +84,10 @@ public class ICalendarAgenda extends Agenda
     // Recurrence helper - handles making appointments, edit and delete components
     final private RecurrenceHelper<Appointment> recurrenceHelper;
     public RecurrenceHelper<Appointment> getRecurrenceHelper() { return recurrenceHelper; }
+    
+    public VComponentStore getVComponentStore() { return vComponentStore; }
+    private VComponentStore vComponentStore = new VComponentFromAppointmentStore(); // default VComponent store - for Appointments, if other implementation used make new store
+    public void setVComponentStore(VComponentStore vComponentStore) { this.vComponentStore = vComponentStore; }
 
     /** The VCalendar object that contains all scheduling information */
     public VCalendar getVCalendar() { return vCalendar; }
@@ -292,7 +297,7 @@ public class ICalendarAgenda extends Agenda
     private Callback<Appointment, ButtonData> newAppointmentDrawnCallback = (Appointment appointment) ->
     {
             // TODO - CAN I REMOVE RETURN ARGUMENT FROM CALLBACK - IT WOULD BE CONSISTENT WITH OTHERS
-        Dialog<ButtonData> newAppointmentDialog = new NewAppointmentDialog(appointment, appointmentGroups(), iCalendarEditPopupCallback, Settings.resources);
+        Dialog<ButtonData> newAppointmentDialog = new NewAppointmentDialog(appointment, appointmentGroups(), Settings.resources);
         newAppointmentDialog.getDialogPane().getStylesheets().add(getUserAgentStylesheet());
         Optional<ButtonData> result = newAppointmentDialog.showAndWait();
         ButtonData button = result.isPresent() ? result.get() : ButtonData.CANCEL_CLOSE;
@@ -411,70 +416,59 @@ public class ICalendarAgenda extends Agenda
                     if (change.getAddedSubList().size() == 1)
                     { // Open little popup - edit, delete
                         ZonedDateTime created = ZonedDateTime.now(ZoneId.of("Z"));
-                        Appointment a = change.getAddedSubList().get(0);
-
-                        String originalSummary = a.getSummary();
-                        AppointmentGroup originalAppointmentGroup = a.getAppointmentGroup();
+                        Appointment appointment = change.getAddedSubList().get(0);
+                        String originalSummary = appointment.getSummary();
+                        AppointmentGroup originalAppointmentGroup = appointment.getAppointmentGroup();
                         ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0)); // runs NewAppointmentDialog by default
                         switch (button)
                         {
                         case CANCEL_CLOSE:
-                            appointments().remove(a);
+//                            appointments().remove(appointment);
                             refresh();
                             break;
                         case OK_DONE: // CREATE EVENT assumes newAppointmentCallback can only edit summary and appointmentGroup
 //                            System.out.println("OK:");
-                            if ((a.getSummary() != null) && ! (a.getSummary().equals(originalSummary)) || ! (a.getAppointmentGroup().equals(originalAppointmentGroup)))
+                            getVComponentStore().createVComponent(appointment, getVCalendar());
+                            if ((appointment.getSummary() != null) && ! (appointment.getSummary().equals(originalSummary)) || ! (appointment.getAppointmentGroup().equals(originalAppointmentGroup)))
                             {
                                 Platform.runLater(() -> refresh());
                             }
-                            // fall through
+                            break;
                         case OTHER: // ADVANCED EDIT
-//                            System.out.println("Advanced edit:");
-                            VComponentDisplayable<?> newVComponent = VComponentFactory
-                                    .newVComponent(a, appointmentGroups());
-                            Temporal startRange = getDateTimeRange().getStartLocalDateTime();
-                            Temporal endRange = getDateTimeRange().getEndLocalDateTime();
-//                            newVComponent.setStartRange(startRange);
-//                            newVComponent.setEndRange(endRange);
-                            newVComponent.setUniqueIdentifier(getUidGeneratorCallback().call(null));
-                            newVComponent.setDateTimeCreated(created);
-                            getVCalendar().getVEvents().removeListener(vComponentsChangeListener);
-                            getVCalendar().getVEvents().add((VEvent) newVComponent);
-                            // TODO - HANDLE OTHER DISPLAYABLE COMPONENTS
-                            System.out.println("new:" + newVComponent);
-                            getVCalendar().getVEvents().addListener(vComponentsChangeListener);
-                            // put data in maps
-//                            System.out.println("dtstart:" + newVComponent.getDateTimeStart());
-//                            System.out.println("map3:" + System.identityHashCode(a) + " " + a.getStartTemporal());
-                            appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
-                            // TODO - find a way to differeniate between VEVENT, VTODO and VJOURNAL - put into correct map
-//                            appointmentVComponentMap.put(System.identityHashCode(a), newVComponent); // populate appointment-vComponent map
+                            System.out.println("vevents1:"+getVCalendar().getVEvents().size());
+                            VComponent<?> newVComponent = getVComponentStore().createVComponent(appointment, getVCalendar());
+                            System.out.println("vevents2:"+getVCalendar().getVEvents().size());
+                            appointments().remove(appointment);
+                            iCalendarEditPopupCallback.call(vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0));
                             break;
                         default:
                             throw new RuntimeException("unknown button type:" + button);
                         }
-                        if (button == ButtonData.OTHER) // edit appointment
-                        {
-                            iCalendarEditPopupCallback.call(a);
-                        }
+                        // remove drawn appointment - if not canceled, it was replaced with one made by the new VComponent
+                        appointments().remove(appointment);
+
+//                        if (button == ButtonData.OTHER) // edit appointment
+//                        {
+//                            iCalendarEditPopupCallback.call(appointment);
+//                        }
                     } else throw new RuntimeException("Adding multiple appointments at once is not supported (" + change.getAddedSubList().size() + ")");
                 }
                 if (change.wasRemoved())
                 {
                     change.getRemoved().stream().forEach(a -> 
                     { // add appointments to EXDATE
-                        VComponentDisplayable<?> v = findVComponent(a);
-                        if (v.getExceptionDates() == null)
-                        {
-                            v.withExceptionDates(a.getStartTemporal());
-                        }
-//                        Temporal t = (a.isWholeDay()) ? LocalDate.from(a.getStartLocalDateTime()) : a.getStartLocalDateTime();
-//                        v.getExDate().getTemporals().add(a.getStartTemporal());
-                        if (v.isRecurrenceSetEmpty())
-                        {
-                            getVCalendar().getVEvents().remove(v);
-                        }
+                        VComponentDisplayable<?> v = appointmentVComponentMap().get(a);
+//                        VComponentDisplayable<?> v = findVComponent(a);
+//                        if (v.getExceptionDates() == null)
+//                        {
+//                            v.withExceptionDates(a.getStartTemporal());
+//                        }
+////                        Temporal t = (a.isWholeDay()) ? LocalDate.from(a.getStartLocalDateTime()) : a.getStartLocalDateTime();
+////                        v.getExDate().getTemporals().add(a.getStartTemporal());
+//                        if (v.isRecurrenceSetEmpty())
+//                        {
+//                            getVCalendar().getVEvents().remove(v);
+//                        }
                     });
                 }
             }
@@ -494,7 +488,12 @@ public class ICalendarAgenda extends Agenda
                             .stream()
                             .forEach(v -> 
                             {
-                                if (! v.isValid()) { throw new IllegalArgumentException("Invalid VComponent:"); } // + v.errorString())
+                                if (! v.isValid())
+                                {
+                                    throw new RuntimeException("Invalid VComponent:" + System.lineSeparator() + 
+                                            v.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                                            v.toContent());
+                                }
                             });
 //                    System.out.println("was added:" + dateTimeRange + " " +  getDateTimeRange());
                     if (dateTimeRange != null)
@@ -705,58 +704,5 @@ public class ICalendarAgenda extends Agenda
 //       public String toString() { return super.toString() + " " + start + " to " + end; }
 //   }
     
-    /**
-     * VComponent factory methods
-     * 
-     * @author David Bal
-     *
-     */
-    @Deprecated
-    static public class VComponentFactory
-    {
-                
-        /** Return new VComponent made from an Appointment
-         * Used when graphically adding an appointment to Agenda.
-         * @param <U>
-         * 
-         * @param vComponentClass - class of new VEvent
-         * @param appointment - an Agenda Appointment
-         * @param appointmentGroups - list of AppointmentGroups
-         * @return
-         */
-//        public static <U extends Appointment> VComponent<U> newVComponent(
-//                Class<? extends VComponent<U>> vComponentClass
-//              , U appointment
-//              , ObservableList<AppointmentGroup> appointmentGroups)
-//        {
-//            try {
-//                return vComponentClass
-//                        .getConstructor(Appointment.class, ObservableList.class)
-//                        .newInstance(appointment, appointmentGroups);
-//            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-        
-        public static VComponentDisplayable<?> newVComponent(Appointment a,
-                ObservableList<AppointmentGroup> appointmentGroups)
-        {
-            // TODO Auto-generated method stub
-            throw new RuntimeException("not implemented");
-        }
-
-//        @SuppressWarnings("unchecked")
-//        public static <U extends Appointment> VComponent<U> newVComponent(VComponent<U> vComponent)
-//        {
-//            try {
-//                return vComponent.getClass()
-//                        .getConstructor(vComponent.getClass())
-//                        .newInstance(vComponent);
-//            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-    }       
+     
 }

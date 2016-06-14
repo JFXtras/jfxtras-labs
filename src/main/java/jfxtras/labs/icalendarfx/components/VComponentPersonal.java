@@ -224,10 +224,30 @@ public interface VComponentPersonal<T> extends VComponentPrimary<T>, VComponentA
             throw new IllegalArgumentException("Property can only occur once in the calendar component");
         }
     }
+    /** Assign UID by using UID generator callback */
+    default T withUniqueIdentifier()
+    {
+        if (getUniqueIdentifier() == null)
+        {
+            setUniqueIdentifier(getUidGeneratorCallback().call(null));
+            return (T) this;
+        } else
+        {
+            throw new IllegalArgumentException("Property can only occur once in the calendar component");
+        }
+    }
     
     /** Callback for creating unique uid values  */
     Callback<Void, String> getUidGeneratorCallback();
     void setUidGeneratorCallback(Callback<Void, String> uidCallback);
+    /** set UID callback generator.  This MUST be set before using the no-arg withUniqueIdentifier if
+     * not using default callback.
+     */
+    default T withUidGeneratorCallback(Callback<Void, String> uidCallback)
+    {
+        setUidGeneratorCallback(uidCallback);
+        return (T) this;
+    }
     
     /**
      * URL: Uniform Resource Locator

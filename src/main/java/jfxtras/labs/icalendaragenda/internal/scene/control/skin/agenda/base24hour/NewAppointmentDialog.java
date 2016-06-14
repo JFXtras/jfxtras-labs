@@ -42,7 +42,7 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
     public NewAppointmentDialog(
             Appointment appointment
           , ObservableList<AppointmentGroup> appointmentGroups
-          , Callback<Appointment, Void> iCalendarEditPopupCallback
+//          , Callback<Appointment, Void> iCalendarEditPopupCallback
           , ResourceBundle resources)
     {
         initModality(Modality.APPLICATION_MODAL);

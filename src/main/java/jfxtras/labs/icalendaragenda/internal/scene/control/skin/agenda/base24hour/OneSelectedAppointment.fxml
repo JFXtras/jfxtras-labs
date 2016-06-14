@@ -11,7 +11,7 @@
    <children>
       <HBox alignment="CENTER_RIGHT">
          <children>
-            <Button mnemonicParsing="false" styleClass="close-button" />
+            <Button mnemonicParsing="false" onAction="#handleClose" onKeyPressed="#handleEnterClose" styleClass="close-button" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" spacing="5.0">

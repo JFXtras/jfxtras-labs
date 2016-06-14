@@ -39,8 +39,14 @@ public class Location extends PropertyBaseAltText<String, Location>
     
     public static Location parse(String propertyContent)
     {
-        Location property = new Location();
-        property.parseContent(propertyContent);
-        return property;
+        if (propertyContent != null)
+        {
+            Location property = new Location();
+            property.parseContent(propertyContent);
+            return property;
+        } else
+        {
+            return null;
+        }
     }
 }

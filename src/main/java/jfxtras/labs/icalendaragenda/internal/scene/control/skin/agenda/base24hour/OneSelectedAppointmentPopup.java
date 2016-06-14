@@ -22,6 +22,9 @@ public class OneSelectedAppointmentPopup extends Popup
     
     public void setupData(ICalendarAgenda agenda, Appointment appointment)
     {
-        ((OneSelectedAppointmentVBox) getContent().get(0)).setupData(agenda, appointment);
+        OneSelectedAppointmentVBox oneSelectedAppointmentVBox = (OneSelectedAppointmentVBox) getContent().get(0);
+        oneSelectedAppointmentVBox.getStylesheets().add(agenda.getUserAgentStylesheet());
+        oneSelectedAppointmentVBox.setupData(agenda, appointment);
+        onShowingProperty().addListener((obs) -> oneSelectedAppointmentVBox.editAppointmentButton.requestFocus());
     }
 }
