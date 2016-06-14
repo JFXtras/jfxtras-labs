@@ -32,6 +32,23 @@
 
 }
 
+.close-button {
+  -fx-background-radius: 9px;
+  -fx-min-width: 18px;
+  -fx-min-height: 18px;
+  -fx-max-width: 18px;
+  -fx-max-height: 18px;
+  -fx-graphic: url('AgendaWeekSkinPopupCloseWindowIcon.png');
+  -fx-background-insets: 0, 0;
+}
+
+.close-button:hover{
+    -fx-background-color: white;
+}
+
+.close-button:focused{
+    -fx-background-insets: -1, 2;
+}
 
 .background-grid {
     -fx-background-image: url("CoarseGrid.png");

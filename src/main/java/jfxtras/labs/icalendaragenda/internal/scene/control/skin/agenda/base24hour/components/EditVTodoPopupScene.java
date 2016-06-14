@@ -16,11 +16,6 @@ public class EditVTodoPopupScene extends EditComponentPopupScene
         super(new EditVTodoTabPane());
     }
 
-//    public EditVTodoPopupStage(VEvent vComponent, ObservableList<VEvent> vEvents)
-//    {
-//        super(new EditVEventTabPane());
-//    }
-
     public EditVTodoPopupScene(
             VTodo vComponent,
             List<VTodo> vTodos,

@@ -1,50 +1,27 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.beans.property.BooleanProperty;
 import javafx.stage.Popup;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.DescriptiveVBox;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public class OneSelectedAppointmentPopup extends Popup
-{
-    @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
+{   
+    public OneSelectedAppointmentPopup()
+    {      
+        setAutoFix(true);
+        setAutoHide(true);
+        setHideOnEscape(true);
+        getContent().add(new OneSelectedAppointmentVBox());
+    }
 
-    @FXML private AnchorPane selectedOneAppointmentAnchorPane;
-    @FXML private VBox vBox;
-    @FXML private Button editAppointmentButton;
-    @FXML private Button deleteAppointmentButton;
-    @FXML private Button attendanceButton;
-    @FXML private Label appointmentTimeLabel;
-    @FXML private Label nameLabel;
-    
-    public OneSelectedAppointmentPopup( )
+    public BooleanProperty isFinished()
     {
-        super();
-        loadFxml(DescriptiveVBox.class.getResource("SelectedOneAppointment.fxml"), this);
-        categorySelectionGridPane.getStylesheets().addAll(getStylesheets());
-        startDateTimeTextField.setId("startDateTimeTextField");
-        startDateTextField.setId("startDateTextField");
+        return ((OneSelectedAppointmentVBox) getContent().get(0)).isFinished();
     }
     
-    protected static void loadFxml(URL fxmlFile, Object rootController)
+    public void setupData(ICalendarAgenda agenda, Appointment appointment)
     {
-        FXMLLoader loader = new FXMLLoader(fxmlFile);
-        loader.setController(rootController);
-        loader.setRoot(rootController);
-        loader.setResources(Settings.resources);
-        try {
-            loader.load();
-        }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
+        ((OneSelectedAppointmentVBox) getContent().get(0)).setupData(agenda, appointment);
     }
 }
