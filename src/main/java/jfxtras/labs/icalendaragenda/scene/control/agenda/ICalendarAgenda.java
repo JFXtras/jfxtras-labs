@@ -426,21 +426,27 @@ public class ICalendarAgenda extends Agenda
 //                            appointments().remove(appointment);
                             refresh();
                             break;
-                        case OK_DONE: // CREATE EVENT assumes newAppointmentCallback can only edit summary and appointmentGroup
-//                            System.out.println("OK:");
-                            getVComponentStore().createVComponent(appointment, getVCalendar());
+                        case OK_DONE:
+                        {
+                            VComponent<?> newVComponent = getVComponentStore().createVComponent(appointment, getVCalendar());
+                            System.out.println("vevents2:"+getVCalendar().getVEvents().size());
+                            System.out.println("vevent:"+newVComponent.toContent());
                             if ((appointment.getSummary() != null) && ! (appointment.getSummary().equals(originalSummary)) || ! (appointment.getAppointmentGroup().equals(originalAppointmentGroup)))
                             {
                                 Platform.runLater(() -> refresh());
                             }
                             break;
+                        }
                         case OTHER: // ADVANCED EDIT
+                        {
                             System.out.println("vevents1:"+getVCalendar().getVEvents().size());
                             VComponent<?> newVComponent = getVComponentStore().createVComponent(appointment, getVCalendar());
                             System.out.println("vevents2:"+getVCalendar().getVEvents().size());
-                            appointments().remove(appointment);
+                            System.out.println("vevent:"+newVComponent.toContent());
                             iCalendarEditPopupCallback.call(vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0));
+                            System.out.println("vevents3:"+getVCalendar().getVEvents().size());
                             break;
+                        }
                         default:
                             throw new RuntimeException("unknown button type:" + button);
                         }

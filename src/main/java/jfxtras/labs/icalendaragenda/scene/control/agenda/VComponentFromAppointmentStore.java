@@ -9,7 +9,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
-public class VComponentFromAppointmentStore implements VComponentStore
+public class VComponentFromAppointmentStore implements VComponentStore<Appointment>
 {
     @Override
     public VComponent<?> createVComponent(Appointment appointment, VCalendar vCalendar)
