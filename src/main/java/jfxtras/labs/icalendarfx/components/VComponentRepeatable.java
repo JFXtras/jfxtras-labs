@@ -1,16 +1,14 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -80,21 +78,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             {
                 list = getRecurrenceDates();
             }
-            Set<Temporal> recurrences2 = Arrays.stream(recurrenceDates).map(r -> (LocalDate) r).collect(Collectors.toSet());
-            getRecurrenceDates().add(new RecurrenceDates(FXCollections.observableSet(recurrences2)));
-            
-//            Temporal t = recurrenceDates[0];
-//            if (t instanceof LocalDate)
-//            {
-//                Set<LocalDate> recurrences2 = Arrays.stream(recurrenceDates).map(r -> (LocalDate) r).collect(Collectors.toSet());
-//                getRecurrenceDates().add(new Recurrences<LocalDate>(FXCollections.observableSet(recurrences2)));
-//            } else if (t instanceof LocalDateTime)
-//            {
-//                getRecurrenceDates().add(new Recurrences<LocalDateTime>(FXCollections.observableSet((LocalDateTime[]) recurrenceDates)));
-//            } else if (t instanceof ZonedDateTime)
-//            {
-//                getRecurrenceDates().add(new Recurrences<ZonedDateTime>(FXCollections.observableSet((ZonedDateTime[]) recurrenceDates)));
-//            }
+            getRecurrenceDates().add(new RecurrenceDates(FXCollections.observableSet(recurrenceDates)));
         }
         return (T) this;
     }
@@ -126,6 +110,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
                     List<? extends PropertyBaseRecurrence<?>> changeList = change.getAddedSubList();
                     Temporal firstRecurrence = list.get(0).getValue().iterator().next();
                     // check consistency with previous recurrence values
+                    System.out.println("check match:" );
                     checkRecurrencesConsistency(changeList, firstRecurrence);
                 }
             }
@@ -137,6 +122,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
      * Observable list is set.
      * 
      * Also works for exceptions.
+     * @param <U>
      * 
      * @param list - list of recurrence objects to be tested.
      * @param firstRecurrence - example of Temporal to match against.  If null uses first element in first recurrence in list
@@ -148,20 +134,34 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         {
             return true;
         }
-        firstRecurrence = (firstRecurrence == null) ? list.get(0).getValue().iterator().next() : firstRecurrence;
+        Optional<Temporal> firstOptional = list.stream().flatMap(p -> p.getValue().stream()).findAny();
+        firstRecurrence = (firstOptional.isPresent()) ? firstOptional.get() : firstRecurrence;
         DateTimeType firstDateTimeTypeType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
-        Iterator<? extends PropertyBaseRecurrence<?>> i = list.iterator();
-        while (i.hasNext())
+        Optional<DateTimeType> badType = list.stream()
+                .flatMap(p -> p.getValue().stream())
+                .map(t -> DateTimeUtilities.DateTimeType.of(t))
+                .filter(y -> ! y.equals(firstDateTimeTypeType))
+                .findAny();
+        if (badType.isPresent())
         {
-            PropertyBaseRecurrence<?> r = i.next();
-            Temporal myTemporalClass = r.getValue().iterator().next();
-            DateTimeType myDateTimeType = DateTimeUtilities.DateTimeType.of(myTemporalClass);
-            if (myDateTimeType != firstDateTimeTypeType)
-            {
-                throw new DateTimeException("Added recurrences DateTimeType " + myDateTimeType +
-                        " doesn't match previous recurrences DateTimeType " + firstDateTimeTypeType);
-            }
+            throw new DateTimeException("Added recurrences DateTimeType " + badType.get() +
+                    " doesn't match previous recurrences DateTimeType " + firstDateTimeTypeType);            
         }
+
+//        System.out.println("firstDateTimeTypeType:" + firstDateTimeTypeType + " " + list.size());
+//        Iterator<? extends PropertyBaseRecurrence<?>> i = allValues.iterator();
+//        while (i.hasNext())
+//        {
+//            PropertyBaseRecurrence<?> r = i.next();
+//            Temporal myTemporalClass = r.getValue().iterator().next();
+//            System.out.println("myTemporalClass:" + myTemporalClass );
+//            DateTimeType myDateTimeType = DateTimeUtilities.DateTimeType.of(myTemporalClass);
+//            if (myDateTimeType != firstDateTimeTypeType)
+//            {
+//                throw new DateTimeException("Added recurrences DateTimeType " + myDateTimeType +
+//                        " doesn't match previous recurrences DateTimeType " + firstDateTimeTypeType);
+//            }
+//        }
         // check consistency with dateTimeStart
         if (getDateTimeStart() != null)
         {

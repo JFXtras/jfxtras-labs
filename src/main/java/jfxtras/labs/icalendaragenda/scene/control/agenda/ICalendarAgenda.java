@@ -437,8 +437,8 @@ public class ICalendarAgenda extends Agenda
                         case OK_DONE:
                         {
                             VComponent newVComponent = getVComponentStore().createVComponent(appointment, getVCalendar());
-                            System.out.println("vevents2:"+getVCalendar().getVEvents().size());
-                            System.out.println("vevent:"+newVComponent.toContent());
+//                            System.out.println("vevents2:"+getVCalendar().getVEvents().size());
+//                            System.out.println("vevent:"+newVComponent.toContent());
                             if ((appointment.getSummary() != null) && ! (appointment.getSummary().equals(originalSummary)) || ! (appointment.getAppointmentGroup().equals(originalAppointmentGroup)))
                             {
                                 Platform.runLater(() -> refresh());
@@ -447,12 +447,12 @@ public class ICalendarAgenda extends Agenda
                         }
                         case OTHER: // ADVANCED EDIT
                         {
-                            System.out.println("vevents1:"+getVCalendar().getVEvents().size());
+//                            System.out.println("vevents1:"+getVCalendar().getVEvents().size());
                             VComponent newVComponent = getVComponentStore().createVComponent(appointment, getVCalendar());
-                            System.out.println("vevents2:"+getVCalendar().getVEvents().size());
-                            System.out.println("vevent:"+newVComponent.toContent());
+//                            System.out.println("vevents2:"+getVCalendar().getVEvents().size());
+//                            System.out.println("vevent:"+newVComponent.toContent());
                             iCalendarEditPopupCallback.call(vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0));
-                            System.out.println("vevents3:"+getVCalendar().getVEvents().size());
+//                            System.out.println("vevents3:"+getVCalendar().getVEvents().size());
                             break;
                         }
                         default:

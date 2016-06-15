@@ -270,7 +270,6 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         {
             list = getExceptionDates();
         }
-//        Set<Temporal> exceptions2 = Arrays.stream(exceptions).map(r -> (LocalDate) r).collect(Collectors.toSet());
         getExceptionDates().add(new ExceptionDates(FXCollections.observableSet(exceptions)));
         return (T) this;
     }

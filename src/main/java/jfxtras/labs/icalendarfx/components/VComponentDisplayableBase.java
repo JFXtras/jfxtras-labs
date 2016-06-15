@@ -156,8 +156,9 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         this.exceptions = exceptions;
         if (exceptions != null)
         {
+            System.out.println("attach listener:");
             exceptions.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
-            checkRecurrencesConsistency(exceptions, null);
+            checkRecurrencesConsistency(exceptions, null); // test current data
         }
     }
     
