@@ -39,6 +39,8 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.Behavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VEventBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VJournalBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VTodoBehavior;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.AppointmentVComponentStore;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.VComponentStore;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
@@ -76,18 +78,22 @@ public class ICalendarAgenda extends Agenda
     public void setDateTimeRange(LocalDateTimeRange dateTimeRange)
     {
         this.dateTimeRange = dateTimeRange;
-        getRecurrenceHelper().setStartRange(dateTimeRange.getStartLocalDateTime());
-        getRecurrenceHelper().setEndRange(dateTimeRange.getEndLocalDateTime());
+        getVComponentStore().setStartRange(dateTimeRange.getStartLocalDateTime());
+        getVComponentStore().setEndRange(dateTimeRange.getEndLocalDateTime());
+//        getRecurrenceHelper().setStartRange(dateTimeRange.getStartLocalDateTime());
+//        getRecurrenceHelper().setEndRange(dateTimeRange.getEndLocalDateTime());
     }
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
     
     // Recurrence helper - handles making appointments, edit and delete components
+    @Deprecated
     final private RecurrenceHelper<Appointment> recurrenceHelper;
+    @Deprecated
     public RecurrenceHelper<Appointment> getRecurrenceHelper() { return recurrenceHelper; }
     
-    public VComponentStore getVComponentStore() { return vComponentStore; }
-    private VComponentStore vComponentStore = new VComponentFromAppointmentStore(); // default VComponent store - for Appointments, if other implementation used make new store
-    public void setVComponentStore(VComponentStore vComponentStore) { this.vComponentStore = vComponentStore; }
+    public VComponentStore<Appointment> getVComponentStore() { return vComponentStore; }
+    private VComponentStore<Appointment> vComponentStore; // default VComponent store - for Appointments, if other implementation used make new store
+    public void setVComponentStore(VComponentStore<Appointment> vComponentStore) { this.vComponentStore = vComponentStore; }
 
     /** The VCalendar object that contains all scheduling information */
     public VCalendar getVCalendar() { return vCalendar; }
@@ -343,6 +349,8 @@ public class ICalendarAgenda extends Agenda
     {
         super();
         this.vCalendar = vCalendar;
+        vComponentStore = new AppointmentVComponentStore(appointmentGroups()); // default VComponent store - for Appointments, if other implementation used make new store
+
         recurrenceHelper = new RecurrenceHelper<Appointment>(makeAppointmentCallback);
 //        vEventBehavior = new VEventBehavior(this);
         
@@ -613,8 +621,8 @@ public class ICalendarAgenda extends Agenda
         {
             List<Appointment> newAppointments = new ArrayList<>();
             setDateTimeRange(dateTimeRange);
-            getRecurrenceHelper().setStartRange(dateTimeRange.getStartLocalDateTime());
-            getRecurrenceHelper().setEndRange(dateTimeRange.getEndLocalDateTime());
+            getVComponentStore().setStartRange(dateTimeRange.getStartLocalDateTime());
+            getVComponentStore().setEndRange(dateTimeRange.getEndLocalDateTime());
 //            System.out.println("range0:" + dateTimeRange);
             if (dateTimeRange != null)
             {
@@ -630,6 +638,8 @@ public class ICalendarAgenda extends Agenda
 //                    List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(v, start, end, appointmentGroups());
 //                    List<Appointment> newAppointments = makeRecurrences(v);
 //                    vComponentAppointmentMap.put(v, newAppointments);
+
+//                    newAppointments.addAll(getVComponentStore().makeRecurrences(v));
 
                     newAppointments.addAll(makeAppointments(v));
                     
@@ -651,7 +661,7 @@ public class ICalendarAgenda extends Agenda
     
     private Collection<Appointment> makeAppointments(VComponentDisplayable<?> v)
     {
-        List<Appointment> myAppointments = recurrenceHelper.makeRecurrences(v);
+        List<Appointment> myAppointments = getVComponentStore().makeRecurrences(v);
         myAppointments.forEach(a -> 
         {
             appointmentVComponentMap.put(System.identityHashCode(a), v);

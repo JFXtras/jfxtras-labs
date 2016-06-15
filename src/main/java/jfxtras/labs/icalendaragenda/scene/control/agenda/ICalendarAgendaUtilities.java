@@ -11,6 +11,7 @@ public final class ICalendarAgendaUtilities
 {
     private ICalendarAgendaUtilities() {}
 
+    @Deprecated
     final public static List<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS = IntStream.range(0, 24)
                .mapToObj(i -> new Agenda.AppointmentGroupImpl()
                      .withStyleClass("group" + i)
