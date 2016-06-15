@@ -463,14 +463,14 @@ public class VCalendar
      * 
      * @return - the list of components
      */
-    public List<VComponent<?>> components()
+    public List<VComponent> components()
     {
-        List<VComponent<?>> allComponents = new ArrayList<>();
+        List<VComponent> allComponents = new ArrayList<>();
         Iterator<CalendarElementType> i = Arrays.stream(CalendarElementType.values()).iterator();
         while (i.hasNext())
         {
             CalendarElementType componentType = i.next();
-            List<? extends VComponent<?>> myComponents = componentType.getComponents(this);
+            List<? extends VComponent> myComponents = componentType.getComponents(this);
             if (myComponents != null)
             {
                 allComponents.addAll(myComponents);

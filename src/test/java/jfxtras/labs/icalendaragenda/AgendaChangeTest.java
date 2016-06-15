@@ -17,7 +17,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
 import jfxtras.labs.icalendarfx.components.VComponentPrimary;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.revisors.ReviseComponentHelper.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.test.TestUtil;
 

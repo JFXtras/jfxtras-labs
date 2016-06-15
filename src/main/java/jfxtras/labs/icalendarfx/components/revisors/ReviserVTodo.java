@@ -6,9 +6,9 @@ import java.time.temporal.TemporalAmount;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public class VTodoReviser extends LocatableReviser<VTodoReviser, VTodo>
+public class ReviserVTodo extends ReviserLocatable<ReviserVTodo, VTodo>
 {
-    public VTodoReviser(VTodo component)
+    public ReviserVTodo(VTodo component)
     {
         super(component);
     }

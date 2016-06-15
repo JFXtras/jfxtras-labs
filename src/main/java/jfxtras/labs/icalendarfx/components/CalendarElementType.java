@@ -31,7 +31,7 @@ public enum CalendarElementType
     {
 
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             return vCalendar.getVEvents();
         }
@@ -60,7 +60,7 @@ public enum CalendarElementType
             true)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             return vCalendar.getVTodos();
         }
@@ -85,7 +85,7 @@ public enum CalendarElementType
             true)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             return vCalendar.getVJournals();
         }
@@ -104,7 +104,7 @@ public enum CalendarElementType
             true)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             return vCalendar.getVTimeZones();
         }
@@ -125,7 +125,7 @@ public enum CalendarElementType
             true)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             return vCalendar.getVFreeBusies();
         }
@@ -146,7 +146,7 @@ public enum CalendarElementType
             false)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             return null; // not a main component - must be embedded inside a VTimeZone
         }
@@ -167,7 +167,7 @@ public enum CalendarElementType
             false)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             return null; // not a main component - must be embedded inside a VTimeZone
         }
@@ -187,7 +187,7 @@ public enum CalendarElementType
             false)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             return null; // not a main component - must be embedded inside a VEvent or VTodo
         }
@@ -204,7 +204,7 @@ public enum CalendarElementType
     CALENDAR_SCALE (PropertyType.CALENDAR_SCALE.toString(), null, true)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             // TODO Auto-generated method stub
             return null;
@@ -229,7 +229,7 @@ public enum CalendarElementType
     METHOD (PropertyType.METHOD.toString(), null, true)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             // TODO Auto-generated method stub
             return null;
@@ -254,7 +254,7 @@ public enum CalendarElementType
     PRODUCT_IDENTIFIER (PropertyType.PRODUCT_IDENTIFIER.toString(), null, true)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             // TODO Auto-generated method stub
             return null;
@@ -279,7 +279,7 @@ public enum CalendarElementType
     VERSION (PropertyType.VERSION.toString(), null, true)
     {
         @Override
-        public List<? extends VComponent<?>> getComponents(VCalendar vCalendar)
+        public List<? extends VComponent> getComponents(VCalendar vCalendar)
         {
             // TODO Auto-generated method stub
             return null;
@@ -336,7 +336,7 @@ public enum CalendarElementType
         this.isCalendarElement = isCalendarElement;
     }
 
-    abstract public List<? extends VComponent<?>> getComponents(VCalendar vCalendar);
+    abstract public List<? extends VComponent> getComponents(VCalendar vCalendar);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
     abstract public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines);

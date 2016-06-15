@@ -6,16 +6,17 @@ import java.time.temporal.TemporalAmount;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public abstract class LocatableReviser<T, U extends VComponentLocatable<U>> extends DisplayableReviser<T, U> implements LocateRevisable<T, U>
+public abstract class ReviserLocatable<T, U extends VComponentLocatable<U>> extends ReviserDisplayable<T, U>
 {
-    public LocatableReviser(U component)
+    public ReviserLocatable(U component)
     {
         super(component);
     }
 
-    @Override public Temporal getEndRecurrence() { return endRecurrence; }
+    public Temporal getEndRecurrence() { return endRecurrence; }
     private Temporal endRecurrence;
-    @Override public void setEndRecurrence(Temporal startRecurrence) { this.endRecurrence = startRecurrence; }
+    public void setEndRecurrence(Temporal startRecurrence) { this.endRecurrence = startRecurrence; }
+    public T withEndRecurrence(Temporal endRecurrence) { setEndRecurrence(endRecurrence); return (T) this; }
     
     @Override
     boolean isValid()

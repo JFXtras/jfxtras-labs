@@ -24,32 +24,41 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> implements DisplayRevisable<T, U>
+public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> extends ReviserBase<T, U>
 { 
-    public DisplayableReviser(U component)
+    public ReviserDisplayable(U component)
     {
         setVComponentEdited(component);
     }
 
-    @Override public U getVComponentEdited() { return vComponentEdited; }
+    public U getVComponentEdited() { return vComponentEdited; }
     private U vComponentEdited;
-    @Override public void setVComponentEdited(U vComponentEdited) { this.vComponentEdited = vComponentEdited; }
+    public void setVComponentEdited(U vComponentEdited) { this.vComponentEdited = vComponentEdited; }
+    public T withVComponentEdited(U vComponentEdited) { setVComponentEdited(vComponentEdited); return (T) this; }
 
-    @Override public U getVComponentOriginal() { return vComponentOriginal; }
+    public U getVComponentOriginal() { return vComponentOriginal; }
     private U vComponentOriginal;
-    @Override public void setVComponentOriginal(U vComponentOriginal) { this.vComponentOriginal = vComponentOriginal; }
+    public void setVComponentOriginal(U vComponentOriginal) { this.vComponentOriginal = vComponentOriginal; }
+    public T withVComponentOriginal(U vComponentOriginal) { setVComponentOriginal(vComponentOriginal); return (T) this; }
 
-    @Override public Temporal getStartOriginalRecurrence() { return startOriginalRecurrence; }
+    public Temporal getStartOriginalRecurrence() { return startOriginalRecurrence; }
     private Temporal startOriginalRecurrence;
-    @Override public void setStartOriginalRecurrence(Temporal startOriginalRecurrence) { this.startOriginalRecurrence = startOriginalRecurrence; }
+    public void setStartOriginalRecurrence(Temporal startOriginalRecurrence) { this.startOriginalRecurrence = startOriginalRecurrence; }
+    public T withStartOriginalRecurrence(Temporal startOriginalRecurrence) { setStartOriginalRecurrence(startOriginalRecurrence); return (T) this; }
     
-    @Override public Temporal getStartRecurrence() { return startRecurrence; }
+    public Temporal getStartRecurrence() { return startRecurrence; }
     private Temporal startRecurrence;
-    @Override public void setStartRecurrence(Temporal startRecurrence) { this.startRecurrence = startRecurrence; }
+    public void setStartRecurrence(Temporal startRecurrence) { this.startRecurrence = startRecurrence; }
+    public T withStartRecurrence(Temporal startRecurrence) { setStartRecurrence(startRecurrence); return (T) this; }
     
-    @Override public Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> getDialogCallback() { return dialogCallback; }
+    public Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> getDialogCallback() { return dialogCallback; }
     private Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback;    
-    @Override public void setDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback) { this.dialogCallback = dialogCallback; }
+    public void setDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback) { this.dialogCallback = dialogCallback; }
+    public T withDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback)
+    {
+        setDialogCallback(dialogCallback);
+        return (T) this;
+    }
 
     boolean isValid()
     {
@@ -318,7 +327,6 @@ public abstract class DisplayableReviser<T, U extends VComponentDisplayable<U>> 
      * When one of these properties the change-scope dialog should be activated to determine if the changes should be applied
      * to ONE, ALL, or THIS_AND_FUTURE recurrences.  If other properties are modified the changes should be applied without a dialog.
      */
-    @Override
     public List<PropertyType> dialogRequiredProperties()
     {
         return new ArrayList<>(Arrays.asList(             

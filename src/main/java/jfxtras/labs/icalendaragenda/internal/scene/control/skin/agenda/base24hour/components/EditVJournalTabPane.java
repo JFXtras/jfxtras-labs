@@ -7,7 +7,7 @@ import java.util.List;
 import javafx.fxml.FXML;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.revisors.VJournalReviser;
+import jfxtras.labs.icalendarfx.components.revisors.ReviserVJournal;
 
 public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, DescriptiveVJournalVBox>
 {
@@ -58,7 +58,7 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, Descri
     @Override
     Collection<VJournal> callRevisor()
     {
-        VJournalReviser reviser = ((VJournalReviser) vComponentOriginalCopy.newRevisor())
+        ReviserVJournal reviser = ((ReviserVJournal) vComponentOriginalCopy.newRevisor())
                 .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
                 .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
                 .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())

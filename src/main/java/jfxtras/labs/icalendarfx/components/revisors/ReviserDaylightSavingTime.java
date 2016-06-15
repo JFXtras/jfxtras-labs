@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 
-public class DaylightSavingTimeReviser implements Revisable<DaylightSavingTimeReviser, DaylightSavingTime>
+public class ReviserDaylightSavingTime extends ReviserBase<ReviserDaylightSavingTime, DaylightSavingTime>
 {
-    public DaylightSavingTimeReviser(DaylightSavingTime component)
+    public ReviserDaylightSavingTime(DaylightSavingTime component)
     {
         throw new RuntimeException("not implemented");
     }

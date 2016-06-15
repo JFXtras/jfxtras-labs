@@ -9,7 +9,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
-import jfxtras.labs.icalendarfx.components.revisors.VFreeBusyReviser;
+import jfxtras.labs.icalendarfx.components.revisors.ReviserVFreeBusy;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
@@ -212,7 +212,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
     }
     
     @Override
-    public Revisable<VFreeBusyReviser, VFreeBusy> newRevisor() { return new VFreeBusyReviser(this); }
+    public Revisable newRevisor() { return new ReviserVFreeBusy(this); }
         
     @Override
     public List<String> errors()

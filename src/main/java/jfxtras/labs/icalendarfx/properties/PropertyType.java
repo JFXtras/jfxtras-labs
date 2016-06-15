@@ -13,6 +13,7 @@ import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentAttendee;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
+import jfxtras.labs.icalendarfx.components.VComponentCommon;
 import jfxtras.labs.icalendarfx.components.VComponentDateTimeEnd;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable;
 import jfxtras.labs.icalendarfx.components.VComponentDescribable2;
@@ -88,14 +89,14 @@ public enum PropertyType
             Action.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VAlarm castComponent = (VAlarm) vComponent;
             return castComponent.getAction();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VAlarm castComponent = (VAlarm) vComponent;
             if (castComponent.getAction() == null)
@@ -108,7 +109,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VAlarm castSource = (VAlarm) source;
             VAlarm castDestination = (VAlarm) destination;
@@ -123,14 +124,14 @@ public enum PropertyType
             , Attachment.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
             return castComponent.getAttachments();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
             
@@ -156,7 +157,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDescribable<?> castSource = (VComponentDescribable<?>) source;
             VComponentDescribable<?> castDestination = (VComponentDescribable<?>) destination;
@@ -179,14 +180,14 @@ public enum PropertyType
             , Attendee.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vComponent;
             return castComponent.getAttendees();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentAttendee<?> castComponent = (VComponentAttendee<?>) vComponent;
             final ObservableList<Attendee> list;
@@ -202,7 +203,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentAttendee<?> castSource = (VComponentAttendee<?>) source;
             VComponentAttendee<?> castDestination = (VComponentAttendee<?>) destination;
@@ -221,19 +222,19 @@ public enum PropertyType
             , CalendarScale.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -245,14 +246,14 @@ public enum PropertyType
             , Categories.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getCategories();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             final ObservableList<Categories> list;
@@ -268,7 +269,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
@@ -287,14 +288,14 @@ public enum PropertyType
             Classification.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getClassification();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getClassification() == null)
@@ -307,7 +308,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
@@ -322,14 +323,14 @@ public enum PropertyType
             Comment.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentPrimary<?> castProperty = (VComponentPrimary<?>) vComponent;
             return castProperty.getComments();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
             final ObservableList<Comment> list;
@@ -345,7 +346,7 @@ public enum PropertyType
         }
         
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentPrimary<?> castSource = (VComponentPrimary<?>) source;
             VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
@@ -364,7 +365,7 @@ public enum PropertyType
             Contact.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             if (vComponent instanceof VFreeBusy)
             {// VJournal has one Contact
@@ -378,7 +379,7 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             if (vComponent instanceof VFreeBusy)
             {// VJournal has one Contact
@@ -401,7 +402,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             if (source instanceof VFreeBusy)
             { // VFreeBusy has one Contact
@@ -429,14 +430,14 @@ public enum PropertyType
             DateTimeCompleted.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VTodo castComponent = (VTodo) vComponent;
             return castComponent.getDateTimeCompleted();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VTodo castComponent = (VTodo) vComponent;
             if (castComponent.getDateTimeCompleted() == null)
@@ -449,7 +450,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VTodo castSource = (VTodo) source;
             VTodo castDestination = (VTodo) destination;
@@ -464,14 +465,14 @@ public enum PropertyType
             DateTimeCreated.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getDateTimeCreated();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getDateTimeCreated() == null)
@@ -484,7 +485,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
@@ -499,14 +500,14 @@ public enum PropertyType
             DateTimeDue.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VTodo castComponent = (VTodo) vComponent;
             return castComponent.getDateTimeDue();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VTodo castComponent = (VTodo) vComponent;
             if (castComponent.getDateTimeDue() == null)
@@ -519,7 +520,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VTodo castSource = (VTodo) source;
             VTodo castDestination = (VTodo) destination;
@@ -534,14 +535,14 @@ public enum PropertyType
             DateTimeEnd.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDateTimeEnd<?> castComponent = (VComponentDateTimeEnd<?>) vComponent;
             return castComponent.getDateTimeEnd();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDateTimeEnd<?> castComponent = (VComponentDateTimeEnd<?>) vComponent;
             if (castComponent.getDateTimeEnd() == null)
@@ -554,7 +555,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDateTimeEnd<?> castSource = (VComponentDateTimeEnd<?>) source;
             VComponentDateTimeEnd<?> castDestination = (VComponentDateTimeEnd<?>) destination;
@@ -569,14 +570,14 @@ public enum PropertyType
             DateTimeStamp.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             return castComponent.getDateTimeStamp();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             if (castComponent.getDateTimeStamp() == null)
@@ -589,7 +590,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
@@ -603,14 +604,14 @@ public enum PropertyType
             DateTimeStart.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
             return castComponent.getDateTimeStart();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentPrimary<?> castComponent = (VComponentPrimary<?>) vComponent;
             if (castComponent.getDateTimeStart() == null)
@@ -623,7 +624,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentPrimary<?> castSource = (VComponentPrimary<?>) source;
             VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
@@ -638,7 +639,7 @@ public enum PropertyType
             Description.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             if (vComponent instanceof VJournal)
             {// VJournal has list of Descriptions
@@ -652,7 +653,7 @@ public enum PropertyType
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             if (vComponent instanceof VJournal)
             { // VJournal has list of Descriptions
@@ -681,7 +682,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             if (source instanceof VJournal)
             { // VJournal has list of Descriptions
@@ -709,14 +710,14 @@ public enum PropertyType
             DurationProp.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDuration<?> castComponent = (VComponentDuration<?>) vComponent;
             return castComponent.getDuration();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDuration<?> castComponent = (VComponentDuration<?>) vComponent;
             if (castComponent.getDuration() == null)
@@ -729,7 +730,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDuration<?> castSource = (VComponentDuration<?>) source;
             VComponentDuration<?> castDestination = (VComponentDuration<?>) destination;
@@ -744,14 +745,14 @@ public enum PropertyType
             ExceptionDates.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getExceptionDates();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             final ObservableList<ExceptionDates> list;
@@ -767,7 +768,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
@@ -786,14 +787,14 @@ public enum PropertyType
             FreeBusyTime.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VFreeBusy castComponent = (VFreeBusy) vComponent;
             return castComponent.getFreeBusyTime();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VFreeBusy castComponent = (VFreeBusy) vComponent;
             if (castComponent.getFreeBusyTime() == null)
@@ -806,7 +807,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VFreeBusy castSource = (VFreeBusy) source;
             VFreeBusy castDestination = (VFreeBusy) destination;
@@ -821,14 +822,14 @@ public enum PropertyType
             GeographicPosition.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             return castComponent.getGeographicPosition();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             if (castComponent.getGeographicPosition() == null)
@@ -841,7 +842,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
@@ -856,35 +857,39 @@ public enum PropertyType
             IANAProperty.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
-            return vComponent.getIANAProperties();
+            VComponentCommon<?> castComponent = (VComponentCommon<?>) vComponent;
+            return castComponent.getIANAProperties();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
+            VComponentCommon<?> castComponent = (VComponentCommon<?>) vComponent;
             final ObservableList<IANAProperty> list;
-            if (vComponent.getIANAProperties() == null)
+            if (castComponent.getIANAProperties() == null)
             {
                 list = FXCollections.observableArrayList();
-                vComponent.setIANAProperties(list);
+                castComponent.setIANAProperties(list);
             } else
             {
-                list = vComponent.getIANAProperties();
+                list = castComponent.getIANAProperties();
             }
             list.add(IANAProperty.parse(propertyContent));
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
-            IANAProperty[] propertyArray = source.getIANAProperties()
+            VComponentCommon<?> castSource = (VComponentCommon<?>) source;
+            VComponentCommon<?> castDestination = (VComponentCommon<?>) destination;
+            IANAProperty[] propertyArray = castSource.getIANAProperties()
                     .stream()
                     .map(c -> new IANAProperty(c)) // copy each property
                     .toArray(size -> new IANAProperty[size]);
             ObservableList<IANAProperty> properties = FXCollections.observableArrayList(propertyArray);
-            destination.setIANAProperties(properties);
+            castDestination.setIANAProperties(properties);
         }
     },
     // Change management
@@ -894,14 +899,14 @@ public enum PropertyType
             LastModified.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vComponent;
             return castComponent.getDateTimeLastModified();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentLastModified<?> castComponent = (VComponentLastModified<?>) vComponent;
             if (castComponent.getDateTimeLastModified() == null)
@@ -914,7 +919,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentLastModified<?> castSource = (VComponentLastModified<?>) source;
             VComponentLastModified<?> castDestination = (VComponentLastModified<?>) destination;
@@ -929,14 +934,14 @@ public enum PropertyType
             Location.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             return castComponent.getLocation();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             if (castComponent.getLocation() == null)
@@ -949,7 +954,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
@@ -964,19 +969,19 @@ public enum PropertyType
             , Method.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -988,35 +993,39 @@ public enum PropertyType
             NonStandardProperty.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
-            return vComponent.getNonStandardProperties();
+            VComponentCommon<?> castComponent = (VComponentCommon<?>) vComponent;
+            return castComponent.getNonStandardProperties();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
+            VComponentCommon<?> castComponent = (VComponentCommon<?>) vComponent;
             final ObservableList<NonStandardProperty> list;
-            if (vComponent.getNonStandardProperties() == null)
+            if (castComponent.getNonStandardProperties() == null)
             {
                 list = FXCollections.observableArrayList();
-                vComponent.setNonStandardProperties(list);
+                castComponent.setNonStandardProperties(list);
             } else
             {
-                list = vComponent.getNonStandardProperties();
+                list = castComponent.getNonStandardProperties();
             }
             list.add(NonStandardProperty.parse(propertyContent));
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
-            NonStandardProperty[] propertyArray = source.getNonStandardProperties()
+            VComponentCommon<?> castSource = (VComponentCommon<?>) source;
+            VComponentCommon<?> castDestination = (VComponentCommon<?>) destination;
+            NonStandardProperty[] propertyArray = castSource.getNonStandardProperties()
                     .stream()
                     .map(c -> new NonStandardProperty(c)) // copy each property
                     .toArray(size -> new NonStandardProperty[size]);
             ObservableList<NonStandardProperty> properties = FXCollections.observableArrayList(propertyArray);
-            destination.setNonStandardProperties(properties);
+            castDestination.setNonStandardProperties(properties);
         }
     },
     // Relationship
@@ -1027,14 +1036,14 @@ public enum PropertyType
             Organizer.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             return castComponent.getOrganizer();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             if (castComponent.getOrganizer() == null)
@@ -1047,7 +1056,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
@@ -1062,14 +1071,14 @@ public enum PropertyType
             PercentComplete.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VTodo castComponent = (VTodo) vComponent;
             return castComponent.getPercentComplete();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VTodo castComponent = (VTodo) vComponent;
             if (castComponent.getPercentComplete() == null)
@@ -1082,7 +1091,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VTodo castSource = (VTodo) source;
             VTodo castDestination = (VTodo) destination;
@@ -1097,14 +1106,14 @@ public enum PropertyType
             Priority.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             return castComponent.getPriority();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             if (castComponent.getPriority() == null)
@@ -1117,7 +1126,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
@@ -1132,19 +1141,19 @@ public enum PropertyType
             , ProductIdentifier.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1156,14 +1165,14 @@ public enum PropertyType
             RecurrenceDates.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             return castComponent.getRecurrenceDates();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             final ObservableList<RecurrenceDates> list;
@@ -1179,7 +1188,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
@@ -1198,14 +1207,14 @@ public enum PropertyType
             RecurrenceId.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getRecurrenceId();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getRecurrenceId() == null)
@@ -1218,7 +1227,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
@@ -1233,14 +1242,14 @@ public enum PropertyType
             RecurrenceRule.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             return castComponent.getRecurrenceRule();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentRepeatable<?> castComponent = (VComponentRepeatable<?>) vComponent;
             if (castComponent.getRecurrenceRule() == null)
@@ -1253,7 +1262,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
@@ -1268,14 +1277,14 @@ public enum PropertyType
             RelatedTo.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getRelatedTo();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             final ObservableList<RelatedTo> list;
@@ -1291,7 +1300,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
@@ -1310,14 +1319,14 @@ public enum PropertyType
             RepeatCount.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VAlarm castComponent = (VAlarm) vComponent;
             return castComponent.getRepeatCount();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VAlarm castComponent = (VAlarm) vComponent;
             if (castComponent.getRepeatCount() == null)
@@ -1330,7 +1339,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VAlarm castSource = (VAlarm) source;
             VAlarm castDestination = (VAlarm) destination;
@@ -1345,14 +1354,14 @@ public enum PropertyType
             RequestStatus.class)
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             return castComponent.getRequestStatus();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?>) vComponent;
             final ObservableList<RequestStatus> list;
@@ -1368,7 +1377,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VAlarm castSource = (VAlarm) source;
             VAlarm castDestination = (VAlarm) destination;
@@ -1383,14 +1392,14 @@ public enum PropertyType
             Resources.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentLocatable<?> castProperty = (VComponentLocatable<?>) vComponent;
             return castProperty.getResources();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentLocatable<?> castComponent = (VComponentLocatable<?>) vComponent;
             final ObservableList<Resources> list;
@@ -1406,7 +1415,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
@@ -1425,14 +1434,14 @@ public enum PropertyType
             Sequence.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getSequence();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getSequence() == null)
@@ -1445,7 +1454,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
@@ -1460,14 +1469,14 @@ public enum PropertyType
             Status.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             return castComponent.getStatus();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDisplayable<?> castComponent = (VComponentDisplayable<?>) vComponent;
             if (castComponent.getStatus() == null)
@@ -1480,7 +1489,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
@@ -1496,14 +1505,14 @@ public enum PropertyType
             Summary.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
             return castComponent.getSummary();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentDescribable<?> castComponent = (VComponentDescribable<?>) vComponent;
             if (castComponent.getSummary() == null)
@@ -1516,7 +1525,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentDescribable<?> castSource = (VComponentDescribable<?>) source;
             VComponentDescribable<?> castDestination = (VComponentDescribable<?>) destination;
@@ -1531,14 +1540,14 @@ public enum PropertyType
             TimeTransparency.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VEvent castComponent = (VEvent) vComponent;
             return castComponent.getTimeTransparency();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VEvent castComponent = (VEvent) vComponent;
             if (castComponent.getTimeTransparency() == null)
@@ -1551,7 +1560,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VEvent castSource = (VEvent) source;
             VEvent castDestination = (VEvent) destination;
@@ -1566,14 +1575,14 @@ public enum PropertyType
             TimeZoneIdentifier.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VTimeZone castComponent = (VTimeZone) vComponent;
             return castComponent.getTimeZoneIdentifier();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VTimeZone castComponent = (VTimeZone) vComponent;
             if (castComponent.getTimeZoneIdentifier() == null)
@@ -1586,7 +1595,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VTimeZone castSource = (VTimeZone) source;
             VTimeZone castDestination = (VTimeZone) destination;
@@ -1601,14 +1610,14 @@ public enum PropertyType
             TimeZoneName.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             StandardOrDaylight<?> castProperty = (StandardOrDaylight<?>) vComponent;
             return castProperty.getTimeZoneNames();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             final ObservableList<TimeZoneName> list;
@@ -1624,7 +1633,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             StandardOrDaylight<?> castSource = (StandardOrDaylight<?>) source;
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
@@ -1643,14 +1652,14 @@ public enum PropertyType
             TimeZoneOffsetFrom.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             return castComponent.getTimeZoneOffsetFrom();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             if (castComponent.getTimeZoneOffsetFrom() == null)
@@ -1663,7 +1672,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             StandardOrDaylight<?> castSource = (StandardOrDaylight<?>) source;
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
@@ -1678,14 +1687,14 @@ public enum PropertyType
             TimeZoneOffsetTo.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             return castComponent.getTimeZoneOffsetTo();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             StandardOrDaylight<?> castComponent = (StandardOrDaylight<?>) vComponent;
             if (castComponent.getTimeZoneOffsetTo() == null)
@@ -1698,7 +1707,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             StandardOrDaylight<?> castSource = (StandardOrDaylight<?>) source;
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
@@ -1713,14 +1722,14 @@ public enum PropertyType
             TimeZoneURL.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VTimeZone castComponent = (VTimeZone) vComponent;
             return castComponent.getTimeZoneURL();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VTimeZone castComponent = (VTimeZone) vComponent;
             if (castComponent.getTimeZoneURL() == null)
@@ -1733,7 +1742,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VTimeZone castSource = (VTimeZone) source;
             VTimeZone castDestination = (VTimeZone) destination;
@@ -1748,14 +1757,14 @@ public enum PropertyType
             Trigger.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VAlarm castComponent = (VAlarm) vComponent;
             return castComponent.getTrigger();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VAlarm castComponent = (VAlarm) vComponent;
             if (castComponent.getTrigger() == null)
@@ -1768,7 +1777,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VAlarm castSource = (VAlarm) source;
             VAlarm castDestination = (VAlarm) destination;
@@ -1783,14 +1792,14 @@ public enum PropertyType
             UniqueIdentifier.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             return castComponent.getUniqueIdentifier();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             if (castComponent.getUniqueIdentifier() == null)
@@ -1803,7 +1812,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
@@ -1818,21 +1827,21 @@ public enum PropertyType
             UniformResourceLocator.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             return castComponent.getUniformResourceLocator();
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             VComponentPersonal<?> castComponent = (VComponentPersonal<?> ) vComponent;
             castComponent.setUniformResourceLocator(UniformResourceLocator.parse(propertyContent));
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
@@ -1847,19 +1856,19 @@ public enum PropertyType
             , Version.class) // property class
     {
         @Override
-        public Object getProperty(VComponent<?> vComponent)
+        public Object getProperty(VComponent vComponent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void parse(VComponent<?> vComponent, String propertyContent)
+        public void parse(VComponent vComponent, String propertyContent)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
 
         @Override
-        public void copyProperty(VComponent<?> source, VComponent<?> destination)
+        public void copyProperty(VComponent source, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1964,11 +1973,11 @@ public enum PropertyType
      * ABSTRACT METHODS
      */
     /** Returns associated Property<?> or List<Property<?>> */
-    abstract public Object getProperty(VComponent<?> vComponent);
+    abstract public Object getProperty(VComponent vComponent);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
-    abstract public void parse(VComponent<?> vComponent, String propertyContent);
+    abstract public void parse(VComponent vComponent, String propertyContent);
 
     /** copies the associated property from the source component to the destination component */
-    abstract public void copyProperty(VComponent<?> source, VComponent<?> destination);
+    abstract public void copyProperty(VComponent source, VComponent destination);
 }

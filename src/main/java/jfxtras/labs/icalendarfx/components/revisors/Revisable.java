@@ -7,16 +7,15 @@ import java.util.Collection;
  * 
  * @author David Bal
  *
- * @param <T> - subclass
- * @param <U> - calendar component class
+ * @param <U> - calendar VComponent class
  */
-public interface Revisable<T, U>
+public interface Revisable
 {
     /** Revise component based on properties set in subclasses
      * Can return one or two components.  Returns two if changes are applied to ONE or THIS-AND-FUTURE
      * 
      * @return - Collection of revised component(s)
      */
-    Collection<U> revise();
+    Collection<?> revise();
 
 }

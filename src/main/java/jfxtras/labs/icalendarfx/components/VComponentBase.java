@@ -41,7 +41,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public abstract class VComponentBase<T> implements VComponent<T>
+public abstract class VComponentBase<T> implements VComponentCommon<T>
 {
     /**
      * 3.8.8.2.  Non-Standard Properties

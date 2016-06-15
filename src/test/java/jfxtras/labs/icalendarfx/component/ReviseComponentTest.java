@@ -25,7 +25,7 @@ import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
-import jfxtras.labs.icalendarfx.components.revisors.VEventReviser;
+import jfxtras.labs.icalendarfx.components.revisors.ReviserVEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -54,7 +54,7 @@ public class ReviseComponentTest
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
-        VEventReviser reviser = ((VEventReviser) vComponentOriginalCopy.newRevisor())
+        ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginalCopy.newRevisor())
                 .withDialogCallback((m) -> ChangeDialogOption.ALL)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
@@ -165,7 +165,7 @@ public class ReviseComponentTest
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
 //        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
-        VEventReviser reviser = ((VEventReviser) vComponentOriginalCopy.newRevisor())
+        ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginalCopy.newRevisor())
                 .withDialogCallback((m) -> ChangeDialogOption.ONE)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
@@ -220,7 +220,7 @@ public class ReviseComponentTest
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
-        VEventReviser reviser = ((VEventReviser) vComponentOriginalCopy.newRevisor())
+        ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginalCopy.newRevisor())
                 .withDialogCallback((m) -> ChangeDialogOption.CANCEL)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
@@ -274,7 +274,7 @@ public class ReviseComponentTest
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
-        VEventReviser reviser = ((VEventReviser) vComponentOriginalCopy.newRevisor())
+        ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginalCopy.newRevisor())
                 .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
@@ -344,7 +344,7 @@ public class ReviseComponentTest
         Temporal endRecurrence = LocalDateTime.of(2015, 11, 13, 11, 30);
         TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
-        VEventReviser reviser = ((VEventReviser) vComponentOriginal.newRevisor())
+        ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginal.newRevisor())
                 .withDialogCallback((m) -> ChangeDialogOption.ALL)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)

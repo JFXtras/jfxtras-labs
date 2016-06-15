@@ -6,7 +6,7 @@ import java.util.List;
 
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.revisors.VEventReviser;
+import jfxtras.labs.icalendarfx.components.revisors.ReviserVEvent;
 
 public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
 {
@@ -34,7 +34,7 @@ public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
     @Override
     Collection<VEvent> callRevisor()
     {
-        VEventReviser reviser = ((VEventReviser) vComponentOriginalCopy.newRevisor())
+        ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginalCopy.newRevisor())
                 .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
                 .withEndRecurrence(editDescriptiveVBox.endNewRecurrence)
                 .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)

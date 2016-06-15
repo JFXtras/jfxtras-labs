@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
-import jfxtras.labs.icalendarfx.components.revisors.StandardTimeReviser;
+import jfxtras.labs.icalendarfx.components.revisors.ReviserStandardTime;
 
 public class StandardTime extends StandardOrDaylightBase<StandardTime>
 {
@@ -27,7 +27,7 @@ public class StandardTime extends StandardOrDaylightBase<StandardTime>
     }
     
     @Override
-    public Revisable<StandardTimeReviser, StandardTime> newRevisor() { return new StandardTimeReviser(this); }
+    public Revisable newRevisor() { return new ReviserStandardTime(this); }
 
     /** Parse content lines into calendar component object */
     public static StandardTime parse(String contentLines)

@@ -10,7 +10,7 @@ import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
-import jfxtras.labs.icalendarfx.components.revisors.VEventReviser;
+import jfxtras.labs.icalendarfx.components.revisors.ReviserVEvent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
@@ -226,9 +226,9 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     }
     
     @Override
-    public Revisable<VEventReviser, VEvent> newRevisor()
+    public Revisable newRevisor()
     {
-        return new VEventReviser(this);
+        return new ReviserVEvent(this);
     }
     
     @Override

@@ -178,7 +178,7 @@ public class ICalendarAgenda extends Agenda
     private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>(); /* map matches VComponent to their appointments */
 //    private final Map<VComponentNew<?>, List<Appointment>> vComponentAppointmentMap = new WeakHashMap<>(); /* map matches VComponent to their appointments */
 
-    private final Map<Class<? extends VComponent<?>>, Behavior<?>> vComponentClassBehaviorMap = new HashMap<>();
+    private final Map<Class<? extends VComponent>, Behavior<?>> vComponentClassBehaviorMap = new HashMap<>();
     
     // not here - in VEventImpl
 //    // Extended appointment class used by the implementor - used to instantiate new appointment objects
@@ -436,7 +436,7 @@ public class ICalendarAgenda extends Agenda
                             break;
                         case OK_DONE:
                         {
-                            VComponent<?> newVComponent = getVComponentStore().createVComponent(appointment, getVCalendar());
+                            VComponent newVComponent = getVComponentStore().createVComponent(appointment, getVCalendar());
                             System.out.println("vevents2:"+getVCalendar().getVEvents().size());
                             System.out.println("vevent:"+newVComponent.toContent());
                             if ((appointment.getSummary() != null) && ! (appointment.getSummary().equals(originalSummary)) || ! (appointment.getAppointmentGroup().equals(originalAppointmentGroup)))
@@ -448,7 +448,7 @@ public class ICalendarAgenda extends Agenda
                         case OTHER: // ADVANCED EDIT
                         {
                             System.out.println("vevents1:"+getVCalendar().getVEvents().size());
-                            VComponent<?> newVComponent = getVComponentStore().createVComponent(appointment, getVCalendar());
+                            VComponent newVComponent = getVComponentStore().createVComponent(appointment, getVCalendar());
                             System.out.println("vevents2:"+getVCalendar().getVEvents().size());
                             System.out.println("vevent:"+newVComponent.toContent());
                             iCalendarEditPopupCallback.call(vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0));

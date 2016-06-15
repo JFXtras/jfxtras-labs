@@ -19,12 +19,18 @@ public interface VComponentStore<R>
 {
     VComponentDisplayable<?> createVComponent(R recurrence, VCalendar vCalendar);
     
+    /** Property for start of range to make recurrences */
     ObjectProperty<LocalDateTime> startRangeProperty();
+    /** set start of range to make recurrences */
     void setStartRange(LocalDateTime startRange);
+    /** get start of range to make recurrences */
     LocalDateTime getStartRange();
 
+    /** Property for end of range to make recurrences */
     ObjectProperty<LocalDateTime> endRangeProperty();
+    /** set end of range to make recurrences */
     void setEndRange(LocalDateTime endRange);
+    /** get end of range to make recurrences */
     LocalDateTime getEndRange();
     
     /**

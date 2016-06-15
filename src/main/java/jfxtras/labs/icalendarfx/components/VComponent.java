@@ -6,14 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
-import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 
 /**
  * iCalendar component
@@ -32,7 +28,7 @@ import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public interface VComponent<T> extends VCalendarElement
+public interface VComponent extends VCalendarElement
 {
     /**
      * Returns the enum for the component as it would appear in the iCalendar content line
@@ -43,62 +39,6 @@ public interface VComponent<T> extends VCalendarElement
      * @return - the component enum
      */
     CalendarElementType componentType();
-    
-    /**
-     * 3.8.8.2.  Non-Standard Properties
-     * Any property name with a "X-" prefix
-     * 
-     * Example:
-     * X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.
-     *  org/mysubj.au
-     */
-    ObservableList<NonStandardProperty> getNonStandardProperties();
-    void setNonStandardProperties(ObservableList<NonStandardProperty> properties);
-    default T withNonStandardProperty(String...nonStandardProps)
-    {
-        Arrays.stream(nonStandardProps).forEach(c -> PropertyType.NON_STANDARD.parse(this, c));
-        return (T) this;
-    }
-    default T withNonStandardProperty(ObservableList<NonStandardProperty> nonStandardProps) { setNonStandardProperties(nonStandardProps); return (T) this; }
-    default T withNonStandardProperty(NonStandardProperty...nonStandardProps)
-    {
-        if (getNonStandardProperties() == null)
-        {
-            setNonStandardProperties(FXCollections.observableArrayList(nonStandardProps));
-        } else
-        {
-            getNonStandardProperties().addAll(nonStandardProps);
-        }
-        return (T) this;
-    }
-
-    /**
-     * 3.8.8.1.  IANA Properties
-     * An IANA-registered property name
-     * 
-     * Examples:
-     * NON-SMOKING;VALUE=BOOLEAN:TRUE
-     * DRESSCODE:CASUAL
-     */
-    ObservableList<IANAProperty> getIANAProperties();
-    void setIANAProperties(ObservableList<IANAProperty> properties);
-    default T withIANAProperty(String...ianaProps)
-    {
-        Arrays.stream(ianaProps).forEach(c -> PropertyType.IANA_PROPERTY.parse(this, c));
-        return (T) this;
-    }
-    default T withIANAProperty(ObservableList<IANAProperty> ianaProps) { setIANAProperties(ianaProps); return (T) this; }
-    default T withIANAProperty(IANAProperty...ianaProps)
-    {
-        if (getIANAProperties() == null)
-        {
-            setIANAProperties(FXCollections.observableArrayList(ianaProps));
-        } else
-        {
-            getIANAProperties().addAll(ianaProps);
-        }
-        return (T) this;
-    }
 
     /**
      * List of all properties enums found in component.
@@ -135,7 +75,7 @@ public interface VComponent<T> extends VCalendarElement
     }
     
     /** Component editor */
-    Revisable<?, T> newRevisor();
+    Revisable newRevisor();
     
     /** 
      * SORT ORDER
@@ -156,7 +96,7 @@ public interface VComponent<T> extends VCalendarElement
      * Note: this method only overwrites properties found in source.  If there are properties in
      * this component that are not present in source then those will remain unchanged.
      * */
-    default void copyComponentFrom(VComponent<?> source)
+    default void copyComponentFrom(VComponent source)
     {
         source.propertyEnums().forEach(p -> p.copyProperty(source, this));
         propertySortOrder().putAll(source.propertySortOrder());

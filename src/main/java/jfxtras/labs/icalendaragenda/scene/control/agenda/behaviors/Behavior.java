@@ -4,7 +4,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
-public interface Behavior<T extends VComponent<?>>
+public interface Behavior<T extends VComponent>
 {
     EditComponentPopupScene getEditScene(Appointment appointment);
 

@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.components;
 
-import jfxtras.labs.icalendarfx.components.revisors.DaylightSavingTimeReviser;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
+import jfxtras.labs.icalendarfx.components.revisors.ReviserDaylightSavingTime;
 
 // both this class and Standard are identical - need to extend common class
 public class DaylightSavingTime extends StandardOrDaylightBase<DaylightSavingTime>
@@ -28,7 +28,7 @@ public class DaylightSavingTime extends StandardOrDaylightBase<DaylightSavingTim
     }
     
     @Override
-    public Revisable<DaylightSavingTimeReviser, DaylightSavingTime> newRevisor() { return new DaylightSavingTimeReviser(this); }
+    public Revisable newRevisor() { return new ReviserDaylightSavingTime(this); }
 
     /** Parse content lines into calendar component object */
     public static DaylightSavingTime parse(String contentLines)

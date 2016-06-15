@@ -11,7 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
-import jfxtras.labs.icalendarfx.components.revisors.VTimeZoneReviser;
+import jfxtras.labs.icalendarfx.components.revisors.ReviserVTimeZone;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.change.LastModified;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneIdentifier;
@@ -403,7 +403,7 @@ public class VTimeZone extends VComponentBase<VTimeZone> implements VComponentLa
     }
     
     @Override
-    public Revisable<VTimeZoneReviser, VTimeZone> newRevisor() { return new VTimeZoneReviser(this); }
+    public Revisable newRevisor() { return new ReviserVTimeZone(this); }
 
     @Override
     public List<String> errors()

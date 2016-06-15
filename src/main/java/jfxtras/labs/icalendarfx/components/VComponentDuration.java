@@ -13,7 +13,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
  * @see VComponentLocatable
  * @see VAlarm
  */
-public interface VComponentDuration<T> extends VComponent<T>
+public interface VComponentDuration<T> extends VComponent
 {
     /** 
      * DURATION

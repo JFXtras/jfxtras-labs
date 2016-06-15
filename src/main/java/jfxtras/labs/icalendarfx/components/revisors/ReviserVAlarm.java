@@ -2,17 +2,17 @@ package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.util.Collection;
 
-import jfxtras.labs.icalendarfx.components.VFreeBusy;
+import jfxtras.labs.icalendarfx.components.VAlarm;
 
-public class VFreeBusyReviser implements Revisable<VFreeBusyReviser, VFreeBusy>
+public class ReviserVAlarm extends ReviserBase<ReviserVAlarm, VAlarm>
 {
-    public VFreeBusyReviser(VFreeBusy component)
+    public ReviserVAlarm(VAlarm component)
     {
         throw new RuntimeException("not implemented");
     }
     
     @Override
-    public Collection<VFreeBusy> revise()
+    public Collection<VAlarm> revise()
     {
         throw new RuntimeException("not implemented");
     }

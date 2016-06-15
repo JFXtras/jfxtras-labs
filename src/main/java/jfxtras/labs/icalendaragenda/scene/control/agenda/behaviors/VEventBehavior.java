@@ -11,7 +11,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventPopupScene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.revisors.VEventReviser;
+import jfxtras.labs.icalendarfx.components.revisors.ReviserVEvent;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
@@ -79,7 +79,7 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
                 endRecurrence = appointment.getEndTemporal();            
             }
             
-            VEventReviser newRevisor = (VEventReviser) vComponent.newRevisor();
+            ReviserVEvent newRevisor = (ReviserVEvent) vComponent.newRevisor();
             newRevisor.withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
                     .withEndRecurrence(endRecurrence)
                     .withStartOriginalRecurrence(startOriginalRecurrence)
