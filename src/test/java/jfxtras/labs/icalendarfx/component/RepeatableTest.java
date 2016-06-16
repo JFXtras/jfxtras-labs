@@ -25,6 +25,7 @@ import org.junit.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
+import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
@@ -1315,13 +1316,12 @@ public class RepeatableTest //extends Application
                     .collect(Collectors.toList());
             assertEquals(expectedDates, madeDates);
         }
-System.out.println("here1:");
+
         // Change RRule
         e.setRecurrenceRule(new RecurrenceRule2()
                 .withFrequency(FrequencyType.WEEKLY)
                 .withInterval(2)
                 .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
-        System.out.println("here2:");
 
         { // check new repeatable stream
             List<Temporal> madeDates = e
@@ -1343,7 +1343,6 @@ System.out.println("here1:");
                     .collect(Collectors.toList());
             assertEquals(expectedDates, madeDates);
         }
-        System.out.println("here3:");
 
         // request date beyond first cached date to test cache system
         Temporal date = e.streamRecurrences(LocalDateTime.of(2015, 12, 9, 10, 0)).findFirst().get();
@@ -1395,5 +1394,15 @@ System.out.println("here1:");
     public void canHandleExceptions()
     {
         
+    }
+    
+    @Test
+    public void canFindPreviousStreamValue()
+    {
+        VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
+        Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
+        Temporal previous = vComponentEdited.previousStreamValue(startRecurrence);
+        assertEquals(LocalDateTime.of(2016, 5, 15, 10, 0), previous);
+///        System.out.println("previous:" + previous);
     }
 }

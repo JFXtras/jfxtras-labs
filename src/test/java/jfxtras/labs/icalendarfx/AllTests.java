@@ -14,6 +14,7 @@ import jfxtras.labs.icalendarfx.component.ICalendarParseVEventTest;
 import jfxtras.labs.icalendarfx.component.PersonalTest;
 import jfxtras.labs.icalendarfx.component.PrimaryTest;
 import jfxtras.labs.icalendarfx.component.RepeatableTest;
+import jfxtras.labs.icalendarfx.component.ReviseComponentTest;
 import jfxtras.labs.icalendarfx.component.StandardOrDaylightTimeTest;
 import jfxtras.labs.icalendarfx.component.VAlarmTest;
 import jfxtras.labs.icalendarfx.component.VEventTest;
@@ -93,6 +94,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
         StandardOrDaylightTimeTest.class,
         DaylightSavingsTimeTest.class,
         ICalendarParseVEventTest.class,
+        ReviseComponentTest.class,
        
        // property tests
         GeneralPropertyTest.class,

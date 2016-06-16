@@ -198,7 +198,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     {
                         throw new RuntimeException("Only 1 relatedVComponents currently supported");
                     }
-                    vComponents.add(vComponentEdited);
+//                    vComponents.add(vComponentEdited);
                     break;
                 case CANCEL:
 //                    getVComponentEdited().copyComponentFrom(vComponentOriginal);  // return to original
@@ -206,12 +206,12 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     return null;
                 case THIS_AND_FUTURE:
                     vComponents.add(editThisAndFuture());
-                    vComponents.add(vComponentEdited);
+//                    vComponents.add(vComponentEdited);
                     break;
                 case ONE:
                     editOne();
                     vComponents.add(vComponentOriginal);
-                    vComponents.add(vComponentEdited);
+//                    vComponents.add(vComponentEdited);
                     break;
                 default:
                     throw new RuntimeException("Unknown response:" + changeResponse);
@@ -232,8 +232,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
 //        System.out.println(vComponents.size());
 //        if (! vComponents.isEmpty())
 //        {
-//        vComponents.add(vComponentEdited);
-        System.out.println("endedit:" +vComponents.size());
+        vComponents.add(vComponentEdited);
+//        System.out.println("endedit:" +vComponents.size());
 //        }
 //        System.out.println(vComponents.size());
 //        if (newRecurrences != null)
@@ -367,6 +367,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             untilNew = getVComponentEdited().previousStreamValue(startRecurrence);
         } else
         {
+            System.out.println("startRecurrence:" + startRecurrence + " " + getVComponentEdited().previousStreamValue(startRecurrence));
             Temporal previousRecurrence = getVComponentEdited().previousStreamValue(startRecurrence);
             if (startRecurrence instanceof LocalDateTime)
             {

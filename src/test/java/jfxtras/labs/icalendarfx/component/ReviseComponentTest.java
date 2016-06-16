@@ -272,7 +272,7 @@ public class ReviseComponentTest
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
-        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
+//        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginalCopy.newRevisor())
                 .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
@@ -342,7 +342,7 @@ public class ReviseComponentTest
         Temporal startOriginalRecurrence = LocalDateTime.of(2015, 11, 11, 10, 30);
         Temporal startRecurrence = LocalDateTime.of(2015, 11, 13, 10, 30);
         Temporal endRecurrence = LocalDateTime.of(2015, 11, 13, 11, 30);
-        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
+//        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginal.newRevisor())
                 .withDialogCallback((m) -> ChangeDialogOption.ALL)
@@ -352,14 +352,6 @@ public class ReviseComponentTest
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginal);
         Collection<VEvent> newVComponents = reviser.revise();
-//        Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
-//                vComponentOriginal,
-//                vComponentEdited,
-//                startOriginalRecurrence,
-//                startRecurrence,
-//                endRecurrence,
-////                shift,
-//                (m) -> ChangeDialogOption.ALL);
         vComponents.addAll(newVComponents);
 
         assertEquals(1, vComponents.size());
