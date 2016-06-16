@@ -261,8 +261,6 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
      */
     public Map<ParameterType, Integer> parameterSortOrder() { return parameterSortOrder; }
     final private Map<ParameterType, Integer> parameterSortOrder = new HashMap<>();
-//    public Map<Parameter<?>, Integer> parameterSortOrder() { return parameterSortOrder; }
-//    final private Map<Parameter<?>, Integer> parameterSortOrder = new WeakHashMap<>();
     private Integer parameterCounter = 0;
     
     // property value
@@ -469,21 +467,6 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         }
     }
     
-    
-//    @Override
-//    public boolean isValid()
-//    {
-//        if (getValueParameter() == null)
-//        {
-//            return Property.super.isValid();
-//        } else
-//        {
-//            boolean isValueTypeOK = isValueParameterValid(getValueParameter().getValue());
-////            System.out.println("PropertyBase isValid:" + Property.super.isValid() + " " + isValueTypeOK);
-//            return (Property.super.isValid()) && isValueTypeOK;
-//        }
-//    }
-    
     @Override
     public List<String> errors()
     {
@@ -492,15 +475,27 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         {
             errors.add(getPropertyName() + " value is null.  The property MUST have a value."); 
         }
+        final ValueType valueType;
         if (getValueParameter() != null)
         {
-            boolean isValueTypeOK = isValueParameterValid(getValueParameter().getValue());
+            valueType = getValueParameter().getValue();
+            boolean isValueTypeOK = isValueParameterValid(valueType);
             if (! isValueTypeOK)
             {
                 errors.add(getPropertyName() + " value type " + getValueParameter().getValue() + " is not supported.  Supported types include:" +
                         propertyType().allowedValueTypes().stream().map(v -> v.toString()).collect(Collectors.joining(",")));
             }
+        } else
+        {
+            // use default valueType
+            valueType = propertyType().allowedValueTypes().get(0);
         }
+        List<String> createErrorList = valueType.createErrorList(getValue());
+        if (createErrorList != null)
+        {
+            errors.addAll(createErrorList);
+        }
+        parameters().forEach(b -> errors.addAll(b.errors()));
         return errors;
     }
     

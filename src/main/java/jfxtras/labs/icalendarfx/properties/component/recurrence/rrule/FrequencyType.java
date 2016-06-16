@@ -4,45 +4,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Daily;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Frequency;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Hourly;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Minutely;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Monthly;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Secondly;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Weekly;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.frequency.Yearly;
-
 public enum FrequencyType
 {
-    YEARLY (ChronoUnit.YEARS) {
-        @Override public Frequency newInstance() { return new Yearly(); }
-        @Override public Frequency newInstance(Frequency source) { return new Yearly(source); }
-    },
-    MONTHLY (ChronoUnit.MONTHS) {
-        @Override public Frequency newInstance() { return new Monthly(); }
-        @Override public Frequency newInstance(Frequency source) { return new Monthly(source); }
-    },
-    WEEKLY (ChronoUnit.WEEKS) {
-        @Override public Frequency newInstance() { return new Weekly(); }
-        @Override public Frequency newInstance(Frequency source) { return new Weekly(source); }
-    },
-    DAILY (ChronoUnit.DAYS) {
-        @Override public Frequency newInstance() { return new Daily(); }
-        @Override public Frequency newInstance(Frequency source) { return new Daily(source); }
-    },
-    HOURLY (ChronoUnit.HOURS) {
-        @Override public Frequency newInstance() { return new Hourly(); }
-        @Override public Frequency newInstance(Frequency source) { return new Hourly(source); }
-    },
-    MINUTELY (ChronoUnit.MINUTES) {
-        @Override public Frequency newInstance() { return new Minutely(); }
-        @Override public Frequency newInstance(Frequency source) { return new Minutely(source); }
-    },
-    SECONDLY (ChronoUnit.SECONDS) {
-        @Override public Frequency newInstance() { return new Secondly(); }
-        @Override public Frequency newInstance(Frequency source) { return new Secondly(source); }
-    };
+    YEARLY (ChronoUnit.YEARS),
+    MONTHLY (ChronoUnit.MONTHS),
+    WEEKLY (ChronoUnit.WEEKS),
+    DAILY (ChronoUnit.DAYS),
+    HOURLY (ChronoUnit.HOURS),
+    MINUTELY (ChronoUnit.MINUTES),
+    SECONDLY (ChronoUnit.SECONDS);
     
     ChronoUnit chronoUnit;
     FrequencyType(ChronoUnit chronoUnit)
@@ -68,21 +38,4 @@ public enum FrequencyType
     {
         return propertyFromNameMap.get(propertyName.toUpperCase());
     }
-    
-//        /** sets parameter value */
-//        public abstract void setValue(RRule rrule, String value);
-    
-    /** makes content line (RFC 5545 3.1) from a vComponent property  */
-//        @Deprecated // I don't think this is needed - handled by RRuleProperty
-//        public abstract String toParameterString(Frequency frequency);
-//        
-//        /** Copies property value from source to destination */
-//        public abstract void copyProperty(Frequency source, Frequency destination);
-    @Deprecated
-    public abstract Frequency newInstance();
-    /** return copy of Frequency */
-    @Deprecated
-    public abstract Frequency newInstance(Frequency source);
-    
-//        public abstract Frequency newInstance();
 }

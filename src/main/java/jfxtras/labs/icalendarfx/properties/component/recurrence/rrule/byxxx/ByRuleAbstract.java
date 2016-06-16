@@ -4,7 +4,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.stream.Stream;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementBase;
@@ -25,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleEleme
  * @see BySecond
  * @see BySetPosition
  */
-public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<ObservableList<T>, U> implements ByRule<ObservableList<T>> //, Comparable<ByRule<ObservableList<T>>>, RRuleElement<ObservableList<T>>
+public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<ObservableList<T>, U> implements ByRule<ObservableList<T>>
 {
     @Override
     public void setValue(ObservableList<T> values)
@@ -54,13 +53,6 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<ObservableLi
 
     @Override
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart) { throw new RuntimeException("not implemented"); }
-
-    @Override
-    public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ObjectProperty<ChronoUnit> chronoUnit, Temporal startDateTime) { return null; }
-
-    
-//    @Override
-//    public ChronoUnit getChronoUnit() { throw new RuntimeException("not implemented"); }
     
     /*
      * Constructors
@@ -85,11 +77,7 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<ObservableLi
 
     @Override
     public int compareTo(ByRule<ObservableList<T>> byRule)
-    {        
-//        int p1 = ByRuleType.propertyFromByRule(this).sortOrder();
-//        int p2 = ByRuleType.propertyFromByRule(byRule).sortOrder();
-//        int p1 = byRuleType().sortOrder();
-//        int p2 = byRule.byRuleType().sortOrder();
+    {
         int p1 = RRuleElementType.enumFromClass(getClass()).sortOrder();
         int p2 = RRuleElementType.enumFromClass(byRule.getClass()).sortOrder();
         return Integer.compare(p1, p2);

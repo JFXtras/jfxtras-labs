@@ -158,15 +158,19 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             }
         } else
         {
-            if (dayOfWeekList.size() > 1)
-            {
+            // TODO - CHECK AT LEAST ONE DAY ON SAVING
+//            if (dayOfWeekList.size() > 1)
+//            {
+            System.out.println("about to remove:" + dayOfWeek + dayOfWeekList.size());
                 rule.removeDayOfWeek(dayOfWeek);
+                System.out.println("about to remove2:" + dayOfWeek + dayOfWeekList.size());
                 dayOfWeekList.remove(dayOfWeek);
-            } else
-            {// can't remove last day of week
-                dayOfWeekCheckBoxMap.get(dayOfWeek).set(oldSel);
-                canNotRemoveLastDayOfWeek(dayOfWeek);
-            }
+                System.out.println("about to remove3:" + dayOfWeek + dayOfWeekList.size());
+//            } else
+//            {// can't remove last day of week
+//                dayOfWeekCheckBoxMap.get(dayOfWeek).set(oldSel);
+//                canNotRemoveLastDayOfWeek(dayOfWeek);
+//            }
         }
     };
 
@@ -978,30 +982,35 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     {
         final Temporal dateTimeStart = exceptionFirstTemporal; // vComponent.getDateTimeStart();
 //            final Stream<Temporal> stream1 = vComponent.streamRecurrences();
-        final Stream<Temporal> stream1 = vComponent.getRecurrenceRule().getValue().streamRecurrences(dateTimeStart);
-//            Stream<Temporal> stream2 = (vComponent.getExceptions() == null) ? stream1
-//                    : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
-        final Stream<Temporal> stream3; 
-        if (DateTimeType.of(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
-        {
-            stream3 = stream1.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
-        } else
-        {
-            stream3 = stream1;
-        }
-        Temporal lastExceptionInMasterList = (exceptionMasterList.isEmpty()) ? dateTimeStart.with(LocalDate.MIN) : exceptionMasterList.get(exceptionMasterList.size()-1);
-        List<Temporal> exceptionDates = stream3
-              .limit(EXCEPTION_CHOICE_LIMIT)
-              .peek(t ->
-              {
-                  if (DateTimeUtilities.isAfter(t, lastExceptionInMasterList))
-                  {
-                      exceptionMasterList.add(t);
-                  }
-              })
-              .collect(Collectors.toList());
         exceptionComboBox.getItems().clear();
-        exceptionComboBox.getItems().addAll(exceptionDates);
+        boolean isRecurrenceRuleValid = vComponent.getRecurrenceRule().getValue().isValid();
+        System.out.println("isRecurrenceRuleValid:" + isRecurrenceRuleValid);
+        if (isRecurrenceRuleValid)
+        {
+            final Stream<Temporal> stream1 = vComponent.getRecurrenceRule().getValue().streamRecurrences(dateTimeStart);
+    //            Stream<Temporal> stream2 = (vComponent.getExceptions() == null) ? stream1
+    //                    : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
+            final Stream<Temporal> stream3; 
+            if (DateTimeType.of(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+            {
+                stream3 = stream1.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
+            } else
+            {
+                stream3 = stream1;
+            }
+            Temporal lastExceptionInMasterList = (exceptionMasterList.isEmpty()) ? dateTimeStart.with(LocalDate.MIN) : exceptionMasterList.get(exceptionMasterList.size()-1);
+            List<Temporal> exceptionDates = stream3
+                  .limit(EXCEPTION_CHOICE_LIMIT)
+                  .peek(t ->
+                  {
+                      if (DateTimeUtilities.isAfter(t, lastExceptionInMasterList))
+                      {
+                          exceptionMasterList.add(t);
+                      }
+                  })
+                  .collect(Collectors.toList());
+            exceptionComboBox.getItems().addAll(exceptionDates);
+        }
     }
     
     @FXML private void handleAddException()
@@ -1088,7 +1097,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         
         // set id for testing
         alert.getDialogPane().setId("last_day_of_week_alert");
-        alert.getDialogPane().lookupButton(ButtonType.OK).setId("last_day_of_week_alert_button_ok");
+        alert.getDialogPane().lookupButton(buttonTypeOk).setId("last_day_of_week_alert_button_ok");
         
         alert.showAndWait();
     }

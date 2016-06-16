@@ -77,8 +77,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see RecurrenceRule
  *
  */
-// TODO - PRESERVE ORDER OF PARAMETERS FROM PARSED STRING
-// TODO - LISTENER TO PREVENT COUNT AND LISTENER FROM BOTH BEING SET
+// TODO - LISTENER TO PREVENT COUNT AND UNTIL FROM BOTH BEING SET
 public class RecurrenceRule2 implements VCalendarElement
 {
     /** 
@@ -885,6 +884,7 @@ public class RecurrenceRule2 implements VCalendarElement
     @Override
     public List<String> errors()
     {
+        System.out.println("rrule2 errors:");
         List<String> errors = new ArrayList<>();
         if (getFrequency() == null)
         {
@@ -896,6 +896,11 @@ public class RecurrenceRule2 implements VCalendarElement
         {
             errors.add("UNTIL and COUNT are both present.  UNTIL or COUNT rule parts are OPTIONAL, but they MUST NOT both occur.");
         }
+        byRules().forEach(b ->
+        {
+            System.out.println("byrule errors:" + b + " " + b.errors());
+            errors.addAll(b.errors());
+        });
         return errors;
     }
     

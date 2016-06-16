@@ -256,6 +256,12 @@ public enum ValueType
                 }
             };
         }
+        
+        @Override
+        public <T> List<String> createErrorList(T value)
+        {
+            return ((RecurrenceRule2) value).errors();
+        }
     },
     /* Note: This string converter is only acceptable for values converted to Stings
      * without any additional processing.  For properties with TEXT value that is stored
@@ -437,5 +443,10 @@ public enum ValueType
     /** return default String converter associated with property value type */
     abstract public <T> StringConverter<T> getConverter();
 //    abstract public <VCalendarElement> StringConverter<VCalendarElement> getConverter();
+    public <T> List<String> createErrorList(T value)
+    {
+        // most values are valid by default, which is denoted by an empty list.  RRULE is an exception and needs to call its errors() method.
+        return null;
+    }
 
 }

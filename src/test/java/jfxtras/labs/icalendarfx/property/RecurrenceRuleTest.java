@@ -129,4 +129,15 @@ public class RecurrenceRuleTest
         assertEquals("WKST=SU", element.toContent());
     }
     
+    @Test
+    public void canDetectErrors1()
+    {
+        RecurrenceRule expectedProperty = new RecurrenceRule(
+                new RecurrenceRule2()
+                    .withUntil("19730429T070000Z")
+                    .withFrequency(FrequencyType.YEARLY)
+                    .withByRules(new ByDay()));
+        System.out.println("value:" + new ByDay().getValue().isEmpty());
+        expectedProperty.errors().forEach(System.out::println);
+    }
 }

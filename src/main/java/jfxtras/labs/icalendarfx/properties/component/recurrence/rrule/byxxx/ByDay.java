@@ -75,26 +75,12 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
     public ByDay()
     {
         super();
-
-//        super(ByDay.class);
-        // TODO - USE WKST PROPERTY FOR START OF WEEK
-//        field = WeekFields.of(Locale.getDefault()).dayOfWeek();
-//        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-//        firstDayOfWeekAdjustment = (weekFields.getFirstDayOfWeek() == DayOfWeek.SUNDAY) ? 1 : 0;
     }
-    
-//    @Deprecated // use parse instead
-//    public ByDay(String dayPairs)
-//    {
-//        this();
-//        parseContent(dayPairs);
-//    }
     
     public ByDay(ByDayPair... byDayPairs)
     {
         this();
         setValue(byDayPairs);
-//        setValue(FXCollections.observableArrayList(byDayPairs));
     }
     
     public ByDay(ByDay source)
@@ -142,9 +128,6 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
             .isPresent();
         if (! isPresent)
         {
-//            List<ByDayPair> list = new ArrayList<>(Arrays.asList(getValue()));
-//            list.add(new ByDayPair(dayOfWeek, 0));
-//            byDayPairs = list.toArray(byDayPairs);
             getValue().add(new ByDayPair(dayOfWeek, 0));
             return true;
         }
@@ -162,11 +145,7 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
         {
             getValue().remove(optional.get());
         }
-        return isFound;
-//        byDayPairs = Arrays.stream(getValue())
-//                .filter(d -> d.dayOfWeek != dayOfWeek)
-//                .toArray(size -> new ByDayPair[size]);
-        
+        return isFound;        
     }
     
     /** Return a list of days of the week that don't have an ordinal (as every FRIDAY) */
@@ -177,38 +156,6 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
                      .map(d -> d.dayOfWeek)
                      .collect(Collectors.toList());
     }
-    
-//    @Override
-//    public void copyTo(ByRule destination)
-//    {
-//        ByDay destination2 = (ByDay) destination;
-//        destination2.byDayPairs = new ByDayPair[byDayPairs.length];
-//        for (int i=0; i<byDayPairs.length; i++)
-//        {
-//            destination2.byDayPairs[i] = new ByDayPair(byDayPairs[i].dayOfWeek, byDayPairs[i].ordinal);
-//        }
-//    }
-
-//    @Override
-//    public boolean equals(Object obj)
-//    {
-//        if (obj == this) return true;
-//        if((obj == null) || (obj.getClass() != getClass())) {
-//            return false;
-//        }
-//        ByDay testObj = (ByDay) obj;
-//        boolean byDayPairsEquals = getValue().equals(testObj.getValue());
-////        System.out.println("ByDay equals " + byDayPairsEquals);
-//        return byDayPairsEquals;
-//    }
-//    
-//    @Override
-//    public int hashCode()
-//    {
-//        int hash = 11;
-//        hash = (31 * hash) + getValue().hashCode();
-//        return hash;
-//    }
     
     @Override
     public String toContent()
@@ -226,10 +173,8 @@ public class ByDay extends ByRuleAbstract<ByDayPair, ByDay>
     @Override // TODO - try to REMOVE startTemporal
     public Stream<Temporal> streamRecurrences(Stream<Temporal> inStream, ChronoUnit chronoUnit, Temporal dateTimeStart)
     {
-        // TODO - according to iCalendar standard a ByDay rule doesn't need any specified days - should use day from DTSTART, this is not implemented yet.  When implemented this line should be removed.
-//        if (getValue().size() == 0) throw new RuntimeException("ByDay rule must have at least one day specified");
-//        ChronoUnit originalChronoUnit = chronoUnit.get();
-//        chronoUnit.set(DAYS);
+        /* TODO - according to iCalendar standard a ByDay rule doesn't need any specified days - should use day from DTSTART,
+         * this is not implemented yet.  When implemented this line should be removed. */
         switch (chronoUnit)
         {
         case HOURS:
