@@ -22,6 +22,7 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
         super(component);
     }
     
+    /** Adjust start and end date/time */
     @Override
     public void adjustDateTime()
     {
@@ -32,6 +33,7 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
     private void adjustDateTimeEndOrDuration()
     {
         TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());
+//        System.out.println("duration:" + duration);
         if (getVComponentEdited().getDuration() != null)
         {
             getVComponentEdited().setDuration(duration);
@@ -39,6 +41,7 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
         {
             Temporal dtend = getVComponentEdited().getDateTimeStart().getValue().plus(duration);
             getVComponentEdited().setDateTimeEnd(dtend);
+            System.out.println("dtend:" + dtend);
         } else
         {
             throw new RuntimeException("Either DTEND or DURATION must be set");
@@ -64,6 +67,13 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
             }
         }      
         return changedProperties;
+    }
+    
+    @Override
+    void editThisAndFuture()
+    {
+        super.editThisAndFuture();
+        adjustDateTimeEndOrDuration();
     }
     
     @Override
