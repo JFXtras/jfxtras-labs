@@ -10,7 +10,6 @@ import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 
 /**
  * Base store to create VComponentDisplayable objects from a recurrence and recurrences 
@@ -32,7 +31,7 @@ public abstract class VComponentBaseStore<R> implements VComponentStore<R>
     @Override public void setEndRange(LocalDateTime endRange) { this.endRange.set(endRange); }
     @Override public LocalDateTime getEndRange() { return endRange.get(); }
     
-    abstract CallbackTwoParameters<VComponentRepeatable<?>, Temporal, R> recurrenceCallBack();
+    abstract CallbackTwoParameters<VComponentDisplayable<?>, Temporal, R> recurrenceCallBack();
     
     @Override
     public List<R> makeRecurrences(VComponentDisplayable<?> vComponent)

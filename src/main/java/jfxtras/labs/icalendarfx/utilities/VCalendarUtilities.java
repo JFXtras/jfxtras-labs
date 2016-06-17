@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VComponentBase;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 
 // TODO - COMBINE ICalendarUtilities and VCalendarUtilities
@@ -73,13 +73,13 @@ public final class VCalendarUtilities
         }  
     }
     
-    public static boolean isEqualTo(VComponentBase<?> obj1, VComponentBase<?> obj2)
+    public static boolean isEqualTo(VComponent obj1, VComponent obj2)
     {
         if (obj2 == obj1) return true;
         if((obj2 == null) || (obj2.getClass() != obj1.getClass())) {
             return false;
         }
-        VComponentBase<?> testObj = obj2;
+        VComponent testObj = obj2;
         
         final boolean propertiesEquals;
         List<PropertyType> properties = obj1.propertyEnums(); // make properties local to avoid creating list multiple times

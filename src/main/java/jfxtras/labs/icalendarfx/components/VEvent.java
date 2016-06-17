@@ -293,51 +293,5 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     {
         // TODO Auto-generated method stub
         
-    }    
-    
-    /*
-     * METHODS FOR EDITING COMPONENTS
-     */
-    
-    
-    @Deprecated
-    @Override
-    public
-    <U extends Temporal> void becomeNonRecurring(
-            VComponentDisplayableBase<?> vComponentOriginal,
-            U startRecurrence,
-            U endRecurrence)
-    {
-        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
-        if (getDuration() == null)
-        {
-            setDateTimeEnd(endRecurrence);
-        }
-    }
-
-    @Deprecated
-    @Override
-    public
-    <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
-          T vComponentOriginal,
-          Temporal startOriginalRecurrence,
-          U startRecurrence,
-          U endRecurrence)
-    {
-        List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startOriginalRecurrence, startRecurrence, endRecurrence);
-        System.out.println("duration temporals:" + startRecurrence + " + " + endRecurrence);
-        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-        TemporalAmount durationOriginal = getActualDuration();
-        if (! durationOriginal.equals(durationNew))
-        {
-            if (getDateTimeEnd() != null)
-            {
-                changedProperties.add(PropertyType.DATE_TIME_END);                    
-            } else if (getDuration() == null)
-            {
-                changedProperties.add(PropertyType.DURATION);                    
-            }
-        }      
-        return changedProperties;
     }
 }

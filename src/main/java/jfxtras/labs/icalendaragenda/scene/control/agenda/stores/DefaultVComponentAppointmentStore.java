@@ -8,38 +8,54 @@ import java.time.temporal.TemporalAmount;
 import java.util.Collection;
 import java.util.Optional;
 
-import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-public class AppointmentVComponentStore extends VComponentBaseStore<Appointment>
+public class DefaultVComponentAppointmentStore extends VComponentBaseStore<Appointment>
 {
     private Collection<AppointmentGroup> appointmentGroups;
 
     /** Callback to make Appointment from VComponent and start Temporal */
     @Override
-    CallbackTwoParameters<VComponentRepeatable<?>, Temporal, Appointment> recurrenceCallBack()
+    CallbackTwoParameters<VComponentDisplayable<?>, Temporal, Appointment> recurrenceCallBack()
     {
         return (vComponent, startTemporal) ->
         {
             Boolean isWholeDay = vComponent.getDateTimeStart().getValue() instanceof LocalDate;
-            VComponentLocatable<?> vComponentLocatable = (VComponentLocatable<?>) vComponent;
-            final TemporalAmount adjustment = vComponentLocatable.getActualDuration();
-            Temporal endTemporal = startTemporal.plus(adjustment);
+            final String description;
+            final Temporal endTemporal;
+            final String location;
+            if (vComponent instanceof VComponentLocatable<?>)
+            { // VTODO and VEVENT
+                VComponentLocatable<?> vComponentLocatable = (VComponentLocatable<?>) vComponent;
+                description = (vComponentLocatable.getDescription() != null) ? vComponentLocatable.getDescription().getValue() : null;
+                location = (vComponentLocatable.getLocation() != null) ? vComponentLocatable.getLocation().getValue() : null;
+                TemporalAmount adjustment = vComponentLocatable.getActualDuration();
+                endTemporal = startTemporal.plus(adjustment);
+            } else if (vComponent instanceof VJournal)
+            {
+                VJournal vJournal = (VJournal) vComponent;
+                description = (vJournal.getDescriptions() != null) ? vJournal.getDescriptions().get(0).getValue() : null;
+                location = null;
+                endTemporal = null;
+            } else
+            {
+                throw new RuntimeException("Unsupported VComponent type:" + vComponent.getClass());
+            }
     
             /* Find AppointmentGroup
              * control can only handle one category.  Checks only first category
              */
             final AppointmentGroup appointmentGroup;
-            if (vComponentLocatable.getCategories() != null)
+            if (vComponent.getCategories() != null)
             {
-                String firstCategory = vComponentLocatable.getCategories().get(0).getValue().get(0);
+                String firstCategory = vComponent.getCategories().get(0).getValue().get(0);
                 Optional<AppointmentGroup> myGroup = appointmentGroups
                         .stream()
                         .filter(g -> g.getDescription().equals(firstCategory))
@@ -53,23 +69,23 @@ public class AppointmentVComponentStore extends VComponentBaseStore<Appointment>
             Appointment appt = new Agenda.AppointmentImplTemporal()
                     .withStartTemporal(startTemporal)
                     .withEndTemporal(endTemporal)
-                    .withDescription( (vComponentLocatable.getDescription() != null) ? vComponentLocatable.getDescription().getValue() : null )
-                    .withSummary( (vComponentLocatable.getSummary() != null) ? vComponentLocatable.getSummary().getValue() : null)
-                    .withLocation( (vComponentLocatable.getLocation() != null) ? vComponentLocatable.getLocation().getValue() : null)
+                    .withDescription(description)
+                    .withSummary( (vComponent.getSummary() != null) ? vComponent.getSummary().getValue() : null)
+                    .withLocation(location)
                     .withWholeDay(isWholeDay)
                     .withAppointmentGroup(appointmentGroup);
             return appt;
         };
     }
             
-    public AppointmentVComponentStore(Collection<AppointmentGroup> appointmentGroups)
+    public DefaultVComponentAppointmentStore(Collection<AppointmentGroup> appointmentGroups)
     {
         super();
         this.appointmentGroups = appointmentGroups;
     }
 
     @Override
-    public VComponentDisplayable<?> createVComponent(Appointment appointment, VCalendar vCalendar)
+    public VComponentDisplayable<?> createVComponent(Appointment appointment)
     {
         final VComponentDisplayable<?> newVComponent;
         ZonedDateTime dtCreated = ZonedDateTime.now(ZoneId.of("Z"));
@@ -86,7 +102,6 @@ public class AppointmentVComponentStore extends VComponentBaseStore<Appointment>
                     .withDateTimeCreated(dtCreated)
                     .withDateTimeStamp(dtCreated)
                     .withUniqueIdentifier();
-            vCalendar.getVEvents().add((VEvent) newVComponent);
         } else
         {
             newVComponent = new VTodo()
@@ -98,7 +113,6 @@ public class AppointmentVComponentStore extends VComponentBaseStore<Appointment>
                     .withDateTimeCreated(dtCreated)
                     .withDateTimeStamp(dtCreated)
                     .withUniqueIdentifier();
-            vCalendar.getVTodos().add((VTodo) newVComponent);
         }
         return newVComponent;
     }

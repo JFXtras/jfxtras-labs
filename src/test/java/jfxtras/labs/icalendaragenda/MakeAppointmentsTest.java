@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.AppointmentVComponentStore;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.DefaultVComponentAppointmentStore;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.VComponentStore;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
@@ -44,7 +44,7 @@ public class MakeAppointmentsTest
     public void makeAppointmentsDailyTest1()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        VComponentStore<Appointment> store = new AppointmentVComponentStore(DEFAULT_APPOINTMENT_GROUPS);
+        VComponentStore<Appointment> store = new DefaultVComponentAppointmentStore(DEFAULT_APPOINTMENT_GROUPS);
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
         store.setStartRange(startRange);
@@ -90,7 +90,7 @@ public class MakeAppointmentsTest
                       .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
               .withSummary(Summary.parse("WeeklyZoned Ends"))
               .withUniqueIdentifier("20150110T080000-1@jfxtras.org");
-        VComponentStore<Appointment> store = new AppointmentVComponentStore(DEFAULT_APPOINTMENT_GROUPS);
+        VComponentStore<Appointment> store = new DefaultVComponentAppointmentStore(DEFAULT_APPOINTMENT_GROUPS);
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
         store.setStartRange(startRange);
@@ -133,7 +133,7 @@ public class MakeAppointmentsTest
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withInterval(3));
-        VComponentStore<Appointment> store = new AppointmentVComponentStore(DEFAULT_APPOINTMENT_GROUPS);
+        VComponentStore<Appointment> store = new DefaultVComponentAppointmentStore(DEFAULT_APPOINTMENT_GROUPS);
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
         store.setStartRange(startRange);

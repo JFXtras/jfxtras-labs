@@ -16,7 +16,8 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVJournalTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.DefaultVComponentAppointmentStore;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.VComponentStore;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda;
@@ -46,18 +47,17 @@ public class VJournalPopupTests extends JFXtrasGuiTest
     }
     
     @Test
-    public void canDisplayPopupWithVTodo()
+    public void canDisplayPopupWithVJournal()
     {
-        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_VJOURNAL);
-        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
+        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         VJournal vjournal = new VJournal()
                 .withDateTimeStart("20160518T110000")
                 .withSummary("test journal")
                 .withDateTimeStamp("20160518T232502Z")
                 .withUniqueIdentifier("20160518T232502-0@jfxtras.org");
-        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vjournal);
+        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vjournal);
         Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->

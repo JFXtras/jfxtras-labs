@@ -34,8 +34,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.AppointmentVComponentStore;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.DefaultVComponentAppointmentStore;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.VComponentStore;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
@@ -85,7 +84,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
     {
 //        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
 //                AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
-        VComponentStore<Appointment> vComponentStore = new AppointmentVComponentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
+        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
         vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -113,13 +112,12 @@ public class VEventPopupTests extends JFXtrasGuiTest
     @Test
     public void canEditVEventWithPopup1()
     {
-        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
-        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
+        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1()
                 .withLocation("Here");
-        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
+        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->
@@ -131,7 +129,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
                     appointment.getEndTemporal(),
                     ICalendarAgendaUtilities.CATEGORIES);
         });
-        TestUtil.sleep(3000);
+//        TestUtil.sleep(3000);
         TextField summary = find("#summaryTextField");
         assertEquals(vevent.getSummary().getValue(), summary.getText());
 
@@ -143,13 +141,12 @@ public class VEventPopupTests extends JFXtrasGuiTest
     @Test
     public void canEditDescriptibeProperties()
     {
-        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
-        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
+        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
         ObservableList<VEvent> vEvents = FXCollections.observableArrayList(vevent);
-        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
+        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
 
         TestUtil.runThenWaitForPaintPulse( () ->
@@ -236,7 +233,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
                 .withLocation("new location")
                 .withDateTimeStart(LocalDateTime.of(2016, 5, 15, 8, 0))
                 .withDateTimeEnd(LocalDateTime.of(2016, 5, 15, 9, 0))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withUniqueIdentifier("20150110T080000-004@jfxtras.org")
                 .withSequence(1)
                 .withDateTimeStamp(vEvents.get(1).getDateTimeStamp())
                 .withCategories("new group name");
@@ -246,13 +243,12 @@ public class VEventPopupTests extends JFXtrasGuiTest
     @Test
     public void canChangeFrequency()
     {
-        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
-        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
+        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
         ObservableList<VEvent> vEvents = FXCollections.observableArrayList(vevent);
-        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
+        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
 
         TestUtil.runThenWaitForPaintPulse( () ->

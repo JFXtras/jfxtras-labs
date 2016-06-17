@@ -12,10 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
-import jfxtras.labs.icalendarfx.properties.component.misc.IANAProperty;
-import jfxtras.labs.icalendarfx.properties.component.misc.NonStandardProperty;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
@@ -41,37 +38,8 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public abstract class VComponentBase<T> implements VComponentCommon<T>
-{
-    /**
-     * 3.8.8.2.  Non-Standard Properties
-     * Any property name with a "X-" prefix
-     * 
-     * Example:
-     * X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.
-     *  org/mysubj.au
-     */
-    @Override
-    public ObservableList<NonStandardProperty> getNonStandardProperties() { return nonStandardProps; }
-    private ObservableList<NonStandardProperty> nonStandardProps;
-    @Override
-    public void setNonStandardProperties(ObservableList<NonStandardProperty> nonStandardProps) { this.nonStandardProps = nonStandardProps; }
-    /** add comma separated nonStandardProps into separate nonStandardProps objects */
-    
-    /**
-     * 3.8.8.1.  IANA Properties
-     * An IANA-registered property name
-     * 
-     * Examples:
-     * NON-SMOKING;VALUE=BOOLEAN:TRUE
-     * DRESSCODE:CASUAL
-     */
-    @Override
-    public ObservableList<IANAProperty> getIANAProperties() { return ianaProps; }
-    private ObservableList<IANAProperty> ianaProps;
-    @Override
-    public void setIANAProperties(ObservableList<IANAProperty> ianaProps) { this.ianaProps = ianaProps; }
-    
+public abstract class VComponentBase implements VComponent
+{   
     /**
      * List of all properties found in component.
      * The list is unmodifiable.
@@ -129,7 +97,7 @@ public abstract class VComponentBase<T> implements VComponentCommon<T>
     }
     
     /** Copy constructor */
-    public VComponentBase(VComponentBase<T> source)
+    public VComponentBase(VComponentBase source)
     {
         this();
         copyComponentFrom(source);
@@ -195,7 +163,8 @@ public abstract class VComponentBase<T> implements VComponentCommon<T>
      * Note: this method only overwrites properties found in source.  If there are properties in
      * this component that are not present in source then those will remain unchanged.
      * */
-    public void copyComponentFrom(VComponentBase<?> source)
+    @Override
+    public void copyComponentFrom(VComponent source)
     {
         source.propertyEnums().forEach(p -> p.copyProperty(source, this));
         propertySortOrder().putAll(source.propertySortOrder());
@@ -244,7 +213,7 @@ public abstract class VComponentBase<T> implements VComponentCommon<T>
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
-        VComponentBase<?> testObj = (VComponentBase<?>) obj;
+        VComponentBase testObj = (VComponentBase) obj;
         
         final boolean propertiesEquals;
         List<PropertyType> properties = propertyEnums(); // make properties local to avoid creating list multiple times
@@ -261,7 +230,7 @@ public abstract class VComponentBase<T> implements VComponentCommon<T>
                 Object p2 = i2.next().getProperty(testObj);
                 if (! p1.equals(p2))
                 {
-//                    System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
+                    System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
                     isFailure = true;
 //                    break;
                 }

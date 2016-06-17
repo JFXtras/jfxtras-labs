@@ -16,7 +16,8 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.DefaultVComponentAppointmentStore;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.VComponentStore;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -72,11 +73,10 @@ public class EditComponentPopupTrial extends Application
         ObservableList<VEvent> vEvents = FXCollections.observableArrayList(vevent);
 //        ObservableList<VJournal> vEvents = FXCollections.observableArrayList(vevent);
 //        ObservableList<VTodo> vEvents = FXCollections.observableArrayList(vevent);
-//        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_VJOURNAL);
-        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
-        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
-        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
+        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
+        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
+        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(2);
 //        System.out.println("appoingment:" + appointment.getStartLocalDateTime());
 

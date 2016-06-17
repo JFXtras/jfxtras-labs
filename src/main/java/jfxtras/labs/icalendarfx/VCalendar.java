@@ -356,6 +356,31 @@ public class VCalendar
         return this;
     }
     
+    /**
+     * Add VComponent to one of the ObservableLists based on its type such as VEVENT, VTODO, etc.
+     * 
+     * @param newVComponent - VComponent to add
+     */
+    public void addVComponent(VComponent newVComponent)
+    {
+        if (newVComponent instanceof VEvent)
+        {
+            getVEvents().add((VEvent) newVComponent);
+        } else if (newVComponent instanceof VTodo)
+        {
+            getVTodos().add((VTodo) newVComponent);            
+        } else if (newVComponent instanceof VJournal)
+        {
+            getVJournals().add((VJournal) newVComponent);
+        } else if (newVComponent instanceof VFreeBusy)
+        {
+            getVFreeBusies().add((VFreeBusy) newVComponent);            
+        } else if (newVComponent instanceof VTimeZone)
+        {
+            getVTimeZones().add((VTimeZone) newVComponent);            
+        }
+    }
+    
     /* Map of displayable parent components.  Key is UID string, value is parent component.
      * Used to find parent components when a component with a recurrenceID is added
      */

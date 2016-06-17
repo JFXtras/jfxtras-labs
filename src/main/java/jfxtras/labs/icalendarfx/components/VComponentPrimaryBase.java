@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
  * @see VFreeBusy
  * @see VTimeZone
  */
-public abstract class VComponentPrimaryBase<T> extends VComponentBase<T> implements VComponentPrimary<T>
+public abstract class VComponentPrimaryBase<T> extends VComponentCommonBase<T> implements VComponentPrimary<T>
 {
     /**
      *  COMMENT: RFC 5545 iCalendar 3.8.1.12. page 83

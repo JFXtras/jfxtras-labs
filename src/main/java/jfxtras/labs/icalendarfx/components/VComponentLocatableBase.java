@@ -216,7 +216,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     
     /** copy VAlarms */
     @Override
-    public void copyComponentFrom(VComponentBase<?> source)
+    public void copyComponentFrom(VComponent source)
     {
         super.copyComponentFrom(source);
         VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;

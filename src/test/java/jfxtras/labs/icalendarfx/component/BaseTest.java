@@ -43,7 +43,7 @@ public class BaseTest
     @Test
     public void canBuildBase() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
-        List<VComponentBase<?>> components = Arrays.asList(
+        List<VComponentBase> components = Arrays.asList(
                 new VEvent()
                     .withNonStandardProperty(NonStandardProperty.parse("X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au"))
                     .withIANAProperty(IANAProperty.parse("TESTPROP2:CASUAL"))
@@ -78,7 +78,7 @@ public class BaseTest
                     .withNonStandardProperty(NonStandardProperty.parse("X-TEST-OBJ:testid"))
                 );
         
-        for (VComponentBase<?> builtComponent : components)
+        for (VComponentBase builtComponent : components)
         {
             // reorders properties to match expectedContent
             builtComponent.propertySortOrder().put("X-ABC-MMSUBJ", 0);
@@ -91,7 +91,7 @@ public class BaseTest
                     "TESTPROP2:CASUAL" + System.lineSeparator() +
                     "X-TEST-OBJ:testid" + System.lineSeparator() +
                     "END:" + componentName;
-            VComponentBase<?> parsedComponent = builtComponent
+            VComponentBase parsedComponent = builtComponent
                     .getClass()
                     .newInstance();
             parsedComponent.parseContent(expectedContent);

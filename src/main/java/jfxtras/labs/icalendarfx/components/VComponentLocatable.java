@@ -260,6 +260,5 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     }
     
     /** Return either Duration property value, or a calculated duration based on start and end values */
-    @Deprecated // use actual methods
     TemporalAmount getActualDuration();
 }

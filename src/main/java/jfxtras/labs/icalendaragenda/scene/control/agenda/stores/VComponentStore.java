@@ -4,12 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 
 /**
- * Creates VComponent objects from a recurrence and makes recurrences from VComponents.
- * Only applies to VEVENT, VTODO, and VJOURNAL VComponents.
+ * Creates VComponent calendar objects from a recurrence and makes recurrences from VComponents.
  * 
  * @author David Bal
  *
@@ -17,7 +15,13 @@ import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
  */
 public interface VComponentStore<R>
 {
-    VComponentDisplayable<?> createVComponent(R recurrence, VCalendar vCalendar);
+    /** Create VComponent from recurrence.  The recurrence is tested to determine which type of VComponent should
+     * be created, such as VEVENT or VTODO
+     * 
+     * @param recurrence - recurrence as basis for VComponent
+     * @return - new VComponent
+     */
+    VComponentDisplayable<?> createVComponent(R recurrence);
     
     /** Property for start of range to make recurrences */
     ObjectProperty<LocalDateTime> startRangeProperty();
