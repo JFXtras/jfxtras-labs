@@ -41,7 +41,6 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
             }
         } else
         {
-            System.out.println("vComponent not valid:");
             if (recurrenceRuleVBox.dayOfWeekList.isEmpty())
             {
                 canNotHaveZeroDaysOfWeek();

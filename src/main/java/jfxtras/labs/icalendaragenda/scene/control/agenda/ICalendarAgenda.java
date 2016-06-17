@@ -85,11 +85,11 @@ public class ICalendarAgenda extends Agenda
     }
     public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
     
-    // Recurrence helper - handles making appointments, edit and delete components
-    @Deprecated
-    final private RecurrenceHelper<Appointment> recurrenceHelper;
-    @Deprecated
-    public RecurrenceHelper<Appointment> getRecurrenceHelper() { return recurrenceHelper; }
+//    // Recurrence helper - handles making appointments, edit and delete components
+//    @Deprecated
+//    final private RecurrenceHelper<Appointment> recurrenceHelper;
+//    @Deprecated
+//    public RecurrenceHelper<Appointment> getRecurrenceHelper() { return recurrenceHelper; }
     
     public VComponentStore<Appointment> getVComponentStore() { return vComponentStore; }
     private VComponentStore<Appointment> vComponentStore; // default VComponent store - for Appointments, if other implementation used make new store
@@ -351,7 +351,7 @@ public class ICalendarAgenda extends Agenda
         this.vCalendar = vCalendar;
         vComponentStore = new AppointmentVComponentStore(appointmentGroups()); // default VComponent store - for Appointments, if other implementation used make new store
 
-        recurrenceHelper = new RecurrenceHelper<Appointment>(makeAppointmentCallback);
+//        recurrenceHelper = new RecurrenceHelper<Appointment>(makeAppointmentCallback);
 //        vEventBehavior = new VEventBehavior(this);
         
         // Populate component class to behavior map with required behaviors

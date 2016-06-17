@@ -35,6 +35,8 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.RecurrenceHelper;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.AppointmentVComponentStore;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.VComponentStore;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
@@ -81,12 +83,13 @@ public class VEventPopupTests extends JFXtrasGuiTest
     @Test
     public void canDisplayPopupWithVEvent()
     {
-        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-                AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
-        recurrenceHelper.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        recurrenceHelper.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
+//        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
+//                AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
+        VComponentStore<Appointment> vComponentStore = new AppointmentVComponentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
+        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        List<Appointment> newAppointments = recurrenceHelper.makeRecurrences(vevent);
+        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->
@@ -176,7 +179,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
         assertTrue(endDateTimeTextField.isVisible());
         assertEquals("Daily1 Summary", summaryTextField.getText());
         assertEquals("Daily1 Description", descriptionTextArea.getText());
-        TestUtil.sleep(3000);
+//        TestUtil.sleep(3000);
         assertEquals("group05", categoryTextField.getText());
         assertFalse(wholeDayCheckBox.isSelected());
 

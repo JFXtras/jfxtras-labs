@@ -159,19 +159,8 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             }
         } else
         {
-            // TODO - CHECK AT LEAST ONE DAY ON SAVING
-//            if (dayOfWeekList.size() > 1)
-//            {
-            System.out.println("about to remove:" + dayOfWeek + dayOfWeekList.size());
-                rule.removeDayOfWeek(dayOfWeek);
-                System.out.println("about to remove2:" + dayOfWeek + dayOfWeekList.size());
-                dayOfWeekList.remove(dayOfWeek);
-                System.out.println("about to remove3:" + dayOfWeek + dayOfWeekList.size());
-//            } else
-//            {// can't remove last day of week
-//                dayOfWeekCheckBoxMap.get(dayOfWeek).set(oldSel);
-//                canNotRemoveLastDayOfWeek(dayOfWeek);
-//            }
+            rule.removeDayOfWeek(dayOfWeek);
+            dayOfWeekList.remove(dayOfWeek);
         }
     };
 

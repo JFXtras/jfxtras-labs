@@ -91,10 +91,6 @@ public class BaseTest
                     "TESTPROP2:CASUAL" + System.lineSeparator() +
                     "X-TEST-OBJ:testid" + System.lineSeparator() +
                     "END:" + componentName;
-//            VComponentBase<?> parsedComponent = builtComponent
-//                    .getClass()
-//                    .getConstructor(String.class)
-//                    .newInstance(expectedContent);
             VComponentBase<?> parsedComponent = builtComponent
                     .getClass()
                     .newInstance();
