@@ -42,7 +42,6 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
     public NewAppointmentDialog(
             Appointment appointment
           , ObservableList<AppointmentGroup> appointmentGroups
-//          , Callback<Appointment, Void> iCalendarEditPopupCallback
           , ResourceBundle resources)
     {
         initModality(Modality.APPLICATION_MODAL);
@@ -79,7 +78,7 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
         summaryTextField.setId("summaryTextField");
         appointmentGroupComboBox.setId("appointmentGroupComboBox");
         
-        // Can't use below map because it results in an error: after clicking on a selection the graphic disappears.
+        // TODO - Can't use below map because it results in an error: after clicking on a selection the graphic disappears.  It would be a better implementation without the graphic error
         Map<AppointmentGroup, Node> iconMap = appointmentGroups.stream()
                 .collect(Collectors.toMap(
                         g -> g

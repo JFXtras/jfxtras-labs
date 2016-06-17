@@ -76,7 +76,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     final public static int EXCEPTION_CHOICE_LIMIT = 50;
     final public static int INITIAL_COUNT = 10;
     final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on) 
-//    final private static int INITIAL_INTERVAL = 1;
         
     T vComponent;
     private RecurrenceRule2 rrule;
@@ -124,19 +123,11 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     private Temporal exceptionFirstTemporal;
     private List<Temporal> exceptionMasterList = new ArrayList<>();
 
-//    private Map<FrequencyType, ChangeListener<? super Temporal>> dtStartRecurrenceFrequencyListenerMap = new HashMap<>();
-
     public RecurrenceRuleVBox( )
     {
         super();
     }
-    
-//    /** Called to remove listeners */
-//    public void dispose()
-//    {
-//        removeListeners();
-//    }
-    
+        
     private DateTimeFormatter getFormatter(Temporal t)
     {
         return t.isSupported(ChronoUnit.NANOS) ? Settings.DATE_FORMAT_AGENDA_EXCEPTION : Settings.DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY;

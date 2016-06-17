@@ -52,8 +52,7 @@ public class OneSelectedAppointmentVBox extends VBox
         nameLabel.textProperty().addListener((observable, oldValue, newValue) ->  {
             appointment.setSummary(newValue);
         });
-//        editAppointmentButton.requestFocus(); // TODO - put in onshowing listener
-//        System.out.println(appointment.getAppointmentGroup().getStyleClass());
+//        editAppointmentButton.requestFocus(); // TODO - put in onshowing listener - STILL didn't work.  why?
         getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());
     }
     

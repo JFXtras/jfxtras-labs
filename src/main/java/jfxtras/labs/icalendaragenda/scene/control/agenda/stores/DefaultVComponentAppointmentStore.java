@@ -49,7 +49,7 @@ public class DefaultVComponentAppointmentStore extends VComponentBaseStore<Appoi
                 throw new RuntimeException("Unsupported VComponent type:" + vComponent.getClass());
             }
     
-            /* Find AppointmentGroup
+            /* Find AppointmentGroup (Agenda's version of CATEGORY)
              * control can only handle one category.  Checks only first category
              */
             final AppointmentGroup appointmentGroup;
@@ -65,6 +65,7 @@ public class DefaultVComponentAppointmentStore extends VComponentBaseStore<Appoi
             {
                 appointmentGroup = null;
             }
+            
             // Make appointment
             Appointment appt = new Agenda.AppointmentImplTemporal()
                     .withStartTemporal(startTemporal)
