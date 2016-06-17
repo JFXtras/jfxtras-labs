@@ -1,8 +1,6 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -418,7 +416,7 @@ public class ICalendarAgenda extends Agenda
                 {
                     if (change.getAddedSubList().size() == 1)
                     { // Open little popup - edit, delete
-                        ZonedDateTime created = ZonedDateTime.now(ZoneId.of("Z"));
+//                        ZonedDateTime created = ZonedDateTime.now(ZoneId.of("Z"));
                         Appointment appointment = change.getAddedSubList().get(0);
                         String originalSummary = appointment.getSummary();
                         AppointmentGroup originalAppointmentGroup = appointment.getAppointmentGroup();
@@ -426,16 +424,16 @@ public class ICalendarAgenda extends Agenda
                         switch (button)
                         {
                         case CANCEL_CLOSE:
-//                            appointments().remove(appointment);
-                            refresh();
+                            Platform.runLater(() -> refresh());
                             break;
                         case OK_DONE:
                         {
                             VComponent newVComponent = getVComponentStore().createVComponent(appointment);
                             getVCalendar().addVComponent(newVComponent);
-//                            System.out.println("vevents2:"+getVCalendar().getVEvents().size());
-//                            System.out.println("vevent:"+newVComponent.toContent());
-                            if ((appointment.getSummary() != null) && ! (appointment.getSummary().equals(originalSummary)) || ! (appointment.getAppointmentGroup().equals(originalAppointmentGroup)))
+                            boolean hasSummary = appointment.getSummary() != null;
+                            boolean hasSummaryChanged = appointment.getSummary().equals(originalSummary);
+                            boolean hasAppointmentGroupChanged = appointment.getAppointmentGroup().equals(originalAppointmentGroup);
+                            if ((hasSummary && ! hasSummaryChanged) || ! hasAppointmentGroupChanged)
                             {
                                 Platform.runLater(() -> refresh());
                             }
@@ -443,13 +441,9 @@ public class ICalendarAgenda extends Agenda
                         }
                         case OTHER: // ADVANCED EDIT
                         {
-//                            System.out.println("vevents1:"+getVCalendar().getVEvents().size());
                             VComponent newVComponent = getVComponentStore().createVComponent(appointment);
                             getVCalendar().addVComponent(newVComponent);
-//                            System.out.println("vevents2:"+getVCalendar().getVEvents().size());
-//                            System.out.println("vevent:"+newVComponent.toContent());
                             iCalendarEditPopupCallback.call(vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0));
-//                            System.out.println("vevents3:"+getVCalendar().getVEvents().size());
                             break;
                         }
                         default:
@@ -624,30 +618,13 @@ public class ICalendarAgenda extends Agenda
             if (dateTimeRange != null)
             {
                 appointments().removeListener(appointmentsListChangeListener); // remove appointmentListener to prevent making extra vEvents during refresh
+                System.out.println("appointments:" + appointments());
                 appointments().clear();
                 vComponentAppointmentMap.clear();
                 appointmentStartOriginalMap.clear();
                 getVCalendar().getVEvents().stream().forEach(v ->
                 {
-//                    v.instances().clear(); // Remove instances and appointments
-//                    LocalDateTime start = getDateTimeRange().getStartLocalDateTime();
-//                    LocalDateTime end = getDateTimeRange().getEndLocalDateTime();
-//                    List<Appointment> newAppointments = ICalendarAgendaUtilities.makeAppointments(v, start, end, appointmentGroups());
-//                    List<Appointment> newAppointments = makeRecurrences(v);
-//                    vComponentAppointmentMap.put(v, newAppointments);
-
-//                    newAppointments.addAll(getVComponentStore().makeRecurrences(v));
-
                     newAppointments.addAll(makeAppointments(v));
-                    
-//                    vComponentAppointmentMap.entrySet().stream().forEach(System.out::println);
-                    
-//                    newAppointments.stream().forEach(a ->
-//                    {
-////                        System.out.println("map5:" + System.identityHashCode(a) + " " + a.getStartTemporal());
-////                        appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal()); // populate recurrence-id map
-//                        appointmentVComponentMap.put(System.identityHashCode(a), v); // populate appointment-vComponent map
-//                    });
                 });
                 appointments().addAll(newAppointments);
                 appointments().addListener(appointmentsListChangeListener); // add back appointmentListener

@@ -53,7 +53,10 @@ public class OneSelectedAppointmentVBox extends VBox
             appointment.setSummary(newValue);
         });
 //        editAppointmentButton.requestFocus(); // TODO - put in onshowing listener - STILL didn't work.  why?
-        getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());
+        if (appointment.getAppointmentGroup() != null)
+        {
+            getStyleClass().add(appointment.getAppointmentGroup().getStyleClass());
+        }
     }
     
     @FXML private void handleEditAppointment()
