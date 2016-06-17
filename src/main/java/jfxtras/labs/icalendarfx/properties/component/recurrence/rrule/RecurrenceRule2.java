@@ -884,7 +884,6 @@ public class RecurrenceRule2 implements VCalendarElement
     @Override
     public List<String> errors()
     {
-        System.out.println("rrule2 errors:");
         List<String> errors = new ArrayList<>();
         if (getFrequency() == null)
         {
@@ -896,11 +895,7 @@ public class RecurrenceRule2 implements VCalendarElement
         {
             errors.add("UNTIL and COUNT are both present.  UNTIL or COUNT rule parts are OPTIONAL, but they MUST NOT both occur.");
         }
-        byRules().forEach(b ->
-        {
-            System.out.println("byrule errors:" + b + " " + b.errors());
-            errors.addAll(b.errors());
-        });
+        byRules().forEach(b -> errors.addAll(b.errors()));
         return errors;
     }
     

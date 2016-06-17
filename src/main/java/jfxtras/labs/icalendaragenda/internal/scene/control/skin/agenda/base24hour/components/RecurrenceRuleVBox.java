@@ -62,6 +62,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -100,7 +101,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     @FXML private CheckBox fridayCheckBox;
     @FXML private CheckBox saturdayCheckBox;
     private final Map<BooleanProperty, DayOfWeek> checkBoxDayOfWeekMap = new HashMap<>();
-    private final ObservableList<DayOfWeek> dayOfWeekList = FXCollections.observableArrayList();
+    final ObservableList<DayOfWeek> dayOfWeekList = FXCollections.observableArrayList();
     private Map<DayOfWeek, BooleanProperty> dayOfWeekCheckBoxMap;
     @FXML private VBox monthlyVBox;
     @FXML private Label monthlyLabel;
@@ -1085,22 +1086,22 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         alert.showAndWait();
     }
     
-    // Displays an alert notifying last day of week can not be removed for weekly frequency
-    private static void canNotRemoveLastDayOfWeek(DayOfWeek d)
-    {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Invalid Modification");
-        alert.setHeaderText("Can't remove " + Settings.DAYS_OF_WEEK_MAP.get(d) + ".");
-        alert.setContentText("Weekly repeat must have at least one selected day");
-        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(buttonTypeOk);
-        
-        // set id for testing
-        alert.getDialogPane().setId("last_day_of_week_alert");
-        alert.getDialogPane().lookupButton(buttonTypeOk).setId("last_day_of_week_alert_button_ok");
-        
-        alert.showAndWait();
-    }
+//    // Displays an alert notifying last day of week can not be removed for weekly frequency
+//    private static void canNotRemoveLastDayOfWeek(DayOfWeek d)
+//    {
+//        Alert alert = new Alert(AlertType.ERROR);
+//        alert.setTitle("Invalid Modification");
+//        alert.setHeaderText("Can't remove " + Settings.DAYS_OF_WEEK_MAP.get(d) + ".");
+//        alert.setContentText("Weekly repeat must have at least one selected day");
+//        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+//        alert.getButtonTypes().setAll(buttonTypeOk);
+//        
+//        // set id for testing
+//        alert.getDialogPane().setId("last_day_of_week_alert");
+//        alert.getDialogPane().lookupButton(buttonTypeOk).setId("last_day_of_week_alert_button_ok");
+//        
+//        alert.showAndWait();
+//    }
     
     private static void notDateAlert(String exampleDate)
     {
@@ -1129,6 +1130,10 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
      */
     public static String makeSummary(RecurrenceRule2 rRule, Temporal startTemporal)
     {
+        if (! rRule.isValid())
+        {
+            return (Settings.resources == null) ? "Never" : Settings.resources.getString("rrule.summary.never");
+        }
         StringBuilder builder = new StringBuilder();
         if ((rRule.getCount() != null) && (rRule.getCount().getValue() == 1))
         {
@@ -1222,13 +1227,13 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         int unsupportedRules = (byDay == null) ? byRulesSize : byRulesSize-1;
         if (unsupportedRules > 0)
         {
-//                String unsupportedByRules = rRule.getFrequency().byRules()
-//                        .stream()
-////                        .map(e -> e.getValue())
-//                        .filter(b -> b.byRuleType() != ByRuleType.BY_DAY)
-//                        .map(b -> b.byRuleType().toString())
-//                        .collect(Collectors.joining(","));
-//                System.out.println("RRULE contains unsupported ByRule" + ((unsupportedRules > 1) ? "s:" : ":") + unsupportedByRules);
+                String unsupportedByRules = rrule.byRules()
+                        .stream()
+//                        .map(e -> e.getValue())
+                        .filter(b -> b.elementType() != RRuleElementType.BY_DAY)
+                        .map(b -> b.elementType().toString())
+                        .collect(Collectors.joining(","));
+                System.out.println("RRULE contains unsupported ByRule" + ((unsupportedRules > 1) ? "s:" : ":") + unsupportedByRules);
             return false;
         }
         return true;

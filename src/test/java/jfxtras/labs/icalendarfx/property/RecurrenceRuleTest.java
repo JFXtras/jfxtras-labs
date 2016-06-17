@@ -137,7 +137,6 @@ public class RecurrenceRuleTest
                     .withUntil("19730429T070000Z")
                     .withFrequency(FrequencyType.YEARLY)
                     .withByRules(new ByDay()));
-        System.out.println("value:" + new ByDay().getValue().isEmpty());
-        expectedProperty.errors().forEach(System.out::println);
+        assertEquals(1, expectedProperty.errors().size());
     }
 }

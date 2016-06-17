@@ -2,6 +2,8 @@ package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javafx.collections.FXCollections;
@@ -75,6 +77,21 @@ public abstract class ByRuleAbstract<T, U> extends RRuleElementBase<ObservableLi
         setValue(FXCollections.observableArrayList(source.getValue()));
     }
 
+    @Override
+    public List<String> errors()
+    {
+        List<String> errors = new ArrayList<>();
+        if (getValue() == null)
+        {
+            errors.add(elementType() + " value is null.  The element MUST have a value."); 
+        } else if (getValue().isEmpty())
+        {
+            errors.add(elementType() + " value list is empty.  List MUST have at lease one element."); 
+        }
+
+        return errors;
+    }
+    
     @Override
     public int compareTo(ByRule<ObservableList<T>> byRule)
     {
