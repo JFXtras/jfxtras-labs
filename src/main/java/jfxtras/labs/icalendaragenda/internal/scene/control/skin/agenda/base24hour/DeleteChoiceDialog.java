@@ -39,7 +39,5 @@ public class DeleteChoiceDialog extends ComponentChangeDialog
         super(choiceList, resources);
         getDialogPane().setId("deleteChoiceDialog");
         setTitle(resources.getString("dialog.delete.title"));
-//        setContentText(resources.getString("dialog.delete.content"));
-//        setHeaderText(resources.getString("dialog.delete.header"));
     }
 }

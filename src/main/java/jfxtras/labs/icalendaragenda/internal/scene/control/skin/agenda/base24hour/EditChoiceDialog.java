@@ -39,6 +39,5 @@ public class EditChoiceDialog extends ComponentChangeDialog
         super(choiceList, resources);
         getDialogPane().setId("editChoiceDialog");
         setTitle(resources.getString("dialog.edit.title"));
-//        setHeaderText(resources.getString("dialog.edit.header"));
     }
 }

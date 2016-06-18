@@ -24,9 +24,6 @@ import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
  */
 public class ComponentChangeDialog extends Dialog<ChangeDialogOption>
 {
-        
-//    private final ChangeDialogOption initialSelection = ChangeDialogOption.ONE;
-    
     /**
      * Parent of both edit and delete dialogs
      * 

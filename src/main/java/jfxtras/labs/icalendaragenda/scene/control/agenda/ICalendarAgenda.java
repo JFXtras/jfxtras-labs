@@ -17,6 +17,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.input.KeyCode;
@@ -27,6 +28,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneAppointmentSelectedAlert;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneSelectedAppointmentPopup;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditComponentPopupScene;
@@ -273,7 +275,7 @@ public class ICalendarAgenda extends Agenda
      * delete or other edit options.
      */
     public Callback<Appointment, Void> getSelectedOneAppointmentCallback() { return selectedOneAppointmentCallback; }
-    private Callback<Appointment, Void> selectedOneAppointmentCallback = (Appointment appointment) ->
+    private Callback<Appointment, Void> selectedOneAppointmentCallbackOld = (Appointment appointment) ->
     {
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
 //        SelectedOneAppointmentLoader oneSelectedPopup = new SelectedOneAppointmentLoader(this, appointment);
@@ -282,6 +284,29 @@ public class ICalendarAgenda extends Agenda
         oneSelectedPopup.isFinished().addListener((obs) -> oneSelectedPopup.hide());
         oneSelectedPopup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
         oneSelectedPopup.focusedProperty().addListener((obs) -> oneSelectedPopup.hide());
+        return null;
+    };
+
+    private Callback<Appointment, Void> selectedOneAppointmentCallback = (Appointment appointment) ->
+    {
+        OneAppointmentSelectedAlert alert = new OneAppointmentSelectedAlert(appointment, Settings.resources);
+        Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
+        alert.setX(NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2);
+        alert.setY(NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
+        System.out.println(alert.getX() + " " + alert.getY());
+        Optional<ButtonType> result = alert.showAndWait();
+        System.out.println("result:" + result);
+        if (result.isPresent())
+        {
+            String buttonText = result.get().getText();
+            if (buttonText.equals(Settings.resources.getString("edit")))
+            {
+                getEditAppointmentCallback().call(appointment);
+            } else if (buttonText.equals(Settings.resources.getString("delete")))
+            {
+                // todo
+            }
+        }
         return null;
     };
     public void setSelectedOneAppointmentCallback(Callback<Appointment, Void> c) { selectedOneAppointmentCallback = c; }
@@ -523,26 +548,6 @@ public class ICalendarAgenda extends Agenda
                         {
                             List<Appointment> remove = vComponentAppointmentMap.get(System.identityHashCode(v));
                             appointments().removeAll(remove);
-//                            throw new RuntimeException("here4:");
-//                            List<Appointment> remove = appointments()
-//                                    .stream()
-//                                    .filter(a -> v.instances().stream().anyMatch(a2 -> a2 == a))
-//                                    .collect(Collectors.toList());
-                            
-//                            // move deleted recurrence-id into ExDates (ensure deleted instance stays deleted)
-//                            if (v.getDateTimeRecurrence() != null)
-//                            {
-//                                VComponentNew<?> parent = vComponents().stream()
-//                                        .filter(v2 -> 
-//                                        {
-//                                            boolean isParent1 = v2.getUniqueIdentifier().equals(v.getUniqueIdentifier());
-//                                            boolean isParent2 = v2.getDateTimeRecurrence() == null;
-//                                            return isParent1 && isParent2;
-//                                        })
-//                                        .findFirst()
-//                                        .get();
-//                                parent.getExDate().getTemporals().add(v.getDateTimeRecurrence());
-//                            }
                         });
                 }
             }
@@ -550,37 +555,6 @@ public class ICalendarAgenda extends Agenda
 
         // Listen for changes to appointments (additions and deletions)
         appointments().addListener(appointmentsListChangeListener);
-        
-//        // Keeps appointmentRecurrenceIDMap and appointmentVComponentMap synched with appointments
-//        ListChangeListener<Appointment> appointmentsListener2 = (ListChangeListener.Change<? extends Appointment> change) ->
-//        {
-////            System.out.println("appointmentsListener2:");
-//            while (change.next())
-//            {
-//                if (change.wasAdded())
-//                {
-//                    change.getAddedSubList()
-//                            .stream()
-//                            .forEach(a -> 
-//                            {
-//                                appointmentStartOriginalMap.put(System.identityHashCode(a), a.getStartTemporal());
-////                                appointmentVComponentMap.put(a, newVComponent); // populate appointment-vComponent map
-//                                // TODO - IF I MOVE INSTANCE MAKING TO HERE - EITHER CALLBACK OR LISTENER THEN I CAN UPDATE
-//                                // BOTH MAPS HERE
-//                            });
-//                } else if (change.wasRemoved())
-//                {
-//                    change.getRemoved()
-//                            .stream()
-//                            .forEach(a -> 
-//                            { // remove map entries
-//                                appointmentStartOriginalMap.remove(System.identityHashCode(a));
-//                                appointmentVComponentMap.remove(System.identityHashCode(a));
-//                            });
-//                }
-//            }
-//        };
-//        appointments().addListener(appointmentsListener2);
 
         // Listen for changes to vComponents (additions and deletions)
         getVCalendar().getVEvents().addListener(vComponentsChangeListener);
