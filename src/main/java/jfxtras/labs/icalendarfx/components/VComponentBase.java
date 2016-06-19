@@ -230,7 +230,7 @@ public abstract class VComponentBase implements VComponent
                 Object p2 = i2.next().getProperty(testObj);
                 if (! p1.equals(p2))
                 {
-                    System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
+//                    System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
                     isFailure = true;
 //                    break;
                 }

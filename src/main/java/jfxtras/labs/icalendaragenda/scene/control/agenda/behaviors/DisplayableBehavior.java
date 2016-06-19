@@ -3,7 +3,7 @@ package jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 
-public abstract class DisplayableBehavior<T extends VComponentDisplayable<T>> implements Behavior<T>
+public abstract class DisplayableBehavior<T extends VComponentDisplayable<T>> implements Behavior
 {
     ICalendarAgenda agenda;
     

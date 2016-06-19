@@ -31,7 +31,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneAppointmentSelectedAlert;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneSelectedAppointmentPopup;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditComponentPopupScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.Behavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VEventBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VJournalBehavior;
@@ -101,61 +101,6 @@ public class ICalendarAgenda extends Agenda
         this.categories = categories;
     }
 
-//    // Component Behaviors
-//    VEventBehavior vEventBehavior;
-//    VTodoBehavior vTodoBehavior;
-//    VJournalBehavior vJournalBehavior;
-    
-//    /** Callback to make appointment from VComponent and Temporal */
-//    private final CallbackTwoParameters<VComponentRepeatable<?>, Temporal, Appointment> makeAppointmentCallback = (vComponentEdited, startTemporal) ->
-//    {
-//        Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
-//        VComponentLocatable<?> vComponentLocatable = (VComponentLocatable<?>) vComponentEdited;
-//        final TemporalAmount adjustment = vComponentLocatable.getActualDuration();
-//        Temporal endTemporal = startTemporal.plus(adjustment);
-//
-//        /* Find AppointmentGroup
-//         * control can only handle one category.  Checks only first category
-//         */
-//        final AppointmentGroup appointmentGroup;
-//        if (vComponentLocatable.getCategories() != null)
-//        {
-//            String firstCategory = vComponentLocatable.getCategories().get(0).getValue().get(0);
-//            Optional<AppointmentGroup> myGroup = appointmentGroups()
-//                    .stream()
-//                    .filter(g -> g.getDescription().equals(firstCategory))
-//                    .findAny();
-//            appointmentGroup = (myGroup.isPresent()) ? myGroup.get() : null;
-//        } else
-//        {
-//            appointmentGroup = null;
-//        }
-//        // Make appointment
-//        Appointment appt = new Agenda.AppointmentImplTemporal()
-//                .withStartTemporal(startTemporal)
-//                .withEndTemporal(endTemporal)
-//                .withDescription( (vComponentLocatable.getDescription() != null) ? vComponentLocatable.getDescription().getValue() : null )
-//                .withSummary( (vComponentLocatable.getSummary() != null) ? vComponentLocatable.getSummary().getValue() : null)
-//                .withLocation( (vComponentLocatable.getLocation() != null) ? vComponentLocatable.getLocation().getValue() : null)
-//                .withWholeDay(isWholeDay)
-//                .withAppointmentGroup(appointmentGroup);
-//        return appt;
-//    };
-    
-//    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
-    
-//    /** VComponents are iCalendar compliant calendar components.
-//     * They make appointments for Agenda to render. */
-//    @Deprecated
-//    public ObservableList<VComponentNew<?>> vComponents() { return vComponents; }
-//    @Deprecated
-//    private ObservableList<VComponentNew<?>> vComponents = FXCollections.observableArrayList();
-//    
-//    /** VEvent class - used in factory to instantiate new VEvent objects */
-//    Class<? extends VComponentNew<?>> getVEventClass() { return vEventClass; }
-//    private Class<? extends VComponentNew<?>> vEventClass = VEventImpl.class; // default class, change if other implementation is used
-//    public void setVEventClass(Class<? extends VComponentNew<?>> clazz) { vEventClass = clazz; }
-
     /* 
      * Match up maps
      * 
@@ -166,20 +111,11 @@ public class ICalendarAgenda extends Agenda
 
     private final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>(); /* map matches appointment to VEvent that made it */
     public Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap() { return appointmentVComponentMap; }
-//    private final Map<Integer, VEvent> appointmentVEventMap = new HashMap<>(); /* map matches appointment to VEvent that made it */
-//    private final Map<Integer, VTodo> appointmentVTodoMap = new HashMap<>(); /* map matches appointment to VTodo that made it */
-//    private final Map<Integer, VJournal> appointmentVJournalMap = new HashMap<>(); /* map matches appointment to VJournal that made it */
 
     private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>(); /* map matches VComponent to their appointments */
-//    private final Map<VComponentNew<?>, List<Appointment>> vComponentAppointmentMap = new WeakHashMap<>(); /* map matches VComponent to their appointments */
 
-    private final Map<Class<? extends VComponent>, Behavior<?>> vComponentClassBehaviorMap = new HashMap<>();
+    private final Map<Class<? extends VComponent>, Behavior> vComponentClassBehaviorMap = new HashMap<>();
     
-    // not here - in VEventImpl
-//    // Extended appointment class used by the implementor - used to instantiate new appointment objects
-//    private Class<? extends Appointment> appointmentClass = Agenda.AppointmentImpl.class; // set to default class, change if using own implementation
-//    Class<? extends Appointment> getAppointmentClass() { return appointmentClass; }
-//    public void setAppointmentClass(Class<? extends Appointment> clazz) { appointmentClass = clazz; }
 
     /** Callback for creating unique identifier values
      * @see VComponent#getUidGeneratorCallback() */
@@ -215,7 +151,7 @@ public class ICalendarAgenda extends Agenda
     public ListChangeListener<VComponentDisplayable<?>> getVComponentsChangeListener() { return vComponentsChangeListener; }
 
     /*
-     * Callback for determing scope of edit change - defaults to always answering ALL
+     * Callback for determining scope of edit change - defaults to always answering ALL
      * Add For choice dialog, change to different callback
      */
     private Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> oneAllThisAndFutureDialogCallback = (m) -> ChangeDialogOption.ALL;
@@ -235,7 +171,7 @@ public class ICalendarAgenda extends Agenda
         {
             // make popup
             Stage popupStage = new Stage();
-            EditComponentPopupScene popupScene = vComponentClassBehaviorMap.get(vComponent.getClass()).getEditScene(appointment);
+            CreateEditComponentPopupScene popupScene = vComponentClassBehaviorMap.get(vComponent.getClass()).getEditScene(appointment);
             popupStage.setScene(popupScene);
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setResizable(false);
@@ -275,7 +211,7 @@ public class ICalendarAgenda extends Agenda
      * delete or other edit options.
      */
     public Callback<Appointment, Void> getSelectedOneAppointmentCallback() { return selectedOneAppointmentCallback; }
-    private Callback<Appointment, Void> selectedOneAppointmentCallback2 = (Appointment appointment) ->
+    private Callback<Appointment, Void> selectedOneAppointmentCallbackOld = (Appointment appointment) ->
     {
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
 //        SelectedOneAppointmentLoader oneSelectedPopup = new SelectedOneAppointmentLoader(this, appointment);
@@ -297,6 +233,8 @@ public class ICalendarAgenda extends Agenda
         alert.setX(NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2);
         alert.setY(NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
 //        System.out.println(alert.getX() + " " + alert.getY());
+        
+        // Check if previous alert so it can be closed (like autoHide for popups)
         if (lastOneAppointmentSelectedAlert != null)
         {
             lastOneAppointmentSelectedAlert.close();
@@ -349,29 +287,13 @@ public class ICalendarAgenda extends Agenda
      */
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
-//        appointments().removeListener(appointmentsListChangeListener);
-//        getVCalendar().getVEvents().removeListener(vComponentsChangeListener);
-        
         VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
         
-        System.out.println("about to revise:" + vComponent + " " + appointmentVComponentMap.size());
-        vComponentClassBehaviorMap.get(vComponent.getClass()).callRevisor(appointment);
-
-        //  TODO - handle VTODO, VJOURNAL
-//        System.out.println("about to add back listeners:");
-//        appointments().addListener(appointmentsListChangeListener);
-//            getVCalendar().getVEvents().addListener(vComponentsChangeListener);
-            
-//            System.out.println("vComponents changed - added:******************************" + vComponents.size());       
-            
-//            if (! changed) refresh(); // refresh if canceled (undo drag effect, if edited a refresh occurred when updating Appointments)
-//            System.out.println("map4:" + System.identityHashCode(appointment)+ " " +  appointment.getStartTemporal());
+        System.out.println("about to revise:" + appointmentVComponentMap.size());
+        Behavior behavior = vComponentClassBehaviorMap.get(vComponent.getClass());
+        behavior.callRevisor(appointment);
         appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
-            
-//        } catch (InstantiationException | IllegalAccessException e)
-//        {
-//            e.printStackTrace();
-//        }
+        refresh();
         return null;
     };
     
@@ -455,10 +377,11 @@ public class ICalendarAgenda extends Agenda
                         Appointment appointment = change.getAddedSubList().get(0);
                         String originalSummary = appointment.getSummary();
                         AppointmentGroup originalAppointmentGroup = appointment.getAppointmentGroup();
-                        ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0)); // runs NewAppointmentDialog by default
+                        ButtonData button = newAppointmentDrawnCallback.call(change.getAddedSubList().get(0));
                         switch (button)
                         {
                         case CANCEL_CLOSE:
+//                            appointments().remove(appointment);
                             Platform.runLater(() -> refresh());
                             break;
                         case OK_DONE:
@@ -479,6 +402,7 @@ public class ICalendarAgenda extends Agenda
                             VComponent newVComponent = getVComponentStore().createVComponent(appointment);
                             getVCalendar().addVComponent(newVComponent);
                             iCalendarEditPopupCallback.call(vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0));
+                            Platform.runLater(() -> refresh());
                             break;
                         }
                         default:
@@ -498,17 +422,8 @@ public class ICalendarAgenda extends Agenda
                     change.getRemoved().stream().forEach(a -> 
                     { // add appointments to EXDATE
                         VComponentDisplayable<?> v = appointmentVComponentMap().get(a);
-//                        VComponentDisplayable<?> v = findVComponent(a);
-//                        if (v.getExceptionDates() == null)
-//                        {
-//                            v.withExceptionDates(a.getStartTemporal());
-//                        }
-////                        Temporal t = (a.isWholeDay()) ? LocalDate.from(a.getStartLocalDateTime()) : a.getStartLocalDateTime();
-////                        v.getExDate().getTemporals().add(a.getStartTemporal());
-//                        if (v.isRecurrenceSetEmpty())
-//                        {
-//                            getVCalendar().getVEvents().remove(v);
-//                        }
+                        System.out.println("remove:" + a.hashCode());
+                        Platform.runLater(() -> refresh());
                     });
                 }
             }
@@ -546,8 +461,11 @@ public class ICalendarAgenda extends Agenda
                                 .stream()
                                 .forEach(v -> newAppointments.addAll(makeAppointments(v)));
                         appointments().removeListener(appointmentsListChangeListener);
+//                        appointments().clear();
+//                        System.out.println("About to add");
                         appointments().addAll(newAppointments);
                         appointments().addListener(appointmentsListChangeListener);
+//                        refresh();
                     }
                 } else if (change.wasRemoved())
                 {
@@ -581,8 +499,6 @@ public class ICalendarAgenda extends Agenda
                 {
                     Appointment appointment = selectedAppointments().get(0);
                     getSelectedOneAppointmentCallback().call(appointment);
-//                    VEventOld<Appointment,?> vEvent = (VEventOld<Appointment,?>) findVComponent(appointment);
-//                    System.out.println("selected vEvent:" + vEvent);
                 }
             }
         };
@@ -617,6 +533,23 @@ public class ICalendarAgenda extends Agenda
         });
     } // end of constructor
     
+//    @Override
+//    public void refresh()
+//    {
+//        List<Appointment> newAppointments = new ArrayList<>();
+//        appointments().removeListener(appointmentsListChangeListener); // remove appointmentListener to prevent making extra vEvents during refresh
+////        System.out.println("appointments:" + appointments());
+//        appointments().clear();
+//        vComponentAppointmentMap.clear();
+//        appointmentStartOriginalMap.clear();
+//        getVCalendar().getVEvents().stream().forEach(v -> newAppointments.addAll(makeAppointments(v)));
+//        getVCalendar().getVTodos().stream().forEach(v -> newAppointments.addAll(makeAppointments(v)));
+//        getVCalendar().getVJournals().stream().forEach(v -> newAppointments.addAll(makeAppointments(v)));
+//        appointments().addAll(newAppointments);
+//        appointments().addListener(appointmentsListChangeListener); // add back appointmentListener
+//        super.refresh();
+//    }
+    
     private Collection<Appointment> makeAppointments(VComponentDisplayable<?> v)
     {
         List<Appointment> myAppointments = getVComponentStore().makeRecurrences(v);
@@ -627,56 +560,5 @@ public class ICalendarAgenda extends Agenda
         });
         vComponentAppointmentMap.put(System.identityHashCode(v), myAppointments);
         return myAppointments;
-    }
-    
-    
-    // TODO - SHOULD THESE LISTENERS AND BACKING MAPS GO TO NEW CLASS?
-    @Deprecated
-    public VComponentDisplayable<?> findVComponent(Appointment appointment)
-    {
-//        System.out.println("map:" + appointmentVComponentMap.get(System.identityHashCode(appointment)));
-//        System.exit(0);
-        VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
-        if (vComponent == null)
-        { // find appointment by searching all VComponents.  Then add it to map if not present.  This can happen if multiple edits occur between refreshes.
-//            Stream<VComponentDisplayable<?>> displayableComponents = Stream.concat(Stream.concat(vCalendar.getVEvents().stream(), vCalendar.getVTodos().stream()), vCalendar.getVJournals().stream());
-//            Optional<VComponentDisplayable<?>> v2 = displayableComponents
-//                    .filter(v -> v.instances().stream()
-//                            .map(a -> System.identityHashCode(a))
-//                            .filter(h -> h.equals(System.identityHashCode(appointment)))
-//                            .findAny()
-//                            .isPresent())
-//                    .findAny();
-//            if (v2.isPresent()) appointmentVComponentMap.put(System.identityHashCode(appointment), v2.get());
-            System.out.println("map:");
-            throw new RuntimeException("Can't find matching VComponent for appointment");
-        }
-        return vComponent;
-    }
-    
-//    /**
-//     * A convenience class to represent start and end date-time pairs
-//     * 
-//     */
-//    // TODO - FIND A BETTER PLACE FOR THIS CLASS
-//   static public class StartEndRange
-//   {
-//       public StartEndRange(Temporal start, Temporal end)
-//       {
-//           if ((start != null) && (end != null) && (start.getClass() != end.getClass())) { throw new RuntimeException("Temporal classes of start and end must be the same."); }
-//           this.start = start;
-//           this.end = end;
-//       }
-//       
-//       public Temporal getDateTimeStart() { return start; }
-//       private final Temporal start;
-//       
-//       public Temporal getDateTimeEnd() { return end; }
-//       private final Temporal end; 
-//       
-//       @Override
-//       public String toString() { return super.toString() + " " + start + " to " + end; }
-//   }
-    
-     
+    }  
 }

@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors;
 
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditComponentPopupScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVTodoPopupScene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VTodo;
@@ -14,7 +14,7 @@ public class VTodoBehavior extends DisplayableBehavior<VTodo>
     }
     
     @Override
-    public EditComponentPopupScene getEditScene(Appointment appointment)
+    public CreateEditComponentPopupScene getEditScene(Appointment appointment)
     {
         VTodo vComponent = (VTodo) agenda.appointmentVComponentMap().get(System.identityHashCode(appointment));
         if (vComponent == null)

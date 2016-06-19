@@ -1,6 +1,6 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors;
 
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditComponentPopupScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVJournalPopupScene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -14,7 +14,7 @@ public class VJournalBehavior extends DisplayableBehavior<VJournal>
     }
     
     @Override
-    public EditComponentPopupScene getEditScene(Appointment appointment)
+    public CreateEditComponentPopupScene getEditScene(Appointment appointment)
     {
         VJournal vComponent = (VJournal) agenda.appointmentVComponentMap().get(System.identityHashCode(appointment));
         if (vComponent == null)

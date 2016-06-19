@@ -7,7 +7,7 @@ import java.time.temporal.Temporal;
 import java.util.Collection;
 
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditComponentPopupScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventPopupScene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -23,7 +23,7 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
     }
 
     @Override
-    public EditComponentPopupScene getEditScene(Appointment appointment)
+    public CreateEditComponentPopupScene getEditScene(Appointment appointment)
     {
         VEvent vComponent = (VEvent) agenda.appointmentVComponentMap().get(System.identityHashCode(appointment));
         if (vComponent == null)
@@ -88,9 +88,12 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
                     .withVComponentOriginal(vComponentOriginal);
             Collection<VEvent> newVComponents = newRevisor.revise();
             System.out.println("about to remove:");
-            agenda.getVCalendar().getVEvents().remove(vComponent);
-            System.out.println("about to add:" + newVComponents.size());
-            agenda.getVCalendar().getVEvents().addAll(newVComponents);
+//            System.out.println("about to add:" + newVComponents.size());
+            if (newVComponents != null)
+            {
+                agenda.getVCalendar().getVEvents().remove(vComponent);
+                agenda.getVCalendar().getVEvents().addAll(newVComponents);
+            }
         }
         
     }

@@ -5,6 +5,7 @@ import javafx.stage.Popup;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
+@Deprecated
 public class OneSelectedAppointmentPopup extends Popup
 {   
     public OneSelectedAppointmentPopup()
@@ -12,7 +13,6 @@ public class OneSelectedAppointmentPopup extends Popup
         setAutoFix(true);
         setAutoHide(true);
         setHideOnEscape(true);
-//        getContent().add(new OneSelectedAppointmentVBox());
     }
 
     public BooleanProperty isFinished()
@@ -22,11 +22,9 @@ public class OneSelectedAppointmentPopup extends Popup
     
     public void setupData(ICalendarAgenda agenda, Appointment appointment)
     {
-        getContent().add(new OneAppointmentSelectedAlert(appointment, Settings.resources).getDialogPane());
-
-//        OneSelectedAppointmentVBox oneSelectedAppointmentVBox = (OneSelectedAppointmentVBox) getContent().get(0);
-//        oneSelectedAppointmentVBox.getStylesheets().add(agenda.getUserAgentStylesheet());
-//        oneSelectedAppointmentVBox.setupData(agenda, appointment);
-//        onShowingProperty().addListener((obs) -> oneSelectedAppointmentVBox.editAppointmentButton.requestFocus());
+        OneSelectedAppointmentVBox oneSelectedAppointmentVBox = (OneSelectedAppointmentVBox) getContent().get(0);
+        oneSelectedAppointmentVBox.getStylesheets().add(agenda.getUserAgentStylesheet());
+        oneSelectedAppointmentVBox.setupData(agenda, appointment);
+        onShowingProperty().addListener((obs) -> oneSelectedAppointmentVBox.editAppointmentButton.requestFocus());
     }
 }

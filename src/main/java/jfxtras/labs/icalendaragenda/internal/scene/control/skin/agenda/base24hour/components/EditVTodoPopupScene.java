@@ -9,7 +9,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * 
  * @author David Bal
  */
-public class EditVTodoPopupScene extends EditComponentPopupScene
+public class EditVTodoPopupScene extends CreateEditComponentPopupScene
 {
     public EditVTodoPopupScene()
     {

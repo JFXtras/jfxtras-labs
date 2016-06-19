@@ -10,7 +10,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
  * 
  * @author David Bal
  */
-public class EditVEventPopupScene extends EditComponentPopupScene
+public class EditVEventPopupScene extends CreateEditComponentPopupScene
 {
     public EditVEventPopupScene()
     {

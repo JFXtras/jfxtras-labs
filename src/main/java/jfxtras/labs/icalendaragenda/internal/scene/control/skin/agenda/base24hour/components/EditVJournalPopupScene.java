@@ -9,7 +9,7 @@ import jfxtras.labs.icalendarfx.components.VJournal;
  * 
  * @author David Bal
  */
-public class EditVJournalPopupScene extends EditComponentPopupScene
+public class EditVJournalPopupScene extends CreateEditComponentPopupScene
 {
     public EditVJournalPopupScene()
     {
