@@ -16,8 +16,8 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.input.KeyCode;
@@ -275,38 +275,51 @@ public class ICalendarAgenda extends Agenda
      * delete or other edit options.
      */
     public Callback<Appointment, Void> getSelectedOneAppointmentCallback() { return selectedOneAppointmentCallback; }
-    private Callback<Appointment, Void> selectedOneAppointmentCallbackOld = (Appointment appointment) ->
+    private Callback<Appointment, Void> selectedOneAppointmentCallback2 = (Appointment appointment) ->
     {
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
 //        SelectedOneAppointmentLoader oneSelectedPopup = new SelectedOneAppointmentLoader(this, appointment);
         OneSelectedAppointmentPopup oneSelectedPopup = new OneSelectedAppointmentPopup();
         oneSelectedPopup.setupData(this, appointment);
-        oneSelectedPopup.isFinished().addListener((obs) -> oneSelectedPopup.hide());
+//        oneSelectedPopup.isFinished().addListener((obs) -> oneSelectedPopup.hide());
         oneSelectedPopup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
         oneSelectedPopup.focusedProperty().addListener((obs) -> oneSelectedPopup.hide());
         return null;
     };
 
+    Alert lastOneAppointmentSelectedAlert;
     private Callback<Appointment, Void> selectedOneAppointmentCallback = (Appointment appointment) ->
     {
         OneAppointmentSelectedAlert alert = new OneAppointmentSelectedAlert(appointment, Settings.resources);
+
+        alert.initOwner(this.getScene().getWindow());
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
         alert.setX(NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2);
         alert.setY(NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
-        System.out.println(alert.getX() + " " + alert.getY());
-        Optional<ButtonType> result = alert.showAndWait();
-        System.out.println("result:" + result);
-        if (result.isPresent())
+//        System.out.println(alert.getX() + " " + alert.getY());
+        if (lastOneAppointmentSelectedAlert != null)
         {
-            String buttonText = result.get().getText();
-            if (buttonText.equals(Settings.resources.getString("edit")))
-            {
-                getEditAppointmentCallback().call(appointment);
-            } else if (buttonText.equals(Settings.resources.getString("delete")))
-            {
-                // todo
-            }
+            lastOneAppointmentSelectedAlert.close();
         }
+        lastOneAppointmentSelectedAlert = alert; // save for next time
+
+        alert.resultProperty().addListener((obs, oldValue, newValue) -> 
+        {
+            if (newValue != null)
+            {
+                lastOneAppointmentSelectedAlert = null;
+                String buttonText = newValue.getText();
+                if (buttonText.equals(Settings.resources.getString("edit")))
+                {
+                    getEditAppointmentCallback().call(appointment);
+                } else if (buttonText.equals(Settings.resources.getString("delete")))
+                {
+                    // TODO - delete
+                }
+            }
+        });
+        
+        alert.show(); // NOTE: alert.showAndWait() doesn't work - results in a blank dialog panel for 2nd Alert and beyond
         return null;
     };
     public void setSelectedOneAppointmentCallback(Callback<Appointment, Void> c) { selectedOneAppointmentCallback = c; }
@@ -368,9 +381,6 @@ public class ICalendarAgenda extends Agenda
         super();
         this.vCalendar = vCalendar;
         vComponentStore = new DefaultVComponentAppointmentStore(appointmentGroups()); // default VComponent store - for Appointments, if other implementation used make new store
-
-//        recurrenceHelper = new RecurrenceHelper<Appointment>(makeAppointmentCallback);
-//        vEventBehavior = new VEventBehavior(this);
         
         // Populate component class to behavior map with required behaviors
         vComponentClassBehaviorMap.put(VEvent.class, new VEventBehavior(this));

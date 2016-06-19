@@ -19,7 +19,7 @@ public class OneAppointmentSelectedAlert extends Alert
     public OneAppointmentSelectedAlert(Appointment appointment, ResourceBundle resources)
     {
         super(AlertType.CONFIRMATION);
-        initModality(Modality.APPLICATION_MODAL);
+        initModality(Modality.NONE);
         getDialogPane().getStyleClass().add("choice-dialog");
 
         // Buttons

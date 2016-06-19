@@ -12,7 +12,7 @@ public class OneSelectedAppointmentPopup extends Popup
         setAutoFix(true);
         setAutoHide(true);
         setHideOnEscape(true);
-        getContent().add(new OneSelectedAppointmentVBox());
+//        getContent().add(new OneSelectedAppointmentVBox());
     }
 
     public BooleanProperty isFinished()
@@ -22,9 +22,11 @@ public class OneSelectedAppointmentPopup extends Popup
     
     public void setupData(ICalendarAgenda agenda, Appointment appointment)
     {
-        OneSelectedAppointmentVBox oneSelectedAppointmentVBox = (OneSelectedAppointmentVBox) getContent().get(0);
-        oneSelectedAppointmentVBox.getStylesheets().add(agenda.getUserAgentStylesheet());
-        oneSelectedAppointmentVBox.setupData(agenda, appointment);
-        onShowingProperty().addListener((obs) -> oneSelectedAppointmentVBox.editAppointmentButton.requestFocus());
+        getContent().add(new OneAppointmentSelectedAlert(appointment, Settings.resources).getDialogPane());
+
+//        OneSelectedAppointmentVBox oneSelectedAppointmentVBox = (OneSelectedAppointmentVBox) getContent().get(0);
+//        oneSelectedAppointmentVBox.getStylesheets().add(agenda.getUserAgentStylesheet());
+//        oneSelectedAppointmentVBox.setupData(agenda, appointment);
+//        onShowingProperty().addListener((obs) -> oneSelectedAppointmentVBox.editAppointmentButton.requestFocus());
     }
 }
