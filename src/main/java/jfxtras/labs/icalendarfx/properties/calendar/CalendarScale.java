@@ -25,10 +25,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale.CalendarScaleT
  */
 public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale> implements VCalendarElement
 {
-//    public CalendarScale(String contentLine)
-//    {
-//        super(contentLine);
-//    }
+    public static final CalendarScaleType DEFAULT_CALENDAR_SCALE = CalendarScaleType.GREGORIAN;
     
     public CalendarScale(CalendarScale source)
     {
@@ -38,7 +35,7 @@ public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale
     /** sets default value of GREGORIAN */
     public CalendarScale()
     {
-       super(CalendarScaleType.GREGORIAN);
+       super(DEFAULT_CALENDAR_SCALE);
     }
     
     public enum CalendarScaleType

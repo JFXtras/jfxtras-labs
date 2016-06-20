@@ -50,11 +50,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 public class VCalendar
 {
     // version of this project, not associated with the iCalendar specification version
-    private static String myVersion = "1.0";
-    public static final String DEFAULT_PRODUCT_IDENTIFIER = ("-//JFxtras//iCalendarFx " + myVersion + "//EN");
-//    public static final ProductIdentifier DEFAULT_PRODUCT_IDENTIFIER = ProductIdentifier.parse("-////JFxtras////iCalendarFx " + myVersion + "////EN");
-//    public static final Version DEFAULT_ICALENDAR_SPECIFICATION_VERSION = Version.parse("2.0");
-    public static final String DEFAULT_ICALENDAR_SPECIFICATION_VERSION = ("2.0");
+    public static String myVersion = "1.0";
     
     /*
      * Calendar properties
@@ -380,11 +376,11 @@ public class VCalendar
         }
     }
     
-    /* Map of displayable parent components.  Key is UID string, value is parent component.
-     * Used to find parent components when a component with a recurrenceID is added
+    /*
+     * Map of Related Components - UID is key and List of all related VComponents is value.
+     * Note: if you only want child components you need to filter the list to only include components
+     * that have a RECURRENCE-ID
      */
-    // NOTE: Can't use WeakHashMap - String key always has a strong reference
-//    private Map<String, VComponentDisplayable<?>> uidToComponentMap = new HashMap<String, VComponentDisplayable<?>>();
     private Map<String, List<VComponentDisplayable<?>>> uidToRelatedComponentsMap = new HashMap<>();
     /**
      * RecurrenceID listener
@@ -397,7 +393,6 @@ public class VCalendar
         {
             if (change.wasAdded())
             {
-                System.out.println("displayableListChangeListener:");
                 change.getAddedSubList().forEach(vComponent -> 
                 {
                     
@@ -409,59 +404,20 @@ public class VCalendar
                                 .filter(v -> v.getRecurrenceId() != null) // keep only children objects
                                 .collect(Collectors.toList());
                     });
-                    
-                    String uid = vComponent.getUniqueIdentifier().getValue();
-                    final List<VComponentDisplayable<?>> relatedComponents;
-                    if (uidToRelatedComponentsMap.get(uid) == null)
+                    if (vComponent.getUniqueIdentifier() != null)
                     {
-                        relatedComponents = new ArrayList<>();
-                        uidToRelatedComponentsMap.put(uid, relatedComponents);
-                    } else
-                    {
-                        relatedComponents = uidToRelatedComponentsMap.get(uid);
+                        String uid = vComponent.getUniqueIdentifier().getValue();
+                        final List<VComponentDisplayable<?>> relatedComponents;
+                        if (uidToRelatedComponentsMap.get(uid) == null)
+                        {
+                            relatedComponents = new ArrayList<>();
+                            uidToRelatedComponentsMap.put(uid, relatedComponents);
+                        } else
+                        {
+                            relatedComponents = uidToRelatedComponentsMap.get(uid);
+                        }
+                        relatedComponents.add(vComponent);
                     }
-                    relatedComponents.add(vComponent);
-
-//                    System.out.println("change added:" + vComponent.getRecurrenceId());
-//                    if ((vComponent.getUniqueIdentifier() != null))
-//                    {
-//                        if (vComponent.getRecurrenceId() == null)
-//                        { // is a parent component
-//                            uidToComponentMap.put(vComponent.getUniqueIdentifier().getValue(), vComponent);
-////                            if (e.getChildComponentsListCallBack() == null)
-////                            {
-////                                e.setChildComponentsListCallBack( (c) ->
-////                                {
-//////                                    if (e.getRecurrenceId() != null)
-//////                                    {
-//////                                        throw new RuntimeException("not a parent");
-//////                                    }
-////                                    UniqueIdentifier uid = c.getUniqueIdentifier();
-////                                    List<VComponentDisplayable<?>> ll = change.getList().stream()
-////                                            .filter(t -> t.getUniqueIdentifier().equals(uid))
-////                                            .filter(t -> t != c)
-////                                            .collect(Collectors.toList());
-////                                    return ll;
-////                                });
-////                            }
-//                        } else
-//                        { // is a child component
-//                            String uid = vComponent.getUniqueIdentifier().getValue();
-//                            VComponentDisplayable<?> parent = uidToComponentMap.get(uid);
-//                            System.out.println("child added:" + parent.hashCode());
-//                            if (parent != null)
-//                            {
-//                                if (parent.hasChildComponents())
-//                                {
-//                                    System.out.println("displayableListChangeListener: ADD TO PARENT" + vComponent.hashCode());
-//                                    parent.childComponents().add(vComponent);
-//                                }
-//                            }
-//                        }
-//                    } else
-//                    {
-//                        // Do nothing - component MUST have a UID (should I throw an exception?)             
-//                    }
                 });
             } else
             {
@@ -476,22 +432,6 @@ public class VCalendar
                         {
                             uidToRelatedComponentsMap.remove(uid);
                         }
-//                        if (e.getRecurrenceId() == null)
-//                        {
-//                            uidToComponentMap.remove(e.getUniqueIdentifier().getValue(), e);
-//                        } else
-//                        {
-//                            String uid = e.getUniqueIdentifier().getValue();
-//                            VComponentDisplayable<?> parent = uidToComponentMap.get(uid);
-//                            if (parent != null)
-//                            {
-//                                if (parent.hasChildComponents())
-//                                {
-//                                    System.out.println("displayableListChangeListener: REMOVE FROM PARENT" + e.hashCode());
-//                                    parent.childComponents().remove(e);
-//                                }
-//                            }
-//                        }
                     });
                 }                
             }

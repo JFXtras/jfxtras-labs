@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.components;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
@@ -273,7 +274,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
  
     /**
      * STANDARD or DAYLIGHT
-     * Subcomponent of VAlarm
+     * Subcomponent of VTimeZone
      * Either StandardTime or DaylightSavingsTime.
      * Both classes have identical methods.
      * 
@@ -486,6 +487,40 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
                 getStandardOrDaylight().add(newComponent);
             });
         }
+    }
+    
+    @Override // include STANDARD or DAYLIGHT Subcomponents
+    public boolean equals(Object obj)
+    {
+        VTimeZone testObj = (VTimeZone) obj;
+        final boolean isVAlarmsEqual;
+        if (getStandardOrDaylight() != null)
+        {
+            if (testObj.getStandardOrDaylight() == null)
+            {
+                isVAlarmsEqual = false;
+            } else
+            {
+                isVAlarmsEqual = getStandardOrDaylight().equals(testObj.getStandardOrDaylight());
+            }
+        } else
+        {
+            isVAlarmsEqual = true;
+        }
+        return isVAlarmsEqual && super.equals(obj);
+    }
+    
+    @Override // include STANDARD or DAYLIGHT Subcomponents
+    public int hashCode()
+    {
+        int hash = super.hashCode();
+        Iterator<StandardOrDaylight<?>> i = getStandardOrDaylight().iterator();
+        while (i.hasNext())
+        {
+            Object property = i.next();
+            hash = (31 * hash) + property.hashCode();
+        }
+        return hash;
     }
 
     /** Parse content lines into calendar component object */

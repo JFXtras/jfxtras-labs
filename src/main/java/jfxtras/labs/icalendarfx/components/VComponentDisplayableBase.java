@@ -444,39 +444,17 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         this.makeChildComponentsListCallBack = makeChildComponentsListCallBack;
     }
-//    @Override
-//    public List<VComponentDisplayable<?>> childComponents()
-//    {
-//        if (childComponents == null)
-//        {
-//            if (getChildComponentsListCallBack() != null)
-//            {
-//                childComponents = getChildComponentsListCallBack().call(this);
-//            } else
-//            {
-//                return Collections.emptyList();
-//            }
-//        }
-//        return childComponents;
-//    }
+
     @Override
     public List<VComponentDisplayable<?>> childComponents()
     {
-        if (getRecurrenceId() == null)
+        if ((getRecurrenceId() == null) && (getChildComponentsListCallBack() != null))
         {
             return getChildComponentsListCallBack().call(this);
         }
         return Collections.emptyList();
     }
-//    @Override
-//    public boolean hasChildComponents()
-//    {
-//        if (childComponents() == null) return true;
-//        return (childComponents() != null);
-//    }
-//    private List<VComponentDisplayable<?>> childComponents;
-//    void nullifyChildComponents() { childComponents = null; }
-        
+
     @Override
     public List<String> errors()
     {

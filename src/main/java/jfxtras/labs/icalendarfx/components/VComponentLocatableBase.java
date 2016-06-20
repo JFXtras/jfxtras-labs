@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -240,6 +241,40 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         return errors;
     }
     
+    @Override // include VAlarms
+    public boolean equals(Object obj)
+    {
+        VComponentLocatable<?> testObj = (VComponentLocatable<?>) obj;
+        final boolean isVAlarmsEqual;
+        if (getVAlarms() != null)
+        {
+            if (testObj.getVAlarms() == null)
+            {
+                isVAlarmsEqual = false;
+            } else
+            {
+                isVAlarmsEqual = getVAlarms().equals(testObj.getVAlarms());
+            }
+        } else
+        {
+            isVAlarmsEqual = true;
+        }
+        return isVAlarmsEqual && super.equals(obj);
+    }
+    
+    @Override // include VAlarms
+    public int hashCode()
+    {
+        int hash = super.hashCode();
+        Iterator<VAlarm> i = getVAlarms().iterator();
+        while (i.hasNext())
+        {
+            Object property = i.next();
+            hash = (31 * hash) + property.hashCode();
+        }
+        return hash;
+    }
+    
     /** Stream recurrence dates with adjustment to include recurrences that don't end before start parameter */
     @Override
     public Stream<Temporal> streamRecurrences(Temporal start)
@@ -247,27 +282,4 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         final TemporalAmount adjustment = getActualDuration();
         return super.streamRecurrences(start.minus(adjustment));
     }
-    
-    /*
-     * METHODS FOR EDITING COMPONENTS
-     */
-    
-//    @Override
-//    @Deprecated
-//    public <U extends Temporal> void becomeNonRecurring(
-//            VComponentDisplayableBase<?> vComponentOriginal,
-//            U startRecurrence,
-//            U endRecurrence)
-//    {
-//        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
-//        if (vComponentOriginal.getRecurrenceRule() != null)
-//        { // RRULE was removed, update DTSTART, DTEND or DURATION
-//            setDateTimeStart(startRecurrence);
-//            if (getDuration() != null)
-//            {
-//                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-//                setDuration(duration);
-//            }
-//        }
-//    }
 }
