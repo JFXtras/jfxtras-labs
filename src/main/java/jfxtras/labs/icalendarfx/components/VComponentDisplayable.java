@@ -606,10 +606,10 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * @return - list of child components having RecurrenceIDs
      */
     List<VComponentDisplayable<?>> childComponents();
-    /** Returns true is there are no child components currently in list.  Run this method instead of childComponents().size() because
-     * the latter will generate the list if it doesn't exist which may not be desired.
-     */
-    boolean isChildComponentsEmpty();
+//    /** Returns false if there are no child components currently in list.  Run this method instead of childComponents().size() because
+//     * the latter will generate the list if it doesn't exist which may not be desired.
+//     */
+//    boolean hasChildComponents();
     
     /** Callback to make list of child components (those with RECURRENCE-ID and same UID) 
      * Callback assigned in {@link VCalendar#displayableListChangeListener }.  It should not be assigned elsewhere. */

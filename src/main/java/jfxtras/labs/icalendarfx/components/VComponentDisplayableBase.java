@@ -1,9 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -28,7 +25,6 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRuleCache;
-import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RecurrenceId;
 import jfxtras.labs.icalendarfx.properties.component.relationship.RelatedTo;
@@ -365,35 +361,6 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         super(source);
     }
     
-//    /**
-//     * Start of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
-//     * This property is not a part of the iCalendar standard
-//     */
-//    @Override
-//    public Temporal getStartRange() { return startRange; }
-//    private Temporal startRange;
-//    @Override
-//    public void setStartRange(Temporal startRange) { this.startRange = startRange; }
-//    public T withStartRange(Temporal startRange) { setStartRange(startRange); return (T) this; }
-//    
-//    /**
-//     * End of range for which recurrence instances are generated.  Should match the dates displayed on the calendar.
-//     */
-//    @Override
-//    public Temporal getEndRange() { return endRange; }
-//    private Temporal endRange;
-//    @Override
-//    public void setEndRange(Temporal endRange) { this.endRange = endRange; }
-//    public T withEndRange(Temporal endRange) { setEndRange(endRange); return (T) this; }
-    
-//    /**
-//     * Recurrence instances, represented as type R, that are bounded by {@link #startRange} and {@link #endRange}
-//     * The elements of the list are created by calling {@link #makeRecurrences()}
-//     */
-//    @Override
-//    public List<R> recurrences() { return recurrences; }
-//    final private List<R> recurrences = new ArrayList<>();
-    
     @Override
     public Stream<Temporal> streamRecurrences(Temporal start)
     {
@@ -405,11 +372,15 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         
         // Handle Recurrence IDs
         final Stream<Temporal> stream2;
-        if (childComponents() != null)
+        List<VComponentDisplayable<?>> children = childComponents();
+        if (children != null)
         {
+            System.out.println("childComponents():" + childComponents().size() + " " + this);
+            childComponents().stream().forEach(System.out::println);
             // If present, remove recurrence ID original values
             List<Temporal> recurrenceIDTemporals = childComponents()
                     .stream()
+                    .peek(a -> System.out.println(a.getRecurrenceId()))
                     .map(c -> c.getRecurrenceId().getValue())
                     .collect(Collectors.toList());
             stream2 = inStream.filter(t -> ! recurrenceIDTemporals.contains(t));
@@ -473,28 +444,38 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     {
         this.makeChildComponentsListCallBack = makeChildComponentsListCallBack;
     }
+//    @Override
+//    public List<VComponentDisplayable<?>> childComponents()
+//    {
+//        if (childComponents == null)
+//        {
+//            if (getChildComponentsListCallBack() != null)
+//            {
+//                childComponents = getChildComponentsListCallBack().call(this);
+//            } else
+//            {
+//                return Collections.emptyList();
+//            }
+//        }
+//        return childComponents;
+//    }
     @Override
     public List<VComponentDisplayable<?>> childComponents()
     {
-        if (childComponents == null)
+        if (getRecurrenceId() == null)
         {
-            if (getChildComponentsListCallBack() != null)
-            {
-                childComponents = getChildComponentsListCallBack().call(this);
-            } else
-            {
-                return Collections.emptyList();
-            }
+            return getChildComponentsListCallBack().call(this);
         }
-        return childComponents;
+        return Collections.emptyList();
     }
-    @Override
-    public boolean isChildComponentsEmpty()
-    {
-        if (childComponents == null) return true;
-        return childComponents.isEmpty();
-    }
-    private List<VComponentDisplayable<?>> childComponents; // = new ArrayList<>();    
+//    @Override
+//    public boolean hasChildComponents()
+//    {
+//        if (childComponents() == null) return true;
+//        return (childComponents() != null);
+//    }
+//    private List<VComponentDisplayable<?>> childComponents;
+//    void nullifyChildComponents() { childComponents = null; }
         
     @Override
     public List<String> errors()
@@ -539,144 +520,5 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
             errors.addAll(getRecurrenceRule().errors());
         }      
         return errors;
-    }
-    
-    // TODO - DOUBLE CHECK THIS LIST - WHY NO DESCRIPTION, FOR EXAMPLE?
-    private final static List<PropertyType> DIALOG_REQUIRED_PROPERTIES = Arrays.asList(
-            PropertyType.CATEGORIES,
-            PropertyType.COMMENT,
-            PropertyType.DATE_TIME_START,
-            PropertyType.ORGANIZER,
-            PropertyType.SUMMARY
-            );
-    
-    /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
-     * endRecurrence to closest valid values
-     */
-    @Deprecated
-    public // TODO - VERITFY THIS WORKS - changed from old version
-    void validateStartRecurrenceAndDTStart(Temporal startRecurrence)
-    {
-        if (getRecurrenceRule() != null)
-        {
-            Temporal firstTemporal = getRecurrenceRule().getValue()
-                    .streamRecurrences(getDateTimeStart().getValue())
-                    .findFirst()
-                    .get();
-            if (! firstTemporal.equals(getDateTimeStart().getValue()))
-            {
-                setDateTimeStart(firstTemporal);
-            }
-        }
-    }
-    
-    /**
-     * Make a component non-recurring and change start and end to match
-     * startRecurrence and endRecurrence.
-     * 
-     * This provides the functionality for editing only one recurrence.
-     * @param <U>
-     * 
-     * @param vComponentOriginal
-     * @param startRecurrence
-     * @param endRecurrence
-     */
-    @Deprecated
-    public <U extends Temporal> void becomeNonRecurring(
-            VComponentDisplayableBase<?> vComponentOriginal,
-            U startRecurrence,
-            U endRecurrence)
-    {
-        setRecurrenceRule((RecurrenceRule2) null);
-        setRecurrenceDates(null);
-        setExceptionDates(null);
-    }
-    
-//    /** Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time */
-//    void adjustDateTime(
-//            Temporal startOriginalRecurrence,
-//            Temporal startRecurrence,
-//            Temporal endRecurrence)
-//    {
-//        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
-//        Temporal newStart = getDateTimeStart().getValue().plus(amount);
-//        setDateTimeStart(newStart);
-////        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
-//        setEndOrDuration(startRecurrence, endRecurrence);
-////        endType().setDuration(this, startRecurrence, endRecurrence);
-//    }
-    
-    /** Adjust DTSTART and DTEND, DUE, or DURATION by recurrence's start and end date-time 
-     * @param <U>*/
-    @Deprecated // inline?
-    public
-    <U extends Temporal> void adjustDateTime(
-            Temporal startOriginalRecurrence,
-            U startRecurrence,
-            U endRecurrence)
-//            TemporalAmount shiftAmount)
-    {
-        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
-        Temporal newStart = getDateTimeStart().getValue().plus(amount);
-        setDateTimeStart(newStart);
-//        System.out.println("new DTSTART2:" + newStart + " " + startRecurrence + " " + endRecurrence);
-        setEndOrDuration(startRecurrence, endRecurrence);
-//        endType().setDuration(this, startRecurrence, endRecurrence);
-    }
-    
-    /**
-     * Generates a list of iCalendar property names that have different values from the 
-     * input parameter
-     * 
-     * equal checks are encapsulated inside the enum VComponentProperty
-     * @param <T>
-     * @param <U>
-     */
-    @Deprecated
-    public <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
-//            T vComponentEditedCopy,
-            T vComponentOriginal,
-            Temporal startOriginalRecurrence,
-            U startRecurrence,
-            U endRecurrence)
-//            TemporalAmount shiftAmount)
-    {
-        List<PropertyType> changedProperties = new ArrayList<>();
-        properties()
-                .stream()
-                .map(p -> p.propertyType())
-                .forEach(t ->
-                {
-                    Object p1 = t.getProperty(this);
-                    Object p2 = t.getProperty(vComponentOriginal);
-//                    System.out.println("prop:" + p1 + " " + p2);
-                    if (! p1.equals(p2))
-                    {
-                        changedProperties.add(t);
-                    }
-                });
-        
-        /* Note:
-         * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
-         * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
-         * question is answered. */
-        if (! startOriginalRecurrence.equals(startRecurrence))
-        {
-            changedProperties.add(PropertyType.DATE_TIME_START);
-        }        
-        return changedProperties;
-    }
-    
-    
-    /** 
-     * Sets the appropriate end or duration value calculated from the parameters
-     * 
-     * @param startRecurrence - start of a recurrence
-     * @param endRecurrence - end of the same recurrence
-     */
-    @Deprecated // use proper method for end or duration
-    void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
-    {
-        // no operation - override in subclasses for functionality
     }
 }

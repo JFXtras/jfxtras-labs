@@ -224,22 +224,22 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         return duration;
     }
     
-    @Override
-    public void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
-    {
-        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-        if (getDuration() != null)
-        {
-            setDuration(duration);
-        } else if (getDateTimeDue() != null)
-        {
-            Temporal dtdue = getDateTimeStart().getValue().plus(duration);
-            setDateTimeDue(dtdue);
-        } else
-        {
-            throw new RuntimeException("Invalid VTodo: Either DUE or DURATION must be set");
-        }        
-    }
+//    @Override
+//    public void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
+//    {
+//        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+//        if (getDuration() != null)
+//        {
+//            setDuration(duration);
+//        } else if (getDateTimeDue() != null)
+//        {
+//            Temporal dtdue = getDateTimeStart().getValue().plus(duration);
+//            setDateTimeDue(dtdue);
+//        } else
+//        {
+//            throw new RuntimeException("Invalid VTodo: Either DUE or DURATION must be set");
+//        }        
+//    }
     
     /*
      * METHODS FOR EDITING COMPONENTS
@@ -247,44 +247,44 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     
     @Override
     public Revisable newRevisor() { return new ReviserVTodo(this); }
-    
-    @Override
-    public
-    <U extends Temporal> void becomeNonRecurring(
-            VComponentDisplayableBase<?> vComponentOriginal,
-            U startRecurrence,
-            U endRecurrence)
-    {
-        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
-        if (getDuration() == null)
-        {
-            setDateTimeDue(endRecurrence);
-        }
-    }
-    
-    @Override
-    public
-    <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
-          T vComponentOriginal,
-          Temporal startOriginalRecurrence,
-          U startRecurrence,
-          U endRecurrence)
-    {
-        List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startOriginalRecurrence, startRecurrence, endRecurrence);
-        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-        TemporalAmount durationOriginal = getActualDuration();
-        if (! durationOriginal.equals(durationNew))
-        {
-            if (getDateTimeDue() != null)
-            {
-                changedProperties.add(PropertyType.DATE_TIME_DUE);                    
-            } else if (getDuration() == null)
-            {
-                changedProperties.add(PropertyType.DURATION);                    
-            }
-        }      
-        return changedProperties;
-    }
+//    
+//    @Override
+//    public
+//    <U extends Temporal> void becomeNonRecurring(
+//            VComponentDisplayableBase<?> vComponentOriginal,
+//            U startRecurrence,
+//            U endRecurrence)
+//    {
+//        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+//        if (getDuration() == null)
+//        {
+//            setDateTimeDue(endRecurrence);
+//        }
+//    }
+//    
+//    @Override
+//    public
+//    <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
+//          T vComponentOriginal,
+//          Temporal startOriginalRecurrence,
+//          U startRecurrence,
+//          U endRecurrence)
+//    {
+//        List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startOriginalRecurrence, startRecurrence, endRecurrence);
+//        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+//        TemporalAmount durationOriginal = getActualDuration();
+//        if (! durationOriginal.equals(durationNew))
+//        {
+//            if (getDateTimeDue() != null)
+//            {
+//                changedProperties.add(PropertyType.DATE_TIME_DUE);                    
+//            } else if (getDuration() == null)
+//            {
+//                changedProperties.add(PropertyType.DURATION);                    
+//            }
+//        }      
+//        return changedProperties;
+//    }
     
 //    /** Stream recurrence dates with adjustment to include recurrences that are due before start */
 //    @Override

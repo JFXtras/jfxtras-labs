@@ -16,7 +16,6 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Priority;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBase<T> implements VComponentLocatable<T>, VComponentDescribable2<T>
 {
@@ -253,22 +252,22 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
      * METHODS FOR EDITING COMPONENTS
      */
     
-    @Override
-    @Deprecated
-    public <U extends Temporal> void becomeNonRecurring(
-            VComponentDisplayableBase<?> vComponentOriginal,
-            U startRecurrence,
-            U endRecurrence)
-    {
-        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
-        if (vComponentOriginal.getRecurrenceRule() != null)
-        { // RRULE was removed, update DTSTART, DTEND or DURATION
-            setDateTimeStart(startRecurrence);
-            if (getDuration() != null)
-            {
-                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-                setDuration(duration);
-            }
-        }
-    }
+//    @Override
+//    @Deprecated
+//    public <U extends Temporal> void becomeNonRecurring(
+//            VComponentDisplayableBase<?> vComponentOriginal,
+//            U startRecurrence,
+//            U endRecurrence)
+//    {
+//        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
+//        if (vComponentOriginal.getRecurrenceRule() != null)
+//        { // RRULE was removed, update DTSTART, DTEND or DURATION
+//            setDateTimeStart(startRecurrence);
+//            if (getDuration() != null)
+//            {
+//                TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+//                setDuration(duration);
+//            }
+//        }
+//    }
 }

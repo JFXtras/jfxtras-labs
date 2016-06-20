@@ -188,7 +188,6 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     }
 
     @Override
-    @Deprecated
     public TemporalAmount getActualDuration()
     {
         final TemporalAmount duration;
@@ -207,23 +206,23 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         return duration;
     }
     
-    @Override
-    @Deprecated
-    void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
-    {
-        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-        if (getDuration() != null)
-        {
-            setDuration(duration);
-        } else if (getDateTimeEnd() != null)
-        {
-            Temporal dtend = getDateTimeStart().getValue().plus(duration);
-            setDateTimeEnd(dtend);
-        } else
-        {
-            throw new RuntimeException("Either DTEND or DURATION must be set");
-        }
-    }
+//    @Override
+//    @Deprecated
+//    void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
+//    {
+//        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+//        if (getDuration() != null)
+//        {
+//            setDuration(duration);
+//        } else if (getDateTimeEnd() != null)
+//        {
+//            Temporal dtend = getDateTimeStart().getValue().plus(duration);
+//            setDateTimeEnd(dtend);
+//        } else
+//        {
+//            throw new RuntimeException("Either DTEND or DURATION must be set");
+//        }
+//    }
     
     @Override
     public Revisable newRevisor()

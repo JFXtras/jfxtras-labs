@@ -22,6 +22,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
@@ -141,22 +142,24 @@ public class ReviseComponentTest
     @Test
     public void canEditOne()
     {
-        final ObservableList<VEvent> vComponents = FXCollections.observableArrayList();
-        List<String> changes = new ArrayList<>();
-        ListChangeListener<? super VComponentLocatable<?>> listener  = (ListChangeListener.Change<? extends VComponentLocatable<?>> change) ->
-        {
-            while (change.next())
-            {
-                if (change.wasAdded())
-                {
-                    change.getAddedSubList().forEach(c -> changes.add("Added:" + c.getSummary().getValue()));
-                    // Note: making recurrences should be done here by a similar listener in production code
-                }
-            }
-        };
-        vComponents.addListener(listener);
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
+//        List<String> changes = new ArrayList<>();
+//        ListChangeListener<? super VComponentLocatable<?>> listener  = (ListChangeListener.Change<? extends VComponentLocatable<?>> change) ->
+//        {
+//            while (change.next())
+//            {
+//                if (change.wasAdded())
+//                {
+//                    change.getAddedSubList().forEach(c -> changes.add("Added:" + c.getSummary().getValue()));
+//                    // Note: making recurrences should be done here by a similar listener in production code
+//                }
+//            }
+//        };
+//        vComponents.addListener(listener);
         
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentEdited);
         VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
         vComponentEdited.setSummary("Edited summary");
 
@@ -173,15 +176,7 @@ public class ReviseComponentTest
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginalCopy);
         Collection<VEvent> newVComponents = reviser.revise();
-        
-//        Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
-//                vComponentOriginalCopy,
-//                vComponentEdited,
-//                startOriginalRecurrence,
-//                startRecurrence,
-//                endRecurrence,
-////                shift,
-//                (m) -> ChangeDialogOption.ONE);
+        vComponents.remove(vComponentEdited);
         vComponents.addAll(newVComponents);
 
         System.out.println(vComponentEdited.toContent());
@@ -197,12 +192,36 @@ public class ReviseComponentTest
         assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentRepeats.getDateTimeStart().getValue());        
         assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentRepeats.getDateTimeEnd().getValue()); 
         assertEquals("Edited summary", myComponentIndividual.getSummary().getValue());
+        vComponents.stream().forEach(v -> System.out.println(v.childComponents().size()));
+        assertEquals(1, myComponentRepeats.childComponents().size());
 
-        List<String> expectedChanges = Arrays.asList(
-                "Added:Daily1 Summary",
-                "Added:Edited summary"
-                );
-        assertEquals(expectedChanges, changes);
+//        List<String> expectedChanges = Arrays.asList(
+//                "Added:Daily1 Summary",
+//                "Added:Edited summary"
+//                );
+//        assertEquals(expectedChanges, changes);
+        vComponents.stream().forEach(v -> System.out.println(v.childComponents().size()));
+
+        
+        // edit individual event (one with RecurrenceID)        
+        Temporal startOriginalRecurrence2 = LocalDateTime.of(2016, 5, 16, 9, 0);
+        Temporal startRecurrence2 = LocalDateTime.of(2016, 5, 16, 12, 0);
+        Temporal endRecurrence2 = LocalDateTime.of(2016, 5, 16, 13, 0);
+
+        VEvent vComponentEditedCopy = new VEvent(vComponentEdited);
+        ReviserVEvent reviser2 = ((ReviserVEvent) vComponentOriginalCopy.newRevisor())
+                .withDialogCallback((m) -> null) // no dialog required
+                .withEndRecurrence(endRecurrence2)
+                .withStartOriginalRecurrence(startOriginalRecurrence2)
+                .withStartRecurrence(startRecurrence2)
+                .withVComponentEdited(vComponentEdited)
+                .withVComponentOriginal(vComponentEditedCopy);
+        Collection<VEvent> newVComponents2 = reviser2.revise();
+        vComponents.remove(vComponentEdited);
+        vComponents.addAll(newVComponents2);
+        assertEquals(2, vComponents.size());
+        vComponents.stream().forEach(v -> System.out.println(v.childComponents().size()));
+        assertEquals(1, myComponentRepeats.childComponents().size());
     }
     
     @Test
