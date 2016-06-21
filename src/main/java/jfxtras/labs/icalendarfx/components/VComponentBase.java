@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import jfxtras.labs.icalendarfx.OrderedElement;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -38,7 +39,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public abstract class VComponentBase implements VComponent
+public abstract class VComponentBase extends OrderedElement implements VComponent
 {   
     /**
      * List of all properties found in component.
@@ -52,25 +53,13 @@ public abstract class VComponentBase implements VComponent
         List<PropertyType> populatedProperties = componentType().allowedProperties().stream()
                 .filter(p -> p.getProperty(this) != null)
                 .collect(Collectors.toList());
-        
-//        Iterator<PropertyType> i = componentType().allowedProperties().stream().iterator();
-//        while (i.hasNext())
-//        {
-//            PropertyType propertyType = i.next();
-//            Object property = propertyType.getProperty(this);
-////            System.out.println("props:" + propertyType + " " + property );
-//            if (property != null)
-//            {
-//                populatedProperties.add(propertyType);
-//            }
-//        }
       return Collections.unmodifiableList(populatedProperties);
     }
 
     /** 
      * SORT ORDER
      * 
-     * Property sort order map.  Key is property, value is the sort order.  The map is automatically
+     * Property sort order map.  Key is property name, value is the sort order.  The map is automatically
      * populated when parsing the content lines to preserve the existing property order.
      * 
      * When producing the content lines, if a property is not present in the map, it is put at
@@ -81,18 +70,20 @@ public abstract class VComponentBase implements VComponent
     @Override
     public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
     final private Map<String, Integer> propertySortOrder = new HashMap<>();
-    private Integer propertyCounter = 0;
-//    public Map<Property<?>, Integer> propertySortOrder() { return propertySortOrder; }
-//    final private Map<Property<?>, Integer> propertySortOrder = new WeakHashMap<>();
+    private volatile Integer sortOrderCounter = 0;
     
     /*
      * CONSTRUCTORS
      */
-    VComponentBase() { }
+    VComponentBase()
+    {
+        addListeners();
+    }
     
     /** Parse content lines into calendar component */
     VComponentBase(String contentLines)
     {
+        this();
         parseContent(contentLines);
     }
     
@@ -103,11 +94,15 @@ public abstract class VComponentBase implements VComponent
         copyComponentFrom(source);
     }
 
+    void addListeners()
+    {
+        // functionality added in subclasses
+    }
+    
     /** Parse content lines into calendar component */
     @Override
     public void parseContent(String contentLines)
     {
-//        parseContent(Arrays.asList(contentLines.split(System.lineSeparator())));
         parseContent(ICalendarUtilities.unfoldLines(contentLines));
     }
     
@@ -145,13 +140,14 @@ public abstract class VComponentBase implements VComponent
                 PropertyType propertyType = PropertyType.enumFromName(propertyName);
                 if (propertyType != null)
                 {
-                    propertySortOrder.put(propertyName, propertyCounter);
-                    propertyCounter += 100; // add 100 to allow insertions in between
+//                    propertySortOrder.put(propertyName, sortOrderCounter);
+//                    sortOrderCounter += 100; // add 100 to allow insertions in between
                     propertyType.parse(this, line);
                 } else
                 {
                     // TODO - check IANA properties and X- properties
                     System.out.println("unknown prop:" );
+                    throw new RuntimeException("not implemented");
                 }
             }
         }
@@ -232,7 +228,7 @@ public abstract class VComponentBase implements VComponent
                 {
 //                    System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
                     isFailure = true;
-//                    break;
+                    break;
                 }
             }
             propertiesEquals = ! isFailure;

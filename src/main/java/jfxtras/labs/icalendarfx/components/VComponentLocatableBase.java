@@ -266,11 +266,14 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     public int hashCode()
     {
         int hash = super.hashCode();
-        Iterator<VAlarm> i = getVAlarms().iterator();
-        while (i.hasNext())
+        if (getVAlarms() != null)
         {
-            Object property = i.next();
-            hash = (31 * hash) + property.hashCode();
+            Iterator<VAlarm> i = getVAlarms().iterator();
+            while (i.hasNext())
+            {
+                Object property = i.next();
+                hash = (31 * hash) + property.hashCode();
+            }
         }
         return hash;
     }

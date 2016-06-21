@@ -29,73 +29,65 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
                 "END:VTODO" + System.lineSeparator() +
                 
                 "BEGIN:VTIMEZONE" + System.lineSeparator() +
-                "TZID:America/New_York" + System.lineSeparator() +
                 "LAST-MODIFIED:20050809T050000Z" + System.lineSeparator() +
+                "TZID:America/New_York" + System.lineSeparator() +
                 
                 "BEGIN:DAYLIGHT" + System.lineSeparator() + // 1
                 "DTSTART:19670430T020000" + System.lineSeparator() +
-                "RRULE:FREQ=YEARLY;UNTIL=19730429T070000Z;BYMONTH=4;BYDAY=-1SU" + System.lineSeparator() +
+                "RRULE:FREQ=YEARLY;BYMONTH=4;BYDAY=-1SU;UNTIL=19730429T070000Z" + System.lineSeparator() +            
+                "TZNAME:EDT" + System.lineSeparator() +
                 "TZOFFSETFROM:-0500" + System.lineSeparator() +
                 "TZOFFSETTO:-0400" + System.lineSeparator() +
-                "TZNAME:EDT" + System.lineSeparator() +
                 "END:DAYLIGHT" + System.lineSeparator() +
                 
                 "BEGIN:STANDARD" + System.lineSeparator() + // 2
                 "DTSTART:19671029T020000" + System.lineSeparator() +
-                "RRULE:FREQ=YEARLY;UNTIL=20061029T060000Z;BYMONTH=10;BYDAY=-1SU" + System.lineSeparator() +
+                "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU;UNTIL=20061029T060000Z" + System.lineSeparator() +
+                "TZNAME:EST" + System.lineSeparator() +
                 "TZOFFSETFROM:-0400" + System.lineSeparator() +
                 "TZOFFSETTO:-0500" + System.lineSeparator() +
-                "TZNAME:EST" + System.lineSeparator() +
                 "END:STANDARD" + System.lineSeparator() +
                 
                 "BEGIN:DAYLIGHT" + System.lineSeparator() + // 3
                 "DTSTART:19740106T020000" + System.lineSeparator() +
                 "RDATE:19750223T020000" + System.lineSeparator() +
+                "TZNAME:EDT" + System.lineSeparator() +
                 "TZOFFSETFROM:-0500" + System.lineSeparator() +
                 "TZOFFSETTO:-0400" + System.lineSeparator() +
-                "TZNAME:EDT" + System.lineSeparator() +
                 "END:DAYLIGHT" + System.lineSeparator() +
                 
                 "BEGIN:DAYLIGHT" + System.lineSeparator() + // 4
                 "DTSTART:19760425T020000" + System.lineSeparator() +
-                "RRULE:FREQ=YEARLY;UNTIL=19860427T070000Z;BYMONTH=4;BYDAY=-1SU" + System.lineSeparator() +
+                "RRULE:FREQ=YEARLY;BYMONTH=4;BYDAY=-1SU;UNTIL=19860427T070000Z" + System.lineSeparator() +
+                "TZNAME:EDT" + System.lineSeparator() +
                 "TZOFFSETFROM:-0500" + System.lineSeparator() +
                 "TZOFFSETTO:-0400" + System.lineSeparator() +
-                "TZNAME:EDT" + System.lineSeparator() +
                 "END:DAYLIGHT" + System.lineSeparator() +
                 
                 "BEGIN:DAYLIGHT" + System.lineSeparator() + // 5
                 "DTSTART:19870405T020000" + System.lineSeparator() +
-                "RRULE:FREQ=YEARLY;UNTIL=20060402T070000Z;BYMONTH=4;BYDAY=1SU" + System.lineSeparator() +
+                "RRULE:FREQ=YEARLY;BYMONTH=4;BYDAY=1SU;UNTIL=20060402T070000Z" + System.lineSeparator() +
+                "TZNAME:EDT" + System.lineSeparator() +
                 "TZOFFSETFROM:-0500" + System.lineSeparator() +
                 "TZOFFSETTO:-0400" + System.lineSeparator() +
-                "TZNAME:EDT" + System.lineSeparator() +
                 "END:DAYLIGHT" + System.lineSeparator() +
                 
                 "BEGIN:DAYLIGHT" + System.lineSeparator() + // 6
                 "DTSTART:20070311T020000" + System.lineSeparator() +
                 "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU" + System.lineSeparator() +
+                "TZNAME:EDT" + System.lineSeparator() +
                 "TZOFFSETFROM:-0500" + System.lineSeparator() +
                 "TZOFFSETTO:-0400" + System.lineSeparator() +
-                "TZNAME:EDT" + System.lineSeparator() +
                 "END:DAYLIGHT" + System.lineSeparator() +
                 
                 "BEGIN:STANDARD" + System.lineSeparator() + // 7
                 "DTSTART:20071104T020000" + System.lineSeparator() +
                 "RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU" + System.lineSeparator() +
+                "TZNAME:EST" + System.lineSeparator() +
                 "TZOFFSETFROM:-0400" + System.lineSeparator() +
                 "TZOFFSETTO:-0500" + System.lineSeparator() +
-                "TZNAME:EST" + System.lineSeparator() +
                 "END:STANDARD" + System.lineSeparator() +
                 "END:VTIMEZONE" + System.lineSeparator() +
-        
-                "BEGIN:VEVENT" + System.lineSeparator() +
-                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
-                "DTSTART:20151103T100000" + System.lineSeparator() +
-                "DURATION:PT1H30M" + System.lineSeparator() +
-                "RRULE:FREQ=MONTHLY;BYMONTH=11,12;BYDAY=TU,WE,FR" + System.lineSeparator() +
-                "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator() +
-                "END:VEVENT" + System.lineSeparator() +
                 
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group13" + System.lineSeparator() +
@@ -110,26 +102,41 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
                 "UID:20151109T082900-0@jfxtras.org" + System.lineSeparator() +
                 "END:VEVENT" + System.lineSeparator() +
                 
+                "BEGIN:VEVENT" + System.lineSeparator() +
+                "DTSTAMP:20150110T080000Z" + System.lineSeparator() +
+                "DTSTART:20151103T100000" + System.lineSeparator() +
+                "DURATION:PT1H30M" + System.lineSeparator() +
+                "RRULE:FREQ=MONTHLY;BYMONTH=11,12;BYDAY=TU,WE,FR" + System.lineSeparator() +
+                "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator() +
+                "END:VEVENT" + System.lineSeparator() +
+                
                 "END:VCALENDAR";
         VCalendar vCalendar = VCalendar.parse(expectedContent);
+//        System.out.println(vCalendar.toContent());
+//        vCalendar.components().stream().forEach(System.out::println);
         
         VCalendar c = new VCalendar()
-                .withVEvents(getYearly1())
-                .withCalendarScale(new CalendarScale())
-                .withVersion(new Version())
                 .withProductIdentifier(new ProductIdentifier())
-                .withVTimeZones(getTimeZone1())
+                .withVersion(new Version())
+                .withCalendarScale(new CalendarScale())
                 .withVTodos(new VTodo()
                         .withDateTimeCompleted("COMPLETED:19960401T150000Z")
                         .withDateTimeDue("TZID=America/Los_Angeles:19960401T050000")
                         .withPercentComplete(35))
+                .withVTimeZones(getTimeZone1())
+                .withVEvents(getYearly1())
                 .withVEvents(getMonthly6());
-        
-        System.out.println(expectedContent);
-        
-        System.out.println(c.toContent());
-        assertEquals(expectedContent, c.toContent());
+
+//        c.getVEvents().stream().forEach(v -> System.out.println("vevent:" + v.getSummary()));
+//        c.components().stream().forEach(System.out::println);
+
+//        c.elementSortOrder().entrySet().forEach(v -> System.out.println("component:" + v.getKey().toContent().substring(0, 10) + " " + v.getValue()));
+//        System.out.println(expectedContent);
+//        
+//        System.out.println(c.toContent());
+//        System.exit(0);
         assertEquals(vCalendar, c);
+        assertEquals(expectedContent, c.toContent());
 
 //        System.out.println(c.toContent());
     }

@@ -18,7 +18,11 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     public ObservableList<NonStandardProperty> getNonStandardProperties() { return nonStandardProps; }
     private ObservableList<NonStandardProperty> nonStandardProps;
     @Override
-    public void setNonStandardProperties(ObservableList<NonStandardProperty> nonStandardProps) { this.nonStandardProps = nonStandardProps; }
+    public void setNonStandardProperties(ObservableList<NonStandardProperty> nonStandardProps)
+    {
+        this.nonStandardProps = nonStandardProps;
+//        nonStandardProps.addListener(sortOrderListChangeListener);
+    }
     /** add comma separated nonStandardProps into separate nonStandardProps objects */
     
     /**
@@ -51,5 +55,13 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     {
         this();
         copyComponentFrom(source);
+    }
+    
+    @Override
+    void addListeners()
+    {
+        super.addListeners();
+//        getNonStandardProperties().addListener(sortOrderListChangeListener);
+//        getIANAProperties().addListener(sortOrderListChangeListener);
     }
 }

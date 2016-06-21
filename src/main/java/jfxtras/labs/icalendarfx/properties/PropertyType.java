@@ -1006,7 +1006,8 @@ public enum PropertyType
             final ObservableList<NonStandardProperty> list;
             if (castComponent.getNonStandardProperties() == null)
             {
-                list = FXCollections.observableArrayList();
+                list = vComponent.observableArrayListWithOrderListener();
+//                list = FXCollections.observableArrayList();
                 castComponent.setNonStandardProperties(list);
             } else
             {

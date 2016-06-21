@@ -20,7 +20,6 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -30,7 +29,6 @@ import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
 import jfxtras.labs.icalendarfx.properties.calendar.Version;
-import jfxtras.labs.icalendarfx.properties.component.change.DateTimeStamp;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 /**
@@ -47,7 +45,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see VFreeBusy
  * @see VTimeZone
  */
-public class VCalendar
+public class VCalendar extends OrderedElement
 {
     // version of this project, not associated with the iCalendar specification version
     public static String myVersion = "1.0";
@@ -255,7 +253,11 @@ public class VCalendar
     public ObservableList<VEvent> getVEvents() { return vEvents; }
     private ObservableList<VEvent> vEvents = FXCollections.observableArrayList();
     public void setVEvents(ObservableList<VEvent> vEvents) { this.vEvents = vEvents; }
-    public VCalendar withVEventNew(ObservableList<VEvent> vEvents) { setVEvents(vEvents); return this; }
+    public VCalendar withVEventNew(ObservableList<VEvent> vEvents)
+    {
+        setVEvents(vEvents);
+        return this;
+    }
     public VCalendar withVEventNew(String...vEvents)
     {
         Arrays.stream(vEvents).forEach(c -> getVEvents().add(VEvent.parse(c)));
@@ -276,7 +278,11 @@ public class VCalendar
     public ObservableList<VTodo> getVTodos() { return vTodos; }
     private ObservableList<VTodo> vTodos = FXCollections.observableArrayList();
     public void setVTodos(ObservableList<VTodo> vTodos) { this.vTodos = vTodos; }
-    public VCalendar withVTodo(ObservableList<VTodo> vTodos) { setVTodos(vTodos); return this; }
+    public VCalendar withVTodo(ObservableList<VTodo> vTodos)
+    {
+        setVTodos(vTodos);
+        return this;
+    }
     public VCalendar withVTodo(String...vTodos)
     {
         Arrays.stream(vTodos).forEach(c -> getVTodos().add(VTodo.parse(c)));
@@ -382,6 +388,7 @@ public class VCalendar
      * that have a RECURRENCE-ID
      */
     private Map<String, List<VComponentDisplayable<?>>> uidToRelatedComponentsMap = new HashMap<>();
+    
     /**
      * RecurrenceID listener
      * notifies parents when a child component with recurrenceID is created or removed
@@ -438,15 +445,61 @@ public class VCalendar
         }
     };
     
+//    /** 
+//     * SORT ORDER
+//     * Component sort order map.  Key is component, value is order.  Follows sort order of parsed content or
+//     * order of added components.
+//     * 
+//     * If a parameter is not present in the map, it is put at the end of the sorted by
+//     * DTSTAMP.  If DTSTAMP is not present, the component is put on top.
+//     * Generally, this map shouldn't be modified.  Only modify it when you want to force
+//     * a specific parameter order (e.g. unit testing).
+//     */
+//    public Map<VCalendarElement, Integer> elementSortOrder() { return elementSortOrder; }
+//    final private Map<VCalendarElement, Integer> elementSortOrder = new HashMap<>();
+//    private volatile Integer sortOrderCounter = 0;
+//    
+//    /**
+//     * Maintains {@link #elementSortOrder} map
+//     */
+//    private ListChangeListener<VCalendarElement> sortOrderListChangeListener = (ListChangeListener.Change<? extends VCalendarElement> change) ->
+//    {
+//        while (change.next())
+//        {
+//            if (change.wasAdded())
+//            {
+//                change.getAddedSubList().forEach(vComponent ->  elementSortOrder().put(vComponent, sortOrderCounter));
+//                sortOrderCounter += 100;
+//            } else
+//            {
+//                if (change.wasRemoved())
+//                {
+//                    change.getRemoved().forEach(vComponent -> 
+//                    {
+//                        elementSortOrder().remove(vComponent);
+//                    });
+//                }                
+//            }
+//        }
+//    };
+//    
+//    private ChangeListener<? super VCalendarElement> sortOrderChangeListener = (obs, oldValue, newValue) ->
+//    {
+//        if (oldValue != null)
+//        {
+//            elementSortOrder().remove(oldValue);
+//        }
+//        elementSortOrder().put(newValue, sortOrderCounter);
+//        sortOrderCounter += 100;
+//    };
+    
     /*
      * CONSTRUCTORS
      */
     
     public VCalendar()
     {
-        getVEvents().addListener(displayableListChangeListener);
-        getVTodos().addListener(displayableListChangeListener);
-        getVJournals().addListener(displayableListChangeListener);
+        addListeners();
     }
   
     /** Copy constructor */
@@ -460,6 +513,25 @@ public class VCalendar
     /*
      * OTHER METHODS
      */
+    
+    private void addListeners()
+    {
+        // listeners to keep map to related components from UID string
+        getVEvents().addListener(displayableListChangeListener);
+        getVTodos().addListener(displayableListChangeListener);
+        getVJournals().addListener(displayableListChangeListener);
+
+        // Sort order listeners
+        getVEvents().addListener(sortOrderListChangeListener);
+        getVTodos().addListener(sortOrderListChangeListener);
+        getVJournals().addListener(sortOrderListChangeListener);
+        getVTimeZones().addListener(sortOrderListChangeListener);
+        getVFreeBusies().addListener(sortOrderListChangeListener);
+        calendarScaleProperty().addListener(sortOrderChangeListener);
+        methodProperty().addListener(sortOrderChangeListener);
+        productIdentifierProperty().addListener(sortOrderChangeListener);
+        versionProperty().addListener(sortOrderChangeListener);
+    }
     
     /**
      * List of all components found in calendar object.
@@ -482,17 +554,6 @@ public class VCalendar
         }
         return Collections.unmodifiableList(allComponents);
     }
-    
-    /** 
-     * Component sort order map.  Key is component, value is order.  Follows sort order of parsed content.
-     * If a parameter is not present in the map, it is put at the end of the sorted by
-     * DTSTAMP.  If DTSTAMP is not present, the component is put on top.
-     * Generally, this map shouldn't be modified.  Only modify it when you want to force
-     * a specific parameter order (e.g. unit testing).
-     */
-    public Map<VCalendarElement, Long> elementSortOrder() { return elementSortOrder; }
-    final private Map<VCalendarElement, Long> elementSortOrder = new HashMap<>();
-    
     
     /** Parse content lines into calendar object */
     public String toContent()
@@ -528,11 +589,11 @@ public class VCalendar
         elementContentMap.entrySet().stream()
                 .sorted((Comparator<? super Entry<VCalendarElement, CharSequence>>) (e1, e2) -> 
                 {
-                    final Long s1Initial = elementSortOrder().get(e1.getKey());
-                    final Long s2Initial = elementSortOrder().get(e2.getKey());
-                    final Long s1Final = finalSortOrder(s1Initial, e1.getKey());
-                    final Long s2Final = finalSortOrder(s2Initial, e2.getKey());
-                    return s1Final.compareTo(s2Final);
+                    Integer s1 = elementSortOrder().get(e1.getKey());
+                    Integer s2 = elementSortOrder().get(e2.getKey());
+                    s1 = (s1 == null) ? 0 : s1;
+                    s2 = (s2 == null) ? 0 : s2;
+                    return s1.compareTo(s2);
                 })
                 .forEach(p -> 
                 {
@@ -542,37 +603,13 @@ public class VCalendar
         builder.append(lastContentLine);
         return builder.toString();
     }
-    private Long finalSortOrder(Long initialSort, VCalendarElement element)
-    {
-        final Long s1Final;
-        if (initialSort == null)
-        {
-            if (element instanceof VComponentPersonal)
-            { // sort by DTSTAMP
-                DateTimeStamp dateTimeStamp = ((VComponentPersonal<?>) element).getDateTimeStamp();
-                s1Final = (dateTimeStamp != null) ? dateTimeStamp.getValue().toInstant().toEpochMilli() : 0L; // shouldn't even be 0, DTSTAMP is REQUIRED
-            } else
-            {
-                s1Final = 0L; // no DTSTAMP sort order value is zero, keep natural order of elements
-            }
-        } else
-        {
-            /* make sorted values use negative values to ensure following order
-             * 1 - Elements with sort order
-             * 2 - Elements with no DTSTAMP (i.e. VTimeZone and calendar properties including PRODID, VERSION, CALSCALE and PUBLISH)
-             * 3 - Elements with DTSTAMP, in chronological order
-             */
-            s1Final = initialSort - Long.MIN_VALUE;
-        }
-        return s1Final;
-    }
+
     private final String firstContentLine = "BEGIN:VCALENDAR";
     private final String lastContentLine = "END:VCALENDAR";
 
     /** Parse content lines into calendar object */
     public void parseContent(String content)
     {
-        Long componentCounter = 0L;
         List<String> contentLines = ICalendarUtilities.unfoldLines(content);
         if (! contentLines.get(0).equals("BEGIN:VCALENDAR"))
         {
@@ -597,11 +634,9 @@ public class VCalendar
                     line = contentLines.get(index);
                     myLines.add(line);
                 } while (! line.equals(endLine));
-                
+
                 CalendarElementType elementType = CalendarElementType.valueOf(componentName);
-                VCalendarElement element = elementType.parse(this, myLines);
-                elementSortOrder().put(element, componentCounter);
-                componentCounter += 100;
+                elementType.parse(this, myLines);
                 
             // parse calendar properties (ignores unknown properties)
             } else
@@ -609,9 +644,7 @@ public class VCalendar
                 CalendarElementType elementType = CalendarElementType.enumFromName(propertyName);
                 if (elementType != null)
                 {
-                    VCalendarElement element = elementType.parse(this, Arrays.asList(line));
-                    elementSortOrder().put(element, componentCounter);
-                    componentCounter += 100;
+                    elementType.parse(this, Arrays.asList(line));
                 }
             }
         }
@@ -636,62 +669,36 @@ public class VCalendar
     @Override
     public boolean equals(Object obj)
     {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        VCalendar other = (VCalendar) obj;
-        if (calendarScale == null)
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        VCalendar testObj = (VCalendar) obj;
+        
+        final boolean componentsEquals;
+        List<VComponent> components = components(); // make properties local to avoid creating list multiple times
+        List<VComponent> testComponents = testObj.components(); // make properties local to avoid creating list multiple times
+        if (components.size() == testComponents.size())
         {
-            if (other.calendarScale != null)
-                return false;
-        } else if (!calendarScale.equals(other.calendarScale))
-            return false;
-        if (method == null)
+            Iterator<VComponent> i1 = components.iterator();
+            Iterator<VComponent> i2 = testComponents.iterator();
+            boolean isFailure = false;
+            while (i1.hasNext())
+            {
+                Object c1 = i1.next();
+                Object c2 = i2.next();
+                if (! c1.equals(c2))
+                {
+//                    System.out.println("c1,c2:" + c1 + " " + c2 + " " + c1.equals(c2));
+                    isFailure = true;
+                    break;
+                }
+            }
+            componentsEquals = ! isFailure;
+        } else
         {
-            if (other.method != null)
-                return false;
-        } else if (!method.equals(other.method))
-            return false;
-        if (productIdentifier == null)
-        {
-            if (other.productIdentifier != null)
-                return false;
-        } else if (!productIdentifier.equals(other.productIdentifier))
-            return false;
-        if (vEvents == null)
-        {
-            if (other.vEvents != null)
-                return false;
-        } else if (!vEvents.equals(other.vEvents))
-            return false;
-        if (vFreeBusys == null)
-        {
-            if (other.vFreeBusys != null)
-                return false;
-        } else if (!vFreeBusys.equals(other.vFreeBusys))
-            return false;
-        if (vJournals == null)
-        {
-            if (other.vJournals != null)
-                return false;
-        } else if (!vJournals.equals(other.vJournals))
-            return false;
-        if (vTimeZones == null)
-        {
-            if (other.vTimeZones != null)
-                return false;
-        } else if (!vTimeZones.equals(other.vTimeZones))
-            return false;
-        if (vTodos == null)
-        {
-            if (other.vTodos != null)
-                return false;
-        } else if (!vTodos.equals(other.vTodos))
-            return false;
-        return true;
+            componentsEquals = false;
+        }
+        return componentsEquals;
     }
     
 

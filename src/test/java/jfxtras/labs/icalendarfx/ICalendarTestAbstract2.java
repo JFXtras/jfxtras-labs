@@ -802,13 +802,13 @@ public abstract class ICalendarTestAbstract2
                         .withTimeZoneOffsetTo("-0500")
                         .withTimeZoneNames("EST"),
                     new DaylightSavingTime() // 3
-                        .withDateTimeStart("19760425T020000")
+                        .withDateTimeStart("19740106T020000")
                         .withRecurrenceDates("RDATE:19750223T020000")
                         .withTimeZoneOffsetFrom("-0500")
                         .withTimeZoneOffsetTo("-0400")
                         .withTimeZoneNames("EDT"),
                     new DaylightSavingTime() // 4
-                        .withDateTimeStart("19671029T020000")
+                        .withDateTimeStart("19760425T020000")
                         .withRecurrenceRule("RRULE:FREQ=YEARLY;BYMONTH=4;BYDAY=-1SU;UNTIL=19860427T070000Z")
                         .withTimeZoneOffsetFrom("-0500")
                         .withTimeZoneOffsetTo("-0400")

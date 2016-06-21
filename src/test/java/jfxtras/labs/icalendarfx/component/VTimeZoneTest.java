@@ -99,10 +99,7 @@ public class VTimeZoneTest
 
         component.equals(builtComponent);
         assertEquals(component, builtComponent);
-//        System.out.println(expectedContent);
-//        System.out.println("------------------");
-//        System.out.println(builtComponent.toContent());
-//        assertEquals(component.toContent(), builtComponent.toContent());
         assertEquals(expectedContent, component.toContent());
+        assertEquals(builtComponent.toContent(), component.toContent());
     }
 }

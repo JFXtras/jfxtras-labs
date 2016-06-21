@@ -514,11 +514,14 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
     public int hashCode()
     {
         int hash = super.hashCode();
-        Iterator<StandardOrDaylight<?>> i = getStandardOrDaylight().iterator();
-        while (i.hasNext())
+        if (getStandardOrDaylight() != null)
         {
-            Object property = i.next();
-            hash = (31 * hash) + property.hashCode();
+            Iterator<StandardOrDaylight<?>> i = getStandardOrDaylight().iterator();
+            while (i.hasNext())
+            {
+                Object property = i.next();
+                hash = (31 * hash) + property.hashCode();
+            }
         }
         return hash;
     }

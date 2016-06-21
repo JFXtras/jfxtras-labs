@@ -110,7 +110,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
                     List<? extends PropertyBaseRecurrence<?>> changeList = change.getAddedSubList();
                     Temporal firstRecurrence = list.get(0).getValue().iterator().next();
                     // check consistency with previous recurrence values
-                    System.out.println("check match:" );
+//                    System.out.println("check match:" );
                     checkRecurrencesConsistency(changeList, firstRecurrence);
                 }
             }

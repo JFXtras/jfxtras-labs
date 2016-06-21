@@ -68,8 +68,10 @@ public enum CalendarElementType
         @Override
         public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VTodo e = new VTodo();
+            e.parseContent(contentLines);
+            vCalendar.getVTodos().add(e);
+            return e;
         }
 
     },
@@ -93,8 +95,10 @@ public enum CalendarElementType
         @Override
         public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VJournal e = new VJournal();
+            e.parseContent(contentLines);
+            vCalendar.getVJournals().add(e);
+            return e;
         }
 
     },
@@ -112,8 +116,11 @@ public enum CalendarElementType
         @Override
         public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
-            // TODO Auto-generated method stub
-            return null;
+            System.out.println("parse timezone");
+            VTimeZone e = new VTimeZone();
+            e.parseContent(contentLines);
+            vCalendar.getVTimeZones().add(e);
+            return e;
         }
 
     },
@@ -133,8 +140,10 @@ public enum CalendarElementType
         @Override
         public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
-            // TODO Auto-generated method stub
-            return null;
+            VFreeBusy e = new VFreeBusy();
+            e.parseContent(contentLines);
+            vCalendar.getVFreeBusies().add(e);
+            return e;
         }
     },
     // NON-MAIN COMPONENTS - MUST BE NESTED IN A MAIN COMPONENT
@@ -154,8 +163,7 @@ public enum CalendarElementType
         @Override
         public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
-            // TODO Auto-generated method stub
-            return null;
+            throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
         }
 
     },
@@ -175,8 +183,7 @@ public enum CalendarElementType
         @Override
         public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
-            // TODO Auto-generated method stub
-            return null;
+            throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
         }
 
     },
@@ -195,8 +202,7 @@ public enum CalendarElementType
         @Override
         public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
-            // TODO Auto-generated method stub
-            return null;
+            throw new RuntimeException("Not a main component - must be embedded inside a VEvent or VTodo");
         }
 
     },
