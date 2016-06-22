@@ -37,6 +37,9 @@ public class VTodoTest
                 
         VTodo madeComponent = new VTodo(content);
         assertEquals(madeComponent, builtComponent);
+        System.out.println(builtComponent.toContent() );
+        builtComponent.elementSortOrderMap().entrySet().forEach(System.out::println);
+        System.out.println(madeComponent.toContent() );
         assertEquals(content, builtComponent.toContent());
     }
     

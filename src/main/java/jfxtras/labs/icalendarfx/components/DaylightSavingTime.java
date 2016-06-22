@@ -22,9 +22,9 @@ public class DaylightSavingTime extends StandardOrDaylightBase<DaylightSavingTim
         super(contentLines);
     }
 
-    public DaylightSavingTime(DaylightSavingTime a)
+    public DaylightSavingTime(DaylightSavingTime source)
     {
-        // TODO Auto-generated constructor stub
+        super(source);
     }
     
     @Override

@@ -44,6 +44,13 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
     public void setRecurrenceDates(ObservableList<RecurrenceDates> recurrenceDates)
     {
         this.recurrenceDates = recurrenceDates;
+        if (recurrenceDates != null)
+        {
+            registerSortOrderProperty(recurrenceDates);
+        } else
+        {
+            unregisterSortOrderProperty(this.recurrenceDates);
+        }
         recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
         checkRecurrencesConsistency(recurrenceDates, null);
     }
@@ -64,6 +71,7 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
         if (recurrenceRule == null)
         {
             recurrenceRule = new SimpleObjectProperty<>(this, PropertyType.UNIQUE_IDENTIFIER.toString());
+            registerSortOrderProperty(recurrenceRule);
         }
         return recurrenceRule;
     }

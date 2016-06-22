@@ -82,7 +82,17 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
      */
     public ObservableList<Description> getDescriptions() { return descriptions; }
     private ObservableList<Description> descriptions;
-    public void setDescriptions(ObservableList<Description> descriptions) { this.descriptions = descriptions; }
+    public void setDescriptions(ObservableList<Description> descriptions)
+    {
+        if (descriptions != null)
+        {
+            registerSortOrderProperty(descriptions);
+        } else
+        {
+            unregisterSortOrderProperty(this.descriptions);
+        }
+        this.descriptions = descriptions;
+    }
     public VJournal withDescriptions(ObservableList<Description> descriptions) { setDescriptions(descriptions); return this; }
     public VJournal withDescriptions(String...descriptions)
     {

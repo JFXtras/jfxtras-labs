@@ -83,6 +83,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         if (dateTimeCompleted == null)
         {
             dateTimeCompleted = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_COMPLETED.toString());
+            registerSortOrderProperty(dateTimeCompleted);
         }
         return dateTimeCompleted;
     }
@@ -110,6 +111,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         if (dateTimeDue == null)
         {
             dateTimeDue = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_DUE.toString());
+            registerSortOrderProperty(dateTimeDue);
             dateTimeDue.addListener((observable, oldValue, newValue) -> 
             {
                 if ((getDateTimeDue() != null) && (getDuration() != null))
@@ -178,6 +180,7 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         if (percentComplete == null)
         {
             percentComplete = new SimpleObjectProperty<>(this, PropertyType.PERCENT_COMPLETE.toString());
+            registerSortOrderProperty(percentComplete);
         }
         return percentComplete;
     }

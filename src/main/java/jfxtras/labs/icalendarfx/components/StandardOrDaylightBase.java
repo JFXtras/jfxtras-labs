@@ -40,7 +40,17 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
     public ObservableList<TimeZoneName> getTimeZoneNames() { return timeZoneNames; }
     private ObservableList<TimeZoneName> timeZoneNames;
     @Override
-    public void setTimeZoneNames(ObservableList<TimeZoneName> timeZoneNames) { this.timeZoneNames = timeZoneNames; }
+    public void setTimeZoneNames(ObservableList<TimeZoneName> timeZoneNames)
+    {
+        if (timeZoneNames != null)
+        {
+            registerSortOrderProperty(timeZoneNames);
+        } else
+        {
+            unregisterSortOrderProperty(this.timeZoneNames);
+        }
+        this.timeZoneNames = timeZoneNames;
+    }
     
     /**
      * TZOFFSETFROM
@@ -59,6 +69,7 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
         if (timeZoneOffsetFrom == null)
         {
             timeZoneOffsetFrom = new SimpleObjectProperty<>(this, PropertyType.TIME_ZONE_OFFSET_FROM.toString());
+            registerSortOrderProperty(timeZoneOffsetFrom);
         }
         return timeZoneOffsetFrom;
     }
@@ -81,6 +92,7 @@ public abstract class StandardOrDaylightBase<T> extends VComponentRepeatableBase
         if (timeZoneOffsetTo == null)
         {
             timeZoneOffsetTo = new SimpleObjectProperty<>(this, PropertyType.TIME_ZONE_OFFSET_TO.toString());
+            registerSortOrderProperty(timeZoneOffsetTo);
         }
         return timeZoneOffsetTo;
     }

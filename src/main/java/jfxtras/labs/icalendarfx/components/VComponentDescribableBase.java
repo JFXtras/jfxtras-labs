@@ -41,7 +41,17 @@ public abstract class VComponentDescribableBase<T> extends VComponentCommonBase<
     }
     private ObservableList<Attachment<?>> attachments;
     @Override
-    public void setAttachments(ObservableList<Attachment<?>> attachments) { this.attachments = attachments; }
+    public void setAttachments(ObservableList<Attachment<?>> attachments)
+    {
+        if (attachments != null)
+        {
+            registerSortOrderProperty(attachments);
+        } else
+        {
+            unregisterSortOrderProperty(this.attachments);
+        }
+        this.attachments = attachments;
+    }
     
     /**
      * SUMMARY
@@ -57,6 +67,7 @@ public abstract class VComponentDescribableBase<T> extends VComponentCommonBase<
         if (summary == null)
         {
             summary = new SimpleObjectProperty<>(this, PropertyType.SUMMARY.toString());
+            registerSortOrderProperty(summary);
         }
         return summary;
     }

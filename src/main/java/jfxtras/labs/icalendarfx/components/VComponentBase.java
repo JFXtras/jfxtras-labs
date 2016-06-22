@@ -178,7 +178,13 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
     {
         StringBuilder builder = new StringBuilder(400);
         builder.append(firstContentLine + System.lineSeparator());
-        appendMiddleContentLines(builder);
+        String content = sortedContent().stream()
+//                .map(s -> ICalendarUtilities.foldLine(s))
+                .collect(Collectors.joining(System.lineSeparator()));
+        if (content != null)
+        {
+            builder.append(content + System.lineSeparator());
+        }
         builder.append(lastContentLine);
         return builder.toString();
     }
@@ -239,7 +245,40 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
         return propertiesEquals;
     }
 
-    void appendMiddleContentLines(StringBuilder builder)
+//    public void appendMiddleContentLines(StringBuilder builder)
+//    {
+//        /* map of property name/content
+//         * 
+//         * Note: key is property name and not Property reference because I want all properties
+//         * with same name, even non-standard and IANA properties, to have same sort order.  The non-
+//         * standard properties with different names should be sorted together, not lumped with all
+//         * non-standard properties.
+//         */
+//        
+//        Map<VCalendarElement, CharSequence> elementContentMap = new LinkedHashMap<>();
+//        List<VCalendarElement> elements = new ArrayList<VCalendarElement>();
+//        elements.forEach(element -> elementContentMap.put(element, element.toContent()));
+//        
+//        // restore component sort order if components were parsed from content
+//        elementContentMap.entrySet().stream()
+//                .sorted((Comparator<? super Entry<VCalendarElement, CharSequence>>) (e1, e2) -> 
+//                {
+//                    Integer s1 = elementSortOrder().get(e1.getKey());
+//                    Integer s2 = elementSortOrder().get(e2.getKey());
+//                    s1 = (s1 == null) ? 0 : s1;
+//                    s2 = (s2 == null) ? 0 : s2;
+//                    return s1.compareTo(s2);
+//                })
+//                .forEach(p -> 
+//                {
+//                    builder.append(p.getValue() + System.lineSeparator());
+//                });
+//        
+//        builder.append(lastContentLine);
+//    }
+    
+    @Deprecated
+    void appendMiddleContentLines2(StringBuilder builder)
     {
         /* map of property name/content
          * 
@@ -248,6 +287,7 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
          * standard properties with different names should be sorted together, not lumped with all
          * non-standard properties.
          */
+        
         Map<String, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
         properties().forEach(property -> 
                 {

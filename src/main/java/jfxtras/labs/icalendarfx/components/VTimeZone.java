@@ -10,7 +10,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVTimeZone;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -264,7 +263,7 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
  * @author David Bal
  *
  */
-public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VComponentLastModified<VTimeZone>, VCalendarElement
+public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VComponentLastModified<VTimeZone>
 {
     @Override
     public CalendarElementType componentType()
@@ -285,7 +284,17 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
      */
     public ObservableList<StandardOrDaylight<?>> getStandardOrDaylight() { return standardOrDaylight; }
     private ObservableList<StandardOrDaylight<?>> standardOrDaylight;
-    public void setStandardOrDaylight(ObservableList<StandardOrDaylight<?>> standardOrDaylight) { this.standardOrDaylight = standardOrDaylight; }
+    public void setStandardOrDaylight(ObservableList<StandardOrDaylight<?>> standardOrDaylight)
+    {
+        if (standardOrDaylight != null)
+        {
+            registerSortOrderProperty(standardOrDaylight);
+        } else
+        {
+            unregisterSortOrderProperty(this.standardOrDaylight);
+        }
+        this.standardOrDaylight = standardOrDaylight;
+    }
     public VTimeZone withStandardOrDaylight(ObservableList<StandardOrDaylight<?>> standardOrDaylight) { setStandardOrDaylight(standardOrDaylight); return this; }
     public VTimeZone withStandardOrDaylight(StandardOrDaylight<?>...standardOrDaylight)
     {
@@ -321,6 +330,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
         if (lastModified == null)
         {
             lastModified = new SimpleObjectProperty<>(this, PropertyType.LAST_MODIFIED.toString());
+            registerSortOrderProperty(lastModified);
         }
         return lastModified;
     }
@@ -348,6 +358,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
         if (timeZoneIdentifier == null)
         {
             timeZoneIdentifier = new SimpleObjectProperty<>(this, PropertyType.TIME_ZONE_IDENTIFIER.toString());
+            registerSortOrderProperty(timeZoneIdentifier);
         }
         return timeZoneIdentifier;
     }
@@ -375,6 +386,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
         if (timeZoneURL == null)
         {
             timeZoneURL = new SimpleObjectProperty<>(this, PropertyType.TIME_ZONE_IDENTIFIER.toString());
+            registerSortOrderProperty(timeZoneURL);
         }
         return timeZoneURL;
     }
@@ -424,16 +436,16 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
         return Collections.unmodifiableList(errors);
     }
 
-    /** include Standard and Daylight sub-components in content lines */
-    @Override
-    void appendMiddleContentLines(StringBuilder builder)
-    {
-        super.appendMiddleContentLines(builder);
-        if (getStandardOrDaylight() != null)
-        {
-            getStandardOrDaylight().stream().forEach(a -> builder.append(a.toContent() + System.lineSeparator()));
-        }
-    }
+//    /** include Standard and Daylight sub-components in content lines */
+//    @Override
+//    void appendMiddleContentLines(StringBuilder builder)
+//    {
+//        super.appendMiddleContentLines(builder);
+//        if (getStandardOrDaylight() != null)
+//        {
+//            getStandardOrDaylight().stream().forEach(a -> builder.append(a.toContent() + System.lineSeparator()));
+//        }
+//    }
     
     /** parse Standard and Daylight sub-components */
     @Override

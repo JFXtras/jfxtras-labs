@@ -46,13 +46,20 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      *  reports/r-960812.ps
      * */
     @Override
-    public ObservableList<Attachment<?>> getAttachments()
-    {
-        return attachments;
-    }
+    public ObservableList<Attachment<?>> getAttachments() { return attachments; }
     private ObservableList<Attachment<?>> attachments;
     @Override
-    public void setAttachments(ObservableList<Attachment<?>> attachments) { this.attachments = attachments; }
+    public void setAttachments(ObservableList<Attachment<?>> attachments)
+    {
+        if (attachments != null)
+        {
+            registerSortOrderProperty(attachments);
+        } else
+        {
+            unregisterSortOrderProperty(this.attachments);
+        }
+        this.attachments = attachments;
+    }
     
     /**
      * CATEGORIES:
@@ -66,7 +73,17 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public ObservableList<Categories> getCategories() { return categories; }
     private ObservableList<Categories> categories;
     @Override
-    public void setCategories(ObservableList<Categories> categories) { this.categories = categories; }
+    public void setCategories(ObservableList<Categories> categories)
+    {
+        if (categories != null)
+        {
+            registerSortOrderProperty(categories);
+        } else
+        {
+            unregisterSortOrderProperty(this.categories);
+        }
+        this.categories = categories;
+    }
     
     /**
      * CLASS
@@ -84,6 +101,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (classification == null)
         {
             classification = new SimpleObjectProperty<>(this, PropertyType.CLASSIFICATION.toString());
+            registerSortOrderProperty(classification);
         }
         return classification;
     }
@@ -125,6 +143,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (dateTimeCreated == null)
         {
             dateTimeCreated = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_CREATED.toString());
+            registerSortOrderProperty(dateTimeCreated);
         }
         return dateTimeCreated;
     }
@@ -149,13 +168,16 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     @Override
     public void setExceptionDates(ObservableList<ExceptionDates> exceptions)
     {
-        this.exceptions = exceptions;
         if (exceptions != null)
         {
-            System.out.println("attach listener:");
+            registerSortOrderProperty(exceptions);
             exceptions.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
             checkRecurrencesConsistency(exceptions, null); // test current data
+        } else
+        {
+            unregisterSortOrderProperty(this.exceptions);
         }
+        this.exceptions = exceptions;
     }
     
     /**
@@ -180,6 +202,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (lastModified == null)
         {
             lastModified = new SimpleObjectProperty<>(this, PropertyType.LAST_MODIFIED.toString());
+            registerSortOrderProperty(lastModified);
         }
         return lastModified;
     }
@@ -203,12 +226,16 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     @Override
     public void setRecurrenceDates(ObservableList<RecurrenceDates> recurrenceDates)
     {
-        this.recurrenceDates = recurrenceDates;
         if (recurrenceDates != null)
         {
+            registerSortOrderProperty(recurrenceDates);
             recurrenceDates.addListener(getRecurrencesConsistencyWithDateTimeStartListener());
             checkRecurrencesConsistency(recurrenceDates, null);
+        } else
+        {
+            unregisterSortOrderProperty(this.recurrenceDates);
         }
+        this.recurrenceDates = recurrenceDates;
     }
 
     /**
@@ -226,6 +253,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (recurrenceId == null)
         {
             recurrenceId = new SimpleObjectProperty<>(this, PropertyType.RECURRENCE_IDENTIFIER.toString());
+            registerSortOrderProperty(recurrenceId);
             recurrenceId.addListener((observable, oldValue, newValue) -> checkRecurrenceIdConsistency());
         }
         return recurrenceId;
@@ -249,7 +277,17 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public ObservableList<RelatedTo> getRelatedTo() { return relatedTo; }
     private ObservableList<RelatedTo> relatedTo;
     @Override
-    public void setRelatedTo(ObservableList<RelatedTo> relatedTo) { this.relatedTo = relatedTo; }
+    public void setRelatedTo(ObservableList<RelatedTo> relatedTo)
+    {
+        if (relatedTo != null)
+        {
+            registerSortOrderProperty(relatedTo);
+        } else
+        {
+            unregisterSortOrderProperty(this.relatedTo);
+        }
+        this.relatedTo = relatedTo;
+    }
     
     /**
      * RRULE, Recurrence Rule
@@ -267,6 +305,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (recurrenceRule == null)
         {
             recurrenceRule = new SimpleObjectProperty<>(this, PropertyType.UNIQUE_IDENTIFIER.toString());
+            registerSortOrderProperty(recurrenceRule);
         }
         return recurrenceRule;
     }
@@ -295,6 +334,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (sequence == null)
         {
             sequence = new SimpleObjectProperty<>(this, PropertyType.SEQUENCE.toString());
+            registerSortOrderProperty(sequence);
         }
         return sequence;
     }
@@ -316,6 +356,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (summary == null)
         {
             summary = new SimpleObjectProperty<>(this, PropertyType.SUMMARY.toString());
+            registerSortOrderProperty(summary);
         }
         return summary;
     }
@@ -338,6 +379,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (status == null)
         {
             status = new SimpleObjectProperty<>(this, PropertyType.STATUS.toString());
+            registerSortOrderProperty(status);
         }
         return status;
     }

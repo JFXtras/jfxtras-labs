@@ -3,13 +3,10 @@ package jfxtras.labs.icalendarfx;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
@@ -576,24 +573,30 @@ public class VCalendar extends OrderedElement
 
         StringBuilder builder = new StringBuilder(elements.size()*300);
         builder.append(firstContentLine + System.lineSeparator());
+        String content = sortedContent().stream().collect(Collectors.joining(System.lineSeparator()));
+        if (content != null)
+        {
+            builder.append(content + System.lineSeparator());
+        }
 
-        Map<VCalendarElement, CharSequence> elementContentMap = new LinkedHashMap<>();
-        elements.forEach(element -> elementContentMap.put(element, element.toContent()));
-        
-        // restore component sort order if components were parsed from content
-        elementContentMap.entrySet().stream()
-                .sorted((Comparator<? super Entry<VCalendarElement, CharSequence>>) (e1, e2) -> 
-                {
-                    Integer s1 = elementSortOrder().get(e1.getKey());
-                    Integer s2 = elementSortOrder().get(e2.getKey());
-                    s1 = (s1 == null) ? 0 : s1;
-                    s2 = (s2 == null) ? 0 : s2;
-                    return s1.compareTo(s2);
-                })
-                .forEach(p -> 
-                {
-                    builder.append(p.getValue() + System.lineSeparator());
-                });
+//        Map<VCalendarElement, CharSequence> elementContentMap = new LinkedHashMap<>();
+//        elements.forEach(element -> elementContentMap.put(element, element.toContent()));
+//        
+//        // TODO - REPLACE WITH METHOD IN ORDEREDELEMENT
+//        // restore component sort order if components were parsed from content
+//        elementContentMap.entrySet().stream()
+//                .sorted((Comparator<? super Entry<VCalendarElement, CharSequence>>) (e1, e2) -> 
+//                {
+//                    Integer s1 = elementSortOrderMap().get(e1.getKey());
+//                    Integer s2 = elementSortOrderMap().get(e2.getKey());
+//                    s1 = (s1 == null) ? 0 : s1;
+//                    s2 = (s2 == null) ? 0 : s2;
+//                    return s1.compareTo(s2);
+//                })
+//                .forEach(p -> 
+//                {
+//                    builder.append(p.getValue() + System.lineSeparator());
+//                });
         
         builder.append(lastContentLine);
         return builder.toString();

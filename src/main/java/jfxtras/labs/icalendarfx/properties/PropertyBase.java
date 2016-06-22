@@ -556,8 +556,8 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         // add property value
         String stringValue = valueContent();
         builder.append(":" + stringValue);
-
-        return builder.toString();
+        // return folded line
+        return ICalendarUtilities.foldLine(builder).toString();
     }
 
 //    @Override
