@@ -3,32 +3,31 @@ package jfxtras.labs.icalendarfx;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
-/** Provide a framework to maintain a sort order for of VCalendarElements */ 
+/** Provide a framework to maintain a sort order of VCalendarElement contents */ 
 public abstract class OrderedElement
 {
     /** 
      * SORT ORDER
-     * Component sort order map.  Key is component, value is order.  Follows sort order of parsed content or
-     * order of added components.
+     * Component sort order map.  Key is element, value is sort order.  Follows sort order of parsed content or
+     * order of added elements.
      * 
-     * If a parameter is not present in the map, it is put at the end of the sorted by
-     * DTSTAMP.  If DTSTAMP is not present, the component is put on top.
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
-     * a specific parameter order (e.g. unit testing).
+     * a specific order.
      */
     public Map<VCalendarElement, Integer> elementSortOrder() { return elementSortOrder; }
     final private Map<VCalendarElement, Integer> elementSortOrder = new HashMap<>();
     private volatile Integer sortOrderCounter = 0;
     
     /**
+     * Sort order listener for ObservableList properties
      * Maintains {@link #elementSortOrder} map
      */
-    protected ListChangeListener<VCalendarElement> sortOrderListChangeListener = (ListChangeListener.Change<? extends VCalendarElement> change) ->
+    private ListChangeListener<VCalendarElement> sortOrderListChangeListener = (ListChangeListener.Change<? extends VCalendarElement> change) ->
     {
         while (change.next())
         {
@@ -48,8 +47,24 @@ public abstract class OrderedElement
             }
         }
     };
+    public void registerSortOrderProperty(ObservableList<? extends VCalendarElement> list)
+    {
+        list.addListener(sortOrderListChangeListener);
+        if (! list.isEmpty())
+        { // add existing elements to sort order
+            list.forEach(vComponent ->  elementSortOrder().put(vComponent, sortOrderCounter));
+            sortOrderCounter += 100;
+        }
+    }
+    public void unregisterSortOrderProperty(ObservableList<? extends VCalendarElement> list)
+    {
+        list.removeListener(sortOrderListChangeListener);
+    }
     
-    protected ChangeListener<? super VCalendarElement> sortOrderChangeListener = (obs, oldValue, newValue) ->
+    /** Sort order listener for object properties
+     * Maintains {@link #elementSortOrder} map
+     */
+    private ChangeListener<? super VCalendarElement> sortOrderChangeListener = (obs, oldValue, newValue) ->
     {
         if (oldValue != null)
         {
@@ -58,11 +73,17 @@ public abstract class OrderedElement
         elementSortOrder().put(newValue, sortOrderCounter);
         sortOrderCounter += 100;
     };
-    
-    public <E extends VCalendarElement> ObservableList<E> observableArrayListWithOrderListener()
+    public void registerSortOrderProperty(ObjectProperty<? extends VCalendarElement> property)
     {
-        ObservableList<E> list = FXCollections.observableArrayList();
-        list.addListener(sortOrderListChangeListener);
-        return list;
+        property.addListener(sortOrderChangeListener);
+        if (property.get() != null)
+        { // add existing element to sort order
+            elementSortOrder().put(property.get(), sortOrderCounter);
+            sortOrderCounter += 100;
+        }
+    }
+    public void unregisterSortOrderProperty(ObjectProperty<? extends VCalendarElement> property)
+    {
+        property.removeListener(sortOrderChangeListener);
     }
 }

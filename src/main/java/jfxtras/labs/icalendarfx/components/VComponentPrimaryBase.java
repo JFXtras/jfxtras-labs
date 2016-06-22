@@ -50,7 +50,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentCommonBase<T> i
         if (dateTimeStart == null)
         {
             dateTimeStart = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_START.toString());
-//            dateTimeStartProperty().addListener((observable, oldValue, newValue) -> checkDateTimeStartConsistency() );
+            registerSortOrderProperty(dateTimeStart);
         }
         return dateTimeStart;
     }

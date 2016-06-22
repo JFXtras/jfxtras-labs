@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.properties.Property;
@@ -122,5 +121,5 @@ public interface VComponent extends VCalendarElement
     @Override
     String toContent();
 
-    <E extends VCalendarElement> ObservableList<E> observableArrayListWithOrderListener();
+//    <E extends VCalendarElement> ObservableList<E> observableArrayListWithOrderListener();
 }

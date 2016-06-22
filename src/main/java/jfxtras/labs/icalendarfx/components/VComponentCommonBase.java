@@ -20,8 +20,14 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     @Override
     public void setNonStandardProperties(ObservableList<NonStandardProperty> nonStandardProps)
     {
+        if (nonStandardProps != null)
+        {
+            registerSortOrderProperty(nonStandardProps);
+        } else
+        {
+            unregisterSortOrderProperty(this.nonStandardProps);
+        }
         this.nonStandardProps = nonStandardProps;
-//        nonStandardProps.addListener(sortOrderListChangeListener);
     }
     /** add comma separated nonStandardProps into separate nonStandardProps objects */
     

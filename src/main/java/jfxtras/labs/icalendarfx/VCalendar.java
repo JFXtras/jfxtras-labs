@@ -39,11 +39,6 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * 
  * @author David Bal
  *
- * @see VEvent
- * @see VTodo
- * @see VJournal
- * @see VFreeBusy
- * @see VTimeZone
  */
 public class VCalendar extends OrderedElement
 {
@@ -522,15 +517,15 @@ public class VCalendar extends OrderedElement
         getVJournals().addListener(displayableListChangeListener);
 
         // Sort order listeners
-        getVEvents().addListener(sortOrderListChangeListener);
-        getVTodos().addListener(sortOrderListChangeListener);
-        getVJournals().addListener(sortOrderListChangeListener);
-        getVTimeZones().addListener(sortOrderListChangeListener);
-        getVFreeBusies().addListener(sortOrderListChangeListener);
-        calendarScaleProperty().addListener(sortOrderChangeListener);
-        methodProperty().addListener(sortOrderChangeListener);
-        productIdentifierProperty().addListener(sortOrderChangeListener);
-        versionProperty().addListener(sortOrderChangeListener);
+        registerSortOrderProperty(getVEvents());
+        registerSortOrderProperty(getVTodos());
+        registerSortOrderProperty(getVJournals());
+        registerSortOrderProperty(getVTimeZones());
+        registerSortOrderProperty(getVFreeBusies());
+        registerSortOrderProperty(calendarScaleProperty());
+        registerSortOrderProperty(methodProperty());
+        registerSortOrderProperty(productIdentifierProperty());
+        registerSortOrderProperty(versionProperty());
     }
     
     /**
