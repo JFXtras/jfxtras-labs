@@ -46,7 +46,17 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     public ObservableList<Attendee> getAttendees() { return attendees; }
     private ObservableList<Attendee> attendees;
     @Override
-    public void setAttendees(ObservableList<Attendee> attendees) { this.attendees = attendees; }
+    public void setAttendees(ObservableList<Attendee> attendees)
+    {
+        if (attendees != null)
+        {
+            registerSortOrderProperty(attendees);
+        } else
+        {
+            unregisterSortOrderProperty(this.attendees);
+        }
+        this.attendees = attendees;
+    }
     
     /**
      * DTSTAMP: Date-Time Stamp, from RFC 5545 iCalendar 3.8.7.2 page 137
@@ -59,6 +69,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (dateTimeStamp == null)
         {
             dateTimeStamp = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_STAMP.toString());
+            registerSortOrderProperty(dateTimeStamp);
         }
         return dateTimeStamp;
     }
@@ -78,6 +89,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (organizer == null)
         {
             organizer = new SimpleObjectProperty<Organizer>(this, PropertyType.ORGANIZER.toString());
+            registerSortOrderProperty(organizer);
         }
         return organizer;
     }
@@ -103,7 +115,17 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     }
     private ObservableList<RequestStatus> requestStatus;
     @Override
-    public void setRequestStatus(ObservableList<RequestStatus> requestStatus) { this.requestStatus = requestStatus; }
+    public void setRequestStatus(ObservableList<RequestStatus> requestStatus)
+    {
+        if (requestStatus != null)
+        {
+            registerSortOrderProperty(requestStatus);
+        } else
+        {
+            unregisterSortOrderProperty(this.requestStatus);
+        }
+        this.requestStatus = requestStatus;
+    }
 
     /**
      * UID, Unique identifier
@@ -119,6 +141,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (uniqueIdentifier == null)
         {
             uniqueIdentifier = new SimpleObjectProperty<>(this, PropertyType.UNIQUE_IDENTIFIER.toString());
+            registerSortOrderProperty(uniqueIdentifier);
         }
         return uniqueIdentifier;
     }
@@ -153,6 +176,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (uniformResourceLocator == null)
         {
             uniformResourceLocator = new SimpleObjectProperty<>(this, PropertyType.UNIFORM_RESOURCE_LOCATOR.toString());
+            registerSortOrderProperty(uniformResourceLocator);
         }
         return uniformResourceLocator;
     }

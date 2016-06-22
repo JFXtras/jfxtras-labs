@@ -36,7 +36,17 @@ public abstract class VComponentPrimaryBase<T> extends VComponentCommonBase<T> i
     public ObservableList<Comment> getComments() { return comments; }
     private ObservableList<Comment> comments;
     @Override
-    public void setComments(ObservableList<Comment> comments) { this.comments = comments; }
+    public void setComments(ObservableList<Comment> comments)
+    {
+        if (comments != null)
+        {
+            registerSortOrderProperty(comments);
+        } else
+        {
+            unregisterSortOrderProperty(this.comments);
+        }
+        this.comments = comments;
+    }
     
     /**
      * DTSTART: Date-Time Start, from RFC 5545 iCalendar 3.8.2.4 page 97

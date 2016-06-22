@@ -43,7 +43,17 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     public ObservableList<IANAProperty> getIANAProperties() { return ianaProps; }
     private ObservableList<IANAProperty> ianaProps;
     @Override
-    public void setIANAProperties(ObservableList<IANAProperty> ianaProps) { this.ianaProps = ianaProps; }
+    public void setIANAProperties(ObservableList<IANAProperty> ianaProps)
+    {
+        if (ianaProps != null)
+        {
+            registerSortOrderProperty(ianaProps);
+        } else
+        {
+            unregisterSortOrderProperty(this.ianaProps);
+        }
+        this.ianaProps = ianaProps;
+    }
 
     /*
      * CONSTRUCTORS
