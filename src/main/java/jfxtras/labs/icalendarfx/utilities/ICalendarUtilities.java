@@ -309,8 +309,6 @@ public final class ICalendarUtilities
      * @param componentString
      * @return
      */
-//    final private static char[] SPECIAL_CHARACTERS = new char[] {',' , ';' , '\\' , 'n', 'N' };
-//    final private static char[] REPLACEMENT_CHARACTERS = new char[] {',' , ';' , '\\' , '\n', 'n'};
     public static List<String> unfoldLines(String componentString)
     {
         List<String> propertyLines = new ArrayList<>();

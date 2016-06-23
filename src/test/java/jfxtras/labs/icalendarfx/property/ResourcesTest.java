@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Resources;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class ResourcesTest
 {
@@ -24,7 +25,8 @@ public class ResourcesTest
     {
         String content = "RESOURCES;ALTREP=\"http://xyzcorp.com/conf-rooms/f123.vcf\";LANGUAGE=fr:Nettoyeur haute pression";
         Resources madeProperty = Resources.parse(content);
-        assertEquals(content, madeProperty.toContent());
+        String foldedContent = ICalendarUtilities.foldLine(content).toString();
+        assertEquals(foldedContent, madeProperty.toContent());
         Resources expectedProperty = new Resources("Nettoyeur haute pression")
                 .withAlternateText("http://xyzcorp.com/conf-rooms/f123.vcf")
                 .withLanguage("fr");

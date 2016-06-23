@@ -81,7 +81,8 @@ public class RecurrencesTest
         RecurrenceDates madeProperty = RecurrenceDates.parse(ZonedDateTime.class, content);
         madeProperty.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("America/Los_Angeles")));
         madeProperty.getValue().add(ZonedDateTime.of(LocalDateTime.of(1996, 4, 4, 1, 0), ZoneId.of("America/Los_Angeles")));
-        assertEquals(content + ",19960403T010000,19960404T010000", madeProperty.toContent());
+        String foldedContent = ICalendarUtilities.foldLine(content + ",19960403T010000,19960404T010000").toString();
+        assertEquals(foldedContent, madeProperty.toContent());
         RecurrenceDates expectedProperty = new RecurrenceDates(FXCollections.observableSet(
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 2, 1, 0), ZoneId.of("America/Los_Angeles")),
                 ZonedDateTime.of(LocalDateTime.of(1996, 4, 3, 1, 0), ZoneId.of("America/Los_Angeles")),

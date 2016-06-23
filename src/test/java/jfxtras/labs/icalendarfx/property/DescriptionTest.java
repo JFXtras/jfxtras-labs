@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class DescriptionTest
 {
@@ -28,18 +29,20 @@ public class DescriptionTest
                 .withAlternateText("CID:part3.msg.970415T083000@example.com")
                 .withLanguage("en");
         assertEquals(expectedDescription, madeDescription);
-        assertEquals(contentLine, expectedDescription.toContent());
+        String foldedContent = ICalendarUtilities.foldLine(contentLine).toString();
+        assertEquals(foldedContent, expectedDescription.toContent());
     }
     
     @Test
     public void canParseDescriptionWithOtherParameters()
     {
-        String contentLine = "DESCRIPTION;MYPARAMETER=some value;IGNORE ME;PARAMETER2=other value:Example description";
+        String contentLine = "DESCRIPTION;MYPARAMETER=some value;IGNORE ME;PARAMETER2=other value:Example description";        
         Description madeDescription = Description.parse(contentLine);
         Description expectedDescription = Description.parse("Example description")
                 .withOtherParameters("MYPARAMETER=some value", "PARAMETER2=other value");
         assertEquals(expectedDescription, madeDescription);
-        assertEquals("DESCRIPTION;MYPARAMETER=some value;PARAMETER2=other value:Example description", expectedDescription.toContent());
+        String foldedContent = ICalendarUtilities.foldLine("DESCRIPTION;MYPARAMETER=some value;PARAMETER2=other value:Example description").toString();
+        assertEquals(foldedContent, expectedDescription.toContent());
     }
     
     @Test

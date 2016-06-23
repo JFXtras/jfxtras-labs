@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class LocationTest
 {
@@ -27,7 +28,8 @@ public class LocationTest
     {
         String content = "LOCATION;ALTREP=\"http://xyzcorp.com/conf-rooms/f123.vcf\";LANGUAGE=en-US:Conference Room - F123\\, Bldg. 00";
         Location madeProperty = Location.parse(content);
-        assertEquals(content, madeProperty.toContent());
+        String foldedContent = ICalendarUtilities.foldLine(content).toString();
+        assertEquals(foldedContent, madeProperty.toContent());
         Location expectedProperty = Location.parse("Conference Room - F123\\, Bldg. 00")
                 .withAlternateText(new URI("http://xyzcorp.com/conf-rooms/f123.vcf"))
                 .withLanguage("en-US");

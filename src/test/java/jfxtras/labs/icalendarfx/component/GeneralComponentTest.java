@@ -110,7 +110,9 @@ public class GeneralComponentTest
                 + "END:VEVENT";
         VEvent builtComponent = VEvent.parse(contentLines);
         builtComponent.setDescription((Description) null);
-        builtComponent.getCategories().add(Categories.parse("group05"));
+        Categories category2 = Categories.parse("group05");
+        builtComponent.getCategories().add(category2);
+        builtComponent.elementSortOrderMap().put(category2, 450); // custom order for new category
         builtComponent.setClassification(ClassificationType.PRIVATE);
         builtComponent.setDateTimeStart("20151109T110000Z");
         

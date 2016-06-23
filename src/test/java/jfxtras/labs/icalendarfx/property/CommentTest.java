@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Comment;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class CommentTest
 {
@@ -23,7 +24,8 @@ public class CommentTest
     {
         String content = "COMMENT;ALTREP=\"CID:part3.msg.970415T083000@example.com\";LANGUAGE=en:The meeting needs to be canceled";
         Comment madeProperty = Comment.parse(content);
-        assertEquals(content, madeProperty.toContent());
+        String foldedContent = ICalendarUtilities.foldLine(content).toString();
+        assertEquals(foldedContent, madeProperty.toContent());
         Comment expectedProperty = Comment.parse("The meeting needs to be canceled")
                 .withAlternateText("CID:part3.msg.970415T083000@example.com")
                 .withLanguage("en");

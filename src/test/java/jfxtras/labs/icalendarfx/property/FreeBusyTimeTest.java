@@ -13,6 +13,7 @@ import org.junit.Test;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.parameters.FreeBusyType.FreeBusyTypeEnum;
 import jfxtras.labs.icalendarfx.properties.component.time.FreeBusyTime;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class FreeBusyTimeTest
 {
@@ -36,7 +37,8 @@ public class FreeBusyTimeTest
     {
         String content = "FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/19970309T000000Z";
         FreeBusyTime madeProperty = FreeBusyTime.parse(content);
-        assertEquals("FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/PT1H", madeProperty.toContent());
+        String foldedContent = ICalendarUtilities.foldLine("FREEBUSY;FBTYPE=FREE:19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/PT1H").toString();
+        assertEquals(foldedContent, madeProperty.toContent());
         FreeBusyTime expectedProperty = FreeBusyTime.parse("19970308T160000Z/PT3H,19970308T200000Z/PT1H,19970308T230000Z/19970309T000000Z")
                 .withFreeBusyType(FreeBusyTypeEnum.FREE);
         assertEquals(expectedProperty, madeProperty);

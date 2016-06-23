@@ -102,24 +102,19 @@ public abstract class OrderedElement
     protected List<String> sortedContent()
     {
         List<String> content = new ArrayList<>();
-//        Map<VCalendarElement, String> elementContentMap = new LinkedHashMap<>();
-//        List<VCalendarElement> elements = new ArrayList<VCalendarElement>();
-//        elements.forEach(element -> elementContentMap.put(element, element.toContent()));
         
         // apply sort order (if element doesn't exist in map, don't sort)
         elementSortOrderMap().entrySet().stream()
                 .sorted((Comparator<? super Entry<VCalendarElement, Integer>>) (e1, e2) -> 
                 {
-//                    Integer s1 = elementSortOrderMap().get(e1.getKey());
-//                    Integer s2 = elementSortOrderMap().get(e2.getKey());
-//                    s1 = (s1 == null) ? 0 : s1;
-//                    s2 = (s2 == null) ? 0 : s2;
-//                    System.out.println("value:" + e1.getValue() + " "+ e2.getValue());
                     return e1.getValue().compareTo(e2.getValue());
                 })
                 .forEach(p -> 
                 {
-                    content.add(p.getKey().toContent()); // TODO - need list of Strings, not string - apply wrap after
+                    if (p.getKey() != null)
+                    {
+                        content.add(p.getKey().toContent());
+                    }
                 });
         
         return content;
