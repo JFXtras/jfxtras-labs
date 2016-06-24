@@ -12,6 +12,7 @@ import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class AttachmentTest
 {
@@ -54,7 +55,8 @@ public class AttachmentTest
         Attachment<URI> expectedProperty = new Attachment<URI>(URI.class, "ftp://example.com/pub/reports/r-960812.ps")
                 .withFormatType("application/postscript");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(contentLine, expectedProperty.toContent());
+        String foldedContent = ICalendarUtilities.foldLine(contentLine).toString();
+        assertEquals(foldedContent, expectedProperty.toContent());
     }
     
     @Test

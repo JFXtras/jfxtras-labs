@@ -38,9 +38,9 @@ public class StandardOrDaylightTimeTest
         {
             String componentName = builtComponent.componentType().toString();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
-                    "TZNAME;LANGUAGE=fr-CA:HNE" + System.lineSeparator() +
                     "TZOFFSETFROM:-0400" + System.lineSeparator() +
                     "TZOFFSETTO:-0500" + System.lineSeparator() +
+                    "TZNAME;LANGUAGE=fr-CA:HNE" + System.lineSeparator() +
                     "END:" + componentName;
 
             StandardOrDaylight<?> parsedComponent = builtComponent

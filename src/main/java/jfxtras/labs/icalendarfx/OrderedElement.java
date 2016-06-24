@@ -56,8 +56,11 @@ public abstract class OrderedElement
         list.addListener(sortOrderListChangeListener);
         if (! list.isEmpty())
         { // add existing elements to sort order
-            list.forEach(vComponent ->  elementSortOrderMap().put(vComponent, sortOrderCounter));
-            sortOrderCounter += 100;
+            list.forEach(vComponent ->  
+            {
+                elementSortOrderMap().put(vComponent, sortOrderCounter);
+                sortOrderCounter += 100;
+            });
         }
     }
     public void unregisterSortOrderProperty(ObservableList<? extends VCalendarElement> list)
@@ -113,6 +116,7 @@ public abstract class OrderedElement
                 {
                     if (p.getKey() != null)
                     {
+//                        System.out.println(p.getKey().hashCode());
                         content.add(p.getKey().toContent());
                     }
                 });

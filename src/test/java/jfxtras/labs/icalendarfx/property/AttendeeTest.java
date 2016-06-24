@@ -13,6 +13,7 @@ import jfxtras.labs.icalendarfx.parameters.GroupMembership;
 import jfxtras.labs.icalendarfx.parameters.ParticipationRole.ParticipationRoleType;
 import jfxtras.labs.icalendarfx.parameters.ParticipationStatus.ParticipationStatusType;
 import jfxtras.labs.icalendarfx.properties.component.relationship.Attendee;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class AttendeeTest
 {
@@ -36,7 +37,8 @@ public class AttendeeTest
                         new GroupMembership(
                                 Arrays.asList(new URI("mailto:projectA@example.com"), new URI("mailto:projectB@example.com"))));
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContent());
+        String foldedContent = ICalendarUtilities.foldLine(content).toString();
+        assertEquals(foldedContent, expectedProperty.toContent());
     }
     
     @Test
@@ -80,7 +82,8 @@ public class AttendeeTest
         Attendee expectedProperty = Attendee.parse("mailto:jsmith@example.com")
                 .withDelegatees("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"");
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContent());
+        String foldedContent = ICalendarUtilities.foldLine(content).toString();
+        assertEquals(foldedContent, expectedProperty.toContent());
     }
     
     @Test
@@ -146,7 +149,8 @@ public class AttendeeTest
         assertEquals(ParticipationStatusType.DECLINED, madeProperty.getParticipationStatus().getValue());
         assertEquals(CalendarUserType.GROUP, madeProperty.getCalendarUser().getValue());
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContent());
+        String foldedContent = ICalendarUtilities.foldLine(content).toString();
+        assertEquals(foldedContent, expectedProperty.toContent());
     }
     
     @Test // test non-standard ROLE

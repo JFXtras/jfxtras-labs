@@ -32,8 +32,8 @@ public class VAlarmTest
                 "ACTION:DISPLAY" + System.lineSeparator() +
                 "ATTENDEE:mailto:jsmith@example.com" + System.lineSeparator() +
                 "DURATION:-P2D" + System.lineSeparator() +
-                "REPEAT:2" + System.lineSeparator() +
                 "TRIGGER:-PT15M" + System.lineSeparator() +
+                "REPEAT:2" + System.lineSeparator() +
                 "END:" + componentName;
                 
         VAlarm madeComponent = new VAlarm(content);

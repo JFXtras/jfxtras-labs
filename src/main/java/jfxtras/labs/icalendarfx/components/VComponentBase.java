@@ -178,6 +178,7 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
     {
         StringBuilder builder = new StringBuilder(400);
         builder.append(firstContentLine + System.lineSeparator());
+//        sortedContent().stream().forEach(System.out::println);
         String content = sortedContent().stream()
 //                .map(s -> ICalendarUtilities.foldLine(s))
                 .collect(Collectors.joining(System.lineSeparator()));

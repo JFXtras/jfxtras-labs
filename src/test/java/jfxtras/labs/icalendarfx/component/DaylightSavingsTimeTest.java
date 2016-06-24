@@ -57,10 +57,10 @@ public class DaylightSavingsTimeTest
         String componentName = builtComponent.componentType().toString();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
+                "DTSTART:20160306T080000Z" + System.lineSeparator() +
                 "COMMENT:This is a test comment" + System.lineSeparator() +
                 "COMMENT:Another comment" + System.lineSeparator() +
                 "COMMENT:My third comment" + System.lineSeparator() +
-                "DTSTART:20160306T080000Z" + System.lineSeparator() +
                 "END:" + componentName;
                 
         DaylightSavingTime madeComponent = new DaylightSavingTime(content);
@@ -94,10 +94,9 @@ public class DaylightSavingsTimeTest
         builtComponent.getRecurrenceDates().add(new RecurrenceDates(expectedValues));
         String content2 = "BEGIN:" + componentName + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +
-                "RDATE;VALUE=DATE:19960402,19960403,19960404" + System.lineSeparator() +
                 "RRULE:FREQ=DAILY;INTERVAL=4" + System.lineSeparator() +
+                "RDATE;VALUE=DATE:19960402,19960403,19960404" + System.lineSeparator() +
                 "END:" + componentName;
-        
         assertEquals(content2, builtComponent.toContent());
     }
     
