@@ -122,10 +122,20 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
      *  +1-919-555-1234
      */
     @Override
-    public ObservableList<Contact> getContacts() { return contact; }
-    private ObservableList<Contact> contact;
+    public ObservableList<Contact> getContacts() { return contacts; }
+    private ObservableList<Contact> contacts;
     @Override
-    public void setContacts(ObservableList<Contact> contacts) { this.contact = contacts; }
+    public void setContacts(ObservableList<Contact> contacts)
+    {
+        if (contacts != null)
+        {
+            registerSortOrderProperty(contacts);
+        } else
+        {
+            unregisterSortOrderProperty(this.contacts);
+        }
+        this.contacts = contacts;
+    }
     
     /**
      * CREATED: Date-Time Created

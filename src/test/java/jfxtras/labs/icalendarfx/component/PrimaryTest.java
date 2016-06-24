@@ -71,10 +71,10 @@ public class PrimaryTest
         {
             String componentName = builtComponent.componentType().toString();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
+                    "DTSTART:20160306T080000" + System.lineSeparator() +
                     "COMMENT:This is a test comment" + System.lineSeparator() +
                     "COMMENT:Another comment" + System.lineSeparator() +
                     "COMMENT:My third comment" + System.lineSeparator() +
-                    "DTSTART:20160306T080000" + System.lineSeparator() +
                     "END:" + componentName;
                     
             VComponentPrimary<?> parsedComponent = builtComponent

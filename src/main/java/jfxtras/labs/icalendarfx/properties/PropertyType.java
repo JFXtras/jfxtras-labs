@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.properties;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponent;
@@ -1006,14 +1006,11 @@ public enum PropertyType
             final ObservableList<NonStandardProperty> list;
             if (castComponent.getNonStandardProperties() == null)
             {
-//                list = vComponent.observableArrayListWithOrderListener();
                 list = FXCollections.observableArrayList();
-//                vComponent.registerSortOrderListener(list);
                 castComponent.setNonStandardProperties(list);
             } else
             {
                 list = castComponent.getNonStandardProperties();
-//                vComponent.unregisterSortOrderListener(list);
             }
             list.add(NonStandardProperty.parse(propertyContent));
         }
@@ -1029,6 +1026,22 @@ public enum PropertyType
                     .toArray(size -> new NonStandardProperty[size]);
             ObservableList<NonStandardProperty> properties = FXCollections.observableArrayList(propertyArray);
             castDestination.setNonStandardProperties(properties);
+        }
+
+        @Override
+        public void copyProperty(Property<?> property, VComponent destination)
+        {
+            VComponentCommon<?> castDestination = (VComponentCommon<?>) destination;
+            final ObservableList<NonStandardProperty> list;
+            if (castDestination.getNonStandardProperties() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setNonStandardProperties(list);
+            } else
+            {
+                list = castDestination.getNonStandardProperties();
+            }
+            list.add((NonStandardProperty) property);
         }
     },
     // Relationship
@@ -1877,30 +1890,30 @@ public enum PropertyType
         }
     };
     
-    // Map to match up name to enum List
-    @Deprecated // go back to one name per proprety
-    private static Map<String, List<PropertyType>> enumListFromNameMap = makeEnumListFromNameMap();
-    private static Map<String, List<PropertyType>> makeEnumListFromNameMap()
-    {
-        Map<String, List<PropertyType>> map = new HashMap<>();
-        Arrays.stream(PropertyType.values())
-        .forEach(e ->
-        {
-            if (map.get(e.toString()) == null)
-            {
-                map.put(e.toString(), new ArrayList<>(Arrays.asList(e)));
-            } else
-            {
-                map.get(e.toString()).add(e);
-            }
-        });
-        return map;
-    }
-    @Deprecated // go back to one name per proprety
-    public static List<PropertyType> enumListFromName(String propertyName)
-    {
-        return enumListFromNameMap.get(propertyName.toUpperCase());
-    }
+//    // Map to match up name to enum List
+//    @Deprecated // go back to one name per proprety
+//    private static Map<String, List<PropertyType>> enumListFromNameMap = makeEnumListFromNameMap();
+//    private static Map<String, List<PropertyType>> makeEnumListFromNameMap()
+//    {
+//        Map<String, List<PropertyType>> map = new HashMap<>();
+//        Arrays.stream(PropertyType.values())
+//        .forEach(e ->
+//        {
+//            if (map.get(e.toString()) == null)
+//            {
+//                map.put(e.toString(), new ArrayList<>(Arrays.asList(e)));
+//            } else
+//            {
+//                map.get(e.toString()).add(e);
+//            }
+//        });
+//        return map;
+//    }
+//    @Deprecated // go back to one name per proprety
+//    public static List<PropertyType> enumListFromName(String propertyName)
+//    {
+//        return enumListFromNameMap.get(propertyName.toUpperCase());
+//    }
     
     private static Map<String, PropertyType> enumFromNameMap = makeEnumFromNameMap();
     private static Map<String, PropertyType> makeEnumFromNameMap()
@@ -1942,13 +1955,13 @@ public enum PropertyType
         return map;
     }
     /** get enum from map */
-    public static PropertyType enumFromClass(Class<? extends Property> myClass)
+    public static PropertyType enumFromClass(Class<? extends VCalendarElement> myClass)
     {
         PropertyType p = enumFromClassMap.get(myClass);
-        if (p == null)
-        {
-            throw new IllegalArgumentException(PropertyType.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
-        }
+//        if (p == null)
+//        {
+//            throw new IllegalArgumentException(PropertyType.class.getSimpleName() + " does not contain an enum to match the class:" + myClass.getSimpleName());
+//        }
         return p;
     }
     
@@ -1982,5 +1995,9 @@ public enum PropertyType
     abstract public void parse(VComponent vComponent, String propertyContent);
 
     /** copies the associated property from the source component to the destination component */
+    @Deprecated
     abstract public void copyProperty(VComponent source, VComponent destination);
+
+    /** copies the associated property from the source component to the destination component */
+    public void copyProperty(Property<?> property, VComponent destination) { };
 }

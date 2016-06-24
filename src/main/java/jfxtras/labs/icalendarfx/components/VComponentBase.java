@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendarfx.OrderedElement;
+import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -42,7 +43,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 public abstract class VComponentBase extends OrderedElement implements VComponent
 {   
     /**
-     * List of all properties found in component.
+     * List of all {@link PropertyType} found in component.
      * The list is unmodifiable.
      * 
      * @return - the list of properties
@@ -68,6 +69,7 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
      * to force a specific property order (e.g. unit testing).
      */
     @Override
+    @Deprecated
     public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
     final private Map<String, Integer> propertySortOrder = new HashMap<>();
     private volatile Integer sortOrderCounter = 0;
@@ -162,9 +164,28 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
     @Override
     public void copyComponentFrom(VComponent source)
     {
-        source.propertyEnums().forEach(p -> p.copyProperty(source, this));
-        propertySortOrder().putAll(source.propertySortOrder());
+        System.out.println("copyComponentFrom1");
+//        source.propertyEnums().forEach(p -> p.copyProperty(source, this));
+//        propertySortOrder().putAll(source.propertySortOrder());
+        source.elementSortOrderMap().forEach((key, value) ->
+        {
+            PropertyType type = PropertyType.enumFromClass(value.getClass());
+            System.out.println("type:" + type + " " + elementSortOrderMap().size());
+            if (type != null)
+            {
+                // TODO - FIX problem with LISTS - when property is a list copyProperty copies whole list - not just one element.
+//                type.copyProperty(source, this);
+                type.copyProperty((Property<?>) value, this);
+            }
+//            value.copyToNewParent(this);
+        });
     }
+    
+//    @Override
+//    public void copyToNewParent(VCalendar vComponent)
+//    {
+//        
+//    }
     
     /**
      * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}

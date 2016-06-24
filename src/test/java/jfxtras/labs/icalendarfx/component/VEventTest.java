@@ -40,8 +40,8 @@ public class VEventTest extends ICalendarTestAbstract2
     public void canBuildVEvent()
     {
         VEvent builtComponent = new VEvent()
-                .withTimeTransparency(TimeTransparencyType.OPAQUE)
-                .withDateTimeEnd(LocalDate.of(1997, 3, 1));
+                .withDateTimeEnd(LocalDate.of(1997, 3, 1))
+                .withTimeTransparency(TimeTransparencyType.OPAQUE);
         String componentName = builtComponent.componentType().toString();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +

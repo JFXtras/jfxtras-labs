@@ -74,6 +74,16 @@ public interface VComponent extends VCalendarElement
         .collect(Collectors.toList()));
     }
     
+    /** 
+     * SORT ORDER
+     * Property sort order map.  Key is element, value is sort order.  Follows sort order of parsed content or
+     * order of added elements.
+     * 
+     * Generally, this map shouldn't be modified.  Only modify it when you want to force
+     * a specific order.
+     */
+    Map<Integer, VCalendarElement> elementSortOrderMap();
+    
     /** Component editor */
     Revisable newRevisor();
     
@@ -88,6 +98,7 @@ public interface VComponent extends VCalendarElement
      * alphabetical) Generally, this map shouldn't be modified.  Only modify it when you want
      * to force a specific property order (e.g. unit testing).
      */
+    @Deprecated
     public Map<String, Integer> propertySortOrder();
 
     /** Copy properties and subcomponents from source into this component,

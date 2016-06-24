@@ -1,11 +1,10 @@
 package jfxtras.labs.icalendarfx;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -23,8 +22,9 @@ public abstract class OrderedElement
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
      * a specific order.
      */
-    public Map<VCalendarElement, Integer> elementSortOrderMap() { return elementSortOrderMap; }
-    final private Map<VCalendarElement, Integer> elementSortOrderMap = new HashMap<>();
+    public Map<Integer, VCalendarElement> elementSortOrderMap() { return elementSortOrderMap; }
+//    final private Map<VCalendarElement, Integer> elementSortOrderMap = new HashMap<>();
+    final private SortedMap<Integer, VCalendarElement> elementSortOrderMap = new TreeMap<>();
     private volatile Integer sortOrderCounter = 0;
     
     /**
@@ -37,7 +37,8 @@ public abstract class OrderedElement
         {
             if (change.wasAdded())
             {
-                change.getAddedSubList().forEach(vComponent ->  elementSortOrderMap().put(vComponent, sortOrderCounter));
+//                change.getAddedSubList().forEach(vComponent ->  elementSortOrderMap().put(vComponent, sortOrderCounter));
+                change.getAddedSubList().forEach(vComponent ->  elementSortOrderMap().put(sortOrderCounter, vComponent));
                 sortOrderCounter += 100;
             } else
             {
@@ -58,7 +59,8 @@ public abstract class OrderedElement
         { // add existing elements to sort order
             list.forEach(vComponent ->  
             {
-                elementSortOrderMap().put(vComponent, sortOrderCounter);
+//                elementSortOrderMap().put(vComponent, sortOrderCounter);
+                elementSortOrderMap().put(sortOrderCounter, vComponent);
                 sortOrderCounter += 100;
             });
         }
@@ -80,7 +82,8 @@ public abstract class OrderedElement
         {
             elementSortOrderMap().remove(oldValue);
         }
-        elementSortOrderMap().put(newValue, sortOrderCounter);
+//        elementSortOrderMap().put(newValue, sortOrderCounter);
+        elementSortOrderMap().put(sortOrderCounter, newValue);
         sortOrderCounter += 100;
     };
     public void registerSortOrderProperty(ObjectProperty<? extends VCalendarElement> property)
@@ -88,7 +91,8 @@ public abstract class OrderedElement
         property.addListener(sortOrderChangeListener);
         if (property.get() != null)
         { // add existing element to sort order
-            elementSortOrderMap().put(property.get(), sortOrderCounter);
+//            elementSortOrderMap().put(property.get(), sortOrderCounter);
+            elementSortOrderMap().put(sortOrderCounter, property.get());
             sortOrderCounter += 100;
         }
     }
@@ -108,16 +112,16 @@ public abstract class OrderedElement
         
         // apply sort order (if element doesn't exist in map, don't sort)
         elementSortOrderMap().entrySet().stream()
-                .sorted((Comparator<? super Entry<VCalendarElement, Integer>>) (e1, e2) -> 
-                {
-                    return e1.getValue().compareTo(e2.getValue());
-                })
+//                .sorted((Comparator<? super Entry<VCalendarElement, Integer>>) (e1, e2) -> 
+//                {
+//                    return e1.getValue().compareTo(e2.getValue());
+//                })
                 .forEach(p -> 
                 {
                     if (p.getKey() != null)
                     {
 //                        System.out.println(p.getKey().hashCode());
-                        content.add(p.getKey().toContent());
+                        content.add(p.getValue().toContent());
                     }
                 });
         

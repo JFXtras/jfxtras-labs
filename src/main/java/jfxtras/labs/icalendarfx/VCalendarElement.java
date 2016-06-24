@@ -34,4 +34,6 @@ public interface VCalendarElement
      * @return - list of error messages
      */
     List<String> errors();
+
+//    <V extends VCalendarElement> void copyToNewParent(V vComponent);
 }

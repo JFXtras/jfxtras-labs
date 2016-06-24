@@ -48,31 +48,31 @@ public class PersonalTest
                     .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
                     .withDateTimeStamp(DateTimeStamp.parse("20160415T120000Z"))
                     .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
-                    .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
                     .withRequestStatus(RequestStatus.parse("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy."), RequestStatus.parse("REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com"))
+                    .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
                     .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics"),
                 new VTodo()
                     .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
                     .withDateTimeStamp(DateTimeStamp.parse("20160415T120000Z"))
                     .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
-                    .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
                     .withRequestStatus(RequestStatus.parse("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy."))
                     .withRequestStatus(RequestStatus.parse("REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com"))
+                    .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
                     .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics"),
-                    new VJournal()
+                new VJournal()
                     .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
                     .withDateTimeStamp(DateTimeStamp.parse("20160415T120000Z"))
                     .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
-                    .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
                     .withRequestStatus(RequestStatus.parse("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy."))
                     .withRequestStatus(RequestStatus.parse("REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com"))
+                    .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
                     .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics"),
                 new VFreeBusy()
                     .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
                     .withDateTimeStamp(DateTimeStamp.parse("20160415T120000Z"))
                     .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
-                    .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
                     .withRequestStatus(RequestStatus.parse("REQUEST-STATUS:4.1;Event conflict.  Date-time is busy."), RequestStatus.parse("REQUEST-STATUS:3.7;Invalid user;ATTENDEE:mailto:joecool@example.com"))
+                    .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com")
                     .withUniformResourceLocator("http://example.com/pub/calendars/jsmith/mytime.ics")
                 );
         
@@ -88,7 +88,7 @@ public class PersonalTest
                     "UID:19960401T080045Z-4000F192713-0052@example.com" + System.lineSeparator() +
                     "URL:http://example.com/pub/calendars/jsmith/mytime.ics" + System.lineSeparator() +
                     "END:" + componentName;
-                    System.out.println(builtComponent.componentType());
+
             VComponentPersonal<?> parsedComponent = builtComponent
                     .getClass()
                     .getConstructor(String.class)
