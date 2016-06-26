@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendarfx.OrderedElement;
-import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -49,6 +48,7 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
      * @return - the list of properties
      */
     @Override
+    @Deprecated
     public List<PropertyType> propertyEnums()
     {
         List<PropertyType> populatedProperties = componentType().allowedProperties().stream()
@@ -164,29 +164,27 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
     @Override
     public void copyComponentFrom(VComponent source)
     {
-        System.out.println("copyComponentFrom1");
+//        System.out.println("copyComponentFrom1");
 //        source.propertyEnums().forEach(p -> p.copyProperty(source, this));
 //        propertySortOrder().putAll(source.propertySortOrder());
         source.elementSortOrderMap().forEach((key, value) ->
         {
-            PropertyType type = PropertyType.enumFromClass(value.getClass());
-            System.out.println("type:" + type + " " + elementSortOrderMap().size());
-            if (type != null)
-            {
-                // TODO - FIX problem with LISTS - when property is a list copyProperty copies whole list - not just one element.
-//                type.copyProperty(source, this);
-                type.copyProperty((Property<?>) value, this);
-            }
+            value.copyToParent(this);
+            
+//            PropertyType type = PropertyType.enumFromClass(value.getClass());
+//            System.out.println("type:" + type + " " + elementSortOrderMap().size());
+//            if (type != null)
+//            { // Note: type is null is element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT
+//                // TODO - FIX problem with LISTS - when property is a list copyProperty copies whole list - not just one element.
+////                type.copyProperty(source, this);
+//                type.copyProperty((Property<?>) value, this);
+////                ((Property<?>) value).copyToParent(this);
+////                copyToParent(this);
+//            }
 //            value.copyToNewParent(this);
         });
     }
-    
-//    @Override
-//    public void copyToNewParent(VCalendar vComponent)
-//    {
-//        
-//    }
-    
+
     /**
      * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
      * @param subcomponentType 

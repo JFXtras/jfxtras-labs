@@ -1016,6 +1016,7 @@ public enum PropertyType
         }
 
         @Override
+        @Deprecated
         public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentCommon<?> castSource = (VComponentCommon<?>) source;
@@ -1041,7 +1042,7 @@ public enum PropertyType
             {
                 list = castDestination.getNonStandardProperties();
             }
-            list.add((NonStandardProperty) property);
+            list.add(new NonStandardProperty((NonStandardProperty) property));
         }
     },
     // Relationship
@@ -1072,12 +1073,21 @@ public enum PropertyType
         }
 
         @Override
+        @Deprecated
         public void copyProperty(VComponent source, VComponent destination)
         {
             VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
             Organizer property = new Organizer(castSource.getOrganizer());
             castDestination.setOrganizer(property);
+        }
+        
+        @Override
+        public void copyProperty(Property<?> property, VComponent destination)
+        {
+            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            Organizer propertyCopy = new Organizer((Organizer) property);
+            castDestination.setOrganizer(propertyCopy);
         }
     },
     // Descriptive

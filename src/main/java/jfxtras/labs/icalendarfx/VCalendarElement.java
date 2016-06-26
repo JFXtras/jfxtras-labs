@@ -35,5 +35,10 @@ public interface VCalendarElement
      */
     List<String> errors();
 
+    /** Make a copy of the element and assign it to the appropriate property in the parent */
+    void copyToParent(Object parent);
+    
+//    void copyToParent(P parent);
+
 //    <V extends VCalendarElement> void copyToNewParent(V vComponent);
 }

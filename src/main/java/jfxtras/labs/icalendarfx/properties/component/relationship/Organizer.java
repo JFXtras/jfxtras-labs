@@ -2,6 +2,8 @@ package jfxtras.labs.icalendarfx.properties.component.relationship;
 
 import java.net.URI;
 
+import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.components.VComponentPersonal;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -22,7 +24,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * @see VJournal
  * @see VFreeBusy
  */
-public class Organizer extends PropertyBaseCalendarUser<URI, Organizer>
+public class Organizer extends PropertyBaseCalendarUser<URI, Organizer> implements VCalendarElement<VComponentPersonal<?>>
 {
 //    public Organizer(String contentLine)
 //    {
@@ -46,5 +48,13 @@ public class Organizer extends PropertyBaseCalendarUser<URI, Organizer>
         organizer.parseContent(value);
         URI.class.cast(organizer.getValue()); // ensure value class type matches parameterized type
         return organizer;
+    }
+    
+    @Override
+    public void copyToParent(Object destination)
+    {
+        VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+        Organizer propertyCopy = new Organizer(this);
+        castDestination.setOrganizer(propertyCopy);
     }
 }
