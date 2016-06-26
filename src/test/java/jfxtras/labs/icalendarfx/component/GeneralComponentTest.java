@@ -112,7 +112,7 @@ public class GeneralComponentTest
         builtComponent.setDescription((Description) null);
         Categories category2 = Categories.parse("group05");
         builtComponent.getCategories().add(category2);
-        builtComponent.elementSortOrderMap().put(450, category2); // custom order for new category
+        builtComponent.elementSortOrderMap().put(category2, 450); // custom order for new category
         builtComponent.setClassification(ClassificationType.PRIVATE);
         builtComponent.setDateTimeStart("20151109T110000Z");
         

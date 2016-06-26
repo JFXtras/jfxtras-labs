@@ -101,6 +101,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (classification == null)
         {
             classification = new SimpleObjectProperty<>(this, PropertyType.CLASSIFICATION.toString());
+            System.out.println("attach listener11:");
             registerSortOrderProperty(classification);
         }
         return classification;

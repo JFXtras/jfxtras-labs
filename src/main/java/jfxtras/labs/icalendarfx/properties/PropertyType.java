@@ -109,12 +109,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VAlarm castSource = (VAlarm) source;
             VAlarm castDestination = (VAlarm) destination;
-            Action property = new Action(castSource.getAction());
-            castDestination.setAction(property);
+            Action propertyCopy = new Action((Action) property);
+            castDestination.setAction(propertyCopy);
         }
     },
     // property class
@@ -146,27 +145,22 @@ public enum PropertyType
             }
 
             list.add(Attachment.parse(propertyContent));
-//            boolean isBinary = propertyContent.toUpperCase().contains("VALUE=BINARY");
-//            if (isBinary)
-//            {
-//                list.add(new Attachment<String>(String.class, propertyContent));
-//            } else
-//            {
-//                list.add(new Attachment<URI>(URI.class, propertyContent));
-//            }
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDescribable<?> castSource = (VComponentDescribable<?>) source;
             VComponentDescribable<?> castDestination = (VComponentDescribable<?>) destination;
-            Attachment<?>[] propertyArray = castSource.getAttachments()
-                    .stream()
-                    .map(c -> new Attachment<>(c))
-                    .toArray(size -> new Attachment<?>[size]);
-            ObservableList<Attachment<?>> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setAttachments(properties);
+            final ObservableList<Attachment<?>> list;
+            if (castDestination.getAttachments() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setAttachments(list);
+            } else
+            {
+                list = castDestination.getAttachments();
+            }
+            list.add(new Attachment<>((Attachment<?>) property));
         }
     },
 
@@ -203,16 +197,19 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentAttendee<?> castSource = (VComponentAttendee<?>) source;
             VComponentAttendee<?> castDestination = (VComponentAttendee<?>) destination;
-            Attendee[] propertyArray = castSource.getAttendees()
-                    .stream()
-                    .map(c -> new Attendee(c)) // copy each property
-                    .toArray(size -> new Attendee[size]);
-            ObservableList<Attendee> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setAttendees(properties);
+            final ObservableList<Attendee> list;
+            if (castDestination.getAttendees() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setAttendees(list);
+            } else
+            {
+                list = castDestination.getAttendees();
+            }
+            list.add(new Attendee((Attendee) property));
         }
     },
     // Calendar property
@@ -234,7 +231,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -269,16 +266,19 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            Categories[] propertyArray = castSource.getCategories()
-                    .stream()
-                    .map(c -> new Categories(c)) // copy each property
-                    .toArray(size -> new Categories[size]);
-            ObservableList<Categories> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setCategories(properties);
+            final ObservableList<Categories> list;
+            if (castDestination.getCategories() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setCategories(list);
+            } else
+            {
+                list = castDestination.getCategories();
+            }
+            list.add(new Categories((Categories) property));
         }
     },
     // Descriptive
@@ -308,12 +308,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            Classification property = new Classification(castSource.getClassification());
-            castDestination.setClassification(property);
+            Classification propertyCopy = new Classification((Classification) property);
+            castDestination.setClassification(propertyCopy);
         }
     },
     // Descriptive
@@ -346,16 +345,19 @@ public enum PropertyType
         }
         
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentPrimary<?> castSource = (VComponentPrimary<?>) source;
             VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
-            Comment[] propertyArray = castSource.getComments()
-                    .stream()
-                    .map(c -> new Comment(c)) // copy each property
-                    .toArray(size -> new Comment[size]);
-            ObservableList<Comment> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setComments(properties);
+            final ObservableList<Comment> list;
+            if (castDestination.getComments() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setComments(list);
+            } else
+            {
+                list = castDestination.getComments();
+            }
+            list.add(new Comment((Comment) property));
         }
     },
     // Relationship
@@ -402,24 +404,26 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            if (source instanceof VFreeBusy)
+            if (destination instanceof VFreeBusy)
             { // VFreeBusy has one Contact
-                VFreeBusy castSource = (VFreeBusy) source;
                 VFreeBusy castDestination = (VFreeBusy) destination;
-                Contact property = new Contact(castSource.getContact());
-                castDestination.setContact(property);
+                Contact propertyCopy = new Contact((Contact) property);
+                castDestination.setContact(propertyCopy);
             } else
             { // Other components have a list of Contacts
-                VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
                 VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-                Contact[] propertyArray = castSource.getContacts()
-                        .stream()
-                        .map(c -> new Contact(c)) // copy each property
-                        .toArray(size -> new Contact[size]);
-                ObservableList<Contact> list = FXCollections.observableArrayList(propertyArray);
-                castDestination.setContacts(list);
+                final ObservableList<Contact> list;
+                if (castDestination.getContacts() == null)
+                {
+                    list = FXCollections.observableArrayList();
+                    castDestination.setContacts(list);
+                } else
+                {
+                    list = castDestination.getContacts();
+                }
+                list.add(new Contact((Contact) property));
             }
         }
     },
@@ -450,12 +454,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VTodo castSource = (VTodo) source;
             VTodo castDestination = (VTodo) destination;
-            DateTimeCompleted property = new DateTimeCompleted(castSource.getDateTimeCompleted());
-            castDestination.setDateTimeCompleted(property);
+            DateTimeCompleted propertyCopy = new DateTimeCompleted((DateTimeCompleted) property);
+            castDestination.setDateTimeCompleted(propertyCopy);
         }
     },
     // Change management
@@ -485,12 +488,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            DateTimeCreated property = new DateTimeCreated(castSource.getDateTimeCreated());
-            castDestination.setDateTimeCreated(property);
+            DateTimeCreated propertyCopy = new DateTimeCreated((DateTimeCreated) property);
+            castDestination.setDateTimeCreated(propertyCopy);
         }
     },
     // Date and time
@@ -520,12 +522,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VTodo castSource = (VTodo) source;
             VTodo castDestination = (VTodo) destination;
-            DateTimeDue property = new DateTimeDue(castSource.getDateTimeDue());
-            castDestination.setDateTimeDue(property);
+            DateTimeDue propertyCopy = new DateTimeDue((DateTimeDue) property);
+            castDestination.setDateTimeDue(propertyCopy);
         }
     },
     // Date and Time
@@ -555,12 +556,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDateTimeEnd<?> castSource = (VComponentDateTimeEnd<?>) source;
             VComponentDateTimeEnd<?> castDestination = (VComponentDateTimeEnd<?>) destination;
-            DateTimeEnd property = new DateTimeEnd(castSource.getDateTimeEnd());
-            castDestination.setDateTimeEnd(property);
+            DateTimeEnd propertyCopy = new DateTimeEnd((DateTimeEnd) property);
+            castDestination.setDateTimeEnd(propertyCopy);
         }
     },
     // Change management
@@ -590,12 +590,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
-            DateTimeStamp property = new DateTimeStamp(castSource.getDateTimeStamp());
-            castDestination.setDateTimeStamp(property);
+            DateTimeStamp propertyCopy = new DateTimeStamp((DateTimeStamp) property);
+            castDestination.setDateTimeStamp(propertyCopy);
         }
     },
     DATE_TIME_START ("DTSTART", // property name
@@ -624,12 +623,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentPrimary<?> castSource = (VComponentPrimary<?>) source;
             VComponentPrimary<?> castDestination = (VComponentPrimary<?>) destination;
-            DateTimeStart property = new DateTimeStart(castSource.getDateTimeStart());
-            castDestination.setDateTimeStart(property);
+            DateTimeStart propertyCopy = new DateTimeStart((DateTimeStart) property);
+            castDestination.setDateTimeStart(propertyCopy);
         }
     },
     // Descriptive
@@ -682,24 +680,26 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            if (source instanceof VJournal)
+            if (destination instanceof VJournal)
             { // VJournal has list of Descriptions
-                VJournal castSource = (VJournal) source;
                 VJournal castDestination = (VJournal) destination;
-                Description[] propertyArray = castSource.getDescriptions()
-                        .stream()
-                        .map(c -> new Description(c)) // copy each property
-                        .toArray(size -> new Description[size]);
-                ObservableList<Description> list = FXCollections.observableArrayList(propertyArray);
-                castDestination.setDescriptions(list);
+                final ObservableList<Description> list;
+                if (castDestination.getDescriptions() == null)
+                {
+                    list = FXCollections.observableArrayList();
+                    castDestination.setDescriptions(list);
+                } else
+                {
+                    list = castDestination.getDescriptions();
+                }
+                list.add(new Description((Description) property));
             } else
-            { // Other components have only one Description              
-                VComponentDescribable2<?> castSource = (VComponentDescribable2<?>) source;
+            { // Other components have only one Description
                 VComponentDescribable2<?> castDestination = (VComponentDescribable2<?>) destination;
-                Description property = new Description(castSource.getDescription());
-                castDestination.setDescription(property);
+                Description propertyCopy = new Description((Description) property);
+                castDestination.setDescription(propertyCopy);
             }
         }
     },
@@ -730,12 +730,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDuration<?> castSource = (VComponentDuration<?>) source;
             VComponentDuration<?> castDestination = (VComponentDuration<?>) destination;
-            DurationProp property = new DurationProp(castSource.getDuration());
-            castDestination.setDuration(property);
+            DurationProp propertyCopy = new DurationProp((DurationProp) property);
+            castDestination.setDuration(propertyCopy);
         }
     },
     // Recurrence
@@ -768,16 +767,19 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            ExceptionDates[] propertyArray = castSource.getExceptionDates()
-                    .stream()
-                    .map(c -> new ExceptionDates(c)) // copy each property
-                    .toArray(size -> new ExceptionDates[size]);
-            ObservableList<ExceptionDates> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setExceptionDates(properties);
+            final ObservableList<ExceptionDates> list;
+            if (castDestination.getExceptionDates() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setExceptionDates(list);
+            } else
+            {
+                list = castDestination.getExceptionDates();
+            }
+            list.add(new ExceptionDates((ExceptionDates) property));
         }
     },
     // Date and Time
@@ -807,12 +809,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VFreeBusy castSource = (VFreeBusy) source;
             VFreeBusy castDestination = (VFreeBusy) destination;
-            FreeBusyTime property = new FreeBusyTime(castSource.getFreeBusyTime());
-            castDestination.setFreeBusyTime(property);
+            FreeBusyTime propertyCopy = new FreeBusyTime((FreeBusyTime) property);
+            castDestination.setFreeBusyTime(propertyCopy);
         }
     },
     // Descriptive
@@ -842,12 +843,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
-            GeographicPosition property = new GeographicPosition(castSource.getGeographicPosition());
-            castDestination.setGeographicPosition(property);
+            GeographicPosition propertyCopy = new GeographicPosition((GeographicPosition) property);
+            castDestination.setGeographicPosition(propertyCopy);
         }
     },
     // Miscellaneous
@@ -880,16 +880,19 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentCommon<?> castSource = (VComponentCommon<?>) source;
             VComponentCommon<?> castDestination = (VComponentCommon<?>) destination;
-            IANAProperty[] propertyArray = castSource.getIANAProperties()
-                    .stream()
-                    .map(c -> new IANAProperty(c)) // copy each property
-                    .toArray(size -> new IANAProperty[size]);
-            ObservableList<IANAProperty> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setIANAProperties(properties);
+            final ObservableList<IANAProperty> list;
+            if (castDestination.getIANAProperties() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setIANAProperties(list);
+            } else
+            {
+                list = castDestination.getIANAProperties();
+            }
+            list.add(new IANAProperty((IANAProperty) property));
         }
     },
     // Change management
@@ -919,12 +922,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentLastModified<?> castSource = (VComponentLastModified<?>) source;
             VComponentLastModified<?> castDestination = (VComponentLastModified<?>) destination;
-            LastModified property = new LastModified(castSource.getDateTimeLastModified());
-            castDestination.setDateTimeLastModified(property);
+            LastModified propertyCopy = new LastModified((LastModified) property);
+            castDestination.setDateTimeLastModified(propertyCopy);
         }
     },
     // Descriptive
@@ -954,12 +956,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
-            Location property = new Location(castSource.getLocation());
-            castDestination.setLocation(property);
+            Location propertyCopy = new Location((Location) property);
+            castDestination.setLocation(propertyCopy);
         }
     },
     // Calendar property
@@ -981,7 +982,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1013,20 +1014,6 @@ public enum PropertyType
                 list = castComponent.getNonStandardProperties();
             }
             list.add(NonStandardProperty.parse(propertyContent));
-        }
-
-        @Override
-        @Deprecated
-        public void copyProperty(VComponent source, VComponent destination)
-        {
-            VComponentCommon<?> castSource = (VComponentCommon<?>) source;
-            VComponentCommon<?> castDestination = (VComponentCommon<?>) destination;
-            NonStandardProperty[] propertyArray = castSource.getNonStandardProperties()
-                    .stream()
-                    .map(c -> new NonStandardProperty(c)) // copy each property
-                    .toArray(size -> new NonStandardProperty[size]);
-            ObservableList<NonStandardProperty> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setNonStandardProperties(properties);
         }
 
         @Override
@@ -1071,16 +1058,6 @@ public enum PropertyType
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
-
-        @Override
-        @Deprecated
-        public void copyProperty(VComponent source, VComponent destination)
-        {
-            VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
-            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
-            Organizer property = new Organizer(castSource.getOrganizer());
-            castDestination.setOrganizer(property);
-        }
         
         @Override
         public void copyProperty(Property<?> property, VComponent destination)
@@ -1115,14 +1092,13 @@ public enum PropertyType
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");
             }
         }
-
+        
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VTodo castSource = (VTodo) source;
             VTodo castDestination = (VTodo) destination;
-            PercentComplete property = new PercentComplete(castSource.getPercentComplete());
-            castDestination.setPercentComplete(property);
+            PercentComplete propertyCopy = new PercentComplete((PercentComplete) property);
+            castDestination.setPercentComplete(propertyCopy);
         }
     },
     // Descriptive
@@ -1152,12 +1128,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
-            Priority property = new Priority(castSource.getPriority());
-            castDestination.setPriority(property);
+            Priority propertyCopy = new Priority((Priority) property);
+            castDestination.setPriority(propertyCopy);
         }
     },
     // Calendar property
@@ -1179,7 +1154,7 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
@@ -1212,18 +1187,21 @@ public enum PropertyType
             }
             list.add(RecurrenceDates.parse(propertyContent));
         }
-
+        
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
-            RecurrenceDates[] propertyArray = castSource.getRecurrenceDates()
-                    .stream()
-                    .map(c -> new RecurrenceDates(c)) // copy each property
-                    .toArray(size -> new RecurrenceDates[size]);
-            ObservableList<RecurrenceDates> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setRecurrenceDates(properties);
+            final ObservableList<RecurrenceDates> list;
+            if (castDestination.getRecurrenceDates() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setRecurrenceDates(list);
+            } else
+            {
+                list = castDestination.getRecurrenceDates();
+            }
+            list.add(new RecurrenceDates((RecurrenceDates) property));
         }
     },
     // Relationship
@@ -1253,12 +1231,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            RecurrenceId property = new RecurrenceId(castSource.getRecurrenceId());
-            castDestination.setRecurrenceId(property);
+            RecurrenceId propertyCopy = new RecurrenceId((RecurrenceId) property);
+            castDestination.setRecurrenceId(propertyCopy);
         }
     },
     // Recurrence
@@ -1288,12 +1265,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentRepeatable<?> castSource = (VComponentRepeatable<?>) source;
             VComponentRepeatable<?> castDestination = (VComponentRepeatable<?>) destination;
-            RecurrenceRule property = new RecurrenceRule(castSource.getRecurrenceRule());
-            castDestination.setRecurrenceRule(property);
+            RecurrenceRule propertyCopy = new RecurrenceRule((RecurrenceRule) property);
+            castDestination.setRecurrenceRule(propertyCopy);
         }
     },
     // Relationship
@@ -1326,16 +1302,19 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            RelatedTo[] propertyArray = castSource.getRelatedTo()
-                    .stream()
-                    .map(c -> new RelatedTo(c)) // copy each property
-                    .toArray(size -> new RelatedTo[size]);
-            ObservableList<RelatedTo> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setRelatedTo(properties);
+            final ObservableList<RelatedTo> list;
+            if (castDestination.getRelatedTo() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setRelatedTo(list);
+            } else
+            {
+                list = castDestination.getRelatedTo();
+            }
+            list.add(new RelatedTo((RelatedTo) property));
         }
     },
     // Alarm
@@ -1365,12 +1344,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VAlarm castSource = (VAlarm) source;
             VAlarm castDestination = (VAlarm) destination;
-            RepeatCount property = new RepeatCount(castSource.getRepeatCount());
-            castDestination.setRepeatCount(property);
+            RepeatCount propertyCopy = new RepeatCount((RepeatCount) property);
+            castDestination.setRepeatCount(propertyCopy);
         }
     },
     // Miscellaneous
@@ -1403,12 +1381,19 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VAlarm castSource = (VAlarm) source;
-            VAlarm castDestination = (VAlarm) destination;
-            RepeatCount property = new RepeatCount(castSource.getRepeatCount());
-            castDestination.setRepeatCount(property);
+            VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
+            final ObservableList<RequestStatus> list;
+            if (castDestination.getRequestStatus() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setRequestStatus(list);
+            } else
+            {
+                list = castDestination.getRequestStatus();
+            }
+            list.add(new RequestStatus((RequestStatus) property));
         }
     },
     // Descriptive
@@ -1441,16 +1426,19 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentLocatable<?> castSource = (VComponentLocatable<?>) source;
             VComponentLocatable<?> castDestination = (VComponentLocatable<?>) destination;
-            Resources[] propertyArray = castSource.getResources()
-                    .stream()
-                    .map(c -> new Resources(c)) // copy each property
-                    .toArray(size -> new Resources[size]);
-            ObservableList<Resources> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setResources(properties);
+            final ObservableList<Resources> list;
+            if (castDestination.getResources() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setResources(list);
+            } else
+            {
+                list = castDestination.getResources();
+            }
+            list.add(new Resources((Resources) property));
         }
     },
     // Change management
@@ -1480,12 +1468,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            Sequence property = new Sequence(castSource.getSequence());
-            castDestination.setSequence(property);
+            Sequence propertyCopy = new Sequence((Sequence) property);
+            castDestination.setSequence(propertyCopy);
         }
     },
     // Descriptive
@@ -1515,12 +1502,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDisplayable<?> castSource = (VComponentDisplayable<?>) source;
             VComponentDisplayable<?> castDestination = (VComponentDisplayable<?>) destination;
-            Status property = new Status(castSource.getStatus());
-            castDestination.setStatus(property);
+            Status propertyCopy = new Status((Status) property);
+            castDestination.setStatus(propertyCopy);
         }
     },
     // Descriptive
@@ -1551,12 +1537,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentDescribable<?> castSource = (VComponentDescribable<?>) source;
             VComponentDescribable<?> castDestination = (VComponentDescribable<?>) destination;
-            Summary property = new Summary(castSource.getSummary());
-            castDestination.setSummary(property);
+            Summary propertyCopy = new Summary((Summary) property);
+            castDestination.setSummary(propertyCopy);
         }
     },
     // Date and Time
@@ -1586,12 +1571,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VEvent castSource = (VEvent) source;
             VEvent castDestination = (VEvent) destination;
-            TimeTransparency property = new TimeTransparency(castSource.getTimeTransparency());
-            castDestination.setTimeTransparency(property);
+            TimeTransparency propertyCopy = new TimeTransparency((TimeTransparency) property);
+            castDestination.setTimeTransparency(propertyCopy);
         }
     },
     // Time Zone
@@ -1621,12 +1605,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VTimeZone castSource = (VTimeZone) source;
             VTimeZone castDestination = (VTimeZone) destination;
-            TimeZoneIdentifier property = new TimeZoneIdentifier(castSource.getTimeZoneIdentifier());
-            castDestination.setTimeZoneIdentifier(property);
+            TimeZoneIdentifier propertyCopy = new TimeZoneIdentifier((TimeZoneIdentifier) property);
+            castDestination.setTimeZoneIdentifier(propertyCopy);
         }
     },
     // Time Zone
@@ -1659,16 +1642,19 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            StandardOrDaylight<?> castSource = (StandardOrDaylight<?>) source;
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
-            TimeZoneName[] propertyArray = castSource.getTimeZoneNames()
-                    .stream()
-                    .map(c -> new TimeZoneName(c)) // copy each property
-                    .toArray(size -> new TimeZoneName[size]);
-            ObservableList<TimeZoneName> properties = FXCollections.observableArrayList(propertyArray);
-            castDestination.setTimeZoneNames(properties);
+            final ObservableList<TimeZoneName> list;
+            if (castDestination.getTimeZoneNames() == null)
+            {
+                list = FXCollections.observableArrayList();
+                castDestination.setTimeZoneNames(list);
+            } else
+            {
+                list = castDestination.getTimeZoneNames();
+            }
+            list.add(new TimeZoneName((TimeZoneName) property));
         }
     },
     // Time Zone
@@ -1698,12 +1684,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            StandardOrDaylight<?> castSource = (StandardOrDaylight<?>) source;
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
-            TimeZoneOffsetFrom property = new TimeZoneOffsetFrom(castSource.getTimeZoneOffsetFrom());
-            castDestination.setTimeZoneOffsetFrom(property);
+            TimeZoneOffsetFrom propertyCopy = new TimeZoneOffsetFrom((TimeZoneOffsetFrom) property);
+            castDestination.setTimeZoneOffsetFrom(propertyCopy);
         }
     },
     // Time Zone
@@ -1733,12 +1718,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            StandardOrDaylight<?> castSource = (StandardOrDaylight<?>) source;
             StandardOrDaylight<?> castDestination = (StandardOrDaylight<?>) destination;
-            TimeZoneOffsetTo property = new TimeZoneOffsetTo(castSource.getTimeZoneOffsetTo());
-            castDestination.setTimeZoneOffsetTo(property);
+            TimeZoneOffsetTo propertyCopy = new TimeZoneOffsetTo((TimeZoneOffsetTo) property);
+            castDestination.setTimeZoneOffsetTo(propertyCopy);
         }
     },
     // Time Zone
@@ -1768,12 +1752,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VTimeZone castSource = (VTimeZone) source;
             VTimeZone castDestination = (VTimeZone) destination;
-            TimeZoneURL property = new TimeZoneURL(castSource.getTimeZoneURL());
-            castDestination.setTimeZoneURL(property);
+            TimeZoneURL propertyCopy = new TimeZoneURL((TimeZoneURL) property);
+            castDestination.setTimeZoneURL(propertyCopy);
         }
     },
     // Alarm
@@ -1803,12 +1786,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VAlarm castSource = (VAlarm) source;
             VAlarm castDestination = (VAlarm) destination;
-            Trigger<?> property = new Trigger<>(castSource.getTrigger());
-            castDestination.setTrigger(property);
+            Trigger<?> propertyCopy = new Trigger<>((Trigger<?>) property);
+            castDestination.setTrigger(propertyCopy);
         }
     },
     // Relationship
@@ -1838,12 +1820,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
-            UniqueIdentifier property = new UniqueIdentifier(castSource.getUniqueIdentifier());
-            castDestination.setUniqueIdentifier(property);
+            UniqueIdentifier propertyCopy = new UniqueIdentifier((UniqueIdentifier) property);
+            castDestination.setUniqueIdentifier(propertyCopy);
         }
     },
     // Relationship
@@ -1867,12 +1848,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
-            VComponentPersonal<?> castSource = (VComponentPersonal<?>) source;
             VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
-            UniformResourceLocator property = new UniformResourceLocator(castSource.getUniformResourceLocator());
-            castDestination.setUniformResourceLocator(property);
+            UniformResourceLocator propertyCopy = new UniformResourceLocator((UniformResourceLocator) property);
+            castDestination.setUniformResourceLocator(propertyCopy);
         }
     },
     // Calendar property
@@ -1894,36 +1874,11 @@ public enum PropertyType
         }
 
         @Override
-        public void copyProperty(VComponent source, VComponent destination)
+        public void copyProperty(Property<?> property, VComponent destination)
         {
             throw new RuntimeException(toString() + " is a calendar property.  It can't be a component property.");
         }
     };
-    
-//    // Map to match up name to enum List
-//    @Deprecated // go back to one name per proprety
-//    private static Map<String, List<PropertyType>> enumListFromNameMap = makeEnumListFromNameMap();
-//    private static Map<String, List<PropertyType>> makeEnumListFromNameMap()
-//    {
-//        Map<String, List<PropertyType>> map = new HashMap<>();
-//        Arrays.stream(PropertyType.values())
-//        .forEach(e ->
-//        {
-//            if (map.get(e.toString()) == null)
-//            {
-//                map.put(e.toString(), new ArrayList<>(Arrays.asList(e)));
-//            } else
-//            {
-//                map.get(e.toString()).add(e);
-//            }
-//        });
-//        return map;
-//    }
-//    @Deprecated // go back to one name per proprety
-//    public static List<PropertyType> enumListFromName(String propertyName)
-//    {
-//        return enumListFromNameMap.get(propertyName.toUpperCase());
-//    }
     
     private static Map<String, PropertyType> enumFromNameMap = makeEnumFromNameMap();
     private static Map<String, PropertyType> makeEnumFromNameMap()
@@ -2003,10 +1958,6 @@ public enum PropertyType
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
     abstract public void parse(VComponent vComponent, String propertyContent);
-
-    /** copies the associated property from the source component to the destination component */
-    @Deprecated
-    abstract public void copyProperty(VComponent source, VComponent destination);
 
     /** copies the associated property from the source component to the destination component */
     public void copyProperty(Property<?> property, VComponent destination) { };

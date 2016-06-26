@@ -2,8 +2,10 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendarfx.VCalendarElement;
@@ -82,9 +84,10 @@ public interface VComponent extends VCalendarElement
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
      * a specific order.
      */
-    Map<Integer, VCalendarElement> elementSortOrderMap();
+//    Map<Integer, VCalendarElement> elementSortOrderMap();
+    Map<VCalendarElement, Integer> elementSortOrderMap();
     
-    /** Component editor */
+    /** Encapsulated Component editor */
     Revisable newRevisor();
     
     /** 
@@ -109,8 +112,23 @@ public interface VComponent extends VCalendarElement
      * */
     default void copyComponentFrom(VComponent source)
     {
-        source.propertyEnums().forEach(p -> p.copyProperty(source, this));
-        propertySortOrder().putAll(source.propertySortOrder());
+        source.elementSortOrderMap()
+                .entrySet().stream()
+                .sorted((Comparator<? super Entry<VCalendarElement, Integer>>) (e1, e2) -> 
+                {
+                    return e1.getValue().compareTo(e2.getValue());
+                })
+                .forEach((e) ->
+                {
+                    VCalendarElement key = e.getKey();
+                    PropertyType type = PropertyType.enumFromClass(key.getClass());
+                    if (type != null)
+                    { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+                        type.copyProperty((Property<?>) key, this);
+                    }
+                });
+//        source.propertyEnums().forEach(p -> p.copyProperty(source, this));
+//        propertySortOrder().putAll(source.propertySortOrder());
     }
     
     /**

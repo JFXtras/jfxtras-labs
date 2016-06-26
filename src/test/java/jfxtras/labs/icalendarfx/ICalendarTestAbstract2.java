@@ -55,13 +55,13 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
-                .withUniqueIdentifier("20151109T082900-0@jfxtras.org")
-                .withDuration(Duration.ofHours(1))
                 .withDescription("Yearly1 Description")
-                .withSummary("Yearly1 Summary")
+                .withDuration(Duration.ofHours(1))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
                 .withRecurrenceRule(new RecurrenceRule2()
-                        .withFrequency(FrequencyType.YEARLY));
+                        .withFrequency(FrequencyType.YEARLY))
+                .withSummary("Yearly1 Summary")
+                .withUniqueIdentifier("20151109T082900-0@jfxtras.org");
     }
     
     /** FREQ=YEARLY; */
@@ -72,13 +72,13 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 6, 0))
-                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
-                .withUniqueIdentifier("20151109T082900-0@jfxtras.org")
-                .withDuration(Duration.ofHours(2))
                 .withDescription("Yearly1 Description-edited")
-                .withSummary("Yearly1 Summary-edited")
+                .withDuration(Duration.ofHours(2))
+                .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
                 .withRecurrenceId(LocalDateTime.of(2016, 11, 9, 10, 0))
-                .withSequence(1);
+                .withSequence(1)
+                .withSummary("Yearly1 Summary-edited")
+                .withUniqueIdentifier("20151109T082900-0@jfxtras.org");
     }
     
     /** FREQ=YEARLY; */
@@ -246,14 +246,14 @@ public abstract class ICalendarTestAbstract2
     protected VEvent getMonthly6()
     {
         return new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 3, 10, 0))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 3, 10, 0))
                 .withDuration(Duration.ofMinutes(90))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.MONTHLY)
                         .withByRules(new ByMonth(Month.NOVEMBER, Month.DECEMBER),
-                                new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)));
+                                new ByDay(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
     
     /** FREQ=MONTHLY;BYDAY=3MO */
