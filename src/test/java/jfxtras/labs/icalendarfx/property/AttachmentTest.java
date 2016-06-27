@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.parameters.Encoding.EncodingType;
-import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Attachment;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -68,9 +67,9 @@ public class AttachmentTest
                 .withFormatType("text/plain")
                 .withEncoding(EncodingType.BASE64)
                 .withValueParameter(ValueType.BINARY);
-        expectedProperty.parameterSortOrder().put(ParameterType.FORMAT_TYPE, 0);
-        expectedProperty.parameterSortOrder().put(ParameterType.INLINE_ENCODING, 1);
-        expectedProperty.parameterSortOrder().put(ParameterType.VALUE_DATA_TYPES, 2);
+//        expectedProperty.parameterSortOrder().put(ParameterType.FORMAT_TYPE, 0);
+//        expectedProperty.parameterSortOrder().put(ParameterType.INLINE_ENCODING, 1);
+//        expectedProperty.parameterSortOrder().put(ParameterType.VALUE_DATA_TYPES, 2);
 
         assertEquals(expectedProperty, madeProperty);
         assertEquals(contentLine, expectedProperty.toContent());

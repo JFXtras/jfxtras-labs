@@ -14,7 +14,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.components.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -22,6 +21,7 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
@@ -37,7 +37,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @author David Bal
  *
  */
-public class VCalendar extends OrderedElement
+public class VCalendar extends OrderedElementBase
 {
     // version of this project, not associated with the iCalendar specification version
     public static String myVersion = "1.0";
@@ -498,13 +498,22 @@ public class VCalendar extends OrderedElement
     public VCalendar(VCalendar source)
     {
         this();
-        throw new RuntimeException("not implemented");
-        // TODO Auto-generated method stub        
+        copyChildrenFrom(source);    
     }
 
     /*
      * OTHER METHODS
      */
+    
+    /** Copy property into this component */
+    @Override protected void copyChild(VCalendarElement child)
+    {
+        CalendarElementType type = CalendarElementType.enumFromClass(child.getClass());
+        if (type != null)
+        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+            type.copyProperty((Property<?>) child, this);
+        }        
+    }
     
     private void addListeners()
     {

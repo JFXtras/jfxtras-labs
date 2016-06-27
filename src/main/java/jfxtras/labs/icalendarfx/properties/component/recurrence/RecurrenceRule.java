@@ -54,10 +54,11 @@ public class RecurrenceRule extends PropertyBase<RecurrenceRule2, RecurrenceRule
         return property;
     }
     
-    @Override
-    public void copyPropertyFrom(PropertyBase<RecurrenceRule2, RecurrenceRule> source)
-    {
-        super.copyPropertyFrom(source);
-        setValue(new RecurrenceRule2(source.getValue()));
-    }
+//    @Override
+//    public void copyPropertyFrom(PropertyBase<RecurrenceRule2, RecurrenceRule> source)
+//    {
+//        throw new RuntimeException("not implemented");
+////        super.copyPropertyFrom(source);
+////        setValue(new RecurrenceRule2(source.getValue()));
+//    }
 }

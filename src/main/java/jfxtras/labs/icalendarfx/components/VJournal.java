@@ -6,6 +6,7 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVJournal;
 import jfxtras.labs.icalendarfx.properties.PropertyType;

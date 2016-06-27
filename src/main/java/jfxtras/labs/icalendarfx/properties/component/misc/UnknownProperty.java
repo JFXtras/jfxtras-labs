@@ -296,10 +296,10 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
      * CONSTRUCTORS
      */
     
-    public UnknownProperty(String contentLine)
-    {
-        super(contentLine);
-    }
+//    public UnknownProperty(String contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public UnknownProperty(T value)
     {

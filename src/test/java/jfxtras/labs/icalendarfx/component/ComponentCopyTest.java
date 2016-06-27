@@ -131,4 +131,13 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
 //        System.out.println(component2);
         assertEquals(component1.toContent(), component2.toContent());
     }
+    
+    @Test
+    public void canCopyVEvent5()
+    {
+        VEvent component1 = getWeekly3();
+        VEvent component2 = getYearly1();
+        component1.copyChildrenFrom(component2);
+        assertEquals(component1, component2);
+    }
 }

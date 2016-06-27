@@ -132,7 +132,7 @@ public class VEventTest extends ICalendarTestAbstract2
     {
         VEvent e = getYearly1();
         VEvent e2 = new VEvent();
-        e2.copyComponentFrom(e);
+        e2.copyChildrenFrom(e);
         assertEquals(e, e2);
     }
 

@@ -74,7 +74,7 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     @FXML private void handleCancelButton()
     {
         System.out.println("handlecancel:");
-        vComponent.copyComponentFrom(vComponentOriginalCopy);
+        vComponent.copyChildrenFrom(vComponentOriginalCopy);
         isFinished.set(true);
 ////        vEventOriginal.copyTo(vEvent);
 //        vComponent.copyComponentFrom(vEventOriginal);

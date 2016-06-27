@@ -70,7 +70,7 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     public VComponentCommonBase(VComponentCommonBase<T> source)
     {
         this();
-        copyComponentFrom(source);
+        copyChildrenFrom(source);
     }
     
     @Override

@@ -102,8 +102,9 @@ public abstract class PropertyBaseRecurrence<U> extends PropertyBaseDateTime<Obs
 
     public PropertyBaseRecurrence( PropertyBaseRecurrence<U> source)
     {
-        this();
-        copyPropertyFrom(source);
+//        this();
+        super(source);
+//        copyPropertyFrom(source);
 //        PropertyBase.copyProperty(source, this);
         // TODO - MAKE COPY PROPERTY STATIC? - EXTRACT FROM COPY CONSTRUCTOR IN BASE
 //        super(source);

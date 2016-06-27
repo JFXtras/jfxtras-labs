@@ -639,18 +639,18 @@ public abstract class ICalendarTestAbstract2
                 .withLocation("")
                 .withDescription("")
                 .withUniqueIdentifier("vpqej26mlpg3adcncqqs7t7a34@google.com");
-        v.propertySortOrder().put("DTSTART", 0);
-        v.propertySortOrder().put("DTEND", 10);
-        v.propertySortOrder().put("DTSTAMP", 20);
-        v.propertySortOrder().put("UID", 30);
-        v.propertySortOrder().put("CREATED", 40);
-        v.propertySortOrder().put("DESCRIPTION", 50);
-        v.propertySortOrder().put("LAST-MODIFIED", 60);
-        v.propertySortOrder().put("LOCATION", 70);
-        v.propertySortOrder().put("SEQUENCE", 80);
-        v.propertySortOrder().put("STATUS", 90);
-        v.propertySortOrder().put("SUMMARY", 100);
-        v.propertySortOrder().put("TRANSP", 110);
+//        v.propertySortOrder().put("DTSTART", 0);
+//        v.propertySortOrder().put("DTEND", 10);
+//        v.propertySortOrder().put("DTSTAMP", 20);
+//        v.propertySortOrder().put("UID", 30);
+//        v.propertySortOrder().put("CREATED", 40);
+//        v.propertySortOrder().put("DESCRIPTION", 50);
+//        v.propertySortOrder().put("LAST-MODIFIED", 60);
+//        v.propertySortOrder().put("LOCATION", 70);
+//        v.propertySortOrder().put("SEQUENCE", 80);
+//        v.propertySortOrder().put("STATUS", 90);
+//        v.propertySortOrder().put("SUMMARY", 100);
+//        v.propertySortOrder().put("TRANSP", 110);
         return v;
     }
     

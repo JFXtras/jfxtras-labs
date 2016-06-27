@@ -1,18 +1,15 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import jfxtras.labs.icalendarfx.OrderedElement;
+import jfxtras.labs.icalendarfx.CalendarElementType;
+import jfxtras.labs.icalendarfx.OrderedElementBase;
+import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
@@ -39,7 +36,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public abstract class VComponentBase extends OrderedElement implements VComponent
+public abstract class VComponentBase extends OrderedElementBase implements VComponent
 {   
     /**
      * List of all {@link PropertyType} found in component.
@@ -56,22 +53,22 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
       return Collections.unmodifiableList(populatedProperties);
     }
 
-    /** 
-     * SORT ORDER
-     * 
-     * Property sort order map.  Key is property name, value is the sort order.  The map is automatically
-     * populated when parsing the content lines to preserve the existing property order.
-     * 
-     * When producing the content lines, if a property is not present in the map, it is put at
-     * the end of the sorted ones in the order appearing in {@link #PropertyEnum} (should be
-     * alphabetical) Generally, this map shouldn't be modified.  Only modify it when you want
-     * to force a specific property order (e.g. unit testing).
-     */
-    @Override
-    @Deprecated
-    public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
-    final private Map<String, Integer> propertySortOrder = new HashMap<>();
-    private volatile Integer sortOrderCounter = 0;
+//    /** 
+//     * SORT ORDER
+//     * 
+//     * Property sort order map.  Key is property name, value is the sort order.  The map is automatically
+//     * populated when parsing the content lines to preserve the existing property order.
+//     * 
+//     * When producing the content lines, if a property is not present in the map, it is put at
+//     * the end of the sorted ones in the order appearing in {@link #PropertyEnum} (should be
+//     * alphabetical) Generally, this map shouldn't be modified.  Only modify it when you want
+//     * to force a specific property order (e.g. unit testing).
+//     */
+//    @Override
+//    @Deprecated
+//    public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
+//    final private Map<String, Integer> propertySortOrder = new HashMap<>();
+//    private volatile Integer sortOrderCounter = 0;
     
     /*
      * CONSTRUCTORS
@@ -92,7 +89,7 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
     public VComponentBase(VComponentBase source)
     {
         this();
-        copyComponentFrom(source);
+        copyChildrenFrom(source);
     }
 
     void addListeners()
@@ -160,7 +157,7 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
      * Note: this method only overwrites properties found in source.  If there are properties in
      * this component that are not present in source then those will remain unchanged.
      * */
-//    @Override
+ //    @Override
 //    public void copyComponentFrom(VComponent source)
 //    {
 ////        System.out.println("copyComponentFrom1");
@@ -183,6 +180,16 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
 ////            value.copyToNewParent(this);
 //        });
 //    }
+    
+    /** Copy property into this component */
+    @Override protected void copyChild(VCalendarElement child)
+    {
+        PropertyType type = PropertyType.enumFromClass(child.getClass());
+        if (type != null)
+        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+            type.copyProperty((Property<?>) child, this);
+        }        
+    }
 
     /**
      * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
@@ -296,47 +303,47 @@ public abstract class VComponentBase extends OrderedElement implements VComponen
 //        builder.append(lastContentLine);
 //    }
     
-    @Deprecated
-    void appendMiddleContentLines2(StringBuilder builder)
-    {
-        /* map of property name/content
-         * 
-         * Note: key is property name and not Property reference because I want all properties
-         * with same name, even non-standard and IANA properties, to have same sort order.  The non-
-         * standard properties with different names should be sorted together, not lumped with all
-         * non-standard properties.
-         */
-        
-        Map<String, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
-        properties().forEach(property -> 
-                {
-                    if (propertyNameContentMap.get(property.getPropertyName()) == null)
-                    { // make new list for new entry
-                        List<CharSequence> list = new ArrayList<>(Arrays.asList(property.toContent()));
-                        propertyNameContentMap.put(property.getPropertyName(), list);
-                    } else
-                    { // add properties to existing list for existing entry
-                        List<CharSequence> list = propertyNameContentMap.get(property.getPropertyName());
-                        list.add(property.toContent());
-                    }
-                });
-        
-        // restore property sort order if properties were parsed from content
-        propertyNameContentMap.entrySet().stream()
-                .sorted((Comparator<? super Entry<String, List<CharSequence>>>) (e1, e2) -> 
-                {
-                    Integer s1 = propertySortOrder().get(e1.getKey());
-                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
-                    Integer s2 = propertySortOrder().get(e2.getKey());
-                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
-                    return sort1.compareTo(sort2);
-                })
-                .forEach(p -> 
-                {
-                    p.getValue().stream()
-                            .forEach(s -> builder.append(ICalendarUtilities.foldLine(s) + System.lineSeparator()));
-                });
-    }
+//    @Deprecated
+//    void appendMiddleContentLines2(StringBuilder builder)
+//    {
+//        /* map of property name/content
+//         * 
+//         * Note: key is property name and not Property reference because I want all properties
+//         * with same name, even non-standard and IANA properties, to have same sort order.  The non-
+//         * standard properties with different names should be sorted together, not lumped with all
+//         * non-standard properties.
+//         */
+//        
+//        Map<String, List<CharSequence>> propertyNameContentMap = new LinkedHashMap<>();
+//        properties().forEach(property -> 
+//                {
+//                    if (propertyNameContentMap.get(property.getPropertyName()) == null)
+//                    { // make new list for new entry
+//                        List<CharSequence> list = new ArrayList<>(Arrays.asList(property.toContent()));
+//                        propertyNameContentMap.put(property.getPropertyName(), list);
+//                    } else
+//                    { // add properties to existing list for existing entry
+//                        List<CharSequence> list = propertyNameContentMap.get(property.getPropertyName());
+//                        list.add(property.toContent());
+//                    }
+//                });
+//        
+//        // restore property sort order if properties were parsed from content
+//        propertyNameContentMap.entrySet().stream()
+//                .sorted((Comparator<? super Entry<String, List<CharSequence>>>) (e1, e2) -> 
+//                {
+//                    Integer s1 = propertySortOrder().get(e1.getKey());
+//                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
+//                    Integer s2 = propertySortOrder().get(e2.getKey());
+//                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
+//                    return sort1.compareTo(sort2);
+//                })
+//                .forEach(p -> 
+//                {
+//                    p.getValue().stream()
+//                            .forEach(s -> builder.append(ICalendarUtilities.foldLine(s) + System.lineSeparator()));
+//                });
+//    }
     private final String firstContentLine = "BEGIN:" + componentType().toString();
     private final String lastContentLine = "END:" + componentType().toString();
 

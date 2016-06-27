@@ -84,10 +84,10 @@ public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U>
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyBaseAltText(String contentLine)
-    {
-        super(contentLine);
-    }
+//    protected PropertyBaseAltText(String contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     // copy constructor
     public PropertyBaseAltText(PropertyBaseAltText<T,U> property)

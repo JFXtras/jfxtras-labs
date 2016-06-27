@@ -50,10 +50,10 @@ public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implem
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyBaseLanguage(String contentLine)
-    {
-        super(contentLine);
-    }
+//    protected PropertyBaseLanguage(String contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     // copy constructor
     public PropertyBaseLanguage(PropertyBaseLanguage<T,U> property)

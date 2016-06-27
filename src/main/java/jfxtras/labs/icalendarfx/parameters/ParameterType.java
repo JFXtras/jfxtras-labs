@@ -4,6 +4,7 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
+import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
 import jfxtras.labs.icalendarfx.properties.PropertyAltText;
@@ -551,7 +552,7 @@ public enum ParameterType
         return map;
     }
     /** get enum from map */
-    public static ParameterType enumFromClass(Class<? extends Parameter> myClass)
+    public static ParameterType enumFromClass(Class<? extends VCalendarElement> myClass)
     {
         ParameterType p = enumFromClassMap.get(myClass);
         if (p == null)
@@ -605,4 +606,10 @@ public enum ParameterType
     
     /** copies the associated parameter from the source property to the destination property */
     abstract public void copyParameter(Property<?>  source, Property<?> destination);
+    
+    public void copyParameter(Parameter<?> child, Property<?> destination)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

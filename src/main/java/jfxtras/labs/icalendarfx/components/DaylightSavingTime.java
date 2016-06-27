@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserDaylightSavingTime;
 

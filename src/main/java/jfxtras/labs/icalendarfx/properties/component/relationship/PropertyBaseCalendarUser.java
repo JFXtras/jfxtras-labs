@@ -140,10 +140,10 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
     /*
      * CONSTRUCTORS
      */    
-    protected PropertyBaseCalendarUser(String contentLine)
-    {
-        super(contentLine);
-    }
+//    protected PropertyBaseCalendarUser(String contentLine)
+//    {
+//        super(contentLine);
+//    }
 
     // copy constructor
     public PropertyBaseCalendarUser(PropertyBaseCalendarUser<T,U> property)

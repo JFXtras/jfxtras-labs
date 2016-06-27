@@ -10,6 +10,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.CalendarElementType;
+import jfxtras.labs.icalendarfx.OrderedElement;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVTimeZone;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -473,9 +475,9 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
     
     /** copy STANDARD and DAYLIGHT subcomponents */
     @Override
-    public void copyComponentFrom(VComponent source)
+    public void copyChildrenFrom(OrderedElement source)
     {
-        super.copyComponentFrom(source);
+        super.copyChildrenFrom(source);
         VTimeZone castSource = (VTimeZone) source;
         if (castSource.getStandardOrDaylight() != null)
         {

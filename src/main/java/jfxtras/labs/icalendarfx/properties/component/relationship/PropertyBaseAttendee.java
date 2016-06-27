@@ -244,10 +244,10 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
      * CONSTRUCTORS
      */
     
-    public PropertyBaseAttendee(String contentLine)
-    {
-        super(contentLine);
-    }
+//    public PropertyBaseAttendee(String contentLine)
+//    {
+//        super(contentLine);
+//    }
     
     public PropertyBaseAttendee(T value)
     {

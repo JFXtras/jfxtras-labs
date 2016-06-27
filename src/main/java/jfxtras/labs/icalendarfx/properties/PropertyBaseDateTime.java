@@ -80,12 +80,12 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
         super(temporal);
     }
 
-    @Deprecated
-    public PropertyBaseDateTime(Class<T> clazz, String contentLine)
-    {
-        super(contentLine);
-        clazz.cast(getValue()); // ensure value class type matches parameterized type
-    }
+//    @Deprecated
+//    public PropertyBaseDateTime(Class<T> clazz, String contentLine)
+//    {
+//        super(contentLine);
+//        clazz.cast(getValue()); // ensure value class type matches parameterized type
+//    }
     
     public PropertyBaseDateTime(PropertyBaseDateTime<T,U> source)
     {
