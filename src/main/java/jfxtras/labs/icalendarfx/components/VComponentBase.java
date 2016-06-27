@@ -6,8 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.CalendarElementType;
-import jfxtras.labs.icalendarfx.OrderedElementBase;
+import jfxtras.labs.icalendarfx.Orderer;
+import jfxtras.labs.icalendarfx.OrdererBase;
 import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -36,8 +38,23 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public abstract class VComponentBase extends OrderedElementBase implements VComponent
-{   
+public abstract class VComponentBase implements VComponent
+{
+    final private Orderer orderer;
+    @Override
+    public Orderer orderer() { return orderer; }
+    
+    private Callback<VCalendarElement, Void> copyChildCallback = (child) ->
+    {
+        PropertyType type = PropertyType.enumFromClass(child.getClass());
+        if (type != null)
+        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+            type.copyProperty((Property<?>) child, this);
+        }
+    });
+    private Callback<Void, List<String>> elementNameListCallback;
+    private Callback<VCalendarElement, String> elementNameCallback;
+    
     /**
      * List of all {@link PropertyType} found in component.
      * The list is unmodifiable.
@@ -76,6 +93,7 @@ public abstract class VComponentBase extends OrderedElementBase implements VComp
     VComponentBase()
     {
         addListeners();
+        orderer = new OrdererBase(null, null, null);
     }
     
     /** Parse content lines into calendar component */
@@ -181,15 +199,36 @@ public abstract class VComponentBase extends OrderedElementBase implements VComp
 //        });
 //    }
     
-    /** Copy property into this component */
-    @Override protected void copyChild(VCalendarElement child)
-    {
-        PropertyType type = PropertyType.enumFromClass(child.getClass());
-        if (type != null)
-        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-            type.copyProperty((Property<?>) child, this);
-        }        
-    }
+//    @Override
+//    protected List<String> sortedContent()
+//    {
+//        // check properties to make sure all are accounted for in map
+//        List<PropertyType> types = propertyEnums();
+//        Optional<VCalendarElement> propertyNotFound = orderer().elementSortOrderMap().entrySet()
+//            .stream()
+//            .map(e -> e.getKey())
+//            .filter(v ->
+//            {
+//                PropertyType myType = PropertyType.enumFromClass(v.getClass());
+//                return (myType == null) ? false : types.contains(myType);
+//            })
+//            .findAny();
+//        if (propertyNotFound.isPresent())
+//        {
+//            throw new RuntimeException("property not found:" + propertyNotFound.get());
+//        }
+//        return super.sortedContent();
+//    }
+//    
+//    /** Copy property into this component */
+//    @Override protected void copyChild(VCalendarElement child)
+//    {
+//        PropertyType type = PropertyType.enumFromClass(child.getClass());
+//        if (type != null)
+//        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+//            type.copyProperty((Property<?>) child, this);
+//        }        
+//    }
 
     /**
      * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
@@ -204,7 +243,7 @@ public abstract class VComponentBase extends OrderedElementBase implements VComp
         StringBuilder builder = new StringBuilder(400);
         builder.append(firstContentLine + System.lineSeparator());
 //        sortedContent().stream().forEach(System.out::println);
-        String content = sortedContent().stream()
+        String content = orderer().sortedContent().stream()
 //                .map(s -> ICalendarUtilities.foldLine(s))
                 .collect(Collectors.joining(System.lineSeparator()));
         if (content != null)

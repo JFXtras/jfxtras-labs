@@ -12,11 +12,26 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.properties.PropertyType;
+import javafx.util.Callback;
 
 /** Provide a framework to maintain a sort order of VCalendarElement contents */ 
-public abstract class OrderedElementBase implements OrderedElement
+public class OrdererBase implements Orderer
 {
+    final private Callback<VCalendarElement, Void> copyChildCallback;
+    final private Callback<Void, List<String>> elementNameListCallback;
+    final private Callback<VCalendarElement, String> elementNameCallback;
+    
+    public OrdererBase(
+            Callback<VCalendarElement, Void> copyChildCallback,
+            Callback<Void, List<String>> elementNamesCallback,
+            Callback<VCalendarElement, String> elementNameCallback
+            )
+    {
+        this.copyChildCallback = copyChildCallback;
+        this.elementNameListCallback = elementNamesCallback;
+        this.elementNameCallback = elementNameCallback;
+    }
+    
     /** 
      * SORT ORDER
      * Component sort order map.  Key is element, value is sort order.  Follows sort order of parsed content or
@@ -25,11 +40,9 @@ public abstract class OrderedElementBase implements OrderedElement
      * Generally, this map shouldn't be modified.  Only modify it when you want to force
      * a specific order.
      */
-//    public Map<Integer, VCalendarElement> elementSortOrderMap() { return elementSortOrderMap; }
     @Override
     public Map<VCalendarElement, Integer> elementSortOrderMap() { return elementSortOrderMap; }
     final private Map<VCalendarElement, Integer> elementSortOrderMap = new HashMap<>();
-//    final private SortedMap<Integer, VCalendarElement> elementSortOrderMap = new TreeMap<>();
     private volatile Integer sortOrderCounter = 0;
     
     /**
@@ -43,28 +56,20 @@ public abstract class OrderedElementBase implements OrderedElement
             if (change.wasAdded())
             {
                 change.getAddedSubList().forEach(vComponent ->  elementSortOrderMap().put(vComponent, sortOrderCounter));
-//                change.getAddedSubList().forEach(vComponent ->  elementSortOrderMap().put(sortOrderCounter, vComponent));
                 sortOrderCounter += 100;
-//                System.out.println("sortOrderCounter1:" + sortOrderCounter);
             } else
             {
                 if (change.wasRemoved())
                 {
                     change.getRemoved().forEach(vComponent -> 
                     {
-//                        Integer oldKey = elementSortOrderMap()
-//                                .entrySet()
-//                                .stream()
-//                                .filter(e -> e.getValue().equals(vComponent))
-//                                .map(e -> e.getKey())
-//                                .findAny().get();
-//                        elementSortOrderMap().remove(oldKey);
                         elementSortOrderMap().remove(vComponent);
                     });
                 }                
             }
         }
     };
+    @Override
     public void registerSortOrderProperty(ObservableList<? extends VCalendarElement> list)
     {
         list.addListener(sortOrderListChangeListener);
@@ -73,12 +78,11 @@ public abstract class OrderedElementBase implements OrderedElement
             list.forEach(vComponent ->  
             {
                 elementSortOrderMap().put(vComponent, sortOrderCounter);
-//                elementSortOrderMap().put(sortOrderCounter, vComponent);
                 sortOrderCounter += 100;
-//                System.out.println("sortOrderCounter2:" + sortOrderCounter);
             });
         }
     }
+    @Override
     public void unregisterSortOrderProperty(ObservableList<? extends VCalendarElement> list)
     {
         if (list != null)
@@ -94,14 +98,6 @@ public abstract class OrderedElementBase implements OrderedElement
     {
         if (oldValue != null)
         {
-//            Integer oldKey = elementSortOrderMap()
-//                    .entrySet()
-//                    .stream()
-//                    .filter(e -> e.getValue().equals(oldValue))
-//                    .map(e -> e.getKey())
-//                    .findAny().get();
-//            System.out.println("remove prop:" + oldKey);
-//            elementSortOrderMap().remove(oldKey);
             elementSortOrderMap().remove(oldValue);
         }
         if (newValue != null)
@@ -113,6 +109,7 @@ public abstract class OrderedElementBase implements OrderedElement
 //            System.out.println("sortOrderCounter3:" + sortOrderCounter);
         }
     };
+    @Override
     public void registerSortOrderProperty(ObjectProperty<? extends VCalendarElement> property)
     {
         property.addListener(sortOrderChangeListener);
@@ -124,6 +121,7 @@ public abstract class OrderedElementBase implements OrderedElement
 //            System.out.println("sortOrderCounter4:" + sortOrderCounter);
         }
     }
+    @Override
     public void unregisterSortOrderProperty(ObjectProperty<? extends VCalendarElement> property)
     {
         property.removeListener(sortOrderChangeListener);
@@ -134,25 +132,26 @@ public abstract class OrderedElementBase implements OrderedElement
      * 
      * @return - list of sorted content lines
      */
-    protected List<String> sortedContent()
-    {
-        
+    @Override
+    public List<String> sortedContent()
+    {        
         // check properties to make sure all are accounted for in map
-        List<String> types = elementNames();
+        List<String> elementNames = elementNameListCallback.call(null);
         Optional<VCalendarElement> propertyNotFound = elementSortOrderMap().entrySet()
             .stream()
             .map(e -> e.getKey())
             .filter(v ->
             {
-                PropertyType myType = PropertyType.enumFromClass(v.getClass());
-                return (myType == null) ? false : types.contains(myType);
+//                PropertyType myType = PropertyType.enumFromClass(v.getClass());
+                String myElementName = elementNameCallback.call(v);
+                return (myElementName == null) ? false : elementNames.contains(myElementName);
             })
             .findAny();
         if (propertyNotFound.isPresent())
         {
             throw new RuntimeException("element not found:" + propertyNotFound.get());
         }
-        
+
         List<String> content = new ArrayList<>();
         // apply sort order (if element doesn't exist in map, don't sort)
         elementSortOrderMap().entrySet().stream()
@@ -172,12 +171,7 @@ public abstract class OrderedElementBase implements OrderedElement
         
         return content;
     }
-    
-    private List<String> elementNames()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
     /** Copy parameters, properties, and subcomponents from source into this component,
      * essentially making a copy of source 
      * 
@@ -185,9 +179,9 @@ public abstract class OrderedElementBase implements OrderedElement
      * this component that are not present in source then those will remain unchanged.
      * */
     @Override
-    public void copyChildrenFrom(OrderedElement source)
+    public void copyChildrenFrom(VCalendarElement source)
     {
-        source.elementSortOrderMap()
+        source.orderer().elementSortOrderMap()
                 .entrySet().stream()
                 .sorted((Comparator<? super Entry<VCalendarElement, Integer>>) (e1, e2) -> 
                 {
@@ -196,11 +190,11 @@ public abstract class OrderedElementBase implements OrderedElement
                 .forEach((e) ->
                 {
                     VCalendarElement child = e.getKey();
-                    copyChild(child);
+                    copyChildCallback.call(child);
                 });
     }
     
-    /** Copy child to particular subclass parent */
-    protected abstract void copyChild(VCalendarElement key);
+//    /** Copy child to particular subclass parent */
+//    protected abstract void copyChild(VCalendarElement key);
 
 }
