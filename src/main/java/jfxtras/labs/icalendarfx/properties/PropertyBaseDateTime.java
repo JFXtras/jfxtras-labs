@@ -46,6 +46,8 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
         if (timeZoneIdentifier == null)
         {
             timeZoneIdentifier = new SimpleObjectProperty<>(this, ParameterType.TIME_ZONE_IDENTIFIER.toString());
+            System.out.println("add TZID listener");
+            orderer().registerSortOrderProperty(timeZoneIdentifier);
         }
         return timeZoneIdentifier;
     }
@@ -79,13 +81,6 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
     {
         super(temporal);
     }
-
-//    @Deprecated
-//    public PropertyBaseDateTime(Class<T> clazz, String contentLine)
-//    {
-//        super(contentLine);
-//        clazz.cast(getValue()); // ensure value class type matches parameterized type
-//    }
     
     public PropertyBaseDateTime(PropertyBaseDateTime<T,U> source)
     {
@@ -124,7 +119,10 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
         if (element instanceof ZonedDateTime)
         {
             ZoneId zone = ((ZonedDateTime) element).getZone();
-            setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
+            if (! zone.equals(ZoneId.of("Z")))
+            {
+                setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
+            }
         } else if ((element instanceof LocalDateTime) || (element instanceof LocalDate))
         {
             if (getTimeZoneIdentifier() != null)
@@ -133,7 +131,7 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
             }
             if (element instanceof LocalDate)
             {
-                setValueParameter(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
+                setValueType(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
             }
         } else
         {

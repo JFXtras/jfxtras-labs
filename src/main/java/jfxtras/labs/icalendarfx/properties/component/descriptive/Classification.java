@@ -42,13 +42,6 @@ public class Classification extends PropertyBase<ClassificationType, Classificat
         }
     };
     
-//    public Classification(CharSequence contentLine)
-//    {
-//        super();
-//        setConverter(CONVERTER);
-//        parseContent(contentLine);
-//    }
-    
     public Classification(ClassificationType type)
     {
         super();

@@ -45,10 +45,10 @@ public abstract class VComponentDescribableBase<T> extends VComponentCommonBase<
     {
         if (attachments != null)
         {
-            registerSortOrderProperty(attachments);
+            orderer().registerSortOrderProperty(attachments);
         } else
         {
-            unregisterSortOrderProperty(this.attachments);
+            orderer().unregisterSortOrderProperty(this.attachments);
         }
         this.attachments = attachments;
     }
@@ -67,7 +67,7 @@ public abstract class VComponentDescribableBase<T> extends VComponentCommonBase<
         if (summary == null)
         {
             summary = new SimpleObjectProperty<>(this, PropertyType.SUMMARY.toString());
-            registerSortOrderProperty(summary);
+            orderer().registerSortOrderProperty(summary);
         }
         return summary;
     }

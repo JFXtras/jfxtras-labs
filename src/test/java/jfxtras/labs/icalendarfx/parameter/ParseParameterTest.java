@@ -18,7 +18,7 @@ public class ParseParameterTest
     public void canParseCommonName()
     {
         CommonName parameter = CommonName.parse("David Bal");
-        String expectedContent = ";CN=David Bal";
+        String expectedContent = "CN=David Bal";
         assertEquals(expectedContent, parameter.toContent());
     }
     
@@ -26,7 +26,8 @@ public class ParseParameterTest
     public void canParseCalendarUser()
     {
         CalendarUser parameter = CalendarUser.parse("GROUP");
-        String expectedContent = ";CUTYPE=GROUP";
+        String expectedContent = "CUTYPE=GROUP";
+        System.out.println(parameter.toContent());
         assertEquals(expectedContent, parameter.toContent());
     }
     
@@ -34,7 +35,7 @@ public class ParseParameterTest
     public void canParseDelegatees()
     {
         Delegatees parameter = Delegatees.parse("\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"");
-        String expectedContent = ";DELEGATED-TO=\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"";
+        String expectedContent = "DELEGATED-TO=\"mailto:jdoe@example.com\",\"mailto:jqpublic@example.com\"";
         assertEquals(expectedContent, parameter.toContent());
         assertEquals(2, parameter.getValue().size());
     }
@@ -43,7 +44,7 @@ public class ParseParameterTest
     public void canParseAlternateText()
     {
         AlternateText parameter = AlternateText.parse("\"CID:part3.msg.970415T083000@example.com\"");
-        String expectedContent = ";ALTREP=\"CID:part3.msg.970415T083000@example.com\"";
+        String expectedContent = "ALTREP=\"CID:part3.msg.970415T083000@example.com\"";
         assertEquals(expectedContent, parameter.toContent());
     }
     
@@ -52,7 +53,7 @@ public class ParseParameterTest
     {
         String expectedContent = "\"mailto:projectA@example.com\",\"mailto:projectB@example.com\"";        
         GroupMembership parameter = GroupMembership.parse(expectedContent);
-        assertEquals(";MEMBER=" + expectedContent, parameter.toContent());
+        assertEquals("MEMBER=" + expectedContent, parameter.toContent());
         assertEquals(2, parameter.getValue().size());
     }
     
@@ -60,7 +61,7 @@ public class ParseParameterTest
     public void canParseDirectory()
     {
         DirectoryEntryReference parameter = DirectoryEntryReference.parse("\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"");
-        String expectedContent = ";DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"";
+        String expectedContent = "DIR=\"ldap://example.com:6666/o=ABC%20Industries,c=US???(cn=Jim%20Dolittle)\"";
         assertEquals(expectedContent, parameter.toContent());
     }
     
@@ -68,7 +69,7 @@ public class ParseParameterTest
     public void canParseFormatType()
     {
         FormatType parameter = FormatType.parse("application/msword");
-        String expectedContent = ";FMTTYPE=application/msword";
+        String expectedContent = "FMTTYPE=application/msword";
         assertEquals(expectedContent, parameter.toContent());
         assertEquals("application", parameter.getTypeName());
         assertEquals("msword", parameter.getSubtypeName());

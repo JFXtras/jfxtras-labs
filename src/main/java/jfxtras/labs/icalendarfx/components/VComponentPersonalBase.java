@@ -50,10 +50,10 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     {
         if (attendees != null)
         {
-            registerSortOrderProperty(attendees);
+            orderer().registerSortOrderProperty(attendees);
         } else
         {
-            unregisterSortOrderProperty(this.attendees);
+            orderer().unregisterSortOrderProperty(this.attendees);
         }
         this.attendees = attendees;
     }
@@ -69,7 +69,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (dateTimeStamp == null)
         {
             dateTimeStamp = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_STAMP.toString());
-            registerSortOrderProperty(dateTimeStamp);
+            orderer().registerSortOrderProperty(dateTimeStamp);
         }
         return dateTimeStamp;
     }
@@ -89,7 +89,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (organizer == null)
         {
             organizer = new SimpleObjectProperty<Organizer>(this, PropertyType.ORGANIZER.toString());
-            registerSortOrderProperty(organizer);
+            orderer().registerSortOrderProperty(organizer);
         }
         return organizer;
     }
@@ -119,10 +119,10 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     {
         if (requestStatus != null)
         {
-            registerSortOrderProperty(requestStatus);
+            orderer().registerSortOrderProperty(requestStatus);
         } else
         {
-            unregisterSortOrderProperty(this.requestStatus);
+            orderer().unregisterSortOrderProperty(this.requestStatus);
         }
         this.requestStatus = requestStatus;
     }
@@ -141,7 +141,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (uniqueIdentifier == null)
         {
             uniqueIdentifier = new SimpleObjectProperty<>(this, PropertyType.UNIQUE_IDENTIFIER.toString());
-            registerSortOrderProperty(uniqueIdentifier);
+            orderer().registerSortOrderProperty(uniqueIdentifier);
         }
         return uniqueIdentifier;
     }
@@ -176,7 +176,7 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
         if (uniformResourceLocator == null)
         {
             uniformResourceLocator = new SimpleObjectProperty<>(this, PropertyType.UNIFORM_RESOURCE_LOCATOR.toString());
-            registerSortOrderProperty(uniformResourceLocator);
+            orderer().registerSortOrderProperty(uniformResourceLocator);
         }
         return uniformResourceLocator;
     }
@@ -198,14 +198,6 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     {
         super(source);
     }
-
-//    @Override
-//    public boolean isValid()
-//    {
-//        boolean isDateTimeStampPresent = getDateTimeStamp() != null;
-//        boolean isUniqueIdentifier = getUniqueIdentifier() != null;
-//        return isDateTimeStampPresent && isUniqueIdentifier;
-//    }
     
     @Override
     public List<String> errors()

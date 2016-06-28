@@ -27,11 +27,6 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  */
 public class ExceptionDates extends PropertyBaseRecurrence<ExceptionDates>
 {       
-//    public Exceptions(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//    }
-
     @SuppressWarnings("unchecked")
     public ExceptionDates(Temporal...temporals)
     {

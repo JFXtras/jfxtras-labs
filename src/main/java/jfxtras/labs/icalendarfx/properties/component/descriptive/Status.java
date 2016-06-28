@@ -43,12 +43,6 @@ public class Status extends PropertyBase<StatusType, Status>
         }
     };
     
-//    public Status(CharSequence contentLine)
-//    {
-//        this();
-//        parseContent(contentLine);
-//    }
-    
     public Status(StatusType value)
     {
         this();

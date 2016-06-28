@@ -44,7 +44,13 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
         {
             value = addDoubleQuotesIfNecessary(getValue().toString());
         }
-        return (getValue() != null) ? ";" + parameterType().toString() + "=" + value : null;
+        return valueToContent(value);
+//        return (getValue() != null) ? parameterType().toString() + "=" + value : null;
+    }
+    
+    String valueToContent(String value)
+    {
+        return (getValue() != null) ? parameterType().toString() + "=" + value : null;
     }
     
     /**

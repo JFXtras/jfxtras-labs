@@ -22,10 +22,10 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     {
         if (nonStandardProps != null)
         {
-            registerSortOrderProperty(nonStandardProps);
+            orderer().registerSortOrderProperty(nonStandardProps);
         } else
         {
-            unregisterSortOrderProperty(this.nonStandardProps);
+            orderer().unregisterSortOrderProperty(this.nonStandardProps);
         }
         this.nonStandardProps = nonStandardProps;
     }
@@ -47,10 +47,10 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     {
         if (ianaProps != null)
         {
-            registerSortOrderProperty(ianaProps);
+            orderer().registerSortOrderProperty(ianaProps);
         } else
         {
-            unregisterSortOrderProperty(this.ianaProps);
+            orderer().unregisterSortOrderProperty(this.ianaProps);
         }
         this.ianaProps = ianaProps;
     }
@@ -69,8 +69,9 @@ public abstract class VComponentCommonBase<T> extends VComponentBase implements 
     /** Copy constructor */
     public VComponentCommonBase(VComponentCommonBase<T> source)
     {
-        this();
-        copyChildrenFrom(source);
+//        this();
+        super(source);
+//        copyChildrenFrom(source);
     }
     
     @Override

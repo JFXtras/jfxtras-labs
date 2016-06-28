@@ -27,11 +27,6 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
  */
 public class RecurrenceRule extends PropertyBase<RecurrenceRule2, RecurrenceRule>
 {
-//    public RecurrenceRule(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//    }
-
     public RecurrenceRule(RecurrenceRule2 value)
     {
         super(value);
@@ -53,12 +48,4 @@ public class RecurrenceRule extends PropertyBase<RecurrenceRule2, RecurrenceRule
         property.parseContent(propertyContent);
         return property;
     }
-    
-//    @Override
-//    public void copyPropertyFrom(PropertyBase<RecurrenceRule2, RecurrenceRule> source)
-//    {
-//        throw new RuntimeException("not implemented");
-////        super.copyPropertyFrom(source);
-////        setValue(new RecurrenceRule2(source.getValue()));
-//    }
 }

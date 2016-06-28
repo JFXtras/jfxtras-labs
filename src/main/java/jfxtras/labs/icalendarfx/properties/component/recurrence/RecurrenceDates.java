@@ -29,11 +29,6 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  */
 public class RecurrenceDates extends PropertyBaseRecurrence<RecurrenceDates>
 {       
-//    public Recurrences(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//    }
-    
     @SuppressWarnings("unchecked")
     public RecurrenceDates(Temporal...temporals)
     {

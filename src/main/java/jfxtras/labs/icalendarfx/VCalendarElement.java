@@ -35,10 +35,6 @@ public interface VCalendarElement
      */
     List<String> errors();
 
-    Orderer orderer();
-    
-//    /** Copy children elements from source into this parent */
-//    void copyChildrenFrom(VCalendarElement source);
     
 //    /** Make a copy of the element and assign it to the appropriate property in the parent 
 //     * @param <P>*/

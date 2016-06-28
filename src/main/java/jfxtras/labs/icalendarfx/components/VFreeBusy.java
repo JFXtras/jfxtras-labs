@@ -121,7 +121,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
         if (contact == null)
         {
             contact = new SimpleObjectProperty<>(this, PropertyType.CONTACT.toString());
-            registerSortOrderProperty(contact);
+            orderer().registerSortOrderProperty(contact);
         }
         return contact;
     }
@@ -150,7 +150,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
         if (dateTimeEnd == null)
         {
             dateTimeEnd = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_END.toString());
-            registerSortOrderProperty(dateTimeEnd);
+            orderer().registerSortOrderProperty(dateTimeEnd);
             dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
         return dateTimeEnd;
@@ -186,7 +186,7 @@ public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VCom
         if (freeBusyTime == null)
         {
             freeBusyTime = new SimpleObjectProperty<>(this, PropertyType.FREE_BUSY_TIME.toString());
-            registerSortOrderProperty(freeBusyTime);
+            orderer().registerSortOrderProperty(freeBusyTime);
         }
         return freeBusyTime;
     }

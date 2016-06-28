@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -21,7 +22,6 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
@@ -37,7 +37,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @author David Bal
  *
  */
-public class VCalendar extends OrderedElementBase
+public class VCalendar implements VCalendarParent
 {
     // version of this project, not associated with the iCalendar specification version
     public static String myVersion = "1.0";
@@ -437,6 +437,23 @@ public class VCalendar extends OrderedElementBase
         }
     };
     
+    /*
+     * SORT ORDER FOR CHILD ELEMENTS
+     */
+    final private Orderer orderer;
+    @Override
+    public Orderer orderer() { return orderer; }
+    
+    private Callback<VCalendarElement, Void> copyChildElementCallback = (child) ->
+    {
+        CalendarElementType type = CalendarElementType.enumFromClass(child.getClass());
+        if (type != null)
+        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+            type.copyChild(child, this);
+        }
+        return null;
+    };
+    
 //    /** 
 //     * SORT ORDER
 //     * Component sort order map.  Key is component, value is order.  Follows sort order of parsed content or
@@ -492,28 +509,30 @@ public class VCalendar extends OrderedElementBase
     public VCalendar()
     {
         addListeners();
+        orderer = new OrdererBase(copyChildElementCallback);
     }
   
     /** Copy constructor */
     public VCalendar(VCalendar source)
     {
         this();
-        copyChildrenFrom(source);    
+        throw new RuntimeException("not implemented");
+//        orderer().copyChildrenFrom(source);    
     }
 
     /*
      * OTHER METHODS
      */
     
-    /** Copy property into this component */
-    @Override protected void copyChild(VCalendarElement child)
-    {
-        CalendarElementType type = CalendarElementType.enumFromClass(child.getClass());
-        if (type != null)
-        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-            type.copyProperty((Property<?>) child, this);
-        }        
-    }
+//    /** Copy property into this component */
+//    @Override protected void copyChild(VCalendarElement child)
+//    {
+//        CalendarElementType type = CalendarElementType.enumFromClass(child.getClass());
+//        if (type != null)
+//        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+//            type.copyChild(child, this);
+//        }        
+//    }
     
     private void addListeners()
     {
@@ -523,15 +542,15 @@ public class VCalendar extends OrderedElementBase
         getVJournals().addListener(displayableListChangeListener);
 
         // Sort order listeners
-        registerSortOrderProperty(getVEvents());
-        registerSortOrderProperty(getVTodos());
-        registerSortOrderProperty(getVJournals());
-        registerSortOrderProperty(getVTimeZones());
-        registerSortOrderProperty(getVFreeBusies());
-        registerSortOrderProperty(calendarScaleProperty());
-        registerSortOrderProperty(methodProperty());
-        registerSortOrderProperty(productIdentifierProperty());
-        registerSortOrderProperty(versionProperty());
+//        registerSortOrderProperty(getVEvents());
+//        registerSortOrderProperty(getVTodos());
+//        registerSortOrderProperty(getVJournals());
+//        registerSortOrderProperty(getVTimeZones());
+//        registerSortOrderProperty(getVFreeBusies());
+//        registerSortOrderProperty(calendarScaleProperty());
+//        registerSortOrderProperty(methodProperty());
+//        registerSortOrderProperty(productIdentifierProperty());
+//        registerSortOrderProperty(versionProperty());
     }
     
     /**
@@ -582,7 +601,7 @@ public class VCalendar extends OrderedElementBase
 
         StringBuilder builder = new StringBuilder(elements.size()*300);
         builder.append(firstContentLine + System.lineSeparator());
-        String content = sortedContent().stream().collect(Collectors.joining(System.lineSeparator()));
+        String content = orderer().sortedContent().stream().collect(Collectors.joining(System.lineSeparator()));
         if (content != null)
         {
             builder.append(content + System.lineSeparator());

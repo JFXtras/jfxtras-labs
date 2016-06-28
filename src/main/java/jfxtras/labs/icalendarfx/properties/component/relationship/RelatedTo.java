@@ -48,6 +48,7 @@ public class RelatedTo extends PropertyBase<String, RelatedTo> implements Proper
         if (relationship == null)
         {
             relationship = new SimpleObjectProperty<>(this, ParameterType.RELATIONSHIP_TYPE.toString());
+            orderer().registerSortOrderProperty(relationship);
         }
         return relationship;
     }

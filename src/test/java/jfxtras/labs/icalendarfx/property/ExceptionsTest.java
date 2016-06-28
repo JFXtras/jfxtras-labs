@@ -105,6 +105,6 @@ public class ExceptionsTest
         ExceptionDates property2 = new ExceptionDates(property1);
         assertEquals(property1, property2);
         assertFalse(property1 == property2);
+        assertFalse(property1.getValue() == property2.getValue());
     }
-
 }

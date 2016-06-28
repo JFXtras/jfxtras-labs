@@ -27,11 +27,6 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  */
 public class Priority extends PropertyBase<Integer, Priority>
 {
-//    public Priority(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//    }
-    
     public Priority(Priority source)
     {
         super(source);

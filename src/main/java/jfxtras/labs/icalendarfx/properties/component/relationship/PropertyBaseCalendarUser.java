@@ -53,6 +53,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
         if (commonName == null)
         {
             commonName = new SimpleObjectProperty<>(this, ParameterType.COMMON_NAME.toString());
+            orderer().registerSortOrderProperty(commonName);
         }
         return commonName;
     }
@@ -83,6 +84,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
         if (directoryEntryReference == null)
         {
             directoryEntryReference = new SimpleObjectProperty<>(this, ParameterType.COMMON_NAME.toString());
+            orderer().registerSortOrderProperty(directoryEntryReference);
         }
         return directoryEntryReference;
     }
@@ -119,6 +121,7 @@ public abstract class PropertyBaseCalendarUser<T,U> extends PropertyBaseLanguage
         if (sentBy == null)
         {
             sentBy = new SimpleObjectProperty<>(this, ParameterType.SENT_BY.toString());
+            orderer().registerSortOrderProperty(sentBy);
         }
         return sentBy;
     }

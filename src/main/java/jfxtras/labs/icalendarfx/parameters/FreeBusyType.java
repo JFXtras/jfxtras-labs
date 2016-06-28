@@ -46,8 +46,7 @@ public class FreeBusyType extends ParameterBase<FreeBusyType, FreeBusyTypeEnum>
     public String toContent()
     {
         String value = (getValue() == FreeBusyTypeEnum.UNKNOWN) ? unknownValue : getValue().toString();
-        String parameterName = parameterType().toString();
-        return ";" + parameterName + "=" + value;
+        return valueToContent(value);
     }
     
     @Override

@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.CalendarElementType;
-import jfxtras.labs.icalendarfx.OrderedElement;
+import jfxtras.labs.icalendarfx.VCalendarParent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
@@ -41,7 +41,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         if (description == null)
         {
             description = new SimpleObjectProperty<>(this, PropertyType.DESCRIPTION.toString());
-            registerSortOrderProperty(description);
+            orderer().registerSortOrderProperty(description);
         }
         return description;
     }
@@ -62,7 +62,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         if (duration == null)
         {
             duration = new SimpleObjectProperty<>(this, PropertyType.DURATION.toString());
-            registerSortOrderProperty(duration);
+            orderer().registerSortOrderProperty(duration);
         }
         return duration;
     }
@@ -85,7 +85,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         if (geographicPosition == null)
         {
             geographicPosition = new SimpleObjectProperty<>(this, PropertyType.GEOGRAPHIC_POSITION.toString());
-            registerSortOrderProperty(geographicPosition);
+            orderer().registerSortOrderProperty(geographicPosition);
         }
         return geographicPosition;
     }
@@ -104,7 +104,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         if (location == null)
         {
             location = new SimpleObjectProperty<>(this, PropertyType.LOCATION.toString());
-            registerSortOrderProperty(location);
+            orderer().registerSortOrderProperty(location);
         }
         return location;
     }
@@ -124,7 +124,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
         if (priority == null)
         {
             priority = new SimpleObjectProperty<>(this, PropertyType.PRIORITY.toString());
-            registerSortOrderProperty(priority);
+            orderer().registerSortOrderProperty(priority);
         }
         return priority;
     }
@@ -148,10 +148,10 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (resources != null)
         {
-            registerSortOrderProperty(resources);
+            orderer().registerSortOrderProperty(resources);
         } else
         {
-            unregisterSortOrderProperty(this.resources);
+            orderer().unregisterSortOrderProperty(this.resources);
         }
         this.resources = resources;
     }
@@ -174,10 +174,10 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     {
         if (vAlarms != null)
         {
-            registerSortOrderProperty(vAlarms);
+            orderer().registerSortOrderProperty(vAlarms);
         } else
         {
-            unregisterSortOrderProperty(this.vAlarms);
+            orderer().unregisterSortOrderProperty(this.vAlarms);
         }
         this.vAlarms = vAlarms;
     }
@@ -243,7 +243,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     
     /** copy VAlarms */
     @Override
-    public void copyChildrenFrom(OrderedElement source)
+    public void copyChildrenFrom(VCalendarParent source)
     {
         System.out.println("copyComponentFrom2");
 

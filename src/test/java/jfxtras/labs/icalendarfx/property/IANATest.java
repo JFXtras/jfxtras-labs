@@ -28,7 +28,7 @@ public class IANATest
         assertEquals(content, madeProperty.toContent());
         IANAProperty expectedProperty = new IANAProperty(12)
                 .withPropertyName("TESTPROP2")
-                .withValueParameter("INTEGER");
+                .withValueType("INTEGER");
         assertEquals(expectedProperty, madeProperty);
         assertEquals(12, madeProperty.getValue());
         assertEquals("TESTPROP2", madeProperty.getPropertyName());

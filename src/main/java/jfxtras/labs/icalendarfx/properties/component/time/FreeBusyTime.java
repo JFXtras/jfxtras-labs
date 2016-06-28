@@ -104,6 +104,7 @@ public class FreeBusyTime extends PropertyBase<List<Pair<ZonedDateTime, Temporal
         if (freeBusyType == null)
         {
             freeBusyType = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
+            orderer().registerSortOrderProperty(freeBusyType);
         }
         return freeBusyType;
     }
@@ -129,13 +130,6 @@ public class FreeBusyTime extends PropertyBase<List<Pair<ZonedDateTime, Temporal
     {
         super(source);
     }
-    
-//    public FreeBusyTime(CharSequence contentLine)
-//    {
-//        super();
-//        setConverter(CONVERTER);
-//        parseContent(contentLine);
-//    }
 
     public FreeBusyTime(List<Pair<ZonedDateTime, TemporalAmount>> values)
     {

@@ -83,13 +83,6 @@ public class RequestStatus extends PropertyBaseLanguage<String, RequestStatus>
     public void setException(String exception) { this.exception.set(exception); }
     public RequestStatus withException(String exception) { setException(exception); return this; }
     
-//    public RequestStatus(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//        setupListeners();
-//        updateParts(getValue());
-//    }
-
     public RequestStatus(RequestStatus source)
     {
         super(source);

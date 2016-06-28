@@ -20,7 +20,7 @@ public class NonStandardTest
         assertEquals(content, madeProperty.toContent());
         NonStandardProperty expectedProperty = NonStandardProperty.parse("FALSE")
                 .withPropertyName("X-MYPROP")
-                .withValueParameter(ValueType.BOOLEAN);
+                .withValueType(ValueType.BOOLEAN);
         assertEquals(expectedProperty, madeProperty);
         assertEquals(Boolean.FALSE, madeProperty.getValue());
     }
@@ -33,11 +33,11 @@ public class NonStandardTest
         assertEquals(content, madeProperty.toContent());
         NonStandardProperty expectedProperty = NonStandardProperty.parse("http://www.example.org/mysubj.au")
                 .withFormatType("audio/basic")
-                .withValueParameter(ValueType.UNIFORM_RESOURCE_IDENTIFIER)
+                .withValueType(ValueType.UNIFORM_RESOURCE_IDENTIFIER)
                 .withPropertyName("X-ABC-MMSUBJ");
 
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(ValueType.UNIFORM_RESOURCE_IDENTIFIER, madeProperty.getValueParameter().getValue());
+        assertEquals(ValueType.UNIFORM_RESOURCE_IDENTIFIER, madeProperty.getValueType().getValue());
         assertEquals(new URI("http://www.example.org/mysubj.au"), madeProperty.getValue());
     }
 

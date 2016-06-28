@@ -31,7 +31,7 @@ public class TimeZoneIdentifierTest
         TimeZoneIdentifier madeProperty = TimeZoneIdentifier.parse(content);
         assertEquals(content, madeProperty.toContent());
         TimeZoneIdentifier expectedProperty = new TimeZoneIdentifier(ZoneId.of("America/Los_Angeles"))
-                .withValueParameter(ValueType.TEXT);
+                .withValueType(ValueType.TEXT);
         assertEquals(expectedProperty, madeProperty);
     }
 

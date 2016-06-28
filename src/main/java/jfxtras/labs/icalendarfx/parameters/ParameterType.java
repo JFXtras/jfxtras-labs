@@ -45,6 +45,14 @@ public enum ParameterType
             AlternateText parameter = new AlternateText(castSource.getAlternateText());
             castDestination.setAlternateText(parameter);
         }
+
+        @Override
+        public void copyParameter(Parameter<?> child, Property<?> destination)
+        {
+            PropertyBaseAltText<?,?> castDestination = (PropertyBaseAltText<?,?>) destination;
+            AlternateText parameterCopy = new AlternateText((AlternateText) child);
+            castDestination.setAlternateText(parameterCopy);
+        }
     },
     // in properties ATTENDEE, ORGANIZER
     COMMON_NAME ("CN", CommonName.class) {
@@ -269,6 +277,14 @@ public enum ParameterType
             PropertyBaseLanguage<?,?> castDestination = (PropertyBaseLanguage<?,?>) destination;
             Language parameter = new Language(castSource.getLanguage());
             castDestination.setLanguage(parameter);
+        }
+
+        @Override
+        public void copyParameter(Parameter<?> child, Property<?> destination)
+        {
+            PropertyBaseLanguage<?,?> castDestination = (PropertyBaseLanguage<?,?>) destination;
+            Language parameterCopy = new Language((Language) child);
+            castDestination.setLanguage(parameterCopy);
         }
     },
     GROUP_OR_LIST_MEMBERSHIP ("MEMBER", GroupMembership.class) {
@@ -497,10 +513,10 @@ public enum ParameterType
             ValueType valueType = castProperty.propertyType().allowedValueTypes().get(0);
             if (valueType.toString().equals(content))
             {
-                castProperty.setValueParameter(new ValueParameter(valueType));
+                castProperty.setValueType(new ValueParameter(valueType));
             } else
             {
-                castProperty.setValueParameter(ValueParameter.parse(content)); // unknown value type
+                castProperty.setValueType(ValueParameter.parse(content)); // unknown value type
 //                throw new IllegalArgumentException("Value type: " + content + " is not valid");
             }
         }
@@ -509,7 +525,7 @@ public enum ParameterType
         public Parameter<?> getParameter(Property<?> parent)
         {
             PropertyBase<?,?> castProperty = (PropertyBase<?,?>) parent;
-            return castProperty.getValueParameter();
+            return castProperty.getValueType();
         }
 
         @Override
@@ -517,8 +533,8 @@ public enum ParameterType
         {
             PropertyBase<?,?> castSource = (PropertyBase<?,?>) source;
             PropertyBase<?,?> castDestination = (PropertyBase<?,?>) destination;
-            ValueParameter parameter = new ValueParameter(castSource.getValueParameter());
-            castDestination.setValueParameter(parameter);
+            ValueParameter parameter = new ValueParameter(castSource.getValueType());
+            castDestination.setValueType(parameter);
         }
     };
     
@@ -610,6 +626,6 @@ public enum ParameterType
     public void copyParameter(Parameter<?> child, Property<?> destination)
     {
         // TODO Auto-generated method stub
-        
+        throw new RuntimeException("not implemented");
     }
 }

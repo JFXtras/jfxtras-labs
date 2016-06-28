@@ -41,15 +41,7 @@ public class Range extends ParameterBase<Range, RangeType>
     public Range(Range source)
     {
         super(source);
-    }
-    
-    @Override
-    public String toContent()
-    {
-        String parameterName = parameterType().toString();
-        return ";" + parameterName + "=" + getValue().toString();
-    }
-    
+    }  
     
     @Override
     public void parseContent(String content)

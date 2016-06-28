@@ -31,11 +31,6 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  */
 public class NonStandardProperty extends UnknownProperty<Object, NonStandardProperty>
 {
-//    public NonStandardProperty(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//    }
-    
     public NonStandardProperty(Object value)
     {
         super(value);

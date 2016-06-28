@@ -5,12 +5,21 @@ import java.util.Map;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
+import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 
+/** Provide a framework to maintain a sort order of VCalendarElement contents
+ * 
+ * @see VCalendar
+ * @see VComponent
+ * @see Property
+ * @see RecurrenceRule
+ *  */ 
 public interface Orderer
 {
     Map<VCalendarElement, Integer> elementSortOrderMap();
     
-    void copyChildrenFrom(VCalendarElement source);
+    void copyChildrenFrom(VCalendarParent source);
     
     List<String> sortedContent();
     

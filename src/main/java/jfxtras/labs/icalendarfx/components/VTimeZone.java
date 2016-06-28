@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.CalendarElementType;
-import jfxtras.labs.icalendarfx.OrderedElement;
+import jfxtras.labs.icalendarfx.VCalendarParent;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVTimeZone;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -290,10 +290,10 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
     {
         if (standardOrDaylight != null)
         {
-            registerSortOrderProperty(standardOrDaylight);
+            orderer().registerSortOrderProperty(standardOrDaylight);
         } else
         {
-            unregisterSortOrderProperty(this.standardOrDaylight);
+            orderer().unregisterSortOrderProperty(this.standardOrDaylight);
         }
         this.standardOrDaylight = standardOrDaylight;
     }
@@ -332,7 +332,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
         if (lastModified == null)
         {
             lastModified = new SimpleObjectProperty<>(this, PropertyType.LAST_MODIFIED.toString());
-            registerSortOrderProperty(lastModified);
+            orderer().registerSortOrderProperty(lastModified);
         }
         return lastModified;
     }
@@ -360,7 +360,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
         if (timeZoneIdentifier == null)
         {
             timeZoneIdentifier = new SimpleObjectProperty<>(this, PropertyType.TIME_ZONE_IDENTIFIER.toString());
-            registerSortOrderProperty(timeZoneIdentifier);
+            orderer().registerSortOrderProperty(timeZoneIdentifier);
         }
         return timeZoneIdentifier;
     }
@@ -388,7 +388,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
         if (timeZoneURL == null)
         {
             timeZoneURL = new SimpleObjectProperty<>(this, PropertyType.TIME_ZONE_IDENTIFIER.toString());
-            registerSortOrderProperty(timeZoneURL);
+            orderer().registerSortOrderProperty(timeZoneURL);
         }
         return timeZoneURL;
     }
@@ -475,7 +475,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
     
     /** copy STANDARD and DAYLIGHT subcomponents */
     @Override
-    public void copyChildrenFrom(OrderedElement source)
+    public void copyChildrenFrom(VCalendarParent source)
     {
         super.copyChildrenFrom(source);
         VTimeZone castSource = (VTimeZone) source;

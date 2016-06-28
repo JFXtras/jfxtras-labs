@@ -40,11 +40,6 @@ public class LastModified extends PropertyBaseUTC<LastModified>
     {
         super(temporal);
     }
-
-//    public LastModified(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//    }
     
     public LastModified(LastModified source)
     {

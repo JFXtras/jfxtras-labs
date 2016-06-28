@@ -35,11 +35,11 @@ public class SummaryTest
     @Test
     public void canCopySummary()
     {
-        String content = "SUMMARY;ALTREP=\"cid:part1.0001@example.org\";LANGUAGE=en:Department Party";
+        String content = "SUMMARY;LANGUAGE=en;ALTREP=\"cid:part1.0001@example.org\":Department Party";
         Summary property1 = Summary.parse(content);
         Summary property2 = new Summary(property1);
-        System.out.println(property2.toContent());
         assertEquals(property2, property1);
         assertFalse(property2 == property1);
+        assertEquals(content, property2.toContent());
     }
 }

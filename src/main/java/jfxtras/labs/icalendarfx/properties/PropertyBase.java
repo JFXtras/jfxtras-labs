@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,8 +18,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.OrderedElementBase;
+import jfxtras.labs.icalendarfx.Orderer;
+import jfxtras.labs.icalendarfx.OrdererBase;
 import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
@@ -35,14 +40,6 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * Contains property value, value parameter (ValueType) and other-parameters
  * Also contains several support methods used by other properties
  * 
- * extended interfaces
- * @see PropertyAltText
- * @see PropertyAttendee
- * @see PropertyCalendarUser
- * @see PropertyDateTime
- * @see PropertyFreeBusy
- * @see PropertyLanguage
- * 
  * concrete subclasses
  * @see UniqueIdentifier
  * @see CalendarScale
@@ -55,8 +52,8 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @param <U> - type of implementing subclass
  * @param <T> - type of property value
  */
-public abstract class PropertyBase<T,U> extends OrderedElementBase implements Property<T>, Comparable<Property<T>>
-{
+public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Property<T>>
+{       
     /**
      * PROPERTY VALUE
      * 
@@ -159,7 +156,7 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
     private void setUnknownValue(String value) { unknownValue = value; }
     
     /**
-     * VALUE
+     * VALUE TYPE
      * Value Data Types
      * RFC 5545, 3.2.20, page 29
      * 
@@ -171,25 +168,25 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
      * VALUE=DATE
      */
     @Override
-    public ValueParameter getValueParameter() { return valueType.get(); }
+    public ValueParameter getValueType() { return valueType.get(); }
     @Override
-    public ObjectProperty<ValueParameter> valueParameterProperty() { return valueType; }
+    public ObjectProperty<ValueParameter> valueTypeProperty() { return valueType; }
     private ObjectProperty<ValueParameter> valueType = new SimpleObjectProperty<>(this, ParameterType.VALUE_DATA_TYPES.toString());
     @Override
-    public void setValueParameter(ValueParameter valueType)
+    public void setValueType(ValueParameter valueType)
     {
-        if (isValueParameterValid(valueType.getValue()))
+        if (isValueTypeValid(valueType.getValue()))
         {
-            valueParameterProperty().set(valueType);
+            valueTypeProperty().set(valueType);
         } else
         {
             throw new IllegalArgumentException("Invalid Value Date Type:" + valueType.getValue() + ", allowed = " + propertyType().allowedValueTypes());
         }
     }
-    public void setValueParameter(ValueType value) { setValueParameter(new ValueParameter(value)); }
-    public void setValueParameter(String value) { setValueParameter(ValueParameter.parse(value)); }
-    public U withValueParameter(ValueType value) { setValueParameter(value); return (U) this; } 
-    public U withValueParameter(String value) { setValueParameter(value); return (U) this; }
+    public void setValueType(ValueType value) { setValueType(new ValueParameter(value)); }
+    public void setValueType(String value) { setValueType(ValueParameter.parse(value)); }
+    public U withValueType(ValueType value) { setValueType(value); return (U) this; } 
+    public U withValueType(String value) { setValueType(value); return (U) this; }
     // Synch value with type produced by string converter
     private final ChangeListener<? super ValueParameter> valueParameterChangeListener = (observable, oldValue, newValue) ->
     {
@@ -249,6 +246,20 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
         return Collections.unmodifiableList(populatedParameters);
     }
     
+    /*
+     * SORT ORDER FOR CHILD ELEMENTS
+     */
+    final private Orderer orderer;
+    @Override
+    public Orderer orderer() { return orderer; }
+
+    private Callback<VCalendarElement, Void> copyParameterChildCallback = (child) ->
+    {
+        ParameterType type = ParameterType.enumFromClass(child.getClass());
+        type.copyParameter((Parameter<?>) child, this);
+        return null;
+    };   
+    
 //    /** 
 //     * SORT ORDER
 //     * 
@@ -258,13 +269,15 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
 //     * Generally, this map shouldn't be modified.  Only modify it when you want to force
 //     * a specific parameter order (e.g. unit testing).
 //     */
-//    public Map<ParameterType, Integer> parameterSortOrder() { return parameterSortOrder; }
-//    final private Map<ParameterType, Integer> parameterSortOrder = new HashMap<>();
-//    private Integer parameterCounter = 0;
+    @Deprecated
+    public Map<ParameterType, Integer> parameterSortOrder() { return parameterSortOrder; }
+    final private Map<ParameterType, Integer> parameterSortOrder = new HashMap<>();
+    private Integer parameterCounter = 0;
     
     // property value
     private String propertyValueString = null;
     // Note: in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes add time zone as prefix)
+    @Deprecated
     protected String getPropertyValueString() { return propertyValueString; }
     
     
@@ -295,12 +308,14 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
     
     protected PropertyBase()
     {
+        orderer = new OrdererBase(copyParameterChildCallback);
+        orderer.registerSortOrderProperty(valueTypeProperty());
         propertyType = PropertyType.enumFromClass(getClass());
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
         ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
         defaultConverter = defaultValueType.getConverter();
         setConverter(defaultConverter);
-        valueParameterProperty().addListener(valueParameterChangeListener); // keeps value synched with value type
+        valueTypeProperty().addListener(valueParameterChangeListener); // keeps value synched with value type
     }
 
 //    /**
@@ -334,8 +349,7 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
     public PropertyBase(PropertyBase<T,U> source)
     {
         this();
-        copyChildrenFrom(source);
-//        copyPropertyFrom(source);
+        copyPropertyFrom(source);
     }
     
     // constructor with only value parameter
@@ -344,34 +358,32 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
         this();
         setValue(value);
     }
-
-//    /** Copy parameters and value from source into this property,
-//     *  essentially making a copy of source
-//     *  
-//     *  Note: This method only works if the property value is immutable.  If it is not 
-//     *  immutable this method must be overridden to provide a deep copy of the value (e.g. RRULE) */    
-//    public void copyPropertyFrom(PropertyBase<T,U> source)
-//    {
-//        setConverter(source.getConverter());
+    
+    /** Copy parameters and value from source into this property,
+     *  essentially making a copy of source
+     *  
+     *  Note: This method only works if the property value is immutable.  If it is not 
+     *  immutable this method must be overridden to provide a deep copy of the value (e.g. RRULE) */    
+    public void copyPropertyFrom(PropertyBase<T,U> source)
+    {
+        setConverter(source.getConverter());
+        copyChildrenFrom(source);
 //        parameterSortOrder().putAll(source.parameterSortOrder());
 //        source.parameterEnums().forEach(p -> p.copyParameter(source, this));
-//        if (source.propertyType().equals(PropertyType.NON_STANDARD) || source.propertyType().equals(PropertyType.IANA_PROPERTY))
-//        {
-//            setPropertyName(source.getPropertyName());
-//        }
-//        setValue(source.getValue());
-//    }
-    
-    /** Strategy to copy parameter into this property */
-    @Override protected void copyChild(VCalendarElement child)
-    {
-        ParameterType type = ParameterType.enumFromClass(child.getClass());
-        if (type != null)
-        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-            type.copyParameter((Parameter<?>) child, this);
-        }        
+        if (source.propertyType().equals(PropertyType.NON_STANDARD) || source.propertyType().equals(PropertyType.IANA_PROPERTY))
+        {
+            setPropertyName(source.getPropertyName());
+        }
+        T valueCopy = copyValue(source.getValue());
+        setValue(valueCopy);
     }
 
+    // return a copy of the value
+    protected T copyValue(T source)
+    {
+        return source; // for mutable values override in subclasses
+    }
+    
     // Set converter when using constructor with class parameter
     protected void setConverterByClass(Class<T> valueClass)
     {
@@ -441,8 +453,8 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
                     if (propertyType().allowedParameters().contains(parameterType))
                     {
                         parameterType.parse(this, entry.getValue());
-//                        parameterSortOrder().put(parameterType, parameterCounter);
-//                        parameterCounter += 100; // add 100 to allow insertions in between
+                        parameterSortOrder().put(parameterType, parameterCounter);
+                        parameterCounter += 100; // add 100 to allow insertions in between
                     } else
                     {
                         throw new IllegalArgumentException("Parameter " + parameterType + " not allowed for property " + propertyType());
@@ -486,13 +498,13 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
             errors.add(getPropertyName() + " value is null.  The property MUST have a value."); 
         }
         final ValueType valueType;
-        if (getValueParameter() != null)
+        if (getValueType() != null)
         {
-            valueType = getValueParameter().getValue();
-            boolean isValueTypeOK = isValueParameterValid(valueType);
+            valueType = getValueType().getValue();
+            boolean isValueTypeOK = isValueTypeValid(valueType);
             if (! isValueTypeOK)
             {
-                errors.add(getPropertyName() + " value type " + getValueParameter().getValue() + " is not supported.  Supported types include:" +
+                errors.add(getPropertyName() + " value type " + getValueType().getValue() + " is not supported.  Supported types include:" +
                         propertyType().allowedValueTypes().stream().map(v -> v.toString()).collect(Collectors.joining(",")));
             }
         } else
@@ -510,7 +522,7 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
     }
     
     /* test if value type is valid */
-    private boolean isValueParameterValid(ValueType value)
+    private boolean isValueTypeValid(ValueType value)
     {
         boolean isValueTypeOK = propertyType().allowedValueTypes().contains(value);
         boolean isUnknownType = value.equals(ValueType.UNKNOWN);
@@ -530,49 +542,51 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
      * @return - the content line
      */
 //    @Override
-//    public String toContentOld()
-//    {
-//        // property name
-//        StringBuilder builder = new StringBuilder(50);
-//        if (propertyName == null)
-//        {
-//            builder.append(propertyType().toString());
-//        } else
-//        {
-//            builder.append(propertyName);
-//        }
-//
-//        // PARAMETERS
-//        Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
-//        parameters().forEach(p -> parameterNameContentMap.put(p, p.toContent()));
-//        
-//        // restore parameter sort order if parameters were parsed from content
-//        parameterNameContentMap.entrySet().stream()
-//                .sorted((Comparator<? super Entry<Parameter<?>, CharSequence>>) (e1, e2) -> 
-//                {
-//                    Integer s1 = parameterSortOrder().get(e1.getKey().parameterType());
-//                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
-//                    Integer s2 = parameterSortOrder().get(e2.getKey().parameterType());
-//                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
-//                    return sort1.compareTo(sort2);
-//                })
-//                .forEach(p -> 
-//                {
-//                    builder.append(p.getValue());
-//                });
-//        
-//        // add non-standard parameters - sort order doesn't apply to non-standard parameters
-//        otherParameters().stream().forEach(p -> builder.append(";" + p));
-//        // add property value
-//        String stringValue = valueContent();
-//        builder.append(":" + stringValue);
-//        // return folded line
-//        return ICalendarUtilities.foldLine(builder).toString();
-//    }
+    public String toContentOld()
+    {
+        // property name
+        StringBuilder builder = new StringBuilder(50);
+        if (propertyName == null)
+        {
+            builder.append(propertyType().toString());
+        } else
+        {
+            builder.append(propertyName);
+        }
+
+        // PARAMETERS
+        Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
+        parameters().forEach(p -> parameterNameContentMap.put(p, p.toContent()));
+        
+        // restore parameter sort order if parameters were parsed from content
+        parameterNameContentMap.entrySet().stream()
+                .sorted((Comparator<? super Entry<Parameter<?>, CharSequence>>) (e1, e2) -> 
+                {
+                    Integer s1 = parameterSortOrder().get(e1.getKey().parameterType());
+                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
+                    Integer s2 = parameterSortOrder().get(e2.getKey().parameterType());
+                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
+                    return sort1.compareTo(sort2);
+                })
+                .peek(System.out::println)
+                .forEach(p -> 
+                {
+                    builder.append(p.getValue());
+                });
+        
+        // add non-standard parameters - sort order doesn't apply to non-standard parameters
+        otherParameters().stream().forEach(p -> builder.append(";" + p));
+        // add property value
+        String stringValue = valueContent();
+        builder.append(":" + stringValue);
+        // return folded line
+        return ICalendarUtilities.foldLine(builder).toString();
+    }
     
     @Override
     public String toContent()
     {
+        checkContentList(); // test elements for completeness (can be removed for improved speed)
         StringBuilder builder = new StringBuilder(50);
         if (propertyName == null)
         {
@@ -582,12 +596,38 @@ public abstract class PropertyBase<T,U> extends OrderedElementBase implements Pr
             builder.append(propertyName);
         }
 //        sortedContent().stream().forEach(System.out::println);
-        String content = sortedContent().stream()
+        String content = orderer().sortedContent().stream()
 //                .map(s -> ICalendarUtilities.foldLine(s))
                 .collect(Collectors.joining(";"));
-        builder.append(content + ":" + valueContent());
+        if (! content.isEmpty())
+        {
+            builder.append(";" + content);
+        }
+        builder.append(":" + valueContent());
         // return folded line
         return ICalendarUtilities.foldLine(builder).toString();
+    }
+    
+    // Ensures all elements in elementSortOrderMap are found in parameterEnums list
+    private void checkContentList()
+    {
+        List<String> elementNames1 = parameterEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
+        System.out.println(elementNames1);
+        List<String> elementNames2 = orderer().elementSortOrderMap().entrySet()
+                .stream()
+                .map(e -> ParameterType.enumFromClass(e.getKey().getClass()).toString())
+                .collect(Collectors.toList());
+        System.out.println(elementNames2);
+        Optional<String> propertyNotFound1 = elementNames1.stream().filter(s -> ! elementNames2.contains(s)).findAny();
+        if (propertyNotFound1.isPresent())
+        {
+            throw new RuntimeException("element not found:" + propertyNotFound1.get());
+        }
+        Optional<String> propertyNotFound2 = elementNames2.stream().filter(s -> ! elementNames1.contains(s)).findAny();
+        if (propertyNotFound2.isPresent())
+        {
+            throw new RuntimeException("element not found:" + propertyNotFound2.get());
+        }
     }
 
 //    @Override

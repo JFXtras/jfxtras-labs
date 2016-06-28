@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javafx.util.Callback;
@@ -40,20 +41,63 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  */
 public abstract class VComponentBase implements VComponent
 {
+    /*
+     * SORT ORDER FOR CHILD ELEMENTS
+     */
     final private Orderer orderer;
     @Override
     public Orderer orderer() { return orderer; }
     
-    private Callback<VCalendarElement, Void> copyChildCallback = (child) ->
+    private Callback<VCalendarElement, Void> copyPropertyChildCallback = (child) ->
     {
         PropertyType type = PropertyType.enumFromClass(child.getClass());
         if (type != null)
         { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
             type.copyProperty((Property<?>) child, this);
         }
-    });
-    private Callback<Void, List<String>> elementNameListCallback;
-    private Callback<VCalendarElement, String> elementNameCallback;
+        return null;
+    };
+    
+//    private void checkContentList()
+//    {
+//        List<String> elementNames = propertyEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
+//        Optional<VCalendarElement> propertyNotFound = orderer().elementSortOrderMap().entrySet()
+//            .stream()
+//            .map(e -> e.getKey())
+//            .filter(v ->
+//            {
+//    //            PropertyType myType = PropertyType.enumFromClass(v.getClass());
+//                String myElementName = PropertyType.enumFromClass(v.getClass()).toString();
+//                return (myElementName == null) ? false : ! elementNames.contains(myElementName);
+//            })
+//            .findAny();
+//        if (propertyNotFound.isPresent())
+//        {
+//            throw new RuntimeException("element not found:" + propertyNotFound.get());
+//        }
+//    }
+    
+    // Ensures all elements in elementSortOrderMap are found in propertyEnums list
+    private void checkContentList()
+    {
+        List<String> elementNames1 = propertyEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
+        List<String> elementNames2 = orderer().elementSortOrderMap().entrySet()
+                .stream()
+                .map(e -> PropertyType.enumFromClass(e.getKey().getClass()).toString())
+                .collect(Collectors.toList());
+        Optional<String> propertyNotFound1 = elementNames1.stream().filter(s -> ! elementNames2.contains(s)).findAny();
+        if (propertyNotFound1.isPresent())
+        {
+            throw new RuntimeException("element not found:" + propertyNotFound1.get());
+        }
+        Optional<String> propertyNotFound2 = elementNames2.stream().filter(s -> ! elementNames1.contains(s)).findAny();
+        if (propertyNotFound2.isPresent())
+        {
+            throw new RuntimeException("element not found:" + propertyNotFound2.get());
+        }
+    }
+//    private Callback<Void, List<String>> elementNameListCallback;
+//    private Callback<VCalendarElement, String> elementNameCallback;
     
     /**
      * List of all {@link PropertyType} found in component.
@@ -93,7 +137,7 @@ public abstract class VComponentBase implements VComponent
     VComponentBase()
     {
         addListeners();
-        orderer = new OrdererBase(null, null, null);
+        orderer = new OrdererBase(copyPropertyChildCallback);
     }
     
     /** Parse content lines into calendar component */
@@ -114,6 +158,12 @@ public abstract class VComponentBase implements VComponent
     {
         // functionality added in subclasses
     }
+    
+//    @Override
+//    public void copyChildrenFrom(VCalendarElement source)
+//    {
+//        orderer().copyChildrenFrom(source);
+//    }
     
     /** Parse content lines into calendar component */
     @Override
@@ -243,6 +293,7 @@ public abstract class VComponentBase implements VComponent
         StringBuilder builder = new StringBuilder(400);
         builder.append(firstContentLine + System.lineSeparator());
 //        sortedContent().stream().forEach(System.out::println);
+        checkContentList(); // test elements for completeness (can be removed for improved speed)
         String content = orderer().sortedContent().stream()
 //                .map(s -> ICalendarUtilities.foldLine(s))
                 .collect(Collectors.joining(System.lineSeparator()));

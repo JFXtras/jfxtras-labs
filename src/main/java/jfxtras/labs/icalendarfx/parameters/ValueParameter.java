@@ -36,8 +36,7 @@ public class ValueParameter extends ParameterBase<ValueParameter, ValueType>
     public String toContent()
     {
         String value = (getValue() == ValueType.UNKNOWN) ? unknownValue : getValue().toString();
-        String parameterName = parameterType().toString();
-        return ";" + parameterName + "=" + value;
+        return valueToContent(value);
     }
     
     @Override

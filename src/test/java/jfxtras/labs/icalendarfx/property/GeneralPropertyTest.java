@@ -98,7 +98,7 @@ public class GeneralPropertyTest
     {
         String content = "X-MYPROP:1";
         NonStandardProperty madeProperty = NonStandardProperty.parse(content);
-        madeProperty.valueParameterProperty().set(new ValueParameter(ValueType.INTEGER));
+        madeProperty.valueTypeProperty().set(new ValueParameter(ValueType.INTEGER));
         assertEquals(1, madeProperty.getValue());
     }
     

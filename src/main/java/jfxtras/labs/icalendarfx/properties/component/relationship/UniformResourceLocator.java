@@ -26,13 +26,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @see VFreeBusy
  */
 public class UniformResourceLocator extends PropertyBase<URI,UniformResourceLocator>
-{
-//    public UniformResourceLocator(String contentLine)
-//    {
-//        super(contentLine);
-//        URI.class.cast(getValue()); // ensure value class type matches parameterized type
-//    }
-    
+{    
     public UniformResourceLocator(URI value)
     {
         super(value);

@@ -17,6 +17,7 @@ public class URLTest
         String expectedContentLine = "URL:http://example.com/pub/calendars/jsmith/mytime.ics";
         UniformResourceLocator property = UniformResourceLocator.parse(expectedContentLine);
         String madeContentLine = property.toContent();
+        System.out.println(madeContentLine);
         assertEquals(expectedContentLine, madeContentLine);
         assertEquals(new URI("http://example.com/pub/calendars/jsmith/mytime.ics"), property.getValue());
     }

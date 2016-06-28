@@ -41,8 +41,7 @@ public class Relationship extends ParameterBase<Relationship, RelationshipType>
     public String toContent()
     {
         String value = (getValue() == RelationshipType.UNKNOWN) ? unknownValue : getValue().toString();
-        String parameterName = parameterType().toString();
-        return ";" + parameterName + "=" + value;
+        return valueToContent(value);
     }
     
     @Override

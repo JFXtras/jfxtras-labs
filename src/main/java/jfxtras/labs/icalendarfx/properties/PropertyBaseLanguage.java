@@ -37,6 +37,7 @@ public abstract class PropertyBaseLanguage<T,U> extends PropertyBase<T,U> implem
         if (language == null)
         {
             language = new SimpleObjectProperty<>(this, ParameterType.LANGUAGE.toString());
+            orderer().registerSortOrderProperty(language);
         }
         return language;
     }

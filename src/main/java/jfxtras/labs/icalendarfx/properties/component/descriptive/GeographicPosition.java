@@ -47,16 +47,6 @@ public class GeographicPosition extends PropertyBase<String, GeographicPosition>
     /*
      * CONSTRUCTORS
      */
-    
-//    public GeographicPosition(CharSequence contentLine)
-//    {
-//        super();
-////        setConverter(CONVERTER);
-//        parseContent(contentLine);
-//        setupListeners();
-//        updateParts(getValue());
-//    }
-    
     public GeographicPosition(GeographicPosition source)
     {
         super(source);

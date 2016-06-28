@@ -34,15 +34,7 @@ public class Organizer extends PropertyBaseCalendarUser<URI, Organizer> implemen
     {
         super();
     }
-    
-//    @Override
-//    public void copyToParent(Object destination)
-//    {
-//        VComponentPersonal<?> castDestination = (VComponentPersonal<?>) destination;
-//        Organizer propertyCopy = new Organizer(this);
-//        castDestination.setOrganizer(propertyCopy);
-//    }
-    
+
     public static Organizer parse(String value)
     {
         Organizer organizer = new Organizer();

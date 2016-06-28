@@ -48,6 +48,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
         if (calendarUser == null)
         {
             calendarUser = new SimpleObjectProperty<>(this, ParameterType.CALENDAR_USER_TYPE.toString());
+            orderer().registerSortOrderProperty(calendarUser);
         }
         return calendarUser;
     }
@@ -79,6 +80,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
         if (delegators == null)
         {
             delegators = new SimpleObjectProperty<>(this, ParameterType.DELEGATORS.toString());
+            orderer().registerSortOrderProperty(delegators);
         }
         return delegators;
     }
@@ -111,6 +113,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
         if (delegatees == null)
         {
             delegatees = new SimpleObjectProperty<>(this, ParameterType.DELEGATEES.toString());
+            orderer().registerSortOrderProperty(delegatees);
         }
         return delegatees;
     }
@@ -142,6 +145,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
         if (groupMembership == null)
         {
             groupMembership = new SimpleObjectProperty<>(this, ParameterType.GROUP_OR_LIST_MEMBERSHIP.toString());
+            orderer().registerSortOrderProperty(groupMembership);
         }
         return groupMembership;
     }
@@ -171,6 +175,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
         if (rsvp == null)
         {
             rsvp = new SimpleObjectProperty<>(this, ParameterType.RSVP_EXPECTATION.toString());
+            orderer().registerSortOrderProperty(rsvp);
         }
         return rsvp;
     }
@@ -200,6 +205,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
         if (participationStatus == null)
         {
             participationStatus = new SimpleObjectProperty<>(this, ParameterType.PARTICIPATION_STATUS.toString());
+            orderer().registerSortOrderProperty(participationStatus);
         }
         return participationStatus;
     }
@@ -229,6 +235,7 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
         if (participationRole == null)
         {
             participationRole = new SimpleObjectProperty<>(this, ParameterType.PARTICIPATION_ROLE.toString());
+            orderer().registerSortOrderProperty(participationRole);
         }
         return participationRole;
     }
@@ -243,11 +250,6 @@ public abstract class PropertyBaseAttendee<T,U> extends PropertyBaseCalendarUser
     /*
      * CONSTRUCTORS
      */
-    
-//    public PropertyBaseAttendee(String contentLine)
-//    {
-//        super(contentLine);
-//    }
     
     public PropertyBaseAttendee(T value)
     {

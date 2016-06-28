@@ -109,7 +109,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         if (dateTimeEnd == null)
         {
             dateTimeEnd = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_END.toString());
-            registerSortOrderProperty(dateTimeEnd);
+            orderer().registerSortOrderProperty(dateTimeEnd);
             dateTimeEnd.addListener((observable, oldValue, newValue) -> checkDateTimeEndConsistency());
         }
         return dateTimeEnd;
@@ -160,7 +160,7 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         if (timeTransparency == null)
         {
             timeTransparency = new SimpleObjectProperty<>(this, PropertyType.TIME_TRANSPARENCY.toString());
-            registerSortOrderProperty(timeTransparency);
+            orderer().registerSortOrderProperty(timeTransparency);
         }
         return timeTransparency;
     }

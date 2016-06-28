@@ -55,7 +55,7 @@ public class DateTimeStartTest
     {
         DateTimeStart dateTimeStart = new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
                 .withTimeZoneIdentifier("America/Los_Angeles")
-                .withValueParameter(ValueType.DATE_TIME);;
+                .withValueType(ValueType.DATE_TIME);;
         String expectedContentLine = "DTSTART;TZID=America/Los_Angeles;VALUE=DATE-TIME:20160306T043000";
         DateTimeStart expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, expectedContentLine);
         assertEquals(expectedDateTimeStart, dateTimeStart);
@@ -68,7 +68,7 @@ public class DateTimeStartTest
     {
         DateTimeStart dateTimeStart = new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("America/Los_Angeles")))
                 .withTimeZoneIdentifier("America/Los_Angeles")
-                .withValueParameter(ValueType.DATE_TIME);
+                .withValueType(ValueType.DATE_TIME);
         DateTimeStart expectedDateTimeStart = DateTimeStart.parse(ZonedDateTime.class, "DTSTART;TZID=America/Los_Angeles;VALUE=DATE-TIME:20160306T043000");
         assertEquals(expectedDateTimeStart, dateTimeStart);
     }

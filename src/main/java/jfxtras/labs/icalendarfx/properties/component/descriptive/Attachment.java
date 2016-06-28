@@ -51,6 +51,7 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
        if (formatType == null)
        {
            formatType = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
+           orderer().registerSortOrderProperty(formatType);
        }
        return formatType;
    }
@@ -85,6 +86,7 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
        if (encoding == null)
        {
            encoding = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
+           orderer().registerSortOrderProperty(encoding);
        }
        return encoding;
    }
@@ -182,7 +184,7 @@ public class Attachment<T> extends PropertyBase<T, Attachment<T>> implements Pro
 //           return false;
 //       }
        boolean isBase64Type = (getEncoding() == null) ? false : getEncoding().getValue() != EncodingType.BASE64;
-       boolean isBinaryValue = (getValueParameter() == null) ? false : getValueParameter().getValue() != ValueType.BINARY;
+       boolean isBinaryValue = (getValueType() == null) ? false : getValueType().getValue() != ValueType.BINARY;
        if (isBinaryValue && ! isBase64Type)
        { // invalid ValueType
            return false;

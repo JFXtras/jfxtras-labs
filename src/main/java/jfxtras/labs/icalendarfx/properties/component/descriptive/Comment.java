@@ -32,12 +32,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseAltText;
  * @see DaylightSavingTime
  */
 public class Comment extends PropertyBaseAltText<String, Comment>
-{
-//    public Comment(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//    }
-    
+{   
     public Comment(Comment source)
     {
         super(source);

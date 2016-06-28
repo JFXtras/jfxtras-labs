@@ -27,12 +27,6 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  */
 public class Attendee extends PropertyBaseAttendee<URI, Attendee>
 {
-//    public Attendee(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//        URI.class.cast(getValue()); // ensure value class type matches parameterized type
-//    }
-    
     public Attendee(URI value)
     {
         super(value);

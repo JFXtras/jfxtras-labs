@@ -49,13 +49,6 @@ public class Resources extends PropertyBaseAltText<List<String>, Resources>
                     .collect(Collectors.toList());
         }
     };
-    
-//    public Resources(CharSequence contentLine)
-//    {
-//        super();
-//        setConverter(CONVERTER);
-//        parseContent(contentLine);
-//    }
 
     public Resources(List<String> values)
     {

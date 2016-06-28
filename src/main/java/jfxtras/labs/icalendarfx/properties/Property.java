@@ -8,6 +8,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VCalendarParent;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
@@ -21,7 +22,7 @@ import jfxtras.labs.icalendarfx.parameters.ValueParameter;
  *
  * @param <T> - type of value stored in Property
  */
-public interface Property<T> extends VCalendarElement, Comparable<Property<T>>
+public interface Property<T> extends VCalendarElement, VCalendarParent, Comparable<Property<T>>
 {    
     /**
      * Property Name
@@ -55,11 +56,11 @@ public interface Property<T> extends VCalendarElement, Comparable<Property<T>>
      * Example:
      * VALUE=DATE
      */
-    ValueParameter getValueParameter();
+    ValueParameter getValueType();
     /** property for value type */
-    ObjectProperty<ValueParameter> valueParameterProperty();
+    ObjectProperty<ValueParameter> valueTypeProperty();
     /** Set the value type */
-    void setValueParameter(ValueParameter value);
+    void setValueType(ValueParameter value);
 
     /**
      * Non-standard parameters

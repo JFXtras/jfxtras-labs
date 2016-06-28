@@ -15,7 +15,6 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
@@ -386,7 +385,7 @@ public enum CalendarElementType
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
     abstract public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines);
     
-    public void copyProperty(Property<?> child, VCalendar vCalendar)
+    public void copyChild(VCalendarElement child, VCalendar vCalendar)
     {
         throw new RuntimeException("not implemented");
         // TODO Auto-generated method stub

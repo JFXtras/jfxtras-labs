@@ -8,8 +8,6 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -17,6 +15,7 @@ import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -197,7 +196,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
                 categories.add(i, newSelection);
             }
             categorySelectionGridPane.updateToolTip(i, categories.get(i));
-            vComponentEdited.getCategories().get(0).setValue(new ArrayList<String>(Arrays.asList(newSelection)));
+            vComponentEdited.getCategories().get(0).setValue(FXCollections.observableArrayList(newSelection));
         });
         // verify category is unique
         categoryTextField.focusedProperty().addListener((obs, oldValue, newValue) ->

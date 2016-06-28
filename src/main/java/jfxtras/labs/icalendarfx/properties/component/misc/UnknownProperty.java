@@ -80,6 +80,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
         if (alternateText == null)
         {
             alternateText = new SimpleObjectProperty<>(this, ParameterType.ALTERNATE_TEXT_REPRESENTATION.toString());
+            orderer().registerSortOrderProperty(alternateText);
         }
         return alternateText;
     }
@@ -110,6 +111,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
         if (encoding == null)
         {
             encoding = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
+            orderer().registerSortOrderProperty(encoding);
         }
         return encoding;
     }
@@ -142,6 +144,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
         if (freeBusyType == null)
         {
             freeBusyType = new SimpleObjectProperty<>(this, ParameterType.INLINE_ENCODING.toString());
+            orderer().registerSortOrderProperty(freeBusyType);
         }
         return freeBusyType;
     }
@@ -166,6 +169,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
         if (formatType == null)
         {
             formatType = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
+            orderer().registerSortOrderProperty(formatType);
         }
         return formatType;
     }
@@ -198,6 +202,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
         if (range == null)
         {
             range = new SimpleObjectProperty<>(this, ParameterType.RECURRENCE_IDENTIFIER_RANGE.toString());
+            orderer().registerSortOrderProperty(range);
         }
         return range;
     }
@@ -216,17 +221,18 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
      * respect to the start or end of the calendar component.
      */
     @Override
-    public AlarmTriggerRelationship getAlarmTrigger() { return (AlarmTrigger == null) ? null : AlarmTrigger.get(); }
+    public AlarmTriggerRelationship getAlarmTrigger() { return (alarmTrigger == null) ? null : alarmTrigger.get(); }
     @Override
     public ObjectProperty<AlarmTriggerRelationship> AlarmTriggerProperty()
     {
-        if (AlarmTrigger == null)
+        if (alarmTrigger == null)
         {
-            AlarmTrigger = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
-        }
-        return AlarmTrigger;
+            alarmTrigger = new SimpleObjectProperty<>(this, ParameterType.FORMAT_TYPE.toString());
+            orderer().registerSortOrderProperty(alarmTrigger);
+      }
+        return alarmTrigger;
     }
-    private ObjectProperty<AlarmTriggerRelationship> AlarmTrigger;
+    private ObjectProperty<AlarmTriggerRelationship> alarmTrigger;
     @Override
     public void setAlarmTrigger(AlarmTriggerRelationship AlarmTrigger) { AlarmTriggerProperty().set(AlarmTrigger); }
     public void setAlarmTrigger(AlarmTriggerRelationshipType type) { setAlarmTrigger(new AlarmTriggerRelationship(type)); } 
@@ -254,6 +260,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
         if (relationship == null)
         {
             relationship = new SimpleObjectProperty<>(this, ParameterType.RELATIONSHIP_TYPE.toString());
+            orderer().registerSortOrderProperty(relationship);
         }
         return relationship;
     }
@@ -282,6 +289,7 @@ public abstract class UnknownProperty<T,U> extends PropertyBaseAttendee<T,U> imp
         if (timeZoneIdentifier == null)
         {
             timeZoneIdentifier = new SimpleObjectProperty<>(this, ParameterType.TIME_ZONE_IDENTIFIER.toString());
+            orderer().registerSortOrderProperty(timeZoneIdentifier);
         }
         return timeZoneIdentifier;
     }

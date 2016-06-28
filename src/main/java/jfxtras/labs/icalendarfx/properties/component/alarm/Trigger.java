@@ -50,6 +50,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
        if (relationship == null)
        {
            relationship = new SimpleObjectProperty<>(this, ParameterType.ALARM_TRIGGER_RELATIONSHIP.toString());
+           orderer().registerSortOrderProperty(relationship);
        }
        return relationship;
    }
@@ -59,7 +60,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
    {
        if (relationship != null)
        {
-           ValueType valueType = (getValueParameter() == null) ? propertyType().allowedValueTypes().get(0) : getValueParameter().getValue();
+           ValueType valueType = (getValueType() == null) ? propertyType().allowedValueTypes().get(0) : getValueType().getValue();
            if (valueType == ValueType.DURATION)
            {
                AlarmTriggerProperty().set(relationship);
@@ -96,19 +97,19 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
             {
                 throw new DateTimeException("Unsupported ZoneId:" + zone + " only Z supported");
             }
-            setValueParameter(ValueType.DATE_TIME); // override default value type            
+            setValueType(ValueType.DATE_TIME); // override default value type            
         }
         super.setValue(value);
     }
 
     @Override
-    public void setValueParameter(ValueParameter valueType)
+    public void setValueType(ValueParameter valueType)
     {
         if ((valueType.getValue() == ValueType.DATE_TIME) && (getAlarmTrigger() != null))
         {
             throw new IllegalArgumentException("Value type can only be set to DATE-TIME if Alarm Trigger Relationship is null");
         }
-        super.setValueParameter(valueType);
+        super.setValueType(valueType);
     }
     
     @Override
@@ -129,7 +130,7 @@ public class Trigger<T> extends PropertyBase<T, Trigger<T>> implements PropertyA
     @Override
     public boolean isValid()
     {
-        boolean isDateTimeValue = (getValueParameter() == null) ? false : getValueParameter().getValue() != ValueType.DATE_TIME;
+        boolean isDateTimeValue = (getValueType() == null) ? false : getValueType().getValue() != ValueType.DATE_TIME;
         if (isDateTimeValue)
         {
             // The "RELATED" property parameter is not valid if the value type of the property is set to DATE-TIME

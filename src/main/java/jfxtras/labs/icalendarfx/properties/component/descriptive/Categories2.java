@@ -29,6 +29,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBaseLanguage;
  * @see VTodo
  * @see VJournal
  */
+@Deprecated // subject to deletion - probably not going to use
 public class Categories2 extends PropertyBaseLanguage<List<SimpleStringProperty>, Categories2>
 {
     private final static StringConverter<List<SimpleStringProperty>> CONVERTER = new StringConverter<List<SimpleStringProperty>>()
@@ -52,13 +53,6 @@ public class Categories2 extends PropertyBaseLanguage<List<SimpleStringProperty>
                     .collect(Collectors.toList());
         }
     };
-    
-//    public Categories(CharSequence contentLine)
-//    {
-//        super();
-//        setConverter(CONVERTER);
-//        parseContent(contentLine);
-//    }
     
     public Categories2(List<SimpleStringProperty> values)
     {

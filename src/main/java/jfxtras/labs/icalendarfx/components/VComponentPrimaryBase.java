@@ -40,10 +40,10 @@ public abstract class VComponentPrimaryBase<T> extends VComponentCommonBase<T> i
     {
         if (comments != null)
         {
-            registerSortOrderProperty(comments);
+            orderer().registerSortOrderProperty(comments);
         } else
         {
-            unregisterSortOrderProperty(this.comments);
+            orderer().unregisterSortOrderProperty(this.comments);
         }
         this.comments = comments;
     }
@@ -60,7 +60,7 @@ public abstract class VComponentPrimaryBase<T> extends VComponentCommonBase<T> i
         if (dateTimeStart == null)
         {
             dateTimeStart = new SimpleObjectProperty<>(this, PropertyType.DATE_TIME_START.toString());
-            registerSortOrderProperty(dateTimeStart);
+            orderer().registerSortOrderProperty(dateTimeStart);
         }
         return dateTimeStart;
     }

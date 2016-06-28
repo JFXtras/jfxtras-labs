@@ -65,6 +65,7 @@ public class RecurrenceId extends PropertyBaseDateTime<Temporal, RecurrenceId> i
         if (range == null)
         {
             range = new SimpleObjectProperty<>(this, ParameterType.RECURRENCE_IDENTIFIER_RANGE.toString());
+            orderer().registerSortOrderProperty(range);
         }
         return range;
     }
@@ -89,11 +90,6 @@ public class RecurrenceId extends PropertyBaseDateTime<Temporal, RecurrenceId> i
     {
         super(temporal);
     }
-
-//    public RecurrenceId(Class<T> clazz, CharSequence contentLine)
-//    {
-//        super(clazz, contentLine);
-//    }
     
     public RecurrenceId(RecurrenceId source)
     {

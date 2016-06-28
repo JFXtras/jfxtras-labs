@@ -6,30 +6,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
+import jfxtras.labs.icalendarfx.components.VComponent;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 
-/** Provide a framework to maintain a sort order of VCalendarElement contents */ 
+/** Base class for framework to maintain a sort order of VCalendarElement contents
+ * 
+ * @see VCalendar
+ * @see VComponent
+ * @see Property
+ * @see RecurrenceRule
+ *  */ 
 public class OrdererBase implements Orderer
 {
     final private Callback<VCalendarElement, Void> copyChildCallback;
-    final private Callback<Void, List<String>> elementNameListCallback;
-    final private Callback<VCalendarElement, String> elementNameCallback;
+//    final private Callback<Void, List<String>> elementNameListCallback;
+//    final private Callback<VCalendarElement, String> elementNameCallback;
     
     public OrdererBase(
-            Callback<VCalendarElement, Void> copyChildCallback,
-            Callback<Void, List<String>> elementNamesCallback,
-            Callback<VCalendarElement, String> elementNameCallback
+            Callback<VCalendarElement, Void> copyChildCallback
+//            Callback<Void, List<String>> elementNamesCallback,
+//            Callback<VCalendarElement, String> elementNameCallback
             )
     {
         this.copyChildCallback = copyChildCallback;
-        this.elementNameListCallback = elementNamesCallback;
-        this.elementNameCallback = elementNameCallback;
+//        this.elementNameListCallback = elementNamesCallback;
+//        this.elementNameCallback = elementNameCallback;
     }
     
     /** 
@@ -135,22 +142,22 @@ public class OrdererBase implements Orderer
     @Override
     public List<String> sortedContent()
     {        
-        // check properties to make sure all are accounted for in map
-        List<String> elementNames = elementNameListCallback.call(null);
-        Optional<VCalendarElement> propertyNotFound = elementSortOrderMap().entrySet()
-            .stream()
-            .map(e -> e.getKey())
-            .filter(v ->
-            {
-//                PropertyType myType = PropertyType.enumFromClass(v.getClass());
-                String myElementName = elementNameCallback.call(v);
-                return (myElementName == null) ? false : elementNames.contains(myElementName);
-            })
-            .findAny();
-        if (propertyNotFound.isPresent())
-        {
-            throw new RuntimeException("element not found:" + propertyNotFound.get());
-        }
+//        // check properties to make sure all are accounted for in map
+//        List<String> elementNames = elementNameListCallback.call(null);
+//        Optional<VCalendarElement> propertyNotFound = elementSortOrderMap().entrySet()
+//            .stream()
+//            .map(e -> e.getKey())
+//            .filter(v ->
+//            {
+////                PropertyType myType = PropertyType.enumFromClass(v.getClass());
+//                String myElementName = elementNameCallback.call(v);
+//                return (myElementName == null) ? false : elementNames.contains(myElementName);
+//            })
+//            .findAny();
+//        if (propertyNotFound.isPresent())
+//        {
+//            throw new RuntimeException("element not found:" + propertyNotFound.get());
+//        }
 
         List<String> content = new ArrayList<>();
         // apply sort order (if element doesn't exist in map, don't sort)
@@ -179,7 +186,7 @@ public class OrdererBase implements Orderer
      * this component that are not present in source then those will remain unchanged.
      * */
     @Override
-    public void copyChildrenFrom(VCalendarElement source)
+    public void copyChildrenFrom(VCalendarParent source)
     {
         source.orderer().elementSortOrderMap()
                 .entrySet().stream()

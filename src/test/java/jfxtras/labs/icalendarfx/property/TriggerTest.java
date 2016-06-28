@@ -51,7 +51,6 @@ public class TriggerTest
     {
         String expectedContent = "TRIGGER;VALUE=DATE-TIME:20160306T043000Z";
         Trigger<ZonedDateTime> madeProperty = Trigger.parse(ZonedDateTime.class, expectedContent);
-        System.out.println(madeProperty.toContent());
         assertEquals(expectedContent, madeProperty.toContent());
         ZonedDateTime d = ZonedDateTime.of(LocalDateTime.of(2016, 3, 6, 4, 30), ZoneId.of("Z"));
         assertEquals(d, madeProperty.getValue());
@@ -62,7 +61,7 @@ public class TriggerTest
     {
         new Trigger<Duration>(Duration.ofMinutes(5))
                 .withAlarmTrigger(new AlarmTriggerRelationship(AlarmTriggerRelationshipType.END))
-                .withValueParameter(ValueType.DATE_TIME); // invalid type
+                .withValueType(ValueType.DATE_TIME); // invalid type
     }
     
     @Test (expected=IllegalArgumentException.class)

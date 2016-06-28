@@ -87,10 +87,10 @@ public class VJournal extends VComponentDisplayableBase<VJournal>
     {
         if (descriptions != null)
         {
-            registerSortOrderProperty(descriptions);
+            orderer().registerSortOrderProperty(descriptions);
         } else
         {
-            unregisterSortOrderProperty(this.descriptions);
+            orderer().unregisterSortOrderProperty(this.descriptions);
         }
         this.descriptions = descriptions;
     }

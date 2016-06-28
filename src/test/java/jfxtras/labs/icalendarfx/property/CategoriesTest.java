@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.property;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
@@ -34,5 +35,15 @@ public class CategoriesTest
         String expectedSummary = "CATEGORIES:group03,group04,group05";
         assertEquals(expectedSummary, property.toContent());
         assertEquals(3, property.getValue().size());        
+    }
+    
+    @Test
+    public void canCopyCategories()
+    {
+        Categories property1 = Categories.parse("group03,group04,group05");
+        Categories property2 = new Categories(property1);
+        assertEquals(property1, property2);
+        assertFalse(property1 == property2);
+        assertFalse(property1.getValue() == property2.getValue());
     }
 }

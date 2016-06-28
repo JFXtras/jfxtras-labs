@@ -3,12 +3,11 @@ package jfxtras.labs.icalendarfx.components;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendarfx.CalendarElementType;
-import jfxtras.labs.icalendarfx.OrderedElement;
 import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VCalendarParent;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -30,7 +29,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public interface VComponent extends VCalendarElement, OrderedElement
+public interface VComponent extends VCalendarElement, VCalendarParent
 {
     /**
      * Returns the enum for the component as it would appear in the iCalendar content line
@@ -76,59 +75,8 @@ public interface VComponent extends VCalendarElement, OrderedElement
         .collect(Collectors.toList()));
     }
     
-    /** 
-     * SORT ORDER
-     * Property sort order map.  Key is element, value is sort order.  Follows sort order of parsed content or
-     * order of added elements.
-     * 
-     * Generally, this map shouldn't be modified.  Only modify it when you want to force
-     * a specific order.
-     */
-@Override
-//    Map<Integer, VCalendarElement> elementSortOrderMap();
-    Map<VCalendarElement, Integer> elementSortOrderMap();
-    
     /** Encapsulated Component editor */
     Revisable newRevisor();
-    
-//    /** 
-//     * SORT ORDER
-//     * 
-//     * Property sort order map.  Key is property, value is the sort order.  The map is automatically
-//     * populated when parsing the content lines to preserve the existing property order.
-//     * 
-//     * When producing the content lines, if a property is not present in the map, it is put at
-//     * the end of the sorted ones in the order appearing in {@link #PropertyEnum} (should be
-//     * alphabetical) Generally, this map shouldn't be modified.  Only modify it when you want
-//     * to force a specific property order (e.g. unit testing).
-//     */
-//    @Deprecated
-//    public Map<String, Integer> propertySortOrder();
-
-//    /** Copy properties and subcomponents from source into this component,
-//     * essentially making a copy of source 
-//     * 
-//     * Note: this method only overwrites properties found in source.  If there are properties in
-//     * this component that are not present in source then those will remain unchanged.
-//     * */
-//    default void copyComponentFrom(VComponent source)
-//    {
-//        source.elementSortOrderMap()
-//                .entrySet().stream()
-//                .sorted((Comparator<? super Entry<VCalendarElement, Integer>>) (e1, e2) -> 
-//                {
-//                    return e1.getValue().compareTo(e2.getValue());
-//                })
-//                .forEach((e) ->
-//                {
-//                    VCalendarElement key = e.getKey();
-//                    PropertyType type = PropertyType.enumFromClass(key.getClass());
-//                    if (type != null)
-//                    { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-//                        type.copyProperty((Property<?>) key, this);
-//                    }
-//                });
-//    }
     
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.4
@@ -148,6 +96,4 @@ public interface VComponent extends VCalendarElement, OrderedElement
      */
     @Override
     String toContent();
-
-//    <E extends VCalendarElement> ObservableList<E> observableArrayListWithOrderListener();
 }

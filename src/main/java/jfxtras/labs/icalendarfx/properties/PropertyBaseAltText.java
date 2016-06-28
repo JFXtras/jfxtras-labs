@@ -70,6 +70,7 @@ public abstract class PropertyBaseAltText<T,U> extends PropertyBaseLanguage<T,U>
         if (alternateText == null)
         {
             alternateText = new SimpleObjectProperty<>(this, ParameterType.ALTERNATE_TEXT_REPRESENTATION.toString());
+            orderer().registerSortOrderProperty(alternateText);
         }
         return alternateText;
     }

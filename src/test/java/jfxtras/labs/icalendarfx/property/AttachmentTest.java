@@ -32,7 +32,7 @@ public class AttachmentTest
         Attachment<String> expectedProperty = new Attachment<String>(String.class, "TG9yZW")
                 .withFormatType("text/plain")
                 .withEncoding(EncodingType.BASE64)
-                .withValueParameter(ValueType.BINARY);
+                .withValueType(ValueType.BINARY);
         assertEquals(expectedProperty, madeProperty);
         assertFalse(expectedProperty == madeProperty);
     }
@@ -66,7 +66,7 @@ public class AttachmentTest
         Attachment<String> expectedProperty = new Attachment<String>(String.class, "TG9yZW")
                 .withFormatType("text/plain")
                 .withEncoding(EncodingType.BASE64)
-                .withValueParameter(ValueType.BINARY);
+                .withValueType(ValueType.BINARY);
 //        expectedProperty.parameterSortOrder().put(ParameterType.FORMAT_TYPE, 0);
 //        expectedProperty.parameterSortOrder().put(ParameterType.INLINE_ENCODING, 1);
 //        expectedProperty.parameterSortOrder().put(ParameterType.VALUE_DATA_TYPES, 2);

@@ -33,11 +33,6 @@ public class DateTimeCreated extends PropertyBaseUTC<DateTimeCreated>
     {
         super(temporal);
     }
-
-//    public DateTimeCreated(CharSequence contentLine)
-//    {
-//        super(contentLine);
-//    }
     
     public DateTimeCreated(DateTimeCreated source)
     {

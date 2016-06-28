@@ -32,11 +32,6 @@ public abstract class PropertyBaseUTC<U> extends PropertyBase<ZonedDateTime,U>
     {
         super(temporal);
     }
-
-//    public PropertyBaseUTC(String contentLine)
-//    {
-//        super(contentLine);
-//    }
     
     public PropertyBaseUTC(PropertyBaseUTC<U> source)
     {
