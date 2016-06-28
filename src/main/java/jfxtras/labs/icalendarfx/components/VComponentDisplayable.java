@@ -53,6 +53,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
     default T withCategories(ObservableList<Categories> categories) { setCategories(categories); return (T) this; }
     default T withCategories(String...categories)
     {
+        // TODO - JOINING MAY BE A PROBLEM - PERHAPS BETTER TO GET LIST AND ADD INDIVIDUALLY - CHECK
         String c = Arrays.stream(categories).collect(Collectors.joining(","));
         PropertyType.CATEGORIES.parse(this, c);
         return (T) this;
@@ -270,7 +271,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         {
             list = getExceptionDates();
         }
-        getExceptionDates().add(new ExceptionDates(FXCollections.observableSet(exceptions)));
+        list.add(new ExceptionDates(FXCollections.observableSet(exceptions)));
         return (T) this;
     }
     default T withExceptionDates(ExceptionDates...exceptions)

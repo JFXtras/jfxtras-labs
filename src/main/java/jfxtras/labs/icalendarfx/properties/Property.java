@@ -10,7 +10,6 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.VCalendarParent;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
-import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 
@@ -117,7 +116,8 @@ public interface Property<T> extends VCalendarElement, VCalendarParent, Comparab
      * 
      * @return - the list of parameters
      */
-    default List<Parameter<?>> parameters()
+    @Deprecated
+    default List<Object> parameters()
     {
         return Collections.unmodifiableList(
                 parameterEnums().stream()

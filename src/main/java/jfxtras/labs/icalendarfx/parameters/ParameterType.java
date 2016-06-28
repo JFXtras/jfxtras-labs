@@ -330,10 +330,9 @@ public enum ParameterType
         }
 
         @Override
-        public Parameter<?> getParameter(Property<?> parent)
+        public Object getParameter(Property<?> parent)
         {
-//            return parent.getOtherParameters(); // TODO - RETURN OBJECT???
-            return null;
+            return parent.getOtherParameters();
         }
 
         @Override
@@ -658,7 +657,8 @@ public enum ParameterType
     abstract public void parse(Property<?> property, String content);
     
     /** Returns associated Property<?> or List<Property<?>> */
-    abstract public Parameter<?> getParameter(Property<?> parent);
+    // TODO - MAY BE OBSOLETE WITH USE OF ORDERER - ONLY BEING USED TO DOUBLE-CHECK EXISTANCE OF ALL PARAMETERS WHEN COPYING
+    abstract public Object getParameter(Property<?> parent);
     
     /** copies the associated parameter from the source property to the destination property */
     public void copyParameter(Property<?>  source, Property<?> destination)

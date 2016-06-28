@@ -78,7 +78,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             {
                 list = getRecurrenceDates();
             }
-            getRecurrenceDates().add(new RecurrenceDates(FXCollections.observableSet(recurrenceDates)));
+            list.add(new RecurrenceDates(FXCollections.observableSet(recurrenceDates)));
         }
         return (T) this;
     }

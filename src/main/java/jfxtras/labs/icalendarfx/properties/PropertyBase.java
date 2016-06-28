@@ -245,8 +245,21 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
     public U withOtherParameters(ObservableList<OtherParameter> otherParameters) { setOtherParameters(otherParameters); return (U) this; }
     public U withOtherParameters(String...otherParameters)
     {
-        String c = Arrays.stream(otherParameters).collect(Collectors.joining(","));
-        ParameterType.OTHER.parse(this, c);
+        final ObservableList<OtherParameter> list;
+        if (getOtherParameters() == null)
+        {
+            list = FXCollections.observableArrayList();
+            setOtherParameters(list);
+        } else
+        {
+            list = getOtherParameters();
+        }
+        Arrays.asList(otherParameters).forEach(p -> 
+        {
+            OtherParameter e = new OtherParameter(p);
+//            System.out.println("new1:" + p + " " + e.toContent());
+            list.add(e);
+        });
         return (U) this;
     }
     public U withOtherParameters(OtherParameter...otherParameters)
@@ -279,7 +292,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         while (i.hasNext())
         {
             ParameterType parameterType = i.next();
-            Parameter<?> parameter = parameterType.getParameter(this);
+            Object parameter = parameterType.getParameter(this);
             if (parameter != null)
             {
                 populatedParameters.add(parameterType);
@@ -436,13 +449,13 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
     @Override
     public void parseContent(String contentLine)
     {
-        String propertyString = contentLine.toString();
+//        String contentLine = contentLine.toString();
         
         // perform tests, make changes if necessary
         final String propertyValue;
         List<Integer> indices = new ArrayList<>();
-        indices.add(propertyString.indexOf(':'));
-        indices.add(propertyString.indexOf(';'));
+        indices.add(contentLine.indexOf(':'));
+        indices.add(contentLine.indexOf(';'));
         Optional<Integer> hasPropertyName = indices
                 .stream()
                 .filter(v -> v > 0)
@@ -450,7 +463,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         if (hasPropertyName.isPresent())
         {
             int endNameIndex = hasPropertyName.get();
-            String propertyName = (endNameIndex > 0) ? propertyString.subSequence(0, endNameIndex).toString().toUpperCase() : null;
+            String propertyName = (endNameIndex > 0) ? contentLine.subSequence(0, endNameIndex).toString().toUpperCase() : null;
             boolean isMatch = propertyName.equals(propertyType.toString());
             boolean isNonStandard = propertyName.substring(0, PropertyType.NON_STANDARD.toString().length()).equals(PropertyType.NON_STANDARD.toString());
             boolean isIANA = propertyType.equals(PropertyType.IANA_PROPERTY);
@@ -458,14 +471,14 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
             {
                 if (isNonStandard || isIANA)
                 {
-                    setPropertyName(propertyString.substring(0,endNameIndex));
+                    setPropertyName(contentLine.substring(0,endNameIndex));
                 }
-                propertyValue = propertyString.substring(endNameIndex, propertyString.length()); // strip off property name
+                propertyValue = contentLine.substring(endNameIndex, contentLine.length()); // strip off property name
             } else
             {
                 if (PropertyType.enumFromName(propertyName) == null)
                 {
-                    propertyValue = ":" + propertyString; // doesn't match a known property name, assume its all a property value
+                    propertyValue = ":" + contentLine; // doesn't match a known property name, assume its all a property value
                 } else
                 {
                     throw new IllegalArgumentException("Property name " + propertyName + " doesn't match class " +
@@ -476,12 +489,12 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         } else
         {
 
-            propertyValue = ":" + propertyString;
+            propertyValue = ":" + contentLine;
         }
         
         // parse parameters
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
-//        System.out.println("propertyString:" + propertyString + " " + map.size());
+//        System.out.println("contentLine:" + contentLine + " " + map.size());
         map.entrySet()
             .stream()
 //            .peek(System.out::println)
@@ -503,7 +516,8 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
                     }
                 } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
-//                    OtherParameter other = new OtherParameter(entry.getKey()).withValue(entry.getValue());                    
+//                    OtherParameter other = new OtherParameter(entry.getKey()).withValue(entry.getValue());    
+                    System.out.println("found Other:" + entry);
                     ParameterType.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
 //                    otherParameters().add(entry.getKey() + "=" + entry.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
@@ -561,7 +575,8 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         {
             errors.addAll(createErrorList);
         }
-        parameters().forEach(b -> errors.addAll(b.errors()));
+        orderer().elementSortOrderMap().forEach((key, value) -> errors.addAll(key.errors()));
+//        parameters().forEach(b -> errors.addAll(b.errors()));
         return errors;
     }
     
@@ -600,7 +615,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
 
         // PARAMETERS
         Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
-        parameters().forEach(p -> parameterNameContentMap.put(p, p.toContent()));
+        parameters().forEach(p -> parameterNameContentMap.put((Parameter<?>) p, ((VCalendarElement) p).toContent()));
         
         // restore parameter sort order if parameters were parsed from content
         parameterNameContentMap.entrySet().stream()
@@ -656,12 +671,12 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
     private void checkContentList()
     {
         List<String> elementNames1 = parameterEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
-        System.out.println(elementNames1);
+//        System.out.println(elementNames1);
         List<String> elementNames2 = orderer().elementSortOrderMap().entrySet()
                 .stream()
                 .map(e -> ParameterType.enumFromClass(e.getKey().getClass()).toString())
                 .collect(Collectors.toList());
-        System.out.println(elementNames2);
+//        System.out.println(elementNames2);
         Optional<String> propertyNotFound1 = elementNames1.stream().filter(s -> ! elementNames2.contains(s)).findAny();
         if (propertyNotFound1.isPresent())
         {
@@ -712,8 +727,8 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
             boolean isFailure = false;
             while (i1.hasNext())
             {
-                Parameter<?> p1 = i1.next().getParameter(this);
-                Parameter<?> p2 = i2.next().getParameter(testObj);
+                Object p1 = i1.next().getParameter(this);
+                Object p2 = i2.next().getParameter(testObj);
 //                System.out.println("p1,p2:" + p1 + " " + p2);
                 if (! p1.equals(p2))
                 {
@@ -750,8 +765,8 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         Iterator<ParameterType> i = parameterEnums().iterator();
         while (i.hasNext())
         {
-            Parameter<?> parameter = i.next().getParameter(this);
-            hash = (31 * hash) + parameter.getValue().hashCode();
+            Object parameter = i.next().getParameter(this);
+            hash = (31 * hash) + parameter.hashCode();
         }
         return hash;
     }

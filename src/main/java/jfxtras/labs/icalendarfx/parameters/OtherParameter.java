@@ -11,10 +11,13 @@ public class OtherParameter extends ParameterText<OtherParameter>
     final String name;
     public String getName() { return name; }
     
-    public OtherParameter(String name)
+    public OtherParameter(String content)
     {
         super();
-        this.name = name;
+        int equalsIndex = content.indexOf('=');
+        name = (equalsIndex >= 0) ? content.substring(0, equalsIndex) : content;
+        String value = (equalsIndex >= 0) ? content.substring(equalsIndex+1) : null;
+        setValue(value);
     }
 
     public OtherParameter(OtherParameter source)
@@ -25,10 +28,7 @@ public class OtherParameter extends ParameterText<OtherParameter>
 
     public static OtherParameter parse(String content)
     {
-        String name = content.substring(0, content.indexOf('='));
-        OtherParameter parameter = new OtherParameter(name);
-        parameter.parseContent(content);
-        return parameter;
+        return new OtherParameter(content);
     }
     
     @Override

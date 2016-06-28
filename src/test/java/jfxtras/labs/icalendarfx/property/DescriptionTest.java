@@ -40,9 +40,10 @@ public class DescriptionTest
         Description madeDescription = Description.parse(contentLine);
         Description expectedDescription = Description.parse("Example description")
                 .withOtherParameters("MYPARAMETER=some value", "PARAMETER2=other value");
+        System.out.println(expectedDescription.toContent());
+        System.out.println(madeDescription.toContent());
         assertEquals(expectedDescription, madeDescription);
         String foldedContent = ICalendarUtilities.foldLine("DESCRIPTION;MYPARAMETER=some value;PARAMETER2=other value:Example description").toString();
-        System.out.println(expectedDescription.toContent());
         assertEquals(foldedContent, expectedDescription.toContent());
     }
     
