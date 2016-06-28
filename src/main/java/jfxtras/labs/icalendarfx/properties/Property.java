@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.VCalendarParent;
+import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
@@ -68,7 +69,7 @@ public interface Property<T> extends VCalendarElement, VCalendarParent, Comparab
      * other-param, 3.2 RFC 5545 page 14
      * the parameter name and value are combined into one object
      */
-    ObservableList<Object> otherParameters();
+    ObservableList<OtherParameter> otherParameters();
     
     /**
      * Returns the enumerated type for the property as it would appear in the iCalendar content line

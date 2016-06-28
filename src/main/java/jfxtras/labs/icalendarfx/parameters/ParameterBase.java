@@ -32,7 +32,7 @@ abstract public class ParameterBase<U,T> implements Parameter<T>
     public String toContent()
     {
         final String value;
-        if (getValue() instanceof Collection)
+        if (getValue() instanceof Collection) // TODO - OVERRIDE IN LIST-BASED SUBCLASS INSTEAD OF instanceof
         {
             value = ((Collection<?>) getValue()).stream()
                     .map(obj -> addDoubleQuotesIfNecessary(obj.toString()))

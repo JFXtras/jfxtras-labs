@@ -311,6 +311,31 @@ public enum ParameterType
             castDestination.setGroupMembership(parameter);
         }
     },
+    OTHER ("OTHER", OtherParameter.class) {
+        @Override
+        public void parse(Property<?> property, String content)
+        {
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
+            castProperty.setOtherParameter(OtherParameter.parse(content));
+        }
+
+        @Override
+        public Parameter<?> getParameter(Property<?> parent)
+        {
+            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
+            return castProperty.getOtherParameter();
+        }
+
+        @Override
+        public void copyParameter(Property<?> source, Property<?> destination)
+        {
+            throw new RuntimeException("not implemented");
+//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+//            GroupMembership parameter = new GroupMembership(castSource.getGroupMembership());
+//            castDestination.setGroupMembership(parameter);
+        }
+    },
     PARTICIPATION_STATUS ("PARTSTAT", ParticipationStatus.class) {
         @Override
         public void parse(Property<?> property, String content)

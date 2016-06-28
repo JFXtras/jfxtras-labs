@@ -42,6 +42,7 @@ public class DescriptionTest
                 .withOtherParameters("MYPARAMETER=some value", "PARAMETER2=other value");
         assertEquals(expectedDescription, madeDescription);
         String foldedContent = ICalendarUtilities.foldLine("DESCRIPTION;MYPARAMETER=some value;PARAMETER2=other value:Example description").toString();
+        System.out.println(expectedDescription.toContent());
         assertEquals(foldedContent, expectedDescription.toContent());
     }
     

@@ -23,6 +23,7 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.Orderer;
 import jfxtras.labs.icalendarfx.OrdererBase;
 import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
@@ -221,13 +222,24 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
     };
     
     /**
+     * OTHER PARAMETER
+     * other-param, 3.2 RFC 5545 page 14
+     * Has custom name and String value
+     */
+    @Override
+    public ObservableList<OtherParameter> otherParameters() { return otherParameters; }
+    private ObservableList<OtherParameter> otherParameters = FXCollections.observableArrayList();
+    public U withOtherParameters(OtherParameter... parameter) { otherParameters().addAll(parameter); return (U) this; }
+    
+    
+    /**
      * other-param, 3.2 RFC 5545 page 14
      * the parameter name and value are combined into one object
      */
-    @Override
-    public ObservableList<Object> otherParameters() { return otherParameters; }
-    private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
-    public U withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (U) this; }
+//    @Override
+//    public ObservableList<Object> otherParameters() { return otherParameters; }
+//    private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
+//    public U withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (U) this; }
 
     @Override
     public List<ParameterType> parameterEnums()
