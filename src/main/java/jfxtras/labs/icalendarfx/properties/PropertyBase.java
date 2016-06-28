@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.properties;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -227,10 +228,39 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
      * Has custom name and String value
      */
     @Override
-    public ObservableList<OtherParameter> otherParameters() { return otherParameters; }
-    private ObservableList<OtherParameter> otherParameters = FXCollections.observableArrayList();
-    public U withOtherParameters(OtherParameter... parameter) { otherParameters().addAll(parameter); return (U) this; }
-    
+    public ObservableList<OtherParameter> getOtherParameters() { return otherParameters; }
+    private ObservableList<OtherParameter> otherParameters;
+    @Override
+    public void setOtherParameters(ObservableList<OtherParameter> otherParameters)
+    {
+        if (otherParameters != null)
+        {
+            orderer().registerSortOrderProperty(otherParameters);
+        } else
+        {
+            orderer().unregisterSortOrderProperty(this.otherParameters);
+        }
+        this.otherParameters = otherParameters;
+    }
+    public U withOtherParameters(ObservableList<OtherParameter> otherParameters) { setOtherParameters(otherParameters); return (U) this; }
+    public U withOtherParameters(String...otherParameters)
+    {
+        String c = Arrays.stream(otherParameters).collect(Collectors.joining(","));
+        ParameterType.OTHER.parse(this, c);
+        return (U) this;
+    }
+    public U withOtherParameters(OtherParameter...otherParameters)
+    {
+        if (getOtherParameters() == null)
+        {
+            setOtherParameters(FXCollections.observableArrayList(otherParameters));
+        } else
+        {
+            getOtherParameters().addAll(otherParameters);
+        }
+        return (U) this;
+    }
+
     
     /**
      * other-param, 3.2 RFC 5545 page 14
@@ -473,7 +503,9 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
                     }
                 } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
-                    otherParameters().add(entry.getKey() + "=" + entry.getValue());
+//                    OtherParameter other = new OtherParameter(entry.getKey()).withValue(entry.getValue());                    
+                    ParameterType.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
+//                    otherParameters().add(entry.getKey() + "=" + entry.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
 
@@ -587,7 +619,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
                 });
         
         // add non-standard parameters - sort order doesn't apply to non-standard parameters
-        otherParameters().stream().forEach(p -> builder.append(";" + p));
+//        otherParameters().stream().forEach(p -> builder.append(";" + p));
         // add property value
         String stringValue = valueContent();
         builder.append(":" + stringValue);
@@ -667,9 +699,10 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
 //        boolean valueEquals = isValueEqual(getValue(), testObj.getValue());
         boolean valueEquals = (getValue() == null) ? (testObj.getValue() == null) : getValue().equals(testObj.getValue());
 //        System.out.println("VALUES:" + getValue() + " " + testObj.getValue() + " " + valueEquals);
-        boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
+//        boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
         boolean nameEquals = getPropertyName().equals(testObj.getPropertyName());
         final boolean parametersEquals;
+        // TODO - FIX EQUALS TO USE MAP
         List<ParameterType> parameters = parameterEnums(); // make parameters local to avoid creating list multiple times
         List<ParameterType> testParameters = testObj.parameterEnums(); // make parameters local to avoid creating list multiple times
         if (parameters.size() == testParameters.size())
@@ -694,7 +727,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
             parametersEquals = false;
         }
 //        System.out.println("equals:" + valueEquals + " " + otherParametersEquals + " " + parametersEquals + " " + nameEquals);
-        return valueEquals && otherParametersEquals && parametersEquals && nameEquals;
+        return valueEquals && parametersEquals && nameEquals;
     }
     
 

@@ -69,7 +69,8 @@ public interface Property<T> extends VCalendarElement, VCalendarParent, Comparab
      * other-param, 3.2 RFC 5545 page 14
      * the parameter name and value are combined into one object
      */
-    ObservableList<OtherParameter> otherParameters();
+    ObservableList<OtherParameter> getOtherParameters();
+    void setOtherParameters(ObservableList<OtherParameter> otherParameters);
     
     /**
      * Returns the enumerated type for the property as it would appear in the iCalendar content line

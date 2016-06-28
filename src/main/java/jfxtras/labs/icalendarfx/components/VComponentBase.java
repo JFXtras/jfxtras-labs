@@ -334,6 +334,7 @@ public abstract class VComponentBase implements VComponent
         VComponentBase testObj = (VComponentBase) obj;
         
         final boolean propertiesEquals;
+     // TODO - FIX EQUALS TO USE MAP
         List<PropertyType> properties = propertyEnums(); // make properties local to avoid creating list multiple times
         List<PropertyType> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
 //        System.out.println("equals:" + this + " " + testObj);

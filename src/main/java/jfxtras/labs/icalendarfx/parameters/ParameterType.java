@@ -4,6 +4,8 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.VCalendarElement;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
@@ -315,25 +317,38 @@ public enum ParameterType
         @Override
         public void parse(Property<?> property, String content)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) property;
-            castProperty.setOtherParameter(OtherParameter.parse(content));
+            final ObservableList<OtherParameter> list;
+            if (property.getOtherParameters() == null)
+            {
+                list = FXCollections.observableArrayList();
+                property.setOtherParameters(list);
+            } else
+            {
+                list = property.getOtherParameters();
+            }
+            list.add(OtherParameter.parse(content));
         }
 
         @Override
         public Parameter<?> getParameter(Property<?> parent)
         {
-            PropertyAttendee<?> castProperty = (PropertyAttendee<?>) parent;
-            return castProperty.getOtherParameter();
+//            return parent.getOtherParameters(); // TODO - RETURN OBJECT???
+            return null;
         }
 
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            throw new RuntimeException("not implemented");
-//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
-//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-//            GroupMembership parameter = new GroupMembership(castSource.getGroupMembership());
-//            castDestination.setGroupMembership(parameter);
+            final ObservableList<OtherParameter> list;
+            if (destination.getOtherParameters() == null)
+            {
+                list = FXCollections.observableArrayList();
+                destination.setOtherParameters(list);
+            } else
+            {
+                list = destination.getOtherParameters();
+            }
+            list.add(new OtherParameter((OtherParameter) child));
         }
     },
     PARTICIPATION_STATUS ("PARTSTAT", ParticipationStatus.class) {
@@ -646,7 +661,11 @@ public enum ParameterType
     abstract public Parameter<?> getParameter(Property<?> parent);
     
     /** copies the associated parameter from the source property to the destination property */
-    abstract public void copyParameter(Property<?>  source, Property<?> destination);
+    public void copyParameter(Property<?>  source, Property<?> destination)
+    {
+        throw new RuntimeException("not implemented");        
+    }
+
     
     public void copyParameter(Parameter<?> child, Property<?> destination)
     {
