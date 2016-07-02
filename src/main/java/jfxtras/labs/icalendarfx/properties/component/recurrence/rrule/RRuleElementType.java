@@ -32,7 +32,8 @@ public enum RRuleElementType
         {
             if (recurrenceRule.getFrequency() == null)
             {
-                recurrenceRule.setFrequency(Frequency.parse(content));                
+                recurrenceRule.setFrequency(Frequency.parse(content));
+
             } else
             {
                 throw new IllegalArgumentException(toString() + " can only occur once in a calendar component");

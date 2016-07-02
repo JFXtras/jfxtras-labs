@@ -48,4 +48,10 @@ public class RecurrenceRule extends PropertyBase<RecurrenceRule2, RecurrenceRule
         property.parseContent(propertyContent);
         return property;
     }
+    
+    @Override
+    protected RecurrenceRule2 copyValue(RecurrenceRule2 source)
+    {
+        return new RecurrenceRule2(source);
+    }
 }

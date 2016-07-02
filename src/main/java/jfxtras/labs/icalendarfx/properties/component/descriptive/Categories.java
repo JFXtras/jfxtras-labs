@@ -61,7 +61,8 @@ public class Categories extends PropertyBaseLanguage<ObservableList<String>, Cat
      * Note: Do not use to parse the content line.  Use static parse method instead.*/
     public Categories(String...values)
     {
-        super(FXCollections.observableArrayList(values));
+        this();
+        setValue(FXCollections.observableArrayList(values));
     }
     
     public Categories(Categories source)

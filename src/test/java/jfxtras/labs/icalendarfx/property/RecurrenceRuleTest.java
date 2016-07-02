@@ -69,6 +69,7 @@ public class RecurrenceRuleTest
         RecurrenceRule r2 = new RecurrenceRule(r1);
         assertEquals(r1, r2);
         assertTrue(r1 != r2);
+        assertTrue(r1.equals(r2));
         assertTrue(r1.getValue() != r2.getValue());
     }
  

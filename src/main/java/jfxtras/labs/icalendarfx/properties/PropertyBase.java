@@ -254,12 +254,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         {
             list = getOtherParameters();
         }
-        Arrays.asList(otherParameters).forEach(p -> 
-        {
-            OtherParameter e = new OtherParameter(p);
-//            System.out.println("new1:" + p + " " + e.toContent());
-            list.add(e);
-        });
+        Arrays.asList(otherParameters).forEach(p -> list.add(new OtherParameter(p)));
         return (U) this;
     }
     public U withOtherParameters(OtherParameter...otherParameters)
@@ -507,9 +502,10 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
                 {
                     if (propertyType().allowedParameters().contains(parameterType))
                     {
+//                        System.out.println("parse parameters" + parameterType);
                         parameterType.parse(this, entry.getValue());
-                        parameterSortOrder().put(parameterType, parameterCounter);
-                        parameterCounter += 100; // add 100 to allow insertions in between
+//                        parameterSortOrder().put(parameterType, parameterCounter);
+//                        parameterCounter += 100; // add 100 to allow insertions in between
                     } else
                     {
                         throw new IllegalArgumentException("Parameter " + parameterType + " not allowed for property " + propertyType());
@@ -517,7 +513,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
                 } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
 //                    OtherParameter other = new OtherParameter(entry.getKey()).withValue(entry.getValue());    
-                    System.out.println("found Other:" + entry);
+//                    System.out.println("found Other:" + entry);
                     ParameterType.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
 //                    otherParameters().add(entry.getKey() + "=" + entry.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored

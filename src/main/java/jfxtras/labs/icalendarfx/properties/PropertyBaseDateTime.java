@@ -46,7 +46,6 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
         if (timeZoneIdentifier == null)
         {
             timeZoneIdentifier = new SimpleObjectProperty<>(this, ParameterType.TIME_ZONE_IDENTIFIER.toString());
-            System.out.println("add TZID listener");
             orderer().registerSortOrderProperty(timeZoneIdentifier);
         }
         return timeZoneIdentifier;

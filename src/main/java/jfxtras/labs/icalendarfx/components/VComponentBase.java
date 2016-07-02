@@ -78,19 +78,34 @@ public abstract class VComponentBase implements VComponent
 //    }
     
     // Ensures all elements in elementSortOrderMap are found in propertyEnums list
+    @Deprecated // doesn't work - some propertyEnum produces lists sometimes. elementSortOrderMap only produces individual properties
     private void checkContentList()
     {
-        List<String> elementNames1 = propertyEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
-        List<String> elementNames2 = orderer().elementSortOrderMap().entrySet()
-                .stream()
-                .map(e -> PropertyType.enumFromClass(e.getKey().getClass()).toString())
+//        List<String> elementNames1 = propertyEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
+        List<Object> elementNames1 = propertyEnums().stream()
+                .map(e -> e.getProperty(this))
+//                .peek(a -> System.out.println("ee1:" + a + " " ))
                 .collect(Collectors.toList());
-        Optional<String> propertyNotFound1 = elementNames1.stream().filter(s -> ! elementNames2.contains(s)).findAny();
+//        System.out.println("elements2:" + orderer().elementSortOrderMap().size());
+//        if (orderer().elementSortOrderMap().size() == 9) System.out.println("is 9");
+//        orderer().elementSortOrderMap().entrySet().forEach(System.out::println);
+//        System.exit(0);
+
+        List<Object> elementNames2 = orderer().elementSortOrderMap().entrySet()
+                .stream()
+                .filter(a -> ! (a.getKey() instanceof VComponent))
+//                .peek(a -> System.out.println("ee2:" + a + " " + (a.getKey() instanceof VComponent)))
+                .map(e -> e.getKey())
+                .collect(Collectors.toList());
+//        System.out.println("list done:");
+//        elementNames1.stream().forEach(System.out::println);
+//        elementNames2.stream().forEach(System.out::println);
+        Optional<Object> propertyNotFound1 = elementNames1.stream().filter(s -> ! elementNames2.contains(s)).findAny();
         if (propertyNotFound1.isPresent())
         {
             throw new RuntimeException("element not found:" + propertyNotFound1.get());
         }
-        Optional<String> propertyNotFound2 = elementNames2.stream().filter(s -> ! elementNames1.contains(s)).findAny();
+        Optional<Object> propertyNotFound2 = elementNames2.stream().filter(s -> ! elementNames1.contains(s)).findAny();
         if (propertyNotFound2.isPresent())
         {
             throw new RuntimeException("element not found:" + propertyNotFound2.get());
@@ -293,7 +308,9 @@ public abstract class VComponentBase implements VComponent
         StringBuilder builder = new StringBuilder(400);
         builder.append(firstContentLine + System.lineSeparator());
 //        sortedContent().stream().forEach(System.out::println);
-        checkContentList(); // test elements for completeness (can be removed for improved speed)
+//        System.out.println("elements1:" + orderer().elementSortOrderMap().size() + " " + this.hashCode());
+//        checkContentList(); // test elements for completeness (can be removed for improved speed)
+//        System.exit(0);
         String content = orderer().sortedContent().stream()
 //                .map(s -> ICalendarUtilities.foldLine(s))
                 .collect(Collectors.joining(System.lineSeparator()));

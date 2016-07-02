@@ -128,7 +128,6 @@ public enum CalendarElementType
         @Override
         public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
         {
-            System.out.println("parse timezone");
             VTimeZone e = new VTimeZone();
             e.parseContent(contentLines);
             vCalendar.getVTimeZones().add(e);

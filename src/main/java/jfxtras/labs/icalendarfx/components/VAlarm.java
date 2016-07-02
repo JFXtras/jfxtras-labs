@@ -301,7 +301,7 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         if (trigger == null)
         {
             trigger = new SimpleObjectProperty<>(this, PropertyType.ACTION.toString());
-            orderer().unregisterSortOrderProperty(trigger);
+            orderer().registerSortOrderProperty(trigger);
         }
         return trigger;
     }

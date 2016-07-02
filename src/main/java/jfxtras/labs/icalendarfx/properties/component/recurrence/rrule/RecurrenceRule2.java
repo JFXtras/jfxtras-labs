@@ -137,6 +137,7 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
         if (count == null)
         {
             count = new SimpleObjectProperty<>(this, RRuleElementType.COUNT.toString());
+            orderer().registerSortOrderProperty(count);
             // TODO - add listener to ensure COUNT and UNTIL are not both set
             // listener to ensure >0 throw new IllegalArgumentException("COUNT can't be less than 0. (" + count + ")");
 //            else throw new IllegalArgumentException("can't set COUNT if UNTIL is already set.");
@@ -189,7 +190,7 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
      * interval of a year or more.
      */
     public ObjectProperty<Frequency> frequencyProperty() { return frequency; }
-    final private ObjectProperty<Frequency> frequency = new SimpleObjectProperty<>(this, RRuleElementType.FREQUENCY.toString());
+    final private ObjectProperty<Frequency> frequency; // = new SimpleObjectProperty<>(this, RRuleElementType.FREQUENCY.toString());
     public Frequency getFrequency() { return frequency.get(); }
     public void setFrequency(Frequency frequency) { this.frequency.set(frequency); }
     public void setFrequency(String frequency) { setFrequency(Frequency.parse(frequency)); }
@@ -245,6 +246,7 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
         if (interval == null)
         {
             interval = new SimpleObjectProperty<>(this, RRuleElementType.INTERVAL.toString());
+            orderer().registerSortOrderProperty(interval);
         }
         return interval;
     }
@@ -301,6 +303,7 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
         if (until == null)
         {
             until = new SimpleObjectProperty<>(this, RRuleElementType.UNTIL.toString());
+            orderer().registerSortOrderProperty(until);
             // TODO - add listener to ensure COUNT and UNTIL are not both set
             // TODO - LISTENER TO ENSURE UTC OR DATE
             // if ((DateTimeType.of(until) != DateTimeType.DATE) && (DateTimeType.of(until) != DateTimeType.DATE_WITH_UTC_TIME))
@@ -372,6 +375,7 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
         if (weekStart == null)
         {
             weekStart = new SimpleObjectProperty<>(this, RRuleElementType.WEEK_START.toString());
+            orderer().registerSortOrderProperty(weekStart);
             weekStart.addListener((obs, oldValue, newValue) ->
             {
                 // bind to values in the Byxxx rules that use it
@@ -458,7 +462,10 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
     public RecurrenceRule2()
     {
         orderer = new OrdererBase(copyElementChildCallback);
+        frequency = new SimpleObjectProperty<>(this, RRuleElementType.FREQUENCY.toString());
+        orderer().registerSortOrderProperty(frequencyProperty());
         byRules = FXCollections.observableArrayList();
+        orderer().registerSortOrderProperty(byRules);
         
         // Listener that ensures user doesn't add same ByRule a second time.  Also keeps the byRules list sorted.
         byRules().addListener((ListChangeListener<? super ByRule<?>>) (change) ->
@@ -502,8 +509,8 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
             if (element != null)
             {
                 element.parse(this, entry.getValue());
-                elementSortOrder().put(element, elementCounter);
-                elementCounter += 100; // add 100 to allow insertions in between
+//                elementSortOrder().put(element, elementCounter);
+//                elementCounter += 100; // add 100 to allow insertions in between
             } else
             {
                 throw new IllegalArgumentException("Unsupported Recurrence Rule element: " + entry.getKey());                        

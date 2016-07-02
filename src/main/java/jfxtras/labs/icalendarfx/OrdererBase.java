@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -137,7 +138,7 @@ public class OrdererBase implements Orderer
     /**
      * Make a list of sorted content elements. Used by { @link VCalendarElement#toContent() }
      * 
-     * @return - list of sorted content lines
+     * @return - unmodifiable list of sorted content lines
      */
     @Override
     public List<String> sortedContent()
@@ -176,7 +177,7 @@ public class OrdererBase implements Orderer
                     }
                 });
         
-        return content;
+        return Collections.unmodifiableList(content);
     }
 
     /** Copy parameters, properties, and subcomponents from source into this component,

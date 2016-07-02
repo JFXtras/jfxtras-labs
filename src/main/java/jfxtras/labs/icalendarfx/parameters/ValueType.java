@@ -245,7 +245,6 @@ public enum ValueType
                 @Override
                 public String toString(T object)
                 {
-//                    System.out.println("rrule:" + object.getClass());
                     return ((VCalendarElement) object).toContent();
                 }
 

@@ -14,6 +14,7 @@ public class CategoriesTest
     {
         Categories property = new Categories("group03","g,roup\\;p");
         String expectedContent = "CATEGORIES:group03,g\\,roup\\\\\\;p";
+        System.out.println(property.toContent());
         assertEquals(expectedContent, property.toContent());
         Categories property2 = Categories.parse(expectedContent);
         assertEquals(property, property2);

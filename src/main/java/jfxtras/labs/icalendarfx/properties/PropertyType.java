@@ -81,7 +81,8 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneOffsetTo;
 import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
 
 /**
- * For each VComponent property contains the following: <br>
+ * For each VComponent property (RFC 5545, 3.8, page 80) contains the following: <br>
+ * <br>
  * Property name {@link #toString()} <br>
  * Allowed property value type (first is default value type) {@link PropertyType#allowedValueTypes()}<br>
  * Allowed parameters {@link #allowedParameters()}<br>

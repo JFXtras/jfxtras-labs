@@ -21,6 +21,18 @@ import jfxtras.labs.icalendarfx.properties.PropertyRecurrenceID;
 import jfxtras.labs.icalendarfx.properties.PropertyRelationship;
 import jfxtras.labs.icalendarfx.properties.component.relationship.PropertyBaseCalendarUser;
 
+/**
+ * For each VComponent property parameter (RFC 5545, 3.2, page 13) contains the following: <br>
+ * <br>
+ * Parameter name {@link #toString()} <br>
+ * Parameter class {@link #getPropertyClass()}<br>
+ * Method to parse parameter string into parent component {@link #parse(Property<?>, String)}<br>
+ * Method to get parameter from property {@link #getParameter(Property<?>)}<br>
+ * Method to copy parameter into new parent property {@link #copyParameter(Parameter, Property)}<br>
+ * 
+ * @author David Bal
+ *
+ */
 public enum ParameterType
 {
     // in properties COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES
@@ -39,14 +51,14 @@ public enum ParameterType
             return castProperty.getAlternateText();
         }
 
-        @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
-        {
-            PropertyBaseAltText<?,?> castSource = (PropertyBaseAltText<?,?>) source;
-            PropertyBaseAltText<?,?> castDestination = (PropertyBaseAltText<?,?>) destination;
-            AlternateText parameter = new AlternateText(castSource.getAlternateText());
-            castDestination.setAlternateText(parameter);
-        }
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyBaseAltText<?,?> castSource = (PropertyBaseAltText<?,?>) source;
+//            PropertyBaseAltText<?,?> castDestination = (PropertyBaseAltText<?,?>) destination;
+//            AlternateText parameter = new AlternateText(castSource.getAlternateText());
+//            castDestination.setAlternateText(parameter);
+//        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -72,13 +84,21 @@ public enum ParameterType
             return castProperty.getCommonName();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
+//            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
+//            CommonName parameter = new CommonName(castSource.getCommonName());
+//            castDestination.setCommonName(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
             PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
-            CommonName parameter = new CommonName(castSource.getCommonName());
-            castDestination.setCommonName(parameter);
+            CommonName parameterCopy = new CommonName((CommonName) child);
+            castDestination.setCommonName(parameterCopy);
         }
     },
     // in property ATTENDEE
@@ -97,13 +117,21 @@ public enum ParameterType
             return castProperty.getCalendarUser();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+//            CalendarUser parameter = new CalendarUser(castSource.getCalendarUser());
+//            castDestination.setCalendarUser(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
             PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-            CalendarUser parameter = new CalendarUser(castSource.getCalendarUser());
-            castDestination.setCalendarUser(parameter);
+            CalendarUser parameterCopy = new CalendarUser((CalendarUser) child);
+            castDestination.setCalendarUser(parameterCopy);
         }
     },
     // in property ATTENDEE
@@ -122,13 +150,21 @@ public enum ParameterType
             return castProperty.getDelegators();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+//            Delegators parameter = new Delegators(castSource.getDelegators());
+//            castDestination.setDelegators(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
             PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-            Delegators parameter = new Delegators(castSource.getDelegators());
-            castDestination.setDelegators(parameter);
+            Delegators parameterCopy = new Delegators((Delegators) child);
+            castDestination.setDelegators(parameterCopy);
         }
     },
     // in property ATTENDEE
@@ -147,13 +183,21 @@ public enum ParameterType
             return castProperty.getDelegatees();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+//            Delegatees parameter = new Delegatees(castSource.getDelegatees());
+//            castDestination.setDelegatees(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
             PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-            Delegatees parameter = new Delegatees(castSource.getDelegatees());
-            castDestination.setDelegatees(parameter);
+            Delegatees parameterCopy = new Delegatees((Delegatees) child);
+            castDestination.setDelegatees(parameterCopy);
         }
     },
     // in properties ATTENDEE, ORGANIZER
@@ -172,13 +216,21 @@ public enum ParameterType
             return castProperty.getDirectoryEntryReference();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
+//            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
+//            DirectoryEntryReference parameter = new DirectoryEntryReference(castSource.getDirectoryEntryReference());
+//            castDestination.setDirectoryEntryReference(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
-            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
-            DirectoryEntryReference parameter = new DirectoryEntryReference(castSource.getDirectoryEntryReference());
-            castDestination.setDirectoryEntryReference(parameter);
+            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+            DirectoryEntryReference parameterCopy = new DirectoryEntryReference((DirectoryEntryReference) child);
+            castDestination.setDirectoryEntryReference(parameterCopy);
         }
     },
     // in property ATTACHMENT
@@ -197,13 +249,21 @@ public enum ParameterType
             return castProperty.getEncoding();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAttachment<?> castSource = (PropertyAttachment<?>) source;
+//            PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
+//            Encoding parameter = new Encoding(castSource.getEncoding());
+//            castDestination.setEncoding(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttachment<?> castSource = (PropertyAttachment<?>) source;
             PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
-            Encoding parameter = new Encoding(castSource.getEncoding());
-            castDestination.setEncoding(parameter);
+            Encoding parameterCopy = new Encoding((Encoding) child);
+            castDestination.setEncoding(parameterCopy);
         }
     },
     // in property ATTACHMENT
@@ -222,13 +282,21 @@ public enum ParameterType
             return castProperty.getFormatType();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAttachment<?> castSource = (PropertyAttachment<?>) source;
+//            PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
+//            FormatType parameter = new FormatType(castSource.getFormatType());
+//            castDestination.setFormatType(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttachment<?> castSource = (PropertyAttachment<?>) source;
             PropertyAttachment<?> castDestination = (PropertyAttachment<?>) destination;
-            FormatType parameter = new FormatType(castSource.getFormatType());
-            castDestination.setFormatType(parameter);
+            FormatType parameterCopy = new FormatType((FormatType) child);
+            castDestination.setFormatType(parameterCopy);
         }
     },
     // in property FREEBUSY
@@ -247,13 +315,21 @@ public enum ParameterType
             return castProperty.getFreeBusyType();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyFreeBusy<?> castSource = (PropertyFreeBusy<?>) source;
+//            PropertyFreeBusy<?> castDestination = (PropertyFreeBusy<?>) destination;
+//            FreeBusyType parameter = new FreeBusyType(castSource.getFreeBusyType());
+//            castDestination.setFreeBusyType(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyFreeBusy<?> castSource = (PropertyFreeBusy<?>) source;
             PropertyFreeBusy<?> castDestination = (PropertyFreeBusy<?>) destination;
-            FreeBusyType parameter = new FreeBusyType(castSource.getFreeBusyType());
-            castDestination.setFreeBusyType(parameter);
+            FreeBusyType parameterCopy = new FreeBusyType((FreeBusyType) child);
+            castDestination.setFreeBusyType(parameterCopy);
         }
     },
     // in properties CATEGORIES, COMMENT, CONTACT, DESCRIPTION, LOCATION, RESOURCES, TZNAME
@@ -272,14 +348,14 @@ public enum ParameterType
             return castProperty.getLanguage();
         }
         
-        @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
-        {
-            PropertyBaseLanguage<?,?> castSource = (PropertyBaseLanguage<?,?>) source;
-            PropertyBaseLanguage<?,?> castDestination = (PropertyBaseLanguage<?,?>) destination;
-            Language parameter = new Language(castSource.getLanguage());
-            castDestination.setLanguage(parameter);
-        }
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyBaseLanguage<?,?> castSource = (PropertyBaseLanguage<?,?>) source;
+//            PropertyBaseLanguage<?,?> castDestination = (PropertyBaseLanguage<?,?>) destination;
+//            Language parameter = new Language(castSource.getLanguage());
+//            castDestination.setLanguage(parameter);
+//        }
 
         @Override
         public void copyParameter(Parameter<?> child, Property<?> destination)
@@ -304,13 +380,21 @@ public enum ParameterType
             return castProperty.getGroupMembership();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+//            GroupMembership parameter = new GroupMembership(castSource.getGroupMembership());
+//            castDestination.setGroupMembership(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
-            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-            GroupMembership parameter = new GroupMembership(castSource.getGroupMembership());
-            castDestination.setGroupMembership(parameter);
+            PropertyFreeBusy<?> castDestination = (PropertyFreeBusy<?>) destination;
+            FreeBusyType parameterCopy = new FreeBusyType((FreeBusyType) child);
+            castDestination.setFreeBusyType(parameterCopy);
         }
     },
     OTHER ("OTHER", OtherParameter.class) {
@@ -365,13 +449,21 @@ public enum ParameterType
             return castProperty.getParticipationStatus();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+//            ParticipationStatus parameter = new ParticipationStatus(castSource.getParticipationStatus());
+//            castDestination.setParticipationStatus(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
             PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-            ParticipationStatus parameter = new ParticipationStatus(castSource.getParticipationStatus());
-            castDestination.setParticipationStatus(parameter);
+            ParticipationStatus parameterCopy = new ParticipationStatus((ParticipationStatus) child);
+            castDestination.setParticipationStatus(parameterCopy);
         }
     },
     RECURRENCE_IDENTIFIER_RANGE ("RANGE", Range.class) {
@@ -389,13 +481,21 @@ public enum ParameterType
             return castProperty.getRange();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyRecurrenceID<?> castSource = (PropertyRecurrenceID<?>) source;
+//            PropertyRecurrenceID<?> castDestination = (PropertyRecurrenceID<?>) destination;
+//            Range parameter = new Range(castSource.getRange());
+//            castDestination.setRange(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyRecurrenceID<?> castSource = (PropertyRecurrenceID<?>) source;
             PropertyRecurrenceID<?> castDestination = (PropertyRecurrenceID<?>) destination;
-            Range parameter = new Range(castSource.getRange());
-            castDestination.setRange(parameter);
+            Range parameterCopy = new Range((Range) child);
+            castDestination.setRange(parameterCopy);
         }
     },
     ALARM_TRIGGER_RELATIONSHIP ("RELATED", AlarmTriggerRelationship.class) {
@@ -413,13 +513,21 @@ public enum ParameterType
             return castProperty.getAlarmTrigger();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAlarmTrigger<?> castSource = (PropertyAlarmTrigger<?>) source;
+//            PropertyAlarmTrigger<?> castDestination = (PropertyAlarmTrigger<?>) destination;
+//            AlarmTriggerRelationship parameter = new AlarmTriggerRelationship(castSource.getAlarmTrigger());
+//            castDestination.setAlarmTrigger(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAlarmTrigger<?> castSource = (PropertyAlarmTrigger<?>) source;
             PropertyAlarmTrigger<?> castDestination = (PropertyAlarmTrigger<?>) destination;
-            AlarmTriggerRelationship parameter = new AlarmTriggerRelationship(castSource.getAlarmTrigger());
-            castDestination.setAlarmTrigger(parameter);
+            AlarmTriggerRelationship parameterCopy = new AlarmTriggerRelationship((AlarmTriggerRelationship) child);
+            castDestination.setAlarmTrigger(parameterCopy);
         }
     },
     RELATIONSHIP_TYPE ("RELTYPE", Relationship.class) {
@@ -437,13 +545,21 @@ public enum ParameterType
             return castProperty.getRelationship();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyRelationship<?> castSource = (PropertyRelationship<?>) source;
+//            PropertyRelationship<?> castDestination = (PropertyRelationship<?>) destination;
+//            Relationship parameter = new Relationship(castSource.getRelationship());
+//            castDestination.setRelationship(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyRelationship<?> castSource = (PropertyRelationship<?>) source;
             PropertyRelationship<?> castDestination = (PropertyRelationship<?>) destination;
-            Relationship parameter = new Relationship(castSource.getRelationship());
-            castDestination.setRelationship(parameter);
+            Relationship parameterCopy = new Relationship((Relationship) child);
+            castDestination.setRelationship(parameterCopy);
         }
     },
     PARTICIPATION_ROLE ("ROLE", ParticipationRole.class) {
@@ -461,13 +577,21 @@ public enum ParameterType
             return castProperty.getParticipationRole();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+//            ParticipationRole parameter = new ParticipationRole(castSource.getParticipationRole());
+//            castDestination.setParticipationRole(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
             PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-            ParticipationRole parameter = new ParticipationRole(castSource.getParticipationRole());
-            castDestination.setParticipationRole(parameter);
+            ParticipationRole parameterCopy = new ParticipationRole((ParticipationRole) child);
+            castDestination.setParticipationRole(parameterCopy);
         }
     },
     RSVP_EXPECTATION ("RSVP", RSVP.class) {
@@ -485,13 +609,21 @@ public enum ParameterType
             return castProperty.getRSVP();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
+//            PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
+//            RSVP parameter = new RSVP(castSource.getRSVP());
+//            castDestination.setRSVP(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyAttendee<?> castSource = (PropertyAttendee<?>) source;
             PropertyAttendee<?> castDestination = (PropertyAttendee<?>) destination;
-            RSVP parameter = new RSVP(castSource.getRSVP());
-            castDestination.setRSVP(parameter);
+            RSVP parameterCopy = new RSVP((RSVP) child);
+            castDestination.setRSVP(parameterCopy);
         }
     },
     SENT_BY ("SENT-BY", SentBy.class) {
@@ -509,13 +641,21 @@ public enum ParameterType
             return castProperty.getSentBy();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
+//            PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
+//            SentBy parameter = new SentBy(castSource.getSentBy());
+//            castDestination.setSentBy(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyBaseCalendarUser<?,?> castSource = (PropertyBaseCalendarUser<?,?>) source;
             PropertyBaseCalendarUser<?,?> castDestination = (PropertyBaseCalendarUser<?,?>) destination;
-            SentBy parameter = new SentBy(castSource.getSentBy());
-            castDestination.setSentBy(parameter);
+            SentBy parameterCopy = new SentBy((SentBy) child);
+            castDestination.setSentBy(parameterCopy);
         }
     },
     TIME_ZONE_IDENTIFIER ("TZID", TimeZoneIdentifierParameter.class) {
@@ -535,13 +675,21 @@ public enum ParameterType
 //            return parameter;
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyDateTime<?> castSource = (PropertyDateTime<?>) source;
+//            PropertyDateTime<?> castDestination = (PropertyDateTime<?>) destination;
+//            TimeZoneIdentifierParameter parameter = new TimeZoneIdentifierParameter(castSource.getTimeZoneIdentifier());
+//            castDestination.setTimeZoneIdentifier(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyDateTime<?> castSource = (PropertyDateTime<?>) source;
             PropertyDateTime<?> castDestination = (PropertyDateTime<?>) destination;
-            TimeZoneIdentifierParameter parameter = new TimeZoneIdentifierParameter(castSource.getTimeZoneIdentifier());
-            castDestination.setTimeZoneIdentifier(parameter);
+            TimeZoneIdentifierParameter parameterCopy = new TimeZoneIdentifierParameter((TimeZoneIdentifierParameter) child);
+            castDestination.setTimeZoneIdentifier(parameterCopy);
         }
     },
     VALUE_DATA_TYPES ("VALUE", ValueParameter.class) {
@@ -567,13 +715,21 @@ public enum ParameterType
             return castProperty.getValueType();
         }
 
+//        @Override
+//        public void copyParameter(Property<?> source, Property<?> destination)
+//        {
+//            PropertyBase<?,?> castSource = (PropertyBase<?,?>) source;
+//            PropertyBase<?,?> castDestination = (PropertyBase<?,?>) destination;
+//            ValueParameter parameter = new ValueParameter(castSource.getValueType());
+//            castDestination.setValueType(parameter);
+//        }
+
         @Override
-        public void copyParameter(Property<?> source, Property<?> destination)
+        public void copyParameter(Parameter<?> child, Property<?> destination)
         {
-            PropertyBase<?,?> castSource = (PropertyBase<?,?>) source;
             PropertyBase<?,?> castDestination = (PropertyBase<?,?>) destination;
-            ValueParameter parameter = new ValueParameter(castSource.getValueType());
-            castDestination.setValueType(parameter);
+            ValueParameter parameterCopy = new ValueParameter((ValueParameter) child);
+            castDestination.setValueType(parameterCopy);
         }
     };
     
@@ -660,16 +816,17 @@ public enum ParameterType
     // TODO - MAY BE OBSOLETE WITH USE OF ORDERER - ONLY BEING USED TO DOUBLE-CHECK EXISTANCE OF ALL PARAMETERS WHEN COPYING
     abstract public Object getParameter(Property<?> parent);
     
-    /** copies the associated parameter from the source property to the destination property */
-    public void copyParameter(Property<?>  source, Property<?> destination)
-    {
-        throw new RuntimeException("not implemented");        
-    }
+//    /** copies the associated parameter from the source property to the destination property */
+//    @Deprecated
+//    public void copyParameter(Property<?>  source, Property<?> destination)
+//    {
+//        throw new RuntimeException("not implemented");        
+//    }
 
     
-    public void copyParameter(Parameter<?> child, Property<?> destination)
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
+    abstract public void copyParameter(Parameter<?> child, Property<?> destination);
+//    {
+//        // TODO Auto-generated method stub
+//        throw new RuntimeException("not implemented");
+//    }
 }

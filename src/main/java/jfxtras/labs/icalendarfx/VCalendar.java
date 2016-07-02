@@ -67,6 +67,7 @@ public class VCalendar implements VCalendarParent
         if (calendarScale == null)
         {
             calendarScale = new SimpleObjectProperty<CalendarScale>(this, CalendarElementType.CALENDAR_SCALE.toString());
+            orderer().registerSortOrderProperty(calendarScale);
         }
         return calendarScale;
     }
@@ -110,6 +111,7 @@ public class VCalendar implements VCalendarParent
         if (method == null)
         {
             method = new SimpleObjectProperty<Method>(this, CalendarElementType.METHOD.toString());
+            orderer().registerSortOrderProperty(method);
         }
         return method;
     }
@@ -155,6 +157,7 @@ public class VCalendar implements VCalendarParent
         if (productIdentifier == null)
         {
             productIdentifier = new SimpleObjectProperty<ProductIdentifier>(this, CalendarElementType.PRODUCT_IDENTIFIER.toString());
+            orderer().registerSortOrderProperty(productIdentifier);
         }
         return productIdentifier;
     }
@@ -202,6 +205,7 @@ public class VCalendar implements VCalendarParent
         if (version == null)
         {
             version = new SimpleObjectProperty<Version>(this, CalendarElementType.VERSION.toString());
+            orderer().registerSortOrderProperty(version);
         }
         return version;
     }
@@ -508,8 +512,8 @@ public class VCalendar implements VCalendarParent
     
     public VCalendar()
     {
-        addListeners();
         orderer = new OrdererBase(copyChildElementCallback);
+        addListeners();
     }
   
     /** Copy constructor */
@@ -542,15 +546,15 @@ public class VCalendar implements VCalendarParent
         getVJournals().addListener(displayableListChangeListener);
 
         // Sort order listeners
-//        registerSortOrderProperty(getVEvents());
-//        registerSortOrderProperty(getVTodos());
-//        registerSortOrderProperty(getVJournals());
-//        registerSortOrderProperty(getVTimeZones());
-//        registerSortOrderProperty(getVFreeBusies());
-//        registerSortOrderProperty(calendarScaleProperty());
-//        registerSortOrderProperty(methodProperty());
-//        registerSortOrderProperty(productIdentifierProperty());
-//        registerSortOrderProperty(versionProperty());
+        orderer().registerSortOrderProperty(getVEvents());
+        orderer().registerSortOrderProperty(getVTodos());
+        orderer().registerSortOrderProperty(getVJournals());
+        orderer().registerSortOrderProperty(getVTimeZones());
+        orderer().registerSortOrderProperty(getVFreeBusies());
+//        orderer().registerSortOrderProperty(calendarScaleProperty());
+//        orderer().registerSortOrderProperty(methodProperty());
+//        orderer().registerSortOrderProperty(productIdentifierProperty());
+//        orderer().registerSortOrderProperty(versionProperty());
     }
     
     /**
