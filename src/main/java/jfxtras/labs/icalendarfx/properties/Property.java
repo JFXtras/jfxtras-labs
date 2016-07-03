@@ -1,16 +1,11 @@
 package jfxtras.labs.icalendarfx.properties;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.VCalendarElement;
-import jfxtras.labs.icalendarfx.VCalendarParent;
+import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
-import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
 
 /**
@@ -22,7 +17,7 @@ import jfxtras.labs.icalendarfx.parameters.ValueParameter;
  *
  * @param <T> - type of value stored in Property
  */
-public interface Property<T> extends VCalendarElement, VCalendarParent, Comparable<Property<T>>
+public interface Property<T> extends VElement, VParent, Comparable<Property<T>>
 {    
     /**
      * Property Name
@@ -102,28 +97,28 @@ public interface Property<T> extends VCalendarElement, VCalendarParent, Comparab
      */
     void setConverter(StringConverter<T> converter);
     
-    /**
-     * List of all parameter enums found in property.
-     * The list is unmodifiable.
-     * 
-     * @return - the list of parameter enums
-     */
-    List<ParameterType> parameterEnums();
+//    /**
+//     * List of all parameter enums found in property.
+//     * The list is unmodifiable.
+//     * 
+//     * @return - the list of parameter enums
+//     */
+//    List<ParameterType> parameterEnums();
     
-    /**
-     * List of all properties found in component.
-     * The list is unmodifiable.
-     * 
-     * @return - the list of parameters
-     */
-    @Deprecated
-    default List<Object> parameters()
-    {
-        return Collections.unmodifiableList(
-                parameterEnums().stream()
-                    .map(e -> e.getParameter(this))
-                    .collect(Collectors.toList()));
-    }
+//    /**
+//     * List of all properties found in component.
+//     * The list is unmodifiable.
+//     * 
+//     * @return - the list of parameters
+//     */
+//    @Deprecated
+//    default List<Object> parameters()
+//    {
+//        return Collections.unmodifiableList(
+//                parameterEnums().stream()
+//                    .map(e -> e.getParameter(this))
+//                    .collect(Collectors.toList()));
+//    }
     
 //    /**
 //     * Converts the property's value to a string for the content line

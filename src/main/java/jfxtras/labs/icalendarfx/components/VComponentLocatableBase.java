@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.CalendarElementType;
-import jfxtras.labs.icalendarfx.VCalendarParent;
+import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.GeographicPosition;
@@ -243,7 +243,7 @@ public abstract class VComponentLocatableBase<T> extends VComponentDisplayableBa
     
     /** copy VAlarms */
     @Override
-    public void copyChildrenFrom(VCalendarParent source)
+    public void copyChildrenFrom(VParent source)
     {
         System.out.println("copyComponentFrom2");
 

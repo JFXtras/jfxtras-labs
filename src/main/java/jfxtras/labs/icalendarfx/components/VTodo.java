@@ -12,7 +12,6 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -63,11 +62,11 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  */
 public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentDescribable2<VTodo>
 {
-    @Override
-    public CalendarElementType componentType()
-    {
-        return CalendarElementType.VTODO;
-    }
+//    @Override
+//    public CalendarElementType componentType()
+//    {
+//        return CalendarElementType.VTODO;
+//    }
     
     /**
      * COMPLETED: Date-Time Completed

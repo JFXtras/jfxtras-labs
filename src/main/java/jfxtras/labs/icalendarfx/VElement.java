@@ -9,7 +9,7 @@ import java.util.List;
  * @author David Bal
  *
  */
-public interface VCalendarElement
+public interface VElement
 {
     /**
      * Produce iCalendar content string.  If element is a parent it {@link #toContent() }is invoked recursively to 

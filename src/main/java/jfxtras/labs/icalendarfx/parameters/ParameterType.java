@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyAlarmTrigger;
 import jfxtras.labs.icalendarfx.properties.PropertyAltText;
@@ -763,7 +763,7 @@ public enum ParameterType
         return map;
     }
     /** get enum from map */
-    public static ParameterType enumFromClass(Class<? extends VCalendarElement> myClass)
+    public static ParameterType enumFromClass(Class<? extends VElement> myClass)
     {
         ParameterType p = enumFromClassMap.get(myClass);
         if (p == null)

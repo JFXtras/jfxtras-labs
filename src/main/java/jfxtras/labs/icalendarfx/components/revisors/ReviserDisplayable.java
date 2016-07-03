@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
@@ -251,9 +252,11 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
 
     {
         List<PropertyType> changedProperties = new ArrayList<>();
-        getVComponentEdited().properties()
+
+        getVComponentEdited().childrenUnmodifiable()
                 .stream()
-                .map(p -> p.propertyType())
+                .filter(c -> c instanceof Property<?>)
+                .map(p -> ((Property<?>) p).propertyType())
                 .forEach(t ->
                 {
                     Object p1 = t.getProperty(getVComponentEdited());

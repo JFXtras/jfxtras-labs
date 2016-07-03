@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.CalendarElementType;
-import jfxtras.labs.icalendarfx.VCalendarParent;
+import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVTimeZone;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -267,11 +267,11 @@ import jfxtras.labs.icalendarfx.properties.component.timezone.TimeZoneURL;
  */
 public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VComponentLastModified<VTimeZone>
 {
-    @Override
-    public CalendarElementType componentType()
-    {
-        return CalendarElementType.VTIMEZONE;
-    }
+//    @Override
+//    public CalendarElementType componentType()
+//    {
+//        return CalendarElementType.VTIMEZONE;
+//    }
  
     /**
      * STANDARD or DAYLIGHT
@@ -475,7 +475,7 @@ public class VTimeZone extends VComponentCommonBase<VTimeZone> implements VCompo
     
     /** copy STANDARD and DAYLIGHT subcomponents */
     @Override
-    public void copyChildrenFrom(VCalendarParent source)
+    public void copyChildrenFrom(VParent source)
     {
         super.copyChildrenFrom(source);
         VTimeZone castSource = (VTimeZone) source;

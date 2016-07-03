@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByHour;
@@ -501,7 +501,7 @@ public enum RRuleElementType
         return map;
     }
     /** get enum from map */
-    public static RRuleElementType enumFromClass(Class<? extends VCalendarElement> myClass)
+    public static RRuleElementType enumFromClass(Class<? extends VElement> myClass)
     {
         RRuleElementType p = enumFromClassMap.get(myClass);
         if (p == null)
@@ -534,7 +534,9 @@ public enum RRuleElementType
     /*
      * ABSTRACT METHODS
      */
-    /** Returns associated Element */
+    /** Returns associated Element 
+     * @deprecated  not needed due to addition of Orderer, may be deleted */
+    @Deprecated
     abstract public RRuleElement<?> getElement(RecurrenceRule2 rrule);
     
     abstract public void parse(RecurrenceRule2 recurrenceRule, String content);

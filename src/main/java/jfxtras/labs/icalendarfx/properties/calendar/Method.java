@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.calendar;
 
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 
 /**
@@ -20,7 +20,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * @see VCalendar
  */
-public class Method extends PropertyBase<String, Method> implements VCalendarElement
+public class Method extends PropertyBase<String, Method> implements VElement
 {
 //    public Method(String contentLine)
 //    {

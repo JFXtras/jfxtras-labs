@@ -1,9 +1,9 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 
-public interface RRuleElement<T> extends VCalendarElement
+public interface RRuleElement<T> extends VElement
 {
     /**
      * The value of the parameter.

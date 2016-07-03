@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.calendar;
 
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 
 /**
@@ -21,7 +21,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * @see VCalendar
  */
-public class ProductIdentifier extends PropertyBase<String, ProductIdentifier> implements VCalendarElement
+public class ProductIdentifier extends PropertyBase<String, ProductIdentifier> implements VElement
 {
     public static final String DEFAULT_PRODUCT_IDENTIFIER = ("-//JFxtras//iCalendarFx " + VCalendar.myVersion + "//EN");
 

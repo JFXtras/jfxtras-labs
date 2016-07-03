@@ -1,17 +1,15 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.CalendarElementType;
-import jfxtras.labs.icalendarfx.Orderer;
-import jfxtras.labs.icalendarfx.OrdererBase;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -39,24 +37,42 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public abstract class VComponentBase implements VComponent
+public abstract class VComponentBase extends VParentBase implements VComponent
 {
-    /*
-     * SORT ORDER FOR CHILD ELEMENTS
-     */
-    final private Orderer orderer;
-    @Override
-    public Orderer orderer() { return orderer; }
+//    /*
+//     * SORT ORDER FOR CHILD ELEMENTS
+//     */
+//    final private Orderer orderer;
+//    @Override
+//    public Orderer orderer() { return orderer; }
     
-    private Callback<VCalendarElement, Void> copyPropertyChildCallback = (child) ->
-    {
-        PropertyType type = PropertyType.enumFromClass(child.getClass());
-        if (type != null)
-        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-            type.copyProperty((Property<?>) child, this);
-        }
-        return null;
-    };
+//    final private Callback<VElement, Void> copyPropertyChildCallback = (child) ->
+//    {
+//        PropertyType type = PropertyType.enumFromClass(child.getClass());
+//        if (type != null)
+//        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+//            type.copyProperty((Property<?>) child, this);
+//        }
+//        return null;
+//    };
+    
+    @Override
+    protected Callback<VElement, Void> copyChildCallback()
+    {        
+        return (child) ->
+        {
+            PropertyType type = PropertyType.enumFromClass(child.getClass());
+            if (type != null)
+            { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+                type.copyProperty((Property<?>) child, this);
+            }
+            return null;
+        };
+    }
+    
+    final private CalendarElementType componentType;
+    @Override
+    public CalendarElementType componentType() { return componentType; }
     
 //    private void checkContentList()
 //    {
@@ -78,56 +94,57 @@ public abstract class VComponentBase implements VComponent
 //    }
     
     // Ensures all elements in elementSortOrderMap are found in propertyEnums list
-    @Deprecated // doesn't work - some propertyEnum produces lists sometimes. elementSortOrderMap only produces individual properties
-    private void checkContentList()
-    {
-//        List<String> elementNames1 = propertyEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
-        List<Object> elementNames1 = propertyEnums().stream()
-                .map(e -> e.getProperty(this))
-//                .peek(a -> System.out.println("ee1:" + a + " " ))
-                .collect(Collectors.toList());
-//        System.out.println("elements2:" + orderer().elementSortOrderMap().size());
-//        if (orderer().elementSortOrderMap().size() == 9) System.out.println("is 9");
-//        orderer().elementSortOrderMap().entrySet().forEach(System.out::println);
-//        System.exit(0);
-
-        List<Object> elementNames2 = orderer().elementSortOrderMap().entrySet()
-                .stream()
-                .filter(a -> ! (a.getKey() instanceof VComponent))
-//                .peek(a -> System.out.println("ee2:" + a + " " + (a.getKey() instanceof VComponent)))
-                .map(e -> e.getKey())
-                .collect(Collectors.toList());
-//        System.out.println("list done:");
-//        elementNames1.stream().forEach(System.out::println);
-//        elementNames2.stream().forEach(System.out::println);
-        Optional<Object> propertyNotFound1 = elementNames1.stream().filter(s -> ! elementNames2.contains(s)).findAny();
-        if (propertyNotFound1.isPresent())
-        {
-            throw new RuntimeException("element not found:" + propertyNotFound1.get());
-        }
-        Optional<Object> propertyNotFound2 = elementNames2.stream().filter(s -> ! elementNames1.contains(s)).findAny();
-        if (propertyNotFound2.isPresent())
-        {
-            throw new RuntimeException("element not found:" + propertyNotFound2.get());
-        }
-    }
+//    @Deprecated // doesn't work - some propertyEnum produces lists sometimes. elementSortOrderMap only produces individual properties
+//    private void checkContentList()
+//    {
+////        List<String> elementNames1 = propertyEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
+//        List<Object> elementNames1 = propertyEnums().stream()
+//                .map(e -> e.getProperty(this))
+////                .peek(a -> System.out.println("ee1:" + a + " " ))
+//                .collect(Collectors.toList());
+////        System.out.println("elements2:" + orderer().elementSortOrderMap().size());
+////        if (orderer().elementSortOrderMap().size() == 9) System.out.println("is 9");
+////        orderer().elementSortOrderMap().entrySet().forEach(System.out::println);
+////        System.exit(0);
+//
+//        List<Object> elementNames2 = orderer().elementSortOrderMap().entrySet()
+//                .stream()
+//                .filter(a -> ! (a.getKey() instanceof VComponent))
+////                .peek(a -> System.out.println("ee2:" + a + " " + (a.getKey() instanceof VComponent)))
+//                .map(e -> e.getKey())
+//                .collect(Collectors.toList());
+////        System.out.println("list done:");
+////        elementNames1.stream().forEach(System.out::println);
+////        elementNames2.stream().forEach(System.out::println);
+//        Optional<Object> propertyNotFound1 = elementNames1.stream().filter(s -> ! elementNames2.contains(s)).findAny();
+//        if (propertyNotFound1.isPresent())
+//        {
+//            throw new RuntimeException("element not found:" + propertyNotFound1.get());
+//        }
+//        Optional<Object> propertyNotFound2 = elementNames2.stream().filter(s -> ! elementNames1.contains(s)).findAny();
+//        if (propertyNotFound2.isPresent())
+//        {
+//            throw new RuntimeException("element not found:" + propertyNotFound2.get());
+//        }
+//    }
 //    private Callback<Void, List<String>> elementNameListCallback;
 //    private Callback<VCalendarElement, String> elementNameCallback;
     
-    /**
-     * List of all {@link PropertyType} found in component.
-     * The list is unmodifiable.
-     * 
-     * @return - the list of properties
-     */
-    @Override
-    public List<PropertyType> propertyEnums()
-    {
-        List<PropertyType> populatedProperties = componentType().allowedProperties().stream()
-                .filter(p -> p.getProperty(this) != null)
-                .collect(Collectors.toList());
-      return Collections.unmodifiableList(populatedProperties);
-    }
+//    /**
+//     * List of all {@link PropertyType} found in component.
+//     * The list is unmodifiable.
+//     * 
+//     * @return - the list of properties
+//     * @deprecated  not needed due to addition of Orderer, may be deleted
+//     */
+//    @Deprecated
+//    public List<PropertyType> propertyEnums()
+//    {
+//        List<PropertyType> populatedProperties = componentType().allowedProperties().stream()
+//                .filter(p -> p.getProperty(this) != null)
+//                .collect(Collectors.toList());
+//      return Collections.unmodifiableList(populatedProperties);
+//    }
 
 //    /** 
 //     * SORT ORDER
@@ -152,7 +169,9 @@ public abstract class VComponentBase implements VComponent
     VComponentBase()
     {
         addListeners();
-        orderer = new OrdererBase(copyPropertyChildCallback);
+        
+//        orderer = new OrdererBase(copyPropertyChildCallback);
+        componentType = CalendarElementType.enumFromClass(this.getClass());
     }
     
     /** Parse content lines into calendar component */
@@ -311,8 +330,8 @@ public abstract class VComponentBase implements VComponent
 //        System.out.println("elements1:" + orderer().elementSortOrderMap().size() + " " + this.hashCode());
 //        checkContentList(); // test elements for completeness (can be removed for improved speed)
 //        System.exit(0);
-        String content = orderer().sortedContent().stream()
-//                .map(s -> ICalendarUtilities.foldLine(s))
+        String content = childrenUnmodifiable().stream()
+                .map(c -> c.toContent())
                 .collect(Collectors.joining(System.lineSeparator()));
         if (content != null)
         {
@@ -332,10 +351,10 @@ public abstract class VComponentBase implements VComponent
     public int hashCode()
     {
         int hash = 7;
-        Iterator<PropertyType> i = propertyEnums().iterator();
+        Iterator<?> i = childrenUnmodifiable().iterator();
         while (i.hasNext())
         {
-            Object property = i.next().getProperty(this);
+            Object property = i.next();
             hash = (31 * hash) + property.hashCode();
         }
         return hash;
@@ -352,18 +371,18 @@ public abstract class VComponentBase implements VComponent
         
         final boolean propertiesEquals;
      // TODO - FIX EQUALS TO USE MAP
-        List<PropertyType> properties = propertyEnums(); // make properties local to avoid creating list multiple times
-        List<PropertyType> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
+        Collection<?> properties = childrenUnmodifiable(); // make properties local to avoid creating list multiple times
+        Collection<?> testProperties = testObj.childrenUnmodifiable(); // make properties local to avoid creating list multiple times
 //        System.out.println("equals:" + this + " " + testObj);
         if (properties.size() == testProperties.size())
         {
-            Iterator<PropertyType> i1 = properties.iterator();
-            Iterator<PropertyType> i2 = testProperties.iterator();
+            Iterator<?> i1 = properties.iterator();
+            Iterator<?> i2 = testProperties.iterator();
             boolean isFailure = false;
             while (i1.hasNext())
             {
-                Object p1 = i1.next().getProperty(this);
-                Object p2 = i2.next().getProperty(testObj);
+                Object p1 = i1.next();
+                Object p2 = i2.next();
                 if (! p1.equals(p2))
                 {
 //                    System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));

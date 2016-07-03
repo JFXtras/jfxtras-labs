@@ -16,8 +16,6 @@ import java.util.concurrent.Executors;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VComponent;
-import jfxtras.labs.icalendarfx.properties.PropertyType;
 
 // TODO - COMBINE ICalendarUtilities and VCalendarUtilities
 public final class VCalendarUtilities
@@ -73,39 +71,39 @@ public final class VCalendarUtilities
         }  
     }
     
-    public static boolean isEqualTo(VComponent obj1, VComponent obj2)
-    {
-        if (obj2 == obj1) return true;
-        if((obj2 == null) || (obj2.getClass() != obj1.getClass())) {
-            return false;
-        }
-        VComponent testObj = obj2;
-        
-        final boolean propertiesEquals;
-        List<PropertyType> properties = obj1.propertyEnums(); // make properties local to avoid creating list multiple times
-        List<PropertyType> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
-        if (properties.size() == testProperties.size())
-        {
-            Iterator<PropertyType> i1 = properties.iterator();
-            Iterator<PropertyType> i2 = testProperties.iterator();
-            boolean isFailure = false;
-            while (i1.hasNext())
-            {
-                Object p1 = i1.next().getProperty(obj1);
-                Object p2 = i2.next().getProperty(testObj);
-                if (! p1.equals(p2))
-                {
-                    isFailure = true;
-                    break;
-                }
-            }
-            propertiesEquals = ! isFailure;
-        } else
-        {
-            propertiesEquals = false;
-        }
-        return propertiesEquals;
-    }
+//    public static boolean isEqualTo(VComponent obj1, VComponent obj2)
+//    {
+//        if (obj2 == obj1) return true;
+//        if((obj2 == null) || (obj2.getClass() != obj1.getClass())) {
+//            return false;
+//        }
+//        VComponent testObj = obj2;
+//        
+//        final boolean propertiesEquals;
+//        List<PropertyType> properties = obj1.propertyEnums(); // make properties local to avoid creating list multiple times
+//        List<PropertyType> testProperties = testObj.propertyEnums(); // make properties local to avoid creating list multiple times
+//        if (properties.size() == testProperties.size())
+//        {
+//            Iterator<PropertyType> i1 = properties.iterator();
+//            Iterator<PropertyType> i2 = testProperties.iterator();
+//            boolean isFailure = false;
+//            while (i1.hasNext())
+//            {
+//                Object p1 = i1.next().getProperty(obj1);
+//                Object p2 = i2.next().getProperty(testObj);
+//                if (! p1.equals(p2))
+//                {
+//                    isFailure = true;
+//                    break;
+//                }
+//            }
+//            propertiesEquals = ! isFailure;
+//        } else
+//        {
+//            propertiesEquals = false;
+//        }
+//        return propertiesEquals;
+//    }
     
     /**
      * Parses the property-value pair to the matching property, if a match is found.

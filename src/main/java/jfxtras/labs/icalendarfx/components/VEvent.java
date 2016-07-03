@@ -9,7 +9,6 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVEvent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -84,11 +83,11 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 public class VEvent extends VComponentLocatableBase<VEvent> implements VComponentDateTimeEnd<VEvent>,
     VComponentDescribable2<VEvent>, VComponentRepeatable<VEvent>
 {
-    @Override
-    public CalendarElementType componentType()
-    {
-        return CalendarElementType.VEVENT;
-    }
+//    @Override
+//    public CalendarElementType componentType()
+//    {
+//        return CalendarElementType.VEVENT;
+//    }
 
     /**
      * DTEND

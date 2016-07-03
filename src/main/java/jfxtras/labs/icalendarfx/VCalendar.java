@@ -37,7 +37,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @author David Bal
  *
  */
-public class VCalendar implements VCalendarParent
+public class VCalendar extends VParentBase implements VParent
 {
     // version of this project, not associated with the iCalendar specification version
     public static String myVersion = "1.0";
@@ -441,22 +441,35 @@ public class VCalendar implements VCalendarParent
         }
     };
     
-    /*
-     * SORT ORDER FOR CHILD ELEMENTS
-     */
-    final private Orderer orderer;
-    @Override
-    public Orderer orderer() { return orderer; }
+//    /*
+//     * SORT ORDER FOR CHILD ELEMENTS
+//     */
+//    final private Orderer orderer;
+//    @Override
+//    public Orderer orderer() { return orderer; }
     
-    private Callback<VCalendarElement, Void> copyChildElementCallback = (child) ->
-    {
-        CalendarElementType type = CalendarElementType.enumFromClass(child.getClass());
-        if (type != null)
-        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-            type.copyChild(child, this);
-        }
-        return null;
-    };
+//    private Callback<VElement, Void> copyChildElementCallback = (child) ->
+//    {
+//        CalendarElementType type = CalendarElementType.enumFromClass(child.getClass());
+//        if (type != null)
+//        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+//            type.copyChild(child, this);
+//        }
+//        return null;
+//    };
+    
+    Callback<VElement, Void> copyPropertyChildCallback()
+    {        
+        return (child) ->
+        {
+            CalendarElementType type = CalendarElementType.enumFromClass(child.getClass());
+            if (type != null)
+            { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
+                type.copyChild(child, this);
+            }
+            return null;
+        };
+    }
     
 //    /** 
 //     * SORT ORDER
@@ -512,7 +525,7 @@ public class VCalendar implements VCalendarParent
     
     public VCalendar()
     {
-        orderer = new OrdererBase(copyChildElementCallback);
+//        orderer = new OrdererBase(copyChildElementCallback);
         addListeners();
     }
   
@@ -582,7 +595,7 @@ public class VCalendar implements VCalendarParent
     /** Parse content lines into calendar object */
     public String toContent()
     {
-        List<VCalendarElement> elements = new ArrayList<VCalendarElement>();
+        List<VElement> elements = new ArrayList<VElement>();
         // Add calendar properties
         // Order is PRODID, VERSION, CALSCALE and METHOD unless componentSortOrder specifies other values
         if (getProductIdentifier() != null)

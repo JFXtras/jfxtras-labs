@@ -6,7 +6,6 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVJournal;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -63,11 +62,11 @@ import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
  */
 public class VJournal extends VComponentDisplayableBase<VJournal>
 {
-    @Override
-    public CalendarElementType componentType()
-    {
-        return CalendarElementType.VJOURNAL;
-    }
+//    @Override
+//    public CalendarElementType componentType()
+//    {
+//        return CalendarElementType.VJOURNAL;
+//    }
 
     /**
      * DESCRIPTION:

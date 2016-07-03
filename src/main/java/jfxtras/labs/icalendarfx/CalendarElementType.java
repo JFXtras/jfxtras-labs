@@ -46,7 +46,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             VEvent e = new VEvent();
             e.parseContent(contentLines);
@@ -76,7 +76,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             VTodo e = new VTodo();
             e.parseContent(contentLines);
@@ -104,7 +104,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             VJournal e = new VJournal();
             e.parseContent(contentLines);
@@ -126,7 +126,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             VTimeZone e = new VTimeZone();
             e.parseContent(contentLines);
@@ -150,7 +150,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             VFreeBusy e = new VFreeBusy();
             e.parseContent(contentLines);
@@ -174,7 +174,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
         }
@@ -195,7 +195,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
         }
@@ -215,7 +215,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             throw new RuntimeException("Not a main component - must be embedded inside a VEvent or VTodo");
         }
@@ -232,7 +232,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             final String line;
             if (contentLines.size() == 1)
@@ -257,7 +257,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             final String line;
             if (contentLines.size() == 1)
@@ -282,7 +282,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             final String line;
             if (contentLines.size() == 1)
@@ -307,7 +307,7 @@ public enum CalendarElementType
         }
 
         @Override
-        public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines)
+        public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             final String line;
             if (contentLines.size() == 1)
@@ -341,10 +341,10 @@ public enum CalendarElementType
     }
     
     // Map to match up class to enum
-    private static Map<Class<? extends VCalendarElement>, CalendarElementType> enumFromClassMap = makeEnumFromClassMap();
-    private static Map<Class<? extends VCalendarElement>, CalendarElementType> makeEnumFromClassMap()
+    private static Map<Class<? extends VElement>, CalendarElementType> enumFromClassMap = makeEnumFromClassMap();
+    private static Map<Class<? extends VElement>, CalendarElementType> makeEnumFromClassMap()
     {
-        Map<Class<? extends VCalendarElement>, CalendarElementType> map = new HashMap<>();
+        Map<Class<? extends VElement>, CalendarElementType> map = new HashMap<>();
         CalendarElementType[] values = CalendarElementType.values();
         for (int i=0; i<values.length; i++)
         {
@@ -353,13 +353,13 @@ public enum CalendarElementType
         return map;
     }
     /** get enum from map */
-    public static CalendarElementType enumFromClass(Class<? extends VCalendarElement> myClass)
+    public static CalendarElementType enumFromClass(Class<? extends VElement> myClass)
     {
         return enumFromClassMap.get(myClass);
     }
     
-    private Class<? extends VCalendarElement> myClass;
-    public Class<? extends VCalendarElement> getElementClass() { return myClass; }
+    private Class<? extends VElement> myClass;
+    public Class<? extends VElement> getElementClass() { return myClass; }
     
     private String name;
     @Override
@@ -371,7 +371,7 @@ public enum CalendarElementType
     private boolean isCalendarElement;
     public boolean isCalendarElement() { return isCalendarElement; }
     
-    CalendarElementType(String name, List<PropertyType> allowedProperties, boolean isCalendarElement, Class<? extends VCalendarElement> myClass)
+    CalendarElementType(String name, List<PropertyType> allowedProperties, boolean isCalendarElement, Class<? extends VElement> myClass)
     {
         this.name = name;
         this.allowedProperties = allowedProperties;
@@ -382,9 +382,9 @@ public enum CalendarElementType
     abstract public List<? extends VComponent> getComponents(VCalendar vCalendar);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
-    abstract public VCalendarElement parse(VCalendar vCalendar, List<String> contentLines);
+    abstract public VElement parse(VCalendar vCalendar, List<String> contentLines);
     
-    public void copyChild(VCalendarElement child, VCalendar vCalendar)
+    public void copyChild(VElement child, VCalendar vCalendar)
     {
         throw new RuntimeException("not implemented");
         // TODO Auto-generated method stub

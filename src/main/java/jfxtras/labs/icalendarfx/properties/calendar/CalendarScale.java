@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.calendar;
 
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale.CalendarScaleType;
 
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale.CalendarScaleT
  * @author David Bal
  * @see VCalendar
  */
-public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale> implements VCalendarElement
+public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale> implements VElement
 {
     public static final CalendarScaleType DEFAULT_CALENDAR_SCALE = CalendarScaleType.GREGORIAN;
     

@@ -2,7 +2,7 @@ package jfxtras.labs.icalendarfx.properties.component.relationship;
 
 import java.net.URI;
 
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -23,7 +23,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  * @see VJournal
  * @see VFreeBusy
  */
-public class Organizer extends PropertyBaseCalendarUser<URI, Organizer> implements VCalendarElement
+public class Organizer extends PropertyBaseCalendarUser<URI, Organizer> implements VElement
 {    
     public Organizer(Organizer source)
     {

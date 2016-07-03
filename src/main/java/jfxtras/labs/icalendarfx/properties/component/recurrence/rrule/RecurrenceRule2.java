@@ -8,9 +8,7 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -26,10 +24,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
-import jfxtras.labs.icalendarfx.Orderer;
-import jfxtras.labs.icalendarfx.OrdererBase;
-import jfxtras.labs.icalendarfx.VCalendarElement;
-import jfxtras.labs.icalendarfx.VCalendarParent;
+import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.VParent;
+import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByHour;
@@ -81,7 +78,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  *
  */
 // TODO - LISTENER TO PREVENT COUNT AND UNTIL FROM BOTH BEING SET
-public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
+public class RecurrenceRule2 extends VParentBase implements VElement, VParent
 {
     /** 
      * BYxxx Rules
@@ -411,7 +408,9 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
      * The list is unmodifiable.
      * 
      * @return - the list of elements
+     * @deprecated  not needed due to addition of Orderer, may be deleted
      */
+    @Deprecated
     public List<RRuleElementType> elements()
     {
         List<RRuleElementType> populatedElements = Arrays.stream(RRuleElementType.values())
@@ -423,36 +422,45 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
     /*
      * SORT ORDER FOR CHILD ELEMENTS
      */
-    final private Orderer orderer;
-    @Override
-    public Orderer orderer() { return orderer; }
+//    final private Orderer orderer;
+//    @Override
+//    public Orderer orderer() { return orderer; }
 
-    private Callback<VCalendarElement, Void> copyElementChildCallback = (child) ->
-    {
-        RRuleElementType type = RRuleElementType.enumFromClass(child.getClass());
-        if (type != null)
-        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-            type.copyElement((RRuleElement<?>) child, this);
-        }
-        return null;
-    };
+//    /** Callback to enable copy-element-behavior from {@link Orderer#copyChildrenFrom(VParent) } */
+//    private Callback<VElement, Void> copyElementChildCallback = (child) ->
+//    {
+//        RRuleElementType type = RRuleElementType.enumFromClass(child.getClass());
+//        type.copyElement((RRuleElement<?>) child, this);
+//        return null;
+//    };
     
-    /** 
-     * SORT ORDER
-     * 
-     * Element sort order map.  Key is element, value is the sort order.  The map is automatically
-     * populated when parsing the content lines to preserve the existing property order.
-     * 
-     * When producing the content lines, if a element is not present in the map, it is put at
-     * the end of the sorted ones in the order appearing in {@link #RecurrenceRuleElement} 
-     * Generally, this map shouldn't be modified.  Only modify it when you want
-     * to force a specific property order (e.g. unit testing).
-     */
-    @Deprecated
-    public Map<RRuleElementType, Integer> elementSortOrder() { return elementSortOrder; }
-    @Deprecated
-    final private Map<RRuleElementType, Integer> elementSortOrder = new HashMap<>();
-    private Integer elementCounter = 0;
+    @Override
+    protected Callback<VElement, Void> copyChildCallback()
+    {        
+        return (child) ->
+        {
+            RRuleElementType type = RRuleElementType.enumFromClass(child.getClass());
+            type.copyElement((RRuleElement<?>) child, this);
+            return null;
+        };
+    }
+    
+//    /** 
+//     * SORT ORDER
+//     * 
+//     * Element sort order map.  Key is element, value is the sort order.  The map is automatically
+//     * populated when parsing the content lines to preserve the existing property order.
+//     * 
+//     * When producing the content lines, if a element is not present in the map, it is put at
+//     * the end of the sorted ones in the order appearing in {@link #RecurrenceRuleElement} 
+//     * Generally, this map shouldn't be modified.  Only modify it when you want
+//     * to force a specific property order (e.g. unit testing).
+//     */
+//    @Deprecated
+//    public Map<RRuleElementType, Integer> elementSortOrder() { return elementSortOrder; }
+//    @Deprecated
+//    final private Map<RRuleElementType, Integer> elementSortOrder = new HashMap<>();
+//    private Integer elementCounter = 0;
     
     /*
      * CONSTRUCTORS
@@ -460,7 +468,7 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
     
     public RecurrenceRule2()
     {
-        orderer = new OrdererBase(copyElementChildCallback);
+//        orderer = new OrdererBase(copyElementChildCallback);
         frequency = new SimpleObjectProperty<>(this, RRuleElementType.FREQUENCY.toString());
         orderer().registerSortOrderProperty(frequencyProperty());
         byRules = FXCollections.observableArrayList();
@@ -497,7 +505,6 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
     {
         this();
         copyChildrenFrom(source);
-//        copyRecurrenceRuleFrom(source);
     }
     
 //    /** Copy elements from source into this recurrence rule, making a copy of source */

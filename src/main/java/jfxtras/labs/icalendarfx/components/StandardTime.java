@@ -1,16 +1,15 @@
 package jfxtras.labs.icalendarfx.components;
 
-import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserStandardTime;
 
 public class StandardTime extends StandardOrDaylightBase<StandardTime>
 {
-    @Override
-    public CalendarElementType componentType()
-    {
-        return CalendarElementType.STANDARD_TIME;
-    }
+//    @Override
+//    public CalendarElementType componentType()
+//    {
+//        return CalendarElementType.STANDARD_TIME;
+//    }
     
     /*
      * CONSTRUCTORS

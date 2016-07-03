@@ -1,16 +1,9 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import jfxtras.labs.icalendarfx.CalendarElementType;
-import jfxtras.labs.icalendarfx.VCalendarElement;
-import jfxtras.labs.icalendarfx.VCalendarParent;
+import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
-import jfxtras.labs.icalendarfx.properties.Property;
-import jfxtras.labs.icalendarfx.properties.PropertyType;
 
 /**
  * iCalendar component
@@ -29,7 +22,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyType;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public interface VComponent extends VCalendarElement, VCalendarParent
+public interface VComponent extends VElement, VParent
 {
     /**
      * Returns the enum for the component as it would appear in the iCalendar content line
@@ -41,13 +34,14 @@ public interface VComponent extends VCalendarElement, VCalendarParent
      */
     CalendarElementType componentType();
 
-    /**
-     * List of all properties enums found in component.
-     * The list is unmodifiable.
-     * 
-     * @return - the list of properties enums
-     */
-    List<PropertyType> propertyEnums();
+//    /**
+//     * List of all properties enums found in component.
+//     * The list is unmodifiable.
+//     * 
+//     * @return - the list of properties enums
+//     */
+//    List<PropertyType> propertyEnums();
+//    
     /**
      * List of all properties found in component.
      * The list is unmodifiable.
@@ -55,25 +49,26 @@ public interface VComponent extends VCalendarElement, VCalendarParent
      * @return - the list of properties
      */
 
-    default List<Property<?>> properties()
-    {
-        return Collections.unmodifiableList(
-                propertyEnums().stream().flatMap(e ->
-        {
-            Object obj = e.getProperty(this);
-            if (obj instanceof Property)
-            {
-                return Arrays.asList((Property<?>) obj).stream();
-            } else if (obj instanceof List)
-            {
-                return ((List<Property<?>>) obj).stream();
-            } else
-            {
-                throw new RuntimeException("Unsupported property type:" + obj.getClass());
-            }
-        })
-        .collect(Collectors.toList()));
-    }
+//    default Collection<Property<?>> properties()
+//    {
+//        return orderer().elementSortOrderMap().keySet();
+////        return Collections.unmodifiableList(
+////                propertyEnums().stream().flatMap(e ->
+////        {
+////            Object obj = e.getProperty(this);
+////            if (obj instanceof Property)
+////            {
+////                return Arrays.asList((Property<?>) obj).stream();
+////            } else if (obj instanceof List)
+////            {
+////                return ((List<Property<?>>) obj).stream();
+////            } else
+////            {
+////                throw new RuntimeException("Unsupported property type:" + obj.getClass());
+////            }
+////        })
+////        .collect(Collectors.toList()));
+//    }
     
     /** Encapsulated Component editor */
     Revisable newRevisor();

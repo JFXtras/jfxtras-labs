@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
@@ -245,7 +245,7 @@ public enum ValueType
                 @Override
                 public String toString(T object)
                 {
-                    return ((VCalendarElement) object).toContent();
+                    return ((VElement) object).toContent();
                 }
 
                 @Override

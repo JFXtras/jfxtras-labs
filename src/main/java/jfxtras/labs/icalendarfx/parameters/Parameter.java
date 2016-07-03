@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.parameters;
 
 import javafx.beans.property.ObjectProperty;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 
 /**
  * Every parameter requires the following methods:
@@ -14,7 +14,7 @@ import jfxtras.labs.icalendarfx.VCalendarElement;
  * @param <T> - parameter value type
  *
  */
-public interface Parameter<T> extends Comparable<Parameter<T>>, VCalendarElement
+public interface Parameter<T> extends Comparable<Parameter<T>>, VElement
 {    
     /**
      * The value of the parameter.

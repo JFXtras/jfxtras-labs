@@ -1,17 +1,16 @@
 package jfxtras.labs.icalendarfx.components;
 
-import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserDaylightSavingTime;
 
 // both this class and Standard are identical - need to extend common class
 public class DaylightSavingTime extends StandardOrDaylightBase<DaylightSavingTime>
 {
-    @Override
-    public CalendarElementType componentType()
-    {
-        return CalendarElementType.DAYLIGHT_SAVING_TIME;
-    }
+//    @Override
+//    public CalendarElementType componentType()
+//    {
+//        return CalendarElementType.DAYLIGHT_SAVING_TIME;
+//    }
     
     /*
      * CONSTRUCTORS

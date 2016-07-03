@@ -1,7 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.calendar;
 
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
 
 /**
@@ -21,7 +21,7 @@ import jfxtras.labs.icalendarfx.properties.PropertyBase;
  * @author David Bal
  * @see VCalendar
  */
-public class Version extends PropertyBase<String, Version> implements VCalendarElement
+public class Version extends PropertyBase<String, Version> implements VElement
 {
     public static final String DEFAULT_ICALENDAR_SPECIFICATION_VERSION = ("2.0");
     

@@ -9,7 +9,6 @@ import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVAlarm;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -139,11 +138,11 @@ import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 public class VAlarm extends VComponentDescribableBase<VAlarm> implements VComponentDescribable2<VAlarm>,
         VComponentAttendee<VAlarm>, VComponentDuration<VAlarm>
 {
-    @Override
-    public CalendarElementType componentType()
-    {
-        return CalendarElementType.VALARM;
-    }
+//    @Override
+//    public CalendarElementType componentType()
+//    {
+//        return CalendarElementType.VALARM;
+//    }
  
     /**
      * ACTION

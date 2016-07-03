@@ -8,7 +8,6 @@ import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVFreeBusy;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -95,11 +94,11 @@ A "VFREEBUSY" calendar component is a grouping of
  */
 public class VFreeBusy extends VComponentPersonalBase<VFreeBusy> implements VComponentDateTimeEnd<VFreeBusy>
 {
-    @Override
-    public CalendarElementType componentType()
-    {
-        return CalendarElementType.VFREEBUSY;
-    }
+//    @Override
+//    public CalendarElementType componentType()
+//    {
+//        return CalendarElementType.VFREEBUSY;
+//    }
     
     /**
      * CONTACT:

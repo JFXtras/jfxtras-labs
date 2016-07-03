@@ -17,15 +17,15 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
  *  */ 
 public interface Orderer
 {
-    Map<VCalendarElement, Integer> elementSortOrderMap();
+    Map<VElement, Integer> elementSortOrderMap();
     
-    void copyChildrenFrom(VCalendarParent source);
+//    void copyChildrenFrom(VCalendarParent source);
     
     List<String> sortedContent();
     
-    void registerSortOrderProperty(ObservableList<? extends VCalendarElement> list);
-    void unregisterSortOrderProperty(ObservableList<? extends VCalendarElement> list);
+    void registerSortOrderProperty(ObservableList<? extends VElement> list);
+    void unregisterSortOrderProperty(ObservableList<? extends VElement> list);
     
-    void registerSortOrderProperty(ObjectProperty<? extends VCalendarElement> property);
-    void unregisterSortOrderProperty(ObjectProperty<? extends VCalendarElement> property);
+    void registerSortOrderProperty(ObjectProperty<? extends VElement> property);
+    void unregisterSortOrderProperty(ObjectProperty<? extends VElement> property);
 }

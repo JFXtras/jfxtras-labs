@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.components.StandardOrDaylight;
 import jfxtras.labs.icalendarfx.components.VAlarm;
 import jfxtras.labs.icalendarfx.components.VComponent;
@@ -1939,7 +1939,7 @@ public enum PropertyType
         return map;
     }
     /** get enum from map */
-    public static PropertyType enumFromClass(Class<? extends VCalendarElement> myClass)
+    public static PropertyType enumFromClass(Class<? extends VElement> myClass)
     {
         return enumFromClassMap.get(myClass);
     }
@@ -1967,7 +1967,9 @@ public enum PropertyType
     /*
      * ABSTRACT METHODS
      */
-    /** Returns associated Property<?> or List<Property<?>> */
+    /** Returns associated Property<?> or List<Property<?>> 
+     * @deprecated  not needed due to addition of Orderer, may be deleted */
+    @Deprecated
     abstract public Object getProperty(VComponent vComponent);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */

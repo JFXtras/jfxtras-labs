@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +18,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.Orderer;
-import jfxtras.labs.icalendarfx.OrdererBase;
-import jfxtras.labs.icalendarfx.VCalendarElement;
+import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
@@ -52,7 +50,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @param <U> - type of implementing subclass
  * @param <T> - type of property value
  */
-public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Property<T>>
+public abstract class PropertyBase<T,U> extends VParentBase implements Property<T>, Comparable<Property<T>>
 {       
     /**
      * PROPERTY VALUE
@@ -267,17 +265,15 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
         return (U) this;
     }
 
-    
-    /**
-     * other-param, 3.2 RFC 5545 page 14
-     * the parameter name and value are combined into one object
-     */
-//    @Override
-//    public ObservableList<Object> otherParameters() { return otherParameters; }
-//    private ObservableList<Object> otherParameters = FXCollections.observableArrayList();
-//    public U withOtherParameters(Object... parameter) { otherParameters().addAll(parameter); return (U) this; }
 
-    @Override
+    /**
+     * List of all child parameters.
+     * The list is unmodifiable.
+     * 
+     * @return - the list of elements
+     * @deprecated  not needed due to addition of Orderer, may be deleted
+     */
+    @Deprecated
     public List<ParameterType> parameterEnums()
     {
         List<ParameterType> populatedParameters = new ArrayList<>();
@@ -297,17 +293,28 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
     /*
      * SORT ORDER FOR CHILD ELEMENTS
      */
-    final private Orderer orderer;
-    @Override
-    public Orderer orderer() { return orderer; }
+//    final private Orderer orderer;
+//    @Override
+//    public Orderer orderer() { return orderer; }
 
-    private Callback<VCalendarElement, Void> copyParameterChildCallback = (child) ->
-    {
-        ParameterType type = ParameterType.enumFromClass(child.getClass());
-//        System.out.println("copyParameterChildCallback:" + type);
-        type.copyParameter((Parameter<?>) child, this);
-        return null;
-    };   
+//    private Callback<VElement, Void> copyParameterChildCallback = (child) ->
+//    {
+//        ParameterType type = ParameterType.enumFromClass(child.getClass());
+////        System.out.println("copyParameterChildCallback:" + type);
+//        type.copyParameter((Parameter<?>) child, this);
+//        return null;
+//    };
+    
+    @Override
+    protected Callback<VElement, Void> copyChildCallback()
+    {        
+        return (child) ->
+        {
+            ParameterType type = ParameterType.enumFromClass(child.getClass());
+            type.copyParameter((Parameter<?>) child, this);
+            return null;
+        };
+    }
     
 //    /** 
 //     * SORT ORDER
@@ -318,10 +325,7 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
 //     * Generally, this map shouldn't be modified.  Only modify it when you want to force
 //     * a specific parameter order (e.g. unit testing).
 //     */
-    @Deprecated
-    public Map<ParameterType, Integer> parameterSortOrder() { return parameterSortOrder; }
-    final private Map<ParameterType, Integer> parameterSortOrder = new HashMap<>();
-    private Integer parameterCounter = 0;
+
     
     // property value
     private String propertyValueString = null;
@@ -357,8 +361,8 @@ public abstract class PropertyBase<T,U> implements Property<T>, Comparable<Prope
     
     protected PropertyBase()
     {
-        orderer = new OrdererBase(copyParameterChildCallback);
-        orderer.registerSortOrderProperty(valueTypeProperty());
+//        orderer = new OrdererBase(copyParameterChildCallback);
+        orderer().registerSortOrderProperty(valueTypeProperty());
         propertyType = PropertyType.enumFromClass(getClass());
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
         ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
