@@ -40,10 +40,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.setFrequency(new Frequency(source.getFrequency()));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.setFrequency(new Frequency(source.getFrequency()));
+            Frequency childCopy = new Frequency((Frequency) child);
+            destination.setFrequency(childCopy);
         }
     },
     INTERVAL ("INTERVAL", Interval.class, 0, null) {
@@ -65,10 +72,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.setInterval(new Interval(source.getInterval()));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.setInterval(new Interval(source.getInterval()));
+            Interval childCopy = new Interval((Interval) child);
+            destination.setInterval(childCopy);
         }
     },
     UNTIL ("UNTIL", Until.class, 0, null) {
@@ -90,10 +104,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.setUntil(new Until(source.getUntil()));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.setUntil(new Until(source.getUntil()));
+            Until childCopy = new Until((Until) child);
+            destination.setUntil(childCopy);
         }
     },
     COUNT ("COUNT", Count.class, 0, null) {
@@ -115,10 +136,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.setCount(new Count(source.getCount()));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.setCount(new Count(source.getCount()));
+            Count childCopy = new Count((Count) child);
+            destination.setCount(childCopy);
         }
     },
     WEEK_START ("WKST", WeekStart.class, 0, null) {
@@ -141,10 +169,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.setWeekStart(new WeekStart(source.getWeekStart()));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.setWeekStart(new WeekStart(source.getWeekStart()));
+            WeekStart childCopy = new WeekStart((WeekStart) child);
+            destination.setWeekStart(childCopy);
         }
     },
     BY_MONTH ("BYMONTH", ByMonth.class, 100, ChronoUnit.MONTHS) {
@@ -166,10 +201,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.byRules().add(new ByMonth((ByMonth) source.lookupByRule(ByMonth.class)));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.byRules().add(new ByMonth((ByMonth) source.lookupByRule(ByMonth.class)));
+            ByMonth childCopy = new ByMonth((ByMonth) child);
+            destination.byRules().add(childCopy);
         }
     },
     BY_WEEK_NUMBER ("BYWEEKNO", ByWeekNumber.class, 110, ChronoUnit.DAYS) {
@@ -191,10 +233,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.byRules().add(new ByWeekNumber((ByWeekNumber) source.lookupByRule(ByWeekNumber.class)));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.byRules().add(new ByWeekNumber((ByWeekNumber) source.lookupByRule(ByWeekNumber.class)));
+            ByWeekNumber childCopy = new ByWeekNumber((ByWeekNumber) child);
+            destination.byRules().add(childCopy);
         }
     },
     BY_YEAR_DAY ("BYYEARDAY", ByYearDay.class, 120, ChronoUnit.DAYS) {
@@ -216,10 +265,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.byRules().add(new ByYearDay((ByYearDay) source.lookupByRule(ByYearDay.class)));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.byRules().add(new ByYearDay((ByYearDay) source.lookupByRule(ByYearDay.class)));
+            ByYearDay childCopy = new ByYearDay((ByYearDay) child);
+            destination.byRules().add(childCopy);
         }
     },
     BY_MONTH_DAY ("BYMONTHDAY", ByMonthDay.class, 130, ChronoUnit.DAYS) {
@@ -241,10 +297,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.byRules().add(new ByMonthDay((ByMonthDay) source.lookupByRule(ByMonthDay.class)));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.byRules().add(new ByMonthDay((ByMonthDay) source.lookupByRule(ByMonthDay.class)));
+            ByMonthDay childCopy = new ByMonthDay((ByMonthDay) child);
+            destination.byRules().add(childCopy);
         }
     },
     BY_DAY ("BYDAY", ByDay.class, 140, ChronoUnit.DAYS) {
@@ -266,10 +329,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.byRules().add(new ByDay((ByDay) source.lookupByRule(ByDay.class)));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.byRules().add(new ByDay((ByDay) source.lookupByRule(ByDay.class)));
+            ByDay childCopy = new ByDay((ByDay) child);
+            destination.byRules().add(childCopy);
         }
     },
     BY_HOUR ("BYHOUR", ByHour.class, 150, ChronoUnit.HOURS) {
@@ -291,10 +361,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.byRules().add(new ByWeekNumber((ByWeekNumber) source.lookupByRule(ByWeekNumber.class)));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.byRules().add(new ByWeekNumber((ByWeekNumber) source.lookupByRule(ByWeekNumber.class)));
+            ByHour childCopy = new ByHour((ByHour) child);
+            destination.byRules().add(childCopy);
         }
     },
     BY_MINUTE ("BYMINUTE", ByMinute.class, 160, ChronoUnit.MINUTES) {
@@ -316,10 +393,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.byRules().add(new ByMinute((ByMinute) source.lookupByRule(ByMinute.class)));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.byRules().add(new ByMinute((ByMinute) source.lookupByRule(ByMinute.class)));
+            ByMinute childCopy = new ByMinute((ByMinute) child);
+            destination.byRules().add(childCopy);
         }
     },
     BY_SECOND ("BYSECOND", BySecond.class, 170, ChronoUnit.SECONDS) {
@@ -341,10 +425,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.byRules().add(new BySecond((BySecond) source.lookupByRule(BySecond.class)));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.byRules().add(new BySecond((BySecond) source.lookupByRule(BySecond.class)));
+            BySecond childCopy = new BySecond((BySecond) child);
+            destination.byRules().add(childCopy);
         }
     },
     BY_SET_POSITION ("BYSETPOS", BySetPosition.class, 180, null) {
@@ -366,10 +457,17 @@ public enum RRuleElementType
             }
         }
 
+//        @Override
+//        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+//        {
+//            destination.byRules().add(new BySetPosition((BySetPosition) source.lookupByRule(BySetPosition.class)));
+//        }
+
         @Override
-        public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination)
+        public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
         {
-            destination.byRules().add(new BySetPosition((BySetPosition) source.lookupByRule(BySetPosition.class)));
+            BySetPosition childCopy = new BySetPosition((BySetPosition) child);
+            destination.byRules().add(childCopy);
         }
     };
     
@@ -442,10 +540,10 @@ public enum RRuleElementType
     abstract public void parse(RecurrenceRule2 recurrenceRule, String content);
     
     /** copies the associated element from the source RecurrenceRule to the destination RecurrenceRule */
-    abstract public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination);
-    public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination)
-    {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented");
-    }
+//    abstract public void copyElement(RecurrenceRule2 source, RecurrenceRule2 destination);
+    abstract public void copyElement(RRuleElement<?> child, RecurrenceRule2 destination);
+//    {
+//        throw new RuntimeException("not implemented");
+//        throw new RuntimeException("not implemented");
+//    }
 }

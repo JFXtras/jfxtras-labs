@@ -58,18 +58,37 @@ public class RecurrenceRuleTest
                     .withFrequency(FrequencyType.YEARLY)
                     .withByRules(new ByMonth(Month.APRIL),
                                 new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1))));
+        assertEquals(content, madeProperty.toContent());
+        assertEquals(expectedProperty, madeProperty);
+    }
+    
+    @Test // different ordering of rule parts
+    public void canParseRecurrenceRule2()
+    {
+        String content = "RRULE:BYDAY=-1SU;UNTIL=19730429T070000Z;BYMONTH=4;FREQ=YEARLY";
+        RecurrenceRule madeProperty = RecurrenceRule.parse(content);
+        RecurrenceRule expectedProperty = new RecurrenceRule(
+                new RecurrenceRule2()
+                    .withUntil("19730429T070000Z")
+                    .withFrequency(FrequencyType.YEARLY)
+                    .withByRules(new ByMonth(Month.APRIL),
+                                new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1))));
+        assertEquals(content, madeProperty.toContent());
         assertEquals(expectedProperty, madeProperty);
     }
     
     @Test
     public void canCopyRecurrenceRule()
     {
-        String content = "RRULE:FREQ=YEARLY;UNTIL=19730429T070000Z;BYMONTH=4;BYDAY=-1SU";
+        String content = "RRULE:UNTIL=19730429T070000Z;FREQ=YEARLY;BYMONTH=4;BYDAY=-1SU";
         RecurrenceRule r1 = RecurrenceRule.parse(content);
         RecurrenceRule r2 = new RecurrenceRule(r1);
+//        System.out.println(r1.equals(r2));
         assertEquals(r1, r2);
         assertTrue(r1 != r2);
         assertTrue(r1.equals(r2));
+//        System.out.println(r2.toContent());
+        assertEquals(content, r2.toContent());
         assertTrue(r1.getValue() != r2.getValue());
     }
  

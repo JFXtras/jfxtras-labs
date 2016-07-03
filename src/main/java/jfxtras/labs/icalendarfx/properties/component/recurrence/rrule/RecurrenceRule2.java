@@ -8,7 +8,6 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -488,12 +487,25 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
                         }
                         addWeekStartBindings(newByRule);
                     });
-                    // TODO - FIX SORT - DOESN'T COMPILE WITH GRADLE. IS IT NEEDED?
-//                    Collections.sort(byRules()); // sort additions
                 }
             }
         });
     }
+
+    // Copy constructor
+    public RecurrenceRule2(RecurrenceRule2 source)
+    {
+        this();
+        copyChildrenFrom(source);
+//        copyRecurrenceRuleFrom(source);
+    }
+    
+//    /** Copy elements from source into this recurrence rule, making a copy of source */
+//    public void copyRecurrenceRuleFrom(RecurrenceRule2 source)
+//    {
+//        elementSortOrder().putAll(source.elementSortOrder());
+//        source.elements().forEach(p -> p.copyElement(source, this));
+//    }
     
     /** Parse component from content line */
     @Override
@@ -516,20 +528,6 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
                 throw new IllegalArgumentException("Unsupported Recurrence Rule element: " + entry.getKey());                        
             }
         });
-    }
-
-    // Copy constructor
-    public RecurrenceRule2(RecurrenceRule2 source)
-    {
-        this();
-        copyRecurrenceRuleFrom(source);
-    }
-    
-    /** Copy elements from source into this recurrence rule, making a copy of source */
-    public void copyRecurrenceRuleFrom(RecurrenceRule2 source)
-    {
-        elementSortOrder().putAll(source.elementSortOrder());
-        source.elements().forEach(p -> p.copyElement(source, this));
     }
 
     /**
@@ -620,22 +618,25 @@ public class RecurrenceRule2 implements VCalendarElement, VCalendarParent
     @Override
     public String toContent()
     {
-        return elements().stream()
-                .sorted((Comparator<? super RRuleElementType>) (e1, e2) -> 
-                {
-                    Integer s1 = elementSortOrder().get(e1);
-                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
-                    Integer s2 = elementSortOrder().get(e2);
-                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
-                    return sort1.compareTo(sort2);
-                })
-                // all element objects MUST override toString
-                .map(e -> 
-                {
-                    RRuleElement<?> element = e.getElement(this);
-                    return element.toContent();
-                })
-                .collect(Collectors.joining(";"));
+        return orderer().sortedContent().stream()
+              .collect(Collectors.joining(";"));
+        
+//        return elements().stream()
+//                .sorted((Comparator<? super RRuleElementType>) (e1, e2) -> 
+//                {
+//                    Integer s1 = elementSortOrder().get(e1);
+//                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
+//                    Integer s2 = elementSortOrder().get(e2);
+//                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
+//                    return sort1.compareTo(sort2);
+//                })
+//                // all element objects MUST override toString
+//                .map(e -> 
+//                {
+//                    RRuleElement<?> element = e.getElement(this);
+//                    return element.toContent();
+//                })
+//                .collect(Collectors.joining(";"));
     }
     
     @Override
