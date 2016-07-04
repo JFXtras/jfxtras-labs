@@ -121,10 +121,10 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
             }
         }
         
-        if (getRecurrenceRule() != null)
-        {
-            errors.addAll(getRecurrenceRule().errors());
-        }      
+//        if (getRecurrenceRule() != null)
+//        {
+//            errors.addAll(getRecurrenceRule().errors());
+//        }      
         return errors;
     }
 

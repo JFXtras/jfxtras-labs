@@ -410,6 +410,13 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         return propertiesEquals;
     }
 
+//    @Override
+//    public List<String> errors()
+//    {
+//        List<String> errors = new ArrayList<>();
+//        
+//        return errors;
+//    }
 //    public void appendMiddleContentLines(StringBuilder builder)
 //    {
 //        /* map of property name/content

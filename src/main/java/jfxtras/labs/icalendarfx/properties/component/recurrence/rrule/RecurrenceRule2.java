@@ -25,7 +25,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.VElement;
-import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -78,7 +77,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  *
  */
 // TODO - LISTENER TO PREVENT COUNT AND UNTIL FROM BOTH BEING SET
-public class RecurrenceRule2 extends VParentBase implements VElement, VParent
+public class RecurrenceRule2 extends VParentBase
 {
     /** 
      * BYxxx Rules

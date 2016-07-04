@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
@@ -202,8 +201,8 @@ public abstract class VComponentPersonalBase<T> extends VComponentPrimaryBase<T>
     @Override
     public List<String> errors()
     {
-        List<String> errors = new ArrayList<>();
-//        List<String> errors = super.errors();
+//        List<String> errors = new ArrayList<>();
+        List<String> errors = super.errors();
         if (getDateTimeStamp() == null)
         {
             errors.add("DTSTAMP is not present.  DTSTAMP is REQUIRED and MUST NOT occur more than once");

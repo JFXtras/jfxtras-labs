@@ -37,7 +37,7 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @author David Bal
  *
  */
-public class VCalendar extends VParentBase implements VParent
+public class VCalendar extends VParentBase
 {
     // version of this project, not associated with the iCalendar specification version
     public static String myVersion = "1.0";
@@ -593,6 +593,7 @@ public class VCalendar extends VParentBase implements VParent
     }
     
     /** Parse content lines into calendar object */
+    @Override
     public String toContent()
     {
         List<VElement> elements = new ArrayList<VElement>();
@@ -651,6 +652,7 @@ public class VCalendar extends VParentBase implements VParent
     private final String lastContentLine = "END:VCALENDAR";
 
     /** Parse content lines into calendar object */
+    @Override
     public void parseContent(String content)
     {
         List<String> contentLines = ICalendarUtilities.unfoldLines(content);
@@ -743,7 +745,14 @@ public class VCalendar extends VParentBase implements VParent
         }
         return componentsEquals;
     }
-    
+//    
+//    @Override
+//    public List<String> errors()
+//    {
+//        return childrenUnmodifiable().stream()
+//                .flatMap(c -> c.errors().stream())
+//                .collect(Collectors.toList());
+//    }
 
     public static VCalendar parse(String contentLines)
     {

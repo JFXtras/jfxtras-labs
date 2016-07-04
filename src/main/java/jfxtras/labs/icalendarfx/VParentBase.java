@@ -3,13 +3,14 @@ package jfxtras.labs.icalendarfx;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 
 /**
- * Class for parent calendar components.  Uses an {@link Orderer} to keep track of child object order.  Ordering
+ * Base class for parent calendar components.  Uses an {@link Orderer} to keep track of child object order.  Ordering
  * requires registering {@link Orderer} listeners to child properties.
  * 
  * @author David Bal
@@ -51,5 +52,13 @@ public abstract class VParentBase implements VParent
     public void copyChildrenFrom(VParent source)
     {
          source.childrenUnmodifiable().forEach((e) -> copyChildCallback().call(e));
+    }
+    
+    @Override
+    public List<String> errors()
+    {
+        return childrenUnmodifiable().stream()
+                .flatMap(c -> c.errors().stream())
+                .collect(Collectors.toList());
     }
 }

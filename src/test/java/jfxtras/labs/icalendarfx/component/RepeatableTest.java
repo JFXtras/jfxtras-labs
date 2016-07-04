@@ -156,6 +156,15 @@ public class RepeatableTest //extends Application
             assertEquals(expectedDates, madeDates);
         }
     }
+    
+    @Test
+    public void canDetectErrors1()
+    {
+        VEvent component = new VEvent()
+                .withRecurrenceRule(new RecurrenceRule2());
+//        component.errors().forEach(System.out::println);
+        assertEquals(5, component.errors().size());
+    }
 
     @Test
     public void canStreamRecurrences1()

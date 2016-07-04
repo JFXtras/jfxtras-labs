@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 
@@ -21,7 +20,7 @@ import jfxtras.labs.icalendarfx.components.revisors.Revisable;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public interface VComponent extends VElement, VParent
+public interface VComponent extends VParent
 {
     /**
      * Returns the enum for the component as it would appear in the iCalendar content line
@@ -32,45 +31,8 @@ public interface VComponent extends VElement, VParent
      * @return - the component enum
      */
     String componentName();
-//    CalendarElementType componentType();
-
-//    /**
-//     * List of all properties enums found in component.
-//     * The list is unmodifiable.
-//     * 
-//     * @return - the list of properties enums
-//     */
-//    List<PropertyType> propertyEnums();
-//    
-    /**
-     * List of all properties found in component.
-     * The list is unmodifiable.
-     * 
-     * @return - the list of properties
-     */
-
-//    default Collection<Property<?>> properties()
-//    {
-//        return orderer().elementSortOrderMap().keySet();
-////        return Collections.unmodifiableList(
-////                propertyEnums().stream().flatMap(e ->
-////        {
-////            Object obj = e.getProperty(this);
-////            if (obj instanceof Property)
-////            {
-////                return Arrays.asList((Property<?>) obj).stream();
-////            } else if (obj instanceof List)
-////            {
-////                return ((List<Property<?>>) obj).stream();
-////            } else
-////            {
-////                throw new RuntimeException("Unsupported property type:" + obj.getClass());
-////            }
-////        })
-////        .collect(Collectors.toList()));
-//    }
     
-    /** Encapsulated Component editor */
+    /** Component editor */
     Revisable newRevisor();
     
     /**
