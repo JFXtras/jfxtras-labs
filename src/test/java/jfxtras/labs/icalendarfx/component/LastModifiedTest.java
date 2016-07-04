@@ -46,7 +46,7 @@ public class LastModifiedTest
         
         for (VComponentLastModified<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentType().toString();            
+            String componentName = builtComponent.componentName();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "LAST-MODIFIED:20160306T080000Z" + System.lineSeparator() +
                     "END:" + componentName;

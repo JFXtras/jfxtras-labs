@@ -101,7 +101,6 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         if (classification == null)
         {
             classification = new SimpleObjectProperty<>(this, PropertyType.CLASSIFICATION.toString());
-            System.out.println("attach listener11:");
             orderer().registerSortOrderProperty(classification);
         }
         return classification;
@@ -428,12 +427,12 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         List<VComponentDisplayable<?>> children = childComponents();
         if (children != null)
         {
-            System.out.println("childComponents():" + childComponents().size() + " " + this);
+//            System.out.println("childComponents():" + childComponents().size() + " " + this);
             childComponents().stream().forEach(System.out::println);
             // If present, remove recurrence ID original values
             List<Temporal> recurrenceIDTemporals = childComponents()
                     .stream()
-                    .peek(a -> System.out.println(a.getRecurrenceId()))
+//                    .peek(a -> System.out.println(a.getRecurrenceId()))
                     .map(c -> c.getRecurrenceId().getValue())
                     .collect(Collectors.toList());
             stream2 = inStream.filter(t -> ! recurrenceIDTemporals.contains(t));

@@ -41,4 +41,13 @@ public class NonStandardTest
         assertEquals(new URI("http://www.example.org/mysubj.au"), madeProperty.getValue());
     }
 
+    @Test
+    public void canCopyNonStandard()
+    {
+        String content = "X-MYPROP;VALUE=BOOLEAN:FALSE";
+        NonStandardProperty madeProperty = NonStandardProperty.parse(content);
+        NonStandardProperty copiedProperty = new NonStandardProperty(madeProperty);
+        assertEquals(copiedProperty, madeProperty);
+        assertEquals(content, copiedProperty.toContent());
+    }
 }

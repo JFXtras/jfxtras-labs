@@ -70,9 +70,18 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         };
     }
     
-    final private CalendarElementType componentType;
+//    @Override
+//    public String componentName()
+//    {
+//        return CalendarElementType.enumFromClass(this.getClass()).toString();
+//    }
+    
+    final private String componentName;
     @Override
-    public CalendarElementType componentType() { return componentType; }
+    public String componentName() { return componentName; }
+
+//    @Override
+//    public CalendarElementType componentType() { return componentType; }
     
 //    private void checkContentList()
 //    {
@@ -171,7 +180,8 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         addListeners();
         
 //        orderer = new OrdererBase(copyPropertyChildCallback);
-        componentType = CalendarElementType.enumFromClass(this.getClass());
+        componentName = CalendarElementType.enumFromClass(this.getClass()).toString();
+//        System.out.println("componentType:" + componentType);
     }
     
     /** Parse content lines into calendar component */
@@ -218,7 +228,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
             // Parse subcomponent
             if (propertyName.equals("BEGIN"))
             {
-                boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentType().toString());
+                boolean isMainComponent = line.substring(nameEndIndex+1).equals(componentName());
                 if  (! isMainComponent)
                 {
                     CalendarElementType subcomponentType = CalendarElementType.enumFromName(line.substring(nameEndIndex+1));
@@ -325,7 +335,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     public String toContent()
     {
         StringBuilder builder = new StringBuilder(400);
-        builder.append(firstContentLine + System.lineSeparator());
+        builder.append(firstContentLine() + System.lineSeparator());
 //        sortedContent().stream().forEach(System.out::println);
 //        System.out.println("elements1:" + orderer().elementSortOrderMap().size() + " " + this.hashCode());
 //        checkContentList(); // test elements for completeness (can be removed for improved speed)
@@ -337,9 +347,11 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         {
             builder.append(content + System.lineSeparator());
         }
-        builder.append(lastContentLine);
+        builder.append(lastContentLine());
         return builder.toString();
     }
+    private String firstContentLine() { return "BEGIN:" + componentName(); }
+    private String lastContentLine() { return "END:" + componentName(); }
     
     @Override
     public String toString()
@@ -471,8 +483,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
 //                            .forEach(s -> builder.append(ICalendarUtilities.foldLine(s) + System.lineSeparator()));
 //                });
 //    }
-    private final String firstContentLine = "BEGIN:" + componentType().toString();
-    private final String lastContentLine = "END:" + componentType().toString();
+
 
 
     @Deprecated // may not use - delete if that is the case

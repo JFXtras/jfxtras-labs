@@ -34,7 +34,7 @@ public class DaylightSavingsTimeTest
 //        builtComponent.propertySortOrder().put("X-ABC-MMSUBJ", 0);
 //        builtComponent.propertySortOrder().put("TESTPROP2", 1);
 //        builtComponent.propertySortOrder().put("X-TEST-OBJ", 2);
-//        String componentName = builtComponent.componentType().toString();
+//        String componentName = builtComponent.componentName();
 //        
 //        String content = "BEGIN:" + componentName + System.lineSeparator() +
 //                "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au" + System.lineSeparator() +
@@ -54,7 +54,7 @@ public class DaylightSavingsTimeTest
                 .withDateTimeStart("20160306T080000Z")
                 .withComments("This is a test comment", "Another comment")
                 .withComments("COMMENT:My third comment");
-        String componentName = builtComponent.componentType().toString();
+        String componentName = builtComponent.componentName();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "DTSTART:20160306T080000Z" + System.lineSeparator() +
@@ -76,7 +76,7 @@ public class DaylightSavingsTimeTest
                 .withRecurrenceRule(new RecurrenceRule2()
                     .withFrequency(FrequencyType.DAILY)
                     .withInterval(4));
-        String componentName = builtComponent.componentType().toString();
+        String componentName = builtComponent.componentName();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "RDATE;VALUE=DATE:19970304,19970504,19970704,19970904" + System.lineSeparator() +

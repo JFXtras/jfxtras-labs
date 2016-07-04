@@ -78,7 +78,7 @@ public class PersonalTest
         
         for (VComponentPersonal<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentType().toString();            
+            String componentName = builtComponent.componentName().toString();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com" + System.lineSeparator() +
                     "DTSTAMP:20160415T120000Z" + System.lineSeparator() +

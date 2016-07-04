@@ -36,7 +36,7 @@ public class StandardOrDaylightTimeTest
         
         for (StandardOrDaylight<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentType().toString();            
+            String componentName = builtComponent.componentName();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "TZOFFSETFROM:-0400" + System.lineSeparator() +
                     "TZOFFSETTO:-0500" + System.lineSeparator() +

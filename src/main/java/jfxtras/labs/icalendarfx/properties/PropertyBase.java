@@ -312,6 +312,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         {
             ParameterType type = ParameterType.enumFromClass(child.getClass());
             type.copyParameter((Parameter<?>) child, this);
+//            setUnknownValue(getUnknownValue());
             return null;
         };
     }
@@ -402,6 +403,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     public PropertyBase(PropertyBase<T,U> source)
     {
         this();
+        setConverter(source.getConverter());
         copyChildrenFrom(source);
         T valueCopy = copyValue(source.getValue());
         setValue(valueCopy);

@@ -30,8 +30,6 @@ public class RecurrenceRuleParseTest
                 .withFrequency(FrequencyType.YEARLY)
                 .withInterval(2)
                 .withByRules(new ByMonth(Month.JANUARY), new ByDay(DayOfWeek.SUNDAY));
-        rRule.elements().stream().forEach(System.out::println);
-        System.out.println(rRule.toContent());
         assertEquals(s, expectedRRule.toContent());
         assertEquals(expectedRRule, rRule);
     }
@@ -39,15 +37,13 @@ public class RecurrenceRuleParseTest
     @Test
     public void canParseRRule2()
     {
-        String s = "FREQ=MONTHLY;BYMONTHDAY=7,8,9,10,11,12,13;BYDAY=SA";
+        String s = "FREQ=MONTHLY;BYDAY=SA;BYMONTHDAY=7,8,9,10,11,12,13";
         RecurrenceRule2 rRule = RecurrenceRule2.parse(s);
         RecurrenceRule2 expectedRRule = new RecurrenceRule2()
                 .withFrequency(FrequencyType.MONTHLY)
                 .withByRules(new ByDay(DayOfWeek.SATURDAY), new ByMonthDay(7,8,9,10,11,12,13));
-//        System.out.println(rRule.elements().get(0).getElement(rRule));
-//        System.out.println(expectedRRule.elements().get(0).getElement(expectedRRule));
-//        System.out.println(expectedRRule.getFrequency().toContent());
-//        rRule.elements().stream().forEach(System.out::println);
+//        System.out.println(rRule.toContent());
+//        rRule.childrenUnmodifiable().stream().forEach(System.out::println);
         assertEquals(s, expectedRRule.toContent());
         assertEquals(s, rRule.toContent());
         assertEquals(expectedRRule, rRule);

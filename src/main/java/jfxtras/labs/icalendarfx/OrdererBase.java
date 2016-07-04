@@ -45,6 +45,7 @@ public class OrdererBase implements Orderer
      * a specific order.
      */
 //    @Override
+    @Override
     public Map<VElement, Integer> elementSortOrderMap() { return elementSortOrderMap; }
     final private Map<VElement, Integer> elementSortOrderMap = new HashMap<>();
     private volatile Integer sortOrderCounter = 0;

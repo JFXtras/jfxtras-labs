@@ -85,6 +85,10 @@ public abstract class PropertyBaseRecurrence<U> extends PropertyBaseDateTime<Obs
         }
     }
     
+    /*
+     * CONSTRUCTORS
+     */
+    
     public PropertyBaseRecurrence()
     {
         super();

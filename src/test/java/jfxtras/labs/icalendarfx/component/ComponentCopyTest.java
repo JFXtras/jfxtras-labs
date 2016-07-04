@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 
@@ -65,6 +66,7 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
         VEvent component1 = VEvent.parse(content);
         VEvent component2 = new VEvent(component1);
         assertEquals(component1, component2);
+      System.out.println(component2.toContent());
         assertEquals(component1.toContent(), component2.toContent());
 //        System.out.println(component2.toContent());
         assertEquals(content, component2.toContent());
@@ -125,10 +127,6 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
         VEvent component1 = VEvent.parse(content);
         VEvent component2 = new VEvent(component1);
         assertEquals(component1, component2);
-//        System.out.println(component1.toContent());
-//        System.out.println(component2.toContent());
-//        System.exit(0);
-//        System.out.println(component2);
         assertEquals(component1.toContent(), component2.toContent());
     }
     
@@ -139,5 +137,6 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
         VEvent component2 = getYearly1();
         component1.copyChildrenFrom(component2);
         assertEquals(component1, component2);
+        assertTrue(component1 != component2);
     }
 }

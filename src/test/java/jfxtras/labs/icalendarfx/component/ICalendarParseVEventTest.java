@@ -29,6 +29,7 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
         VEvent vEvent = VEvent.parse(vEventString);
         VEvent expectedVEvent = getYearly1();
         assertEquals(expectedVEvent, vEvent);
+        assertEquals(vEventString, expectedVEvent.toContent());
     }
 
     @Test
@@ -42,9 +43,9 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                               + "END:VEVENT";
         VEvent vEvent = VEvent.parse(vEventString);
-        System.out.println(vEvent);
         VEvent expectedVEvent = getDaily3();
         assertEquals(expectedVEvent, vEvent);
+        assertEquals(vEventString, expectedVEvent.toContent());
     }
     
     @Test
@@ -63,27 +64,33 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
         VEvent vEvent = VEvent.parse(vEventString);
         VEvent expectedVEvent = getDaily3();
         assertEquals(expectedVEvent, vEvent);
+        String vEventString2 = "BEGIN:VEVENT" + System.lineSeparator()
+                + "DTEND:20151109T110000" + System.lineSeparator()
+                + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
+                + "DTSTART:20151109T100000" + System.lineSeparator()
+                + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14" + System.lineSeparator()
+                + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                + "END:VEVENT";
+        assertEquals(vEventString2, expectedVEvent.toContent());
     }
         
     @Test
     public void canParseDailyUTC()
     {
-//        System.out.println(ICalendarParameter.values(Categories.class));
-//        System.exit(0);
         String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
-                              + "CATEGORIES:group03" + System.lineSeparator()
-                              + "DESCRIPTION:DailyUTC Description" + System.lineSeparator()
+                              + "DTSTART:20151109T100000Z" + System.lineSeparator()
                               + "DTEND:20151109T110000Z" + System.lineSeparator()
                               + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
-                              + "DTSTART:20151109T100000Z" + System.lineSeparator()
-                              + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z" + System.lineSeparator()
+                              + "CATEGORIES:group03" + System.lineSeparator()
+                              + "DESCRIPTION:DailyUTC Description" + System.lineSeparator()
                               + "SUMMARY:DailyUTC Summary" + System.lineSeparator()
                               + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                              + "RRULE:FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z" + System.lineSeparator()
                               + "END:VEVENT";
         VEvent vEvent = VEvent.parse(vEventString);
-        System.out.println("text:" + vEvent);
         VEvent expectedVEvent = getDailyUTC();
         assertEquals(expectedVEvent, vEvent);
+        assertEquals(vEventString, expectedVEvent.toContent());
     }
     
     /** Tests FREQ=YEARLY */
@@ -91,28 +98,29 @@ public class ICalendarParseVEventTest extends ICalendarTestAbstract2
     public void canParseDailyWithException1()
     {
         String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
-                + "CATEGORIES:group03" + System.lineSeparator()
-                + "DESCRIPTION:Daily2 Description" + System.lineSeparator()
-                + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
                 + "DTSTART:20151109T100000" + System.lineSeparator()
                 + "DURATION:PT1H30M" + System.lineSeparator()
-                + "EXDATE:20151112T100000,20151115T100000" + System.lineSeparator()
-                + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6" + System.lineSeparator()
+                + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
+                + "CATEGORIES:group03" + System.lineSeparator()
+                + "DESCRIPTION:Daily2 Description" + System.lineSeparator()
                 + "SUMMARY:Daily2 Summary" + System.lineSeparator()
                 + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
+                + "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6" + System.lineSeparator()
+                + "EXDATE:20151112T100000,20151115T100000" + System.lineSeparator()
                 + "END:VEVENT";
         VEvent vEvent = VEvent.parse(vEventString);
         VEvent expectedVEvent = getDailyWithException1();
         assertEquals(expectedVEvent, vEvent);
+        assertEquals(vEventString, expectedVEvent.toContent());
     }
     
     @Test
     public void canParseWholeDay1()
     {
     String vEventString = "BEGIN:VEVENT" + System.lineSeparator()
+                          + "DTSTART;VALUE=DATE:20151109" + System.lineSeparator()
                           + "DTEND;VALUE=DATE:20151112" + System.lineSeparator()
                           + "DTSTAMP:20150110T080000Z" + System.lineSeparator()
-                          + "DTSTART;VALUE=DATE:20151109" + System.lineSeparator()
                           + "UID:20150110T080000-0@jfxtras.org" + System.lineSeparator()
                           + "END:VEVENT";
     VEvent vEvent = VEvent.parse(vEventString);

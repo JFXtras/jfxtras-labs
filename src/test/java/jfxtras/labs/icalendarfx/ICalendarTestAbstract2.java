@@ -53,9 +53,9 @@ public abstract class ICalendarTestAbstract2
         return new VEvent()
                 .withCategories("group13")
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC))
+                .withDescription("Yearly1 Description")
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
-                .withDescription("Yearly1 Description")
                 .withDuration(Duration.ofHours(1))
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 18, 30), ZoneOffset.UTC))
                 .withRecurrenceRule(new RecurrenceRule2()
@@ -359,33 +359,33 @@ public abstract class ICalendarTestAbstract2
     protected static VEvent getDaily2()
     {
         return new VEvent()
-                .withCategories("group03")
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(90))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withCategories("group03")
                 .withDescription("Daily2 Description")
                 .withSummary("Daily2 Summary")
-                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
-                        .withCount(6)
                         .withFrequency(FrequencyType.DAILY)
-                        .withInterval(3));
+                        .withInterval(3)
+                        .withCount(6));
     }
 
     /** FREQ=DAILY;INTERVAL=3;COUNT=10;BYMONTHDAY=9,10,11,12,13,14 */
     protected VEvent getDaily3()
     {
         return new VEvent()
-                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule2()
-                        .withCount(10)
-                        .withFrequency(FrequencyType.DAILY)
-                                .withInterval(3)
-                                .withByRules(new ByMonthDay()
-                                        .withValue(9,10,11,12,13,14)));
+                    .withFrequency(FrequencyType.DAILY)
+                    .withInterval(3)
+                    .withCount(10)
+                    .withByRules(new ByMonthDay()
+                            .withValue(9,10,11,12,13,14)) )
+                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
     }
 
     /** FREQ=DAILY;INVERVAL=2;BYMONTHDAY=9 */
@@ -449,17 +449,17 @@ public abstract class ICalendarTestAbstract2
     public static VEvent getDailyUTC()
     {
         return new VEvent()
-                .withCategories("group03")
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 10, 0), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 11, 0), ZoneOffset.UTC))
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withCategories("group03")
                 .withDescription("DailyUTC Description")
                 .withSummary("DailyUTC Summary")
-                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-0@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
-                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0), ZoneOffset.UTC))
                         .withFrequency(FrequencyType.DAILY)
-                        .withInterval(2));
+                        .withInterval(2)
+                        .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0), ZoneOffset.UTC)));
     }
     
     public static VEvent getDailyJapanZone()
@@ -627,30 +627,19 @@ public abstract class ICalendarTestAbstract2
     protected static VEvent getGoogleIndividual()
     {
         VEvent v = new VEvent()
-                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 12, 30), ZoneOffset.UTC))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 15, 0), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 32), ZoneOffset.UTC))
-                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 12, 30), ZoneOffset.UTC))
+                .withUniqueIdentifier("vpqej26mlpg3adcncqqs7t7a34@google.com")
+                .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
+                .withDescription("")
                 .withDateTimeLastModified(ZonedDateTime.of(LocalDateTime.of(2016, 2, 14, 2, 25, 13), ZoneOffset.UTC))
-                .withSummary("test1")
-                .withTimeTransparency("OPAQUE")
+                .withLocation("")
                 .withSequence(0)
                 .withStatus("CONFIRMED")
-                .withLocation("")
-                .withDescription("")
-                .withUniqueIdentifier("vpqej26mlpg3adcncqqs7t7a34@google.com");
-//        v.propertySortOrder().put("DTSTART", 0);
-//        v.propertySortOrder().put("DTEND", 10);
-//        v.propertySortOrder().put("DTSTAMP", 20);
-//        v.propertySortOrder().put("UID", 30);
-//        v.propertySortOrder().put("CREATED", 40);
-//        v.propertySortOrder().put("DESCRIPTION", 50);
-//        v.propertySortOrder().put("LAST-MODIFIED", 60);
-//        v.propertySortOrder().put("LOCATION", 70);
-//        v.propertySortOrder().put("SEQUENCE", 80);
-//        v.propertySortOrder().put("STATUS", 90);
-//        v.propertySortOrder().put("SUMMARY", 100);
-//        v.propertySortOrder().put("TRANSP", 110);
+                .withSummary("test1")
+                .withTimeTransparency("OPAQUE")
+                ;
         return v;
     }
     

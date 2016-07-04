@@ -23,7 +23,7 @@ public class VJournalTest
                 .withDescriptions("DESCRIPTION:description 1")
                 .withDescriptions("description 2", "DESCRIPTION:description 3");
         
-        String componentName = builtComponent.componentType().toString();
+        String componentName = builtComponent.componentName();
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "DESCRIPTION:description 1" + System.lineSeparator() +
                 "DESCRIPTION:description 2" + System.lineSeparator() +

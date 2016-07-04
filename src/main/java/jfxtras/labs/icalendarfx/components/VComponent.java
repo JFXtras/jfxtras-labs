@@ -1,6 +1,5 @@
 package jfxtras.labs.icalendarfx.components;
 
-import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.components.revisors.Revisable;
@@ -32,7 +31,8 @@ public interface VComponent extends VElement, VParent
      * 
      * @return - the component enum
      */
-    CalendarElementType componentType();
+    String componentName();
+//    CalendarElementType componentType();
 
 //    /**
 //     * List of all properties enums found in component.

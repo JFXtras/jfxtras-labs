@@ -17,7 +17,7 @@ public class VTimeZoneTest
         VTimeZone builtComponent = new VTimeZone()
                 .withTimeZoneIdentifier("America/Los_Angeles");
 
-        String componentName = builtComponent.componentType().toString();            
+        String componentName = builtComponent.componentName();            
         String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                 "TZID:America/Los_Angeles" + System.lineSeparator() +
                 "END:" + componentName;

@@ -484,7 +484,7 @@ public class RecurrenceRule2 extends VParentBase implements VElement, VParent
                     change.getAddedSubList().stream().forEach(c ->
                     {
                         ByRule<?> newByRule = c;
-                        long alreadyPresent = byRules()
+                        long alreadyPresent = change.getList()
                                 .stream()
                                 .map(r -> r.elementType())
                                 .filter(p -> p.equals(c.elementType()))
@@ -495,6 +495,11 @@ public class RecurrenceRule2 extends VParentBase implements VElement, VParent
                         }
                         addWeekStartBindings(newByRule);
                     });
+                    
+                    // Sort after addition
+//                    orderer().unregisterSortOrderProperty(byRules());
+                    Collections.sort(change.getList());
+//                    orderer().registerSortOrderProperty(byRules());
                 }
             }
         });

@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.property.rrule;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,7 +18,10 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByMonthDay;
 
 public class RecurrenceRuleStreamTest
 {
@@ -64,6 +68,20 @@ public class RecurrenceRuleStreamTest
                 ));
         List<Temporal> madeRecurrences = rRule.streamRecurrences(dateTimeStart).limit(5).collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
+    }
+    
+    @Test // Demonstrates correct ByRule processing order
+    public void canOrderByRules()
+    {
+        String s = "FREQ=MONTHLY;BYMONTHDAY=7,8,9,10,11,12,13;BYDAY=SA";
+        RecurrenceRule2 rRule = RecurrenceRule2.parse(s);
+//        rRule.byRules().stream().forEach(System.out::println);
+        RecurrenceRule2 expectedRRule = new RecurrenceRule2()
+                .withFrequency(FrequencyType.MONTHLY)
+                .withByRules(new ByDay(DayOfWeek.SATURDAY), new ByMonthDay(7,8,9,10,11,12,13));
+        assertEquals(s, expectedRRule.toContent());
+        assertEquals(s, rRule.toContent());
+        assertEquals(expectedRRule, rRule);
     }
     
     /*
@@ -181,7 +199,7 @@ public class RecurrenceRuleStreamTest
    {
        String s = "RRULE:FREQ=YEARLY;UNTIL=20000131T140000Z;BYMONTH=1;BYDAY=SU,MO,TU,WE,TH,FR,SA";
        RecurrenceRule rRule = RecurrenceRule.parse(s);
-       assertEquals(rRule.toContent(), s);
+       assertEquals("RRULE:" + rRule.getValue().toContent(), s);
        Temporal dateTimeStart = ZonedDateTime.of(LocalDateTime.of(1998, 1, 1, 9, 0), ZoneId.of("America/New_York"));
        List<Temporal> expectedRecurrences = Stream
                .iterate(dateTimeStart, a -> a.plus(1, ChronoUnit.DAYS))

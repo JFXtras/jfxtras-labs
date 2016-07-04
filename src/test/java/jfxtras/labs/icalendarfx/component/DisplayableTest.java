@@ -149,7 +149,7 @@ public class DisplayableTest // extends FxExceptionPropagatorTest
         
         for (VComponentDisplayable<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentType().toString();
+            String componentName = builtComponent.componentName();
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "ATTACH:CID:jsmith.part3.960817T083000.xyzMail@example.com" + System.lineSeparator() +
                     "CATEGORIES:group03,group04,group05" + System.lineSeparator() +
@@ -190,9 +190,9 @@ public class DisplayableTest // extends FxExceptionPropagatorTest
         VEvent e = new VEvent()
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule2()
-                        .withCount(6)
                         .withFrequency("DAILY")
-                        .withInterval(3))
+                        .withInterval(3)
+                        .withCount(6))
                 .withExceptionDates(new ExceptionDates(LocalDateTime.of(2015, 11, 12, 10, 0)
                                      , LocalDateTime.of(2015, 11, 15, 10, 0)));
         List<Temporal> madeDates = e

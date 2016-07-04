@@ -92,9 +92,9 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
                 "BEGIN:VEVENT" + System.lineSeparator() +
                 "CATEGORIES:group13" + System.lineSeparator() +
                 "CREATED:20151109T082900Z" + System.lineSeparator() +
+                "DESCRIPTION:Yearly1 Description" + System.lineSeparator() +
                 "DTSTAMP:20151109T083000Z" + System.lineSeparator() +
                 "DTSTART:20151109T100000" + System.lineSeparator() +
-                "DESCRIPTION:Yearly1 Description" + System.lineSeparator() +
                 "DURATION:PT1H" + System.lineSeparator() +
                 "LAST-MODIFIED:20151110T183000Z" + System.lineSeparator() +
                 "RRULE:FREQ=YEARLY" + System.lineSeparator() +

@@ -86,7 +86,7 @@ public class LocatableTest
         
         for (VComponentLocatable<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentType().toString();            
+            String componentName = builtComponent.componentName();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "DESCRIPTION:A simple description" + System.lineSeparator() +
                     "DURATION:PT45M" + System.lineSeparator() +

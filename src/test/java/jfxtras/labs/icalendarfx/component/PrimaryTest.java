@@ -69,7 +69,7 @@ public class PrimaryTest
         
         for (VComponentPrimary<?> builtComponent : components)
         {
-            String componentName = builtComponent.componentType().toString();            
+            String componentName = builtComponent.componentName();            
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "DTSTART:20160306T080000" + System.lineSeparator() +
                     "COMMENT:This is a test comment" + System.lineSeparator() +

@@ -42,7 +42,7 @@ public class VEventTest extends ICalendarTestAbstract2
         VEvent builtComponent = new VEvent()
                 .withDateTimeEnd(LocalDate.of(1997, 3, 1))
                 .withTimeTransparency(TimeTransparencyType.OPAQUE);
-        String componentName = builtComponent.componentType().toString();
+        String componentName = builtComponent.componentName();
         
         String content = "BEGIN:" + componentName + System.lineSeparator() +
                 "DTEND;VALUE=DATE:19970301" + System.lineSeparator() +

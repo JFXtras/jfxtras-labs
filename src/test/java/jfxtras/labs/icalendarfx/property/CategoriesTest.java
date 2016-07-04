@@ -41,10 +41,12 @@ public class CategoriesTest
     @Test
     public void canCopyCategories()
     {
-        Categories property1 = Categories.parse("group03,group04,group05");
+        String content = "group03,group04,group05";
+        Categories property1 = Categories.parse(content);
         Categories property2 = new Categories(property1);
         assertEquals(property1, property2);
         assertFalse(property1 == property2);
         assertFalse(property1.getValue() == property2.getValue());
+        assertEquals("CATEGORIES:" + content, property2.toContent());
     }
 }

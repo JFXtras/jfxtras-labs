@@ -84,7 +84,7 @@ public class BaseTest
 //            builtComponent.propertySortOrder().put("X-ABC-MMSUBJ", 0);
 //            builtComponent.propertySortOrder().put("TESTPROP2", 1);
 //            builtComponent.propertySortOrder().put("X-TEST-OBJ", 2);
-            String componentName = builtComponent.componentType().toString();
+            String componentName = builtComponent.componentName();
             
             String expectedContent = "BEGIN:" + componentName + System.lineSeparator() +
                     "X-ABC-MMSUBJ;VALUE=URI;FMTTYPE=audio/basic:http://www.example.org/mysubj.au" + System.lineSeparator() +
