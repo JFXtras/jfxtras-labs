@@ -227,16 +227,17 @@ public class VEventPopupTests extends JFXtrasGuiTest
 
         assertEquals(ICalendarStaticComponents.getDaily1(), vEvents.get(0));
         VEvent editedVEvent = new VEvent()
-                .withRecurrenceId(LocalDateTime.of(2016, 5, 15, 10, 0))
-                .withDescription("new description")
-                .withSummary("new summary")
-                .withLocation("new location")
+                .withCategories("new group name")
                 .withDateTimeStart(LocalDateTime.of(2016, 5, 15, 8, 0))
                 .withDateTimeEnd(LocalDateTime.of(2016, 5, 15, 9, 0))
-                .withUniqueIdentifier("20150110T080000-004@jfxtras.org")
-                .withSequence(1)
+                .withDescription("new description")
+                .withSummary("new summary")
                 .withDateTimeStamp(vEvents.get(1).getDateTimeStamp())
-                .withCategories("new group name");
+                .withUniqueIdentifier("20150110T080000-004@jfxtras.org")
+                .withLocation("new location")
+                .withRecurrenceId(LocalDateTime.of(2016, 5, 15, 10, 0))
+                .withSequence(1)
+                ;
         assertEquals(editedVEvent, vEvents.get(1));
     }
     

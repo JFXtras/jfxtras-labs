@@ -70,18 +70,20 @@ public class RecurrenceRuleStreamTest
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     
-    @Test // Demonstrates correct ByRule processing order
+    @Test // Demonstrates correct ByRule processing order even if elements are ordered wrong in content
     public void canOrderByRules()
     {
-        String s = "FREQ=MONTHLY;BYMONTHDAY=7,8,9,10,11,12,13;BYDAY=SA";
+        String s = "FREQ=MONTHLY;BYDAY=SA;BYMONTHDAY=7,8,9,10,11,12,13";
         RecurrenceRule2 rRule = RecurrenceRule2.parse(s);
-//        rRule.byRules().stream().forEach(System.out::println);
         RecurrenceRule2 expectedRRule = new RecurrenceRule2()
                 .withFrequency(FrequencyType.MONTHLY)
                 .withByRules(new ByDay(DayOfWeek.SATURDAY), new ByMonthDay(7,8,9,10,11,12,13));
         assertEquals(s, expectedRRule.toContent());
         assertEquals(s, rRule.toContent());
         assertEquals(expectedRRule, rRule);
+        List<?> expectedByRuleClasses = Arrays.asList(ByMonthDay.class, ByDay.class);
+        List<?> byRuleClasses = rRule.byRules().stream().map(r -> r.getClass()).collect(Collectors.toList());
+        assertEquals(expectedByRuleClasses, byRuleClasses);        
     }
     
     /*

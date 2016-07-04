@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.misc.RequestStatus;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class RequestStatusTest
 {
@@ -33,7 +34,7 @@ public class RequestStatusTest
     {
         String content = "REQUEST-STATUS:2.8;Success\\, repeating event ignored. Scheduled as a single event.;RRULE:FREQ=WEEKLY\\;INTERVAL=2";
         RequestStatus madeProperty = RequestStatus.parse(content);
-        assertEquals(content, madeProperty.toContent());
+        assertEquals(ICalendarUtilities.foldLine(content).toString(), madeProperty.toContent());
         RequestStatus expectedProperty = new RequestStatus()
                 .withStatusCode(2.8)
                 .withDescription("Success, repeating event ignored. Scheduled as a single event.")

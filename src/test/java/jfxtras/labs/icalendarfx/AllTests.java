@@ -11,6 +11,7 @@ import jfxtras.labs.icalendarfx.component.DaylightSavingsTimeTest;
 import jfxtras.labs.icalendarfx.component.DisplayableTest;
 import jfxtras.labs.icalendarfx.component.GeneralComponentTest;
 import jfxtras.labs.icalendarfx.component.ICalendarParseVEventTest;
+import jfxtras.labs.icalendarfx.component.LocatableTest;
 import jfxtras.labs.icalendarfx.component.PersonalTest;
 import jfxtras.labs.icalendarfx.component.PrimaryTest;
 import jfxtras.labs.icalendarfx.component.RepeatableTest;
@@ -32,6 +33,7 @@ import jfxtras.labs.icalendarfx.property.AttendeeTest;
 import jfxtras.labs.icalendarfx.property.CategoriesTest;
 import jfxtras.labs.icalendarfx.property.ClassificationTest;
 import jfxtras.labs.icalendarfx.property.CommentTest;
+import jfxtras.labs.icalendarfx.property.ContactTest;
 import jfxtras.labs.icalendarfx.property.DateTimeCompletedTest;
 import jfxtras.labs.icalendarfx.property.DateTimeCreatedTest;
 import jfxtras.labs.icalendarfx.property.DateTimeDueTest;
@@ -52,6 +54,7 @@ import jfxtras.labs.icalendarfx.property.RecurrenceIdTest;
 import jfxtras.labs.icalendarfx.property.RecurrenceRuleTest;
 import jfxtras.labs.icalendarfx.property.RecurrencesTest;
 import jfxtras.labs.icalendarfx.property.RepeatCountTest;
+import jfxtras.labs.icalendarfx.property.RequestStatusTest;
 import jfxtras.labs.icalendarfx.property.ResourcesTest;
 import jfxtras.labs.icalendarfx.property.SequenceTest;
 import jfxtras.labs.icalendarfx.property.StatusTest;
@@ -70,6 +73,7 @@ import jfxtras.labs.icalendarfx.property.rrule.ByWeekNumberTest;
 import jfxtras.labs.icalendarfx.property.rrule.ByYearDayTest;
 import jfxtras.labs.icalendarfx.property.rrule.FrequencyTest;
 import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
+import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
@@ -84,6 +88,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
         PrimaryTest.class,
         PersonalTest.class,
         DisplayableTest.class,
+        LocatableTest.class,
         RepeatableTest.class,
         VEventTest.class,
         VTodoTest.class,
@@ -104,6 +109,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
         CategoriesTest.class,
         ClassificationTest.class,
         CommentTest.class,
+        ContactTest.class,
         DateTimeCompletedTest.class,
         DateTimeCreatedTest.class,
         DateTimeDueTest.class,
@@ -123,6 +129,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
         RecurrenceRuleTest.class,
         RecurrencesTest.class,
         RepeatCountTest.class,
+        RequestStatusTest.class,
         ResourcesTest.class,
         SequenceTest.class,
         StatusTest.class,
@@ -144,6 +151,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleParseTest;
         
         // Recurrence Rule tests
         RecurrenceRuleParseTest.class,
+        RecurrenceRuleStreamTest.class,
         FrequencyTest.class,
         ByDayTest.class,
         ByMonthTest.class,

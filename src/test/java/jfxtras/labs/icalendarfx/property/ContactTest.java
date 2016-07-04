@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.properties.component.relationship.Contact;
+import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
 
 public class ContactTest
 {
@@ -16,14 +17,13 @@ public class ContactTest
     {
         String content = "CONTACT;LANGUAGE=en-US;ALTREP=\"CID:part3.msg970930T083000SILVER@example.com\":Jim Dolittle\\, ABC Industries\\, +1-919-555-1234";
         Contact madeProperty = Contact.parse(content);
-        assertEquals(content, madeProperty.toContent());
+        assertEquals(ICalendarUtilities.foldLine(content).toString(), madeProperty.toContent());
         Contact expectedProperty = new Contact()
-                .withValue("Jim Dolittle, ABC Industries, +1-919-555-1234")
+                .withLanguage("en-US")
                 .withAlternateText(new URI("CID:part3.msg970930T083000SILVER@example.com"))
-                .withLanguage("en-US");
-//        expectedProperty.parameterSortOrder().put(ParameterType.LANGUAGE, 0);
-//        expectedProperty.parameterSortOrder().put(ParameterType.ALTERNATE_TEXT_REPRESENTATION, 1);
+                .withValue("Jim Dolittle, ABC Industries, +1-919-555-1234")
+                ;
         assertEquals(expectedProperty, madeProperty);
-        assertEquals(content, expectedProperty.toContent());
+        assertEquals(ICalendarUtilities.foldLine(content).toString(), expectedProperty.toContent());
     }
 }

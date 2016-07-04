@@ -44,12 +44,12 @@ public class LocatableTest
         List<VComponentLocatable<?>> components = Arrays.asList(
                 new VEvent()
                     .withDescription("DESCRIPTION:A simple description")
+                    .withDuration(Duration.ofMinutes(45))
+                    .withGeographicPosition("37.386013;-122.082932")
                     .withLocation("Antarctica")
                     .withPriority(2)
                     .withResources(new Resources("Nettoyeur haute pression")
                             .withLanguage("fr"))
-                    .withDuration(Duration.ofMinutes(45))
-                    .withGeographicPosition("37.386013;-122.082932")
                     .withVAlarms(VAlarm.parse("BEGIN:VALARM" + System.lineSeparator() +
                                      "ACTION:DISPLAY" + System.lineSeparator() +
                                      "DESCRIPTION:Test alarm" + System.lineSeparator() +
@@ -64,12 +64,12 @@ public class LocatableTest
                                      "END:VALARM")),
                 new VTodo()
                     .withDescription("DESCRIPTION:A simple description")
+                    .withDuration(Duration.ofMinutes(45))
+                    .withGeographicPosition("37.386013;-122.082932")
                     .withLocation("Antarctica")
                     .withPriority(2)
                     .withResources(new Resources("Nettoyeur haute pression")
                             .withLanguage("fr"))
-                    .withDuration(Duration.ofMinutes(45))
-                    .withGeographicPosition("37.386013;-122.082932")
                     .withVAlarms(VAlarm.parse("BEGIN:VALARM" + System.lineSeparator() +
                             "ACTION:DISPLAY" + System.lineSeparator() +
                             "DESCRIPTION:Test alarm" + System.lineSeparator() +

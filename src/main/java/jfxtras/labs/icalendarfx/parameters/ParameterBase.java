@@ -9,7 +9,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 /**
- * Base class of all iCalendar Parameters
+ * Base class of all iCalendar Parameters.  Parameters can't have children.
  * Example VALUE=DATE
  * 
  * @author David Bal
