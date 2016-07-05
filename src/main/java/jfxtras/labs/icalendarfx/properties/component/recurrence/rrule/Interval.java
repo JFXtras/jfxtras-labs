@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.properties.component.recurrence.rrule;
 
+import java.util.List;
+
 /**
  * INTERVAL
  * RFC 5545 iCalendar 3.3.10, page 40
@@ -22,14 +24,14 @@ public class Interval extends RRuleElementBase<Integer, Interval>
     {
         super();
         setValue(DEFAULT_INTERVAL);
-        valueProperty().addListener((obs, oldValue, newValue) ->
-        {
-            if ((newValue != null) && (newValue < 1))
-            {
-                setValue(oldValue);
-                throw new IllegalArgumentException(elementType() + " can't be less than 1");
-            }
-        });
+//        valueProperty().addListener((obs, oldValue, newValue) ->
+//        {
+//            if ((newValue != null) && (newValue < 1))
+//            {
+//                setValue(oldValue);
+//                throw new IllegalArgumentException(elementType() + " can't be less than 1");
+//            }
+//        });
     }
     
     public Interval(Integer interval)
@@ -79,5 +81,16 @@ public class Interval extends RRuleElementBase<Integer, Interval>
         Integer value = (getValue() == null) ? DEFAULT_INTERVAL : getValue();
         Integer otherValue = (other.getValue() == null) ? DEFAULT_INTERVAL : getValue();
         return value.equals(otherValue);
+    }
+    
+    @Override
+    public List<String> errors()
+    {
+        List<String> errors = super.errors();
+        if (getValue() != null && getValue() < 1)
+        {
+            errors.add("INTERVAL is " + getValue() + ".  The value MUST be greater than or equal to 1.");
+        }
+        return errors;
     }
 }

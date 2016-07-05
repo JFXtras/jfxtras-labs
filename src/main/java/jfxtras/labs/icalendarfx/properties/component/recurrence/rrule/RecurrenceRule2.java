@@ -664,7 +664,8 @@ public class RecurrenceRule2 extends VParentBase
         {
             errors.add("UNTIL and COUNT are both present.  UNTIL or COUNT rule parts are OPTIONAL, but they MUST NOT both occur.");
         }
-        byRules().forEach(b -> errors.addAll(b.errors()));
+        childrenUnmodifiable().forEach(c -> errors.addAll(c.errors()));
+//        byRules().forEach(b -> errors.addAll(b.errors()));
         return errors;
     }
     

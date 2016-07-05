@@ -825,7 +825,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         
         // DAY OF WEEK RAIO BUTTON LISTENER (FOR MONTHLY)
         dayOfWeekRadioButton.selectedProperty().addListener(dayOfWeekButtonListener);
-        System.out.println("running here3:");
 
         // LISTENERS TO BE ADDED AFTER INITIALIZATION
         addListeners(); // Listeners to update exception dates
@@ -1024,7 +1023,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Invalid Number");
         alert.setHeaderText("Please enter valid numbers.");
-        alert.setContentText("Must greater than or equal to 1");
+        alert.setContentText("Must be greater than or equal to 1");
         ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
