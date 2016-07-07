@@ -9,8 +9,6 @@ import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import jfxtras.labs.icalendarfx.components.revisors.Revisable;
-import jfxtras.labs.icalendarfx.components.revisors.ReviserVAlarm;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action;
 import jfxtras.labs.icalendarfx.properties.component.alarm.Action.ActionType;
@@ -332,8 +330,8 @@ public class VAlarm extends VComponentDescribableBase<VAlarm> implements VCompon
         super(source);
     }
     
-    @Override
-    public Revisable newRevisor() { return new ReviserVAlarm(this); }
+//    @Override
+//    public Reviser newRevisor() { return new ReviserVAlarm(this); }
 
     @Override
     public List<String> errors()

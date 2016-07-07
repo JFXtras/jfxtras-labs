@@ -9,7 +9,7 @@ import java.util.Collection;
  *
  * @param <U> - calendar VComponent class
  */
-public interface Revisable
+public interface Reviser
 {
     /** Revise component based on properties set in subclasses
      * Can return one or two components.  Returns two if changes are applied to ONE or THIS-AND-FUTURE

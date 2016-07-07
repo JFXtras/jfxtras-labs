@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
 import jfxtras.labs.icalendarfx.VParent;
-import jfxtras.labs.icalendarfx.components.revisors.Revisable;
 
 /**
  * iCalendar component
@@ -32,8 +31,8 @@ public interface VComponent extends VParent
      */
     String componentName();
     
-    /** Component editor */
-    Revisable newRevisor();
+//    /** Component editor */
+//    Reviser newRevisor();
     
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.4

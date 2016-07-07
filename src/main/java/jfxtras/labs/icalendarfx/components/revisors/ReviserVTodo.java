@@ -14,17 +14,17 @@ public class ReviserVTodo extends ReviserLocatable<ReviserVTodo, VTodo>
     }
     
     @Override
-    public void adjustDateTime()
+    public void adjustDateTime(VTodo vComponentEditedCopy)
     {
-        super.adjustDateTime();
+        super.adjustDateTime(vComponentEditedCopy);
         TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());
-        if (getVComponentEdited().getDuration() != null)
+        if (vComponentEditedCopy.getDuration() != null)
         {
-            getVComponentEdited().setDuration(duration);
-        } else if (getVComponentEdited().getDateTimeDue() != null)
+            vComponentEditedCopy.setDuration(duration);
+        } else if (vComponentEditedCopy.getDateTimeDue() != null)
         {
-            Temporal dtend = getVComponentEdited().getDateTimeStart().getValue().plus(duration);
-            getVComponentEdited().setDateTimeDue(dtend);
+            Temporal dtend = vComponentEditedCopy.getDateTimeStart().getValue().plus(duration);
+            vComponentEditedCopy.setDateTimeDue(dtend);
         } else
         {
             throw new RuntimeException("Either DTEND or DURATION must be set");

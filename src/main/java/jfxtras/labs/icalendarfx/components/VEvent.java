@@ -9,8 +9,6 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.revisors.Revisable;
-import jfxtras.labs.icalendarfx.components.revisors.ReviserVEvent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
@@ -226,11 +224,11 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
 //        }
 //    }
     
-    @Override
-    public Revisable newRevisor()
-    {
-        return new ReviserVEvent(this);
-    }
+//    @Override
+//    public Reviser newRevisor()
+//    {
+//        return new ReviserVEvent(this);
+//    }
     
     @Override
     public List<String> errors()

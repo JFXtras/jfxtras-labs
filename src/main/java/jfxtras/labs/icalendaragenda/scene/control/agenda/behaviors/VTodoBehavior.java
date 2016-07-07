@@ -37,6 +37,8 @@ public class VTodoBehavior extends DisplayableBehavior<VTodo>
     @Override
     public void callRevisor(Appointment appointment)
     {
+        throw new RuntimeException("not implemented");
+
         // TODO Auto-generated method stub
         
     }

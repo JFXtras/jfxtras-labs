@@ -7,6 +7,7 @@ import java.util.List;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVTodo;
+import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
 
 public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
 {
@@ -35,7 +36,7 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
     @Override
     Collection<VTodo> callRevisor()
     {
-        ReviserVTodo reviser = ((ReviserVTodo) vComponentOriginalCopy.newRevisor())
+        ReviserVTodo reviser = ((ReviserVTodo) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
                 .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
                 .withEndRecurrence(editDescriptiveVBox.endNewRecurrence)
                 .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)

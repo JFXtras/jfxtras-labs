@@ -12,8 +12,6 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import jfxtras.labs.icalendarfx.components.revisors.Revisable;
-import jfxtras.labs.icalendarfx.components.revisors.ReviserVTodo;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.PercentComplete;
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeCompleted;
@@ -61,13 +59,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  *
  */
 public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentDescribable2<VTodo>
-{
-//    @Override
-//    public CalendarElementType componentType()
-//    {
-//        return CalendarElementType.VTODO;
-//    }
-    
+{    
     /**
      * COMPLETED: Date-Time Completed
      * RFC 5545 iCalendar 3.8.2.1 page 94
@@ -226,97 +218,6 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
         }
         return duration;
     }
-    
-//    @Override
-//    public void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
-//    {
-//        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-//        if (getDuration() != null)
-//        {
-//            setDuration(duration);
-//        } else if (getDateTimeDue() != null)
-//        {
-//            Temporal dtdue = getDateTimeStart().getValue().plus(duration);
-//            setDateTimeDue(dtdue);
-//        } else
-//        {
-//            throw new RuntimeException("Invalid VTodo: Either DUE or DURATION must be set");
-//        }        
-//    }
-    
-    /*
-     * METHODS FOR EDITING COMPONENTS
-     */
-    
-    @Override
-    public Revisable newRevisor() { return new ReviserVTodo(this); }
-//    
-//    @Override
-//    public
-//    <U extends Temporal> void becomeNonRecurring(
-//            VComponentDisplayableBase<?> vComponentOriginal,
-//            U startRecurrence,
-//            U endRecurrence)
-//    {
-//        super.becomeNonRecurring(vComponentOriginal, startRecurrence, endRecurrence);
-//        if (getDuration() == null)
-//        {
-//            setDateTimeDue(endRecurrence);
-//        }
-//    }
-//    
-//    @Override
-//    public
-//    <T extends VComponentDisplayableBase<?>, U extends Temporal> List<PropertyType> findChangedProperties(
-//          T vComponentOriginal,
-//          Temporal startOriginalRecurrence,
-//          U startRecurrence,
-//          U endRecurrence)
-//    {
-//        List<PropertyType> changedProperties = super.findChangedProperties(vComponentOriginal, startOriginalRecurrence, startRecurrence, endRecurrence);
-//        TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-//        TemporalAmount durationOriginal = getActualDuration();
-//        if (! durationOriginal.equals(durationNew))
-//        {
-//            if (getDateTimeDue() != null)
-//            {
-//                changedProperties.add(PropertyType.DATE_TIME_DUE);                    
-//            } else if (getDuration() == null)
-//            {
-//                changedProperties.add(PropertyType.DURATION);                    
-//            }
-//        }      
-//        return changedProperties;
-//    }
-    
-//    /** Stream recurrence dates with adjustment to include recurrences that are due before start */
-//    @Override
-//    public Stream<Temporal> streamRecurrences(Temporal start)
-//    {
-//        final TemporalAmount adjustment = getActualDuration();
-////        if (getDuration() != null)
-////        {
-////            adjustment = getDuration().getValue();
-////        } else if (getDateTimeDue() != null)
-////        {
-////            adjustment = Duration.between(getDateTimeStart().getValue(), getDateTimeDue().getValue());
-////        } else
-////        {
-////            throw new RuntimeException("Either DTEND or DURATION must be set");
-////        }
-//        return super.streamRecurrences(start.minus(adjustment));
-//    }
-    
-//    @Override
-//    public boolean isValid()
-//    {
-//        boolean isDuePresent = getDateTimeDue() != null;
-//        boolean isDurationPresent = getDuration() != null;
-//        boolean ok1 = isDuePresent && ! isDurationPresent;
-//        boolean ok2 = ! isDuePresent && isDurationPresent;
-//        boolean isDueAndDurationOk = ok1 || ok2;
-//        return super.isValid() && isDueAndDurationOk;
-//    }
     
     @Override
     public List<String> errors()

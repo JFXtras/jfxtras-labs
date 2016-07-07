@@ -30,9 +30,9 @@ public abstract class ReviserLocatable<T, U extends VComponentLocatable<U>> exte
     }
     
     @Override
-    void becomeNonRecurring()
+    void becomeNonRecurring(U vComponentEditedCopy)
     {
-        super.becomeNonRecurring();
+        super.becomeNonRecurring(vComponentEditedCopy);
         if (getVComponentOriginal().getRecurrenceRule() != null)
         { // RRULE was removed, update DTSTART, DTEND or DURATION
             getVComponentEdited().setDateTimeStart(getStartRecurrence());

@@ -89,7 +89,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         return true;   
     }
     
-    /** Edit VEvent or VTodo or VJournal */
+    /** Main method to edit VEvent or VTodo or VJournal */
     @Override
     public Collection<U> revise()
     {
@@ -98,6 +98,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             throw new RuntimeException("Invalid parameters for component revision:");
         }
         
+        // Copy edited component for further changes (i.e. UID, date/time)
         U vComponentEditedCopy = null;
         try
         {
@@ -112,36 +113,36 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         U vComponentOriginalCopy = getVComponentOriginal();
         Temporal startRecurrence = getStartRecurrence();
         Temporal startOriginalRecurrence = getStartOriginalRecurrence();
-        if (! getVComponentEdited().isValid())
+        if (! vComponentEditedCopy.isValid())
         {
             throw new RuntimeException("Can't revise. Edited component is invalid:" + System.lineSeparator() + 
-                    getVComponentEdited().errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-                    getVComponentEdited().toContent());
+                    vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                    vComponentEditedCopy.toContent());
         }
-        if (! getVComponentOriginal().isValid())
+        if (! vComponentOriginalCopy.isValid())
         {
             throw new RuntimeException("Can't revise. Original component is invalid:" + System.lineSeparator() + 
-                    getVComponentEdited().errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-                    getVComponentEdited().toContent());
+                    vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                    vComponentEditedCopy.toContent());
         }
         
         Collection<U> vComponents = new ArrayList<>(); // new components that should be added to main list
-        validateStartRecurrenceAndDTStart(getStartRecurrence());
-        final RRuleStatus rruleType = RRuleStatus.getRRuleType(getVComponentOriginal().getRecurrenceRule(), getVComponentEdited().getRecurrenceRule());
+        validateStartRecurrenceAndDTStart(vComponentEditedCopy, getStartRecurrence());
+        final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginalCopy.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
         System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         switch (rruleType)
         {
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
-            becomeNonRecurring();
+            becomeNonRecurring(vComponentEditedCopy);
             // fall through
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
-            adjustDateTime();
+            adjustDateTime(vComponentEditedCopy);
             break;
         case WITH_EXISTING_REPEAT:
             // Find which properties changed
-            List<PropertyType> changedProperties = findChangedProperties();
+            List<PropertyType> changedProperties = findChangedProperties(vComponentEditedCopy, vComponentOriginalCopy);
             /* Note:
              * time properties must be checked separately because changes are stored in startRecurrence and endRecurrence,
              * not the VComponents DTSTART and DTEND yet.  The changes to DTSTART and DTEND are made after the dialog
@@ -171,9 +172,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 case ALL:
                     if (relatedVComponents.size() == 1)
                     {
-                        adjustDateTime();
+                        adjustDateTime(vComponentEditedCopy);
                         // Adjust children components with RecurrenceIDs
-                        getVComponentEdited().childComponents()
+                        vComponentEditedCopy.childComponents()
                                 .stream()
                                 .forEach(v ->
                                 {
@@ -189,11 +190,11 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 case CANCEL:
                     return null;
                 case THIS_AND_FUTURE:
-                    editThisAndFuture();
+                    editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
                     vComponents.add(vComponentOriginalCopy);
                     break;
                 case ONE:
-                    editOne();
+                    editOne(vComponentEditedCopy);
                     vComponents.add(vComponentOriginalCopy);
                     break;
                 default:
@@ -202,15 +203,15 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             }
         }
         
-        if (! getVComponentEdited().isValid())
+        if (! vComponentEditedCopy.isValid())
         {
             throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
-                    getVComponentEdited().errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-                    getVComponentEdited().toContent());
+                    vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                    vComponentEditedCopy.toContent());
         }
         if (incrementSequence)
         {
-            getVComponentEdited().incrementSequence();
+            vComponentEditedCopy.incrementSequence();
         }
         vComponents.add(vComponentEditedCopy);
         return vComponents;
@@ -220,34 +221,34 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
      * endRecurrence to closest valid values
      */
      // TODO - VERITFY THIS WORKS - changed from old version
-    void validateStartRecurrenceAndDTStart(Temporal startRecurrence)
+    void validateStartRecurrenceAndDTStart(U vComponentEditedCopy, Temporal startRecurrence)
     {
-        if (getVComponentEdited().getRecurrenceRule() != null)
+        if (vComponentEditedCopy.getRecurrenceRule() != null)
         {
-            Temporal firstTemporal = getVComponentEdited().getRecurrenceRule().getValue()
-                    .streamRecurrences(getVComponentEdited().getDateTimeStart().getValue())
+            Temporal firstTemporal = vComponentEditedCopy.getRecurrenceRule().getValue()
+                    .streamRecurrences(vComponentEditedCopy.getDateTimeStart().getValue())
                     .findFirst()
                     .get();
-            if (! firstTemporal.equals(getVComponentEdited().getDateTimeStart().getValue()))
+            if (! firstTemporal.equals(vComponentEditedCopy.getDateTimeStart().getValue()))
             {
-                getVComponentEdited().setDateTimeStart(firstTemporal);
+                vComponentEditedCopy.setDateTimeStart(firstTemporal);
             }
         }
     }
     
-    void becomeNonRecurring()
+    void becomeNonRecurring(U vComponentEditedCopy)
     {
-        getVComponentEdited().setRecurrenceRule((RecurrenceRule2) null);
-        getVComponentEdited().setRecurrenceDates(null);
-        getVComponentEdited().setExceptionDates(null);
+        vComponentEditedCopy.setRecurrenceRule((RecurrenceRule2) null);
+        vComponentEditedCopy.setRecurrenceDates(null);
+        vComponentEditedCopy.setExceptionDates(null);
     }
     
     /** Adjust start date/time */
-    void adjustDateTime()
+    void adjustDateTime(U vComponentEditedCopy)
     {
         TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
-        Temporal newStart = getVComponentEdited().getDateTimeStart().getValue().plus(amount);
-        getVComponentEdited().setDateTimeStart(newStart);
+        Temporal newStart = vComponentEditedCopy.getDateTimeStart().getValue().plus(amount);
+        vComponentEditedCopy.setDateTimeStart(newStart);
     }
     
     /**
@@ -258,19 +259,19 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
      * @param <T>
      * @param <U>
      */
-    List<PropertyType> findChangedProperties()
+    List<PropertyType> findChangedProperties(U vComponentEditedCopy, U vComponentOriginalCopy)
 
     {
         List<PropertyType> changedProperties = new ArrayList<>();
 
-        getVComponentEdited().childrenUnmodifiable()
+        vComponentEditedCopy.childrenUnmodifiable()
                 .stream()
                 .filter(c -> c instanceof Property<?>)
                 .map(p -> ((Property<?>) p).propertyType())
                 .forEach(t ->
                 {
-                    Object p1 = t.getProperty(getVComponentEdited());
-                    Object p2 = t.getProperty(getVComponentOriginal());
+                    Object p1 = t.getProperty(vComponentEditedCopy);
+                    Object p2 = t.getProperty(vComponentOriginalCopy);
 //                    System.out.println("prop:" + p1 + " " + p2);
                     if (! p1.equals(p2))
                     {
@@ -317,24 +318,24 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
      * VComponents.  vEventNew has new settings, vEvent has former settings.
      * 
      */
-    void editThisAndFuture()
+    void editThisAndFuture(U vComponentEditedCopy, U vComponentOriginalCopy)
     {
-//        System.out.println("myUID1:" + getVComponentEdited().getUniqueIdentifier().getValue());
+//        System.out.println("myUID1:" + vComponentEditedCopy.getUniqueIdentifier().getValue());
         // Reset COUNT, set UNTIL
         
-        if (getVComponentOriginal().getRecurrenceRule().getValue().getCount() != null)
+        if (vComponentOriginalCopy.getRecurrenceRule().getValue().getCount() != null)
         {
-            getVComponentOriginal().getRecurrenceRule().getValue().setCount(null);
+            vComponentOriginalCopy.getRecurrenceRule().getValue().setCount(null);
         }
         
         final Temporal untilNew;
-        if (getVComponentEdited().isWholeDay())
+        if (vComponentEditedCopy.isWholeDay())
         {
-            untilNew = getVComponentEdited().previousStreamValue(getStartRecurrence());
+            untilNew = vComponentEditedCopy.previousStreamValue(getStartRecurrence());
         } else
         {
-            System.out.println("getStartRecurrence():" + getStartRecurrence() + " " + getVComponentEdited().previousStreamValue(getStartRecurrence()));
-            Temporal previousRecurrence = getVComponentEdited().previousStreamValue(getStartRecurrence());
+            System.out.println("getStartRecurrence():" + getStartRecurrence() + " " + vComponentEditedCopy.previousStreamValue(getStartRecurrence()));
+            Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(getStartRecurrence());
             if (getStartRecurrence() instanceof LocalDateTime)
             {
                 untilNew = LocalDateTime.from(previousRecurrence).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
@@ -345,21 +346,21 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             {
                 throw new DateTimeException("Unsupported Temporal type:" + previousRecurrence.getClass());
             }
-            getVComponentOriginal().getRecurrenceRule().getValue().setUntil(untilNew);
+            vComponentOriginalCopy.getRecurrenceRule().getValue().setUntil(untilNew);
         }
 
         // Adjust start and end
-        getVComponentEdited().setDateTimeStart(getStartRecurrence());
+        vComponentEditedCopy.setDateTimeStart(getStartRecurrence());
 
-        String relatedUID = (getVComponentOriginal().getRelatedTo() == null) ?
-                getVComponentOriginal().getUniqueIdentifier().getValue() : getVComponentOriginal().getRelatedTo().get(0).getValue();
-        getVComponentEdited().withRelatedTo(relatedUID);
-        getVComponentEdited().setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
+        String relatedUID = (vComponentOriginalCopy.getRelatedTo() == null) ?
+                vComponentOriginalCopy.getUniqueIdentifier().getValue() : vComponentOriginalCopy.getRelatedTo().get(0).getValue();
+        vComponentEditedCopy.withRelatedTo(relatedUID);
+        vComponentEditedCopy.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
         
         // remove EXDATEs that are out of bounds
-        if (getVComponentEdited().getExceptionDates() != null)
+        if (vComponentEditedCopy.getExceptionDates() != null)
         {
-            final Iterator<Temporal> exceptionDateIterator = getVComponentEdited().getExceptionDates()
+            final Iterator<Temporal> exceptionDateIterator = vComponentEditedCopy.getExceptionDates()
                     .stream()
                     .flatMap(e -> e.getValue().stream())
                     .iterator();
@@ -373,9 +374,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 }
             }
         }
-        if (getVComponentOriginal().getExceptionDates() != null)
+        if (vComponentOriginalCopy.getExceptionDates() != null)
         {
-            final Iterator<Temporal> exceptionDateIterator = getVComponentOriginal().getExceptionDates()
+            final Iterator<Temporal> exceptionDateIterator = vComponentOriginalCopy.getExceptionDates()
                     .stream()
                     .flatMap(e -> e.getValue().stream())
                     .iterator();
@@ -391,9 +392,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
         
         // remove RDATEs that are out of bounds
-        if (getVComponentEdited().getRecurrenceDates() != null)
+        if (vComponentEditedCopy.getRecurrenceDates() != null)
         {
-            final Iterator<Temporal> recurrenceDateIterator = getVComponentEdited().getRecurrenceDates()
+            final Iterator<Temporal> recurrenceDateIterator = vComponentEditedCopy.getRecurrenceDates()
                     .stream()
                     .flatMap(e -> e.getValue().stream())
                     .iterator();
@@ -407,9 +408,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 }
             }
         }
-        if (getVComponentOriginal().getRecurrenceDates() != null)
+        if (vComponentOriginalCopy.getRecurrenceDates() != null)
         {
-            final Iterator<Temporal> recurrenceDateIterator = getVComponentOriginal().getRecurrenceDates()
+            final Iterator<Temporal> recurrenceDateIterator = vComponentOriginalCopy.getRecurrenceDates()
                     .stream()
                     .flatMap(e -> e.getValue().stream())
                     .iterator();
@@ -425,10 +426,10 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
         
         // remove RECURRENCE-ID components that are out of bounds
-//        System.out.println("myUID2:" + getVComponentEdited().getUniqueIdentifier().getValue());
-        if (getVComponentEdited().childComponents() != null)
+//        System.out.println("myUID2:" + vComponentEditedCopy.getUniqueIdentifier().getValue());
+        if (vComponentEditedCopy.childComponents() != null)
         {
-            final Iterator<Temporal> recurrenceIDIterator = getVComponentEdited().childComponents()
+            final Iterator<Temporal> recurrenceIDIterator = vComponentEditedCopy.childComponents()
                     .stream()
                     .map(e -> e.getRecurrenceId().getValue())
                     .iterator();
@@ -442,9 +443,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 }
             }
         }
-        if (getVComponentOriginal().getRecurrenceDates() != null)
+        if (vComponentOriginalCopy.getRecurrenceDates() != null)
         {
-            final Iterator<Temporal> recurrenceIDIterator = getVComponentOriginal().childComponents()
+            final Iterator<Temporal> recurrenceIDIterator = vComponentOriginalCopy.childComponents()
                     .stream()
                     .map(e -> e.getRecurrenceId().getValue())
                     .iterator();
@@ -460,25 +461,25 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
         
         // Modify COUNT for the edited vEvent
-//        System.out.println(getVComponentOriginal().getRecurrenceRule().getValue());
-//        System.out.println(getVComponentEdited().getRecurrenceRule().getValue());
-        if (getVComponentEdited().getRecurrenceRule().getValue().getCount() != null)
+//        System.out.println(vComponentOriginalCopy.getRecurrenceRule().getValue());
+//        System.out.println(vComponentEditedCopy.getRecurrenceRule().getValue());
+        if (vComponentEditedCopy.getRecurrenceRule().getValue().getCount() != null)
         {
-            int countInOrginal = (int) getVComponentOriginal().streamRecurrences().count();
-            int countInNew = getVComponentEdited().getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
+            int countInOrginal = (int) vComponentOriginalCopy.streamRecurrences().count();
+            int countInNew = vComponentEditedCopy.getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
 //            System.out.println("countInNew:" + countInOrginal + " " + countInNew);
             // TODO - NEED TO CHECK IF COUNT IS LESS THAN 1 AND PROHIBIT THIS-AND-FUTURE EDIT
-            getVComponentEdited().getRecurrenceRule().getValue().setCount(countInNew);
+            vComponentEditedCopy.getRecurrenceRule().getValue().setCount(countInNew);
         }
         
-        if (! getVComponentOriginal().isValid())
+        if (! vComponentOriginalCopy.isValid())
         {
             throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
-                    getVComponentOriginal().errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-                    getVComponentOriginal().toContent());
+                    vComponentOriginalCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                    vComponentOriginalCopy.toContent());
         }
         
-        getVComponentEdited().setUniqueIdentifier(); // TODO - NEED TO REGISTER CHANGE WITH VCALENDAR MAP
+        vComponentEditedCopy.setUniqueIdentifier(); // TODO - NEED TO REGISTER CHANGE WITH VCALENDAR MAP
     }
     
     /**
@@ -486,12 +487,12 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
      * as with the same UID as the parent and a recurrence-id for the replaced date or date/time.
      * 
      */
-    void editOne()
+    void editOne(U vComponentEditedCopy)
     {
-        getVComponentEdited().setRecurrenceRule((RecurrenceRule) null);
-        getVComponentEdited().setDateTimeStart(getStartRecurrence());
-        getVComponentEdited().setRecurrenceId(startOriginalRecurrence);
-        getVComponentEdited().setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
+        vComponentEditedCopy.setRecurrenceRule((RecurrenceRule) null);
+        vComponentEditedCopy.setDateTimeStart(getStartRecurrence());
+        vComponentEditedCopy.setRecurrenceId(startOriginalRecurrence);
+        vComponentEditedCopy.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
     }
     
     private enum RRuleStatus

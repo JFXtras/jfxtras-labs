@@ -24,23 +24,23 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
     
     /** Adjust start and end date/time */
     @Override
-    public void adjustDateTime()
+    public void adjustDateTime(VEvent vComponentEditedCopy)
     {
-        super.adjustDateTime();
-        adjustDateTimeEndOrDuration();
+        super.adjustDateTime(vComponentEditedCopy);
+        adjustDateTimeEndOrDuration(vComponentEditedCopy);
     }
 
-    private void adjustDateTimeEndOrDuration()
+    private void adjustDateTimeEndOrDuration(VEvent vComponentEditedCopy)
     {
         TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());
 //        System.out.println("duration:" + duration);
-        if (getVComponentEdited().getDuration() != null)
+        if (vComponentEditedCopy.getDuration() != null)
         {
-            getVComponentEdited().setDuration(duration);
-        } else if (getVComponentEdited().getDateTimeEnd() != null)
+            vComponentEditedCopy.setDuration(duration);
+        } else if (vComponentEditedCopy.getDateTimeEnd() != null)
         {
-            Temporal dtend = getVComponentEdited().getDateTimeStart().getValue().plus(duration);
-            getVComponentEdited().setDateTimeEnd(dtend);
+            Temporal dtend = vComponentEditedCopy.getDateTimeStart().getValue().plus(duration);
+            vComponentEditedCopy.setDateTimeEnd(dtend);
             System.out.println("dtend:" + dtend);
         } else
         {
@@ -49,9 +49,9 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
     }
     
     @Override
-    List<PropertyType> findChangedProperties()
+    List<PropertyType> findChangedProperties(VEvent vComponentEditedCopy, VEvent vComponentOriginalCopy)
     {
-        List<PropertyType> changedProperties = super.findChangedProperties();
+        List<PropertyType> changedProperties = super.findChangedProperties(vComponentEditedCopy, vComponentOriginalCopy);
 //                getVComponentEdited(), getVComponentOriginal(), getStartRecurrence(), getEndRecurrence());
 //        System.out.println("duration temporals:" + startRecurrence + " + " + endRecurrence);
         TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());
@@ -70,10 +70,10 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
     }
     
     @Override
-    void editThisAndFuture()
+    void editThisAndFuture(VEvent vComponentEditedCopy, VEvent vComponentOriginalCopy)
     {
-        super.editThisAndFuture();
-        adjustDateTimeEndOrDuration();
+        super.editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
+        adjustDateTimeEndOrDuration(vComponentEditedCopy);
     }
     
     @Override
@@ -92,9 +92,9 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
     }
     
     @Override
-    void editOne()
+    void editOne(VEvent vComponentEditedCopy)
     {
-        super.editOne();
-        adjustDateTimeEndOrDuration();
+        super.editOne(vComponentEditedCopy);
+        adjustDateTimeEndOrDuration(vComponentEditedCopy);
     }
 }
