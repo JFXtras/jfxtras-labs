@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.time.DateTimeException;
@@ -17,6 +18,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
@@ -143,6 +145,22 @@ public class VEventTest extends ICalendarTestAbstract2
         VEvent e = getYearly1();
         VEvent e2 = new VEvent(e);
         assertEquals(e, e2);
+    }
+    
+    @Test // use reflection
+    public void canCopyComponent3()
+    {
+        VComponent e = getYearly1();
+        try
+        {
+            VComponent e2 = e.getClass().newInstance();
+            e2.copyChildrenFrom(e);
+            assertEquals(e, e2);
+            assertFalse(e == e2);
+        } catch (InstantiationException | IllegalAccessException e1)
+        {
+            e1.printStackTrace();
+        }
     }
     
 }

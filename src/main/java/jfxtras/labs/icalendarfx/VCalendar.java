@@ -383,7 +383,7 @@ public class VCalendar extends VParentBase
      * Note: if you only want child components you need to filter the list to only include components
      * that have a RECURRENCE-ID
      */
-    private Map<String, List<VComponentDisplayable<?>>> uidToRelatedComponentsMap = new HashMap<>();
+    public Map<String, List<VComponentDisplayable<?>>> uidToRelatedComponentsMap = new HashMap<>(); // public for testing
     
     /**
      * RecurrenceID listener
@@ -401,6 +401,7 @@ public class VCalendar extends VParentBase
                     
                     vComponent.setChildComponentsListCallBack( (c) ->
                     {
+                        System.out.println("my UID:" + c.getUniqueIdentifier().getValue() + " ");
                         return uidToRelatedComponentsMap
                                 .get(c.getUniqueIdentifier().getValue())
                                 .stream()
@@ -430,10 +431,13 @@ public class VCalendar extends VParentBase
                     {
                         String uid = vComponent.getUniqueIdentifier().getValue();
                         List<VComponentDisplayable<?>> relatedComponents = uidToRelatedComponentsMap.get(uid);
-                        relatedComponents.remove(vComponent);
-                        if (relatedComponents.isEmpty())
+                        if (relatedComponents != null)
                         {
-                            uidToRelatedComponentsMap.remove(uid);
+                            relatedComponents.remove(vComponent);
+                            if (relatedComponents.isEmpty())
+                            {
+                                uidToRelatedComponentsMap.remove(uid);
+                            }
                         }
                     });
                 }                

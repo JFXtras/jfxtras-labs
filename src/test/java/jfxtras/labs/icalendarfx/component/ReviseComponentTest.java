@@ -189,23 +189,11 @@ public class ReviseComponentTest
         assertEquals("Daily1 Summary", myComponent.getSummary().getValue());        
     }
     
-    @Test
+    @Test // change date and time
     public void canEditThisAndFuture()
     {
-        final ObservableList<VEvent> vComponents = FXCollections.observableArrayList();
-        List<String> changes = new ArrayList<>();
-        ListChangeListener<? super VComponentLocatable<?>> listener  = (ListChangeListener.Change<? extends VComponentLocatable<?>> change) ->
-        {
-            while (change.next())
-            {
-                if (change.wasAdded())
-                {
-                    change.getAddedSubList().forEach(c -> changes.add("Added:" + c.getSummary().getValue()));
-                    // Note: making recurrences should be done here by a similar listener in production code
-                }
-            }
-        };
-        vComponents.addListener(listener);
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
         
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
         VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
@@ -214,7 +202,6 @@ public class ReviseComponentTest
         Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
-//        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
         ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginalCopy.newRevisor())
                 .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
@@ -224,14 +211,6 @@ public class ReviseComponentTest
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginalCopy);
         Collection<VEvent> newVComponents = reviser.revise();
-//        Collection<VEvent> newVComponents = ReviseComponentHelper.handleEdit(
-//                vComponentOriginalCopy,
-//                vComponentEdited,
-//                startOriginalRecurrence,
-//                startRecurrence,
-//                endRecurrence,
-////                shift,
-//                (m) -> ChangeDialogOption.THIS_AND_FUTURE);
         vComponents.addAll(newVComponents);
 
         assertEquals(2, vComponents.size());
@@ -248,12 +227,50 @@ public class ReviseComponentTest
         Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
         RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
         assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
+    }
+    
+    @Test // change INTERVAL
+    public void canEditThisAndFuture2()
+    {
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
+        
+        VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentEdited);
+        VEvent vComponentOriginalCopy = new VEvent(vComponentEdited);
+        vComponentEdited.setSummary("Edited summary");
+        vComponentEdited.getRecurrenceRule().getValue().setInterval(2);
 
-        List<String> expectedChanges = Arrays.asList(
-                "Added:Daily1 Summary",
-                "Added:Edited summary"
-                );
-        assertEquals(expectedChanges, changes);
+        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+        Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
+        Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
+
+        ReviserVEvent reviser = ((ReviserVEvent) vComponentOriginalCopy.newRevisor())
+                .withDialogCallback((m) -> ChangeDialogOption.THIS_AND_FUTURE)
+                .withEndRecurrence(endRecurrence)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withStartRecurrence(startRecurrence)
+                .withVComponentEdited(vComponentEdited)
+                .withVComponentOriginal(vComponentOriginalCopy);
+        Collection<VEvent> newVComponents = reviser.revise();
+        vComponents.remove(vComponentEdited);
+        vComponents.addAll(newVComponents);
+
+        assertEquals(2, vComponents.size());
+        VEvent myComponentFuture = vComponents.get(1);
+        System.out.println(myComponentFuture);
+        assertTrue(vComponentEdited == myComponentFuture);
+        VEvent myComponentOriginal = vComponents.get(0);
+        assertTrue(vComponentOriginalCopy == myComponentOriginal);
+        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentFuture.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentFuture.getDateTimeEnd().getValue());        
+        assertEquals("Edited summary", myComponentFuture.getSummary().getValue());
+        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentOriginal.getDateTimeStart().getValue());        
+        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
+        Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+        RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
+        assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
     }
     
     @Test

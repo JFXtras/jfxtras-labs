@@ -98,8 +98,18 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             throw new RuntimeException("Invalid parameters for component revision:");
         }
         
-        U vComponentEdited = getVComponentEdited();
-        U vComponentOriginal = getVComponentOriginal();
+        U vComponentEditedCopy = null;
+        try
+        {
+            vComponentEditedCopy = (U) getVComponentEdited().getClass().newInstance();
+            vComponentEditedCopy.copyChildrenFrom(getVComponentEdited());
+        } catch (InstantiationException | IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        
+//        U vComponentEdited = getVComponentEdited();
+        U vComponentOriginalCopy = getVComponentOriginal();
         Temporal startRecurrence = getStartRecurrence();
         Temporal startOriginalRecurrence = getStartOriginalRecurrence();
         if (! getVComponentEdited().isValid())
@@ -142,13 +152,13 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 .anyMatch(b -> b == true);
             if (changedProperties.size() > 0) // if changes occurred
             {
-                List<U> relatedVComponents = Arrays.asList(vComponentEdited); // TODO - support related components
+                List<U> relatedVComponents = Arrays.asList(vComponentEditedCopy); // TODO - support related components
                 final ChangeDialogOption changeResponse;
                 if (provideDialog)
                 {
                     Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = ChangeDialogOption.makeDialogChoices(
-                            vComponentOriginal,
-                            vComponentEdited,
+                            vComponentOriginalCopy,
+                            vComponentEditedCopy,
                             startOriginalRecurrence,
                             changedProperties);
                     changeResponse = dialogCallback.call(choices);
@@ -180,11 +190,11 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     return null;
                 case THIS_AND_FUTURE:
                     editThisAndFuture();
-                    vComponents.add(vComponentOriginal);
+                    vComponents.add(vComponentOriginalCopy);
                     break;
                 case ONE:
                     editOne();
-                    vComponents.add(vComponentOriginal);
+                    vComponents.add(vComponentOriginalCopy);
                     break;
                 default:
                     throw new RuntimeException("Unknown response:" + changeResponse);
@@ -202,7 +212,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         {
             getVComponentEdited().incrementSequence();
         }
-        vComponents.add(vComponentEdited);
+        vComponents.add(vComponentEditedCopy);
         return vComponents;
     }
     
@@ -309,7 +319,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
      */
     void editThisAndFuture()
     {
+//        System.out.println("myUID1:" + getVComponentEdited().getUniqueIdentifier().getValue());
         // Reset COUNT, set UNTIL
+        
         if (getVComponentOriginal().getRecurrenceRule().getValue().getCount() != null)
         {
             getVComponentOriginal().getRecurrenceRule().getValue().setCount(null);
@@ -337,7 +349,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
 
         // Adjust start and end
-        getVComponentEdited().setUniqueIdentifier();
         getVComponentEdited().setDateTimeStart(getStartRecurrence());
 
         String relatedUID = (getVComponentOriginal().getRelatedTo() == null) ?
@@ -414,6 +425,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
         
         // remove RECURRENCE-ID components that are out of bounds
+//        System.out.println("myUID2:" + getVComponentEdited().getUniqueIdentifier().getValue());
         if (getVComponentEdited().childComponents() != null)
         {
             final Iterator<Temporal> recurrenceIDIterator = getVComponentEdited().childComponents()
@@ -454,6 +466,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         {
             int countInOrginal = (int) getVComponentOriginal().streamRecurrences().count();
             int countInNew = getVComponentEdited().getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
+//            System.out.println("countInNew:" + countInOrginal + " " + countInNew);
+            // TODO - NEED TO CHECK IF COUNT IS LESS THAN 1 AND PROHIBIT THIS-AND-FUTURE EDIT
             getVComponentEdited().getRecurrenceRule().getValue().setCount(countInNew);
         }
         
@@ -463,6 +477,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     getVComponentOriginal().errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
                     getVComponentOriginal().toContent());
         }
+        
+        getVComponentEdited().setUniqueIdentifier(); // TODO - NEED TO REGISTER CHANGE WITH VCALENDAR MAP
     }
     
     /**
