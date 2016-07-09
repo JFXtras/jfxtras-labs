@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.VAlarm;
 
-public class ReviserVAlarm extends ReviserBase<ReviserVAlarm, VAlarm>
+public class ReviserVAlarm extends ReviserBase<VAlarm>
 {
     public ReviserVAlarm(VAlarm component)
     {

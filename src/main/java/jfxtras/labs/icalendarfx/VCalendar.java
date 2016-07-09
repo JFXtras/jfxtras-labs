@@ -401,7 +401,6 @@ public class VCalendar extends VParentBase
                     
                     vComponent.setChildComponentsListCallBack( (c) ->
                     {
-                        System.out.println("my UID:" + c.getUniqueIdentifier().getValue() + " ");
                         return uidToRelatedComponentsMap
                                 .get(c.getUniqueIdentifier().getValue())
                                 .stream()

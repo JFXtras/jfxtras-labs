@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.StandardTime;
 
-public class ReviserStandardTime extends ReviserBase<ReviserStandardTime, StandardTime>
+public class ReviserStandardTime extends ReviserBase<StandardTime>
 {
     public ReviserStandardTime(StandardTime component)
     {

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 
-public class ReviserDaylightSavingTime extends ReviserBase<ReviserDaylightSavingTime, DaylightSavingTime>
+public class ReviserDaylightSavingTime extends ReviserBase<DaylightSavingTime>
 {
     public ReviserDaylightSavingTime(DaylightSavingTime component)
     {

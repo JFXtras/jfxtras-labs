@@ -52,7 +52,6 @@ public class ICalendarAgendaTrial1 extends Application
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
         // ROOT PANE
-	    System.out.println("start:");
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(ICalendarAgendaTrial1.class.getResource("view/Calendar.fxml"));
         BorderPane root = mainLoader.load();

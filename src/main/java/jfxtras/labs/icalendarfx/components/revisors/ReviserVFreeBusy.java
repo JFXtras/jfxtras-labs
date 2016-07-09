@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 
-public class ReviserVFreeBusy extends ReviserBase<ReviserVFreeBusy, VFreeBusy>
+public class ReviserVFreeBusy extends ReviserBase<VFreeBusy>
 {
     public ReviserVFreeBusy(VFreeBusy component)
     {

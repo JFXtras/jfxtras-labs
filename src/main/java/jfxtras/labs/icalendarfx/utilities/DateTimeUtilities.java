@@ -213,13 +213,13 @@ public final class DateTimeUtilities
      */
     public static TemporalAmount temporalAmountBetween(Temporal startInclusive, Temporal endExclusive)
     {
-        if (! startInclusive.getClass().equals(endExclusive.getClass()))
-        {
-            throw new DateTimeException("Temporal class of parameters startInclusive and endExclusive must be the same - " + 
-                        startInclusive.getClass().getSimpleName() + ", " + endExclusive.getClass().getSimpleName());
-        }
+//        if (! startInclusive.getClass().equals(endExclusive.getClass()))
+//        {
+//            throw new DateTimeException("Temporal class of parameters startInclusive and endExclusive must be the same - " + 
+//                        startInclusive.getClass().getSimpleName() + ", " + endExclusive.getClass().getSimpleName());
+//        }
         final TemporalAmount duration;
-        if (DateTimeType.of(startInclusive) == DateTimeType.DATE)
+        if (DateTimeType.of(endExclusive) == DateTimeType.DATE)
         {
             duration = Period.between(LocalDate.from(startInclusive), LocalDate.from(endExclusive));
         } else

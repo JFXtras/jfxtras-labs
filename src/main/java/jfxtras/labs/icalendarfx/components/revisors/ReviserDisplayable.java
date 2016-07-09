@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -23,8 +24,8 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> extends ReviserBase<T, U>
-{ 
+public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> extends ReviserBase<U>
+{
     public ReviserDisplayable(U component)
     {
         setVComponentEdited(component);
@@ -109,7 +110,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             e.printStackTrace();
         }
         
-//        U vComponentEdited = getVComponentEdited();
         U vComponentOriginalCopy = getVComponentOriginal();
         Temporal startRecurrence = getStartRecurrence();
         Temporal startOriginalRecurrence = getStartOriginalRecurrence();
@@ -191,6 +191,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     return null;
                 case THIS_AND_FUTURE:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
+                    System.out.println("start2:" + vComponentEditedCopy.getDateTimeStart().getValue());
                     vComponents.add(vComponentOriginalCopy);
                     break;
                 case ONE:
@@ -246,8 +247,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     /** Adjust start date/time */
     void adjustDateTime(U vComponentEditedCopy)
     {
-        TemporalAmount amount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
-        Temporal newStart = vComponentEditedCopy.getDateTimeStart().getValue().plus(amount);
+        TemporalAmount shiftAmount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
+        Temporal newStart = vComponentEditedCopy.getDateTimeStart().getValue().plus(shiftAmount);
         vComponentEditedCopy.setDateTimeStart(newStart);
     }
     
@@ -322,11 +323,20 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     {
 //        System.out.println("myUID1:" + vComponentEditedCopy.getUniqueIdentifier().getValue());
         // Reset COUNT, set UNTIL
-        
         if (vComponentOriginalCopy.getRecurrenceRule().getValue().getCount() != null)
         {
             vComponentOriginalCopy.getRecurrenceRule().getValue().setCount(null);
         }
+
+        // Adjust start and end - set recurrence temporal as start
+//        adjustDateTime(vComponentEditedCopy);
+        vComponentEditedCopy.setDateTimeStart(getStartRecurrence());
+        if (getStartRecurrence() instanceof LocalDate)
+        {
+            // need shift amount - apply to end, may need to change type
+        }
+        System.out.println("start:" + vComponentEditedCopy.getDateTimeStart());
+        // TODO - NEED TO ADJUST END - NOT BEIGN DONE
         
         final Temporal untilNew;
         if (vComponentEditedCopy.isWholeDay())
@@ -334,7 +344,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             untilNew = vComponentEditedCopy.previousStreamValue(getStartRecurrence());
         } else
         {
-            System.out.println("getStartRecurrence():" + getStartRecurrence() + " " + vComponentEditedCopy.previousStreamValue(getStartRecurrence()));
             Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(getStartRecurrence());
             if (getStartRecurrence() instanceof LocalDateTime)
             {
@@ -348,9 +357,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             }
             vComponentOriginalCopy.getRecurrenceRule().getValue().setUntil(untilNew);
         }
-
-        // Adjust start and end
-        vComponentEditedCopy.setDateTimeStart(getStartRecurrence());
 
         String relatedUID = (vComponentOriginalCopy.getRelatedTo() == null) ?
                 vComponentOriginalCopy.getUniqueIdentifier().getValue() : vComponentOriginalCopy.getRelatedTo().get(0).getValue();
@@ -495,7 +501,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         vComponentEditedCopy.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
     }
     
-    private enum RRuleStatus
+   public enum RRuleStatus
    {
        INDIVIDUAL ,
        WITH_EXISTING_REPEAT ,

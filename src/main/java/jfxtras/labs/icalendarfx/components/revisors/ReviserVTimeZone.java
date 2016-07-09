@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 
-public class ReviserVTimeZone extends ReviserBase<ReviserVTimeZone, VTimeZone>
+public class ReviserVTimeZone extends ReviserBase<VTimeZone>
 {
     public ReviserVTimeZone(VTimeZone component)
     {
