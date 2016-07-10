@@ -21,6 +21,7 @@ import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> extends ReviserBase<U>
@@ -247,8 +248,11 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     void adjustDateTime(U vComponentEditedCopy)
     {
         TemporalAmount shiftAmount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
-        Temporal newStart = vComponentEditedCopy.getDateTimeStart().getValue().plus(shiftAmount);
-        vComponentEditedCopy.setDateTimeStart(newStart);
+        TemporalAmount amountToStart = DateTimeUtilities.temporalAmountBetween(vComponentEditedCopy.getDateTimeStart().getValue(), getStartRecurrence());
+        System.out.println("amountToStart:" + amountToStart + " "+ shiftAmount);
+        Temporal newStart = getStartRecurrence().minus(amountToStart).plus(shiftAmount);
+        System.out.println("newStart:" + newStart);
+        vComponentEditedCopy.setDateTimeStart(new DateTimeStart(newStart));
     }
     
     /**

@@ -7,9 +7,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ 
     AgendaStringConverstionTests.class,
-    VEventPopupTests.class,
-    VJournalPopupTests.class,
-    VTodoPopupTests.class,
+    VEventEditPopupTests.class,
+    VJournalEditPopupTests.class,
+    VTodoEditPopupTests.class,
               })
 public class AllTests {
 

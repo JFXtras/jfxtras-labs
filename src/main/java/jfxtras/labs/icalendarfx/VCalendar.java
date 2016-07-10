@@ -354,7 +354,8 @@ public class VCalendar extends VParentBase
     }
     
     /**
-     * Add VComponent to one of the ObservableLists based on its type such as VEVENT, VTODO, etc.
+     * A convenience method that adds a VComponent to one of the ObservableLists based on
+     * its type such as VEVENT, VTODO, etc.
      * 
      * @param newVComponent - VComponent to add
      */
@@ -375,6 +376,9 @@ public class VCalendar extends VParentBase
         } else if (newVComponent instanceof VTimeZone)
         {
             getVTimeZones().add((VTimeZone) newVComponent);            
+        } else
+        {
+            throw new RuntimeException("Unsuppored VComponent type:" + newVComponent.getClass());
         }
     }
     

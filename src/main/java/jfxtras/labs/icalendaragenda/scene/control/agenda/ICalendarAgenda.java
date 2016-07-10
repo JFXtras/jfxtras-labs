@@ -36,8 +36,8 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.Behavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VEventBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VJournalBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VTodoBehavior;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.DefaultVComponentAppointmentStore;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.VComponentStore;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFromAppointment;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
@@ -86,9 +86,9 @@ public class ICalendarAgenda extends Agenda
 //    @Deprecated
 //    public RecurrenceHelper<Appointment> getRecurrenceHelper() { return recurrenceHelper; }
     
-    public VComponentStore<Appointment> getVComponentStore() { return vComponentStore; }
-    private VComponentStore<Appointment> vComponentStore; // default VComponent store - for Appointments, if other implementation used make new store
-    public void setVComponentStore(VComponentStore<Appointment> vComponentStore) { this.vComponentStore = vComponentStore; }
+    public VComponentFactory<Appointment> getVComponentStore() { return vComponentStore; }
+    private VComponentFactory<Appointment> vComponentStore; // default VComponent store - for Appointments, if other implementation used make new store
+    public void setVComponentStore(VComponentFactory<Appointment> vComponentStore) { this.vComponentStore = vComponentStore; }
 
     /** The VCalendar object that contains all scheduling information */
     public VCalendar getVCalendar() { return vCalendar; }
@@ -304,7 +304,7 @@ public class ICalendarAgenda extends Agenda
     {
         super();
         this.vCalendar = vCalendar;
-        vComponentStore = new DefaultVComponentAppointmentStore(appointmentGroups()); // default VComponent store - for Appointments, if other implementation used make new store
+        vComponentStore = new DefaultVComponentFromAppointment(appointmentGroups()); // default VComponent store - for Appointments, if other implementation used make new store
         
         // Populate component class to behavior map with required behaviors
         vComponentClassBehaviorMap.put(VEvent.class, new VEventBehavior(this));

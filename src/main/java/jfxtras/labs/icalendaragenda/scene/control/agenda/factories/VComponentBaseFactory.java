@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.scene.control.agenda.stores;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.factories;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -19,7 +19,7 @@ import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
  *
  * @param <R> - type of recurrence
  */
-public abstract class VComponentBaseStore<R> implements VComponentStore<R>
+public abstract class VComponentBaseFactory<R> implements VComponentFactory<R>
 {
     private ObjectProperty<LocalDateTime> startRange = new SimpleObjectProperty<LocalDateTime>(); // must be updated when range changes
     @Override public ObjectProperty<LocalDateTime> startRangeProperty() { return startRange; }

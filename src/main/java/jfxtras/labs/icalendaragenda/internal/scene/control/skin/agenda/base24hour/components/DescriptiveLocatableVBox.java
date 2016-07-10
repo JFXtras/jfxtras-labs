@@ -198,7 +198,7 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
         }
         endDateTextField.localDateProperty().addListener(endDateTextListener);
         endDateTimeTextField.localDateTimeProperty().addListener(endDateTimeTextListener);
-        System.out.println("valuese: + " + endNewRecurrence + " ");
+//        System.out.println("endNewRecurrence:" + endNewRecurrence);
     }
     
 //    /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and

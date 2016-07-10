@@ -34,8 +34,9 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.DefaultVComponentAppointmentStore;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.VComponentStore;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFromAppointment;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFactory;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
@@ -56,7 +57,7 @@ import jfxtras.test.TestUtil;
  * @author David Bal
  *
  */
-public class VEventPopupTests extends JFXtrasGuiTest
+public class VEventEditPopupTests extends JFXtrasGuiTest
 {
     private EditVEventTabPane editComponentPopup;
     
@@ -82,9 +83,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
     @Test
     public void canDisplayPopupWithVEvent()
     {
-//        RecurrenceHelper<Appointment> recurrenceHelper = new RecurrenceHelper<Appointment>(
-//                AgendaTestAbstract.MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE);
-        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
+        VComponentFactory<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
         vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -110,9 +109,9 @@ public class VEventPopupTests extends JFXtrasGuiTest
     }
     
     @Test
-    public void canEditVEventWithPopup1()
+    public void canSimpleEditVEvent()
     {
-        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        VComponentFactory<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
         vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1()
@@ -141,7 +140,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
     @Test
     public void canEditDescriptibeProperties()
     {
-        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        VComponentFactory<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
         vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -208,6 +207,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
         categoryTextField.setText("new group name");
         assertEquals("new group name", vevent.getCategories().get(0).getValue().get(0));
         
+        // Save changes
         click("#saveComponentButton");
         
         ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
@@ -244,7 +244,7 @@ public class VEventPopupTests extends JFXtrasGuiTest
     @Test
     public void canChangeFrequency()
     {
-        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        VComponentFactory<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
         vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
@@ -362,6 +362,49 @@ public class VEventPopupTests extends JFXtrasGuiTest
         assertEquals(0, rrule.byRules().size());
         }
     }
+    
+    @Test
+    public void canChangeToWholeDay()
+    {
+        VComponentFactory<Appointment> vComponentFactory = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        vComponentFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));   
+        VCalendar myCalendar = new VCalendar();
+        VEvent vevent = ICalendarStaticComponents.getDaily1()
+                .withLocation("Here");
+        myCalendar.getVEvents().add(vevent);
+        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
+        Appointment appointment = newAppointments.get(0);
+        
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            editComponentPopup.setupData(
+                    vevent,
+                    myCalendar.getVEvents(),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
+                    ICalendarAgendaUtilities.CATEGORIES);
+        });
+        CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
+        click(wholeDayCheckBox);
+
+        LocalDateTextField start = find("#startDateTextField");
+        assertEquals(LocalDate.of(2016, 5, 15), start.getLocalDate());
+        start.setLocalDate(LocalDate.of(2016, 5, 16));
+        
+        // Save changes
+        click("#saveComponentButton");
+        
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
+        click("#changeDialogOkButton");
+        
+        VEvent editedVEvent = myCalendar.getVEvents().get(0);
+        assertEquals(LocalDate.of(2015, 11, 12), editedVEvent.getDateTimeStart().getValue());
+        assertEquals(LocalDate.of(2015, 11, 13), editedVEvent.getDateTimeEnd().getValue());
+        System.out.println(editedVEvent);
+    }
+    
     
     private static final Map<ChangeDialogOption, Pair<Temporal,Temporal>> EXAMPLE_MAP = makeExampleMap();
     private static Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeExampleMap()

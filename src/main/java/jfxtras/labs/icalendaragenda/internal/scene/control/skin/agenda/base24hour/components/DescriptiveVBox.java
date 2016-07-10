@@ -78,6 +78,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         categorySelectionGridPane.getStylesheets().addAll(getStylesheets());
         startDateTimeTextField.setId("startDateTimeTextField");
         startDateTextField.setId("startDateTextField");
+        startDateTimeTextField.setId("startDateTimeTextField");
     }
 
     final private ChangeListener<? super LocalDate> startDateTextListener = (observable, oldValue, newValue) -> synchStartDate(oldValue, newValue);
@@ -291,7 +292,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         }
         startDateTextField.localDateProperty().addListener(startDateTextListener);
         startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
-        System.out.println("valuess: + " + startRecurrenceProperty.get() + " ");
+//        System.out.println("startRecurrenceProperty:" + startRecurrenceProperty.get());
     }
     
     /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and

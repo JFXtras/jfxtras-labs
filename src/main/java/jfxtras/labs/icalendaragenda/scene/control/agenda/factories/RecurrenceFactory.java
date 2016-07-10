@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.scene.control.agenda.stores;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.factories;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,22 +7,14 @@ import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 
 /**
- * Creates VComponent calendar objects from a recurrence and makes recurrences from VComponents.
+ * Creates recurrences from VComponents.
  * 
  * @author David Bal
  *
  * @param <R> - type of recurrences
  */
-public interface VComponentStore<R>
+public interface RecurrenceFactory<R>
 {
-    /** Create VComponent from recurrence.  The recurrence is tested to determine which type of VComponent should
-     * be created, such as VEVENT or VTODO
-     * 
-     * @param recurrence - recurrence as basis for VComponent
-     * @return - new VComponent
-     */
-    VComponentDisplayable<?> createVComponent(R recurrence);
-    
     /** Property for start of range to make recurrences */
     ObjectProperty<LocalDateTime> startRangeProperty();
     /** set start of range to make recurrences */
@@ -45,5 +37,4 @@ public interface VComponentStore<R>
      * @return created appointments
      */
     List<R> makeRecurrences(VComponentDisplayable<?> vComponent);
-
 }

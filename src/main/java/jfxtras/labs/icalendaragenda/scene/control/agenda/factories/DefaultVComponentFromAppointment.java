@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.scene.control.agenda.stores;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.factories;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -17,7 +17,7 @@ import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-public class DefaultVComponentAppointmentStore extends VComponentBaseStore<Appointment>
+public class DefaultVComponentFromAppointment extends VComponentBaseFactory<Appointment>
 {
     private Collection<AppointmentGroup> appointmentGroups;
 
@@ -79,7 +79,7 @@ public class DefaultVComponentAppointmentStore extends VComponentBaseStore<Appoi
         };
     }
             
-    public DefaultVComponentAppointmentStore(Collection<AppointmentGroup> appointmentGroups)
+    public DefaultVComponentFromAppointment(Collection<AppointmentGroup> appointmentGroups)
     {
         super();
         this.appointmentGroups = appointmentGroups;

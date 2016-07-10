@@ -6,8 +6,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
@@ -16,8 +14,9 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.DefaultVComponentAppointmentStore;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.stores.VComponentStore;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFromAppointment;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFactory;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -41,7 +40,9 @@ public class EditComponentPopupTrial extends Application
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", Locale.getDefault());
         Settings.setup(resources);
 
+        VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
+        myCalendar.addVComponent(vevent);
 //        VEvent vevent = new VEvent()
 //                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
 //                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2016, 5, 16, 10, 0), ZoneId.of("America/Los_Angeles")))
@@ -58,11 +59,13 @@ public class EditComponentPopupTrial extends Application
 //                        .withFrequency(FrequencyType.DAILY)
 //                        .withInterval(3)
 //                        .withCount(10));
+
 //        VJournal vevent = new VJournal()
 //                .withDateTimeStart("20160518T110000")
 //                .withSummary("test journal")
 //                .withDateTimeStamp("20160518T232502Z")
 //                .withUniqueIdentifier("20160518T232502-0@jfxtras.org");
+
 //        VTodo vevent = new VTodo()
 //                .withDateTimeStart("20160518T110000")
 //                .withDuration(Duration.ofHours(1))
@@ -70,23 +73,19 @@ public class EditComponentPopupTrial extends Application
 //                .withDateTimeStamp("20160518T232502Z")
 //                .withUniqueIdentifier("20160518T232502-0@jfxtras.org");
         
-        ObservableList<VEvent> vEvents = FXCollections.observableArrayList(vevent);
-//        ObservableList<VJournal> vEvents = FXCollections.observableArrayList(vevent);
-//        ObservableList<VTodo> vEvents = FXCollections.observableArrayList(vevent);
-        VComponentStore<Appointment> vComponentStore = new DefaultVComponentAppointmentStore(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
+        VComponentFactory<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
         vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(2);
-//        System.out.println("appoingment:" + appointment.getStartLocalDateTime());
 
         EditVEventTabPane popup = new EditVEventTabPane();
 //        EditVJournalTabPane popup = new EditVJournalTabPane();
 //        EditVTodoTabPane popup = new EditVTodoTabPane();
-//        List<String> categories = ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.stream().map(a -> a.getDescription()).collect(Collectors.toList());
+
         popup.setupData(
                 vevent,
-                vEvents,
+                myCalendar.getVEvents(),
                 appointment.getStartTemporal(),
                 appointment.getEndTemporal(),
                 ICalendarAgendaUtilities.CATEGORIES
@@ -100,19 +99,10 @@ public class EditComponentPopupTrial extends Application
         primaryStage.setTitle("ICalendar Edit Popup Demo");
         primaryStage.show();
         
-//        popup.isFinished().addListener((obs, oldValue, newValue) -> 
-//        {
-////            System.out.println("hide:"+ vEvents.size());
-//            vEvents.stream().forEach(System.out::println);
-//            primaryStage.hide();
-//            System.out.println("child components:" + vEvents.get(0).childComponents());
-//            System.out.println("child components:" + vEvents.get(1).childComponents());
-//        });
-        
-//        vEvents.addListener((InvalidationListener) (obs) ->
-//        {
-//            System.out.println("VEVENTS:" + vEvents.size());
-//            vEvents.stream().forEach(System.out::println);
-//        });
+        popup.isFinished().addListener((obs, oldValue, newValue) -> 
+        {
+            myCalendar.getVEvents().stream().forEach(System.out::println);
+            primaryStage.hide();
+        });
     }
 }
