@@ -291,8 +291,6 @@ public class ReviseComponentTest
         assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
         Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
         RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
-        System.out.println(myComponentOriginal);
-        System.out.println(myComponentFuture);
         assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
     }
     

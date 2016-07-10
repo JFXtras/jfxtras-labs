@@ -190,7 +190,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     return null;
                 case THIS_AND_FUTURE:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-                    System.out.println("start2:" + vComponentEditedCopy.getDateTimeStart().getValue());
+//                    System.out.println("start2:" + vComponentEditedCopy.getDateTimeStart().getValue());
                     vComponents.add(vComponentOriginalCopy);
                     break;
                 case ONE:
@@ -320,27 +320,27 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
      */
     void editThisAndFuture(U vComponentEditedCopy, U vComponentOriginalCopy)
     {
-//        System.out.println("myUID1:" + vComponentEditedCopy.getUniqueIdentifier().getValue());
         // Reset COUNT, set UNTIL
         if (vComponentOriginalCopy.getRecurrenceRule().getValue().getCount() != null)
         {
             vComponentOriginalCopy.getRecurrenceRule().getValue().setCount(null);
         }
-        
+
+        /*
+         * Assigning UNTIL must be done before adjusting the start and end or the previousStreamValue
+         * will not be valid.
+         */
         final Temporal untilNew;
         if (vComponentEditedCopy.isWholeDay())
         {
-            untilNew = vComponentEditedCopy.previousStreamValue(getStartRecurrence());
+            untilNew = vComponentEditedCopy.previousStreamValue(getStartOriginalRecurrence());
         } else
         {
-            // TODO - how to get previous recurrence when DTSTART hasn't changed yet
-            // try changing type, but not date???
-            // should use start original recurrence?
-            Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(getStartRecurrence());
-            if (getStartRecurrence() instanceof LocalDateTime)
+            Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(getStartOriginalRecurrence());
+            if (getStartOriginalRecurrence() instanceof LocalDateTime)
             {
                 untilNew = LocalDateTime.from(previousRecurrence).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
-            } else if (getStartRecurrence() instanceof ZonedDateTime)
+            } else if (getStartOriginalRecurrence() instanceof ZonedDateTime)
             {
                 untilNew = ((ZonedDateTime) previousRecurrence).withZoneSameInstant(ZoneId.of("Z"));
             } else
@@ -485,7 +485,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     
     void adjustStartAndEnd(U vComponentEditedCopy, U vComponentOriginalCopy)
     {
-        // no op
+        // no op hook, override in subclasses
     }
     
     /**
