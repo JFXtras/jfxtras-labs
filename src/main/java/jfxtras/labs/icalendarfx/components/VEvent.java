@@ -81,12 +81,6 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 public class VEvent extends VComponentLocatableBase<VEvent> implements VComponentDateTimeEnd<VEvent>,
     VComponentDescribable2<VEvent>, VComponentRepeatable<VEvent>
 {
-//    @Override
-//    public CalendarElementType componentType()
-//    {
-//        return CalendarElementType.VEVENT;
-//    }
-
     /**
      * DTEND
      * Date-Time End
@@ -206,29 +200,22 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
         return duration;
     }
     
-//    @Override
-//    @Deprecated
-//    void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
-//    {
-//        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
-//        if (getDuration() != null)
-//        {
-//            setDuration(duration);
-//        } else if (getDateTimeEnd() != null)
-//        {
-//            Temporal dtend = getDateTimeStart().getValue().plus(duration);
-//            setDateTimeEnd(dtend);
-//        } else
-//        {
-//            throw new RuntimeException("Either DTEND or DURATION must be set");
-//        }
-//    }
-    
-//    @Override
-//    public Reviser newRevisor()
-//    {
-//        return new ReviserVEvent(this);
-//    }
+    @Override
+    public void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
+    {
+        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+        if (getDuration() != null)
+        {
+            setDuration(duration);
+        } else if (getDateTimeEnd() != null)
+        {
+            Temporal dtend = getDateTimeStart().getValue().plus(duration);
+            setDateTimeEnd(dtend);
+        } else
+        {
+            throw new RuntimeException("Either DTEND or DURATION must be set");
+        }
+    }
     
     @Override
     public List<String> errors()
@@ -291,6 +278,6 @@ public class VEvent extends VComponentLocatableBase<VEvent> implements VComponen
     public void checkDateTimeStartConsistency()
     {
         // TODO Auto-generated method stub
-        
+        throw new RuntimeException("not implemented");        
     }
 }

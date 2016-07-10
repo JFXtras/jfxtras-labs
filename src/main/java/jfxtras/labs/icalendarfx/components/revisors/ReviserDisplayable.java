@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendarfx.components.revisors;
 
 import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -327,16 +326,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         {
             vComponentOriginalCopy.getRecurrenceRule().getValue().setCount(null);
         }
-
-        // Adjust start and end - set recurrence temporal as start
-//        adjustDateTime(vComponentEditedCopy);
-        vComponentEditedCopy.setDateTimeStart(getStartRecurrence());
-        if (getStartRecurrence() instanceof LocalDate)
-        {
-            // need shift amount - apply to end, may need to change type
-        }
-        System.out.println("start:" + vComponentEditedCopy.getDateTimeStart());
-        // TODO - NEED TO ADJUST END - NOT BEIGN DONE
         
         final Temporal untilNew;
         if (vComponentEditedCopy.isWholeDay())
@@ -344,6 +333,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             untilNew = vComponentEditedCopy.previousStreamValue(getStartRecurrence());
         } else
         {
+            // TODO - how to get previous recurrence when DTSTART hasn't changed yet
+            // try changing type, but not date???
+            // should use start original recurrence?
             Temporal previousRecurrence = vComponentEditedCopy.previousStreamValue(getStartRecurrence());
             if (getStartRecurrence() instanceof LocalDateTime)
             {
@@ -357,6 +349,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             }
             vComponentOriginalCopy.getRecurrenceRule().getValue().setUntil(untilNew);
         }
+        
+        // Adjust start and end - set recurrence temporal as start
+        adjustStartAndEnd(vComponentEditedCopy, vComponentOriginalCopy);
 
         String relatedUID = (vComponentOriginalCopy.getRelatedTo() == null) ?
                 vComponentOriginalCopy.getUniqueIdentifier().getValue() : vComponentOriginalCopy.getRelatedTo().get(0).getValue();
@@ -486,6 +481,11 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
         
         vComponentEditedCopy.setUniqueIdentifier(); // TODO - NEED TO REGISTER CHANGE WITH VCALENDAR MAP
+    }
+    
+    void adjustStartAndEnd(U vComponentEditedCopy, U vComponentOriginalCopy)
+    {
+        // no op
     }
     
     /**

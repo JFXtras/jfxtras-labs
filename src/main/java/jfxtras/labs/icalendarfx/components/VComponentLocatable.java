@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 
@@ -259,6 +260,18 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
         return (T) this;
     }
     
-    /** Return either Duration property value, or a calculated duration based on start and end values */
+    /** A convenience method that returns either Duration property value, or a calculated duration based on start and end values */
     TemporalAmount getActualDuration();
+    
+    /**
+     * A convenience method that sets DTEND, DURATION (VEvent) or DUE (VTodo) depending on which ever is already set
+     * to new value calculated by the duration or period between input parameters (depending on if the parameters
+     * are LocalDate or a date/time type (i.e. ZonedDateTime))
+     *  
+     * Note: In order to set DTEND, DTSTART must be assigned a value.  DURATION and DUE doesn't require a DTSTART value.
+     *  
+     * @param startRecurrence
+     * @param endRecurrence
+     */
+    void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence);
 }

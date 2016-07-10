@@ -220,6 +220,23 @@ public class VTodo extends VComponentLocatableBase<VTodo> implements VComponentD
     }
     
     @Override
+    public void setEndOrDuration(Temporal startRecurrence, Temporal endRecurrence)
+    {
+        TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(startRecurrence, endRecurrence);
+        if (getDuration() != null)
+        {
+            setDuration(duration);
+        } else if (getDateTimeDue() != null)
+        {
+            Temporal due = getDateTimeStart().getValue().plus(duration);
+            setDateTimeDue(due);
+        } else
+        {
+            throw new RuntimeException("Either DTEND or DURATION must be set");
+        }
+    }
+    
+    @Override
     public List<String> errors()
     {
         List<String> errors = super.errors();
