@@ -53,7 +53,7 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
         loadFxml(DescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
     }
     
-    /** make new reviser, provide its data, produce revised components */
+    /** hook to make new reviser, provide its data, produce revised components */
     abstract Collection<T> callRevisor();
 
     @FXML

@@ -189,13 +189,16 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
         {
             timeGridPane.getChildren().remove(endDateTimeTextField);
             timeGridPane.add(endDateTextField, 1, 1);
+            endNewRecurrence = endDateTextField.getLocalDate();
         } else
         {
             timeGridPane.getChildren().remove(endDateTextField);
             timeGridPane.add(endDateTimeTextField, 1, 1);
+            endNewRecurrence = endDateTimeTextField.getLocalDateTime();
         }
         endDateTextField.localDateProperty().addListener(endDateTextListener);
         endDateTimeTextField.localDateTimeProperty().addListener(endDateTimeTextListener);
+        System.out.println("valuese: + " + endNewRecurrence + " ");
     }
     
 //    /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and

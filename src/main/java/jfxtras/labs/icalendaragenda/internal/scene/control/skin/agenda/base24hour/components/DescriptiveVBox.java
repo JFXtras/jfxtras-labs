@@ -85,6 +85,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTimeTextField when startDateTextField changes */
     void synchStartDate(LocalDate oldValue, LocalDate newValue)
     {
+        System.out.println("start date:" + newValue);
         startRecurrenceProperty.set(newValue);
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
         LocalDateTime newDateTime = startDateTimeTextField.getLocalDateTime().with(newValue);
@@ -97,6 +98,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTextField when startDateTimeTextField changes */
     void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
+        System.out.println("start date2:" + newValue);
         startRecurrenceProperty.set(startOriginalRecurrence.with(newValue));
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
@@ -126,7 +128,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             Temporal endRecurrence,
             List<String> categories)
     {
-        System.out.println("startRecurrence:" + startRecurrence);
         startOriginalRecurrence = startRecurrence;
         startRecurrenceProperty = new SimpleObjectProperty<>(startRecurrence);
         vComponentEdited = vComponent;
@@ -148,9 +149,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         // START DATE/TIME
         startDateTimeTextField.setLocale(Locale.getDefault());
         startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
-//        startDateTimeTextField.localDateTimeProperty().addListener(shiftAmountListener);
         startDateTextField.localDateProperty().addListener(startDateTextListener);
-//        startDateTextField.localDateProperty().addListener(shiftAmountListener);
         final LocalDateTime start;
         if (startRecurrence.isSupported(ChronoUnit.NANOS))
         {
@@ -283,13 +282,16 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         {
             timeGridPane.getChildren().remove(startDateTimeTextField);
             timeGridPane.add(startDateTextField, 1, 0);
+            startRecurrenceProperty.set(startDateTextField.getLocalDate());
         } else
         {
             timeGridPane.getChildren().remove(startDateTextField);
             timeGridPane.add(startDateTimeTextField, 1, 0);
+            startRecurrenceProperty.set(startDateTimeTextField.getLocalDateTime());
         }
         startDateTextField.localDateProperty().addListener(startDateTextListener);
         startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
+        System.out.println("valuess: + " + startRecurrenceProperty.get() + " ");
     }
     
     /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and
