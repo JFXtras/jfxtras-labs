@@ -5,10 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
-import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentBase;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
@@ -39,11 +40,11 @@ public enum CalendarElementType
             VEvent.class)
     {
 
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            return vCalendar.getVEvents();
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            return vCalendar.getVEvents();
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -54,6 +55,20 @@ public enum CalendarElementType
             return e;
         }
 
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            final ObservableList<VEvent> list;
+            if (destination.getVEvents() == null)
+            {
+                list = FXCollections.observableArrayList();
+                destination.setVEvents(list);
+            } else
+            {
+                list = destination.getVEvents();
+            }
+            list.add(new VEvent((VEvent) child));
+        }
     },
     VTODO ("VTODO",
             Arrays.asList(PropertyType.ATTACHMENT, PropertyType.ATTENDEE, PropertyType.CATEGORIES,
@@ -69,11 +84,11 @@ public enum CalendarElementType
             true,
             VTodo.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            return vCalendar.getVTodos();
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            return vCalendar.getVTodos();
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -82,6 +97,13 @@ public enum CalendarElementType
             e.parseContent(contentLines);
             vCalendar.getVTodos().add(e);
             return e;
+        }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
         }
 
     },
@@ -97,11 +119,11 @@ public enum CalendarElementType
             true,
             VJournal.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            return vCalendar.getVJournals();
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            return vCalendar.getVJournals();
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -112,6 +134,13 @@ public enum CalendarElementType
             return e;
         }
 
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
+        }
+
     },
     VTIMEZONE ("VTIMEZONE",
             Arrays.asList(PropertyType.IANA_PROPERTY, PropertyType.LAST_MODIFIED, PropertyType.NON_STANDARD,
@@ -119,11 +148,11 @@ public enum CalendarElementType
             true,
             VTimeZone.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            return vCalendar.getVTimeZones();
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            return vCalendar.getVTimeZones();
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -132,6 +161,13 @@ public enum CalendarElementType
             e.parseContent(contentLines);
             vCalendar.getVTimeZones().add(e);
             return e;
+        }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
         }
 
     },
@@ -143,11 +179,11 @@ public enum CalendarElementType
             true,
             VFreeBusy.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            return vCalendar.getVFreeBusies();
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            return vCalendar.getVFreeBusies();
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -156,6 +192,13 @@ public enum CalendarElementType
             e.parseContent(contentLines);
             vCalendar.getVFreeBusies().add(e);
             return e;
+        }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
         }
     },
     // NON-MAIN COMPONENTS - MUST BE NESTED IN A MAIN COMPONENT
@@ -167,16 +210,23 @@ public enum CalendarElementType
             false,
             DaylightSavingTime.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            return null; // not a main component - must be embedded inside a VTimeZone
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            return null; // not a main component - must be embedded inside a VTimeZone
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
+        }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
         }
 
     },
@@ -188,16 +238,23 @@ public enum CalendarElementType
             false,
             StandardTime.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            return null; // not a main component - must be embedded inside a VTimeZone
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            return null; // not a main component - must be embedded inside a VTimeZone
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
         {
             throw new RuntimeException("Not a main component - must be embedded inside a VTimeZone");
+        }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
         }
 
     },
@@ -208,11 +265,11 @@ public enum CalendarElementType
             false,
             VAlarm.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            return null; // not a main component - must be embedded inside a VEvent or VTodo
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            return null; // not a main component - must be embedded inside a VEvent or VTodo
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -220,16 +277,23 @@ public enum CalendarElementType
             throw new RuntimeException("Not a main component - must be embedded inside a VEvent or VTodo");
         }
 
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
+        }
+
     },
     // CALENDAR PROPERTIES
     CALENDAR_SCALE (PropertyType.CALENDAR_SCALE.toString(), null, true, CalendarScale.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -246,15 +310,22 @@ public enum CalendarElementType
             vCalendar.setCalendarScale(property);
             return property;
         }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
+        }
     },
     METHOD (PropertyType.METHOD.toString(), null, true, Method.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -271,15 +342,22 @@ public enum CalendarElementType
             vCalendar.setMethod(property);
             return property;
         }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
+        }
     },
     PRODUCT_IDENTIFIER (PropertyType.PRODUCT_IDENTIFIER.toString(), null, true, ProductIdentifier.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -296,15 +374,22 @@ public enum CalendarElementType
             vCalendar.setProductIdentifier(property);
             return property;
         }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
+        }
     },
     VERSION (PropertyType.VERSION.toString(), null, true, Version.class)
     {
-        @Override
-        public List<? extends VComponent> getComponents(VCalendar vCalendar)
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
+//        @Override
+//        public List<? extends VComponent> getComponents(VCalendar vCalendar)
+//        {
+//            // TODO Auto-generated method stub
+//            return null;
+//        }
 
         @Override
         public VElement parse(VCalendar vCalendar, List<String> contentLines)
@@ -320,6 +405,13 @@ public enum CalendarElementType
             Version property = Version.parse(line);
             vCalendar.setVersion(property);
             return property;
+        }
+
+        @Override
+        public void copyChild(VChild child, VCalendar destination)
+        {
+            throw new RuntimeException("not implemented");
+            
         }
     };
 
@@ -379,15 +471,13 @@ public enum CalendarElementType
         this.myClass = myClass;
     }
 
-    abstract public List<? extends VComponent> getComponents(VCalendar vCalendar);
+//    abstract public List<? extends VComponent> getComponents(VCalendar vCalendar);
 
     /** Parses string and sets property.  Called by {@link VComponentBase#parseContent()} */
     abstract public VElement parse(VCalendar vCalendar, List<String> contentLines);
     
-    public void copyChild(VElement child, VCalendar vCalendar)
-    {
-        throw new RuntimeException("not implemented");
-        // TODO Auto-generated method stub
-        
-    }
+    abstract public void copyChild(VChild child, VCalendar destination);
+//    {
+//        throw new RuntimeException("not implemented");
+//    }
 }

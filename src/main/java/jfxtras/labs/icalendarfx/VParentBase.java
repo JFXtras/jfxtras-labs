@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javafx.util.Callback;
+import jfxtras.labs.icalendarfx.content.ContentLineStrategy;
 
 /**
  * Base class for parent calendar components.  Uses an {@link Orderer} to keep track of child object order.  Ordering
@@ -22,6 +23,23 @@ public abstract class VParentBase implements VParent
      */
     final private Orderer orderer = new OrdererBase(this);
     public Orderer orderer() { return orderer; }
+    
+    private ContentLineStrategy contentLineGenerator;
+    protected void setContentLineGenerator(ContentLineStrategy contentLineGenerator)
+    {
+        System.out.println("set22");
+        this.contentLineGenerator = contentLineGenerator;
+        System.out.println("set223" + contentLineGenerator);
+    }
+    
+//    /*
+//     * CONSTRUCTOR
+//     */
+//    public VParentBase(ContentLineStrategy contentLineGenerator)
+//    {
+//        orderer = new OrdererBase(this);
+//        this.contentLineGenerator = contentLineGenerator;
+//    }
     
     /** Strategy to copy subclass's children */
     protected Callback<VChild, Void> copyChildCallback()
@@ -60,4 +78,32 @@ public abstract class VParentBase implements VParent
                 .flatMap(c -> c.errors().stream())
                 .collect(Collectors.toList());
     }
+
+//    final private String contentDelimeter;
+//    final private String lineDelimeter; // 
+    @Override
+    public String toContent()
+    {
+        if (contentLineGenerator == null)
+        {
+            throw new RuntimeException("Can't produce content lines before contentLineGenerator is set");
+        }
+        return contentLineGenerator.execute();
+//        StringBuilder builder = getContentBuilder();
+//        builder.append(firstContentLine());
+//        String content = orderer().sortedContent().stream()
+//              .collect(Collectors.joining(contentDelimeter));
+////        String content = childrenUnmodifiable().stream()
+////                .map(c -> c.toContent())
+////                .collect(Collectors.joining(System.lineSeparator()));
+//        if (content != null)
+//        {
+//            builder.append(content + lineDelimeter);
+//        }
+//        builder.append(lastContentLine());
+//        return builder.toString();
+    }
+//    abstract protected StringBuilder getContentBuilder();
+//    protected String firstContentLine() { return null; }
+//    protected String lastContentLine() { return null; }
 }

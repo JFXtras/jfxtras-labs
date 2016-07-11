@@ -28,14 +28,6 @@ public class OrdererBase implements Orderer
 {
     final private VParent parent;
     
-    /** 
-     * SORT ORDER
-     * Component sort order map.  Key is element, value is sort order.  Follows sort order of parsed content or
-     * order of added elements.
-     * 
-     * Generally, this map shouldn't be modified.  Only modify it when you want to force
-     * a specific order.
-     */
     @Override
     public Map<VChild, Integer> elementSortOrderMap() { return elementSortOrderMap; }
     final private Map<VChild, Integer> elementSortOrderMap = new HashMap<>();
@@ -86,7 +78,6 @@ public class OrdererBase implements Orderer
             }
         };
     }
-    
     
     /**
      * Sort order listener for ObservableList properties
@@ -139,11 +130,6 @@ public class OrdererBase implements Orderer
         property.removeListener(sortOrderChangeListener);
     }
     
-    /**
-     * Make a list of sorted content elements. Used by { @link VCalendarElement#toContent() }
-     * 
-     * @return - unmodifiable list of sorted content lines
-     */
     @Override
     public List<String> sortedContent()
     {        
@@ -164,26 +150,4 @@ public class OrdererBase implements Orderer
         
         return Collections.unmodifiableList(content);
     }
-
-//    /** Copy parameters, properties, and subcomponents from source into this component,
-//     * essentially making a copy of source 
-//     * 
-//     * Note: this method only overwrites properties found in source.  If there are properties in
-//     * this component that are not present in source then those will remain unchanged.
-//     * */
-//    @Override
-//    public void copyChildrenFrom(VCalendarParent source)
-//    {
-//        source.orderer().elementSortOrderMap
-//                .entrySet().stream()
-//                .sorted((Comparator<? super Entry<VCalendarElement, Integer>>) (e1, e2) -> 
-//                {
-//                    return e1.getValue().compareTo(e2.getValue());
-//                })
-//                .forEach((e) ->
-//                {
-//                    VCalendarElement child = e.getKey();
-//                    copyChildCallback.call(child);
-//                });
-//    }
 }

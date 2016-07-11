@@ -4,13 +4,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
+import jfxtras.labs.icalendarfx.content.MultilineContent;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -44,6 +44,9 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     @Override public void setParent(VParent parent) { myParent = parent; }
     @Override public VParent getParent() { return myParent; }
     
+    private String firstContentLine = "BEGIN:";
+    private String lastContentLine = "END:";
+    
     @Override
     protected Callback<VChild, Void> copyChildCallback()
     {        
@@ -69,6 +72,11 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     {
         addListeners();
         componentName = CalendarElementType.enumFromClass(this.getClass()).toString();
+        setContentLineGenerator(new MultilineContent(
+                orderer(),
+                firstContentLine + componentName,
+                lastContentLine + componentName,
+                400));
     }
     
     /** Parse content lines into calendar component */
@@ -212,27 +220,31 @@ public abstract class VComponentBase extends VParentBase implements VComponent
      */
     void parseSubComponents(CalendarElementType subcomponentType, String subcomponentcontentLines) { }
     
-    @Override
-    public String toContent()
-    {
-        StringBuilder builder = new StringBuilder(400);
-        builder.append(firstContentLine() + System.lineSeparator());
-//        sortedContent().stream().forEach(System.out::println);
-//        System.out.println("elements1:" + orderer().elementSortOrderMap().size() + " " + this.hashCode());
-//        checkContentList(); // test elements for completeness (can be removed for improved speed)
-//        System.exit(0);
-        String content = childrenUnmodifiable().stream()
-                .map(c -> c.toContent())
-                .collect(Collectors.joining(System.lineSeparator()));
-        if (content != null)
-        {
-            builder.append(content + System.lineSeparator());
-        }
-        builder.append(lastContentLine());
-        return builder.toString();
-    }
-    private String firstContentLine() { return "BEGIN:" + componentName(); }
-    private String lastContentLine() { return "END:" + componentName(); }
+//    @Override
+//    public String toContent()
+//    {
+//        StringBuilder builder = new StringBuilder(400);
+//        builder.append(firstContentLine() + System.lineSeparator());
+////        sortedContent().stream().forEach(System.out::println);
+////        System.out.println("elements1:" + orderer().elementSortOrderMap().size() + " " + this.hashCode());
+////        checkContentList(); // test elements for completeness (can be removed for improved speed)
+////        System.exit(0);
+//        String content = childrenUnmodifiable().stream()
+//                .map(c -> c.toContent())
+//                .collect(Collectors.joining(System.lineSeparator()));
+//        if (content != null)
+//        {
+//            builder.append(content + System.lineSeparator());
+//        }
+//        builder.append(lastContentLine());
+//        return builder.toString();
+//    }
+//    @Override
+//    protected StringBuilder getContentBuilder() { return new StringBuilder(400); }
+//    @Override
+//    protected String firstContentLine() { return "BEGIN:" + componentName(); }
+//    @Override
+//    protected String lastContentLine() { return "END:" + componentName(); }
     
     @Override
     public String toString()
@@ -254,6 +266,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     }
 
     @Override
+    // TODO - MOVE TO VPARENT
     public boolean equals(Object obj)
     {
         if (obj == this) return true;

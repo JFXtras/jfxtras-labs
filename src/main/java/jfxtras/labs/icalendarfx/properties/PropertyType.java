@@ -1976,5 +1976,5 @@ public enum PropertyType
     abstract public void parse(VComponent vComponent, String propertyContent);
 
     /** copies the associated property from the source component to the destination component */
-    public void copyProperty(Property<?> child, VComponent destination) { throw new RuntimeException("not implemented");};
+    abstract public void copyProperty(Property<?> child, VComponent destination);
 }
