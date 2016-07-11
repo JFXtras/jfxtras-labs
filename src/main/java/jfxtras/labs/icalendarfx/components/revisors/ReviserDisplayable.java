@@ -104,7 +104,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         try
         {
             vComponentEditedCopy = (U) getVComponentEdited().getClass().newInstance();
-            vComponentEditedCopy.copyChildrenFrom(getVComponentEdited());
+            vComponentEditedCopy.copyFrom(getVComponentEdited());
+//            vComponentEditedCopy.copyChildrenFrom(getVComponentEdited());            
+//            vComponentEditedCopy.setParent(getVComponentEdited().getParent());
         } catch (InstantiationException | IllegalAccessException e)
         {
             e.printStackTrace();

@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx.properties;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
+import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.ValueParameter;
@@ -16,7 +17,7 @@ import jfxtras.labs.icalendarfx.parameters.ValueParameter;
  *
  * @param <T> - type of value stored in Property
  */
-public interface Property<T> extends VParent, Comparable<Property<T>>
+public interface Property<T> extends VParent, VChild, Comparable<Property<T>>
 {    
     /**
      * Property Name

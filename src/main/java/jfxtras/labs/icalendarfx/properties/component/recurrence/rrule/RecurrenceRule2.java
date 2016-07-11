@@ -24,7 +24,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
-import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.VChild;
+import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
@@ -77,8 +78,12 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  *
  */
 // TODO - LISTENER TO PREVENT COUNT AND UNTIL FROM BOTH BEING SET
-public class RecurrenceRule2 extends VParentBase
+public class RecurrenceRule2 extends VParentBase implements VChild
 {
+    private VParent myParent;
+    @Override public void setParent(VParent parent) { myParent = parent; }
+    @Override public VParent getParent() { return myParent; }
+    
     /** 
      * BYxxx Rules
      * RFC 5545, iCalendar 3.3.10 Page 42
@@ -434,7 +439,7 @@ public class RecurrenceRule2 extends VParentBase
 //    };
     
     @Override
-    protected Callback<VElement, Void> copyChildCallback()
+    protected Callback<VChild, Void> copyChildCallback()
     {        
         return (child) ->
         {

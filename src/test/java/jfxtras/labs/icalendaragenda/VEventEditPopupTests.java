@@ -364,7 +364,7 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
     }
     
     @Test
-    public void canChangeToWholeDay()
+    public void canChangeToWholeDayAll()
     {
         VComponentFactory<Appointment> vComponentFactory = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
         vComponentFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
@@ -390,7 +390,7 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
 
         LocalDateTextField start = find("#startDateTextField");
         assertEquals(LocalDate.of(2016, 5, 15), start.getLocalDate());
-        start.setLocalDate(LocalDate.of(2016, 5, 16));
+        start.setLocalDate(LocalDate.of(2016, 5, 16)); // adds 1 day shift
         
         // Save changes
         click("#saveComponentButton");
@@ -400,11 +400,9 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         click("#changeDialogOkButton");
         
         VEvent editedVEvent = myCalendar.getVEvents().get(0);
-        assertEquals(LocalDate.of(2015, 11, 12), editedVEvent.getDateTimeStart().getValue());
-        assertEquals(LocalDate.of(2015, 11, 13), editedVEvent.getDateTimeEnd().getValue());
-        System.out.println(editedVEvent);
+        assertEquals(LocalDate.of(2015, 11, 10), editedVEvent.getDateTimeStart().getValue());
+        assertEquals(LocalDate.of(2015, 11, 11), editedVEvent.getDateTimeEnd().getValue());
     }
-    
     
     private static final Map<ChangeDialogOption, Pair<Temporal,Temporal>> EXAMPLE_MAP = makeExampleMap();
     private static Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeExampleMap()

@@ -20,28 +20,27 @@ public abstract class VParentBase implements VParent
     /*
      * SORT ORDER FOR CHILD ELEMENTS
      */
-    final private Orderer orderer = new OrdererBase();
+    final private Orderer orderer = new OrdererBase(this);
     public Orderer orderer() { return orderer; }
     
     /** Strategy to copy subclass's children */
-    protected Callback<VElement, Void> copyChildCallback()
+    protected Callback<VChild, Void> copyChildCallback()
     {
         throw new RuntimeException("Copy child callback not overridden in subclass " + this.getClass());
     };
 
-    /** returns collection of child elements following sort order controlled by {@link Orderer} */
+    /** returns read-only collection of child elements following the sort order controlled by {@link Orderer} */
     @Override
-    public Collection<VElement> childrenUnmodifiable()
+    public Collection<VChild> childrenUnmodifiable()
     {
         return Collections.unmodifiableList(
                 orderer().elementSortOrderMap().entrySet().stream()
-                .sorted((Comparator<? super Entry<VElement, Integer>>) (e1, e2) -> e1.getValue().compareTo(e2.getValue()))
+                .sorted((Comparator<? super Entry<VChild, Integer>>) (e1, e2) -> e1.getValue().compareTo(e2.getValue()))
                 .map(e -> e.getKey())
                 .collect(Collectors.toList())
                 );
     }
     
-    /** Copy children elements from source into this parent */
     /** Copy parameters, properties, and subcomponents from source into this component,
     * essentially making a copy of source 
     * 

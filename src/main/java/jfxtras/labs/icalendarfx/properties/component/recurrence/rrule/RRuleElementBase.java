@@ -5,9 +5,14 @@ import java.util.List;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendarfx.VParent;
 
 abstract public class RRuleElementBase<T, U> implements RRuleElement<T>
 {
+    private VParent myParent;
+    @Override public void setParent(VParent parent) { myParent = parent; }
+    @Override public VParent getParent() { return myParent; }
+    
     /*
      * Recurrence Rule element value
      * For example, FREQ=DAILY the value is DAILY

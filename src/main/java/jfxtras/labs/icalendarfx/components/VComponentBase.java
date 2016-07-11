@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 
 import javafx.util.Callback;
 import jfxtras.labs.icalendarfx.CalendarElementType;
-import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.VChild;
+import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
@@ -39,25 +40,12 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  */
 public abstract class VComponentBase extends VParentBase implements VComponent
 {
-//    /*
-//     * SORT ORDER FOR CHILD ELEMENTS
-//     */
-//    final private Orderer orderer;
-//    @Override
-//    public Orderer orderer() { return orderer; }
-    
-//    final private Callback<VElement, Void> copyPropertyChildCallback = (child) ->
-//    {
-//        PropertyType type = PropertyType.enumFromClass(child.getClass());
-//        if (type != null)
-//        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-//            type.copyProperty((Property<?>) child, this);
-//        }
-//        return null;
-//    };
+    VParent myParent;
+    @Override public void setParent(VParent parent) { myParent = parent; }
+    @Override public VParent getParent() { return myParent; }
     
     @Override
-    protected Callback<VElement, Void> copyChildCallback()
+    protected Callback<VChild, Void> copyChildCallback()
     {        
         return (child) ->
         {
@@ -202,12 +190,6 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     {
         // functionality added in subclasses
     }
-    
-//    @Override
-//    public void copyChildrenFrom(VCalendarElement source)
-//    {
-//        orderer().copyChildrenFrom(source);
-//    }
     
     /** Parse content lines into calendar component */
     @Override

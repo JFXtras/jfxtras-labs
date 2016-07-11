@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import jfxtras.labs.icalendarfx.VParent;
 
 /**
  * Base class of all iCalendar Parameters.  Parameters can't have children.
@@ -18,7 +19,11 @@ import javafx.beans.property.SimpleObjectProperty;
  * @param <U> - implemented subclass
  */
 abstract public class ParameterBase<U,T> implements Parameter<T>
-{    
+{
+    private VParent myParent;
+    @Override public void setParent(VParent parent) { myParent = parent; }
+    @Override public VParent getParent() { return myParent; }
+    
     @Override
     public T getValue() { return value.get(); }
     @Override

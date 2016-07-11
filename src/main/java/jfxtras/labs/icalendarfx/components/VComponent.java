@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
+import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 
 /**
@@ -19,7 +20,7 @@ import jfxtras.labs.icalendarfx.VParent;
  * @see VTimeZone
  * @see VAlarmInt
  */
-public interface VComponent extends VParent
+public interface VComponent extends VParent, VChild
 {
     /**
      * Returns the enum for the component as it would appear in the iCalendar content line
@@ -30,9 +31,6 @@ public interface VComponent extends VParent
      * @return - the component enum
      */
     String componentName();
-    
-//    /** Component editor */
-//    Reviser newRevisor();
     
     /**
      * Return property content line for iCalendar output files.  See RFC 5545 3.4
@@ -52,4 +50,11 @@ public interface VComponent extends VParent
      */
     @Override
     String toContent();
+    
+    /** Copy children and parent from source into this VComponent */
+    default void copyFrom(VComponent source)
+    {
+        copyChildrenFrom(source);
+        setParent(source.getParent());
+    }
 }

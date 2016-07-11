@@ -18,7 +18,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import jfxtras.labs.icalendarfx.VElement;
+import jfxtras.labs.icalendarfx.VChild;
+import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
@@ -51,7 +52,11 @@ import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
  * @param <T> - type of property value
  */
 public abstract class PropertyBase<T,U> extends VParentBase implements Property<T>, Comparable<Property<T>>
-{       
+{
+    private VParent myParent;
+    @Override public void setParent(VParent parent) { myParent = parent; }
+    @Override public VParent getParent() { return myParent; }
+    
     /**
      * PROPERTY VALUE
      * 
@@ -306,7 +311,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
 //    };
     
     @Override
-    protected Callback<VElement, Void> copyChildCallback()
+    public Callback<VChild, Void> copyChildCallback()
     {        
         return (child) ->
         {

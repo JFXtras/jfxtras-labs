@@ -525,14 +525,25 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
                     errors.add("The value type of EXDATE elements MUST be the same as the DTSTART property (" + exceptionType + ", " + startType);
                 }
             }
-    
+            
             if (getRecurrenceId() != null)
             {
                 DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
-                boolean isRecurrenceIdTypeMatch = startType == recurrenceIdType;
-                if (! isRecurrenceIdTypeMatch)
+                List<VComponentDisplayable<?>> relatedComponents = ((VCalendar) getParent()).uidComponentsMap().get(getUniqueIdentifier().getValue());
+                VComponentDisplayable<?> parentComponent = relatedComponents.stream()
+                        .filter(v -> v.getRecurrenceId() == null)
+                        .findFirst()
+                        .orElseGet(() -> null);
+                if (parentComponent != null)
                 {
-                    errors.add("The value type of RECURRENCE-ID MUST be the same as the DTSTART property (" + recurrenceIdType + ", " + startType);
+                    DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(parentComponent.getDateTimeStart().getValue());
+                    if (recurrenceIdType != dateTimeStartType)
+                    {
+                        errors.add("The value type of RECURRENCE-ID MUST be the same as the parent's DTSTART property (" + recurrenceIdType + ", " + dateTimeStartType);
+                    }
+                } else
+                {
+                    errors.add("Parent of this component with RECURRENCE-ID can't be found.");                    
                 }
             }
             
@@ -547,11 +558,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
                 }
             }
         }
-        
-//        if (getRecurrenceRule() != null)
-//        {
-//            errors.addAll(getRecurrenceRule().errors());
-//        }      
+    
         return errors;
     }
 }
