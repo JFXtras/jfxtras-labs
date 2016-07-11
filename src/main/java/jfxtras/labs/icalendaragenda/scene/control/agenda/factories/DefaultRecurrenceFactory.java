@@ -1,8 +1,6 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda.factories;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.Collection;
@@ -10,18 +8,15 @@ import java.util.Optional;
 
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
-import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-@Deprecated
-public class DefaultVComponentFromAppointment extends VComponentBaseFactory<Appointment>
+public class DefaultRecurrenceFactory extends RecurrenceFactory<Appointment>
 {
     private Collection<AppointmentGroup> appointmentGroups;
-
+    
     /** Callback to make Appointment from VComponent and start Temporal */
     @Override
     CallbackTwoParameters<VComponentDisplayable<?>, Temporal, Appointment> recurrenceCallBack()
@@ -80,42 +75,10 @@ public class DefaultVComponentFromAppointment extends VComponentBaseFactory<Appo
         };
     }
             
-    public DefaultVComponentFromAppointment(Collection<AppointmentGroup> appointmentGroups)
+    public DefaultRecurrenceFactory(Collection<AppointmentGroup> appointmentGroups)
     {
         super();
         this.appointmentGroups = appointmentGroups;
     }
 
-    @Override
-    public VComponentDisplayable<?> createVComponent(Appointment appointment)
-    {
-        final VComponentDisplayable<?> newVComponent;
-        ZonedDateTime dtCreated = ZonedDateTime.now(ZoneId.of("Z"));
-        boolean hasEnd = appointment.getEndTemporal() != null;
-        if (hasEnd)
-        {
-            newVComponent = new VEvent()
-                    .withSummary(appointment.getSummary())
-                    .withCategories(appointment.getAppointmentGroup().getDescription())
-                    .withDateTimeStart(appointment.getStartTemporal())
-                    .withDateTimeEnd(appointment.getEndTemporal())
-                    .withDescription(appointment.getDescription())
-                    .withLocation(appointment.getLocation())
-                    .withDateTimeCreated(dtCreated)
-                    .withDateTimeStamp(dtCreated)
-                    .withUniqueIdentifier();
-        } else
-        {
-            newVComponent = new VTodo()
-                    .withSummary(appointment.getSummary())
-                    .withCategories(appointment.getAppointmentGroup().getDescription())
-                    .withDateTimeStart(appointment.getStartTemporal())
-                    .withDescription(appointment.getDescription())
-                    .withLocation(appointment.getLocation())
-                    .withDateTimeCreated(dtCreated)
-                    .withDateTimeStamp(dtCreated)
-                    .withUniqueIdentifier();
-        }
-        return newVComponent;
-    }
 }

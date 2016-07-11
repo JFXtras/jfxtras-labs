@@ -36,7 +36,9 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.Behavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VEventBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VJournalBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VTodoBehavior;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFromAppointment;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
@@ -73,8 +75,8 @@ public class ICalendarAgenda extends Agenda
     public void setDateTimeRange(LocalDateTimeRange dateTimeRange)
     {
         this.dateTimeRange = dateTimeRange;
-        getVComponentStore().setStartRange(dateTimeRange.getStartLocalDateTime());
-        getVComponentStore().setEndRange(dateTimeRange.getEndLocalDateTime());
+        getRecurrenceFactory().setStartRange(dateTimeRange.getStartLocalDateTime());
+        getRecurrenceFactory().setEndRange(dateTimeRange.getEndLocalDateTime());
 //        getRecurrenceHelper().setStartRange(dateTimeRange.getStartLocalDateTime());
 //        getRecurrenceHelper().setEndRange(dateTimeRange.getEndLocalDateTime());
     }
@@ -86,10 +88,15 @@ public class ICalendarAgenda extends Agenda
 //    @Deprecated
 //    public RecurrenceHelper<Appointment> getRecurrenceHelper() { return recurrenceHelper; }
     
-    public VComponentFactory<Appointment> getVComponentStore() { return vComponentStore; }
-    private VComponentFactory<Appointment> vComponentStore; // default VComponent store - for Appointments, if other implementation used make new store
-    public void setVComponentStore(VComponentFactory<Appointment> vComponentStore) { this.vComponentStore = vComponentStore; }
+    public VComponentFactory<Appointment> getVComponentFactory() { return vComponentFactory; }
+    private VComponentFactory<Appointment> vComponentFactory;
+    public void setVComponentFactory(VComponentFactory<Appointment> vComponentFactory) { this.vComponentFactory = vComponentFactory; }
 
+    public RecurrenceFactory<Appointment> getRecurrenceFactory() { return recurrenceFactory; }
+    private RecurrenceFactory<Appointment> recurrenceFactory;
+    public void setRecurrenceFactory(RecurrenceFactory<Appointment> recurrenceFactory) { this.recurrenceFactory = recurrenceFactory; }
+
+    
     /** The VCalendar object that contains all scheduling information */
     public VCalendar getVCalendar() { return vCalendar; }
     final private VCalendar vCalendar;
@@ -304,7 +311,9 @@ public class ICalendarAgenda extends Agenda
     {
         super();
         this.vCalendar = vCalendar;
-        vComponentStore = new DefaultVComponentFromAppointment(appointmentGroups()); // default VComponent store - for Appointments, if other implementation used make new store
+//        vComponentStore = new DefaultVComponentFromAppointment(appointmentGroups()); // default VComponent store - for Appointments, if other implementation used make new store
+        recurrenceFactory = new DefaultRecurrenceFactory(appointmentGroups()); // default recurrence factory - for Appointments, if other implementation is used assign different factory
+        vComponentFactory = new DefaultVComponentFactory(); // default VComponent factory - for ppointments
         
         // Populate component class to behavior map with required behaviors
         vComponentClassBehaviorMap.put(VEvent.class, new VEventBehavior(this));
@@ -389,7 +398,7 @@ public class ICalendarAgenda extends Agenda
                             break;
                         case OK_DONE:
                         {
-                            VComponent newVComponent = getVComponentStore().createVComponent(appointment);
+                            VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
                             getVCalendar().addVComponent(newVComponent);
 //                            boolean hasSummary = appointment.getSummary() != null;
 //                            boolean hasSummaryChanged = appointment.getSummary().equals(originalSummary);
@@ -402,7 +411,7 @@ public class ICalendarAgenda extends Agenda
                         }
                         case OTHER: // ADVANCED EDIT
                         {
-                            VComponent newVComponent = getVComponentStore().createVComponent(appointment);
+                            VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
                             getVCalendar().addVComponent(newVComponent);
                             iCalendarEditPopupCallback.call(vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0));
 //                            Platform.runLater(() -> refresh());
@@ -515,8 +524,8 @@ public class ICalendarAgenda extends Agenda
         {
             List<Appointment> newAppointments = new ArrayList<>();
             setDateTimeRange(dateTimeRange);
-            getVComponentStore().setStartRange(dateTimeRange.getStartLocalDateTime());
-            getVComponentStore().setEndRange(dateTimeRange.getEndLocalDateTime());
+            getRecurrenceFactory().setStartRange(dateTimeRange.getStartLocalDateTime());
+            getRecurrenceFactory().setEndRange(dateTimeRange.getEndLocalDateTime());
 //            System.out.println("range0:" + dateTimeRange);
             if (dateTimeRange != null)
             {
@@ -559,7 +568,7 @@ public class ICalendarAgenda extends Agenda
     
     private Collection<Appointment> makeAppointments(VComponentDisplayable<?> v)
     {
-        List<Appointment> myAppointments = getVComponentStore().makeRecurrences(v);
+        List<Appointment> myAppointments = getRecurrenceFactory().makeRecurrences(v);
         myAppointments.forEach(a -> 
         {
             appointmentVComponentMap.put(System.identityHashCode(a), v);
