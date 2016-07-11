@@ -54,7 +54,7 @@ public interface VComponent extends VParent, VChild
     /** Copy children and parent from source into this VComponent */
     default void copyFrom(VComponent source)
     {
-        copyChildrenFrom(source);
         setParent(source.getParent());
+        copyChildrenFrom(source);
     }
 }

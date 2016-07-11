@@ -379,19 +379,19 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         if ((getRecurrenceId() != null) && (getDateTimeStart() != null))
         {
             DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
-//            System.out.println("getParent():" + getParent());
-//            System.out.println("this:" + this);
-//            System.out.println("getRecurrenceId().getValue():" + getRecurrenceId().getValue());
-            List<VComponentDisplayable<?>> relatedComponents = ((VCalendar) getParent()).uidComponentsMap().get(getUniqueIdentifier().getValue());
-            VComponentDisplayable<?> parentComponent = relatedComponents.stream()
-                    .filter(v -> v.getRecurrenceId() == null)
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("no parent component found"));
-            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(parentComponent.getDateTimeStart().getValue());
-            if (recurrenceIdType != dateTimeStartType)
+            if (getParent() != null)
             {
-                throw new DateTimeException("RecurrenceId DateTimeType (" + recurrenceIdType +
-                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+                List<VComponentDisplayable<?>> relatedComponents = ((VCalendar) getParent()).uidComponentsMap().get(getUniqueIdentifier().getValue());
+                VComponentDisplayable<?> parentComponent = relatedComponents.stream()
+                        .filter(v -> v.getRecurrenceId() == null)
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("no parent component found"));
+                DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(parentComponent.getDateTimeStart().getValue());
+                if (recurrenceIdType != dateTimeStartType)
+                {
+                    throw new DateTimeException("RecurrenceId DateTimeType (" + recurrenceIdType +
+                            ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+                }
             }
         }
     }

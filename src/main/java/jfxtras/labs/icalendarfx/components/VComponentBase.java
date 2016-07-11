@@ -58,118 +58,17 @@ public abstract class VComponentBase extends VParentBase implements VComponent
         };
     }
     
-//    @Override
-//    public String componentName()
-//    {
-//        return CalendarElementType.enumFromClass(this.getClass()).toString();
-//    }
-    
     final private String componentName;
     @Override
     public String componentName() { return componentName; }
 
-//    @Override
-//    public CalendarElementType componentType() { return componentType; }
-    
-//    private void checkContentList()
-//    {
-//        List<String> elementNames = propertyEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
-//        Optional<VCalendarElement> propertyNotFound = orderer().elementSortOrderMap().entrySet()
-//            .stream()
-//            .map(e -> e.getKey())
-//            .filter(v ->
-//            {
-//    //            PropertyType myType = PropertyType.enumFromClass(v.getClass());
-//                String myElementName = PropertyType.enumFromClass(v.getClass()).toString();
-//                return (myElementName == null) ? false : ! elementNames.contains(myElementName);
-//            })
-//            .findAny();
-//        if (propertyNotFound.isPresent())
-//        {
-//            throw new RuntimeException("element not found:" + propertyNotFound.get());
-//        }
-//    }
-    
-    // Ensures all elements in elementSortOrderMap are found in propertyEnums list
-//    @Deprecated // doesn't work - some propertyEnum produces lists sometimes. elementSortOrderMap only produces individual properties
-//    private void checkContentList()
-//    {
-////        List<String> elementNames1 = propertyEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
-//        List<Object> elementNames1 = propertyEnums().stream()
-//                .map(e -> e.getProperty(this))
-////                .peek(a -> System.out.println("ee1:" + a + " " ))
-//                .collect(Collectors.toList());
-////        System.out.println("elements2:" + orderer().elementSortOrderMap().size());
-////        if (orderer().elementSortOrderMap().size() == 9) System.out.println("is 9");
-////        orderer().elementSortOrderMap().entrySet().forEach(System.out::println);
-////        System.exit(0);
-//
-//        List<Object> elementNames2 = orderer().elementSortOrderMap().entrySet()
-//                .stream()
-//                .filter(a -> ! (a.getKey() instanceof VComponent))
-////                .peek(a -> System.out.println("ee2:" + a + " " + (a.getKey() instanceof VComponent)))
-//                .map(e -> e.getKey())
-//                .collect(Collectors.toList());
-////        System.out.println("list done:");
-////        elementNames1.stream().forEach(System.out::println);
-////        elementNames2.stream().forEach(System.out::println);
-//        Optional<Object> propertyNotFound1 = elementNames1.stream().filter(s -> ! elementNames2.contains(s)).findAny();
-//        if (propertyNotFound1.isPresent())
-//        {
-//            throw new RuntimeException("element not found:" + propertyNotFound1.get());
-//        }
-//        Optional<Object> propertyNotFound2 = elementNames2.stream().filter(s -> ! elementNames1.contains(s)).findAny();
-//        if (propertyNotFound2.isPresent())
-//        {
-//            throw new RuntimeException("element not found:" + propertyNotFound2.get());
-//        }
-//    }
-//    private Callback<Void, List<String>> elementNameListCallback;
-//    private Callback<VCalendarElement, String> elementNameCallback;
-    
-//    /**
-//     * List of all {@link PropertyType} found in component.
-//     * The list is unmodifiable.
-//     * 
-//     * @return - the list of properties
-//     * @deprecated  not needed due to addition of Orderer, may be deleted
-//     */
-//    @Deprecated
-//    public List<PropertyType> propertyEnums()
-//    {
-//        List<PropertyType> populatedProperties = componentType().allowedProperties().stream()
-//                .filter(p -> p.getProperty(this) != null)
-//                .collect(Collectors.toList());
-//      return Collections.unmodifiableList(populatedProperties);
-//    }
-
-//    /** 
-//     * SORT ORDER
-//     * 
-//     * Property sort order map.  Key is property name, value is the sort order.  The map is automatically
-//     * populated when parsing the content lines to preserve the existing property order.
-//     * 
-//     * When producing the content lines, if a property is not present in the map, it is put at
-//     * the end of the sorted ones in the order appearing in {@link #PropertyEnum} (should be
-//     * alphabetical) Generally, this map shouldn't be modified.  Only modify it when you want
-//     * to force a specific property order (e.g. unit testing).
-//     */
-//    @Override
-//    @Deprecated
-//    public Map<String, Integer> propertySortOrder() { return propertySortOrder; }
-//    final private Map<String, Integer> propertySortOrder = new HashMap<>();
-//    private volatile Integer sortOrderCounter = 0;
-    
     /*
      * CONSTRUCTORS
      */
     VComponentBase()
     {
         addListeners();
-        
-//        orderer = new OrdererBase(copyPropertyChildCallback);
         componentName = CalendarElementType.enumFromClass(this.getClass()).toString();
-//        System.out.println("componentType:" + componentType);
     }
     
     /** Parse content lines into calendar component */
@@ -183,7 +82,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     public VComponentBase(VComponentBase source)
     {
         this();
-        copyChildrenFrom(source);
+        copyFrom(source);
     }
 
     void addListeners()
