@@ -20,8 +20,8 @@ import java.util.stream.IntStream;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFromAppointment;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFactoryOld;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -44,12 +44,12 @@ public class MakeAppointmentsTest
     public void makeAppointmentsDailyTest1()
     {
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        VComponentFactoryOld<Appointment> store = new DefaultVComponentFromAppointment(DEFAULT_APPOINTMENT_GROUPS);
+        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(DEFAULT_APPOINTMENT_GROUPS);
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
-        store.setStartRange(startRange);
-        store.setEndRange(endRange);
-        List<Appointment> newAppointments = store.makeRecurrences(vevent);
+        recurrenceFactory.setStartRange(startRange);
+        recurrenceFactory.setEndRange(endRange);
+        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         List<LocalDateTime> expectedDates = new ArrayList<LocalDateTime>(Arrays.asList(
                 LocalDateTime.of(2015, 11, 15, 10, 0)
               , LocalDateTime.of(2015, 11, 16, 10, 0)
@@ -90,12 +90,12 @@ public class MakeAppointmentsTest
                       .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
               .withSummary(Summary.parse("WeeklyZoned Ends"))
               .withUniqueIdentifier("20150110T080000-1@jfxtras.org");
-        VComponentFactoryOld<Appointment> store = new DefaultVComponentFromAppointment(DEFAULT_APPOINTMENT_GROUPS);
+        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(DEFAULT_APPOINTMENT_GROUPS);
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
-        store.setStartRange(startRange);
-        store.setEndRange(endRange);
-        List<Appointment> newAppointments = store.makeRecurrences(vevent);
+        recurrenceFactory.setStartRange(startRange);
+        recurrenceFactory.setEndRange(endRange);
+        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
                 ZonedDateTime.of(LocalDateTime.of(2015, 11, 16, 8, 15), ZoneId.of("America/Los_Angeles"))
               , ZonedDateTime.of(LocalDateTime.of(2015, 11, 18, 8, 15), ZoneId.of("America/Los_Angeles"))
@@ -133,12 +133,12 @@ public class MakeAppointmentsTest
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.WEEKLY)
                         .withInterval(3));
-        VComponentFactoryOld<Appointment> store = new DefaultVComponentFromAppointment(DEFAULT_APPOINTMENT_GROUPS);
+        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(DEFAULT_APPOINTMENT_GROUPS);
         LocalDateTime startRange = LocalDateTime.of(2015, 11, 15, 0, 0);
         LocalDateTime endRange = LocalDateTime.of(2015, 11, 22, 0, 0);
-        store.setStartRange(startRange);
-        store.setEndRange(endRange);
-        List<Appointment> newAppointments = store.makeRecurrences(vevent);
+        recurrenceFactory.setStartRange(startRange);
+        recurrenceFactory.setEndRange(endRange);
+        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         List<Temporal> expectedDates = new ArrayList<>(Arrays.asList(
                 LocalDate.of(2015, 11, 15)
                 ));

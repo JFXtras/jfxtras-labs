@@ -16,8 +16,8 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVJournalTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFromAppointment;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFactoryOld;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda;
@@ -49,15 +49,15 @@ public class VJournalEditPopupTests extends JFXtrasGuiTest
     @Test
     public void canDisplayPopupWithVJournal()
     {
-        VComponentFactoryOld<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
+        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         VJournal vjournal = new VJournal()
                 .withDateTimeStart("20160518T110000")
                 .withSummary("test journal")
                 .withDateTimeStamp("20160518T232502Z")
                 .withUniqueIdentifier("20160518T232502-0@jfxtras.org");
-        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vjournal);
+        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vjournal);
         Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->

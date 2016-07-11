@@ -526,7 +526,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
                 }
             }
             
-            if (getRecurrenceId() != null)
+            if (getRecurrenceId() != null && getParent() != null)
             {
                 DateTimeType recurrenceIdType = DateTimeUtilities.DateTimeType.of(getRecurrenceId().getValue());
                 List<VComponentDisplayable<?>> relatedComponents = ((VCalendar) getParent()).uidComponentsMap().get(getUniqueIdentifier().getValue());

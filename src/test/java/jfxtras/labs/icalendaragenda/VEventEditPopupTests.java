@@ -34,8 +34,8 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFromAppointment;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFactoryOld;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
@@ -83,11 +83,11 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
     @Test
     public void canDisplayPopupWithVEvent()
     {
-        VComponentFactoryOld<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
-        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
+        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
+        recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         VEvent vevent = ICalendarStaticComponents.getDaily1();
-        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
+        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->
@@ -111,12 +111,12 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
     @Test
     public void canSimpleEditVEvent()
     {
-        VComponentFactoryOld<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
+        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1()
                 .withLocation("Here");
-        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
+        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
         
         TestUtil.runThenWaitForPaintPulse( () ->
@@ -136,16 +136,16 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         assertEquals(LocalDateTime.of(2016, 5, 15, 10, 0), start.getLocalDateTime());
     }
     
-    // edit non-repeatable elements
+    // edit one repeating event to make an individual event
     @Test
     public void canEditDescriptibeProperties()
     {
-        VComponentFactoryOld<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
+        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
         ObservableList<VEvent> vEvents = FXCollections.observableArrayList(vevent);
-        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
+        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
 
         TestUtil.runThenWaitForPaintPulse( () ->
@@ -213,17 +213,19 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ONE));
         click("#changeDialogOkButton");
+        
+        VEvent individualVEvent = vEvents.get(1);
 
         assertEquals(2, vEvents.size());
         
         // Check component after dialog close
-        assertEquals(LocalDateTime.of(2016, 5, 15, 8, 0), vevent.getDateTimeStart().getValue());
-        assertEquals(LocalDateTime.of(2016, 5, 15, 9, 0), vevent.getDateTimeEnd().getValue());
+        assertEquals(LocalDateTime.of(2016, 5, 15, 8, 0), individualVEvent.getDateTimeStart().getValue());
+        assertEquals(LocalDateTime.of(2016, 5, 15, 9, 0), individualVEvent.getDateTimeEnd().getValue());
         
-        assertEquals("new summary", vevent.getSummary().getValue());
-        assertEquals("new description", vevent.getDescription().getValue());
-        assertEquals("new location", vevent.getLocation().getValue());
-        assertEquals("new group name", vevent.getCategories().get(0).getValue().get(0));
+        assertEquals("new summary", individualVEvent.getSummary().getValue());
+        assertEquals("new description", individualVEvent.getDescription().getValue());
+        assertEquals("new location", individualVEvent.getLocation().getValue());
+        assertEquals("new group name", individualVEvent.getCategories().get(0).getValue().get(0));
 
         assertEquals(ICalendarStaticComponents.getDaily1(), vEvents.get(0));
         VEvent editedVEvent = new VEvent()
@@ -238,18 +240,18 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
                 .withRecurrenceId(LocalDateTime.of(2016, 5, 15, 10, 0))
                 .withSequence(1)
                 ;
-        assertEquals(editedVEvent, vEvents.get(1));
+        assertEquals(editedVEvent, individualVEvent);
     }
     
     @Test
     public void canChangeFrequency()
     {
-        VComponentFactoryOld<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
+        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));        
         VEvent vevent = ICalendarStaticComponents.getDaily1();
         ObservableList<VEvent> vEvents = FXCollections.observableArrayList(vevent);
-        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
+        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(0);
 
         TestUtil.runThenWaitForPaintPulse( () ->
@@ -366,7 +368,7 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
     @Test
     public void canChangeToWholeDayAll()
     {
-        VComponentFactoryOld<Appointment> vComponentFactory = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
         vComponentFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
         vComponentFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));   
         VCalendar myCalendar = new VCalendar();

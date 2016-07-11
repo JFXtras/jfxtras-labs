@@ -14,8 +14,8 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFromAppointment;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFactoryOld;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
@@ -73,10 +73,10 @@ public class EditComponentPopupTrial extends Application
 //                .withDateTimeStamp("20160518T232502Z")
 //                .withUniqueIdentifier("20160518T232502-0@jfxtras.org");
         
-        VComponentFactoryOld<Appointment> vComponentStore = new DefaultVComponentFromAppointment(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
-        vComponentStore.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
-        vComponentStore.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
-        List<Appointment> newAppointments = vComponentStore.makeRecurrences(vevent);
+        RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
+        recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
+        recurrenceFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
+        List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(2);
 
         EditVEventTabPane popup = new EditVEventTabPane();

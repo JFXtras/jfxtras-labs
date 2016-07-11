@@ -40,6 +40,9 @@ public class DefaultVComponentFactory extends VComponentFactory<Appointment>
                     .withDateTimeStamp(dtCreated)
                     .withUniqueIdentifier();
         }
+        /* Note: If other VComponents are to be supported other tests to determine
+         * which type of VComponent the Appointment represents will need to be created.
+         */
         return newVComponent;
     }
 }
