@@ -42,8 +42,6 @@ public class RecurrenceRuleParseTest
         RecurrenceRule2 expectedRRule = new RecurrenceRule2()
                 .withFrequency(FrequencyType.MONTHLY)
                 .withByRules(new ByDay(DayOfWeek.SATURDAY), new ByMonthDay(7,8,9,10,11,12,13));
-//        System.out.println(rRule.toContent());
-//        rRule.childrenUnmodifiable().stream().forEach(System.out::println);
         assertEquals(s, expectedRRule.toContent());
         assertEquals(s, rRule.toContent());
         assertEquals(expectedRRule, rRule);
@@ -56,27 +54,19 @@ public class RecurrenceRuleParseTest
         RecurrenceRule2 rRule = RecurrenceRule2.parse(s);
         RecurrenceRule2 expectedRRule = new RecurrenceRule2()
                 .withFrequency(FrequencyType.YEARLY)
-                .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2), new ByDayPair(DayOfWeek.MONDAY, 3)), new ByWeekNumber(20));
+                .withByRules(new ByWeekNumber(20), new ByDay(new ByDayPair(DayOfWeek.MONDAY, 2), new ByDayPair(DayOfWeek.MONDAY, 3)));
         assertEquals(expectedRRule, rRule);
     }
 
     @Test
     public void canParseRRule4()
     {
-        String s = "FREQ=DAILY;INTERVAL=2;UNTIL=20151201T100000Z";
+        String s = "UNTIL=20151201T100000Z;INTERVAL=2;FREQ=DAILY";
         RecurrenceRule2 rRule = RecurrenceRule2.parse(s);
         RecurrenceRule2 expectedRRule = new RecurrenceRule2()
                 .withUntil(ZonedDateTime.of(LocalDateTime.of(2015, 12, 1, 10, 0),ZoneId.of("Z")))
-                .withFrequency(FrequencyType.DAILY)
-                .withInterval(2);
+                .withInterval(2)
+                .withFrequency(FrequencyType.DAILY);
         assertEquals(expectedRRule, rRule);
     }
-    
-//    @Test
-//    public void canParseRRule5()
-//    {
-//        RecurrenceRule3 rRule = new RecurrenceRule3()
-//        .withFrequency(FrequencyType.YEARLY)
-//        .withByRules(new ByDay(new ByDayPair(DayOfWeek.MONDAY, 20)));
-//    }
 }

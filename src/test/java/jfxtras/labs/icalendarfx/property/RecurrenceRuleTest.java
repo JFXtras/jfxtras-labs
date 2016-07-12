@@ -54,8 +54,8 @@ public class RecurrenceRuleTest
         assertEquals(content, madeProperty.toContent());
         RecurrenceRule expectedProperty = new RecurrenceRule(
                 new RecurrenceRule2()
-                    .withUntil("19730429T070000Z")
                     .withFrequency(FrequencyType.YEARLY)
+                    .withUntil("19730429T070000Z")
                     .withByRules(new ByMonth(Month.APRIL),
                                 new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1))));
         assertEquals(content, madeProperty.toContent());
@@ -69,10 +69,10 @@ public class RecurrenceRuleTest
         RecurrenceRule madeProperty = RecurrenceRule.parse(content);
         RecurrenceRule expectedProperty = new RecurrenceRule(
                 new RecurrenceRule2()
+                    .withByRules(new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1)))
                     .withUntil("19730429T070000Z")
-                    .withFrequency(FrequencyType.YEARLY)
-                    .withByRules(new ByMonth(Month.APRIL),
-                                new ByDay(new ByDay.ByDayPair(DayOfWeek.SUNDAY, -1))));
+                    .withByRules(new ByMonth(Month.APRIL))
+                    .withFrequency(FrequencyType.YEARLY));
         assertEquals(content, madeProperty.toContent());
         assertEquals(expectedProperty, madeProperty);
     }

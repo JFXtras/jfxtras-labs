@@ -392,15 +392,13 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     // Set converter when using constructor with class parameter
     protected void setConverterByClass(Class<T> valueClass)
     {
-        // do nothing - override in subclass for functionality
+        // do nothing - hook to override in subclass for functionality
     }
     
     /** Parse content line into calendar property */
     @Override
     public void parseContent(String contentLine)
     {
-//        String contentLine = contentLine.toString();
-        
         // perform tests, make changes if necessary
         final String propertyValue;
         List<Integer> indices = new ArrayList<>();
@@ -438,54 +436,41 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             }
         } else
         {
-
             propertyValue = ":" + contentLine;
         }
         
         // parse parameters
         Map<String, String> map = ICalendarUtilities.propertyLineToParameterMap(propertyValue);
-//        System.out.println("contentLine:" + contentLine + " " + map.size());
         map.entrySet()
             .stream()
-//            .peek(System.out::println)
             .filter(entry -> ! (entry.getKey() == ICalendarUtilities.PROPERTY_VALUE_KEY))
             .forEach(entry ->
             {
                 ParameterType parameterType = ParameterType.enumFromName(entry.getKey());
-//                parameterSortOrder().put(p, parameterCounter++);
                 if (parameterType != null)
                 {
                     if (propertyType().allowedParameters().contains(parameterType))
                     {
-//                        System.out.println("parse parameters" + parameterType);
                         parameterType.parse(this, entry.getValue());
-//                        parameterSortOrder().put(parameterType, parameterCounter);
-//                        parameterCounter += 100; // add 100 to allow insertions in between
                     } else
                     {
                         throw new IllegalArgumentException("Parameter " + parameterType + " not allowed for property " + propertyType());
                     }
                 } else if ((entry.getKey() != null) && (entry.getValue() != null))
                 { // unknown parameter - store as String in other parameter
-//                    OtherParameter other = new OtherParameter(entry.getKey()).withValue(entry.getValue());    
-//                    System.out.println("found Other:" + entry);
                     ParameterType.OTHER.parse(this, entry.getKey() + "=" + entry.getValue());
-//                    otherParameters().add(entry.getKey() + "=" + entry.getValue());
                 } // if parameter doesn't contain both a key and a value it is ignored
             });
 
         // save property value        
         propertyValueString = map.get(ICalendarUtilities.PROPERTY_VALUE_KEY);
-//        System.out.println("propertyValueString:" + getPropertyValueString());
         T value = getConverter().fromString(getPropertyValueString());
-//        System.out.println("value class:" + value.getClass() + " " + isCustomConverter());
         if (value == null)
         {
             setUnknownValue(propertyValueString);
         } else
         {
             setValue(value);
-//            System.out.println("value class2:" + getValue().getClass());
             if (value.toString() == "UNKNOWN") // enum name indicating unknown value
             {
                 setUnknownValue(propertyValueString);
@@ -527,7 +512,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
             errors.addAll(createErrorList);
         }
         orderer().elementSortOrderMap().forEach((key, value) -> errors.addAll(key.errors()));
-//        parameters().forEach(b -> errors.addAll(b.errors()));
         return errors;
     }
     

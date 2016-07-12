@@ -574,7 +574,7 @@ public class RepeatableTest //extends Application
                 .withDateTimeStart(LocalDateTime.of(1997, 6, 13, 10, 0))
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.MONTHLY)
-                        .withByRules(new ByMonthDay(13), new ByDay(DayOfWeek.FRIDAY)));
+                        .withByRules(new ByDay(DayOfWeek.FRIDAY), new ByMonthDay(13)));
         List<Temporal> madeDates = e
                 .streamRecurrences()
                 .limit(6)
@@ -588,7 +588,7 @@ public class RepeatableTest //extends Application
               , LocalDateTime.of(2000, 10, 13, 10, 0)
                 ));
         assertEquals(expectedDates, madeDates);
-        String expectedContent = "RRULE:FREQ=MONTHLY;BYMONTHDAY=13;BYDAY=FR";
+        String expectedContent = "RRULE:FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13";
         assertEquals(expectedContent, e.getRecurrenceRule().toContent());
         RecurrenceRule2 r = RecurrenceRule2.parse("FREQ=MONTHLY;BYDAY=FR;BYMONTHDAY=13");
         assertEquals(r, e.getRecurrenceRule().getValue()); // verify order of parameters doesn't matter

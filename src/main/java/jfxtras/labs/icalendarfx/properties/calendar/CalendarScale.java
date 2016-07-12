@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendarfx.properties.calendar;
 
+import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.VElement;
 import jfxtras.labs.icalendarfx.properties.PropertyBase;
@@ -27,6 +28,21 @@ public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale
 {
     public static final CalendarScaleType DEFAULT_CALENDAR_SCALE = CalendarScaleType.GREGORIAN;
     
+    private final static StringConverter<CalendarScaleType> CONVERTER = new StringConverter<CalendarScaleType>()
+    {
+        @Override
+        public String toString(CalendarScaleType object)
+        {
+            return object.toString();
+        }
+
+        @Override
+        public CalendarScaleType fromString(String string)
+        {
+            return CalendarScaleType.valueOf(string);
+        }
+    };
+    
     public CalendarScale(CalendarScale source)
     {
         super(source);
@@ -36,7 +52,15 @@ public class CalendarScale extends PropertyBase<CalendarScaleType, CalendarScale
     public CalendarScale()
     {
        super(DEFAULT_CALENDAR_SCALE);
+       setConverter(CONVERTER);
     }
+    
+    public CalendarScale(CalendarScaleType calendarScaleType)
+    {
+       super(calendarScaleType);
+       setConverter(CONVERTER);
+    }
+
     
     public enum CalendarScaleType
     {

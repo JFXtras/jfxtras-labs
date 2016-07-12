@@ -32,8 +32,8 @@ public class NonStandardTest
         NonStandardProperty madeProperty = NonStandardProperty.parse(content);
         assertEquals(content, madeProperty.toContent());
         NonStandardProperty expectedProperty = NonStandardProperty.parse("http://www.example.org/mysubj.au")
-                .withFormatType("audio/basic")
                 .withValueType(ValueType.UNIFORM_RESOURCE_IDENTIFIER)
+                .withFormatType("audio/basic")
                 .withPropertyName("X-ABC-MMSUBJ");
 
         assertEquals(expectedProperty, madeProperty);

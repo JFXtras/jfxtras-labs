@@ -127,6 +127,8 @@ public class GeneralCalendarTest extends ICalendarTestAbstract2
                 .withVEvents(getYearly1())
                 .withVEvents(getMonthly6());
 
+//        System.out.println(c.toContent());
+
 //        c.getVEvents().stream().forEach(v -> System.out.println("vevent:" + v.getSummary()));
 //        c.components().stream().forEach(System.out::println);
 
