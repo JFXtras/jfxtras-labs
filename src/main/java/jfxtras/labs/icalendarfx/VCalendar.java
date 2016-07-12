@@ -2,10 +2,8 @@ package jfxtras.labs.icalendarfx;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,7 +21,7 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.content.MultilineContent;
+import jfxtras.labs.icalendarfx.content.MultiLineContent;
 import jfxtras.labs.icalendarfx.properties.calendar.CalendarScale;
 import jfxtras.labs.icalendarfx.properties.calendar.Method;
 import jfxtras.labs.icalendarfx.properties.calendar.ProductIdentifier;
@@ -538,14 +536,8 @@ public class VCalendar extends VParentBase
     
     public VCalendar()
     {
-//        super(new MultilineContent(orderer(),
-//                FIRST_CONTENT_LINE,
-//                LAST_CONTENT_LINE,
-//                1000));
-//        orderer = new OrdererBase(copyChildElementCallback);
         addListeners();
-        System.out.println("set content generator");
-        setContentLineGenerator(new MultilineContent(
+        setContentLineGenerator(new MultiLineContent(
                 orderer(),
                 FIRST_CONTENT_LINE,
                 LAST_CONTENT_LINE,
@@ -588,93 +580,6 @@ public class VCalendar extends VParentBase
         orderer().registerSortOrderProperty(getVTimeZones());
         orderer().registerSortOrderProperty(getVFreeBusies());
     }
-    
-    /*
-     * For toContent
-     */
-//    @Override
-//    protected String firstContentLine() { return "BEGIN:VCALENDAR" + System.lineSeparator(); }
-//    @Override
-//    protected String lastContentLine() { return "END:VCALENDAR"; }
-
-    //    /**
-//     * List of all components found in calendar object.
-//     * The list is unmodifiable.
-//     * 
-//     * @return - the list of components
-//     */
-//    public List<VComponent> components()
-//    {
-//        List<VComponent> allComponents = new ArrayList<>();
-//        Iterator<CalendarElementType> i = Arrays.stream(CalendarElementType.values()).iterator();
-//        while (i.hasNext())
-//        {
-//            CalendarElementType componentType = i.next();
-//            List<? extends VComponent> myComponents = componentType.getComponents(this);
-//            if (myComponents != null)
-//            {
-//                allComponents.addAll(myComponents);
-//            }
-//        }
-//        return Collections.unmodifiableList(allComponents);
-//    }
-    
-//    /** Parse content lines into calendar object */
-//    @Override
-//    public String toContent()
-//    {
-//        List<VElement> elements = new ArrayList<VElement>();
-//        // Add calendar properties
-//        // Order is PRODID, VERSION, CALSCALE and METHOD unless componentSortOrder specifies other values
-//        if (getProductIdentifier() != null)
-//        {
-//            elements.add(getProductIdentifier());
-//        }
-//        if (getVersion() != null)
-//        {
-//            elements.add(getVersion());
-//        }
-//        if (getCalendarScale() != null)
-//        {
-//            elements.add(getCalendarScale());
-//        }
-//        if (getMethod() != null)
-//        {
-//            elements.add(getMethod());
-//        }
-//        elements.addAll(components());
-//
-//        StringBuilder builder = new StringBuilder(elements.size()*300);
-//        builder.append(firstContentLine + System.lineSeparator());
-//        String content = orderer().sortedContent().stream().collect(Collectors.joining(System.lineSeparator()));
-//        if (content != null)
-//        {
-//            builder.append(content + System.lineSeparator());
-//        }
-//
-////        Map<VCalendarElement, CharSequence> elementContentMap = new LinkedHashMap<>();
-////        elements.forEach(element -> elementContentMap.put(element, element.toContent()));
-////        
-////        // TODO - REPLACE WITH METHOD IN ORDEREDELEMENT
-////        // restore component sort order if components were parsed from content
-////        elementContentMap.entrySet().stream()
-////                .sorted((Comparator<? super Entry<VCalendarElement, CharSequence>>) (e1, e2) -> 
-////                {
-////                    Integer s1 = elementSortOrderMap().get(e1.getKey());
-////                    Integer s2 = elementSortOrderMap().get(e2.getKey());
-////                    s1 = (s1 == null) ? 0 : s1;
-////                    s2 = (s2 == null) ? 0 : s2;
-////                    return s1.compareTo(s2);
-////                })
-////                .forEach(p -> 
-////                {
-////                    builder.append(p.getValue() + System.lineSeparator());
-////                });
-//        
-//        builder.append(lastContentLine);
-//        return builder.toString();
-//    }
-
 
     /** Parse content lines into calendar object */
     @Override
@@ -720,76 +625,49 @@ public class VCalendar extends VParentBase
         }
     }
     
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((calendarScale == null) ? 0 : calendarScale.hashCode());
-        result = prime * result + ((method == null) ? 0 : method.hashCode());
-        result = prime * result + ((productIdentifier == null) ? 0 : productIdentifier.hashCode());
-        result = prime * result + ((vEvents == null) ? 0 : vEvents.hashCode());
-        result = prime * result + ((vFreeBusys == null) ? 0 : vFreeBusys.hashCode());
-        result = prime * result + ((vJournals == null) ? 0 : vJournals.hashCode());
-        result = prime * result + ((vTimeZones == null) ? 0 : vTimeZones.hashCode());
-        result = prime * result + ((vTodos == null) ? 0 : vTodos.hashCode());
-        return result;
-    }
+//    @Override
+//    public int hashCode()
+//    {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ((calendarScale == null) ? 0 : calendarScale.hashCode());
+//        result = prime * result + ((method == null) ? 0 : method.hashCode());
+//        result = prime * result + ((productIdentifier == null) ? 0 : productIdentifier.hashCode());
+//        result = prime * result + ((vEvents == null) ? 0 : vEvents.hashCode());
+//        result = prime * result + ((vFreeBusys == null) ? 0 : vFreeBusys.hashCode());
+//        result = prime * result + ((vJournals == null) ? 0 : vJournals.hashCode());
+//        result = prime * result + ((vTimeZones == null) ? 0 : vTimeZones.hashCode());
+//        result = prime * result + ((vTodos == null) ? 0 : vTodos.hashCode());
+//        return result;
+//    }
     
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        VCalendar testObj = (VCalendar) obj;
-        
-//        final boolean componentsEquals;
-//        List<VComponent> components = components(); // make properties local to avoid creating list multiple times
-//        List<VComponent> testComponents = testObj.components(); // make properties local to avoid creating list multiple times
-        
-        Collection<VChild> c1 = childrenUnmodifiable();
-        Collection<VChild> c2 = testObj.childrenUnmodifiable();
-        if (c1.size() == c2.size())
-        {
-            Iterator<VChild> i1 = childrenUnmodifiable().iterator();
-            Iterator<VChild> i2 = childrenUnmodifiable().iterator();
-            for (int i=0; i<c1.size(); i++)
-            {
-                if (! i1.next().equals(i2.next()))
-                {
-                    return false;
-                }
-            }
-        } else
-        {
-            return false;
-        }
-        return true;
-        
-//        if (components.size() == testComponents.size())
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (this == obj) return true;
+//        if (obj == null) return false;
+//        if (getClass() != obj.getClass()) return false;
+//        VCalendar testObj = (VCalendar) obj;
+//        
+//        Collection<VChild> c1 = childrenUnmodifiable();
+//        Collection<VChild> c2 = testObj.childrenUnmodifiable();
+//        if (c1.size() == c2.size())
 //        {
-//            Iterator<VComponent> i1 = components.iterator();
-//            Iterator<VComponent> i2 = testComponents.iterator();
-//            boolean isFailure = false;
-//            while (i1.hasNext())
+//            Iterator<VChild> i1 = childrenUnmodifiable().iterator();
+//            Iterator<VChild> i2 = childrenUnmodifiable().iterator();
+//            for (int i=0; i<c1.size(); i++)
 //            {
-//                Object c1 = i1.next();
-//                Object c2 = i2.next();
-//                if (! c1.equals(c2))
+//                if (! i1.next().equals(i2.next()))
 //                {
-////                    System.out.println("c1,c2:" + c1 + " " + c2 + " " + c1.equals(c2));
-//                    isFailure = true;
-//                    break;
+//                    return false;
 //                }
 //            }
-//            componentsEquals = ! isFailure;
 //        } else
 //        {
-//            componentsEquals = false;
+//            return false;
 //        }
-//        return componentsEquals;
-    }
+//        return true;
+//    }
     
 //    
 //    @Override

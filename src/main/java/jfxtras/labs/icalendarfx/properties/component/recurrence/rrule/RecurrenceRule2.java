@@ -472,7 +472,6 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     
     public RecurrenceRule2()
     {
-//        orderer = new OrdererBase(copyElementChildCallback);
         frequency = new SimpleObjectProperty<>(this, RRuleElementType.FREQUENCY.toString());
         orderer().registerSortOrderProperty(frequencyProperty());
         byRules = FXCollections.observableArrayList();
@@ -515,13 +514,6 @@ public class RecurrenceRule2 extends VParentBase implements VChild
         this();
         copyChildrenFrom(source);
     }
-    
-//    /** Copy elements from source into this recurrence rule, making a copy of source */
-//    public void copyRecurrenceRuleFrom(RecurrenceRule2 source)
-//    {
-//        elementSortOrder().putAll(source.elementSortOrder());
-//        source.elements().forEach(p -> p.copyElement(source, this));
-//    }
     
     /** Parse component from content line */
     @Override
@@ -636,23 +628,6 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     {
         return orderer().sortedContent().stream()
               .collect(Collectors.joining(";"));
-        
-//        return elements().stream()
-//                .sorted((Comparator<? super RRuleElementType>) (e1, e2) -> 
-//                {
-//                    Integer s1 = elementSortOrder().get(e1);
-//                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
-//                    Integer s2 = elementSortOrder().get(e2);
-//                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
-//                    return sort1.compareTo(sort2);
-//                })
-//                // all element objects MUST override toString
-//                .map(e -> 
-//                {
-//                    RRuleElement<?> element = e.getElement(this);
-//                    return element.toContent();
-//                })
-//                .collect(Collectors.joining(";"));
     }
     
     @Override
@@ -680,64 +655,64 @@ public class RecurrenceRule2 extends VParentBase implements VChild
         return super.toString() + ", " + toContent();
     }
 
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        RecurrenceRule2 testObj = (RecurrenceRule2) obj;
-
-        List<RRuleElementType> myElements = elements();
-        // elements only found in testObj.  Some may be equal because default value may match assigned value
-        List<RRuleElementType> testElements = testObj.elements()
-                .stream()
-                .filter(e -> ! myElements.contains(e))
-                .collect(Collectors.toList());
-        
-        for (RRuleElementType t : myElements)
-        {
-            RRuleElement<?> myElement = t.getElement(this);
-            RRuleElement<?> otherElement = t.getElement(testObj);
-            testElements.remove(t);
-            if (! myElement.equals(otherElement))
-            {
-                return false;
-            }
-        }
-        // check elements matching default values
-        for (RRuleElementType t : testElements)
-        {
-            RRuleElement<?> otherElement = t.getElement(testObj);
-            try
-            {
-                RRuleElement<?> defaultElement = otherElement.getClass().newInstance();
-                if (! otherElement.equals(defaultElement))
-                {
-                    return false;
-                }
-            } catch (InstantiationException | IllegalAccessException e1)
-            {
-                e1.printStackTrace();
-            }
-        }
-        return true;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((byRules == null) ? 0 : byRules.hashCode());
-        result = prime * result + ((count == null) ? 0 : count.hashCode());
-        result = prime * result + ((frequency == null) ? 0 : frequency.hashCode());
-        result = prime * result + ((interval == null) ? 0 : interval.hashCode());
-        result = prime * result + ((until == null) ? 0 : until.hashCode());
-        result = prime * result + ((weekStart == null) ? 0 : weekStart.hashCode());
-        return result;
-    }
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (obj == this) return true;
+//        if((obj == null) || (obj.getClass() != getClass())) {
+//            return false;
+//        }
+//        RecurrenceRule2 testObj = (RecurrenceRule2) obj;
+//
+//        List<RRuleElementType> myElements = elements();
+//        // elements only found in testObj.  Some may be equal because default value may match assigned value
+//        List<RRuleElementType> testElements = testObj.elements()
+//                .stream()
+//                .filter(e -> ! myElements.contains(e))
+//                .collect(Collectors.toList());
+//        
+//        for (RRuleElementType t : myElements)
+//        {
+//            RRuleElement<?> myElement = t.getElement(this);
+//            RRuleElement<?> otherElement = t.getElement(testObj);
+//            testElements.remove(t);
+//            if (! myElement.equals(otherElement))
+//            {
+//                return false;
+//            }
+//        }
+//        // check elements matching default values
+//        for (RRuleElementType t : testElements)
+//        {
+//            RRuleElement<?> otherElement = t.getElement(testObj);
+//            try
+//            {
+//                RRuleElement<?> defaultElement = otherElement.getClass().newInstance();
+//                if (! otherElement.equals(defaultElement))
+//                {
+//                    return false;
+//                }
+//            } catch (InstantiationException | IllegalAccessException e1)
+//            {
+//                e1.printStackTrace();
+//            }
+//        }
+//        return true;
+//    }
+//    
+//    @Override
+//    public int hashCode()
+//    {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ((byRules == null) ? 0 : byRules.hashCode());
+//        result = prime * result + ((count == null) ? 0 : count.hashCode());
+//        result = prime * result + ((frequency == null) ? 0 : frequency.hashCode());
+//        result = prime * result + ((interval == null) ? 0 : interval.hashCode());
+//        result = prime * result + ((until == null) ? 0 : until.hashCode());
+//        result = prime * result + ((weekStart == null) ? 0 : weekStart.hashCode());
+//        return result;
+//    }
     
     public static RecurrenceRule2 parse(String propertyContent)
     {

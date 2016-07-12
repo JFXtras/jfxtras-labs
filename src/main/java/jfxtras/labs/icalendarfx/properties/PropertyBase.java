@@ -21,6 +21,7 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
+import jfxtras.labs.icalendarfx.content.SingleLineContent;
 import jfxtras.labs.icalendarfx.parameters.OtherParameter;
 import jfxtras.labs.icalendarfx.parameters.Parameter;
 import jfxtras.labs.icalendarfx.parameters.ParameterType;
@@ -106,13 +107,14 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     @Override
     public String getPropertyName()
     {
-        if (propertyName == null)
-        {
-            return propertyType().toString();
-        }
-        return propertyName;
+//        if (propertyName == null)
+//        {
+//            return propertyType().toString();
+//        }
+        return propertyName.get();
     }
-    private String propertyName;
+    public ObjectProperty<String> propertyNameProperty() { return propertyName; }
+    private ObjectProperty<String> propertyName =  new SimpleObjectProperty<String>();
     /** Set the name of the property.  Only allowed for non-standard and IANA properties */
     public void setPropertyName(String name)
     {
@@ -120,7 +122,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         {
             if (name.substring(0, 2).toUpperCase().equals("X-"))
             {
-                propertyName = name;
+                propertyName.set(name);
             } else
             {
                 throw new RuntimeException("Non-standard properties must begin with X-");                
@@ -129,14 +131,17 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         {
             if (IANAProperty.REGISTERED_IANA_PROPERTY_NAMES.contains(name))
             {
-                propertyName = name;
+                propertyName.set(name);
             } else
             {
                 throw new RuntimeException(name + " is not an IANA-registered property name.  Registered names are in IANAProperty.REGISTERED_IANA_PROPERTY_NAMES");
             }
+        } else if (propertyType().toString().equals(name)) // let setting name to default value have no operation
+        {
+            propertyName.set(name);
         } else
         {
-            throw new RuntimeException("Property names can only be set for non-standard and IANA-registered properties.");
+            throw new RuntimeException("Custom property names can only be set for non-standard and IANA-registered properties.");
         }
     }
     public U withPropertyName(String name) { setPropertyName(name); return (U) this; }
@@ -295,21 +300,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         return Collections.unmodifiableList(populatedParameters);
     }
     
-    /*
-     * SORT ORDER FOR CHILD ELEMENTS
-     */
-//    final private Orderer orderer;
-//    @Override
-//    public Orderer orderer() { return orderer; }
-
-//    private Callback<VElement, Void> copyParameterChildCallback = (child) ->
-//    {
-//        ParameterType type = ParameterType.enumFromClass(child.getClass());
-////        System.out.println("copyParameterChildCallback:" + type);
-//        type.copyParameter((Parameter<?>) child, this);
-//        return null;
-//    };
-    
     @Override
     public Callback<VChild, Void> copyChildCallback()
     {        
@@ -317,26 +307,13 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         {
             ParameterType type = ParameterType.enumFromClass(child.getClass());
             type.copyParameter((Parameter<?>) child, this);
-//            setUnknownValue(getUnknownValue());
             return null;
         };
     }
     
-//    /** 
-//     * SORT ORDER
-//     * 
-//     * Parameter sort order map.  Key is parameter, value is order.  Follows sort order of parsed content.
-//     * If a parameter is not present in the map, it is put at the end of the sorted ones in
-//     * the order appearing in {@link #ParameterEnum} (should be alphabetical)
-//     * Generally, this map shouldn't be modified.  Only modify it when you want to force
-//     * a specific parameter order (e.g. unit testing).
-//     */
-
-    
-    // property value
+    // property value as string - kept if string converter changes the value can change
     private String propertyValueString = null;
     // Note: in subclasses additional text can be concatenated to string (e.g. ZonedDateTime classes add time zone as prefix)
-    @Deprecated
     protected String getPropertyValueString() { return propertyValueString; }
     
     
@@ -357,7 +334,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     private StringConverter<T> defaultConverter;
     private boolean isCustomConverter()
     {
-//        System.out.println("custom:" + getConverter() + " " + ValueType.UNIFORM_RESOURCE_IDENTIFIER.getConverter());
         return ! getConverter().equals(defaultConverter);
     }
     
@@ -367,34 +343,19 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     
     protected PropertyBase()
     {
-//        orderer = new OrdererBase(copyParameterChildCallback);
         orderer().registerSortOrderProperty(valueTypeProperty());
         propertyType = PropertyType.enumFromClass(getClass());
+        setPropertyName(propertyType.toString());
         value = new SimpleObjectProperty<T>(this, propertyType.toString());
         ValueType defaultValueType = propertyType.allowedValueTypes().get(0);
         defaultConverter = defaultValueType.getConverter();
         setConverter(defaultConverter);
         valueTypeProperty().addListener(valueParameterChangeListener); // keeps value synched with value type
+        setContentLineGenerator(new SingleLineContent(
+                orderer(),
+                propertyNameProperty(),
+                50));
     }
-
-//    /**
-//     * Parse iCalendar content line constructor
-//     * 
-//     * Construct new property by parsing content line using default string converter
-//     * @see ValueType
-//     * Sets parameters by running parse for each parameter enum
-//     * 
-//     * The input parameter is CharSequence to avoid ambiguous constructors for properties
-//     * that has the parameterized type T of String
-//     * 
-//     * @param contentLine - property text string
-//     */
-//    @Deprecated // use parse method instead
-//    public PropertyBase(String contentLine)
-//    {
-//        this();
-//        parseContent(contentLine);
-//    }
 
     public PropertyBase(Class<T> valueClass, String contentLine)
     {
@@ -412,6 +373,7 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         copyChildrenFrom(source);
         T valueCopy = copyValue(source.getValue());
         setValue(valueCopy);
+        setPropertyName(source.getPropertyName());
     }
     
     // constructor with only value parameter
@@ -420,25 +382,6 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
         this();
         setValue(value);
     }
-    
-//    /** Copy parameters and value from source into this property,
-//     *  essentially making a copy of source
-//     *  
-//     *  Note: This method only works if the property value is immutable.  If it is not 
-//     *  immutable this method must be overridden to provide a deep copy of the value (e.g. RRULE) */    
-//    public void copyPropertyFrom(PropertyBase<T,U> source)
-//    {
-//        setConverter(source.getConverter());
-//        copyChildrenFrom(source);
-////        parameterSortOrder().putAll(source.parameterSortOrder());
-////        source.parameterEnums().forEach(p -> p.copyParameter(source, this));
-//        if (source.propertyType().equals(PropertyType.NON_STANDARD) || source.propertyType().equals(PropertyType.IANA_PROPERTY))
-//        {
-//            setPropertyName(source.getPropertyName());
-//        }
-//        T valueCopy = copyValue(source.getValue());
-//        setValue(valueCopy);
-//    }
 
     // return a copy of the value
     protected T copyValue(T source)
@@ -597,186 +540,43 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
 //        System.out.println("parameter valid:" + isValueTypeOK + " " + isUnknownType + " " + isNonStandardProperty);
         return (isValueTypeOK || isUnknownType || isNonStandardProperty);
     }
-    
-    /**
-     * Return property content line for iCalendar output files.  See RFC 5545 3.5
-     * Contains component property with its value and any populated parameters.
-     * Only property name and parameter name/value pairs are added here.
-     * Property value is added in subclasses
-     * 
-     * For example: SUMMARY;LANGUAGE=en-US:Company Holiday Party
-     * 
-     * @return - the content line
-     */
-////    @Override
-//    @Deprecated
-//    public String toContentOld()
-//    {
-//        // property name
-//        StringBuilder builder = new StringBuilder(50);
-//        if (propertyName == null)
-//        {
-//            builder.append(propertyType().toString());
-//        } else
-//        {
-//            builder.append(propertyName);
-//        }
-//
-//        // PARAMETERS
-//        Map<Parameter<?>, CharSequence> parameterNameContentMap = new LinkedHashMap<>();
-//        parameters().forEach(p -> parameterNameContentMap.put((Parameter<?>) p, ((VCalendarElement) p).toContent()));
-//        
-//        // restore parameter sort order if parameters were parsed from content
-//        parameterNameContentMap.entrySet().stream()
-//                .sorted((Comparator<? super Entry<Parameter<?>, CharSequence>>) (e1, e2) -> 
-//                {
-//                    Integer s1 = parameterSortOrder().get(e1.getKey().parameterType());
-//                    Integer sort1 = (s1 == null) ? Integer.MAX_VALUE : s1;
-//                    Integer s2 = parameterSortOrder().get(e2.getKey().parameterType());
-//                    Integer sort2 = (s2 == null) ? Integer.MAX_VALUE : s2;
-//                    return sort1.compareTo(sort2);
-//                })
-//                .peek(System.out::println)
-//                .forEach(p -> 
-//                {
-//                    builder.append(p.getValue());
-//                });
-//        
-//        // add non-standard parameters - sort order doesn't apply to non-standard parameters
-////        otherParameters().stream().forEach(p -> builder.append(";" + p));
-//        // add property value
-//        String stringValue = valueContent();
-//        builder.append(":" + stringValue);
-//        // return folded line
-//        return ICalendarUtilities.foldLine(builder).toString();
-//    }
 
-    
     @Override
     public String toContent()
     {
-        checkContentList(); // test elements for completeness (can be removed for improved speed)
-        StringBuilder builder = new StringBuilder(50);
-        if (propertyName == null)
-        {
-            builder.append(propertyType().toString());
-        } else
-        {
-            builder.append(propertyName);
-        }
-//        sortedContent().stream().forEach(System.out::println);
-        String content = orderer().sortedContent().stream()
-//                .map(s -> ICalendarUtilities.foldLine(s))
-                .collect(Collectors.joining(";"));
-        if (! content.isEmpty())
-        {
-            builder.append(";" + content);
-        }
+        StringBuilder builder = new StringBuilder(super.toContent());
         builder.append(":" + valueContent());
         // return folded line
         return ICalendarUtilities.foldLine(builder).toString();
     }
     
-    // Ensures all elements in elementSortOrderMap are found in parameterEnums list
-    private void checkContentList()
-    {
-        List<String> elementNames1 = parameterEnums().stream().map(e -> e.toString()).collect(Collectors.toList());
-//        System.out.println(elementNames1);
-        List<String> elementNames2 = orderer().elementSortOrderMap().entrySet()
-                .stream()
-                .map(e -> ParameterType.enumFromClass(e.getKey().getClass()).toString())
-                .collect(Collectors.toList());
-//        System.out.println(elementNames2);
-        Optional<String> propertyNotFound1 = elementNames1.stream().filter(s -> ! elementNames2.contains(s)).findAny();
-        if (propertyNotFound1.isPresent())
-        {
-            throw new RuntimeException("element not found:" + propertyNotFound1.get());
-        }
-        Optional<String> propertyNotFound2 = elementNames2.stream().filter(s -> ! elementNames1.contains(s)).findAny();
-        if (propertyNotFound2.isPresent())
-        {
-            throw new RuntimeException("element not found:" + propertyNotFound2.get());
-        }
-    }
-
-//    @Override
-//    public int hashCode()
-//    {
-//        int hash = 7;
-//        hash = (31 * hash) + getValue().hashCode();
-//        Iterator<ParameterType> i = parameterEnums().iterator();
-//        while (i.hasNext())
-//        {
-//            Parameter<?> parameter = i.next().getParameter(this);
-//            hash = (31 * hash) + parameter.getValue().hashCode();
-//        }
-//        return hash;
-//    }
-//
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
-//        boolean valueEquals = isValueEqual(getValue(), testObj.getValue());
-        boolean valueEquals = (getValue() == null) ? (testObj.getValue() == null) : getValue().equals(testObj.getValue());
-//        System.out.println("VALUES:" + getValue() + " " + testObj.getValue() + " " + valueEquals);
-//        boolean otherParametersEquals = otherParameters().equals(testObj.otherParameters());
-        boolean nameEquals = getPropertyName().equals(testObj.getPropertyName());
-        final boolean parametersEquals;
-        // TODO - FIX EQUALS TO USE MAP
-        List<ParameterType> parameters = parameterEnums(); // make parameters local to avoid creating list multiple times
-        List<ParameterType> testParameters = testObj.parameterEnums(); // make parameters local to avoid creating list multiple times
-        if (parameters.size() == testParameters.size())
-        {
-            Iterator<ParameterType> i1 = parameters.iterator();
-            Iterator<ParameterType> i2 = testParameters.iterator();
-            boolean isFailure = false;
-            while (i1.hasNext())
-            {
-                Object p1 = i1.next().getParameter(this);
-                Object p2 = i2.next().getParameter(testObj);
-//                System.out.println("p1,p2:" + p1 + " " + p2);
-                if (! p1.equals(p2))
-                {
-                    isFailure = true;
-                    break;
-                }
-            }
-            parametersEquals = (isFailure) ? false : true;
-        } else
-        {
-            parametersEquals = false;
-        }
-//        System.out.println("equals:" + valueEquals + " " + parametersEquals + " " + nameEquals);
-        return valueEquals && parametersEquals && nameEquals;
-    }
-
     @Override
     public String toString()
     {
         return super.toString() + "," + toContent();
     }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        boolean parametersEquals = super.equals(obj);
+        if (! parametersEquals) return false;
+        PropertyBase<?,?> testObj = (PropertyBase<?,?>) obj;
+        boolean valueEquals = (getValue() == null) ? (testObj.getValue() == null) : getValue().equals(testObj.getValue());
+        boolean nameEquals = getPropertyName().equals(testObj.getPropertyName());
+        return valueEquals && parametersEquals && nameEquals;
+    }
+
     @Override
     public int hashCode()
     {
+        int hash = super.hashCode();
         final int prime = 31;
-        int hash = 1;
         hash = prime * hash + ((converter == null) ? 0 : converter.hashCode());
-        hash = prime * hash + ((otherParameters == null) ? 0 : otherParameters.hashCode());
         hash = prime * hash + ((propertyName == null) ? 0 : propertyName.hashCode());
         hash = prime * hash + ((propertyValueString == null) ? 0 : propertyValueString.hashCode());
         hash = prime * hash + ((unknownValue == null) ? 0 : unknownValue.hashCode());
         hash = prime * hash + ((value == null) ? 0 : value.hashCode());
-        Iterator<ParameterType> i = parameterEnums().iterator();
-        while (i.hasNext())
-        {
-            Object parameter = i.next().getParameter(this);
-            hash = (31 * hash) + parameter.hashCode();
-        }
         return hash;
     }
 

@@ -4,13 +4,13 @@ import java.util.stream.Collectors;
 
 import jfxtras.labs.icalendarfx.Orderer;
 
-public class MultilineContent extends ContentLineBase
+public class MultiLineContent extends ContentLineBase
 {
     final private String firstContentLine;
     final private String lastContentLine;
     final private int builderSize;
     
-    public MultilineContent(
+    public MultiLineContent(
             Orderer orderer,
             String firstContentLine,
             String lastContentLine,

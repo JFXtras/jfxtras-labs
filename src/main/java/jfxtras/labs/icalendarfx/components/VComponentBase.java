@@ -1,8 +1,6 @@
 package jfxtras.labs.icalendarfx.components;
 
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import javafx.util.Callback;
@@ -10,7 +8,7 @@ import jfxtras.labs.icalendarfx.CalendarElementType;
 import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 import jfxtras.labs.icalendarfx.VParentBase;
-import jfxtras.labs.icalendarfx.content.MultilineContent;
+import jfxtras.labs.icalendarfx.content.MultiLineContent;
 import jfxtras.labs.icalendarfx.properties.Property;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.ICalendarUtilities;
@@ -72,7 +70,7 @@ public abstract class VComponentBase extends VParentBase implements VComponent
     {
         addListeners();
         componentName = CalendarElementType.enumFromClass(this.getClass()).toString();
-        setContentLineGenerator(new MultilineContent(
+        setContentLineGenerator(new MultiLineContent(
                 orderer(),
                 firstContentLine + componentName,
                 lastContentLine + componentName,
@@ -151,67 +149,6 @@ public abstract class VComponentBase extends VParentBase implements VComponent
             }
         }
     }
-    
-    /** Copy properties and subcomponents from source into this component,
-     * essentially making a copy of source 
-     * 
-     * Note: this method only overwrites properties found in source.  If there are properties in
-     * this component that are not present in source then those will remain unchanged.
-     * */
- //    @Override
-//    public void copyComponentFrom(VComponent source)
-//    {
-////        System.out.println("copyComponentFrom1");
-////        source.propertyEnums().forEach(p -> p.copyProperty(source, this));
-////        propertySortOrder().putAll(source.propertySortOrder());
-//        source.elementSortOrderMap().forEach((key, value) ->
-//        {
-////            value.copyToParent(this);
-//            
-//            PropertyType type = PropertyType.enumFromClass(key.getClass());
-////            System.out.println("type:" + type + " " + elementSortOrderMap().size());
-//            if (type != null)
-//            { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-////                // TODO - FIX problem with LISTS - when property is a list copyProperty copies whole list - not just one element.
-//////                type.copyProperty(source, this);
-//                type.copyProperty((Property<?>) key, this);
-//////                ((Property<?>) value).copyToParent(this);
-//////                copyToParent(this);
-//            }
-////            value.copyToNewParent(this);
-//        });
-//    }
-    
-//    @Override
-//    protected List<String> sortedContent()
-//    {
-//        // check properties to make sure all are accounted for in map
-//        List<PropertyType> types = propertyEnums();
-//        Optional<VCalendarElement> propertyNotFound = orderer().elementSortOrderMap().entrySet()
-//            .stream()
-//            .map(e -> e.getKey())
-//            .filter(v ->
-//            {
-//                PropertyType myType = PropertyType.enumFromClass(v.getClass());
-//                return (myType == null) ? false : types.contains(myType);
-//            })
-//            .findAny();
-//        if (propertyNotFound.isPresent())
-//        {
-//            throw new RuntimeException("property not found:" + propertyNotFound.get());
-//        }
-//        return super.sortedContent();
-//    }
-//    
-//    /** Copy property into this component */
-//    @Override protected void copyChild(VCalendarElement child)
-//    {
-//        PropertyType type = PropertyType.enumFromClass(child.getClass());
-//        if (type != null)
-//        { // Note: if type is null then element is a subcomponent such as a VALARM, STANDARD or DAYLIGHT and copying happens in subclasses
-//            type.copyProperty((Property<?>) child, this);
-//        }        
-//    }
 
     /**
      * Parse any subcomponents such as {@link #VAlarm}, {@link #StandardTime} and {@link #DaylightSavingTime}
@@ -220,89 +157,63 @@ public abstract class VComponentBase extends VParentBase implements VComponent
      */
     void parseSubComponents(CalendarElementType subcomponentType, String subcomponentcontentLines) { }
     
-//    @Override
-//    public String toContent()
-//    {
-//        StringBuilder builder = new StringBuilder(400);
-//        builder.append(firstContentLine() + System.lineSeparator());
-////        sortedContent().stream().forEach(System.out::println);
-////        System.out.println("elements1:" + orderer().elementSortOrderMap().size() + " " + this.hashCode());
-////        checkContentList(); // test elements for completeness (can be removed for improved speed)
-////        System.exit(0);
-//        String content = childrenUnmodifiable().stream()
-//                .map(c -> c.toContent())
-//                .collect(Collectors.joining(System.lineSeparator()));
-//        if (content != null)
-//        {
-//            builder.append(content + System.lineSeparator());
-//        }
-//        builder.append(lastContentLine());
-//        return builder.toString();
-//    }
-//    @Override
-//    protected StringBuilder getContentBuilder() { return new StringBuilder(400); }
-//    @Override
-//    protected String firstContentLine() { return "BEGIN:" + componentName(); }
-//    @Override
-//    protected String lastContentLine() { return "END:" + componentName(); }
-    
     @Override
     public String toString()
     {
         return super.toString() + System.lineSeparator() + toContent();
     }
     
-    @Override
-    public int hashCode()
-    {
-        int hash = 7;
-        Iterator<?> i = childrenUnmodifiable().iterator();
-        while (i.hasNext())
-        {
-            Object property = i.next();
-            hash = (31 * hash) + property.hashCode();
-        }
-        return hash;
-    }
-
-    @Override
-    // TODO - MOVE TO VPARENT
-    public boolean equals(Object obj)
-    {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        VComponentBase testObj = (VComponentBase) obj;
-        
-        final boolean propertiesEquals;
-     // TODO - FIX EQUALS TO USE MAP
-        Collection<?> properties = childrenUnmodifiable(); // make properties local to avoid creating list multiple times
-        Collection<?> testProperties = testObj.childrenUnmodifiable(); // make properties local to avoid creating list multiple times
-//        System.out.println("equals:" + this + " " + testObj);
-        if (properties.size() == testProperties.size())
-        {
-            Iterator<?> i1 = properties.iterator();
-            Iterator<?> i2 = testProperties.iterator();
-            boolean isFailure = false;
-            while (i1.hasNext())
-            {
-                Object p1 = i1.next();
-                Object p2 = i2.next();
-                if (! p1.equals(p2))
-                {
-//                    System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
-                    isFailure = true;
-                    break;
-                }
-            }
-            propertiesEquals = ! isFailure;
-        } else
-        {
-            propertiesEquals = false;
-        }
-        return propertiesEquals;
-    }
+//    @Override
+//    public int hashCode()
+//    {
+//        int hash = 7;
+//        Iterator<?> i = childrenUnmodifiable().iterator();
+//        while (i.hasNext())
+//        {
+//            Object property = i.next();
+//            hash = (31 * hash) + property.hashCode();
+//        }
+//        return hash;
+//    }
+//
+//    @Override
+//    // TODO - MOVE TO VPARENT
+//    public boolean equals(Object obj)
+//    {
+//        if (obj == this) return true;
+//        if((obj == null) || (obj.getClass() != getClass())) {
+//            return false;
+//        }
+//        VComponentBase testObj = (VComponentBase) obj;
+//        
+//        final boolean propertiesEquals;
+//     // TODO - FIX EQUALS TO USE MAP
+//        Collection<?> properties = childrenUnmodifiable(); // make properties local to avoid creating list multiple times
+//        Collection<?> testProperties = testObj.childrenUnmodifiable(); // make properties local to avoid creating list multiple times
+////        System.out.println("equals:" + this + " " + testObj);
+//        if (properties.size() == testProperties.size())
+//        {
+//            Iterator<?> i1 = properties.iterator();
+//            Iterator<?> i2 = testProperties.iterator();
+//            boolean isFailure = false;
+//            while (i1.hasNext())
+//            {
+//                Object p1 = i1.next();
+//                Object p2 = i2.next();
+//                if (! p1.equals(p2))
+//                {
+////                    System.out.println("p1,p2:" + p1 + " " + p2 + " " + p1.equals(p2));
+//                    isFailure = true;
+//                    break;
+//                }
+//            }
+//            propertiesEquals = ! isFailure;
+//        } else
+//        {
+//            propertiesEquals = false;
+//        }
+//        return propertiesEquals;
+//    }
 
 //    @Override
 //    public List<String> errors()

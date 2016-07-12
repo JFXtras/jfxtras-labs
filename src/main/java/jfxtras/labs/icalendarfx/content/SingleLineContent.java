@@ -2,16 +2,17 @@ package jfxtras.labs.icalendarfx.content;
 
 import java.util.stream.Collectors;
 
+import javafx.beans.property.ObjectProperty;
 import jfxtras.labs.icalendarfx.Orderer;
 
 public class SingleLineContent extends ContentLineBase
 {
     final private int builderSize;
-    final private String name;
+    final private ObjectProperty<String> name;
     
     public SingleLineContent(
             Orderer orderer,
-            String name,
+            ObjectProperty<String> name,
             int builderSize)
     {
         super(orderer);
@@ -23,9 +24,16 @@ public class SingleLineContent extends ContentLineBase
     public String execute()
     {
         StringBuilder builder = new StringBuilder(builderSize);
-        builder.append(name);
-        builder.append(orderer().sortedContent().stream()
-                .collect(Collectors.joining(";")));
+//        if (name != null)
+//        {
+            builder.append(name.get());
+//        }
+        String elements = orderer().sortedContent().stream()
+                .collect(Collectors.joining(";"));
+        if (! elements.isEmpty())
+        {
+            builder.append(";" + elements);
+        }
         return builder.toString();
     }
 }

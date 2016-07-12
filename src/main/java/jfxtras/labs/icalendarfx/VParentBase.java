@@ -3,6 +3,7 @@ package jfxtras.labs.icalendarfx;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -27,9 +28,7 @@ public abstract class VParentBase implements VParent
     private ContentLineStrategy contentLineGenerator;
     protected void setContentLineGenerator(ContentLineStrategy contentLineGenerator)
     {
-        System.out.println("set22");
         this.contentLineGenerator = contentLineGenerator;
-        System.out.println("set223" + contentLineGenerator);
     }
     
 //    /*
@@ -44,7 +43,7 @@ public abstract class VParentBase implements VParent
     /** Strategy to copy subclass's children */
     protected Callback<VChild, Void> copyChildCallback()
     {
-        throw new RuntimeException("Copy child callback not overridden in subclass " + this.getClass());
+        throw new RuntimeException("Copy child callback is not overridden in subclass " + this.getClass());
     };
 
     /** returns read-only collection of child elements following the sort order controlled by {@link Orderer} */
@@ -79,8 +78,6 @@ public abstract class VParentBase implements VParent
                 .collect(Collectors.toList());
     }
 
-//    final private String contentDelimeter;
-//    final private String lineDelimeter; // 
     @Override
     public String toContent()
     {
@@ -89,21 +86,46 @@ public abstract class VParentBase implements VParent
             throw new RuntimeException("Can't produce content lines before contentLineGenerator is set");
         }
         return contentLineGenerator.execute();
-//        StringBuilder builder = getContentBuilder();
-//        builder.append(firstContentLine());
-//        String content = orderer().sortedContent().stream()
-//              .collect(Collectors.joining(contentDelimeter));
-////        String content = childrenUnmodifiable().stream()
-////                .map(c -> c.toContent())
-////                .collect(Collectors.joining(System.lineSeparator()));
-//        if (content != null)
-//        {
-//            builder.append(content + lineDelimeter);
-//        }
-//        builder.append(lastContentLine());
-//        return builder.toString();
     }
-//    abstract protected StringBuilder getContentBuilder();
-//    protected String firstContentLine() { return null; }
-//    protected String lastContentLine() { return null; }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        VParent testObj = (VParent) obj;
+        
+        Collection<VChild> c1 = childrenUnmodifiable();
+        Collection<VChild> c2 = testObj.childrenUnmodifiable();
+        if (c1.size() == c2.size())
+        {
+            Iterator<VChild> i1 = childrenUnmodifiable().iterator();
+            Iterator<VChild> i2 = childrenUnmodifiable().iterator();
+            for (int i=0; i<c1.size(); i++)
+            {
+                if (! i1.next().equals(i2.next()))
+                {
+                    return false;
+                }
+            }
+        } else
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        for (VChild child : childrenUnmodifiable())
+        {
+            result = prime * result + child.hashCode();
+        }
+        return result;
+    }
 }
