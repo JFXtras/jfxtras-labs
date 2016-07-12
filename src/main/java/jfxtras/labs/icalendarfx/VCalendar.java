@@ -624,59 +624,6 @@ public class VCalendar extends VParentBase
             }
         }
     }
-    
-//    @Override
-//    public int hashCode()
-//    {
-//        final int prime = 31;
-//        int result = 1;
-//        result = prime * result + ((calendarScale == null) ? 0 : calendarScale.hashCode());
-//        result = prime * result + ((method == null) ? 0 : method.hashCode());
-//        result = prime * result + ((productIdentifier == null) ? 0 : productIdentifier.hashCode());
-//        result = prime * result + ((vEvents == null) ? 0 : vEvents.hashCode());
-//        result = prime * result + ((vFreeBusys == null) ? 0 : vFreeBusys.hashCode());
-//        result = prime * result + ((vJournals == null) ? 0 : vJournals.hashCode());
-//        result = prime * result + ((vTimeZones == null) ? 0 : vTimeZones.hashCode());
-//        result = prime * result + ((vTodos == null) ? 0 : vTodos.hashCode());
-//        return result;
-//    }
-    
-//    @Override
-//    public boolean equals(Object obj)
-//    {
-//        if (this == obj) return true;
-//        if (obj == null) return false;
-//        if (getClass() != obj.getClass()) return false;
-//        VCalendar testObj = (VCalendar) obj;
-//        
-//        Collection<VChild> c1 = childrenUnmodifiable();
-//        Collection<VChild> c2 = testObj.childrenUnmodifiable();
-//        if (c1.size() == c2.size())
-//        {
-//            Iterator<VChild> i1 = childrenUnmodifiable().iterator();
-//            Iterator<VChild> i2 = childrenUnmodifiable().iterator();
-//            for (int i=0; i<c1.size(); i++)
-//            {
-//                if (! i1.next().equals(i2.next()))
-//                {
-//                    return false;
-//                }
-//            }
-//        } else
-//        {
-//            return false;
-//        }
-//        return true;
-//    }
-    
-//    
-//    @Override
-//    public List<String> errors()
-//    {
-//        return childrenUnmodifiable().stream()
-//                .flatMap(c -> c.errors().stream())
-//                .collect(Collectors.toList());
-//    }
 
     public static VCalendar parse(String contentLines)
     {

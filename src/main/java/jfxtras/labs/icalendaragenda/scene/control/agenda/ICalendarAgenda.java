@@ -303,6 +303,7 @@ public class ICalendarAgenda extends Agenda
         // TODO - MAKE REVISOR HANDLE EDIT ONE - NEED TO ADD EXDATE
         appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
         Platform.runLater(() -> refresh());
+//        getVCalendar().getVEvents().forEach(System.out::println);
         return null;
     };
     
@@ -400,6 +401,7 @@ public class ICalendarAgenda extends Agenda
                         {
                             VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
                             getVCalendar().addVComponent(newVComponent);
+                            getVCalendar().getVEvents().forEach(System.out::println);
 //                            boolean hasSummary = appointment.getSummary() != null;
 //                            boolean hasSummaryChanged = appointment.getSummary().equals(originalSummary);
 //                            boolean hasAppointmentGroupChanged = appointment.getAppointmentGroup().equals(originalAppointmentGroup);
@@ -434,7 +436,7 @@ public class ICalendarAgenda extends Agenda
                     change.getRemoved().stream().forEach(a -> 
                     { // add appointments to EXDATE
 //                        VComponentDisplayable<?> v = appointmentVComponentMap().get(a);
-                        System.out.println("remove:" + a.hashCode());
+//                        System.out.println("remove:" + a.hashCode());
 //                        Platform.runLater(() -> refresh());
                     });
                 }

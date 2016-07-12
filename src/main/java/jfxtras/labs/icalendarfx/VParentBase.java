@@ -102,7 +102,7 @@ public abstract class VParentBase implements VParent
         if (c1.size() == c2.size())
         {
             Iterator<VChild> i1 = childrenUnmodifiable().iterator();
-            Iterator<VChild> i2 = childrenUnmodifiable().iterator();
+            Iterator<VChild> i2 = testObj.childrenUnmodifiable().iterator();
             for (int i=0; i<c1.size(); i++)
             {
                 if (! i1.next().equals(i2.next()))

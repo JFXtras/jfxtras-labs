@@ -69,13 +69,6 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
         return changedProperties;
     }
     
-//    @Override
-//    void editThisAndFuture(VEvent vComponentEditedCopy, VEvent vComponentOriginalCopy)
-//    {
-//        super.editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-//        adjustDateTimeEndOrDuration(vComponentEditedCopy);
-//    }
-    
     @Override
     public List<PropertyType> dialogRequiredProperties()
     {

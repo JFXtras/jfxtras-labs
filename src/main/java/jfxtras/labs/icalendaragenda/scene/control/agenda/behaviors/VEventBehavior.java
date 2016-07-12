@@ -80,7 +80,6 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
                 endRecurrence = appointment.getEndTemporal();            
             }
             
-//            ReviserVEvent newRevisor = (ReviserVEvent) vComponent.newRevisor();
             ReviserVEvent newRevisor = (ReviserVEvent) SimpleRevisorFactory.newReviser(vComponent);
             newRevisor.withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
                     .withEndRecurrence(endRecurrence)
@@ -89,8 +88,6 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
                     .withVComponentEdited(vComponent)
                     .withVComponentOriginal(vComponentOriginal);
             Collection<VEvent> newVComponents = newRevisor.revise();
-            System.out.println("about to remove:");
-//            System.out.println("about to add:" + newVComponents.size());
             if (newVComponents != null)
             {
                 agenda.getVCalendar().getVEvents().remove(vComponent);

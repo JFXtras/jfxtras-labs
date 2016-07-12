@@ -141,12 +141,12 @@ public class CalendarController
                 .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(8).getDescription())
                 .withDescription("Split Description")
                 .withSummary(Summary.parse("Split"))
-                .withUniqueIdentifier("20150110T080000-0@jfxtras.org");
+                .withUniqueIdentifier("20150110T080000-00@jfxtras.org");
         agenda.getVCalendar().getVEvents().add(vEventSplit);
         
         VEvent vEventZonedUntil = new VEvent()
 //                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(10))
-//                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(10).getDescription())
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(10).getDescription())
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(9, 45)), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(8, 15)), ZoneId.of("America/Los_Angeles")))
@@ -156,9 +156,9 @@ public class CalendarController
                         .withFrequency(FrequencyType.WEEKLY)
                         .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
                 .withSummary(Summary.parse("WeeklyZoned Ends"))
-                .withUniqueIdentifier("20150110T080000-1@jfxtras.org");
+                .withUniqueIdentifier("20150110T080000-01@jfxtras.org");
         agenda.getVCalendar().getVEvents().add(vEventZonedUntil);
-        
+               
         VEvent vEventZonedInfinite = new VEvent()
             .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
             .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(12, 00)), ZoneId.of("America/Los_Angeles")))
@@ -169,7 +169,7 @@ public class CalendarController
                     .withFrequency(FrequencyType.WEEKLY)
                     .withByRules(new ByDay(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)))
             .withSummary(Summary.parse("WeeklyZoned Infinite"))
-            .withUniqueIdentifier("20150110T080000-2@jfxtras.org");
+            .withUniqueIdentifier("20150110T080000-02@jfxtras.org");
         agenda.getVCalendar().getVEvents().add(vEventZonedInfinite);
         
         VEvent vEventLocalDate = new VEvent()

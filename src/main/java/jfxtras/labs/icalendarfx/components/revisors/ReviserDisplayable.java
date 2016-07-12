@@ -140,7 +140,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             // fall through
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
-            adjustDateTime(vComponentEditedCopy);
+            adjustStartAndEnd(vComponentEditedCopy, vComponentOriginalCopy);
+//            adjustDateTime(vComponentEditedCopy);
             break;
         case WITH_EXISTING_REPEAT:
             // Find which properties changed
@@ -205,18 +206,18 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 }
             }
         }
-        
+
+        if (incrementSequence)
+        {
+            vComponentEditedCopy.incrementSequence();
+        }
         if (! vComponentEditedCopy.isValid())
         {
             throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
                     vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
                     vComponentEditedCopy.toContent());
         }
-        if (incrementSequence)
-        {
-            vComponentEditedCopy.incrementSequence();
-        }
-        vComponents.add(vComponentEditedCopy);
+        vComponents.add(vComponentEditedCopy); // add edited copy for all edit options
         return vComponents;
     }
     
@@ -247,13 +248,16 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     }
     
     /** Adjust start date/time */
+    @Deprecated
     void adjustDateTime(U vComponentEditedCopy)
     {
+        System.out.println("start and end:" + getStartOriginalRecurrence() + " " + getStartRecurrence());
+        // TODO - DescriptiveVBox needs to keep zone
         TemporalAmount shiftAmount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
         TemporalAmount amountToStart = DateTimeUtilities.temporalAmountBetween(vComponentEditedCopy.getDateTimeStart().getValue(), getStartRecurrence());
-        System.out.println("amountToStart:" + amountToStart + " "+ shiftAmount);
+//        System.out.println("amountToStart:" + amountToStart + " "+ shiftAmount);
         Temporal newStart = getStartRecurrence().minus(amountToStart).plus(shiftAmount);
-        System.out.println("newStart:" + newStart);
+//        System.out.println("newStart:" + newStart);
         vComponentEditedCopy.setDateTimeStart(new DateTimeStart(newStart));
     }
     
