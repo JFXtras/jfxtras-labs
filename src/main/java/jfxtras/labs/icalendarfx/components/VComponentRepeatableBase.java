@@ -120,11 +120,37 @@ public abstract class VComponentRepeatableBase<T> extends VComponentPrimaryBase<
                 errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
             }
         }
-        
-//        if (getRecurrenceRule() != null)
-//        {
-//            errors.addAll(getRecurrenceRule().errors());
-//        }      
+        System.out.println("UNTIL test" + (getRecurrenceRule() != null) + " " + (getRecurrenceRule().getValue().getUntil() != null)); 
+        if (getRecurrenceRule() != null && getRecurrenceRule().getValue().getUntil() != null)
+        {
+            Temporal until = getRecurrenceRule().getValue().getUntil().getValue();
+            DateTimeType untilType = DateTimeType.of(until);
+            DateTimeType startType = DateTimeType.of(getDateTimeStart().getValue());
+            switch (startType)
+            {
+            case DATE:
+                if (untilType != DateTimeType.DATE)
+                {
+                    errors.add("If DTSTART specifies a DATE then UNTIL must also specify a DATE value instead of:" + untilType);
+                }
+                break;
+            case DATE_WITH_LOCAL_TIME:
+                if (untilType != DateTimeType.DATE_WITH_LOCAL_TIME)
+                {
+                    errors.add("If DTSTART specifies a DATE_WITH_LOCAL_TIME then UNTIL must also specify a DATE_WITH_LOCAL_TIME value instead of:" + untilType);
+                }
+                break;
+            case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+            case DATE_WITH_UTC_TIME:
+                if (untilType != DateTimeType.DATE_WITH_LOCAL_TIME)
+                {
+                    errors.add("If DTSTART specifies a DATE_WITH_LOCAL_TIME_AND_TIME_ZONE or DATE_WITH_UTC_TIME then UNTIL must specify a DATE_WITH_UTC_TIME value instead of:" + untilType);
+                }
+                break;
+            default:
+                throw new RuntimeException("unsupported DateTimeType:" + startType);
+            }
+        }
         return errors;
     }
 
