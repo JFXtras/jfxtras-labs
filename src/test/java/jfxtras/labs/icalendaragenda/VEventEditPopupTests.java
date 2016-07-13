@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -404,6 +406,55 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         VEvent editedVEvent = myCalendar.getVEvents().get(0);
         assertEquals(LocalDate.of(2015, 11, 10), editedVEvent.getDateTimeStart().getValue());
         assertEquals(LocalDate.of(2015, 11, 11), editedVEvent.getDateTimeEnd().getValue());
+    }
+    
+    @Test
+    public void canChangeWholeDayToTimeBased()
+    {
+        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
+        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
+        VCalendar myCalendar = new VCalendar();
+        VEvent vevent = ICalendarStaticComponents.getWholeDayDaily3();
+        myCalendar.getVEvents().add(vevent);
+        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
+        Appointment appointment = newAppointments.get(1);
+        System.out.println(appointment);
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            editComponentPopup.setupData(
+                    vevent,
+                    myCalendar.getVEvents(),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
+                    ICalendarAgendaUtilities.CATEGORIES);
+        });
+        CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
+        assertTrue(wholeDayCheckBox.isSelected());
+        LocalDateTextField start1 = find("#startDateTextField");
+        assertEquals(LocalDate.of(2015, 11, 11), start1.getLocalDate());
+        click(wholeDayCheckBox); // turn off wholeDayCheckBox
+
+        LocalDateTimeTextField start2 = find("#startDateTimeTextField");
+        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 0), start2.getLocalDateTime());
+        start2.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 13, 0)); // adds 3 hour shift
+        TestUtil.sleep(3000);
+        
+        // Save changes
+        click("#saveComponentButton");
+        
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
+        click("#changeDialogOkButton");
+        
+        VEvent veventExpected = ICalendarStaticComponents.getWholeDayDaily3()
+                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 13, 0), ZoneId.systemDefault()))
+                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 14, 0), ZoneId.systemDefault()));
+        Temporal until = ZonedDateTime.of(LocalDateTime.of(2015, 11, 23, 13, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+        veventExpected.getRecurrenceRule().getValue().setUntil(until);
+
+        VEvent editedVEvent = myCalendar.getVEvents().get(0);
+        assertEquals(veventExpected, editedVEvent);
     }
     
     private static final Map<ChangeDialogOption, Pair<Temporal,Temporal>> EXAMPLE_MAP = makeExampleMap();

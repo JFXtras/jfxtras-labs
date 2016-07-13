@@ -31,6 +31,7 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  */
 public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>> extends DescriptiveVBox<T>
 {
+    private static final Duration DEFAULT_DURATION = Duration.ofHours(1);
     protected LocalDateTimeTextField endDateTimeTextField = new LocalDateTimeTextField(); // end of recurrence
     protected LocalDateTextField endDateTextField = new LocalDateTextField(); // end of recurrence when wholeDayCheckBox is selected
     
@@ -82,7 +83,13 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
     /** Update endDateTextField when endDateTimeTextField changes */
     void synchEndDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
-        endNewRecurrence = startOriginalRecurrence.with(newValue);
+        if (startOriginalRecurrence.isSupported(ChronoUnit.NANOS)) // ZoneDateTime, LocalDateTime
+        {
+            endNewRecurrence = startOriginalRecurrence.with(newValue);            
+        } else // LocalDate
+        {
+            endNewRecurrence = newValue;
+        }
         endDateTextField.localDateProperty().removeListener(endDateTextListener);
         LocalDate newDate = LocalDate.from(endDateTimeTextField.getLocalDateTime()).plusDays(1);
         endDateTextField.setLocalDate(newDate);
@@ -101,7 +108,6 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
 //            List<T> vComponents,
             List<String> categories)
     {
-        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
 //        endRecurrenceOriginal = appointment.getEndTemporal();
         
         if (vComponent.getDescription() == null)
@@ -114,26 +120,45 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
             vComponent.setLocation(Location.parse(""));
         }
         locationTextField.textProperty().bindBidirectional(vComponent.getLocation().valueProperty());
-        
+                
         /*
          * END DATE/TIME
          */
         endDateTimeTextField.setLocale(Locale.getDefault());
-        final LocalDateTime endDateTime;
-        final LocalDate endDate;
-        if (endRecurrence.isSupported(ChronoUnit.NANOS))
+        endDateTextField.setLocale(Locale.getDefault());
+        endDateTimeTextField.setParseErrorCallback(errorCallback);
+        endDateTextField.setParseErrorCallback(errorCallback);
+        final LocalDateTime end1;
+        final LocalDate end2;
+        if (vComponent.isWholeDay())
         {
-            endDateTime = TemporalUtilities.toLocalDateTime(endRecurrence);
-            endDate = LocalDate.from(endRecurrence).plusDays(1);
+            end1 = LocalDate.from(endRecurrence).minusDays(1).atTime(DEFAULT_START_TIME).plus(DEFAULT_DURATION);
+            end2 = LocalDate.from(endRecurrence);
         } else
         {
-            endDateTime = LocalDate.from(startRecurrence).atTime(defaultStartTime);
-            endDate = LocalDate.from(endRecurrence);
+            end1 = TemporalUtilities.toLocalDateTime(endRecurrence);
+            end2 = LocalDate.from(endRecurrence).plusDays(1);
         }
-        endDateTimeTextField.setLocalDateTime(endDateTime);
-        endDateTimeTextField.setParseErrorCallback(errorCallback);
-        endDateTextField.setLocalDate(LocalDate.from(endDate));
-        endDateTextField.setParseErrorCallback(errorCallback);
+        endDateTimeTextField.setLocalDateTime(end1);
+        endDateTextField.setLocalDate(end2);
+        endDateTimeTextField.localDateTimeProperty().addListener(endDateTimeTextListener);
+        endDateTextField.localDateProperty().addListener(endDateTextListener);
+
+        
+//        final LocalDateTime endDateTime;
+//        final LocalDate endDate;
+//        if (endRecurrence.isSupported(ChronoUnit.NANOS))
+//        {
+//            endDateTime = TemporalUtilities.toLocalDateTime(endRecurrence);
+//            endDate = LocalDate.from(endRecurrence).plusDays(1);
+//        } else
+//        {
+//            endDateTime = LocalDate.from(startRecurrence).atTime(DEFAULT_START_TIME);
+//            endDate = LocalDate.from(endRecurrence);
+//        }
+//        endDateTimeTextField.setLocalDateTime(endDateTime);
+//        endDateTextField.setLocalDate(LocalDate.from(endDate));
+
         
         // Ensure end date/time is not before start date/time
         endDateTimeTextField.localDateTimeProperty().addListener((observable, oldSelection, newSelection) ->
@@ -153,8 +178,10 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
                 endDateTextField.setLocalDate(oldSelection);
             }
         });
+        
+        super.setupData(vComponent, startRecurrence, endRecurrence, categories);
     }
-    
+        
 //    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
 //    private void tooEarlyDateAlert(LocalDateTime t1, LocalDateTime t2)
 //    {

@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeDue;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public class ReviserVTodo extends ReviserLocatable<ReviserVTodo, VTodo>
@@ -23,8 +24,8 @@ public class ReviserVTodo extends ReviserLocatable<ReviserVTodo, VTodo>
             vComponentEditedCopy.setDuration(duration);
         } else if (vComponentEditedCopy.getDateTimeDue() != null)
         {
-            Temporal dtend = vComponentEditedCopy.getDateTimeStart().getValue().plus(duration);
-            vComponentEditedCopy.setDateTimeDue(dtend);
+            Temporal due = vComponentEditedCopy.getDateTimeStart().getValue().plus(duration);
+            vComponentEditedCopy.setDateTimeDue(new DateTimeDue(due));
         } else
         {
             throw new RuntimeException("Either DTEND or DURATION must be set");

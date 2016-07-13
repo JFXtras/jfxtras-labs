@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public abstract class ReviserLocatable<T, U extends VComponentLocatable<U>> extends ReviserDisplayable<T, U>
@@ -42,7 +43,7 @@ public abstract class ReviserLocatable<T, U extends VComponentLocatable<U>> exte
     void adjustStartAndEnd(U vComponentEditedCopy, U vComponentOriginalCopy)
     {
         // Adjust start and end - set recurrence temporal as start
-        vComponentEditedCopy.setDateTimeStart(getStartRecurrence());
+        vComponentEditedCopy.setDateTimeStart(new DateTimeStart(getStartRecurrence()));
         vComponentEditedCopy.setEndOrDuration(getStartRecurrence(), getEndRecurrence());
 //        super.editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
     }
@@ -53,7 +54,7 @@ public abstract class ReviserLocatable<T, U extends VComponentLocatable<U>> exte
         super.becomeNonRecurring(vComponentEditedCopy);
         if (getVComponentOriginal().getRecurrenceRule() != null)
         { // RRULE was removed, update DTSTART, DTEND or DURATION
-            getVComponentEdited().setDateTimeStart(getStartRecurrence());
+            getVComponentEdited().setDateTimeStart(new DateTimeStart(getStartRecurrence()));
             if (getVComponentEdited().getDuration() != null)
             {
                 TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());

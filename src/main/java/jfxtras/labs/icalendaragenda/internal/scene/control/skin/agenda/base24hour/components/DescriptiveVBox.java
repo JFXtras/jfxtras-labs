@@ -53,7 +53,8 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML GridPane timeGridPane;
     LocalDateTimeTextField startDateTimeTextField = new LocalDateTimeTextField(); // start of recurrence
     LocalDateTextField startDateTextField = new LocalDateTextField(); // start of recurrence when wholeDayCheckBox is selected
-    
+    protected final static LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0); // default time
+
     @FXML Label endLabel;
     
     @FXML private CheckBox wholeDayCheckBox;
@@ -100,7 +101,13 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
         System.out.println("start date2:" + newValue);
-        startRecurrenceProperty.set(startOriginalRecurrence.with(newValue));
+        if (startOriginalRecurrence.isSupported(ChronoUnit.NANOS)) // ZoneDateTime, LocalDateTime
+        {
+            startRecurrenceProperty.set(startOriginalRecurrence.with(newValue));            
+        } else // LocalDate
+        {
+            startRecurrenceProperty.set(newValue);
+        }
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
         startDateTextField.setLocalDate(newDate);
@@ -120,6 +127,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     T vComponentEdited;
     private String initialCategory;
     Temporal startOriginalRecurrence;
+    // TODO - MAKE A LOCALDATE AND A LOCALDATETIME VERSION
     /** Contains the start recurrence Temporal LocalDate or LocalDateTime */
     ObjectProperty<Temporal> startRecurrenceProperty;
 
@@ -149,28 +157,28 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         
         // START DATE/TIME
         startDateTimeTextField.setLocale(Locale.getDefault());
-        startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
-        startDateTextField.localDateProperty().addListener(startDateTextListener);
-        final LocalDateTime start;
-        if (startRecurrence.isSupported(ChronoUnit.NANOS))
+        startDateTextField.setLocale(Locale.getDefault());
+        startDateTimeTextField.setParseErrorCallback(errorCallback);
+        startDateTextField.setParseErrorCallback(errorCallback);
+        final LocalDateTime start1;
+        final LocalDate start2 = LocalDate.from(startRecurrence);
+        if (vComponentEdited.isWholeDay())
         {
-            start = TemporalUtilities.toLocalDateTime(startRecurrence);
+            start1 = LocalDate.from(startRecurrence).atTime(DEFAULT_START_TIME);
         } else
         {
-            start = LocalDate.from(startRecurrence).atTime(defaultStartTime);
+            start1 = TemporalUtilities.toLocalDateTime(startRecurrence);     
         }
-//        System.out.println("start:" + start + " " + startOriginalRecurrence + " " + appointment.getStartTemporal());
-        startDateTimeTextField.setLocalDateTime(start);
-        startDateTimeTextField.setParseErrorCallback(errorCallback);
-        startDateTextField.setLocale(Locale.getDefault());
-        startDateTextField.setLocalDate(LocalDate.from(startRecurrence));
-        startDateTextField.setParseErrorCallback(errorCallback);
-        
+        startDateTimeTextField.setLocalDateTime(start1);
+        startDateTextField.setLocalDate(start2);
+        startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
+        startDateTextField.localDateProperty().addListener(startDateTextListener);
+
         // WHOLE DAY
         wholeDayCheckBox.setSelected(vComponentEdited.isWholeDay());
         handleWholeDayChange(vComponentEdited, wholeDayCheckBox.isSelected()); 
         wholeDayCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) -> handleWholeDayChange(vComponent, newSelection));
-        
+
         // CATEGORIES
         // initialize with empty category, to be removed later if not populated with other value.
         if (vComponentEdited.getCategories() == null)
@@ -245,33 +253,13 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             Temporal r = newValue.with(startDateTextField.getLocalDate());
             TemporalAmount shift = DateTimeUtilities.temporalAmountBetween(r, newValue);
             LocalDateTime startNew = startDateTimeTextField.getLocalDateTime().plus(shift);
-//            startDateTimeTextField.localDateTimeProperty().removeListener(shiftAmountListener);
-//            startDateTextField.localDateProperty().removeListener(shiftAmountListener);
-//            TemporalAmount shiftAmountSave = shiftAmount;
             startDateTimeTextField.setLocalDateTime(startNew);
-//            System.out.println("dtstart changed:" + oldValue + " " + newValue + " " + shiftAmount);
-
-//            shiftAmount = shiftAmountSave;
-//            startDateTimeTextField.localDateTimeProperty().addListener(shiftAmountListener);
-//            startDateTextField.localDateProperty().addListener(shiftAmountListener);
-//            System.out.println("recurrence:" + startRecurrenceProperty.get() + " " + shift);
-//            startOriginalRecurrence = startOriginalRecurrence.plus(duration);
-//            System.out.println("recurrence:" + startRecurrenceProperty.get() + " " + startOriginalRecurrence);
-//            System.out.println("new start:" + startDateTimeTextField.getLocalDateTime());
-//            System.out.println("DTSTART changed:" + vComponentEdited.getDateTimeStart().getValue() +
-//                    startDateTimeTextField.getLocalDateTime() + " " + startDateTextField.getLocalDate()
-//                    );
         } else
         {
 //            shiftAmount = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
         }
     };
-    
-    //    private LocalDateTime lastStartTextFieldValue = null; // last LocalDateTime in startTextField
-    protected LocalTime defaultStartTime = LocalTime.of(10, 0); // default time
-//    protected TemporalAmount lastDuration = Duration.ofHours(1); // Default to one hour duration
-//    protected Temporal lastDateTimeStart;
-    
+        
     /*
      * When
      */
@@ -292,7 +280,6 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         }
         startDateTextField.localDateProperty().addListener(startDateTextListener);
         startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);
-//        System.out.println("startRecurrenceProperty:" + startRecurrenceProperty.get());
     }
     
     /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and
@@ -302,26 +289,9 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     {
         if (! vComponentEdited.isRecurrence(startRecurrenceProperty.get()))
         {
-//            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
             TemporalAmount shift = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
-//            System.out.println("synch amount:" + oldValue + " " + newValue + " " + shiftAmount);
             LocalDateTime startNew = startDateTimeTextField.getLocalDateTime().plus(shift);
-//            startDateTextField.localDateProperty().removeListener(startDateTextListener);
-//            startDateTextField.localDateProperty().removeListener(shiftAmountListener);
-//            TemporalAmount shiftAmountSave = shiftAmount;
             startDateTimeTextField.setLocalDateTime(startNew);
-//            shiftAmount = shiftAmountSave;
-//            startDateTextField.localDateProperty().addListener(startDateTextListener);
-//            startDateTextField.localDateProperty().addListener(shiftAmountListener);
-//            startDateTimeTextField.setLocalDateTime(startNew);
-//            startOriginalRecurrence = startOriginalRecurrence.plus(duration);
-//            Temporal recurrenceBefore = vComponentEdited.previousStreamValue(startRecurrenceProperty.get());
-//            Optional<Temporal> optionalAfter = vComponentEdited.streamRecurrences(startRecurrenceProperty.get()).findFirst();
-//            Temporal newStartRecurrence = (optionalAfter.isPresent()) ? optionalAfter.get() : recurrenceBefore;
-//            startDateTimeTextField.setLocalDateTime((LocalDateTime) DateTimeUtilities.DateTimeType.DATE_WITH_LOCAL_TIME.from(newStartRecurrence));
-//            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
-//            Temporal endNew = endDateTimeTextField.getLocalDateTime().plus(duration);
-            System.out.println("new start:" + startDateTimeTextField.getLocalDateTime());
         }
     }
     

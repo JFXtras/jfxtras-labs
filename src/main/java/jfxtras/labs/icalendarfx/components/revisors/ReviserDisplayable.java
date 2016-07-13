@@ -506,7 +506,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     void editOne(U vComponentEditedCopy)
     {
         vComponentEditedCopy.setRecurrenceRule((RecurrenceRule) null);
-        vComponentEditedCopy.setDateTimeStart(getStartRecurrence());
+        vComponentEditedCopy.setDateTimeStart(new DateTimeStart(getStartRecurrence()));
         vComponentEditedCopy.setRecurrenceId(startOriginalRecurrence);
         vComponentEditedCopy.setDateTimeStamp(ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Z")));
     }

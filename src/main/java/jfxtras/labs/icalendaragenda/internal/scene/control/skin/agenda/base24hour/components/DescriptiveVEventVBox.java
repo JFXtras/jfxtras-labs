@@ -20,8 +20,6 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
-    // TODO - TRY TO REMOVE appointmentGroups - USE A LISTENER TO MATCH UP CATEGORY TO APPOINTMENT GROUP?
-    // USE LIST<STRING> INSTEAD - JUST THE DESCRIPTIONS?
     {
         // Convert duration to date/time end - this controller can't handle VEvents with duration
         if (vComponent.getDuration() != null)
@@ -33,20 +31,4 @@ public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
         
         super.setupData(vComponent, startRecurrence, endRecurrence, categories);
     }
-    
-//    /* If startRecurrence isn't valid due to a RRULE change, changes startRecurrence and
-//     * endRecurrence to closest valid values
-//     */
-//    @Override
-//    void validateRecurrenceDates(Temporal oldValue, Temporal newValue)
-//    {
-//        super.validateRecurrenceDates(oldValue, newValue);
-//        if (! vComponentEdited.isRecurrence(startRecurrenceProperty.get()))
-//        {
-//            TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(oldValue, newValue);
-//            LocalDateTime endNew = endDateTimeTextField.getLocalDateTime().plus(duration);
-//            endDateTimeTextField.setLocalDateTime(endNew);
-//            System.out.println("new end:" + endDateTimeTextField.getLocalDateTime());
-//        }
-//    }
 }

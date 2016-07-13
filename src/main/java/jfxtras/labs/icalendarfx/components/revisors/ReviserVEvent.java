@@ -7,6 +7,7 @@ import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
@@ -40,7 +41,7 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
         } else if (vComponentEditedCopy.getDateTimeEnd() != null)
         {
             Temporal dtend = vComponentEditedCopy.getDateTimeStart().getValue().plus(duration);
-            vComponentEditedCopy.setDateTimeEnd(dtend);
+            vComponentEditedCopy.setDateTimeEnd(new DateTimeEnd(dtend));
             System.out.println("dtend:" + dtend);
         } else
         {
