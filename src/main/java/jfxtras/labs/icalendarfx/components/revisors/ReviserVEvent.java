@@ -34,7 +34,6 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
     private void adjustDateTimeEndOrDuration(VEvent vComponentEditedCopy)
     {
         TemporalAmount duration = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());
-//        System.out.println("duration:" + duration);
         if (vComponentEditedCopy.getDuration() != null)
         {
             vComponentEditedCopy.setDuration(duration);
@@ -42,7 +41,6 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
         {
             Temporal dtend = vComponentEditedCopy.getDateTimeStart().getValue().plus(duration);
             vComponentEditedCopy.setDateTimeEnd(new DateTimeEnd(dtend));
-            System.out.println("dtend:" + dtend);
         } else
         {
             throw new RuntimeException("Either DTEND or DURATION must be set");
@@ -53,8 +51,6 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
     List<PropertyType> findChangedProperties(VEvent vComponentEditedCopy, VEvent vComponentOriginalCopy)
     {
         List<PropertyType> changedProperties = super.findChangedProperties(vComponentEditedCopy, vComponentOriginalCopy);
-//                getVComponentEdited(), getVComponentOriginal(), getStartRecurrence(), getEndRecurrence());
-//        System.out.println("duration temporals:" + startRecurrence + " + " + endRecurrence);
         TemporalAmount durationNew = DateTimeUtilities.temporalAmountBetween(getStartRecurrence(), getEndRecurrence());
         TemporalAmount durationOriginal = getVComponentEdited().getActualDuration();
         if (! durationOriginal.equals(durationNew))

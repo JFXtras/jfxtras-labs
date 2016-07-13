@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -86,9 +88,9 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
         if (startOriginalRecurrence.isSupported(ChronoUnit.NANOS)) // ZoneDateTime, LocalDateTime
         {
             endNewRecurrence = startOriginalRecurrence.with(newValue);            
-        } else // LocalDate
+        } else // LocalDate - use ZonedDateTime at system default ZoneId
         {
-            endNewRecurrence = newValue;
+            endNewRecurrence = ZonedDateTime.of(newValue, ZoneId.systemDefault());
         }
         endDateTextField.localDateProperty().removeListener(endDateTextListener);
         LocalDate newDate = LocalDate.from(endDateTimeTextField.getLocalDateTime()).plusDays(1);

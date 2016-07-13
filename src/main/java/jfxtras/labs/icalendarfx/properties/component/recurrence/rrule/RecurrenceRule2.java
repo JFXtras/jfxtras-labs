@@ -520,22 +520,19 @@ public class RecurrenceRule2 extends VParentBase implements VChild
     public void parseContent(String contentLine)
     {
         ICalendarUtilities.propertyLineToParameterMap(contentLine)
-        .entrySet()
-        .stream()
-//        .peek(System.out::println)
-        .forEach(entry ->
-        {
-            RRuleElementType element = RRuleElementType.enumFromName(entry.getKey());
-            if (element != null)
-            {
-                element.parse(this, entry.getValue());
-//                elementSortOrder().put(element, elementCounter);
-//                elementCounter += 100; // add 100 to allow insertions in between
-            } else
-            {
-                throw new IllegalArgumentException("Unsupported Recurrence Rule element: " + entry.getKey());                        
-            }
-        });
+                .entrySet()
+                .stream()
+                .forEach(entry ->
+                {
+                    RRuleElementType element = RRuleElementType.enumFromName(entry.getKey());
+                    if (element != null)
+                    {
+                        element.parse(this, entry.getValue());
+                    } else
+                    {
+                        throw new IllegalArgumentException("Unsupported Recurrence Rule element: " + entry.getKey());                        
+                    }
+                });
     }
 
     /**
@@ -565,7 +562,6 @@ public class RecurrenceRule2 extends VParentBase implements VChild
                             .sorted()
                             .forEach(rule ->
                             {
-//                                System.out.println("rule:" + rule.elementType() + " " + chronoUnit + " " + rule.getClass().getSimpleName());
                                 myStream = rule.streamRecurrences(myStream, chronoUnit, start);
                                 chronoUnit = rule.getChronoUnit();
                             });

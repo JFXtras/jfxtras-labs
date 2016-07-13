@@ -105,12 +105,10 @@ public abstract class VParentBase implements VParent
             Iterator<VChild> i2 = testObj.childrenUnmodifiable().iterator();
             for (int i=0; i<c1.size(); i++)
             {
-                VChild next = i1.next();
-                VChild next2 = i2.next();
-                if (! next.equals(next2))
-//                if (! i1.next().equals(i2.next()))
+                VChild child1 = i1.next();
+                VChild child2 = i2.next();
+                if (! child1.equals(child2))
                 {
-                    System.out.println(next + " " + next2);
                     return false;
                 }
             }

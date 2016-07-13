@@ -29,15 +29,6 @@ public abstract class ReviserLocatable<T, U extends VComponentLocatable<U>> exte
         }
         return super.isValid();
     }
-
-//    @Override
-//    void editThisAndFuture(U vComponentEditedCopy, U vComponentOriginalCopy)
-//    {
-//        // Adjust start and end - set recurrence temporal as start
-//        vComponentEditedCopy.setDateTimeStart(getStartRecurrence());
-//        vComponentEditedCopy.setEndOrDuration(getStartRecurrence(), getEndRecurrence());
-//        super.editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-//    }
     
     @Override
     void adjustStartAndEnd(U vComponentEditedCopy, U vComponentOriginalCopy)

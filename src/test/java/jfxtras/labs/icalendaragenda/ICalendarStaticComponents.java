@@ -172,7 +172,7 @@ public final class ICalendarStaticComponents
     protected static VEvent getIndividual2()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13).toString())
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
                 .withDateTimeStart(LocalDate.of(2015, 11, 11))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -182,7 +182,7 @@ public final class ICalendarStaticComponents
     public static VEvent getIndividualZoned()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13).toString())
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -203,7 +203,7 @@ public final class ICalendarStaticComponents
     protected static VEvent getWholeDayDaily3()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6).toString())
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
                 .withDateTimeStart(LocalDate.of(2015, 11, 8))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 10))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))

@@ -95,13 +95,9 @@ public class VTimeZoneTest
             "END:STANDARD" + System.lineSeparator() +
             "END:VTIMEZONE";
         VTimeZone component = VTimeZone.parse(expectedContent);
-//        System.out.println("elements:" + component.orderer().elementSortOrderMap().size());
-//        component.orderer().elementSortOrderMap().entrySet().stream().forEach(System.out::println);
-//        System.exit(0);
         VTimeZone builtComponent = ICalendarTestAbstract2.getTimeZone1();
         component.equals(builtComponent);
         assertEquals(component, builtComponent);
-//        System.out.println(component.toContent());
         assertEquals(expectedContent, component.toContent());
         assertEquals(builtComponent.toContent(), component.toContent());
     }

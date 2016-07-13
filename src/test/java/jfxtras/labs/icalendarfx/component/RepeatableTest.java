@@ -1383,6 +1383,5 @@ public class RepeatableTest //extends Application
         Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
         Temporal previous = vComponentEdited.previousStreamValue(startRecurrence);
         assertEquals(LocalDateTime.of(2016, 5, 15, 10, 0), previous);
-///        System.out.println("previous:" + previous);
     }
 }

@@ -297,13 +297,13 @@ public class ICalendarAgenda extends Agenda
     {
         VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
         
-        System.out.println("about to revise:" + appointmentVComponentMap.size());
         Behavior behavior = vComponentClassBehaviorMap.get(vComponent.getClass());
+        System.out.println("about to revise:" + appointmentVComponentMap.size());
         behavior.callRevisor(appointment);
+        System.out.println("done:");
         // TODO - MAKE REVISOR HANDLE EDIT ONE - NEED TO ADD EXDATE
         appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
         Platform.runLater(() -> refresh());
-//        getVCalendar().getVEvents().forEach(System.out::println);
         return null;
     };
     
@@ -320,12 +320,6 @@ public class ICalendarAgenda extends Agenda
         vComponentClassBehaviorMap.put(VEvent.class, new VEventBehavior(this));
         vComponentClassBehaviorMap.put(VJournal.class, new VJournalBehavior(this));
         vComponentClassBehaviorMap.put(VTodo.class, new VTodoBehavior(this));
-
-//        getVCalendar().getVEvents().addListener((InvalidationListener) (obs) -> 
-//        {
-////            System.out.println("vComponents chagned:******************************" + vComponents.size());
-////            vComponents.stream().forEach(System.out::println);
-//        });
         
         // setup default categories from appointment groups
         categories = FXCollections.observableArrayList(
@@ -528,7 +522,6 @@ public class ICalendarAgenda extends Agenda
             setDateTimeRange(dateTimeRange);
             getRecurrenceFactory().setStartRange(dateTimeRange.getStartLocalDateTime());
             getRecurrenceFactory().setEndRange(dateTimeRange.getEndLocalDateTime());
-//            System.out.println("range0:" + dateTimeRange);
             if (dateTimeRange != null)
             {
                 appointments().removeListener(appointmentsListChangeListener); // remove appointmentListener to prevent making extra vEvents during refresh
@@ -546,27 +539,6 @@ public class ICalendarAgenda extends Agenda
             return null; // return argument for the Callback
         });
     } // end of constructor
-    
-    @Override
-    public void refresh()
-    {
-//        List<Appointment> newAppointments = new ArrayList<>();
-//        appointments().removeListener(appointmentsListChangeListener); // remove appointmentListener to prevent making extra vEvents during refresh
-////        System.out.println("appointments:" + appointments());
-//        appointments().clear();
-//        vComponentAppointmentMap.clear();
-//        appointmentStartOriginalMap.clear();
-//        appointmentVComponentMap.clear();
-//        getVCalendar().getVEvents().stream().forEach(v -> newAppointments.addAll(makeAppointments(v)));
-//        getVCalendar().getVTodos().stream().forEach(v -> newAppointments.addAll(makeAppointments(v)));
-//        getVCalendar().getVJournals().stream().forEach(v -> newAppointments.addAll(makeAppointments(v)));
-//        appointments().addAll(newAppointments);
-//        appointments().addListener(appointmentsListChangeListener); // add back appointmentListener
-        getVCalendar().getVEvents().stream().forEach(v -> System.out.println("v:" + v.getUniqueIdentifier() + " " + v.childComponents().size()));
-        System.out.println("REFRESH");
-//        childComponents()
-        super.refresh();
-    }
     
     private Collection<Appointment> makeAppointments(VComponentDisplayable<?> v)
     {

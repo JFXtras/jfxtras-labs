@@ -24,6 +24,7 @@ import javafx.util.Pair;
  * @author David Bal
  *
  */
+// NEEDS TO BE CLEANED UP - REMOVE UNUSED METHODS
 public final class ICalendarUtilities
 {
     private ICalendarUtilities() { };
@@ -168,7 +169,6 @@ public final class ICalendarUtilities
                parameterEnd = propertyLine.length();
                name = PROPERTY_VALUE_KEY;
                value = propertyLine.substring(parameterStart, parameterEnd);
-//               System.out.println("value:" + value);
            } else if (firstCharacter == ';')
            { // found parameter/value pair.
                int equalsPosition = propertyLine.indexOf('=', parameterStart);

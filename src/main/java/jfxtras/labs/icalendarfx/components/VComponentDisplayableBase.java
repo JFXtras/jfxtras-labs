@@ -427,23 +427,12 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         List<VComponentDisplayable<?>> children = childComponents();
         if (children != null)
         {
-//            System.out.println("childComponents():" + childComponents().size() + " " + this);
-            childComponents().stream().forEach(System.out::println);
             // If present, remove recurrence ID original values
             List<Temporal> recurrenceIDTemporals = childComponents()
                     .stream()
-//                    .peek(a -> System.out.println(a.getRecurrenceId()))
                     .map(c -> c.getRecurrenceId().getValue())
                     .collect(Collectors.toList());
             stream2 = inStream.filter(t -> ! recurrenceIDTemporals.contains(t));
-//            // If present, add replacement recurrences from child components - DON'T DO - ADDED IN WHEN OTHER COMPONENT IS PROCESSED
-//            stream3 = RecurrenceStreamer.merge(
-//                    stream2,
-//                    childComponentsWithRecurrenceIDs()
-//                            .stream()
-//                            .flatMap(c ->  c.streamRecurrences(start))
-//                            .sorted(temporalComparator),
-//                    temporalComparator);
         } else
         {
             stream2 = inStream;

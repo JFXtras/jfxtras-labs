@@ -46,7 +46,7 @@ public class ByHourTest
               , LocalDateTime.of(2016, 1, 4, 12, 30)
               , LocalDateTime.of(2016, 1, 5, 10, 0)
                 ));
-        List<Temporal> madeRecurrences = recurrenceStream.limit(5).peek(System.out::println).collect(Collectors.toList());
+        List<Temporal> madeRecurrences = recurrenceStream.limit(5).collect(Collectors.toList());
         assertEquals(expectedRecurrences, madeRecurrences);
     }
     

@@ -5,6 +5,8 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -87,7 +89,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTimeTextField when startDateTextField changes */
     void synchStartDate(LocalDate oldValue, LocalDate newValue)
     {
-        System.out.println("start date:" + newValue);
+//        System.out.println("start date:" + newValue);
         startRecurrenceProperty.set(newValue);
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
         LocalDateTime newDateTime = startDateTimeTextField.getLocalDateTime().with(newValue);
@@ -100,13 +102,13 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     /** Update startDateTextField when startDateTimeTextField changes */
     void synchStartDateTime(LocalDateTime oldValue, LocalDateTime newValue)
     {
-        System.out.println("start date2:" + newValue);
+//        System.out.println("start date2:" + newValue);
         if (startOriginalRecurrence.isSupported(ChronoUnit.NANOS)) // ZoneDateTime, LocalDateTime
         {
             startRecurrenceProperty.set(startOriginalRecurrence.with(newValue));            
-        } else // LocalDate
+        } else // LocalDate - use ZonedDateTime at system default ZoneId
         {
-            startRecurrenceProperty.set(newValue);
+            startRecurrenceProperty.set(ZonedDateTime.of(newValue, ZoneId.systemDefault()));
         }
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());

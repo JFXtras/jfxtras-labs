@@ -34,8 +34,6 @@ public class GeneralPropertyTest
         SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(contentLine));
         SortedMap<String, String> expectedMap = new TreeMap<>();
         expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "");
-        expectedMap.entrySet().stream().forEach(System.out::println);
-        valueMap.entrySet().stream().forEach(System.out::println);
         assertEquals(expectedMap, valueMap);
     }
     
@@ -46,8 +44,6 @@ public class GeneralPropertyTest
         SortedMap<String, String> valueMap = new TreeMap<>(ICalendarUtilities.propertyLineToParameterMap(contentLine));
         SortedMap<String, String> expectedMap = new TreeMap<>();
         expectedMap.put(ICalendarUtilities.PROPERTY_VALUE_KEY, "");
-        expectedMap.entrySet().stream().forEach(System.out::println);
-        valueMap.entrySet().stream().forEach(System.out::println);
         assertEquals(expectedMap, valueMap);
     }
     

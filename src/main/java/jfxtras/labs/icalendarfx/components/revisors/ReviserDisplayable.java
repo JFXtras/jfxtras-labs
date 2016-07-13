@@ -105,8 +105,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         {
             vComponentEditedCopy = (U) getVComponentEdited().getClass().newInstance();
             vComponentEditedCopy.copyFrom(getVComponentEdited());
-//            vComponentEditedCopy.copyChildrenFrom(getVComponentEdited());            
-//            vComponentEditedCopy.setParent(getVComponentEdited().getParent());
         } catch (InstantiationException | IllegalAccessException e)
         {
             e.printStackTrace();
@@ -131,7 +129,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         Collection<U> vComponents = new ArrayList<>(); // new components that should be added to main list
         validateStartRecurrenceAndDTStart(vComponentEditedCopy, getStartRecurrence());
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginalCopy.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
-        System.out.println("rruleType:" + rruleType);
         boolean incrementSequence = true;
         switch (rruleType)
         {
@@ -194,7 +191,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     return null;
                 case THIS_AND_FUTURE:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-//                    System.out.println("start2:" + vComponentEditedCopy.getDateTimeStart().getValue());
                     vComponents.add(vComponentOriginalCopy);
                     break;
                 case ONE:
@@ -251,13 +247,10 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     @Deprecated
     void adjustDateTime(U vComponentEditedCopy)
     {
-        System.out.println("start and end:" + getStartOriginalRecurrence() + " " + getStartRecurrence());
         // TODO - DescriptiveVBox needs to keep zone
         TemporalAmount shiftAmount = DateTimeUtilities.temporalAmountBetween(getStartOriginalRecurrence(), getStartRecurrence());
         TemporalAmount amountToStart = DateTimeUtilities.temporalAmountBetween(vComponentEditedCopy.getDateTimeStart().getValue(), getStartRecurrence());
-//        System.out.println("amountToStart:" + amountToStart + " "+ shiftAmount);
         Temporal newStart = getStartRecurrence().minus(amountToStart).plus(shiftAmount);
-//        System.out.println("newStart:" + newStart);
         vComponentEditedCopy.setDateTimeStart(new DateTimeStart(newStart));
     }
     
@@ -282,7 +275,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 {
                     Object p1 = t.getProperty(vComponentEditedCopy);
                     Object p2 = t.getProperty(vComponentOriginalCopy);
-//                    System.out.println("prop:" + p1 + " " + p2);
                     if (! p1.equals(p2))
                     {
                         changedProperties.add(t);
@@ -437,7 +429,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
         
         // remove RECURRENCE-ID components that are out of bounds
-//        System.out.println("myUID2:" + vComponentEditedCopy.getUniqueIdentifier().getValue());
         if (vComponentEditedCopy.childComponents() != null)
         {
             final Iterator<Temporal> recurrenceIDIterator = vComponentEditedCopy.childComponents()
@@ -472,13 +463,10 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
         
         // Modify COUNT for the edited vEvent
-//        System.out.println(vComponentOriginalCopy.getRecurrenceRule().getValue());
-//        System.out.println(vComponentEditedCopy.getRecurrenceRule().getValue());
         if (vComponentEditedCopy.getRecurrenceRule().getValue().getCount() != null)
         {
             int countInOrginal = (int) vComponentOriginalCopy.streamRecurrences().count();
             int countInNew = vComponentEditedCopy.getRecurrenceRule().getValue().getCount().getValue() - countInOrginal;
-//            System.out.println("countInNew:" + countInOrginal + " " + countInNew);
             // TODO - NEED TO CHECK IF COUNT IS LESS THAN 1 AND PROHIBIT THIS-AND-FUTURE EDIT
             vComponentEditedCopy.getRecurrenceRule().getValue().setCount(countInNew);
         }

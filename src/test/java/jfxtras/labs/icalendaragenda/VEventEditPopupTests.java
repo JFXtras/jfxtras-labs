@@ -8,6 +8,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
@@ -45,6 +46,8 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByDay;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda;
@@ -419,7 +422,7 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         myCalendar.getVEvents().add(vevent);
         List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(1);
-        System.out.println(appointment);
+//        System.out.println(appointment);
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
@@ -438,7 +441,10 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         LocalDateTimeTextField start2 = find("#startDateTimeTextField");
         assertEquals(LocalDateTime.of(2015, 11, 11, 10, 0), start2.getLocalDateTime());
         start2.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 13, 0)); // adds 3 hour shift
-        TestUtil.sleep(3000);
+        LocalDateTimeTextField end2 = find("#endDateTimeTextField");
+        assertEquals(LocalDateTime.of(2015, 11, 12, 14, 0), end2.getLocalDateTime());
+        end2.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 14, 0)); // make 1 hour long
+//        TestUtil.sleep(3000);
         
         // Save changes
         click("#saveComponentButton");
@@ -447,9 +453,20 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
         click("#changeDialogOkButton");
         
-        VEvent veventExpected = ICalendarStaticComponents.getWholeDayDaily3()
-                .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 13, 0), ZoneId.systemDefault()))
-                .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 14, 0), ZoneId.systemDefault()));
+        VEvent veventExpected = new VEvent()
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-010@jfxtras.org")
+                .withRecurrenceRule(new RecurrenceRule2()
+                        .withUntil(LocalDate.of(2015, 11, 23))
+                        .withFrequency(FrequencyType.DAILY)
+                        .withInterval(3))
+                .withDateTimeStart(new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 8, 13, 0), ZoneId.systemDefault())))
+                .withDateTimeEnd(new DateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 8, 14, 0), ZoneId.systemDefault())))
+                .withSequence(1);
+        System.out.println("bad until valid:" + veventExpected.isValid()); // TODO - FIX THIS
+//        veventExpected.setDateTimeStart(new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 13, 0), ZoneId.systemDefault())));
+//        veventExpected.setDateTimeEnd(new DateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 14, 0), ZoneId.systemDefault())));
         Temporal until = ZonedDateTime.of(LocalDateTime.of(2015, 11, 23, 13, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
         veventExpected.getRecurrenceRule().getValue().setUntil(until);
 

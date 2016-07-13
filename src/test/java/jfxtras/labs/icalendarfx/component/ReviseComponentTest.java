@@ -456,7 +456,6 @@ public class ReviseComponentTest
         Collection<VEvent> newVComponents = reviser.revise();
         vComponents.remove(vComponentOriginal);
         vComponents.addAll(newVComponents);
-        vComponents.stream().forEach(System.out::println);
         assertEquals(2, vComponents.size());
         VEvent myComponent = vComponents.get(1);
         assertEquals(LocalDateTime.of(2016, 5, 16, 11, 30), myComponent.getDateTimeStart().getValue());        
