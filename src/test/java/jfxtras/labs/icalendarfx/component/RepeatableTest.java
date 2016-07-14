@@ -1,9 +1,9 @@
 package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -211,14 +211,14 @@ public class RepeatableTest //extends Application
         component.setDateTimeStart(DateTimeStart.parse(ZonedDateTime.class, "20160302T223316Z")); // invalid
     }
 
-    @Test (expected = DateTimeException.class)
+    @Test
     public void canCatchWrongDateType()
     {
         VEvent component = new VEvent()
                 .withDateTimeStart(LocalDate.of(1997, 3, 1));
         ObservableList<RecurrenceDates> recurrences = FXCollections.observableArrayList();
         recurrences.add(RecurrenceDates.parse(LocalDateTime.class, "20160228T093000"));
-        component.setRecurrenceDates(recurrences); // invalid        
+        assertFalse(component.isValid());
     }
 
     @Test //(expected = DateTimeException.class)

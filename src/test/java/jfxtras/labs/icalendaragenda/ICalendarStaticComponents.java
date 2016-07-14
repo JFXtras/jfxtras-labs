@@ -209,7 +209,7 @@ public final class ICalendarStaticComponents
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-010@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
-//                        .withUntil(LocalDate.of(2015, 11, 23))
+                        .withUntil(LocalDate.of(2015, 11, 23))
                         .withFrequency(FrequencyType.DAILY)
                         .withInterval(3));
     }

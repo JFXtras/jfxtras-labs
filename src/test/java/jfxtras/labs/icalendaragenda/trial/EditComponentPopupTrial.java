@@ -41,7 +41,7 @@ public class EditComponentPopupTrial extends Application
         Settings.setup(resources);
 
         VCalendar myCalendar = new VCalendar();
-        VEvent vevent = ICalendarStaticComponents.getWholeDayDaily3();
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
         myCalendar.addVComponent(vevent);
 //        VEvent vevent = new VEvent()
 //                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
