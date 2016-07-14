@@ -114,6 +114,7 @@ public abstract class PropertyBaseRecurrence<U> extends PropertyBaseDateTime<Obs
                 {
                     Temporal newTemporal = change.getElementAdded();
                     DateTimeType newType = DateTimeType.of(newTemporal);
+                    System.out.println("types" + newType + " " + myType);
                     if (newType != myType)
                     {
                         change.getSet().remove(newTemporal);

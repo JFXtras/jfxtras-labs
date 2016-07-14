@@ -424,8 +424,7 @@ public class ICalendarAgenda extends Agenda
 //                            iCalendarEditPopupCallback.call(appointment);
 //                        }
                     } else throw new RuntimeException("Adding multiple appointments at once is not supported (" + change.getAddedSubList().size() + ")");
-                }
-                if (change.wasRemoved())
+                } else if (change.wasRemoved())
                 {
                     change.getRemoved().stream().forEach(a -> 
                     { // add appointments to EXDATE

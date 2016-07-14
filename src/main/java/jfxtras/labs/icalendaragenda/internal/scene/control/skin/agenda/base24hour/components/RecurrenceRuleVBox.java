@@ -29,6 +29,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -60,6 +61,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
@@ -71,6 +73,16 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.byxxx.ByRu
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
+/**
+ * Control for selecting Recurrence Rule options (RRULE)
+ * 
+ * Note: Only supports one Exception Date property (the iCalendar standard allows multiple Exception
+ * Date properties)
+ * 
+ * @author David Bal
+ *
+ * @param <T>
+ */
 public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> extends VBox
 {
     final public static int EXCEPTION_CHOICE_LIMIT = 50;
@@ -675,6 +687,51 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         endNeverRadioButton.setToggleGroup(endGroup);
         endAfterRadioButton.setToggleGroup(endGroup);
         untilRadioButton.setToggleGroup(endGroup);
+        
+        ListChangeListener<? super Temporal> exceptionsListChangeListener = (change) ->
+        {
+            while (change.next())
+            {
+                if (change.wasAdded())
+                {
+                    List<? extends Temporal> added1 = change.getAddedSubList();
+                    final ObservableList<ExceptionDates> exceptionDates;
+                    if (vComponent.getExceptionDates() == null)
+                    {
+                        exceptionDates = FXCollections.observableArrayList();
+                        vComponent.setExceptionDates(exceptionDates);
+                    } else
+                    {
+                        exceptionDates = vComponent.getExceptionDates();
+                    }
+                    
+                    if (exceptionDates.isEmpty())
+                    {
+                        Temporal[] added2 = added1.toArray(new Temporal[added1.size()]);
+                        exceptionDates.add(new ExceptionDates(added2));
+                    } else
+                    {
+                        DateTimeType startType = DateTimeType.of(vComponent.getDateTimeStart().getValue());
+                        DateTimeType newType = DateTimeType.of(added1.get(0));
+                        if (startType != newType)
+                        { // type changes, rebuild exceptions
+                            vComponent.getExceptionDates().clear();
+                            ObservableList<? extends Temporal> list = change.getList();
+                            Temporal[] allExceptions = list.toArray(new Temporal[list.size()]);
+                            vComponent.getExceptionDates().add(new ExceptionDates(allExceptions));
+                        } else
+                        {
+                            vComponent.getExceptionDates().get(0).getValue().addAll(added1);
+                        }
+                    }
+                } else if (change.wasRemoved())
+                {
+                    List<? extends Temporal> removed = change.getRemoved();
+                    vComponent.getExceptionDates().get(0).getValue().removeAll(removed);
+                }
+            }
+        };
+        exceptionsListView.getItems().addListener(exceptionsListChangeListener);
     }
     
     /**
@@ -694,6 +751,35 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         {
             throw new RuntimeException("Unsupported VComponent");
         }
+        dateTimeStartRecurrenceNew.addListener((obs, oldValue, newValue) -> {
+            System.out.println("dtstart rec changed:");
+            // CHANGE EXCEPTIONS
+            DateTimeType newType = DateTimeType.of(newValue);
+            Temporal[] convertedExceptions = exceptionsListView.getItems()
+                    .stream()
+                    .map(e -> newType.from(e))
+                    .toArray(size -> new Temporal[size]);
+            exceptionsListView.getItems().clear();
+            exceptionsListView.getItems().addAll(convertedExceptions);
+            
+            // NEED TO BIND exceptionsListView TO EXCEPTIONS - NOT BUTTON PRESS
+            
+//            if (vComponent.getExceptionDates() != null)
+//            {
+//                DateTimeType newType = DateTimeType.of(newValue);
+//                Temporal[] allExceptions = vComponent.getExceptionDates()
+//                    .stream()
+//                    .flatMap(e -> e.getValue().stream())
+//                    .map(e -> newType.from(e))
+//                    .toArray(size -> new Temporal[size]);
+//                vComponent.getExceptionDates().clear();
+//                vComponent.getExceptionDates().add(new ExceptionDates(allExceptions));
+//            }
+            // TODO - CHANGE UNTIL
+            
+            exceptionMasterList.clear();
+            refreshExceptionDates();
+        });
         
         // Add or remove functionality and listeners when RRULE changes
         vComponent.recurrenceRuleProperty().addListener((obs, oldValue, newValue) ->
@@ -960,30 +1046,44 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
     {
-        final Temporal dateTimeStart = exceptionFirstTemporal; // vComponent.getDateTimeStart();
-//            final Stream<Temporal> stream1 = vComponent.streamRecurrences();
+        DateTimeType currentDTStartType = DateTimeType.of(dateTimeStartRecurrenceNew.get());
+        final Temporal dateTimeStart = currentDTStartType.from(exceptionFirstTemporal);
         exceptionComboBox.getItems().clear();
         boolean isRecurrenceRuleValid = vComponent.getRecurrenceRule().getValue().isValid();
-        System.out.println("isRecurrenceRuleValid:" + isRecurrenceRuleValid);
+        System.out.println("isRecurrenceRuleValid:" + isRecurrenceRuleValid + " " + dateTimeStart);
         if (isRecurrenceRuleValid)
         {
-            final Stream<Temporal> stream1 = vComponent.getRecurrenceRule().getValue().streamRecurrences(dateTimeStart);
-    //            Stream<Temporal> stream2 = (vComponent.getExceptions() == null) ? stream1
-    //                    : vComponent.getExDate().stream(stream1, dateTimeStart); // remove exceptions
-            final Stream<Temporal> stream3; 
-            if (DateTimeType.of(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+            // FILTER OUT EXCEPTIONS
+            final Stream<Temporal> stream1;
+            if (vComponent.getExceptionDates() != null)
             {
-                stream3 = stream1.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
+                List<Temporal> allExceptions = vComponent.getExceptionDates()
+                    .stream()
+                    .flatMap(e -> e.getValue().stream())
+                    .collect(Collectors.toList());
+                stream1 = vComponent.getRecurrenceRule().getValue()
+                        .streamRecurrences(dateTimeStart)
+                        .filter(v -> ! allExceptions.contains(v));
             } else
             {
-                stream3 = stream1;
+                stream1 = vComponent.getRecurrenceRule().getValue()
+                        .streamRecurrences(dateTimeStart);
             }
-            Temporal lastExceptionInMasterList = (exceptionMasterList.isEmpty()) ? dateTimeStart.with(LocalDate.MIN) : exceptionMasterList.get(exceptionMasterList.size()-1);
-            List<Temporal> exceptionDates = stream3
+            // Convert to ZonedDateTime time, if needed
+            final Stream<Temporal> stream2; 
+            if (DateTimeType.of(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+            {
+                stream2 = stream1.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
+            } else
+            {
+                stream2 = stream1;
+            }
+            Temporal lastDateInMasterList = (exceptionMasterList.isEmpty()) ? dateTimeStart.with(LocalDate.MIN) : exceptionMasterList.get(exceptionMasterList.size()-1);
+            List<Temporal> exceptionDates = stream2
                   .limit(EXCEPTION_CHOICE_LIMIT)
                   .peek(t ->
                   {
-                      if (DateTimeUtilities.isAfter(t, lastExceptionInMasterList))
+                      if (DateTimeUtilities.isAfter(t, lastDateInMasterList))
                       {
                           exceptionMasterList.add(t);
                       }
@@ -997,11 +1097,24 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     {
         Temporal d = exceptionComboBox.getValue();
         exceptionsListView.getItems().add(d);
-        if (vComponent.getExceptionDates() == null)
-        {
-            vComponent.setExceptionDates(FXCollections.observableArrayList());
-        }
-        vComponent.getExceptionDates().get(0).getValue().add(d);
+
+//        final ObservableList<ExceptionDates> exceptionDates;
+//        if (vComponent.getExceptionDates() == null)
+//        {
+//            exceptionDates = FXCollections.observableArrayList();
+//            vComponent.setExceptionDates(exceptionDates);
+//        } else
+//        {
+//            exceptionDates = vComponent.getExceptionDates();
+//        }
+//        
+//        if (exceptionDates.isEmpty())
+//        {
+//            exceptionDates.add(new ExceptionDates(d));
+//        } else
+//        {
+//            vComponent.getExceptionDates().get(0).getValue().add(d);
+//        }
         refreshExceptionDates();
         Collections.sort(exceptionsListView.getItems(),DateTimeUtilities.TEMPORAL_COMPARATOR); // Maintain sorted list
         if (exceptionComboBox.getValue() == null) addExceptionButton.setDisable(true);

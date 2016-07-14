@@ -271,7 +271,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
         {
             list = getExceptionDates();
         }
-        list.add(new ExceptionDates(FXCollections.observableSet(exceptions)));
+        list.add(new ExceptionDates(exceptions));
         return (T) this;
     }
     default T withExceptionDates(ExceptionDates...exceptions)

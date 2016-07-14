@@ -2,6 +2,7 @@ package jfxtras.labs.icalendarfx.components;
 
 import java.time.DateTimeException;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -78,7 +79,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
             {
                 list = getRecurrenceDates();
             }
-            list.add(new RecurrenceDates(FXCollections.observableSet(recurrenceDates)));
+            list.add(new RecurrenceDates(recurrenceDates));
         }
         return (T) this;
     }
@@ -163,15 +164,15 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
 //            }
 //        }
         // check consistency with dateTimeStart
-        if (getDateTimeStart() != null)
-        {
-            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-            if (firstDateTimeTypeType != dateTimeStartType)
-            {
-                throw new DateTimeException("DateTimeType (" + firstDateTimeTypeType +
-                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
-            }
-        }
+//        if (getDateTimeStart() != null)
+//        {
+//            DateTimeType dateTimeStartType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
+//            if (firstDateTimeTypeType != dateTimeStartType)
+//            {
+//                throw new DateTimeException("DateTimeType (" + firstDateTimeTypeType +
+//                        ") must be same as the DateTimeType of DateTimeStart (" + dateTimeStartType + ")");
+//            }
+//        }
         return true;
     }
     
@@ -402,29 +403,53 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         }       
     }
     
-//    @Override
-//    default List<String> errors()
-//    {
-////        List<String> errors = new ArrayList<>();
-//        List<String> errors = VComponentPrimary.super.errors();
-//        boolean isRecurrenceRulePresent = getRecurrenceRule() != null;
-//        if (! isRecurrenceRulePresent)
-//        {
-//            errors.addAll(getRecurrenceRule().errors());
-//        }
-//        if (getRecurrenceDates() != null)
-//        {
-//            DateTimeType startType = DateTimeUtilities.DateTimeType.of(getDateTimeStart().getValue());
-//            Temporal r1 = getRecurrenceDates().get(0).getValue().iterator().next();
-//            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
-//            boolean isRecurrenceTypeMatch = startType == recurrenceType;
-//            if (! isRecurrenceTypeMatch)
-//            {
-//                errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
-//            }
-//        }
-//        return errors;
-//    }
+    static List<String> errorsRepeatable(VComponentRepeatable<?> testObj)
+    {
+        List<String> errors = new ArrayList<>();
+        if (testObj.getRecurrenceDates() != null)
+        {
+            Temporal r1 = testObj.getRecurrenceDates().get(0).getValue().iterator().next();
+            DateTimeType recurrenceType = DateTimeUtilities.DateTimeType.of(r1);
+            DateTimeType startType = DateTimeUtilities.DateTimeType.of(testObj.getDateTimeStart().getValue());
+            boolean isRecurrenceTypeMatch = startType == recurrenceType;
+            if (! isRecurrenceTypeMatch)
+            {
+                errors.add("The value type of RDATE elements MUST be the same as the DTSTART property (" + recurrenceType + ", " + startType);
+            }
+        }
+
+        if (testObj.getRecurrenceRule() != null && testObj.getRecurrenceRule().getValue().getUntil() != null)
+        {
+            Temporal until = testObj.getRecurrenceRule().getValue().getUntil().getValue();
+            DateTimeType untilType = DateTimeType.of(until);
+            DateTimeType startType = DateTimeType.of(testObj.getDateTimeStart().getValue());
+            switch (startType)
+            {
+            case DATE:
+                if (untilType != DateTimeType.DATE)
+                {
+                    errors.add("If DTSTART specifies a DATE then UNTIL must also specify a DATE value instead of:" + untilType);
+                }
+                break;
+            case DATE_WITH_LOCAL_TIME:
+                if (untilType != DateTimeType.DATE_WITH_LOCAL_TIME)
+                {
+                    errors.add("If DTSTART specifies a DATE_WITH_LOCAL_TIME then UNTIL must also specify a DATE_WITH_LOCAL_TIME value instead of:" + untilType);
+                }
+                break;
+            case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
+            case DATE_WITH_UTC_TIME:
+                if (untilType != DateTimeType.DATE_WITH_LOCAL_TIME)
+                {
+                    errors.add("If DTSTART specifies a DATE_WITH_LOCAL_TIME_AND_TIME_ZONE or DATE_WITH_UTC_TIME then UNTIL must specify a DATE_WITH_UTC_TIME value instead of:" + untilType);
+                }
+                break;
+            default:
+                throw new RuntimeException("unsupported DateTimeType:" + startType);
+            }
+        }
+        return errors;
+    }
     
     @Deprecated // may not be used - if not remove or move to utility class
     public static <T> Stream<T> merge(Stream<T> stream1, Stream<T> stream2, Comparator<T> comparator)
