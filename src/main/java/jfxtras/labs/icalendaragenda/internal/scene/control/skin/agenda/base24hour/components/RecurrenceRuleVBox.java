@@ -760,7 +760,15 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             DateTimeType newType = DateTimeType.of(newValue);
             Temporal[] convertedExceptions = exceptionsListView.getItems()
                     .stream()
-                    .map(e -> newType.from(e))
+                    .map(e -> 
+                    {
+                        Temporal converted = newType.from(e);
+                        if (converted.isSupported(ChronoUnit.NANOS))
+                        {
+                            converted = converted.with(LocalTime.from(newValue));
+                        }
+                        return converted;
+                    })
                     .toArray(size -> new Temporal[size]);
             exceptionsListView.getItems().clear();
             exceptionsListView.getItems().addAll(convertedExceptions);
@@ -768,7 +776,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             // Change UNTIL type
             if (untilRadioButton.isSelected())
             {
-                Temporal newUntil = newType.from(vComponent.getRecurrenceRule().getValue().getUntil().getValue());
+                Temporal newUntil = DateTimeType.DATE_WITH_UTC_TIME.from(vComponent.getRecurrenceRule().getValue().getUntil().getValue());
                 if (newValue.isSupported(ChronoUnit.NANOS))
                 {
                     newUntil = newUntil.with(LocalTime.from(newValue));
