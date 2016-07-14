@@ -113,12 +113,12 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         U vComponentOriginalCopy = getVComponentOriginal();
         Temporal startRecurrence = getStartRecurrence();
         Temporal startOriginalRecurrence = getStartOriginalRecurrence();
-        if (! vComponentEditedCopy.isValid())
-        {
-            throw new RuntimeException("Can't revise. Edited component is invalid:" + System.lineSeparator() + 
-                    vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-                    vComponentEditedCopy.toContent());
-        }
+//        if (! vComponentEditedCopy.isValid())
+//        {
+//            throw new RuntimeException("Can't revise. Edited component is invalid:" + System.lineSeparator() + 
+//                    vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+//                    vComponentEditedCopy.toContent());
+//        }
         if (! vComponentOriginalCopy.isValid())
         {
             throw new RuntimeException("Can't revise. Original component is invalid:" + System.lineSeparator() + 

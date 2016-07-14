@@ -42,7 +42,6 @@ public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
                 .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
                 .withVComponentEdited(vComponent)
                 .withVComponentOriginal(vComponentOriginalCopy);
-        System.out.println("s&e:" + editDescriptiveVBox.startRecurrenceProperty.get() + " " + editDescriptiveVBox.endNewRecurrence);
         return reviser.revise();
     }
 }

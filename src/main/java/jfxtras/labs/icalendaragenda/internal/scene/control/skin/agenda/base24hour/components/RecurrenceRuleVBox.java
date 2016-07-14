@@ -97,7 +97,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
 
     @FXML private CheckBox repeatableCheckBox;
     @FXML private GridPane repeatableGridPane;
-    @FXML private ComboBox<FrequencyType> frequencyComboBox;
+    @FXML ComboBox<FrequencyType> frequencyComboBox;
     @FXML Spinner<Integer> intervalSpinner;
     @FXML private Label frequencyLabel;
     @FXML private Label eventLabel;
@@ -276,10 +276,10 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         final String frequencyLabelText;
         if (intervalSpinner.getValue() == 1)
         {
-            frequencyLabelText = Settings.REPEAT_FREQUENCIES_SINGULAR.get(frequencyComboBox.valueProperty().get());
+            frequencyLabelText = Settings.REPEAT_FREQUENCIES_SINGULAR.get(frequencyComboBox.getValue());
         } else
         {
-            frequencyLabelText = Settings.REPEAT_FREQUENCIES_PLURAL.get(frequencyComboBox.valueProperty().get());
+            frequencyLabelText = Settings.REPEAT_FREQUENCIES_PLURAL.get(frequencyComboBox.getValue());
         }
         frequencyLabel.setText(frequencyLabelText);
         
@@ -357,6 +357,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
                 refreshExceptionDates();
             } else
             {
+                System.out.println("fire occurrence");
                 notOccurrenceDateAlert(newSelection);
                 untilDatePicker.setValue(oldSelection);               
             }
@@ -751,9 +752,11 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         {
             throw new RuntimeException("Unsupported VComponent");
         }
-        dateTimeStartRecurrenceNew.addListener((obs, oldValue, newValue) -> {
-            System.out.println("dtstart rec changed:");
-            // CHANGE EXCEPTIONS
+        
+        // Listen to DTSTART type changes (by selecting wholeDay in DescriptiveVBox)
+        dateTimeStartRecurrenceNew.addListener((obs, oldValue, newValue) ->
+        {
+            // Change EXCEPTIONS type
             DateTimeType newType = DateTimeType.of(newValue);
             Temporal[] convertedExceptions = exceptionsListView.getItems()
                     .stream()
@@ -762,20 +765,16 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             exceptionsListView.getItems().clear();
             exceptionsListView.getItems().addAll(convertedExceptions);
             
-            // NEED TO BIND exceptionsListView TO EXCEPTIONS - NOT BUTTON PRESS
-            
-//            if (vComponent.getExceptionDates() != null)
-//            {
-//                DateTimeType newType = DateTimeType.of(newValue);
-//                Temporal[] allExceptions = vComponent.getExceptionDates()
-//                    .stream()
-//                    .flatMap(e -> e.getValue().stream())
-//                    .map(e -> newType.from(e))
-//                    .toArray(size -> new Temporal[size]);
-//                vComponent.getExceptionDates().clear();
-//                vComponent.getExceptionDates().add(new ExceptionDates(allExceptions));
-//            }
-            // TODO - CHANGE UNTIL
+            // Change UNTIL type
+            if (untilRadioButton.isSelected())
+            {
+                Temporal newUntil = newType.from(vComponent.getRecurrenceRule().getValue().getUntil().getValue());
+                if (newValue.isSupported(ChronoUnit.NANOS))
+                {
+                    newUntil = newUntil.with(LocalTime.from(newValue));
+                }
+                vComponent.getRecurrenceRule().getValue().setUntil(newUntil);
+            }
             
             exceptionMasterList.clear();
             refreshExceptionDates();
@@ -1177,23 +1176,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         alert.getButtonTypes().setAll(buttonTypeOk);
         alert.showAndWait();
     }
-    
-//    // Displays an alert notifying last day of week can not be removed for weekly frequency
-//    private static void canNotRemoveLastDayOfWeek(DayOfWeek d)
-//    {
-//        Alert alert = new Alert(AlertType.ERROR);
-//        alert.setTitle("Invalid Modification");
-//        alert.setHeaderText("Can't remove " + Settings.DAYS_OF_WEEK_MAP.get(d) + ".");
-//        alert.setContentText("Weekly repeat must have at least one selected day");
-//        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
-//        alert.getButtonTypes().setAll(buttonTypeOk);
-//        
-//        // set id for testing
-//        alert.getDialogPane().setId("last_day_of_week_alert");
-//        alert.getDialogPane().lookupButton(buttonTypeOk).setId("last_day_of_week_alert_button_ok");
-//        
-//        alert.showAndWait();
-//    }
     
     private static void notDateAlert(String exampleDate)
     {

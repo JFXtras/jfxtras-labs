@@ -432,16 +432,11 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
                 }
                 break;
             case DATE_WITH_LOCAL_TIME:
-                if (untilType != DateTimeType.DATE_WITH_LOCAL_TIME)
-                {
-                    errors.add("If DTSTART specifies a DATE_WITH_LOCAL_TIME then UNTIL must also specify a DATE_WITH_LOCAL_TIME value instead of:" + untilType);
-                }
-                break;
             case DATE_WITH_LOCAL_TIME_AND_TIME_ZONE:
             case DATE_WITH_UTC_TIME:
-                if (untilType != DateTimeType.DATE_WITH_LOCAL_TIME)
+                if (untilType != DateTimeType.DATE_WITH_UTC_TIME)
                 {
-                    errors.add("If DTSTART specifies a DATE_WITH_LOCAL_TIME_AND_TIME_ZONE or DATE_WITH_UTC_TIME then UNTIL must specify a DATE_WITH_UTC_TIME value instead of:" + untilType);
+                    errors.add("If DTSTART specifies a DATE_WITH_LOCAL_TIME, DATE_WITH_LOCAL_TIME_AND_TIME_ZONE or DATE_WITH_UTC_TIME then UNTIL must specify a DATE_WITH_UTC_TIME value instead of:" + untilType);
                 }
                 break;
             default:

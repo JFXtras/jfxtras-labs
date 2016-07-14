@@ -11,6 +11,10 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
@@ -20,6 +24,7 @@ import javafx.scene.layout.AnchorPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 
 /** 
@@ -59,6 +64,14 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     @FXML
     void handleSaveButton()
     {
+        if (recurrenceRuleVBox.frequencyComboBox.getValue() == FrequencyType.WEEKLY && recurrenceRuleVBox.dayOfWeekList.isEmpty())
+        {
+            canNotHaveZeroDaysOfWeek();
+        } else if (! vComponent.getRecurrenceRule().isValid())
+        {
+            throw new RuntimeException("Unhandled component error" + System.lineSeparator() + vComponent.errors());
+        }
+        
         if (editDescriptiveVBox.summaryTextField.getText().isEmpty())
         {
             vComponent.setSummary((Summary) null); 
@@ -141,6 +154,23 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
 //                }
 //            }
 //        });
+    }
+    
+    // Displays an alert notifying at least one day of week must be present for weekly frequency
+    private static void canNotHaveZeroDaysOfWeek()
+    {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Invalid Modification");
+        alert.setHeaderText("Please select at least one day of the week.");
+        alert.setContentText("Weekly repeat must have at least one selected day");
+        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOk);
+        
+        // set id for testing
+        alert.getDialogPane().setId("zero_day_of_week_alert");
+        alert.getDialogPane().lookupButton(buttonTypeOk).setId("zero_day_of_week_alert_button_ok");
+        
+        alert.showAndWait();
     }
     
     protected static void loadFxml(URL fxmlFile, Object rootController)

@@ -21,8 +21,8 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
     @Override
     @FXML void handleSaveButton()
     {
-        if (vComponent.isValid())
-        {
+//        if (vComponent.isValid())
+//        {
             if (editDescriptiveVBox.descriptionTextArea.getText().isEmpty())
             {
                 vComponent.setDescription((Description) null); 
@@ -39,16 +39,17 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
                 vComponents.addAll(newVComponents);
                 isFinished.set(true);
             }
-        } else
-        {
-            if (recurrenceRuleVBox.dayOfWeekList.isEmpty())
-            {
-                canNotHaveZeroDaysOfWeek();
-            } else
-            {
-                throw new RuntimeException("Unhandled component error" + System.lineSeparator() + vComponent.errors());
-            }
-        }
+//        } else
+//        {
+//            vComponent.errors().stream().forEach(System.out::println);
+//            if (recurrenceRuleVBox.dayOfWeekList.isEmpty())
+//            {
+//                canNotHaveZeroDaysOfWeek();
+//            } else
+//            {
+//                throw new RuntimeException("Unhandled component error" + System.lineSeparator() + vComponent.errors());
+//            }
+//        }
     }
     
     // Displays an alert notifying at least one day of week must be present for weekly frequency
