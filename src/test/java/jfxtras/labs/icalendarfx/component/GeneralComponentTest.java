@@ -2,12 +2,16 @@ package jfxtras.labs.icalendarfx.component;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDateTime;
+
 import org.junit.Test;
 
+import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Classification.ClassificationType;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 
 public class GeneralComponentTest
 {
@@ -40,28 +44,6 @@ public class GeneralComponentTest
         assertEquals(expectedContent, builtComponent.toContent());
         assertEquals(line, builtComponent.getComments().get(0).getValue());
     }
-    
-//    @Test
-//    public void canGetProperties()
-//    {
-//        VEvent builtComponent = new VEvent()
-//                .withAttendees(Attendee.parse("ATTENDEE;MEMBER=\"mailto:DEV-GROUP@example.com\":mailto:joecool@example.com"))
-//                .withDateTimeStart(new DateTimeStart(LocalDateTime.of(2016, 4, 15, 12, 0)))
-//                .withOrganizer(Organizer.parse("ORGANIZER;CN=David Bal:mailto:ddbal1@yahoo.com"))
-//                .withAttendees(Attendee.parse("ATTENDEE;PARTSTAT=DECLINED:mailto:jsmith@example.com"))
-//                .withUniqueIdentifier("19960401T080045Z-4000F192713-0052@example.com");
-//        List<PropertyType> expectedPropertyEnums = Arrays.asList(PropertyType.ATTENDEE, PropertyType.DATE_TIME_START, PropertyType.ORGANIZER, PropertyType.UNIQUE_IDENTIFIER);
-//        assertEquals(expectedPropertyEnums, builtComponent.propertyEnums());
-//        List<Property<?>> expectedProperties = Arrays.asList(
-//                builtComponent.getAttendees().get(0),
-//                builtComponent.getAttendees().get(1),
-//                builtComponent.getDateTimeStart(),
-//                builtComponent.getOrganizer(),
-//                builtComponent.getUniqueIdentifier()
-//                );
-//        assertEquals(expectedProperties, builtComponent.properties());
-////        builtComponent.properties().stream().forEach(p -> System.out.println(p.toContentLine()));
-//    }
     
     @Test (expected = IllegalArgumentException.class)
     public void canCatchSecondAssignmentException()
@@ -119,5 +101,15 @@ public class GeneralComponentTest
                 + "CLASS:PRIVATE" + System.lineSeparator()
                 + "END:VEVENT";
         assertEquals(contentLines2, builtComponent.toContent());
+    }
+    
+    @Test
+    public void canMaintainOrderAfterEdit()
+    {
+        VEvent vevent = ICalendarStaticComponents.getDaily1()
+                .withExceptionDates(LocalDateTime.of(2015, 11, 19, 9, 30));
+        DateTimeStart dtStart = new DateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 30));
+        vevent.setDateTimeStart(dtStart);
+        assertEquals(dtStart, vevent.childrenUnmodifiable().get(1));
     }
 }

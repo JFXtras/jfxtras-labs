@@ -139,4 +139,14 @@ public class ComponentCopyTest extends ICalendarTestAbstract2
         assertEquals(component1, component2);
         assertTrue(component1 != component2);
     }
+    
+    @Test
+    public void canCopyVEvent6()
+    {
+        VEvent component1 = getWeekly3();
+        VEvent component2 = getYearly1();
+        component2.copyChildrenFrom(component1);
+        assertEquals(component1, component2);
+        assertTrue(component1 != component2);
+    }
 }

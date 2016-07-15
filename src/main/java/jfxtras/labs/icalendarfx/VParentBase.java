@@ -46,9 +46,9 @@ public abstract class VParentBase implements VParent
         throw new RuntimeException("Copy child callback is not overridden in subclass " + this.getClass());
     };
 
-    /** returns read-only collection of child elements following the sort order controlled by {@link Orderer} */
+    /** returns read-only list of child elements following the sort order controlled by {@link Orderer} */
     @Override
-    public Collection<VChild> childrenUnmodifiable()
+    public List<VChild> childrenUnmodifiable()
     {
         return Collections.unmodifiableList(
                 orderer().elementSortOrderMap().entrySet().stream()
@@ -67,7 +67,8 @@ public abstract class VParentBase implements VParent
     @Override
     public void copyChildrenFrom(VParent source)
     {
-         source.childrenUnmodifiable().forEach((e) -> copyChildCallback().call(e));
+        orderer().elementSortOrderMap().clear();
+        source.childrenUnmodifiable().forEach((e) -> copyChildCallback().call(e));
     }
     
     @Override

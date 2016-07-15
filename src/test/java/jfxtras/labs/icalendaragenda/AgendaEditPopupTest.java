@@ -18,6 +18,7 @@ import jfxtras.test.TestUtil;
  *
  * @author David Bal
  */
+@Deprecated
 public class AgendaEditPopupTest extends AgendaTestAbstract
 {
     @Override

@@ -1053,8 +1053,13 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
     {
-        DateTimeType currentDTStartType = DateTimeType.of(dateTimeStartRecurrenceNew.get());
-        final Temporal dateTimeStart = currentDTStartType.from(exceptionFirstTemporal);
+        // TODO - dateTimeStartRecurrenceNew can only be LocalDate or LocalDateTime
+        // when DTSTART can be ZonedDateTime
+        DateTimeType currentStartRecurrenceType = DateTimeType.of(dateTimeStartRecurrenceNew.get());
+        System.out.println("currentDTStartType:" + currentStartRecurrenceType);
+        Temporal dtstart = vComponent.getDateTimeStart().getValue();
+        final ZoneId zone = (dtstart instanceof ZonedDateTime) ? ((ZonedDateTime) dtstart).getZone() : null;
+        final Temporal dateTimeStart = currentStartRecurrenceType.from(exceptionFirstTemporal, zone);
         exceptionComboBox.getItems().clear();
         boolean isRecurrenceRuleValid = vComponent.getRecurrenceRule().getValue().isValid();
         System.out.println("isRecurrenceRuleValid:" + isRecurrenceRuleValid + " " + dateTimeStart);

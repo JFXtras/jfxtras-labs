@@ -70,7 +70,15 @@ public abstract class PropertyBase<T,U> extends VParentBase implements Property<
     public ObjectProperty<T> valueProperty() { return value; }
     private ObjectProperty<T> value; // initialized in constructor
     @Override
-    public void setValue(T value) { this.value.set(value); }
+    public void setValue(T value)
+    {
+//        // preserve sort order
+//        if (value != null)
+//        {
+//            this.getParent().
+//        }
+        this.value.set(value);
+    }
     public U withValue(T value) { setValue(value); return (U) this; } // in constructor
 
     /** The propery's value converted by string converted to content string */

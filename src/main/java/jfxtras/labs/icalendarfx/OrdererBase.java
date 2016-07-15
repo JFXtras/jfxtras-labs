@@ -66,15 +66,22 @@ public class OrdererBase implements Orderer
         
         sortOrderChangeListener = (obs, oldValue, newValue) ->
         {
-            if (oldValue != null)
+            final int sortOrder;
+//            System.out.println("elementmap:" + elementSortOrderMap.get(oldValue));
+            if ((oldValue != null) && (elementSortOrderMap.get(oldValue) != null))
             {
+                sortOrder = elementSortOrderMap.get(oldValue);
                 elementSortOrderMap.remove(oldValue);
+            } else
+            {
+                sortOrder = sortOrderCounter;
+                sortOrderCounter += 100;
             }
             if (newValue != null)
             {
-                elementSortOrderMap.put(newValue, sortOrderCounter);
+                elementSortOrderMap.put(newValue, sortOrder);
                 newValue.setParent(parent);
-                sortOrderCounter += 100;
+//                sortOrderCounter += 100;
             }
         };
     }

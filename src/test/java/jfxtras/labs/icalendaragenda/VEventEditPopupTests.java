@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -35,6 +38,7 @@ import javafx.util.Pair;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.RecurrenceRuleVBox;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
@@ -262,7 +266,6 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
-//                    appointment,
                     vevent,
                     vEvents,
                     appointment.getStartTemporal(),
@@ -414,15 +417,14 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
     @Test
     public void canChangeWholeDayToTimeBased()
     {
-        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
-        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
-        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
         VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getWholeDayDaily3();
         myCalendar.getVEvents().add(vevent);
+        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
+        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
         List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(1);
-//        System.out.println(appointment);
         TestUtil.runThenWaitForPaintPulse( () ->
         {
             editComponentPopup.setupData(
@@ -444,7 +446,6 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         LocalDateTimeTextField end2 = find("#endDateTimeTextField");
         assertEquals(LocalDateTime.of(2015, 11, 12, 14, 0), end2.getLocalDateTime());
         end2.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 14, 0)); // make 1 hour long
-//        TestUtil.sleep(3000);
         
         // Save changes
         click("#saveComponentButton");
@@ -464,14 +465,46 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
                 .withDateTimeStart(new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 8, 13, 0), ZoneId.systemDefault())))
                 .withDateTimeEnd(new DateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 8, 14, 0), ZoneId.systemDefault())))
                 .withSequence(1);
-        System.out.println("bad until valid:" + veventExpected.isValid()); // TODO - FIX THIS
-//        veventExpected.setDateTimeStart(new DateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 13, 0), ZoneId.systemDefault())));
-//        veventExpected.setDateTimeEnd(new DateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 14, 0), ZoneId.systemDefault())));
         Temporal until = ZonedDateTime.of(LocalDateTime.of(2015, 11, 23, 13, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
         veventExpected.getRecurrenceRule().getValue().setUntil(until);
 
         VEvent editedVEvent = myCalendar.getVEvents().get(0);
         assertEquals(veventExpected, editedVEvent);
+    }
+    
+    @Test
+    public void canMakeExceptionList()
+    {
+        VCalendar myCalendar = new VCalendar();
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
+        myCalendar.getVEvents().add(vevent);
+        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
+        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
+        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
+        Appointment appointment = newAppointments.get(1);
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            editComponentPopup.setupData(
+                    vevent,
+                    myCalendar.getVEvents(),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
+                    ICalendarAgendaUtilities.CATEGORIES);
+        });
+        
+        // Get properties
+        click("#recurrenceRuleTab");
+        ComboBox<Temporal> exceptionComboBox = find("#exceptionComboBox");
+
+        // Check initial state
+        List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
+        LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
+        List<LocalDateTime> expectedDates = Stream
+                .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
+                .limit(RecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
+                .collect(Collectors.toList());
+        assertEquals(expectedDates, exceptions);
     }
     
     private static final Map<ChangeDialogOption, Pair<Temporal,Temporal>> EXAMPLE_MAP = makeExampleMap();
