@@ -10,6 +10,7 @@ import java.util.Map;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 /**
  * Options available when editing or deleting a repeatable appointment.
@@ -38,17 +39,22 @@ public enum ChangeDialogOption
         
        Temporal lastRecurrence = vComponentEdited.lastRecurrence();
        Temporal firstRecurrence = vComponentEdited.streamRecurrences().findFirst().get();
+       System.out.println("first,last:" + lastRecurrence );
        boolean isLastRecurrence = (lastRecurrence == null) ? false : startInstance.equals(lastRecurrence);
+       boolean isAfterLastRecurrence = (lastRecurrence == null) ? false : DateTimeUtilities.isAfter(startInstance, lastRecurrence);
        boolean isFirstRecurrence = startInstance.equals(firstRecurrence);
        boolean isDTStartChanged = ! vComponentEdited.getDateTimeStart().equals(vComponentOriginal.getDateTimeStart());
        boolean isFirstOrLastChanged = ! (isLastRecurrence || isFirstRecurrence);
-       if (isFirstOrLastChanged || isDTStartChanged)
+       if (! isAfterLastRecurrence)
        {
-           Temporal start = (startInstance == null) ? vComponentEdited.getDateTimeStart().getValue() : startInstance; // set initial start
-           Period dateTimeStartShift = Period.between(LocalDate.from(vComponentEdited.getDateTimeStart().getValue()),
-                   LocalDate.from(vComponentOriginal.getDateTimeStart().getValue()));
-           start = start.plus(dateTimeStartShift);
-           choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));
+           if (isFirstOrLastChanged || isDTStartChanged)
+           {
+               Temporal start = (startInstance == null) ? vComponentEdited.getDateTimeStart().getValue() : startInstance; // set initial start
+               Period dateTimeStartShift = Period.between(LocalDate.from(vComponentEdited.getDateTimeStart().getValue()),
+                       LocalDate.from(vComponentOriginal.getDateTimeStart().getValue()));
+               start = start.plus(dateTimeStartShift);
+               choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));
+           }
        }
        choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponentEdited.getDateTimeStart().getValue(), lastRecurrence));
        return choices;
