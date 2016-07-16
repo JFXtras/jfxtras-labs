@@ -10,6 +10,8 @@ import javafx.scene.control.ButtonType;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 
 public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> extends EditDisplayableTabPane<T, DescriptiveLocatableVBox<T>>
 {
@@ -21,25 +23,26 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
     @Override
     @FXML void handleSaveButton()
     {
-            super.handleSaveButton();
-            Collection<T> newVComponents = callRevisor();
-            if (newVComponents != null)
+        if (vComponent.getRecurrenceRule() != null)
+        {
+            RecurrenceRule2 rrule = vComponent.getRecurrenceRule().getValue();
+            if (rrule.getFrequency().getValue() == FrequencyType.WEEKLY)
             {
-                vComponents.remove(vComponent);
-                vComponents.addAll(newVComponents);
-                isFinished.set(true);
+                if (recurrenceRuleVBox.dayOfWeekList.isEmpty())
+                {
+                    canNotHaveZeroDaysOfWeek();
+                    return; // skip other operations, allow user to make changes and try again
+                }
             }
-//        } else
-//        {
-//            vComponent.errors().stream().forEach(System.out::println);
-//            if (recurrenceRuleVBox.dayOfWeekList.isEmpty())
-//            {
-//                canNotHaveZeroDaysOfWeek();
-//            } else
-//            {
-//                throw new RuntimeException("Unhandled component error" + System.lineSeparator() + vComponent.errors());
-//            }
-//        }
+        }
+        super.handleSaveButton();
+        Collection<T> newVComponents = callRevisor();
+        if (newVComponents != null)
+        {
+            vComponents.remove(vComponent);
+            vComponents.addAll(newVComponents);
+            isFinished.set(true);
+        }
     }
     
     @Override

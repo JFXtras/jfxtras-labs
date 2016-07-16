@@ -1110,7 +1110,8 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             exceptionComboBox.getItems().addAll(exceptionDates);
         } else
         {
-            throw new RuntimeException("not valid RRULE:" + System.lineSeparator() + vComponent.getRecurrenceRule().errors());
+            // Allow invalid as a temporary condition, checked after save
+            // throw new RuntimeException("not valid RRULE:" + System.lineSeparator() + vComponent.getRecurrenceRule().errors());
         }
     }
     

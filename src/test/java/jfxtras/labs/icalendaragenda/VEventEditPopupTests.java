@@ -1287,6 +1287,37 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         assertEquals(expectedV0, v0);
     }
     
+    @Test
+    public void canDeleteSeriesEdit()
+    {
+        VCalendar myCalendar = new VCalendar();
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
+        myCalendar.getVEvents().add(vevent);
+        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
+        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
+        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
+        Appointment appointment = newAppointments.get(2);
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            editComponentPopup.setupData(
+                    vevent,
+                    myCalendar.getVEvents(),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
+                    ICalendarAgendaUtilities.CATEGORIES);
+        });
+
+        // delete VComponent
+        click("#deleteComponentButton");
+        ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
+        TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.ALL));
+        click("#changeDialogOkButton");
+
+        // check return to original state
+        assertEquals(0, myCalendar.getVEvents().size());
+    }
+    
     private static final Map<ChangeDialogOption, Pair<Temporal,Temporal>> EXAMPLE_MAP = makeExampleMap();
     private static Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeExampleMap()
     {

@@ -91,24 +91,9 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     
     @FXML private void handleCancelButton()
     {
-//        System.out.println("handlecancel1:" + vComponent);
-//        System.out.println("handlecancel2:" + vComponentOriginalCopy);
-        // restore original properties
-//        try
-//        {
-//            vComponent = (T) vComponent.getClass().newInstance();
-//        } catch (InstantiationException | IllegalAccessException e)
-//        {
-//            e.printStackTrace();
-//        }
         vComponent.copyChildrenFrom(vComponentOriginalCopy);
         removeEmptyProperties();
-
-//        System.out.println("handlecancel3:" + vComponent);
         isFinished.set(true);
-////        vEventOriginal.copyTo(vEvent);
-//        vComponent.copyComponentFrom(vEventOriginal);
-//        popup.close();
     }
     
     @FXML private void handleDeleteButton()
