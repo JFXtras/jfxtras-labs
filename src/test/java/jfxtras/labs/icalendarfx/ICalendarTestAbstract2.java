@@ -299,6 +299,7 @@ public abstract class ICalendarTestAbstract2
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0))
                 .withDuration(Duration.ofMinutes(45))
                 .withDescription("Weekly3 Description")
+                .withLocation("here")
                 .withSummary("Weekly3 Summary")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withFrequency(FrequencyType.WEEKLY)

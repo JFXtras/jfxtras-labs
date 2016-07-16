@@ -1169,6 +1169,124 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
         }
     }
     
+    @Test
+    public void canEditThisAndFuture()
+    {
+        VCalendar myCalendar = new VCalendar();
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
+        myCalendar.getVEvents().add(vevent);
+        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
+        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
+        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
+        Appointment appointment = newAppointments.get(2);
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            editComponentPopup.setupData(
+                    vevent,
+                    myCalendar.getVEvents(),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
+                    ICalendarAgendaUtilities.CATEGORIES);
+        });
+
+       // edit property
+       TextField summaryTextField = find("#summaryTextField");
+       summaryTextField.setText("new summary");
+
+       // save changes to THIS AND FUTURE
+       click("#saveComponentButton");
+       ComboBox<ChangeDialogOption> c = find("#changeDialogComboBox");
+       TestUtil.runThenWaitForPaintPulse( () -> c.getSelectionModel().select(ChangeDialogOption.THIS_AND_FUTURE));
+       click("#changeDialogOkButton");
+
+       // verify VComponent changes
+       assertEquals(2, myCalendar.getVEvents().size());
+
+       VEvent v0 = myCalendar.getVEvents().get(0);
+       VEvent expectedV0 = ICalendarStaticComponents.getDaily1();
+       ZonedDateTime until = ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
+       expectedV0.getRecurrenceRule().getValue()
+               .setUntil(until);
+       assertEquals(expectedV0, v0);
+
+       VEvent v1 = myCalendar.getVEvents().get(1);
+       VEvent expectedV1 = new VEvent()
+               .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
+               .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
+               .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0))
+               .withDescription("Daily1 Description")
+               .withSummary("new summary")
+               .withDateTimeStamp(v1.getDateTimeStamp()) // time stamp is time-based so copy it to guarantee equality.
+               .withUniqueIdentifier(v1.getUniqueIdentifier()) // uid is time-based so copy it to guarantee equality.
+               .withRecurrenceRule(new RecurrenceRule2()
+                       .withFrequency(FrequencyType.DAILY))
+               .withRelatedTo("20150110T080000-004@jfxtras.org")
+               .withSequence(1);
+      assertEquals(expectedV1, v1);
+
+       // verify Appointment changes      
+       {
+           List<String> summaries = vComponentFactory.makeRecurrences(v0)
+                   .stream()
+                   .map(a -> a.getSummary())
+                   .collect(Collectors.toList());
+           List<String> summaries2 = vComponentFactory.makeRecurrences(v1)
+                   .stream()
+                   .map(a -> a.getSummary())
+                   .collect(Collectors.toList());
+           List<String> summariesAll = new ArrayList<>(summaries);
+           summariesAll.addAll(summaries2);
+           List<String> expectedSummaries = new ArrayList<>(Arrays.asList(
+                   "Daily1 Summary"
+                 , "Daily1 Summary"
+                 , "new summary"
+                 , "new summary"
+                 , "new summary"
+                 , "new summary"
+                   ));
+           assertEquals(expectedSummaries, summariesAll);
+       }
+    }
+
+    @Test
+    public void canCancelEdit()
+    {
+        VCalendar myCalendar = new VCalendar();
+        VEvent vevent = ICalendarStaticComponents.getDaily1();
+        myCalendar.getVEvents().add(vevent);
+        RecurrenceFactory<Appointment> vComponentFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
+        vComponentFactory.setStartRange(LocalDateTime.of(2015, 11, 8, 0, 0));
+        vComponentFactory.setEndRange(LocalDateTime.of(2015, 11, 15, 0, 0));
+        List<Appointment> newAppointments = vComponentFactory.makeRecurrences(vevent);
+        Appointment appointment = newAppointments.get(2);
+        TestUtil.runThenWaitForPaintPulse( () ->
+        {
+            editComponentPopup.setupData(
+                    vevent,
+                    myCalendar.getVEvents(),
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
+                    ICalendarAgendaUtilities.CATEGORIES);
+        });
+
+        // edit properties
+        TextField summaryTextField = find("#summaryTextField");
+        summaryTextField.setText("new summary");
+        LocalDateTimeTextField startDateTimeTextField = find("#startDateTimeTextField");
+        startDateTimeTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 10, 30));
+
+        // cancel changes
+        click("#saveComponentButton");
+        click("#changeDialogCancelButton");
+        click("#cancelComponentButton");
+        
+        // check return to original state
+        VEvent expectedV0 = ICalendarStaticComponents.getDaily1();
+        VEvent v0 = myCalendar.getVEvents().get(0);
+        assertEquals(expectedV0, v0);
+    }
+    
     private static final Map<ChangeDialogOption, Pair<Temporal,Temporal>> EXAMPLE_MAP = makeExampleMap();
     private static Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeExampleMap()
     {

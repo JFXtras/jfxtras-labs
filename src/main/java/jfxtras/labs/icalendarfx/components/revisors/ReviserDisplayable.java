@@ -275,6 +275,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 {
                     Object p1 = t.getProperty(vComponentEditedCopy);
                     Object p2 = t.getProperty(vComponentOriginalCopy);
+//                    System.out.println("ppp:" + p1 + " " + p2);
                     if (! p1.equals(p2))
                     {
                         changedProperties.add(t);

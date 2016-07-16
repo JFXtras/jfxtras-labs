@@ -21,16 +21,6 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
     @Override
     @FXML void handleSaveButton()
     {
-//        if (vComponent.isValid())
-//        {
-            if (editDescriptiveVBox.descriptionTextArea.getText().isEmpty())
-            {
-                vComponent.setDescription((Description) null); 
-            }
-            if (editDescriptiveVBox.locationTextField.getText().isEmpty())
-            {
-                vComponent.setLocation((Location) null); 
-            }
             super.handleSaveButton();
             Collection<T> newVComponents = callRevisor();
             if (newVComponents != null)
@@ -50,6 +40,19 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
 //                throw new RuntimeException("Unhandled component error" + System.lineSeparator() + vComponent.errors());
 //            }
 //        }
+    }
+    
+    @Override
+    void removeEmptyProperties()
+    {
+        if (editDescriptiveVBox.descriptionTextArea.getText().isEmpty())
+        {
+            vComponent.setDescription((Description) null); 
+        }
+        if (editDescriptiveVBox.locationTextField.getText().isEmpty())
+        {
+            vComponent.setLocation((Location) null); 
+        }
     }
     
     // Displays an alert notifying at least one day of week must be present for weekly frequency

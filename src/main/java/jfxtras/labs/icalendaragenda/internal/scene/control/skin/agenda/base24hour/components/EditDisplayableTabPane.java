@@ -64,6 +64,11 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     @FXML
     void handleSaveButton()
     {
+        removeEmptyProperties();
+    }
+
+    void removeEmptyProperties()
+    {
         if (recurrenceRuleVBox.frequencyComboBox.getValue() == FrequencyType.WEEKLY && recurrenceRuleVBox.dayOfWeekList.isEmpty())
         {
             canNotHaveZeroDaysOfWeek();
@@ -76,18 +81,30 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
         {
             vComponent.setSummary((Summary) null); 
         }
+
        // nullify Interval if value equals default (avoid unnecessary content output)
         if ((vComponent.getRecurrenceRule() != null) && (recurrenceRuleVBox.intervalSpinner.getValue() == Interval.DEFAULT_INTERVAL))
         {
             vComponent.getRecurrenceRule().getValue().setInterval((Interval) null); 
         }
-        // additional functionality in subclasses
     }
     
     @FXML private void handleCancelButton()
     {
-        System.out.println("handlecancel:");
+//        System.out.println("handlecancel1:" + vComponent);
+//        System.out.println("handlecancel2:" + vComponentOriginalCopy);
+        // restore original properties
+//        try
+//        {
+//            vComponent = (T) vComponent.getClass().newInstance();
+//        } catch (InstantiationException | IllegalAccessException e)
+//        {
+//            e.printStackTrace();
+//        }
         vComponent.copyChildrenFrom(vComponentOriginalCopy);
+        removeEmptyProperties();
+
+//        System.out.println("handlecancel3:" + vComponent);
         isFinished.set(true);
 ////        vEventOriginal.copyTo(vEvent);
 //        vComponent.copyComponentFrom(vEventOriginal);
@@ -97,13 +114,6 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<?>,
     @FXML private void handleDeleteButton()
     {
         isFinished.set(true);
-//        vEvent.handleDelete(
-//                vComponents
-//              , startRecurrence
-//              , appointment
-//              , appointments
-//              , DeleteChoiceDialog.DELETE_DIALOG_CALLBACK);
-//        popup.close();
     }
     
     @FXML private void handlePressEnter(KeyEvent e)

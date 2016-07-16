@@ -67,7 +67,8 @@ public abstract class VParentBase implements VParent
     @Override
     public void copyChildrenFrom(VParent source)
     {
-        orderer().elementSortOrderMap().clear();
+//        orderer().elementSortOrderMap().clear();
+        // TODO - FIND WAY TO ORDER UNIQUE CHILDREN
         source.childrenUnmodifiable().forEach((e) -> copyChildCallback().call(e));
     }
     

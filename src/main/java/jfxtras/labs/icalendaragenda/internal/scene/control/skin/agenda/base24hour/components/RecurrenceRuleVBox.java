@@ -331,12 +331,15 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
         if (intervalSpinner.getValue() == 1)
         {
             frequencyLabelText = Settings.REPEAT_FREQUENCIES_SINGULAR.get(frequencyComboBox.valueProperty().get());
+            rrule.setInterval((Interval) null); // rely on default value from omitted Interval
+            System.out.println("reset interval:" + rrule.toContent());
         } else
         {
             frequencyLabelText = Settings.REPEAT_FREQUENCIES_PLURAL.get(frequencyComboBox.valueProperty().get());
+            Interval interval = (rrule.getInterval() == null) ? new Interval() : rrule.getInterval();
+            interval.setValue(newValue);
         }
         frequencyLabel.setText(frequencyLabelText);
-        rrule.setInterval(newValue);
         refreshSummary();
         refreshExceptionDates();
     };
@@ -357,7 +360,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
                 refreshExceptionDates();
             } else
             {
-                System.out.println("fire occurrence");
                 notOccurrenceDateAlert(newSelection);
                 untilDatePicker.setValue(oldSelection);               
             }
@@ -489,17 +491,11 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
                     vComponent.setRecurrenceRule(rrule);
                     setInitialValues(vComponent);
                 }
-//                vComponent.getDateTimeStart().valueProperty().addListener(dateTimeStartToExceptionChangeListener);
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
-//                addListeners();
             } else
             {
-//                vComponent.getDateTimeStart().valueProperty().removeListener(dateTimeStartToExceptionChangeListener);
-//                vComponent.setRecurrenceRule((RecurrenceRule) null);
                 rrule = null;
-//                System.out.println(vComponent.getRecurrenceRule());
-//                System.out.println(vComponent.getRecurrenceRule().getValue());
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);
             }
@@ -561,9 +557,12 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
                 if (isNumber)
                 {
                     value = Integer.parseInt(s);
-                    rrule.setInterval(value);
-                    refreshSummary();
-                    refreshExceptionDates();
+                    if (value > 1)
+                    {
+                        rrule.setInterval(value);
+                        refreshSummary();
+                        refreshExceptionDates();
+                    }
                 } else {
                     String lastValue = intervalSpinner.getValue().toString();
                     intervalSpinner.getEditor().textProperty().set(lastValue);
@@ -944,13 +943,16 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     /* Set controls to values in rRule */
     private void setInitialValues(VComponentDisplayable<?> vComponent)
     {
+        final int initialInterval;
         if (rrule.getInterval() == null)
         {
-            rrule.setInterval(new Interval(Interval.DEFAULT_INTERVAL));
+            initialInterval = Interval.DEFAULT_INTERVAL;
+        } else
+        {
+            initialInterval = rrule.getInterval().getValue();
         }
-        int initialInterval = rrule.getInterval().getValue();
         intervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, initialInterval));
-        rrule.getInterval().valueProperty().bind(intervalSpinner.valueProperty());
+//        rrule.getInterval().valueProperty().bind(intervalSpinner.valueProperty());
         // TODO - OTHER LISTENERS MAY BE OBSOLETE WITH ABOVE BINDING
 
         FrequencyType frequencyType = rrule.getFrequency().getValue();
