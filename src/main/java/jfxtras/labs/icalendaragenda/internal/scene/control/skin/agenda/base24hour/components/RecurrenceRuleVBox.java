@@ -384,7 +384,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             refreshExceptionDates();
         } else
         {
-            rrule.setUntil((Temporal) null);
+            rrule.setUntil((Until) null);
             untilDatePicker.setDisable(true);
         }
     };
@@ -883,9 +883,12 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
                                     {
                                         // add data to bottom
                                         int elements = exceptionComboBox.getItems().size();
-                                        exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
-                                        makeExceptionDates();
-                                        bar.setValue(.5);
+                                        if (elements == EXCEPTION_CHOICE_LIMIT)
+                                        {
+                                            exceptionFirstTemporal = exceptionComboBox.getItems().get(elements/3);
+                                            makeExceptionDates();
+                                            bar.setValue(.5);
+                                        }
                                     } else if (((double) newValue < 0.1) && ((double) oldValue > 0.1))
                                     {
                                         // add data to top
@@ -1055,14 +1058,15 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     {
         // TODO - dateTimeStartRecurrenceNew can only be LocalDate or LocalDateTime
         // when DTSTART can be ZonedDateTime
+//        System.out.println("until" + vComponent.getRecurrenceRule().getValue().getUntil());
         DateTimeType currentStartRecurrenceType = DateTimeType.of(dateTimeStartRecurrenceNew.get());
-        System.out.println("currentDTStartType:" + currentStartRecurrenceType);
+//        System.out.println("currentDTStartType:" + currentStartRecurrenceType);
         Temporal dtstart = vComponent.getDateTimeStart().getValue();
         final ZoneId zone = (dtstart instanceof ZonedDateTime) ? ((ZonedDateTime) dtstart).getZone() : null;
         final Temporal dateTimeStart = currentStartRecurrenceType.from(exceptionFirstTemporal, zone);
         exceptionComboBox.getItems().clear();
         boolean isRecurrenceRuleValid = vComponent.getRecurrenceRule().getValue().isValid();
-        System.out.println("isRecurrenceRuleValid:" + isRecurrenceRuleValid + " " + dateTimeStart);
+//        System.out.println("isRecurrenceRuleValid:" + isRecurrenceRuleValid + " " + dateTimeStart);
         if (isRecurrenceRuleValid)
         {
             // FILTER OUT EXCEPTIONS
@@ -1102,6 +1106,9 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
                   })
                   .collect(Collectors.toList());
             exceptionComboBox.getItems().addAll(exceptionDates);
+        } else
+        {
+            throw new RuntimeException("not valid RRULE:" + System.lineSeparator() + vComponent.getRecurrenceRule().errors());
         }
     }
     
