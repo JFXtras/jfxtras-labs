@@ -88,11 +88,11 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
                     .withVComponentEdited(vComponent)
                     .withVComponentOriginal(vComponentOriginal);
             Collection<VEvent> newVComponents = newRevisor.revise();
-            if (newVComponents != null)
-            {
+//            if (newVComponents != null)
+//            {
                 agenda.getVCalendar().getVEvents().remove(vComponent);
                 agenda.getVCalendar().getVEvents().addAll(newVComponents);
-            }
+//            }
         }
         
     }

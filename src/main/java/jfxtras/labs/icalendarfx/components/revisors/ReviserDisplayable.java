@@ -188,7 +188,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     }
                     break;
                 case CANCEL:
-                    return null;
+//                    return null;
+                    return Arrays.asList(vComponentOriginalCopy);
+                    // TODO - RETURN 
                 case THIS_AND_FUTURE:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
                     vComponents.add(vComponentOriginalCopy);
