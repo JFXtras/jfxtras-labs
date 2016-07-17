@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VComponentRepeatable;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
@@ -24,7 +25,7 @@ public enum ChangeDialogOption
   , THIS_AND_FUTURE      // selected instance and all in the future
   , CANCEL;              // do nothing
     
-   /** Produce the map of change dialog options and the date range the option affects */
+   /** Produce the map of change dialog options and the date range the option affects - {@link Reviser} */
    public static <U extends VComponentDisplayable<U>> Map<ChangeDialogOption, Pair<Temporal,Temporal>> makeDialogChoices(
             U vComponentOriginal,
             U vComponentEdited,
@@ -58,5 +59,43 @@ public enum ChangeDialogOption
        }
        choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponentEdited.getDateTimeStart().getValue(), lastRecurrence));
        return choices;
+    }
+
+   /** Produce the map of change dialog options and the date range the option affects - {@link Deleter} 
+ * @param <U>*/
+    public static <U extends VComponentRepeatable<U>> Map<ChangeDialogOption, Pair<Temporal, Temporal>> makeDialogChoices(
+            U vComponent,
+            Temporal startOriginalRecurrence)
+    {
+        Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = new LinkedHashMap<>();
+        final Temporal lastRecurrence;
+        
+        final long rdates;
+        if (vComponent.getRecurrenceDates() != null)
+        {
+            rdates = vComponent.getRecurrenceDates().stream().flatMap(r -> r.getValue().stream()).count();
+        } else
+        {
+            rdates = 0;
+        }
+        if (vComponent.getRecurrenceRule() != null || rdates > 1)
+        {
+            choices.put(ChangeDialogOption.ONE, new Pair<Temporal,Temporal>(startOriginalRecurrence, startOriginalRecurrence));
+            lastRecurrence = vComponent.lastRecurrence();
+            boolean isLastRecurrence = (lastRecurrence == null) ? false : startOriginalRecurrence.equals(lastRecurrence);
+            if (! isLastRecurrence)
+            {
+                Temporal start = (startOriginalRecurrence == null) ? vComponent.getDateTimeStart().getValue() : startOriginalRecurrence; // set initial start
+                Period dateTimeStartShift = Period.between(LocalDate.from(vComponent.getDateTimeStart().getValue()),
+                        LocalDate.from(vComponent.getDateTimeStart().getValue()));
+                start = start.plus(dateTimeStartShift);
+                choices.put(ChangeDialogOption.THIS_AND_FUTURE, new Pair<Temporal,Temporal>(start, lastRecurrence));            
+            }
+        } else
+        {
+            lastRecurrence = vComponent.getDateTimeStart().getValue();
+        }
+        choices.put(ChangeDialogOption.ALL, new Pair<Temporal,Temporal>(vComponent.getDateTimeStart().getValue(), lastRecurrence));
+        return choices;
     }        
 }

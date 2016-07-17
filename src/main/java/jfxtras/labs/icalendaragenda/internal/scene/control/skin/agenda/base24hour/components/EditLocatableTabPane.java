@@ -37,12 +37,12 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
         }
         super.handleSaveButton();
         Collection<T> newVComponents = callRevisor();
-//        if (newVComponents != null)
-//        {
-            vComponents.remove(vComponent);
+        vComponents.remove(vComponent);
+        if (newVComponents != null)
+        {
             vComponents.addAll(newVComponents);
-            isFinished.set(true);
-//        }
+        }
+        isFinished.set(true);
     }
     
     @Override

@@ -9,7 +9,7 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
  * @author David Bal
  *
  */
-public interface Behavior
+public interface AppointmentChangeBehavior
 {
     /** creates edit component popup scene */
     CreateEditComponentPopupScene getEditScene(Appointment appointment);

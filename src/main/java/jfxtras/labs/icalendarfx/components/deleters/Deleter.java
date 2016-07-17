@@ -1,14 +1,7 @@
 package jfxtras.labs.icalendarfx.components.deleters;
 
-import java.util.Collection;
-
-public interface Deleter
+public abstract class Deleter<U>
 {
-    /** Delete component based on properties set in subclasses
-     * Can return zero or one.  Returns one if changes are applied to ONE or THIS-AND-FUTURE,
-     * zero for ALL.
-     * 
-     * @return - Collection of revised component after deletion, or empty collection
-     */
-    Collection<?> delete();
+    /** Executes delete algorithm */
+    public abstract U delete();
 }

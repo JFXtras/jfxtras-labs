@@ -135,8 +135,16 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         {
             return true;
         }
-        Optional<Temporal> firstOptional = list.stream().flatMap(p -> p.getValue().stream()).findAny();
+        
+        Optional<Temporal> firstOptional = list.stream()
+                .filter(l -> l.getValue() != null) // remove empty properties
+                .flatMap(p -> p.getValue().stream())
+                .findAny();
         firstRecurrence = (firstOptional.isPresent()) ? firstOptional.get() : firstRecurrence;
+        if (firstRecurrence == null)
+        {
+            return true;
+        }
         DateTimeType firstDateTimeTypeType = DateTimeUtilities.DateTimeType.of(firstRecurrence);
         Optional<DateTimeType> badType = list.stream()
                 .flatMap(p -> p.getValue().stream())
@@ -421,6 +429,7 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         if (testObj.getRecurrenceRule() != null && testObj.getRecurrenceRule().getValue().getUntil() != null)
         {
             Temporal until = testObj.getRecurrenceRule().getValue().getUntil().getValue();
+            System.out.println("until:" + until);
             DateTimeType untilType = DateTimeType.of(until);
             DateTimeType startType = DateTimeType.of(testObj.getDateTimeStart().getValue());
             switch (startType)

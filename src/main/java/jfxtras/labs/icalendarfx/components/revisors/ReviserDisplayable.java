@@ -26,9 +26,9 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
 public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> extends ReviserBase<U>
 {
-    public ReviserDisplayable(U component)
+    public ReviserDisplayable(U vComponent)
     {
-        setVComponentEdited(component);
+        setVComponentEdited(vComponent);
     }
 
     public U getVComponentEdited() { return vComponentEdited; }
@@ -200,7 +200,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     vComponents.add(vComponentOriginalCopy);
                     break;
                 default:
-                    throw new RuntimeException("Unknown response:" + changeResponse);
+                    throw new RuntimeException("Unsupprted response:" + changeResponse);
                 }
             }
         }

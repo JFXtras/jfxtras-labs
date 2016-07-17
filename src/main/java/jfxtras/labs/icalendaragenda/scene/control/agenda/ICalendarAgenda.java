@@ -32,7 +32,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneSelectedAppointmentPopup;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.Behavior;
+import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.AppointmentChangeBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VEventBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VJournalBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VTodoBehavior;
@@ -122,7 +122,7 @@ public class ICalendarAgenda extends Agenda
 
     private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>(); /* map matches VComponent to their appointments */
 
-    private final Map<Class<? extends VComponent>, Behavior> vComponentClassBehaviorMap = new HashMap<>();
+    private final Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap = new HashMap<>();
     
 
     /** Callback for creating unique identifier values
@@ -297,7 +297,7 @@ public class ICalendarAgenda extends Agenda
     {
         VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
         
-        Behavior behavior = vComponentClassBehaviorMap.get(vComponent.getClass());
+        AppointmentChangeBehavior behavior = vComponentClassBehaviorMap.get(vComponent.getClass());
         System.out.println("about to revise:" + appointmentVComponentMap.size());
         behavior.callRevisor(appointment);
         System.out.println("done:");

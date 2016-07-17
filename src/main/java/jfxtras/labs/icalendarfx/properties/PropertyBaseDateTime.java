@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.Collection;
 
 import javafx.beans.property.ObjectProperty;
@@ -109,32 +110,39 @@ public abstract class PropertyBaseDateTime<T, U> extends PropertyBase<T,U> imple
         final Object element;
         if (value instanceof Collection)
         {
-            element = ((Collection<?>) value).iterator().next();
-        } else
+            Collection<?> collection = (Collection<?>) value;
+            element = (collection.isEmpty()) ? null : collection.iterator().next();
+        } else if (value instanceof Temporal)
         {
             element = value;
-        }
-
-        if (element instanceof ZonedDateTime)
-        {
-            ZoneId zone = ((ZonedDateTime) element).getZone();
-            if (! zone.equals(ZoneId.of("Z")))
-            {
-                setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
-            }
-        } else if ((element instanceof LocalDateTime) || (element instanceof LocalDate))
-        {
-            if (getTimeZoneIdentifier() != null)
-            {
-                throw new DateTimeException("Only ZonedDateTime is permitted when specifying a Time Zone Identifier (" + element.getClass().getSimpleName() + ")");                            
-            }
-            if (element instanceof LocalDate)
-            {
-                setValueType(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
-            }
         } else
         {
-            throw new DateTimeException("Unsupported Temporal type:" + value.getClass().getSimpleName());            
+            throw new DateTimeException("Unsupported type:" + value.getClass().getSimpleName());            
+        }
+
+        if (element != null)
+        {
+            if (element instanceof ZonedDateTime)
+            {
+                ZoneId zone = ((ZonedDateTime) element).getZone();
+                if (! zone.equals(ZoneId.of("Z")))
+                {
+                    setTimeZoneIdentifier(new TimeZoneIdentifierParameter(zone));
+                }
+            } else if ((element instanceof LocalDateTime) || (element instanceof LocalDate))
+            {
+                if (getTimeZoneIdentifier() != null)
+                {
+                    throw new DateTimeException("Only ZonedDateTime is permitted when specifying a Time Zone Identifier (" + element.getClass().getSimpleName() + ")");                            
+                }
+                if (element instanceof LocalDate)
+                {
+                    setValueType(ValueType.DATE); // must set value parameter to force output of VALUE=DATE
+                }
+            } else
+            {
+                throw new DateTimeException("Unsupported Temporal type:" + value.getClass().getSimpleName());            
+            }
         }
         super.setValue(value);
     }
