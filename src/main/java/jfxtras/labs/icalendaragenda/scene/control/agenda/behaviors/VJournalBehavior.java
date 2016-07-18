@@ -8,13 +8,8 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public class VJournalBehavior extends DisplayableBehavior<VJournal>
 {
-    public VJournalBehavior(ICalendarAgenda agenda)
-    {
-        super(agenda);
-    }
-    
     @Override
-    public CreateEditComponentPopupScene getEditScene(Appointment appointment)
+    public CreateEditComponentPopupScene getEditPopupScene(ICalendarAgenda agenda, Appointment appointment)
     {
         VJournal vComponent = (VJournal) agenda.appointmentVComponentMap().get(System.identityHashCode(appointment));
         if (vComponent == null)
@@ -35,7 +30,15 @@ public class VJournalBehavior extends DisplayableBehavior<VJournal>
     }
 
     @Override
-    public void callRevisor(Appointment appointment)
+    public void callRevisor(ICalendarAgenda agenda, Appointment appointment)
+    {
+        throw new RuntimeException("not implemented");
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void callDeleter(ICalendarAgenda agenda, Appointment appointment)
     {
         throw new RuntimeException("not implemented");
         // TODO Auto-generated method stub

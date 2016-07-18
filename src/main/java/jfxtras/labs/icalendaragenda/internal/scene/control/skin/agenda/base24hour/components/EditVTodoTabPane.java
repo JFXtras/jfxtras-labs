@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.List;
 
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVTodo;
@@ -36,13 +37,22 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
     @Override
     Collection<VTodo> callRevisor()
     {
-        ReviserVTodo reviser = ((ReviserVTodo) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
+        return ((ReviserVTodo) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
                 .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
                 .withEndRecurrence(editDescriptiveVBox.endNewRecurrence)
                 .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
                 .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
                 .withVComponentEdited(vComponent)
-                .withVComponentOriginal(vComponentOriginalCopy);
-        return reviser.revise();
+                .withVComponentOriginal(vComponentOriginalCopy)
+                .revise();
+    }
+    
+    @Override
+    VTodo callDeleter()
+    {
+        return new DeleterVTodo(vComponent)
+                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
+                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
+                .delete();
     }
 }

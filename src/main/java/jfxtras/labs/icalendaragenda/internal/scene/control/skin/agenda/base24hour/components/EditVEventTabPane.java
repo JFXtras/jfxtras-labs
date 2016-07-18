@@ -4,8 +4,10 @@ import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.List;
 
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.deleters.DeleterVEvent;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVEvent;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
 
@@ -35,13 +37,24 @@ public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
     @Override
     Collection<VEvent> callRevisor()
     {
-        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
+        return ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
                 .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
                 .withEndRecurrence(editDescriptiveVBox.endNewRecurrence)
                 .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
                 .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
                 .withVComponentEdited(vComponent)
-                .withVComponentOriginal(vComponentOriginalCopy);
-        return reviser.revise();
+                .withVComponentOriginal(vComponentOriginalCopy)
+                .revise();
+    }
+    
+    @Override
+    VEvent callDeleter()
+    {
+//        SimpleBehaviorFactory.newBehavior(vComponent)
+//            .callDeleter(agenda, appointment);
+        return new DeleterVEvent(vComponent)
+                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
+                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
+                .delete();
     }
 }

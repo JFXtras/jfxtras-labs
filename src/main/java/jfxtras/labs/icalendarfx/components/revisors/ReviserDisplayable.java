@@ -24,7 +24,7 @@ import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Recurrence
 import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
-public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> extends ReviserBase<U>
+public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> implements Reviser
 {
     public ReviserDisplayable(U vComponent)
     {
@@ -40,6 +40,11 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     private U vComponentOriginal;
     public void setVComponentOriginal(U vComponentOriginal) { this.vComponentOriginal = vComponentOriginal; }
     public T withVComponentOriginal(U vComponentOriginal) { setVComponentOriginal(vComponentOriginal); return (T) this; }
+
+    public List<U> getVComponents() { return vComponents; }
+    private List<U> vComponents;
+    public void setVComponents(List<U> vComponents) { this.vComponents = vComponents; }
+    public T withVComponents(List<U> vComponents) { setVComponents(vComponents); return (T) this; }
 
     public Temporal getStartOriginalRecurrence() { return startOriginalRecurrence; }
     private Temporal startOriginalRecurrence;
@@ -92,7 +97,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     
     /** Main method to edit VEvent or VTodo or VJournal */
     @Override
-    public Collection<U> revise()
+    public void revise()
     {
         if (! isValid())
         {
@@ -126,7 +131,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     vComponentEditedCopy.toContent());
         }
         
-        Collection<U> vComponents = new ArrayList<>(); // new components that should be added to main list
+        Collection<U> revisedVComponents = new ArrayList<>(Arrays.asList(vComponentEditedCopy)); // new components that should be added to main list
         validateStartRecurrenceAndDTStart(vComponentEditedCopy, getStartRecurrence());
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginalCopy.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
         boolean incrementSequence = true;
@@ -188,16 +193,14 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     }
                     break;
                 case CANCEL:
-//                    return null;
-                    return Arrays.asList(vComponentOriginalCopy);
-                    // TODO - RETURN 
+                    revisedVComponents.clear(); // remove vComponentEditedCopy
                 case THIS_AND_FUTURE:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-                    vComponents.add(vComponentOriginalCopy);
+                    revisedVComponents.add(vComponentOriginalCopy);
                     break;
                 case ONE:
                     editOne(vComponentEditedCopy);
-                    vComponents.add(vComponentOriginalCopy);
+                    revisedVComponents.add(vComponentOriginalCopy);
                     break;
                 default:
                     throw new RuntimeException("Unsupprted response:" + changeResponse);
@@ -215,8 +218,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
                     vComponentEditedCopy.toContent());
         }
-        vComponents.add(vComponentEditedCopy); // add edited copy for all edit options
-        return vComponents;
+        getVComponents().remove(getVComponentEdited());
+        getVComponents().addAll(revisedVComponents);
     }
     
     /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and

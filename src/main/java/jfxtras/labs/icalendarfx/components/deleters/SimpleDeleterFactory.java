@@ -1,7 +1,11 @@
-package jfxtras.labs.icalendarfx.components.revisors;
+package jfxtras.labs.icalendarfx.components.deleters;
 
+import java.time.temporal.Temporal;
 import java.util.List;
+import java.util.Map;
 
+import javafx.util.Callback;
+import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
@@ -11,40 +15,38 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 
-public class SimpleRevisorFactory
+public class SimpleDeleterFactory
 {
-    public static Reviser newReviser(VComponent vComponent, List<Object> params)
+    public static Deleter newDeleter (VComponent vComponent, List<Object> args)
     {
         if (vComponent instanceof VEvent)
         {
-            return new ReviserVEvent((VEvent) vComponent)
-                    .withEndRecurrence(endRecurrence)
-                    .withStartOriginalRecurrence(startOriginalRecurrence)
-                    .withStartRecurrence(startRecurrence)
-                    .withVComponentEdited(vComponent)
-                    .withVComponentOriginal(vComponentOriginal);;
+            return new DeleterVEvent((VEvent) vComponent)
+                    .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) args.get(0))
+                    .withStartOriginalRecurrence((Temporal) args.get(1));
         } else if (vComponent instanceof VTodo)
         {
-            return new ReviserVTodo((VTodo) vComponent);            
+            return new DeleterVTodo((VTodo) vComponent);            
         } else if (vComponent instanceof VJournal)
         {
-            return new ReviserVJournal((VJournal) vComponent);            
+            return new DeleterVJournal((VJournal) vComponent);            
         } else if (vComponent instanceof VFreeBusy)
         {
-            return new ReviserVFreeBusy((VFreeBusy) vComponent);            
+            throw new RuntimeException("not implemented");
         } else if (vComponent instanceof VTimeZone)
         {
-            return new ReviserVTimeZone((VTimeZone) vComponent);            
+            throw new RuntimeException("not implemented");
         } else if (vComponent instanceof VAlarm)
         {
-            return new ReviserVAlarm((VAlarm) vComponent);            
+            throw new RuntimeException("not implemented");
         } else if (vComponent instanceof StandardTime)
         {
-            return new ReviserStandardTime((StandardTime) vComponent);            
+            throw new RuntimeException("not implemented");
         } else if (vComponent instanceof DaylightSavingTime)
         {
-            return new ReviserDaylightSavingTime((DaylightSavingTime) vComponent);            
+            throw new RuntimeException("not implemented");          
         } else
         {
             throw new RuntimeException("Unsupported VComponent type" + vComponent.getClass());

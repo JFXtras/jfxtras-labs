@@ -1,10 +1,8 @@
 package jfxtras.labs.icalendarfx.components.revisors;
 
-import java.util.Collection;
-
 import jfxtras.labs.icalendarfx.components.VFreeBusy;
 
-public class ReviserVFreeBusy extends ReviserBase<VFreeBusy>
+public class ReviserVFreeBusy implements Reviser
 {
     public ReviserVFreeBusy(VFreeBusy component)
     {
@@ -12,7 +10,7 @@ public class ReviserVFreeBusy extends ReviserBase<VFreeBusy>
     }
     
     @Override
-    public Collection<VFreeBusy> revise()
+    public void revise()
     {
         throw new RuntimeException("not implemented");
     }

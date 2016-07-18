@@ -1,6 +1,4 @@
-package jfxtras.labs.icalendarfx.components.revisors;
-
-import java.util.List;
+package jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors;
 
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
@@ -12,39 +10,40 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 
-public class SimpleRevisorFactory
+/**
+ * Simply factory to return correct behavior by {@link VComponent} class
+ * 
+ * @author David Bal
+ *
+ */
+public class SimpleBehaviorFactory
 {
-    public static Reviser newReviser(VComponent vComponent, List<Object> params)
+    public static AppointmentChangeBehavior newBehavior(VComponent vComponent)
     {
         if (vComponent instanceof VEvent)
         {
-            return new ReviserVEvent((VEvent) vComponent)
-                    .withEndRecurrence(endRecurrence)
-                    .withStartOriginalRecurrence(startOriginalRecurrence)
-                    .withStartRecurrence(startRecurrence)
-                    .withVComponentEdited(vComponent)
-                    .withVComponentOriginal(vComponentOriginal);;
+            return new VEventBehavior();
         } else if (vComponent instanceof VTodo)
         {
-            return new ReviserVTodo((VTodo) vComponent);            
+            return new VTodoBehavior();
         } else if (vComponent instanceof VJournal)
         {
-            return new ReviserVJournal((VJournal) vComponent);            
+            return new VJournalBehavior();
         } else if (vComponent instanceof VFreeBusy)
         {
-            return new ReviserVFreeBusy((VFreeBusy) vComponent);            
+            throw new RuntimeException("not implemented");
         } else if (vComponent instanceof VTimeZone)
         {
-            return new ReviserVTimeZone((VTimeZone) vComponent);            
+            throw new RuntimeException("not implemented");
         } else if (vComponent instanceof VAlarm)
         {
-            return new ReviserVAlarm((VAlarm) vComponent);            
+            throw new RuntimeException("not implemented");
         } else if (vComponent instanceof StandardTime)
         {
-            return new ReviserStandardTime((StandardTime) vComponent);            
+            throw new RuntimeException("not implemented");
         } else if (vComponent instanceof DaylightSavingTime)
         {
-            return new ReviserDaylightSavingTime((DaylightSavingTime) vComponent);            
+            throw new RuntimeException("not implemented");
         } else
         {
             throw new RuntimeException("Unsupported VComponent type" + vComponent.getClass());

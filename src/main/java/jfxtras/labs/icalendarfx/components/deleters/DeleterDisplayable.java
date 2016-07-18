@@ -25,7 +25,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  *
  * @param <U> VComponent class
  */
-public class DeleterDisplayable<U extends VComponentDisplayable<U>> extends Deleter<U>
+public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends Deleter<U>
 {
     private U vComponent;
 
@@ -33,19 +33,19 @@ public class DeleterDisplayable<U extends VComponentDisplayable<U>> extends Dele
     {
         this.vComponent = vComponent;
     }
-    
+
     public Temporal getStartOriginalRecurrence() { return startOriginalRecurrence; }
     private Temporal startOriginalRecurrence;
     public void setStartOriginalRecurrence(Temporal startOriginalRecurrence) { this.startOriginalRecurrence = startOriginalRecurrence; }
-    public DeleterDisplayable<U> withStartOriginalRecurrence(Temporal startOriginalRecurrence) { setStartOriginalRecurrence(startOriginalRecurrence); return this; }
+    public T withStartOriginalRecurrence(Temporal startOriginalRecurrence) { setStartOriginalRecurrence(startOriginalRecurrence); return (T) this; }
     
     public Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> getDialogCallback() { return dialogCallback; }
     private Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback;    
     public void setDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback) { this.dialogCallback = dialogCallback; }
-    public DeleterDisplayable<U> withDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback)
+    public T withDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> dialogCallback)
     {
         setDialogCallback(dialogCallback);
-        return this;
+        return (T) this;
     }
     
     private boolean isValid()
@@ -79,7 +79,6 @@ public class DeleterDisplayable<U extends VComponentDisplayable<U>> extends Dele
             Map<ChangeDialogOption, Pair<Temporal,Temporal>> choices = ChangeDialogOption.makeDialogChoices(
                     vComponent,
                     startOriginalRecurrence);
-            System.out.println("choices:" + choices);
             ChangeDialogOption changeResponse = dialogCallback.call(choices);
             switch (changeResponse)
             {

@@ -1,10 +1,8 @@
 package jfxtras.labs.icalendarfx.components.revisors;
 
-import java.util.Collection;
-
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 
-public class ReviserDaylightSavingTime extends ReviserBase<DaylightSavingTime>
+public class ReviserDaylightSavingTime implements Reviser
 {
     public ReviserDaylightSavingTime(DaylightSavingTime component)
     {
@@ -12,7 +10,7 @@ public class ReviserDaylightSavingTime extends ReviserBase<DaylightSavingTime>
     }
     
     @Override
-    public Collection<DaylightSavingTime> revise()
+    public void revise()
     {
         throw new RuntimeException("not implemented");
     }

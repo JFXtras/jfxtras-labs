@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javafx.fxml.FXML;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVJournal;
@@ -59,12 +60,21 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, Descri
     @Override
     Collection<VJournal> callRevisor()
     {
-        ReviserVJournal reviser = ((ReviserVJournal) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
+        return ((ReviserVJournal) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
                 .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
                 .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
                 .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
                 .withVComponentEdited(vComponent)
-                .withVComponentOriginal(vComponentOriginalCopy);
-        return reviser.revise();
+                .withVComponentOriginal(vComponentOriginalCopy)
+                .revise();
+    }
+    
+    @Override
+    VJournal callDeleter()
+    {
+        return new DeleterVJournal(vComponent)
+                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
+                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
+                .delete();
     }
 }

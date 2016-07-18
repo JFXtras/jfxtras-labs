@@ -1,10 +1,8 @@
 package jfxtras.labs.icalendarfx.components.revisors;
 
-import java.util.Collection;
-
 import jfxtras.labs.icalendarfx.components.StandardTime;
 
-public class ReviserStandardTime extends ReviserBase<StandardTime>
+public class ReviserStandardTime implements Reviser
 {
     public ReviserStandardTime(StandardTime component)
     {
@@ -12,7 +10,7 @@ public class ReviserStandardTime extends ReviserBase<StandardTime>
     }
     
     @Override
-    public Collection<StandardTime> revise()
+    public void revise()
     {
         throw new RuntimeException("not implemented");
     }

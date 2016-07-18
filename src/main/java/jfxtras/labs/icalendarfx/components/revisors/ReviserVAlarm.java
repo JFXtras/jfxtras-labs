@@ -1,10 +1,8 @@
 package jfxtras.labs.icalendarfx.components.revisors;
 
-import java.util.Collection;
-
 import jfxtras.labs.icalendarfx.components.VAlarm;
 
-public class ReviserVAlarm extends ReviserBase<VAlarm>
+public class ReviserVAlarm implements Reviser
 {
     public ReviserVAlarm(VAlarm component)
     {
@@ -12,7 +10,7 @@ public class ReviserVAlarm extends ReviserBase<VAlarm>
     }
     
     @Override
-    public Collection<VAlarm> revise()
+    public void revise()
     {
         throw new RuntimeException("not implemented");
     }

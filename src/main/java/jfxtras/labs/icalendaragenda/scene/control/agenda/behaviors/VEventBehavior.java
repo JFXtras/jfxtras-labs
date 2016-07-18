@@ -5,12 +5,16 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Collection;
+import java.util.List;
 
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventPopupScene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.deleters.DeleterVEvent;
 import jfxtras.labs.icalendarfx.components.revisors.ReviserVEvent;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
@@ -18,13 +22,13 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public class VEventBehavior extends DisplayableBehavior<VEvent>
 {
-    public VEventBehavior(ICalendarAgenda agenda)
-    {
-        super(agenda);
-    }
+//    public VEventBehavior()
+//    {
+//        super(agenda);
+//    }
 
     @Override
-    public CreateEditComponentPopupScene getEditScene(Appointment appointment)
+    public CreateEditComponentPopupScene getEditPopupScene(ICalendarAgenda agenda, Appointment appointment)
     {
         VEvent vComponent = (VEvent) agenda.appointmentVComponentMap().get(System.identityHashCode(appointment));
         if (vComponent == null)
@@ -46,7 +50,7 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
 
     // TODO - TRY TO MOVE MOST OF BELOW METHOD TO SUPER
     @Override
-    public void callRevisor(Appointment appointment)
+    public void callRevisor(ICalendarAgenda agenda, Appointment appointment)
     {
         VEvent vComponent = (VEvent) agenda.appointmentVComponentMap().get(System.identityHashCode(appointment));
         VEvent vComponentOriginal = new VEvent(vComponent);
@@ -93,7 +97,21 @@ public class VEventBehavior extends DisplayableBehavior<VEvent>
             {
                 agenda.getVCalendar().getVEvents().addAll(newVComponents);
             }
+        }        
+    }
+    
+    @Override
+    public void callDeleter(VComponent vComponent, List<VComponent> vComponents, Temporal startOriginalRecurrence)//ICalendarAgenda agenda, Appointment appointment)
+    {
+//        VEvent vComponent = (VEvent) agenda.appointmentVComponentMap().get(System.identityHashCode(appointment));
+        VEvent vComponentNew = new DeleterVEvent((VEvent) vComponent)
+                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .delete();
+        vComponents.remove(vComponent);
+        if (vComponentNew != null)
+        {
+            vComponents.add(vComponentNew);
         }
-        
     }
 }

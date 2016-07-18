@@ -3,6 +3,7 @@ package jfxtras.labs.icalendaragenda.scene.control.agenda;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -27,15 +28,12 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneAppointmentSelectedAlert;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneSelectedAppointmentPopup;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.AppointmentChangeBehavior;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VEventBehavior;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VJournalBehavior;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.VTodoBehavior;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
@@ -43,10 +41,9 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFac
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.VEvent;
-import jfxtras.labs.icalendarfx.components.VJournal;
-import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
+import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.util.NodeUtil;
@@ -122,8 +119,8 @@ public class ICalendarAgenda extends Agenda
 
     private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>(); /* map matches VComponent to their appointments */
 
-    private final Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap = new HashMap<>();
-    
+    @Deprecated private final Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap = new HashMap<>();
+    @Deprecated public Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap() { return vComponentClassBehaviorMap; }
 
     /** Callback for creating unique identifier values
      * @see VComponent#getUidGeneratorCallback() */
@@ -179,7 +176,9 @@ public class ICalendarAgenda extends Agenda
         {
             // make popup
             Stage popupStage = new Stage();
-            CreateEditComponentPopupScene popupScene = vComponentClassBehaviorMap.get(vComponent.getClass()).getEditScene(appointment);
+            CreateEditComponentPopupScene popupScene = vComponentClassBehaviorMap
+                    .get(vComponent.getClass())
+                    .getEditPopupScene(appointment);
             popupStage.setScene(popupScene);
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setResizable(false);
@@ -219,17 +218,18 @@ public class ICalendarAgenda extends Agenda
      * delete or other edit options.
      */
     public Callback<Appointment, Void> getSelectedOneAppointmentCallback() { return selectedOneAppointmentCallback; }
-    private Callback<Appointment, Void> selectedOneAppointmentCallbackOld = (Appointment appointment) ->
-    {
-        Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
-//        SelectedOneAppointmentLoader oneSelectedPopup = new SelectedOneAppointmentLoader(this, appointment);
-        OneSelectedAppointmentPopup oneSelectedPopup = new OneSelectedAppointmentPopup();
-        oneSelectedPopup.setupData(this, appointment);
-//        oneSelectedPopup.isFinished().addListener((obs) -> oneSelectedPopup.hide());
-        oneSelectedPopup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
-        oneSelectedPopup.focusedProperty().addListener((obs) -> oneSelectedPopup.hide());
-        return null;
-    };
+//    private Callback<Appointment, Void> selectedOneAppointmentCallbackOld = (Appointment appointment) ->
+//    {
+//        System.out.println("selected one");
+//        Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
+////        SelectedOneAppointmentLoader oneSelectedPopup = new SelectedOneAppointmentLoader(this, appointment);
+//        OneSelectedAppointmentPopup oneSelectedPopup = new OneSelectedAppointmentPopup();
+//        oneSelectedPopup.setupData(this, appointment);
+////        oneSelectedPopup.isFinished().addListener((obs) -> oneSelectedPopup.hide());
+//        oneSelectedPopup.show(bodyPane, NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2, NodeUtil.screenY(bodyPane) + bodyPane.getHeight()/2);
+//        oneSelectedPopup.focusedProperty().addListener((obs) -> oneSelectedPopup.hide());
+//        return null;
+//    };
 
     Alert lastOneAppointmentSelectedAlert;
     private Callback<Appointment, Void> selectedOneAppointmentCallback = (Appointment appointment) ->
@@ -260,7 +260,23 @@ public class ICalendarAgenda extends Agenda
                     getEditAppointmentCallback().call(appointment);
                 } else if (buttonText.equals(Settings.resources.getString("delete")))
                 {
-                    // TODO - delete
+                    VComponentDisplayable<?> vComponent = appointmentVComponentMap().get(System.identityHashCode(appointment));
+                    List<Object> args = Arrays.asList(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK, appointment.getStartTemporal());
+                    VComponentDisplayable<?> vComponentNew = (VComponentDisplayable<?>) 
+                            SimpleDeleterFactory.newDeleter(vComponent, args).delete();
+                    
+//                            .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
+//                            .withStartOriginalRecurrence(appointment.getStartTemporal())
+//                            .delete();
+//                    AppointmentChangeBehavior behavior = vComponentClassBehaviorMap.get(vComponent.getClass());
+//                    behavior.delete(appointment);
+////                  System.out.println("about to revise:" + appointmentVComponentMap.size());
+//                  behavior.callRevisor(appointment);
+//                    VComponentDisplayable<?> vComponentNew = new DeleterDisplayable(vComponent)
+//                            .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
+//                            .withStartOriginalRecurrence(appointment.getStartTemporal())
+//                            .delete();
+                    
                 }
             }
         });
@@ -296,11 +312,12 @@ public class ICalendarAgenda extends Agenda
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
         VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
-        
-        AppointmentChangeBehavior behavior = vComponentClassBehaviorMap.get(vComponent.getClass());
-        System.out.println("about to revise:" + appointmentVComponentMap.size());
-        behavior.callRevisor(appointment);
-        System.out.println("done:");
+        List<Object> params;
+        SimpleRevisorFactory.newReviser(vComponent, params).revise();
+//        AppointmentChangeBehavior behavior = vComponentClassBehaviorMap.get(vComponent.getClass());
+//        System.out.println("about to revise:" + appointmentVComponentMap.size());
+//        behavior.callRevisor(appointment);
+//        System.out.println("done:");
         // TODO - MAKE REVISOR HANDLE EDIT ONE - NEED TO ADD EXDATE
         appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
         Platform.runLater(() -> refresh());
@@ -317,9 +334,9 @@ public class ICalendarAgenda extends Agenda
         vComponentFactory = new DefaultVComponentFactory(); // default VComponent factory - for ppointments
         
         // Populate component class to behavior map with required behaviors
-        vComponentClassBehaviorMap.put(VEvent.class, new VEventBehavior(this));
-        vComponentClassBehaviorMap.put(VJournal.class, new VJournalBehavior(this));
-        vComponentClassBehaviorMap.put(VTodo.class, new VTodoBehavior(this));
+//        vComponentClassBehaviorMap.put(VEvent.class, new VEventBehavior(this));
+//        vComponentClassBehaviorMap.put(VJournal.class, new VJournalBehavior(this));
+//        vComponentClassBehaviorMap.put(VTodo.class, new VTodoBehavior(this));
         
         // setup default categories from appointment groups
         categories = FXCollections.observableArrayList(

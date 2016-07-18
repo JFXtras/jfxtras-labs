@@ -21,10 +21,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.deleters.DeleterDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
@@ -65,13 +63,17 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
 
     /** make new deleter, provide its data, and produce revised component (or null if ALL deleted),
      * after deletions occurred.  Use same deleter for all {@link VComponentDisplayable} objects */
-    T callDeleter()
-    {
-        DeleterDisplayable<T> deleter = new DeleterDisplayable<T>(vComponent)
-                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
-                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence);
-        return deleter.delete();
-    }
+    abstract T callDeleter();
+
+    /** make new deleter, provide its data, and produce revised component (or null if ALL deleted),
+     * after deletions occurred.  Use same deleter for all {@link VComponentDisplayable} objects */
+//    T callDeleter()
+//    {
+//        DeleterDisplayable deleter = new DeleterDisplayable(vComponent)
+//                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
+//                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence);
+//        return (T) deleter.delete();
+//    }
     
     @FXML
     void handleSaveButton()
@@ -110,6 +112,9 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     
     @FXML private void handleDeleteButton()
     {
+//        SimpleBehaviorFactory.newBehavior(vComponent)
+//                .callDeleter(vComponent, vComponents, editDescriptiveVBox.startOriginalRecurrence);
+
         T newVComponent = callDeleter();
         vComponents.remove(vComponent);
         if (newVComponent != null)
