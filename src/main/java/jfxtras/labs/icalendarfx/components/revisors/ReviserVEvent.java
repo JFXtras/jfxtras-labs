@@ -23,6 +23,23 @@ public class ReviserVEvent extends ReviserLocatable<ReviserVEvent, VEvent>
         super(component);
     }
     
+//    @Override
+//    public Collection<VEvent> revise()
+//    {
+//        Collection<VEvent> revisedVComponents = super.revise();
+////        if (getVCalendar() != null)
+////        {
+////            getVCalendar().getVEvents().remove(getVComponentEdited());
+////            getVCalendar().getVEvents().addAll(revisedVComponents);
+////        }
+//        if (getVComponents() != null)
+//        {
+//            getVComponents().remove(getVComponentEdited());
+//            getVComponents().addAll(revisedVComponents);
+//        }
+//        return revisedVComponents;
+//    }
+    
     /** Adjust start and end date/time */
     @Override
     public void adjustDateTime(VEvent vComponentEditedCopy)

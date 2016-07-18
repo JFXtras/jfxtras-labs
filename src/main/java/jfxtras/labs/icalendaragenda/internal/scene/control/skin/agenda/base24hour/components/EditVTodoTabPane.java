@@ -1,14 +1,9 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
 import java.time.temporal.Temporal;
-import java.util.Collection;
 import java.util.List;
 
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.components.revisors.ReviserVTodo;
-import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
 
 public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
 {
@@ -34,25 +29,25 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
         vComponentOriginalCopy = new VTodo(vComponent);
     }
 
-    @Override
-    Collection<VTodo> callRevisor()
-    {
-        return ((ReviserVTodo) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
-                .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
-                .withEndRecurrence(editDescriptiveVBox.endNewRecurrence)
-                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
-                .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
-                .withVComponentEdited(vComponent)
-                .withVComponentOriginal(vComponentOriginalCopy)
-                .revise();
-    }
+//    @Override
+//    Collection<VTodo> callRevisor()
+//    {
+//        return ((ReviserVTodo) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
+//                .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
+//                .withEndRecurrence(editDescriptiveVBox.endNewRecurrence)
+//                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
+//                .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
+//                .withVComponentEdited(vComponent)
+//                .withVComponentOriginal(vComponentOriginalCopy)
+//                .revise();
+//    }
     
-    @Override
-    VTodo callDeleter()
-    {
-        return new DeleterVTodo(vComponent)
-                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
-                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
-                .delete();
-    }
+//    @Override
+//    VTodo callDeleter()
+//    {
+////        return new DeleterVTodo(vComponent)
+////                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
+////                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
+////                .delete();
+//    }
 }

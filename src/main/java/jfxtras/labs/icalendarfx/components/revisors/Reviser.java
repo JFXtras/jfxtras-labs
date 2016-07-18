@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.components.revisors;
 
+import java.util.Collection;
+
 /**
  * Interface defining the edit behavior of a VComponent
  * 
@@ -11,6 +13,6 @@ public interface Reviser
 {
     /** Revise calendar component based on properties set in subclasses
      *      */
-    void revise();
+    Collection<?> revise();
 
 }

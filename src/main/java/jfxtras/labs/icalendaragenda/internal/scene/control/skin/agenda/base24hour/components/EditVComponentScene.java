@@ -4,9 +4,9 @@ import javafx.scene.Scene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.scene.control.agenda.Agenda;
 
-public class CreateEditComponentPopupScene extends Scene
+public abstract class EditVComponentScene extends Scene
 {
-    public CreateEditComponentPopupScene(EditDisplayableTabPane<?,?> parent)
+    public EditVComponentScene(EditDisplayableTabPane<?,?> parent)
     {
         super(parent);
         ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();

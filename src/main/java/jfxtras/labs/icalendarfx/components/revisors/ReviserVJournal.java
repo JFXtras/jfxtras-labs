@@ -8,4 +8,16 @@ public class ReviserVJournal extends ReviserDisplayable<ReviserVJournal, VJourna
     {
         super(component);
     }
+    
+//    @Override
+//    public Collection<VJournal> revise()
+//    {
+//        Collection<VJournal> revisedVComponents = super.revise();
+//        if (getVCalendar() != null)
+//        {
+//            getVCalendar().getVJournals().remove(getVComponentEdited());
+//            getVCalendar().getVJournals().addAll(revisedVComponents);
+//        }
+//        return revisedVComponents;
+//    }
 }

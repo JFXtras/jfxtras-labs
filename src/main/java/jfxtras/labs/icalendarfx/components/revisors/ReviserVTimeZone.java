@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendarfx.components.revisors;
 
+import java.util.Collection;
+
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 
 public class ReviserVTimeZone implements Reviser
@@ -10,7 +12,7 @@ public class ReviserVTimeZone implements Reviser
     }
     
     @Override
-    public void revise()
+    public Collection<?> revise()
     {
         throw new RuntimeException("not implemented");
     }

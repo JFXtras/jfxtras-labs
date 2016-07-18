@@ -3,7 +3,7 @@ package jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors;
 import java.time.temporal.Temporal;
 import java.util.List;
 
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVComponentScene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.deleters.Deleter;
@@ -16,10 +16,11 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
  * @author David Bal
  *
  */
+@Deprecated
 public interface AppointmentChangeBehavior
 {
     /** creates edit component popup scene */
-    CreateEditComponentPopupScene getEditPopupScene(ICalendarAgenda agenda, Appointment appointment);
+    EditVComponentScene getEditPopupScene(ICalendarAgenda agenda, Appointment appointment);
 
     /** handles calling {@link Reviser} for correct VComponent associated with appointment */
     void callRevisor(ICalendarAgenda agenda, Appointment appointment);

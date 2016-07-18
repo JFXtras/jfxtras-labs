@@ -41,8 +41,16 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     public void setVComponentOriginal(U vComponentOriginal) { this.vComponentOriginal = vComponentOriginal; }
     public T withVComponentOriginal(U vComponentOriginal) { setVComponentOriginal(vComponentOriginal); return (T) this; }
 
+//    public VCalendar getVCalendar() { return vCalendar; }
+//    private VCalendar vCalendar;
+//    /** parent VCalendar object, the appropriate collection (e.g. VEvents) will be changed to reflect
+//     * the component revision.  Can be null if only the returned changed components are desired */
+//    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
+//    public T withVCalendar(VCalendar vCalendar) { setVCalendar(vCalendar); return (T) this; }
+
     public List<U> getVComponents() { return vComponents; }
     private List<U> vComponents;
+    /** Can be null if only the returned changed components are only desired */
     public void setVComponents(List<U> vComponents) { this.vComponents = vComponents; }
     public T withVComponents(List<U> vComponents) { setVComponents(vComponents); return (T) this; }
 
@@ -97,7 +105,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     
     /** Main method to edit VEvent or VTodo or VJournal */
     @Override
-    public void revise()
+    public Collection<U> revise()
     {
         if (! isValid())
         {
@@ -218,8 +226,14 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
                     vComponentEditedCopy.toContent());
         }
-        getVComponents().remove(getVComponentEdited());
-        getVComponents().addAll(revisedVComponents);
+        if (getVComponents() != null)
+        {
+            getVComponents().remove(getVComponentEdited());
+            getVComponents().addAll(revisedVComponents);
+        }
+        return revisedVComponents;
+//        getVComponents().remove(getVComponentEdited());
+//        getVComponents().addAll(revisedVComponents);
     }
     
     /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and

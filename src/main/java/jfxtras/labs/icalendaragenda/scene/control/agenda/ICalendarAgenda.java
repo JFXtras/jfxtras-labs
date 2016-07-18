@@ -1,9 +1,11 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -29,11 +31,12 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneAppointmentSelectedAlert;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors.AppointmentChangeBehavior;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVComponentScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.SimpleEditSceneFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
@@ -45,6 +48,7 @@ import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.util.NodeUtil;
 /**
@@ -119,8 +123,8 @@ public class ICalendarAgenda extends Agenda
 
     private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>(); /* map matches VComponent to their appointments */
 
-    @Deprecated private final Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap = new HashMap<>();
-    @Deprecated public Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap() { return vComponentClassBehaviorMap; }
+//    @Deprecated private final Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap = new HashMap<>();
+//    @Deprecated public Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap() { return vComponentClassBehaviorMap; }
 
     /** Callback for creating unique identifier values
      * @see VComponent#getUidGeneratorCallback() */
@@ -176,9 +180,18 @@ public class ICalendarAgenda extends Agenda
         {
             // make popup
             Stage popupStage = new Stage();
-            CreateEditComponentPopupScene popupScene = vComponentClassBehaviorMap
-                    .get(vComponent.getClass())
-                    .getEditPopupScene(appointment);
+            Object[] params = new Object[] {
+                    getVCalendar(),
+                    vComponent,
+                    appointment.getStartTemporal(),
+                    appointment.getEndTemporal(),
+                    getCategories()
+                    };
+            EditVComponentScene popupScene = SimpleEditSceneFactory.newScene(vComponent, params);
+
+//            EditVComponentScene popupScene = vComponentClassBehaviorMap
+//                    .get(vComponent.getClass())
+//                    .getEditPopupScene(appointment);
             popupStage.setScene(popupScene);
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setResizable(false);
@@ -261,9 +274,13 @@ public class ICalendarAgenda extends Agenda
                 } else if (buttonText.equals(Settings.resources.getString("delete")))
                 {
                     VComponentDisplayable<?> vComponent = appointmentVComponentMap().get(System.identityHashCode(appointment));
-                    List<Object> args = Arrays.asList(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK, appointment.getStartTemporal());
-                    VComponentDisplayable<?> vComponentNew = (VComponentDisplayable<?>) 
-                            SimpleDeleterFactory.newDeleter(vComponent, args).delete();
+                    Object[] params = new Object[] {
+                            getVCalendar(),
+                            DeleteChoiceDialog.DELETE_DIALOG_CALLBACK,
+                            appointment.getStartTemporal()
+                    };
+                    SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+//                    VComponentDisplayable<?> vComponentNew = (VComponentDisplayable<?>) SimpleDeleterFactory.newDeleter(vComponent, params).delete();
                     
 //                            .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
 //                            .withStartOriginalRecurrence(appointment.getStartTemporal())
@@ -312,17 +329,68 @@ public class ICalendarAgenda extends Agenda
     private Callback<Appointment, Void> appointmentChangedCallback = (Appointment appointment) ->
     {
         VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
-        List<Object> params;
+        Object[] params = reviseParamGenerator(vComponent, appointment);
         SimpleRevisorFactory.newReviser(vComponent, params).revise();
-//        AppointmentChangeBehavior behavior = vComponentClassBehaviorMap.get(vComponent.getClass());
-//        System.out.println("about to revise:" + appointmentVComponentMap.size());
-//        behavior.callRevisor(appointment);
-//        System.out.println("done:");
-        // TODO - MAKE REVISOR HANDLE EDIT ONE - NEED TO ADD EXDATE
         appointmentStartOriginalMap.put(System.identityHashCode(appointment), appointment.getStartTemporal()); // update start map
         Platform.runLater(() -> refresh());
         return null;
     };
+    
+    /** Generate the parameters required for {@link SimpleRevisorFactory} */
+    private Object[] reviseParamGenerator(VComponent vComponent, Appointment appointment)
+    {
+//        VEvent vComponent = (VEvent) appointmentVComponentMap().get(System.identityHashCode(appointment));
+
+        if (vComponent == null)
+        {
+            // NOTE: Can't throw exception here because in Agenda there is a mouse event that isn't consumed.
+            // Throwing an exception will leave the mouse unresponsive.
+            System.out.println("ERROR: no component found - popup can'b be displayed");
+            return null;
+        } else
+        {
+            VComponent vComponentOriginalCopy = null;
+            try
+            {
+                vComponentOriginalCopy = vComponent.getClass().newInstance();
+            } catch (InstantiationException | IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+            vComponentOriginalCopy.copyChildrenFrom(vComponent);
+            Temporal startOriginalRecurrence = appointmentStartOriginalMap().get(System.identityHashCode(appointment));
+            final Temporal startRecurrence;
+            final Temporal endRecurrence;
+
+            boolean wasDateType = DateTimeType.of(startOriginalRecurrence).equals(DateTimeType.DATE);
+            boolean isNotDateType = ! DateTimeType.of(appointment.getStartTemporal()).equals(DateTimeType.DATE);
+            boolean isChangedToTimeBased = wasDateType && isNotDateType;
+            boolean isChangedToWholeDay = appointment.isWholeDay() && isNotDateType;
+            if (isChangedToTimeBased)
+            {
+                startRecurrence = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getStartTemporal(), ZoneId.systemDefault());
+                endRecurrence = DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE.from(appointment.getEndTemporal(), ZoneId.systemDefault());
+            } else if (isChangedToWholeDay)
+            {
+                startRecurrence = LocalDate.from(appointment.getStartTemporal());
+                Temporal endInstanceTemp = LocalDate.from(appointment.getEndTemporal());
+                endRecurrence = (endInstanceTemp.equals(startRecurrence)) ? endInstanceTemp.plus(1, ChronoUnit.DAYS) : endInstanceTemp; // make period between start and end at least one day
+            } else
+            {
+                startRecurrence = appointment.getStartTemporal();
+                endRecurrence = appointment.getEndTemporal();            
+            }
+            return new Object[] {
+                    getVCalendar(),
+                    EditChoiceDialog.EDIT_DIALOG_CALLBACK,
+                    endRecurrence,
+                    startOriginalRecurrence,
+                    startRecurrence,
+                    vComponent,
+                    vComponentOriginalCopy
+                    };
+        }
+    }
     
     // CONSTRUCTOR
     public ICalendarAgenda(VCalendar vCalendar)

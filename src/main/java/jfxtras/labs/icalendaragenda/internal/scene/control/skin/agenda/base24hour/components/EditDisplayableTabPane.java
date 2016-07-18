@@ -3,7 +3,6 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.io.IOException;
 import java.net.URL;
 import java.time.temporal.Temporal;
-import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -21,8 +20,10 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
@@ -58,15 +59,15 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
         loadFxml(DescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
     }
     
-    /** make new reviser, provide its data, and produce revised components */
-    abstract Collection<T> callRevisor();
-
-    /** make new deleter, provide its data, and produce revised component (or null if ALL deleted),
-     * after deletions occurred.  Use same deleter for all {@link VComponentDisplayable} objects */
-    abstract T callDeleter();
-
-    /** make new deleter, provide its data, and produce revised component (or null if ALL deleted),
-     * after deletions occurred.  Use same deleter for all {@link VComponentDisplayable} objects */
+//    /** make new reviser, provide its data, and produce revised components */
+//    abstract Collection<T> callRevisor();
+//
+//    /** make new deleter, provide its data, and produce revised component (or null if ALL deleted),
+//     * after deletions occurred.  Use same deleter for all {@link VComponentDisplayable} objects */
+//    abstract T callDeleter();
+//
+//    /** make new deleter, provide its data, and produce revised component (or null if ALL deleted),
+//     * after deletions occurred.  Use same deleter for all {@link VComponentDisplayable} objects */
 //    T callDeleter()
 //    {
 //        DeleterDisplayable deleter = new DeleterDisplayable(vComponent)
@@ -79,6 +80,7 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     void handleSaveButton()
     {
         removeEmptyProperties();
+        isFinished.set(true);
     }
 
     void removeEmptyProperties()
@@ -101,6 +103,16 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
         {
             vComponent.getRecurrenceRule().getValue().setInterval((Interval) null); 
         }
+//        Object[] params = new Object[] {
+//        vComponentOriginalCopy,
+//        EditChoiceDialog.EDIT_DIALOG_CALLBACK,
+//        editDescriptiveVBox.endNewRecurrence,
+//        editDescriptiveVBox.startOriginalRecurrence,
+//        editDescriptiveVBox.startRecurrenceProperty.get(),
+//        vComponent,
+//        vComponentOriginalCopy
+//        }
+//        SimpleRevisorFactory.newReviser(vComponent, params).revise();
     }
     
     @FXML private void handleCancelButton()
@@ -112,15 +124,12 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     
     @FXML private void handleDeleteButton()
     {
-//        SimpleBehaviorFactory.newBehavior(vComponent)
-//                .callDeleter(vComponent, vComponents, editDescriptiveVBox.startOriginalRecurrence);
-
-        T newVComponent = callDeleter();
-        vComponents.remove(vComponent);
-        if (newVComponent != null)
-        {
-            vComponents.add(newVComponent);
-        }
+        Object[] params = new Object[] {
+                vComponentOriginalCopy,
+                DeleteChoiceDialog.DELETE_DIALOG_CALLBACK,
+                editDescriptiveVBox.startOriginalRecurrence,
+        };
+        SimpleDeleterFactory.newDeleter(vComponent, params).delete();
         isFinished.set(true);
     }
     

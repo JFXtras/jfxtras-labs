@@ -1,13 +1,13 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
-import java.util.Collection;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VComponentLocatable;
+import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -23,6 +23,7 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
     @Override
     @FXML void handleSaveButton()
     {
+        super.handleSaveButton();
         if (vComponent.getRecurrenceRule() != null)
         {
             RecurrenceRule2 rrule = vComponent.getRecurrenceRule().getValue();
@@ -35,14 +36,17 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
                 }
             }
         }
-        super.handleSaveButton();
-        Collection<T> newVComponents = callRevisor();
-        vComponents.remove(vComponent);
-        if (newVComponents != null)
-        {
-            vComponents.addAll(newVComponents);
-        }
-        isFinished.set(true);
+        Object[] params = new Object[] {
+//                vComponentOriginalCopy,
+                vComponents,
+                EditChoiceDialog.EDIT_DIALOG_CALLBACK,
+                editDescriptiveVBox.endNewRecurrence,
+                editDescriptiveVBox.startOriginalRecurrence,
+                editDescriptiveVBox.startRecurrenceProperty.get(),
+                vComponent,
+                vComponentOriginalCopy
+        };
+        SimpleRevisorFactory.newReviser(vComponent, params).revise();
     }
     
     @Override

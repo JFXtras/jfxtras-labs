@@ -1,10 +1,8 @@
-package jfxtras.labs.icalendarfx.components.deleters;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
 import java.time.temporal.Temporal;
-import java.util.Map;
+import java.util.List;
 
-import javafx.util.Callback;
-import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
@@ -15,24 +13,42 @@ import jfxtras.labs.icalendarfx.components.VFreeBusy;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
-import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 
-public class SimpleDeleterFactory
+public class SimpleEditSceneFactory
 {
-    public static Deleter newDeleter (VComponent vComponent, Object[] params)
+    public static EditVComponentScene newScene (VComponent vComponent, Object[] params)
     {
         if (vComponent instanceof VEvent)
         {
-            return new DeleterVEvent((VEvent) vComponent)
-                    .withVCalendar((VCalendar) params[0]) // can be null
-                    .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[1])
-                    .withStartOriginalRecurrence((Temporal) params[2]);
+            return new EditVEventScene()
+                    .setupData(
+                            (VEvent) params[1],         // vComponent - component to edit
+                            ((VCalendar) params[0]).getVEvents(),         // vComponents - collection of components that vComponent is a member
+                            (Temporal) params[2],       // startRecurrence - start of selected recurrence
+                            (Temporal) params[3],       // endRecurrence - end of selected recurrence
+                            (List<String>) params[4]    // categories - available category names
+                            );
         } else if (vComponent instanceof VTodo)
         {
-            return new DeleterVTodo((VTodo) vComponent);            
+            return new EditVTodoScene()
+                    .setupData(
+                    (VTodo) params[0],         // vComponent - component to edit
+                    ((VCalendar) params[0]).getVTodos(),         // vComponents - collection of components that vComponent is a member
+                    (Temporal) params[2],       // startRecurrence - start of selected recurrence
+                    (Temporal) params[3],       // endRecurrence - end of selected recurrence
+                    (List<String>) params[4]    // categories - available category names
+                    );
+           
         } else if (vComponent instanceof VJournal)
         {
-            return new DeleterVJournal((VJournal) vComponent);            
+            return new EditVJournalScene()
+                    .setupData(
+                    (VJournal) params[0],         // vComponent - component to edit
+                    ((VCalendar) params[0]).getVJournals(),         // vComponents - collection of components that vComponent is a member
+                    (Temporal) params[2],       // startRecurrence - start of selected recurrence
+                    (Temporal) params[3],       // endRecurrence - end of selected recurrence
+                    (List<String>) params[4]    // categories - available category names
+                    );
         } else if (vComponent instanceof VFreeBusy)
         {
             throw new RuntimeException("not implemented");
@@ -54,17 +70,17 @@ public class SimpleDeleterFactory
         }
     }
     
-    public static Deleter newDeleter (VComponent vComponent)
+    public static EditVComponentScene newScene (VComponent vComponent)
     {
         if (vComponent instanceof VEvent)
         {
-            return new DeleterVEvent((VEvent) vComponent);
+            return new EditVEventScene();
         } else if (vComponent instanceof VTodo)
         {
-            return new DeleterVTodo((VTodo) vComponent);            
+            return new EditVTodoScene();
         } else if (vComponent instanceof VJournal)
         {
-            return new DeleterVJournal((VJournal) vComponent);            
+            return new EditVJournalScene();
         } else if (vComponent instanceof VFreeBusy)
         {
             throw new RuntimeException("not implemented");

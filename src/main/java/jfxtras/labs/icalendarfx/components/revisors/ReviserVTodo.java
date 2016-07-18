@@ -14,6 +14,18 @@ public class ReviserVTodo extends ReviserLocatable<ReviserVTodo, VTodo>
         super(component);
     }
     
+//    @Override
+//    public Collection<VTodo> revise()
+//    {
+//        Collection<VTodo> revisedVComponents = super.revise();
+//        if (getVCalendar() != null)
+//        {
+//            getVCalendar().getVTodos().remove(getVComponentEdited());
+//            getVCalendar().getVTodos().addAll(revisedVComponents);
+//        }
+//        return revisedVComponents;
+//    }
+    
     @Override
     public void adjustDateTime(VTodo vComponentEditedCopy)
     {

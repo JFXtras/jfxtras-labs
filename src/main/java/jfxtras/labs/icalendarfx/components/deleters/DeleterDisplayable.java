@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -33,6 +34,13 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
     {
         this.vComponent = vComponent;
     }
+
+    public VCalendar getVCalendar() { return vCalendar; }
+    private VCalendar vCalendar;
+    /** parent VCalendar object, the appropriate collection (e.g. VEvents) will be changed to reflect
+     * the component revision.  Can be null if only the returned changed components are desired */
+    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
+    public T withVCalendar(VCalendar vCalendar) { setVCalendar(vCalendar); return (T) this; }
 
     public Temporal getStartOriginalRecurrence() { return startOriginalRecurrence; }
     private Temporal startOriginalRecurrence;

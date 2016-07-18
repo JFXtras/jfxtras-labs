@@ -1,15 +1,19 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda.behaviors;
 
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.CreateEditComponentPopupScene;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVTodoPopupScene;
+import java.time.temporal.Temporal;
+import java.util.List;
+
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVComponentScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVTodoScene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public class VTodoBehavior extends DisplayableBehavior<VTodo>
 {   
     @Override
-    public CreateEditComponentPopupScene getEditPopupScene(ICalendarAgenda agenda, Appointment appointment)
+    public EditVComponentScene getEditPopupScene(ICalendarAgenda agenda, Appointment appointment)
     {
         VTodo vComponent = (VTodo) agenda.appointmentVComponentMap().get(System.identityHashCode(appointment));
         if (vComponent == null)
@@ -20,7 +24,7 @@ public class VTodoBehavior extends DisplayableBehavior<VTodo>
             return null;
         } else
         {
-            return new EditVTodoPopupScene(
+            return new EditVTodoScene(
                     vComponent,
                     agenda.getVCalendar().getVTodos(),
                     appointment.getStartTemporal(),
@@ -30,18 +34,35 @@ public class VTodoBehavior extends DisplayableBehavior<VTodo>
     }
 
 
+//    @Override
+//    public void callRevisor(ICalendarAgenda agenda, Appointment appointment)
+//    {
+//        throw new RuntimeException("not implemented");
+//        // TODO Auto-generated method stub
+//        
+//    }
+
+//    @Override
+//    public void callDeleter(ICalendarAgenda agenda, Appointment appointment)
+//    {
+//        throw new RuntimeException("not implemented");
+//        // TODO Auto-generated method stub
+//        
+//    }
+
+
     @Override
     public void callRevisor(ICalendarAgenda agenda, Appointment appointment)
     {
-        throw new RuntimeException("not implemented");
         // TODO Auto-generated method stub
         
     }
 
+
     @Override
-    public void callDeleter(ICalendarAgenda agenda, Appointment appointment)
+    public void callDeleter(VComponent vComponent, List<? extends VComponent> vComponents,
+            Temporal startOriginalRecurrence)
     {
-        throw new RuntimeException("not implemented");
         // TODO Auto-generated method stub
         
     }
