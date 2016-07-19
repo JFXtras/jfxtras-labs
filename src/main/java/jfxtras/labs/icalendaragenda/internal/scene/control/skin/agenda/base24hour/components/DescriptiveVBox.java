@@ -2,6 +2,7 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,7 +55,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 {
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     public ResourceBundle getResources() { return resources; }
-    final private static ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
+    final static ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
 
     @FXML GridPane timeGridPane;
     LocalDateTimeTextField startDateTimeTextField = new LocalDateTimeTextField(); // start of recurrence
@@ -133,6 +134,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     T vComponentEdited;
     private String initialCategory;
     Temporal startOriginalRecurrence;
+//    ZoneId originalZoneId;
     // TODO - MAKE A LOCALDATE AND A LOCALDATETIME VERSION
     /** Contains the start recurrence Temporal LocalDate or LocalDateTime */
     ObjectProperty<Temporal> startRecurrenceProperty;
@@ -144,6 +146,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             List<String> categories)
     {
         startOriginalRecurrence = startRecurrence;
+//        originalZoneId = (startRecurrence.isSupported(ChronoField.OFFSET_SECONDS)) ? ZoneId.from(startRecurrence) : null;
         startRecurrenceProperty = new SimpleObjectProperty<>(startRecurrence);
         vComponentEdited = vComponent;
         
@@ -267,7 +270,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     };
         
     /*
-     * When
+     * Change start date/time when whole day is changed
      */
     void handleWholeDayChange(T vComponent, Boolean newSelection)
     {
@@ -282,7 +285,20 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         {
             timeGridPane.getChildren().remove(startDateTextField);
             timeGridPane.add(startDateTimeTextField, 1, 0);
-            startRecurrenceProperty.set(startDateTimeTextField.getLocalDateTime().atZone(DEFAULT_ZONE_ID));
+            if (startOriginalRecurrence instanceof LocalDate)
+            {
+                startRecurrenceProperty.set(startDateTimeTextField.getLocalDateTime().atZone(DEFAULT_ZONE_ID));
+            } else if (startOriginalRecurrence instanceof LocalDateTime)
+            {
+                startRecurrenceProperty.set(startDateTimeTextField.getLocalDateTime());
+            } else if (startOriginalRecurrence instanceof ZonedDateTime)
+            {
+                ZoneId originalZoneId = ((ZonedDateTime) startOriginalRecurrence).getZone();
+                startRecurrenceProperty.set(startDateTimeTextField.getLocalDateTime().atZone(originalZoneId));
+            } else
+            {
+                throw new DateTimeException("Unsupported Temporal type:" + startOriginalRecurrence.getClass());
+            }
         }
         startDateTextField.localDateProperty().addListener(startDateTextListener);
         startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);

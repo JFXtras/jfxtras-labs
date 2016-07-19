@@ -1,5 +1,6 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
 
+import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -208,6 +209,9 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
         alert.showAndWait();
     }
     
+    /*
+     * Change end date/time when whole day is changed
+     */
     @Override
     void handleWholeDayChange(T vComponent, Boolean newSelection)
     {
@@ -223,7 +227,20 @@ public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>>
         {
             timeGridPane.getChildren().remove(endDateTextField);
             timeGridPane.add(endDateTimeTextField, 1, 1);
-            endNewRecurrence = endDateTimeTextField.getLocalDateTime();
+            if (startOriginalRecurrence instanceof LocalDate)
+            {
+                endNewRecurrence = endDateTimeTextField.getLocalDateTime().atZone(DEFAULT_ZONE_ID);
+            } else if (startOriginalRecurrence instanceof LocalDateTime)
+            {
+                endNewRecurrence = endDateTimeTextField.getLocalDateTime();
+            } else if (startOriginalRecurrence instanceof ZonedDateTime)
+            {
+                ZoneId originalZoneId = ((ZonedDateTime) startOriginalRecurrence).getZone();
+                endNewRecurrence = endDateTimeTextField.getLocalDateTime().atZone(originalZoneId);
+            } else
+            {
+                throw new DateTimeException("Unsupported Temporal type:" + startOriginalRecurrence.getClass());
+            }
         }
         endDateTextField.localDateProperty().addListener(endDateTextListener);
         endDateTimeTextField.localDateTimeProperty().addListener(endDateTimeTextListener);

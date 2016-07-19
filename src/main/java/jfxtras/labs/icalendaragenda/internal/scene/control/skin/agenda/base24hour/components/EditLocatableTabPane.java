@@ -45,7 +45,8 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
                 vComponent,
                 vComponentOriginalCopy
         };
-        SimpleRevisorFactory.newReviser(vComponent, params).revise();
+        boolean result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
+        isFinished.set(result);
     }
     
     @Override

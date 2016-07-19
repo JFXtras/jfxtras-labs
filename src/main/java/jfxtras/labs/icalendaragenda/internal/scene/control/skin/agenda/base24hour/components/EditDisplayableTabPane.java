@@ -80,7 +80,7 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     void handleSaveButton()
     {
         removeEmptyProperties();
-        isFinished.set(true);
+//        isFinished.set(true);
     }
 
     void removeEmptyProperties()
@@ -120,8 +120,8 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
                 editDescriptiveVBox.startOriginalRecurrence,
                 vComponents
         };
-        SimpleDeleterFactory.newDeleter(vComponent, params).delete();
-        isFinished.set(true);
+        boolean result = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+        isFinished.set(result);
     }
     
     @FXML private void handlePressEnter(KeyEvent e)

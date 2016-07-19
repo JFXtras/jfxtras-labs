@@ -505,10 +505,12 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
 
         // Check initial state
         List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
+//        exceptions.stream().forEach(System.out::println);
         LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
         List<LocalDateTime> expectedDates = Stream
                 .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
                 .limit(RecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
+//                .peek(System.out::println)
                 .collect(Collectors.toList());
         assertEquals(expectedDates, exceptions);
     }

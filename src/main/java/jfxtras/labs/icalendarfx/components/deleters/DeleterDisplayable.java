@@ -26,7 +26,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  *
  * @param <U> VComponent class
  */
-public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends Deleter<U>
+public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends Deleter
 {
     private U vComponent;
 
@@ -35,16 +35,8 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
         this.vComponent = vComponent;
     }
 
-//    public VCalendar getVCalendar() { return vCalendar; }
-//    private VCalendar vCalendar;
-//    /** parent VCalendar object, the appropriate collection (e.g. VEvents) will be changed to reflect
-//     * the component revision.  Can be null if only the returned changed components are desired */
-//    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
-//    public T withVCalendar(VCalendar vCalendar) { setVCalendar(vCalendar); return (T) this; }
-
     public List<U> getVComponents() { return vComponents; }
     private List<U> vComponents;
-    /** Can be null if only the returned changed components are only desired */
     public void setVComponents(List<U> vComponents) { this.vComponents = vComponents; }
     public T withVComponents(List<U> vComponents) { setVComponents(vComponents); return (T) this; }
 
@@ -74,23 +66,23 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
             System.out.println("dialogCallback must not be null");
             return false;
         }
+        if (getVComponents() == null)
+        {
+            System.out.println("getVComponents must not be null");
+            return false;
+        }
         return true;   
     }
     
     /** Main method to delete all or part of a VEvent or VTodo or VJournal */
     @Override
-    public U delete()
+    public boolean delete()
     {
         if (! isValid())
         {
             throw new RuntimeException("Invalid parameters for component revision:");
         }
         
-        if (getVComponents() != null)
-        {
-            getVComponents().remove(vComponent); // remove component, if edit ONE or THIS_AND_FUTURE add back changed component later
-        }
-        final U changedVComponent;
         final boolean incrementSequence;
         boolean hasRRule = vComponent.getRecurrenceRule() != null;
         if (hasRRule)
@@ -102,15 +94,13 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
             switch (changeResponse)
             {
             case ALL:
-                incrementSequence = false;
-                changedVComponent = null;
-                break;
+                getVComponents().remove(vComponent);
+                return true;
             case CANCEL:
-                incrementSequence = false;
-                changedVComponent = vComponent;
-                break;
+                return false;
             case ONE:
                 // Add recurrence to exception list
+                getVComponents().remove(vComponent);
                 final ExceptionDates exceptionDates;
                 if (vComponent.getExceptionDates() == null)
                 {
@@ -122,10 +112,10 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                 }
                 exceptionDates.getValue().add(startOriginalRecurrence);
                 incrementSequence = true;
-                changedVComponent = vComponent;
                 break;
             case THIS_AND_FUTURE:
                 // add UNTIL
+                getVComponents().remove(vComponent);
                 Temporal previous = vComponent.previousStreamValue(getStartOriginalRecurrence());
                 final Temporal until;
                 if (previous.isSupported(ChronoUnit.NANOS))
@@ -137,35 +127,28 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                 }
                 vComponent.getRecurrenceRule().getValue().setUntil(until);
                 incrementSequence = true;
-                changedVComponent = vComponent;
                 break;
             default:
                 throw new RuntimeException("Unsupprted response:" + changeResponse);          
             }
         } else
         { // delete individual component
-            incrementSequence = false;
-            changedVComponent = null;
+            getVComponents().remove(vComponent);
+            return true;
         }
         
-        if (changedVComponent != null)
+        if (incrementSequence)
         {
-            if (incrementSequence)
-            {
-                changedVComponent.incrementSequence();
-            }
-
-            if (! changedVComponent.isValid())
-            {
-                throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
-                        changedVComponent.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-                        changedVComponent.toContent());
-            }
-            if (getVComponents() != null)
-            {
-                getVComponents().add(changedVComponent);
-            }
+            vComponent.incrementSequence();
         }
-        return changedVComponent;
+
+        if (! vComponent.isValid())
+        {
+            throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
+                    vComponent.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                    vComponent.toContent());
+        }
+        getVComponents().add(vComponent);
+        return true;
     }
 }

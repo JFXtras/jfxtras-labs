@@ -42,7 +42,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
 
     public List<U> getVComponents() { return vComponents; }
     private List<U> vComponents;
-    /** Can be null if only the returned changed components are only desired */
     public void setVComponents(List<U> vComponents) { this.vComponents = vComponents; }
     public T withVComponents(List<U> vComponents) { setVComponents(vComponents); return (T) this; }
 
@@ -92,12 +91,17 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
             System.out.println("dialogCallback must not be null");
             return false;
         }
-        return true;   
+        if (getVComponents() == null)
+        {
+            System.out.println("getVComponents must not be null");
+            return false;
+        }
+        return true;  
     }
     
     /** Main method to edit VEvent or VTodo or VJournal */
     @Override
-    public List<U> revise()
+    public boolean revise()
     {
         if (! isValid())
         {
@@ -188,7 +192,11 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     }
                     break;
                 case CANCEL:
-                    revisedVComponents.clear(); // remove vComponentEditedCopy
+                    getVComponents().remove(getVComponentEdited());
+                    getVComponents().add(vComponentOriginalCopy);
+                    return false;
+//                    revisedVComponents.clear(); // remove vComponentEditedCopy
+//                    revisedVComponents.add(vComponentOriginalCopy);
                 case THIS_AND_FUTURE:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
                     revisedVComponents.add(0, vComponentOriginalCopy);
@@ -213,14 +221,9 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
                     vComponentEditedCopy.toContent());
         }
-        if (getVComponents() != null)
-        {
-            getVComponents().remove(getVComponentEdited());
-            getVComponents().addAll(revisedVComponents);
-        }
-        return revisedVComponents;
-//        getVComponents().remove(getVComponentEdited());
-//        getVComponents().addAll(revisedVComponents);
+        getVComponents().remove(getVComponentEdited());
+        getVComponents().addAll(revisedVComponents);
+        return true;
     }
     
     /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
