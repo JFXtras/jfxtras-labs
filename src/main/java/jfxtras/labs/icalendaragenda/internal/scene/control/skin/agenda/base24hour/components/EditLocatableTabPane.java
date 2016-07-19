@@ -37,12 +37,11 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
             }
         }
         Object[] params = new Object[] {
-//                vComponentOriginalCopy,
-                vComponents,
                 EditChoiceDialog.EDIT_DIALOG_CALLBACK,
                 editDescriptiveVBox.endNewRecurrence,
                 editDescriptiveVBox.startOriginalRecurrence,
                 editDescriptiveVBox.startRecurrenceProperty.get(),
+                vComponents,
                 vComponent,
                 vComponentOriginalCopy
         };

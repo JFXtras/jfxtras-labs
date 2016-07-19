@@ -8,7 +8,6 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +104,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     
     /** Main method to edit VEvent or VTodo or VJournal */
     @Override
-    public Collection<U> revise()
+    public List<U> revise()
     {
         if (! isValid())
         {
@@ -139,7 +138,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     vComponentEditedCopy.toContent());
         }
         
-        Collection<U> revisedVComponents = new ArrayList<>(Arrays.asList(vComponentEditedCopy)); // new components that should be added to main list
+        List<U> revisedVComponents = new ArrayList<>(Arrays.asList(vComponentEditedCopy)); // new components that should be added to main list
         validateStartRecurrenceAndDTStart(vComponentEditedCopy, getStartRecurrence());
         final RRuleStatus rruleType = RRuleStatus.getRRuleType(vComponentOriginalCopy.getRecurrenceRule(), vComponentEditedCopy.getRecurrenceRule());
         boolean incrementSequence = true;
@@ -204,11 +203,11 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     revisedVComponents.clear(); // remove vComponentEditedCopy
                 case THIS_AND_FUTURE:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-                    revisedVComponents.add(vComponentOriginalCopy);
+                    revisedVComponents.add(0, vComponentOriginalCopy);
                     break;
                 case ONE:
                     editOne(vComponentEditedCopy);
-                    revisedVComponents.add(vComponentOriginalCopy);
+                    revisedVComponents.add(0, vComponentOriginalCopy);
                     break;
                 default:
                     throw new RuntimeException("Unsupprted response:" + changeResponse);

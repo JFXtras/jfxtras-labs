@@ -14,6 +14,7 @@ import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -155,9 +156,10 @@ public class ReviseComponentTest
                 .withStartRecurrence(startRecurrence)
                 .withVComponentEdited(vComponentEdited)
                 .withVComponentOriginal(vComponentOriginalCopy);
-        Collection<VEvent> newVComponents = reviser.revise();
+        List<VEvent> newVComponents = reviser.revise();
         
-        assertNull(newVComponents);
+        assertEquals(1, newVComponents.size());
+        assertEquals(vComponentOriginalCopy, newVComponents.get(0));
 
         assertEquals(1, vComponents.size());
         VEvent myComponent = vComponents.get(0);

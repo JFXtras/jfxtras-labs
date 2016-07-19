@@ -14,6 +14,22 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 
+/**
+ * Simple factory to create {@link EditVComponentScene} objects.  Two methods to create scenes
+ * exist.  One takes only a VComponent as a parameter and builds an empty {@link EditVComponentScene}.
+ * The second takes a VComponent and an array of parameters required to completely
+ * initialize the {@link EditVComponentScene}.<br>
+ * <br>
+ * The types of objects in the params array are as follows:<br>
+ * VComponent - component to edit<br>
+ * VCalendar - parent VCalendar<br>
+ * Temporal - startRecurrence, start of selected recurrence<br>
+ * Temporal - endRecurrence - end of selected recurrence<br>
+ * List-String - available category names<br>
+ * 
+ * @author David Bal
+ *
+ */
 public class SimpleEditSceneFactory
 {
     public static EditVComponentScene newScene (VComponent vComponent, Object[] params)
@@ -22,32 +38,32 @@ public class SimpleEditSceneFactory
         {
             return new EditVEventScene()
                     .setupData(
-                            (VEvent) params[1],         // vComponent - component to edit
-                            ((VCalendar) params[0]).getVEvents(),         // vComponents - collection of components that vComponent is a member
-                            (Temporal) params[2],       // startRecurrence - start of selected recurrence
-                            (Temporal) params[3],       // endRecurrence - end of selected recurrence
-                            (List<String>) params[4]    // categories - available category names
-                            );
+                        (VEvent) params[1],         // vComponent - component to edit
+                        ((VCalendar) params[0]).getVEvents(),         // vComponents - collection of components that vComponent is a member
+                        (Temporal) params[2],       // startRecurrence - start of selected recurrence
+                        (Temporal) params[3],       // endRecurrence - end of selected recurrence
+                        (List<String>) params[4]    // categories - available category names
+                    );
         } else if (vComponent instanceof VTodo)
         {
             return new EditVTodoScene()
                     .setupData(
-                    (VTodo) params[0],         // vComponent - component to edit
-                    ((VCalendar) params[0]).getVTodos(),         // vComponents - collection of components that vComponent is a member
-                    (Temporal) params[2],       // startRecurrence - start of selected recurrence
-                    (Temporal) params[3],       // endRecurrence - end of selected recurrence
-                    (List<String>) params[4]    // categories - available category names
+                        (VTodo) params[0],         // vComponent - component to edit
+                        ((VCalendar) params[0]).getVTodos(),         // vComponents - collection of components that vComponent is a member
+                        (Temporal) params[2],       // startRecurrence - start of selected recurrence
+                        (Temporal) params[3],       // endRecurrence - end of selected recurrence
+                        (List<String>) params[4]    // categories - available category names
                     );
            
         } else if (vComponent instanceof VJournal)
         {
             return new EditVJournalScene()
                     .setupData(
-                    (VJournal) params[0],         // vComponent - component to edit
-                    ((VCalendar) params[0]).getVJournals(),         // vComponents - collection of components that vComponent is a member
-                    (Temporal) params[2],       // startRecurrence - start of selected recurrence
-                    (Temporal) params[3],       // endRecurrence - end of selected recurrence
-                    (List<String>) params[4]    // categories - available category names
+                        (VJournal) params[0],         // vComponent - component to edit
+                        ((VCalendar) params[0]).getVJournals(),         // vComponents - collection of components that vComponent is a member
+                        (Temporal) params[2],       // startRecurrence - start of selected recurrence
+                        (Temporal) params[3],       // endRecurrence - end of selected recurrence
+                        (List<String>) params[4]    // categories - available category names
                     );
         } else if (vComponent instanceof VFreeBusy)
         {

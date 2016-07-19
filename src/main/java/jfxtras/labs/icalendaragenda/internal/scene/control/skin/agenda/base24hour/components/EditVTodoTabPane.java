@@ -18,7 +18,6 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
     
     @Override
     public void setupData(
-//            Appointment appointment,
             VTodo vComponent,
             List<VTodo> vComponents,
             Temporal startRecurrence,
@@ -28,26 +27,4 @@ public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
         super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
         vComponentOriginalCopy = new VTodo(vComponent);
     }
-
-//    @Override
-//    Collection<VTodo> callRevisor()
-//    {
-//        return ((ReviserVTodo) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
-//                .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
-//                .withEndRecurrence(editDescriptiveVBox.endNewRecurrence)
-//                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
-//                .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
-//                .withVComponentEdited(vComponent)
-//                .withVComponentOriginal(vComponentOriginalCopy)
-//                .revise();
-//    }
-    
-//    @Override
-//    VTodo callDeleter()
-//    {
-////        return new DeleterVTodo(vComponent)
-////                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
-////                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
-////                .delete();
-//    }
 }

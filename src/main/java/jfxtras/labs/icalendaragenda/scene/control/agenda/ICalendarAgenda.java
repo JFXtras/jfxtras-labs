@@ -381,11 +381,11 @@ public class ICalendarAgenda extends Agenda
                 endRecurrence = appointment.getEndTemporal();            
             }
             return new Object[] {
-                    getVCalendar(),
                     EditChoiceDialog.EDIT_DIALOG_CALLBACK,
                     endRecurrence,
                     startOriginalRecurrence,
                     startRecurrence,
+                    getVCalendar(),
                     vComponent,
                     vComponentOriginalCopy
                     };

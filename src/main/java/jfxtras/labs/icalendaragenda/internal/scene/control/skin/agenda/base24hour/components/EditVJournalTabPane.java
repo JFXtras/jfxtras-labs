@@ -45,7 +45,6 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, Descri
     
     @Override
     public void setupData(
-//            Appointment appointment,
             VJournal vComponent,
             List<VJournal> vComponents,
             Temporal startRecurrence,
@@ -55,25 +54,4 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, Descri
         super.setupData(vComponent, vComponents, startRecurrence, endRecurrence, categories);
         vComponentOriginalCopy = new VJournal(vComponent);
     }
-
-//    @Override
-//    Collection<VJournal> callRevisor()
-//    {
-//        return ((ReviserVJournal) SimpleRevisorFactory.newReviser(vComponentOriginalCopy))
-//                .withDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK)
-//                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
-//                .withStartRecurrence(editDescriptiveVBox.startRecurrenceProperty.get())
-//                .withVComponentEdited(vComponent)
-//                .withVComponentOriginal(vComponentOriginalCopy)
-//                .revise();
-//    }
-    
-//    @Override
-//    VJournal callDeleter()
-//    {
-//        return new DeleterVJournal(vComponent)
-//                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
-//                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence)
-//                .delete();
-//    }
 }
