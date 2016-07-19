@@ -20,7 +20,7 @@ import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.test.JFXtrasGuiTest;
 
-public class AgendaTestAbstract extends JFXtrasGuiTest
+public abstract class AgendaTestAbstract extends JFXtrasGuiTest
 {
     final public static List<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS = IntStream.range(0, 24)
             .mapToObj(i -> new Agenda.AppointmentGroupImpl()
@@ -90,41 +90,4 @@ public class AgendaTestAbstract extends JFXtrasGuiTest
     protected VBox vbox = null; // cannot make this final and assign upon construction
 //    final protected Map<String, Agenda.AppointmentGroup> appointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
     protected ICalendarAgenda agenda = null; // cannot make this final and assign upon construction
-
-//    /** Callback to make appointment from VComponent and Temporal */
-//    public static final CallbackTwoParameters<VComponentRepeatable<?>, Temporal, Appointment> MAKE_APPOINTMENT_TEST_CALLBACK_LOCATABLE = (vComponentEdited, startTemporal) ->
-//    {
-//        Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
-//        VComponentLocatable<?> vComponentLocatable = (VComponentLocatable<?>) vComponentEdited;
-//        final TemporalAmount adjustment = vComponentLocatable.getActualDuration();
-//        Temporal endTemporal = startTemporal.plus(adjustment);
-//
-//        // Make appointment
-//        Appointment appt = new Agenda.AppointmentImplTemporal()
-//                .withStartTemporal(startTemporal)
-//                .withEndTemporal(endTemporal)
-//                .withDescription( (vComponentLocatable.getDescription() != null) ? vComponentLocatable.getDescription().getValue() : null )
-//                .withSummary( (vComponentLocatable.getSummary() != null) ? vComponentLocatable.getSummary().getValue() : null)
-//                .withLocation( (vComponentLocatable.getLocation() != null) ? vComponentLocatable.getLocation().getValue() : null)
-//                .withWholeDay(isWholeDay);
-//        return appt;
-//    };
-//    
-//    /** Callback to make appointment from VComponent and Temporal */
-//    public static final CallbackTwoParameters<VComponentRepeatable<?>, Temporal, Appointment> MAKE_APPOINTMENT_TEST_CALLBACK_VJOURNAL = (vComponentEdited, startTemporal) ->
-//    {
-//        Boolean isWholeDay = vComponentEdited.getDateTimeStart().getValue() instanceof LocalDate;
-//        VJournal vComponent = (VJournal) vComponentEdited;
-////        final TemporalAmount adjustment = vComponentLocatable.getActualDuration();
-////        Temporal endTemporal = startTemporal.plus(adjustment);
-//
-//        // Make appointment
-//        Appointment appt = new Agenda.AppointmentImplTemporal()
-//                .withStartTemporal(startTemporal)
-////                .withEndTemporal(endTemporal)
-//                .withDescription( (vComponent.getDescriptions() != null) ? vComponent.getDescriptions().get(0).getValue() : null )
-//                .withSummary( (vComponent.getSummary() != null) ? vComponent.getSummary().getValue() : null)
-//                .withWholeDay(isWholeDay);
-//        return appt;
-//    };
 }

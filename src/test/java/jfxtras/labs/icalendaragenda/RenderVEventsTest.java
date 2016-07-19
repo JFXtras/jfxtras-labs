@@ -17,7 +17,7 @@ import org.junit.Test;
 import javafx.scene.Parent;
 import jfxtras.test.TestUtil;
 
-public class RenderAppointmentsFromVComponentsTest extends AgendaTestAbstract
+public class RenderVEventsTest extends AgendaTestAbstract
 {
     @Override
     public Parent getRootNode()

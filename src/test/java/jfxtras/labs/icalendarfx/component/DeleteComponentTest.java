@@ -9,9 +9,9 @@ import java.time.temporal.Temporal;
 
 import org.junit.Test;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
+import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.deleters.DeleterVEvent;
 import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
@@ -22,7 +22,8 @@ public class DeleteComponentTest
     @Test
     public void canDeleteAll()
     {
-        final ObservableList<VEvent> vComponents = FXCollections.observableArrayList();
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponentEdited);
 
@@ -40,7 +41,8 @@ public class DeleteComponentTest
     @Test
     public void canDeleteOne()
     {
-        final ObservableList<VEvent> vComponents = FXCollections.observableArrayList();
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
         vComponents.add(vComponentEdited);
 
@@ -61,8 +63,10 @@ public class DeleteComponentTest
     @Test
     public void canDeleteThisAndFuture()
     {
-        final ObservableList<VEvent> vComponents = FXCollections.observableArrayList();
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
         VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
+
         vComponents.add(vComponentEdited);
 
         LocalDateTime startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);

@@ -1,11 +1,20 @@
 package jfxtras.labs.icalendaragenda;
 
-import org.junit.Ignore;
+import static org.junit.Assert.assertEquals;
+
+import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.Test;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.test.AssertNode;
 import jfxtras.test.TestUtil;
 
@@ -18,7 +27,6 @@ import jfxtras.test.TestUtil;
  *
  * @author David Bal
  */
-@Deprecated
 public class AgendaEditPopupTest extends AgendaTestAbstract
 {
     @Override
@@ -28,8 +36,6 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
     }
         
     @Test
-    @Ignore
-    // TODO - fix listener in Agenda to make appointments
     public void canProduceEditPopup()
     {
         TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getDaily1()));
@@ -40,87 +46,50 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         release(MouseButton.SECONDARY);
         
         Node n = find("#editDisplayableTabPane");
-        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
-        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 600.0, 0.01);
+//        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);
         closeCurrentWindow();
-        //TestUtil.sleep(3000);
     }
     
-//    // edit non-repeatable elements
-//    @Test
-//    public void canEditNonRepeatProperties()
-//    {
-//        TestUtil.runThenWaitForPaintPulse( () -> agenda.vComponents().add(ICalendarStaticVEvents.getIndividual1()));        
-//        VEventImpl v = (VEventImpl) agenda.vComponents().get(0);
-//        
-//        // Open edit popup
-//        move("#hourLine11");
-//        press(MouseButton.SECONDARY);
-//        release(MouseButton.SECONDARY);
-//
-//        // Get properties
-//        LocalDateTimeTextField startTextField = find("#startTextField");
-//        LocalDateTimeTextField endTextField = find("#endTextField");
-//        CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
-//        TextField summaryTextField = find("#summaryTextField");
-//        TextArea descriptionTextArea = find("#descriptionTextArea");
-//        TextField locationTextField = find("#locationTextField");
-//        TextField groupTextField = find("#groupTextField");
-//        AppointmentGroupGridPane appointmentGroupGridPane = find("#appointmentGroupGridPane");
-//        
-//        // Check initial state
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 30), startTextField.getLocalDateTime());
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 11, 30), endTextField.getLocalDateTime());
-//        assertEquals("Individual Summary", summaryTextField.getText());
-//        assertEquals("Individual Description", descriptionTextArea.getText());
-//        assertEquals("group05", groupTextField.getText());
-//        assertFalse(wholeDayCheckBox.isSelected());
-//
-//        // Edit and check properties
-//        startTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 8, 0));        
-//        endTextField.setLocalDateTime(LocalDateTime.of(2015, 11, 11, 9, 0));
-//        
-//        wholeDayCheckBox.setSelected(true);
-//        assertEquals(LocalDate.of(2015, 11, 11), v.getDateTimeStart());
-//        assertEquals(LocalDate.of(2015, 11, 12), v.getDateTimeEnd());
-//        wholeDayCheckBox.setSelected(false);
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 10, 30), v.getDateTimeStart());
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 11, 30), v.getDateTimeEnd());
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), startTextField.getLocalDateTime());
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), endTextField.getLocalDateTime());
-//        
-//        summaryTextField.setText("new summary");
-//        assertEquals("new summary", v.getSummary());
-//
-//        descriptionTextArea.setText("new description");
-//        assertEquals("new description", v.getDescription());
-//        
-//        locationTextField.setText("new location");
-//        assertEquals("new location", v.getLocation());
-//
-//        TestUtil.runThenWaitForPaintPulse(() -> appointmentGroupGridPane.setAppointmentGroupSelected(11));
-//        assertEquals("group11", v.getCategories());
-//        
-//        groupTextField.setText("new group name");
-//        assertEquals("new group name", v.getCategories());
-//        assertEquals("new group name", agenda.appointmentGroups().get(11).getDescription());
-//        
-//        click("#saveAppointmentButton");
-//        // Check appointment edited after close
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), v.getDateTimeStart());
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), v.getDateTimeEnd());
-//        
-//        assertEquals(1, agenda.appointments().size());
-//        Appointment a = agenda.appointments().get(0);
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 8, 0), a.getStartLocalDateTime());
-//        assertEquals(LocalDateTime.of(2015, 11, 11, 9, 0), a.getEndLocalDateTime());
-//        assertEquals("new summary", a.getSummary());
-//        assertEquals("new description", a.getDescription());
-//        assertEquals("new group name", a.getAppointmentGroup().getDescription());
-//        
-////        closeCurrentWindow();
-//    }
-//    
+    @Test
+    public void canMakeRepeatableAppointments()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getIndividual1()));
+        
+        // Open edit popup
+        move("#hourLine11");
+        press(MouseButton.SECONDARY);
+        release(MouseButton.SECONDARY);
+        
+        click("#recurrenceRuleTab");
+        click("#repeatableCheckBox");
+        ComboBox<FrequencyType> frequencyComboBox = find("#frequencyComboBox");
+        TestUtil.runThenWaitForPaintPulse( () -> frequencyComboBox.setValue(FrequencyType.DAILY));
+        click("#saveRepeatButton");
+
+        List<Temporal> expectedStarts = Arrays.asList(
+                LocalDateTime.of(2015, 11, 11, 10, 30),
+                LocalDateTime.of(2015, 11, 12, 10, 30),
+                LocalDateTime.of(2015, 11, 13, 10, 30),
+                LocalDateTime.of(2015, 11, 14, 10, 30)
+                );
+        List<Temporal> starts = agenda.appointments().stream()
+            .map(a -> a.getStartTemporal())
+            .collect(Collectors.toList());
+        assertEquals(expectedStarts, starts);
+
+        List<Temporal> expectedEnds = Arrays.asList(
+                LocalDateTime.of(2015, 11, 11, 11, 30),
+                LocalDateTime.of(2015, 11, 12, 11, 30),
+                LocalDateTime.of(2015, 11, 13, 11, 30),
+                LocalDateTime.of(2015, 11, 14, 11, 30)
+                );
+        List<Temporal> ends = agenda.appointments().stream()
+            .map(a -> a.getEndTemporal())
+            .collect(Collectors.toList());
+        assertEquals(expectedEnds, ends);
+    }
+
 //    @Test
 //    public void canToggleRepeatableCheckBox()
 //    {

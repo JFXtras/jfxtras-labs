@@ -109,12 +109,11 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                 {
                     exceptionDates = vComponent.getExceptionDates().get(vComponent.getExceptionDates().size()); // get last ExceptionDate
                 }
-                System.out.println("null check1:" + exceptionDates.getValue() + " " + startOriginalRecurrence);
+//                System.out.println("null check1:" + exceptionDates.getValue() + " " + startOriginalRecurrence);
                 exceptionDates.getValue().add(startOriginalRecurrence);
                 break;
             case THIS_AND_FUTURE:
                 // add UNTIL
-                getVComponents().remove(vComponent);
                 Temporal previous = vComponent.previousStreamValue(getStartOriginalRecurrence());
                 final Temporal until;
                 if (previous.isSupported(ChronoUnit.NANOS))
@@ -125,6 +124,7 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                     until = LocalDate.from(previous);                    
                 }
                 vComponent.getRecurrenceRule().getValue().setUntil(until);
+                getVComponents().remove(vComponent);
                 break;
             default:
                 throw new RuntimeException("Unsupprted response:" + changeResponse);          

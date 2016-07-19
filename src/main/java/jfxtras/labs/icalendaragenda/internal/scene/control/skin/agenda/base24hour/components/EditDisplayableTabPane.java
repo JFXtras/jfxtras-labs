@@ -38,9 +38,6 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
 {
     U editDescriptiveVBox;
     RecurrenceRuleVBox<T> recurrenceRuleVBox;
-    
-//    void setDescriptiveVBox(DescriptiveVBox<T> descriptiveVBox) { this.editDescriptiveVBox = descriptiveVBox; }
-//    DescriptiveVBox<T> getDescriptiveVBox() { return editDescriptiveVBox; }
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML AnchorPane descriptiveAnchorPane;
@@ -59,28 +56,10 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
         loadFxml(DescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
     }
     
-//    /** make new reviser, provide its data, and produce revised components */
-//    abstract Collection<T> callRevisor();
-//
-//    /** make new deleter, provide its data, and produce revised component (or null if ALL deleted),
-//     * after deletions occurred.  Use same deleter for all {@link VComponentDisplayable} objects */
-//    abstract T callDeleter();
-//
-//    /** make new deleter, provide its data, and produce revised component (or null if ALL deleted),
-//     * after deletions occurred.  Use same deleter for all {@link VComponentDisplayable} objects */
-//    T callDeleter()
-//    {
-//        DeleterDisplayable deleter = new DeleterDisplayable(vComponent)
-//                .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
-//                .withStartOriginalRecurrence(editDescriptiveVBox.startOriginalRecurrence);
-//        return (T) deleter.delete();
-//    }
-    
     @FXML
     void handleSaveButton()
     {
         removeEmptyProperties();
-//        isFinished.set(true);
     }
 
     void removeEmptyProperties()
@@ -146,7 +125,6 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     {
         this.vComponent = vComponent;
         this.vComponents = vComponents;
-        System.out.println("recurrence:" + startRecurrence + " " + endRecurrence);
         editDescriptiveVBox.setupData(vComponent, startRecurrence, endRecurrence, categories);
         
         /* 
@@ -159,19 +137,6 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
             recurrenceRuleTab.setTooltip(new Tooltip(resources.getString("repeat.tab.unavailable")));
         }
         recurrenceRuleVBox.setupData(vComponent, editDescriptiveVBox.startRecurrenceProperty);
-        
-//        // When Appointment tab is selected make sure start and end times are valid, adjust if not
-//        editDisplayableTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-//        {
-//            if (newValue == descriptiveTab)
-//            {
-//                Runnable alertRunnable = editDescriptiveVBox.validateStartRecurrence();
-//                if (alertRunnable != null)
-//                {
-//                    Platform.runLater(alertRunnable); // display alert after tab change refresh
-//                }
-//            }
-//        });
     }
     
     // Displays an alert notifying at least one day of week must be present for weekly frequency

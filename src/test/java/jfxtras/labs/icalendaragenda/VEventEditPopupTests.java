@@ -1290,7 +1290,7 @@ public class VEventEditPopupTests extends JFXtrasGuiTest
     }
     
     @Test
-    public void canDeleteSeriesEdit()
+    public void canDeleteAll()
     {
         VCalendar myCalendar = new VCalendar();
         VEvent vevent = ICalendarStaticComponents.getDaily1();
