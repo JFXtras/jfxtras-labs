@@ -8,6 +8,7 @@ import jfxtras.labs.icalendarfx.calendar.GeneralCalendarTest;
 import jfxtras.labs.icalendarfx.component.BaseTest;
 import jfxtras.labs.icalendarfx.component.ComponentCopyTest;
 import jfxtras.labs.icalendarfx.component.DaylightSavingsTimeTest;
+import jfxtras.labs.icalendarfx.component.DeleteComponentTest;
 import jfxtras.labs.icalendarfx.component.DisplayableTest;
 import jfxtras.labs.icalendarfx.component.EqualsTest;
 import jfxtras.labs.icalendarfx.component.GeneralComponentTest;
@@ -87,6 +88,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         BaseTest.class,
         ComponentCopyTest.class,
         DaylightSavingsTimeTest.class,
+        DeleteComponentTest.class,
         DisplayableTest.class,
         EqualsTest.class,
         GeneralComponentTest.class,

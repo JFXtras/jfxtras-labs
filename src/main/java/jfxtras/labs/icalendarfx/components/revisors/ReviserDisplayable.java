@@ -40,13 +40,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     public void setVComponentOriginal(U vComponentOriginal) { this.vComponentOriginal = vComponentOriginal; }
     public T withVComponentOriginal(U vComponentOriginal) { setVComponentOriginal(vComponentOriginal); return (T) this; }
 
-//    public VCalendar getVCalendar() { return vCalendar; }
-//    private VCalendar vCalendar;
-//    /** parent VCalendar object, the appropriate collection (e.g. VEvents) will be changed to reflect
-//     * the component revision.  Can be null if only the returned changed components are desired */
-//    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
-//    public T withVCalendar(VCalendar vCalendar) { setVCalendar(vCalendar); return (T) this; }
-
     public List<U> getVComponents() { return vComponents; }
     private List<U> vComponents;
     /** Can be null if only the returned changed components are only desired */
@@ -125,12 +118,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         U vComponentOriginalCopy = getVComponentOriginal();
         Temporal startRecurrence = getStartRecurrence();
         Temporal startOriginalRecurrence = getStartOriginalRecurrence();
-//        if (! vComponentEditedCopy.isValid())
-//        {
-//            throw new RuntimeException("Can't revise. Edited component is invalid:" + System.lineSeparator() + 
-//                    vComponentEditedCopy.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-//                    vComponentEditedCopy.toContent());
-//        }
+
         if (! vComponentOriginalCopy.isValid())
         {
             throw new RuntimeException("Can't revise. Original component is invalid:" + System.lineSeparator() + 

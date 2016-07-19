@@ -384,6 +384,35 @@ public class VCalendar extends VParentBase
         }
     }
     
+    /**
+     * A convenience method that returns parent list of the {@link VComponent} parameter.
+     * Returns null if component is not in any {@link VComponent} list not found.
+     * 
+     * @param vComponent - VComponent to look up
+     */
+    public List<? extends VComponent> getParentComponentList(VComponent vComponent)
+    {
+        if (vComponent instanceof VEvent)
+        {
+            return (getVEvents().contains(vComponent)) ? getVEvents() : null;
+        } else if (vComponent instanceof VTodo)
+        {
+            return (getVTodos().contains(vComponent)) ? getVTodos() : null;
+        } else if (vComponent instanceof VJournal)
+        {
+            return (getVJournals().contains(vComponent)) ? getVJournals() : null;
+        } else if (vComponent instanceof VFreeBusy)
+        {
+            return (getVFreeBusies().contains(vComponent)) ? getVFreeBusies() : null;
+        } else if (vComponent instanceof VTimeZone)
+        {
+            return (getVTimeZones().contains(vComponent)) ? getVTimeZones() : null;
+        } else
+        {
+            throw new RuntimeException("Unsuppored VComponent type:" + vComponent.getClass());
+        }
+    }
+    
     /*
      * Map of Related Components - UID is key and List of all related VComponents is value.
      * Note: if you only want child components you need to filter the list to only include components

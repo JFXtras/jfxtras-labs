@@ -275,25 +275,11 @@ public class ICalendarAgenda extends Agenda
                 {
                     VComponentDisplayable<?> vComponent = appointmentVComponentMap().get(System.identityHashCode(appointment));
                     Object[] params = new Object[] {
-                            getVCalendar(),
                             DeleteChoiceDialog.DELETE_DIALOG_CALLBACK,
-                            appointment.getStartTemporal()
+                            appointment.getStartTemporal(),
+                            getVCalendar().getParentComponentList(vComponent)
                     };
                     SimpleDeleterFactory.newDeleter(vComponent, params).delete();
-//                    VComponentDisplayable<?> vComponentNew = (VComponentDisplayable<?>) SimpleDeleterFactory.newDeleter(vComponent, params).delete();
-                    
-//                            .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
-//                            .withStartOriginalRecurrence(appointment.getStartTemporal())
-//                            .delete();
-//                    AppointmentChangeBehavior behavior = vComponentClassBehaviorMap.get(vComponent.getClass());
-//                    behavior.delete(appointment);
-////                  System.out.println("about to revise:" + appointmentVComponentMap.size());
-//                  behavior.callRevisor(appointment);
-//                    VComponentDisplayable<?> vComponentNew = new DeleterDisplayable(vComponent)
-//                            .withDialogCallback(DeleteChoiceDialog.DELETE_DIALOG_CALLBACK)
-//                            .withStartOriginalRecurrence(appointment.getStartTemporal())
-//                            .delete();
-                    
                 }
             }
         });
@@ -385,7 +371,7 @@ public class ICalendarAgenda extends Agenda
                     endRecurrence,
                     startOriginalRecurrence,
                     startRecurrence,
-                    getVCalendar(),
+                    getVCalendar().getParentComponentList(vComponent),
                     vComponent,
                     vComponentOriginalCopy
                     };

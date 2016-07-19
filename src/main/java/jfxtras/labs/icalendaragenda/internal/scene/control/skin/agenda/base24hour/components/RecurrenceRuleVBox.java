@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,7 +79,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
  * 
  * Note: Only supports one Exception Date property (the iCalendar standard allows multiple Exception
  * Date properties)
- * 
+ *  
  * @author David Bal
  *
  * @param <T>
@@ -87,7 +88,8 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
 {
     final public static int EXCEPTION_CHOICE_LIMIT = 50;
     final public static int INITIAL_COUNT = 10;
-    final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on) 
+    final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on)
+    final private static ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
         
     T vComponent;
     private RecurrenceRule2 rrule;
@@ -466,7 +468,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             Period shift = Period.between(oldValue, newValue);
             Temporal newStart = vComponent.getDateTimeStart().getValue().plus(shift);
             vComponent.setDateTimeStart(newStart);
-            System.out.println("new start picker:" + newStart + " " + System.identityHashCode(vComponent));
         } else
         {
             notOccurrenceDateAlert(newValue);
@@ -775,12 +776,21 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
             // Change UNTIL type
             if (untilRadioButton.isSelected())
             {
-                Temporal newUntil = DateTimeType.DATE_WITH_UTC_TIME.from(vComponent.getRecurrenceRule().getValue().getUntil().getValue());
-                if (newValue.isSupported(ChronoUnit.NANOS))
+                Temporal untilOld = vComponent.getRecurrenceRule().getValue().getUntil().getValue();
+                final Temporal untilNew;
+                if (newValue instanceof ZonedDateTime)
                 {
-                    newUntil = newUntil.with(LocalTime.from(newValue));
+                    LocalTime localTime = ((ZonedDateTime) newValue).withZoneSameInstant(ZoneId.of("Z")).toLocalTime();
+                    untilNew = LocalDate.from(untilOld).atTime(localTime).atZone(ZoneId.of("Z"));
+                } else if (newValue instanceof LocalDateTime)
+                {
+                    untilNew = ((LocalDateTime) newValue.with((TemporalAdjuster) untilOld)).atZone(ZoneId.of("Z"));
+                } else
+                {
+                    untilNew = LocalDate.from(vComponent.getRecurrenceRule().getValue().getUntil().getValue());
                 }
-                vComponent.getRecurrenceRule().getValue().setUntil(newUntil);
+                System.out.println("newUntil:" + untilNew);
+                vComponent.getRecurrenceRule().getValue().setUntil(untilNew);
             }
             
             exceptionMasterList.clear();
@@ -1058,17 +1068,22 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     /** Make list of start date/times for exceptionComboBox */
     private void makeExceptionDates()
     {
-        // TODO - dateTimeStartRecurrenceNew can only be LocalDate or LocalDateTime
-        // when DTSTART can be ZonedDateTime
-//        System.out.println("until" + vComponent.getRecurrenceRule().getValue().getUntil());
         DateTimeType currentStartRecurrenceType = DateTimeType.of(dateTimeStartRecurrenceNew.get());
-//        System.out.println("currentDTStartType:" + currentStartRecurrenceType);
         Temporal dtstart = vComponent.getDateTimeStart().getValue();
-        final ZoneId zone = (dtstart instanceof ZonedDateTime) ? ((ZonedDateTime) dtstart).getZone() : null;
-        final Temporal dateTimeStart = currentStartRecurrenceType.from(exceptionFirstTemporal, zone);
+        DateTimeType dtstartType = DateTimeType.of(dtstart);
+        
+        final Temporal newDateTimeStart;
+        if (currentStartRecurrenceType.ordinal() >= dtstartType.ordinal())
+        {
+            newDateTimeStart = dateTimeStartRecurrenceNew.get().with((TemporalAdjuster) dtstart);
+        } else
+        {
+            ZoneId zone = (dtstart instanceof ZonedDateTime) ? ((ZonedDateTime) dtstart).getZone() : DEFAULT_ZONE_ID;
+            newDateTimeStart = currentStartRecurrenceType.from(exceptionFirstTemporal, zone);
+        }
+        
         exceptionComboBox.getItems().clear();
         boolean isRecurrenceRuleValid = vComponent.getRecurrenceRule().getValue().isValid();
-//        System.out.println("isRecurrenceRuleValid:" + isRecurrenceRuleValid + " " + dateTimeStart);
         if (isRecurrenceRuleValid)
         {
             // FILTER OUT EXCEPTIONS
@@ -1080,23 +1095,23 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
                     .flatMap(e -> e.getValue().stream())
                     .collect(Collectors.toList());
                 stream1 = vComponent.getRecurrenceRule().getValue()
-                        .streamRecurrences(dateTimeStart)
+                        .streamRecurrences(newDateTimeStart)
                         .filter(v -> ! allExceptions.contains(v));
             } else
             {
                 stream1 = vComponent.getRecurrenceRule().getValue()
-                        .streamRecurrences(dateTimeStart);
+                        .streamRecurrences(newDateTimeStart);
             }
             // Convert to ZonedDateTime time, if needed
             final Stream<Temporal> stream2; 
-            if (DateTimeType.of(dateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
+            if (DateTimeType.of(newDateTimeStart) == DateTimeType.DATE_WITH_LOCAL_TIME_AND_TIME_ZONE)
             {
                 stream2 = stream1.map(t -> ((ZonedDateTime) t).withZoneSameInstant(ZoneId.systemDefault()));
             } else
             {
                 stream2 = stream1;
             }
-            Temporal lastDateInMasterList = (exceptionMasterList.isEmpty()) ? dateTimeStart.with(LocalDate.MIN) : exceptionMasterList.get(exceptionMasterList.size()-1);
+            Temporal lastDateInMasterList = (exceptionMasterList.isEmpty()) ? newDateTimeStart.with(LocalDate.MIN) : exceptionMasterList.get(exceptionMasterList.size()-1);
             List<Temporal> exceptionDates = stream2
                   .limit(EXCEPTION_CHOICE_LIMIT)
                   .peek(t ->

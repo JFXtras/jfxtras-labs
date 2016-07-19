@@ -3,13 +3,13 @@ package jfxtras.labs.icalendarfx.components.deleters;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.util.Callback;
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -35,12 +35,18 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
         this.vComponent = vComponent;
     }
 
-    public VCalendar getVCalendar() { return vCalendar; }
-    private VCalendar vCalendar;
-    /** parent VCalendar object, the appropriate collection (e.g. VEvents) will be changed to reflect
-     * the component revision.  Can be null if only the returned changed components are desired */
-    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
-    public T withVCalendar(VCalendar vCalendar) { setVCalendar(vCalendar); return (T) this; }
+//    public VCalendar getVCalendar() { return vCalendar; }
+//    private VCalendar vCalendar;
+//    /** parent VCalendar object, the appropriate collection (e.g. VEvents) will be changed to reflect
+//     * the component revision.  Can be null if only the returned changed components are desired */
+//    public void setVCalendar(VCalendar vCalendar) { this.vCalendar = vCalendar; }
+//    public T withVCalendar(VCalendar vCalendar) { setVCalendar(vCalendar); return (T) this; }
+
+    public List<U> getVComponents() { return vComponents; }
+    private List<U> vComponents;
+    /** Can be null if only the returned changed components are only desired */
+    public void setVComponents(List<U> vComponents) { this.vComponents = vComponents; }
+    public T withVComponents(List<U> vComponents) { setVComponents(vComponents); return (T) this; }
 
     public Temporal getStartOriginalRecurrence() { return startOriginalRecurrence; }
     private Temporal startOriginalRecurrence;
@@ -80,7 +86,12 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
             throw new RuntimeException("Invalid parameters for component revision:");
         }
         
-        boolean incrementSequence = true;
+        if (getVComponents() != null)
+        {
+            getVComponents().remove(vComponent); // remove component, if edit ONE or THIS_AND_FUTURE add back changed component later
+        }
+        final U changedVComponent;
+        final boolean incrementSequence;
         boolean hasRRule = vComponent.getRecurrenceRule() != null;
         if (hasRRule)
         {
@@ -91,9 +102,13 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
             switch (changeResponse)
             {
             case ALL:
-                return null;
+                incrementSequence = false;
+                changedVComponent = null;
+                break;
             case CANCEL:
-                return vComponent;
+                incrementSequence = false;
+                changedVComponent = vComponent;
+                break;
             case ONE:
                 // Add recurrence to exception list
                 final ExceptionDates exceptionDates;
@@ -106,6 +121,8 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                     exceptionDates = vComponent.getExceptionDates().get(vComponent.getExceptionDates().size()); // get last ExceptionDate
                 }
                 exceptionDates.getValue().add(startOriginalRecurrence);
+                incrementSequence = true;
+                changedVComponent = vComponent;
                 break;
             case THIS_AND_FUTURE:
                 // add UNTIL
@@ -119,26 +136,36 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                     until = LocalDate.from(previous);                    
                 }
                 vComponent.getRecurrenceRule().getValue().setUntil(until);
+                incrementSequence = true;
+                changedVComponent = vComponent;
                 break;
             default:
                 throw new RuntimeException("Unsupprted response:" + changeResponse);          
             }
         } else
         { // delete individual component
-            return null;
+            incrementSequence = false;
+            changedVComponent = null;
         }
         
+        if (changedVComponent != null)
+        {
+            if (incrementSequence)
+            {
+                changedVComponent.incrementSequence();
+            }
 
-        if (incrementSequence)
-        {
-            vComponent.incrementSequence();
+            if (! changedVComponent.isValid())
+            {
+                throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
+                        changedVComponent.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
+                        changedVComponent.toContent());
+            }
+            if (getVComponents() != null)
+            {
+                getVComponents().add(changedVComponent);
+            }
         }
-        if (! vComponent.isValid())
-        {
-            throw new RuntimeException("Invalid component:" + System.lineSeparator() + 
-                    vComponent.errors().stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator() +
-                    vComponent.toContent());
-        }
-        return vComponent;
+        return changedVComponent;
     }
 }

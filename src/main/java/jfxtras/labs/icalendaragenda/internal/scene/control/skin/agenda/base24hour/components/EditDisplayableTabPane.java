@@ -103,16 +103,6 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
         {
             vComponent.getRecurrenceRule().getValue().setInterval((Interval) null); 
         }
-//        Object[] params = new Object[] {
-//        vComponentOriginalCopy,
-//        EditChoiceDialog.EDIT_DIALOG_CALLBACK,
-//        editDescriptiveVBox.endNewRecurrence,
-//        editDescriptiveVBox.startOriginalRecurrence,
-//        editDescriptiveVBox.startRecurrenceProperty.get(),
-//        vComponent,
-//        vComponentOriginalCopy
-//        }
-//        SimpleRevisorFactory.newReviser(vComponent, params).revise();
     }
     
     @FXML private void handleCancelButton()
@@ -124,10 +114,11 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     
     @FXML private void handleDeleteButton()
     {
+        removeEmptyProperties();
         Object[] params = new Object[] {
-                vComponentOriginalCopy,
                 DeleteChoiceDialog.DELETE_DIALOG_CALLBACK,
                 editDescriptiveVBox.startOriginalRecurrence,
+                vComponents
         };
         SimpleDeleterFactory.newDeleter(vComponent, params).delete();
         isFinished.set(true);

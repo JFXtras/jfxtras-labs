@@ -43,7 +43,10 @@ import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
-/** Makes new TabPane for editing a {@link VComponentDisplayable} component
+/** Makes new control for editing a {@link VComponentDisplayable} component
+ * 
+ * When a component starts as with DTSTART as a DATE, but changes to date/time the
+ * control uses date/time with default time zone.
  * 
  * @author David Bal
  */
@@ -51,6 +54,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
 {
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     public ResourceBundle getResources() { return resources; }
+    final private static ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
 
     @FXML GridPane timeGridPane;
     LocalDateTimeTextField startDateTimeTextField = new LocalDateTimeTextField(); // start of recurrence
@@ -108,7 +112,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
             startRecurrenceProperty.set(startOriginalRecurrence.with(newValue));            
         } else // LocalDate - use ZonedDateTime at system default ZoneId
         {
-            startRecurrenceProperty.set(ZonedDateTime.of(newValue, ZoneId.systemDefault()));
+            startRecurrenceProperty.set(ZonedDateTime.of(newValue, DEFAULT_ZONE_ID));
         }
         startDateTextField.localDateProperty().removeListener(startDateTextListener);
         LocalDate newDate = LocalDate.from(startDateTimeTextField.getLocalDateTime());
@@ -278,7 +282,7 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
         {
             timeGridPane.getChildren().remove(startDateTextField);
             timeGridPane.add(startDateTimeTextField, 1, 0);
-            startRecurrenceProperty.set(startDateTimeTextField.getLocalDateTime());
+            startRecurrenceProperty.set(startDateTimeTextField.getLocalDateTime().atZone(DEFAULT_ZONE_ID));
         }
         startDateTextField.localDateProperty().addListener(startDateTextListener);
         startDateTimeTextField.localDateTimeProperty().addListener(startDateTimeTextListener);

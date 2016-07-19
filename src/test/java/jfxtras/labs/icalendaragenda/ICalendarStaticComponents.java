@@ -204,13 +204,28 @@ public final class ICalendarStaticComponents
     {
         return new VEvent()
                 .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
-                .withDateTimeStart(LocalDate.of(2015, 11, 8))
-                .withDateTimeEnd(LocalDate.of(2015, 11, 10))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-010@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
                         .withUntil(LocalDate.of(2015, 11, 23))
                         .withFrequency(FrequencyType.DAILY)
-                        .withInterval(3));
+                        .withInterval(3))
+                .withDateTimeStart(LocalDate.of(2015, 11, 8))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 10));
+    }
+    
+    /* FREQ=DAILY;INVERVAL=3;UNTIL=20151124 */
+    public static VEvent getWholeDayDaily4()
+    {
+        return new VEvent()
+                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
+                .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
+                .withUniqueIdentifier("20150110T080000-010@jfxtras.org")
+                .withRecurrenceRule(new RecurrenceRule2()
+                        .withUntil(LocalDate.of(2017, 11, 24))
+                        .withFrequency(FrequencyType.DAILY)
+                        .withInterval(3))
+                .withDateTimeStart(LocalDate.of(2015, 11, 8))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 10));
     }
 }

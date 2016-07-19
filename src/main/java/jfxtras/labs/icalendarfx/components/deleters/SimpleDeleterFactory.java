@@ -1,11 +1,11 @@
 package jfxtras.labs.icalendarfx.components.deleters;
 
 import java.time.temporal.Temporal;
+import java.util.List;
 import java.util.Map;
 
 import javafx.util.Callback;
 import javafx.util.Pair;
-import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.DaylightSavingTime;
 import jfxtras.labs.icalendarfx.components.StandardTime;
 import jfxtras.labs.icalendarfx.components.VAlarm;
@@ -24,9 +24,9 @@ import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
  * initialize the {@link Deleter}.<br>
  * <br>
  * The types of objects in the params array are as follows:<br>
- * VComponent - component to edit<br>
  * Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption> - callback for user dialog<br>
  * Temporal - startOriginalRecurrence, start of selected recurrence<br>
+ * List-VComponent - list of components that vComponent is a member<br>
  * 
  * @author David Bal
  *
@@ -38,15 +38,25 @@ public class SimpleDeleterFactory
         if (vComponent instanceof VEvent)
         {
             return new DeleterVEvent((VEvent) vComponent)
-                    .withVCalendar((VCalendar) params[0]) // can be null
-                    .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[1])
-                    .withStartOriginalRecurrence((Temporal) params[2]);
+                    .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
+                    .withStartOriginalRecurrence((Temporal) params[1])
+                    .withVComponents((List<VEvent>) params[2]) // can be null
+                    ;
         } else if (vComponent instanceof VTodo)
         {
-            return new DeleterVTodo((VTodo) vComponent);            
+            return new DeleterVTodo((VTodo) vComponent)
+                    .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
+                    .withStartOriginalRecurrence((Temporal) params[1])
+                    .withVComponents((List<VTodo>) params[2]) // can be null
+                    ;
+
         } else if (vComponent instanceof VJournal)
         {
-            return new DeleterVJournal((VJournal) vComponent);            
+            return new DeleterVJournal((VJournal) vComponent)
+                    .withDialogCallback((Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption>) params[0])
+                    .withStartOriginalRecurrence((Temporal) params[1])
+                    .withVComponents((List<VJournal>) params[2]) // can be null
+                    ;
         } else if (vComponent instanceof VFreeBusy)
         {
             throw new RuntimeException("not implemented");

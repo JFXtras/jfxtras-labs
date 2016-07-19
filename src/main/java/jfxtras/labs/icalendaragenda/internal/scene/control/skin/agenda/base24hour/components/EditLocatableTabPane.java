@@ -51,6 +51,7 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
     @Override
     void removeEmptyProperties()
     {
+        super.removeEmptyProperties();
         if (editDescriptiveVBox.descriptionTextArea.getText().isEmpty())
         {
             vComponent.setDescription((Description) null); 
