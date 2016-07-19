@@ -83,7 +83,6 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
             throw new RuntimeException("Invalid parameters for component revision:");
         }
         
-        final boolean incrementSequence;
         boolean hasRRule = vComponent.getRecurrenceRule() != null;
         if (hasRRule)
         {
@@ -104,14 +103,14 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                 final ExceptionDates exceptionDates;
                 if (vComponent.getExceptionDates() == null)
                 {
-                    exceptionDates = new ExceptionDates();
+                    exceptionDates = new ExceptionDates(FXCollections.observableSet());
                     vComponent.setExceptionDates(FXCollections.observableArrayList(exceptionDates));
                 } else
                 {
                     exceptionDates = vComponent.getExceptionDates().get(vComponent.getExceptionDates().size()); // get last ExceptionDate
                 }
+                System.out.println("null check1:" + exceptionDates.getValue() + " " + startOriginalRecurrence);
                 exceptionDates.getValue().add(startOriginalRecurrence);
-                incrementSequence = true;
                 break;
             case THIS_AND_FUTURE:
                 // add UNTIL
@@ -126,7 +125,6 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                     until = LocalDate.from(previous);                    
                 }
                 vComponent.getRecurrenceRule().getValue().setUntil(until);
-                incrementSequence = true;
                 break;
             default:
                 throw new RuntimeException("Unsupprted response:" + changeResponse);          
@@ -135,11 +133,6 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
         { // delete individual component
             getVComponents().remove(vComponent);
             return true;
-        }
-        
-        if (incrementSequence)
-        {
-            vComponent.incrementSequence();
         }
 
         if (! vComponent.isValid())

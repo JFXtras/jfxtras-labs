@@ -429,7 +429,6 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
         if (testObj.getRecurrenceRule() != null && testObj.getRecurrenceRule().getValue().getUntil() != null)
         {
             Temporal until = testObj.getRecurrenceRule().getValue().getUntil().getValue();
-            System.out.println("until:" + until);
             DateTimeType untilType = DateTimeType.of(until);
             DateTimeType startType = DateTimeType.of(testObj.getDateTimeStart().getValue());
             switch (startType)

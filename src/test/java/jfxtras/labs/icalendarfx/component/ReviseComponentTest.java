@@ -52,21 +52,21 @@ public class ReviseComponentTest
         Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
 //        TemporalAmount shift = Duration.between(startOriginalRecurrence, startRecurrence);
 
-        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
+        ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponentEdited))
                 .withDialogCallback((m) -> ChangeDialogOption.ALL)
                 .withEndRecurrence(endRecurrence)
                 .withStartOriginalRecurrence(startOriginalRecurrence)
                 .withStartRecurrence(startRecurrence)
                 .withVComponents(vComponents)
                 .withVComponentEdited(vComponentEdited)
-                .withVComponentOriginal(vComponentOriginalCopy);
-        reviser.revise();
+                .withVComponentOriginal(vComponentOriginalCopy)
+                .revise();
 
         assertEquals(1, vComponents.size());
         VEvent myComponent = vComponents.get(0);
         assertEquals(LocalDateTime.of(2015, 11, 9, 9, 0), myComponent.getDateTimeStart().getValue());        
         assertEquals(LocalDateTime.of(2015, 11, 9, 10, 30), myComponent.getDateTimeEnd().getValue());        
-        assertEquals("Edited summary", myComponent.getSummary().getValue());        
+        assertEquals("Edited summary", myComponent.getSummary().getValue());
     }
     
     @Test
