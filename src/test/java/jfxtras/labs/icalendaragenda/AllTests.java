@@ -6,11 +6,14 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
-    AgendaStringConverstionTests.class,
+    AgendaEditPopupTest.class,
+    AgendaStringConverstionTest.class,
+    ComponentChangeDialogTest.class,
+    MakeAppointmentsTest.class,
     RenderVEventsTest.class,
-    VEventEditPopupTests.class,
-    VJournalEditPopupTests.class,
-    VTodoEditPopupTests.class,
+    VEventEditPopupTest.class,
+    VJournalEditPopupTest.class,
+    VTodoEditPopupTest.class,
               })
 public class AllTests {
 

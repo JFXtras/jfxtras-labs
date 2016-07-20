@@ -45,6 +45,7 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
         
+//        TestUtil.sleep(10000);
         Node n = find("#editDisplayableTabPane");
 //        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
         new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);

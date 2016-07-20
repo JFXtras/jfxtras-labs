@@ -72,7 +72,7 @@ import jfxtras.test.TestUtil;
  * @author David Bal
  *
  */
-public class VEventEditPopupTests extends JFXtrasGuiTest
+public class VEventEditPopupTest extends JFXtrasGuiTest
 {
     private EditVEventTabPane editComponentPopup;
     

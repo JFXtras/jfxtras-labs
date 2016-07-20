@@ -11,7 +11,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.RecurrenceRuleVEventVBox;
 import jfxtras.labs.icalendarfx.components.VEvent;
 
-public class AgendaStringConverstionTests
+public class AgendaStringConverstionTest
 {
     // Easy-to-read-summary tests for edit popup RRULE summary
     
