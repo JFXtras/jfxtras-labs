@@ -5,9 +5,14 @@ import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VJournal;
 
-public class DescriptiveVJournalVBox extends DescriptiveVBox<VJournal>
+/**
+ *  Controller for editing descriptive properties in a {@link VJournal}
+ * 
+ * @author David Bal
+ */
+public class EditDescriptiveVJournalVBox extends EditDescriptiveVBox<VJournal>
 {
-    public DescriptiveVJournalVBox()
+    public EditDescriptiveVJournalVBox()
     {
         super();
         // remove unavailable elements

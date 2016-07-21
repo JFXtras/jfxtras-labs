@@ -38,26 +38,36 @@ import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
-/** Makes new control for editing a {@link VComponentDisplayable} component
- * 
- * When a component starts as with DTSTART as a DATE, but changes to date/time the
- * control uses date/time with default time zone.
+/** 
+ * Base controller for editing descriptive properties in a {@link VComponentDisplayable} component.
+ * Edits the following properties: {@link DateTimeStart}, {@link DateTimeEnd}, {@link Summary}, {@link Description}
+ * {@link Location}, {@link Categories}
+ * <p>
+ * When a component starts with DTSTART as a date only (no time), but changes to date/time the
+ * control uses date/time with {@link DEFAULT_ZONE_ID} time zone.
  * 
  * @author David Bal
+ * 
+ * @param <T> subclass of {@link VComponentDisplayable}
  */
-public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extends VBox
+public abstract class EditDescriptiveVBox<T extends VComponentDisplayable<T>> extends VBox
 {
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     public ResourceBundle getResources() { return resources; }
-    final static ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
+    final static ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault(); // can be changed to "Z" if preferred
 
-    @FXML GridPane timeGridPane;
+    @FXML GridPane timeGridPane; // contains either LocalDateTextField or LocalDateTimeTextField depending if wholeDayCheckBox is selected
     LocalDateTimeTextField startDateTimeTextField = new LocalDateTimeTextField(); // start of recurrence
     LocalDateTextField startDateTextField = new LocalDateTextField(); // start of recurrence when wholeDayCheckBox is selected
     protected final static LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0); // default time
@@ -79,10 +89,10 @@ public abstract class DescriptiveVBox<T extends VComponentDisplayable<?>> extend
     @FXML private Tab appointmentTab;
     @FXML private Tab repeatableTab;
     
-    public DescriptiveVBox( )
+    public EditDescriptiveVBox( )
     {
         super();
-        loadFxml(DescriptiveVBox.class.getResource("EditDescriptive.fxml"), this);
+        loadFxml(EditDescriptiveVBox.class.getResource("EditDescriptive.fxml"), this);
         categorySelectionGridPane.getStylesheets().addAll(getStylesheets());
         startDateTimeTextField.setId("startDateTimeTextField");
         startDateTextField.setId("startDateTextField");

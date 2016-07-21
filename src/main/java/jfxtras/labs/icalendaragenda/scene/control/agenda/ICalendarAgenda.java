@@ -35,7 +35,7 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneAppointmentSelectedAlert;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVComponentScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditDisplayableScene;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.SimpleEditSceneFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFactory;
@@ -187,7 +187,7 @@ public class ICalendarAgenda extends Agenda
                     appointment.getEndTemporal(),
                     getCategories()
                     };
-            EditVComponentScene popupScene = SimpleEditSceneFactory.newScene(vComponent, params);
+            EditDisplayableScene popupScene = SimpleEditSceneFactory.newScene(vComponent, params);
 
 //            EditVComponentScene popupScene = vComponentClassBehaviorMap
 //                    .get(vComponent.getClass())

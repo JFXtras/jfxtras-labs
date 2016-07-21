@@ -7,15 +7,21 @@ import javafx.fxml.FXML;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 
-public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, DescriptiveVJournalVBox>
+/** 
+ * TabPane for editing descriptive properties and a {@link RecurrenceRule} for a {@link VJournal}.
+ * 
+ * @author David Bal
+ */
+public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, EditDescriptiveVJournalVBox>
 {
     public EditVJournalTabPane( )
     {
         super();
-        editDescriptiveVBox = new DescriptiveVJournalVBox();
+        editDescriptiveVBox = new EditDescriptiveVJournalVBox();
         descriptiveAnchorPane.getChildren().add(0, editDescriptiveVBox);
-        recurrenceRuleVBox = new RecurrenceRuleVJournalVBox();
+        recurrenceRuleVBox = new EditRecurrenceRuleVJournalVBox();
         recurrenceRuleAnchorPane.getChildren().add(0, recurrenceRuleVBox);
     }
     

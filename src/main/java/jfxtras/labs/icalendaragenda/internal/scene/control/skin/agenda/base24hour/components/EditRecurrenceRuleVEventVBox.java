@@ -5,8 +5,14 @@ import java.time.Period;
 import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 
-public class RecurrenceRuleVEventVBox extends RecurrenceRuleVBox<VEvent>
+/**
+ * VBox containing controls to edit the {@link RecurrenceRule} in a {@link VEvent}.
+ * 
+ * @author David Bal
+ */
+public class EditRecurrenceRuleVEventVBox extends EditRecurrenceRuleVBox<VEvent>
 {
     @Override
     void synchStartDatePickerAndComponent(LocalDate oldValue, LocalDate newValue)

@@ -25,19 +25,23 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 
 /** 
- * Makes a TabPane for editing a VEvent, VTodo or VJournal - to be specified by type
- * T in a subclass
+ * Base TabPane that contains two tabs for editing descriptive properties and for editing a {@link RecurrenceRule}.
+ * The first tab contains a {@link EditDescriptiveVBox }.  The second contains a {@link EditRecurrenceRuleVBox}.
  * 
  * @author David Bal
+ * 
+ * @param <T> subclass of {@link VComponentDisplayable}
+ * @param <U> subclass of {@link EditDescriptiveVBox} associated with the subclass of {@link VComponentDisplayable}
  */
-public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>, U extends DescriptiveVBox<T>> extends TabPane
+public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>, U extends EditDescriptiveVBox<T>> extends TabPane
 {
     U editDescriptiveVBox;
-    RecurrenceRuleVBox<T> recurrenceRuleVBox;
+    EditRecurrenceRuleVBox<T> recurrenceRuleVBox;
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML AnchorPane descriptiveAnchorPane;
@@ -53,7 +57,7 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     public EditDisplayableTabPane( )
     {
         super();
-        loadFxml(DescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
+        loadFxml(EditDescriptiveVBox.class.getResource("EditDisplayable.fxml"), this);
     }
     
     @FXML

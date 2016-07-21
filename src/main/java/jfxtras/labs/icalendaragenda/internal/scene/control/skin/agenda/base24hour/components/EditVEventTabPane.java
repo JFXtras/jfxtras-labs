@@ -4,15 +4,21 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 
+/** 
+ * TabPane for editing descriptive properties and a {@link RecurrenceRule} for a {@link VEvent}.
+ * 
+ * @author David Bal
+ */
 public class EditVEventTabPane extends EditLocatableTabPane<VEvent>
 {
     public EditVEventTabPane( )
     {
         super();
-        editDescriptiveVBox = new DescriptiveVEventVBox();
+        editDescriptiveVBox = new EditDescriptiveVEventVBox();
         descriptiveAnchorPane.getChildren().add(0, editDescriptiveVBox);
-        recurrenceRuleVBox = new RecurrenceRuleVEventVBox();
+        recurrenceRuleVBox = new EditRecurrenceRuleVEventVBox();
         recurrenceRuleAnchorPane.getChildren().add(0, recurrenceRuleVBox);
     }
     

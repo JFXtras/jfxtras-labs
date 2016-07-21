@@ -4,12 +4,15 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 
-/** Makes new stage for popup window to edit VEvent with Agenda.Appointment recurrences
+/**
+ * Scene for editing descriptive properties and a {@link RecurrenceRule} in a {@link VTodo}.
+ * A {@link EditVTodoTabPane} is set as the root node of the scene graph<br>
  * 
  * @author David Bal
  */
-public class EditVTodoScene extends EditVComponentScene
+public class EditVTodoScene extends EditDisplayableScene
 {
     public EditVTodoScene()
     {

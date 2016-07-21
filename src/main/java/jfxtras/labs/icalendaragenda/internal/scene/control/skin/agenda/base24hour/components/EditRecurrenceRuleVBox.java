@@ -63,6 +63,7 @@ import javafx.util.StringConverter;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RRuleElementType;
@@ -75,16 +76,16 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
 /**
- * Control for selecting Recurrence Rule options (RRULE)
- * 
+ * VBox containing controls to edit the {@link RecurrenceRule} in a {@link VComponentDisplayable}.
+ * <p>
  * Note: Only supports one Exception Date property (the iCalendar standard allows multiple Exception
  * Date properties)
- *  
+ * 
  * @author David Bal
- *
- * @param <T>
+ * 
+ * @param <T> subclass of {@link VComponentDisplayable}
  */
-public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> extends VBox
+public abstract class EditRecurrenceRuleVBox<T extends VComponentDisplayable<T>> extends VBox
 {
     final public static int EXCEPTION_CHOICE_LIMIT = 50;
     final public static int INITIAL_COUNT = 10;
@@ -136,10 +137,10 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     private Temporal exceptionFirstTemporal;
     private List<Temporal> exceptionMasterList = new ArrayList<>();
 
-    public RecurrenceRuleVBox( )
+    public EditRecurrenceRuleVBox( )
     {
         super();
-        loadFxml(DescriptiveVBox.class.getResource("RecurrenceRule.fxml"), this);
+        loadFxml(EditDescriptiveVBox.class.getResource("RecurrenceRule.fxml"), this);
     }
         
     private DateTimeFormatter getFormatter(Temporal t)

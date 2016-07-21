@@ -5,8 +5,14 @@ import java.time.Period;
 import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 
-public class RecurrenceRuleVTodoVBox extends RecurrenceRuleVBox<VTodo>
+/**
+ * VBox containing controls to edit the {@link RecurrenceRule} in a {@link VTodo}.
+ * 
+ * @author David Bal
+ */
+public class EditRecurrenceRuleVTodoVBox extends EditRecurrenceRuleVBox<VTodo>
 {
     @Override
     void synchStartDatePickerAndComponent(LocalDate oldValue, LocalDate newValue)

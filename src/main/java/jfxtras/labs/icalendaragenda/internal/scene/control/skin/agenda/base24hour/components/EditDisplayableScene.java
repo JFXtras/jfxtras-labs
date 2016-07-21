@@ -2,11 +2,19 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 
 import javafx.scene.Scene;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
+import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.scene.control.agenda.Agenda;
 
-public abstract class EditVComponentScene extends Scene
+/** 
+ * Base Scene for editing descriptive properties and a {@link RecurrenceRule} in a {@link VComponentDisplayable}.
+ * A {@link EditDisplayableTabPane} passed to the constructor is the root node of the scene graph<br>
+ * 
+ * @author David Bal
+ */
+public abstract class EditDisplayableScene extends Scene
 {
-    public EditVComponentScene(EditDisplayableTabPane<?,?> parent)
+    public EditDisplayableScene(EditDisplayableTabPane<?,?> parent)
     {
         super(parent);
         ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();

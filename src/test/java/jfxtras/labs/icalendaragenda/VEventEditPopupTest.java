@@ -44,7 +44,7 @@ import javafx.util.Pair;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.RecurrenceRuleVBox;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditRecurrenceRuleVBox;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
@@ -509,7 +509,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
         LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
         List<LocalDateTime> expectedDates = Stream
                 .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
-                .limit(RecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
+                .limit(EditRecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
 //                .peek(System.out::println)
                 .collect(Collectors.toList());
         assertEquals(expectedDates, exceptions);
@@ -567,7 +567,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
         LocalDate seed = LocalDate.of(2015, 11, 9);
         List<LocalDate> expectedDates = Stream
                 .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
-                .limit(RecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
+                .limit(EditRecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
                 .collect(Collectors.toList());
         assertEquals(expectedDates, exceptions);
     }
@@ -918,7 +918,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
             LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
             List<LocalDateTime> expectedDates = Stream
                     .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
-                    .limit(RecurrenceRuleVBox.INITIAL_COUNT)
+                    .limit(EditRecurrenceRuleVBox.INITIAL_COUNT)
                     .collect(Collectors.toList());
             assertEquals(expectedDates, exceptions);
         }
@@ -928,7 +928,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
             LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
             List<LocalDateTime> expectedDates = Stream
                     .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
-                    .limit(RecurrenceRuleVBox.INITIAL_COUNT-5)
+                    .limit(EditRecurrenceRuleVBox.INITIAL_COUNT-5)
                     .collect(Collectors.toList());
             assertEquals(expectedDates, exceptions);
         }
@@ -936,7 +936,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
         // Ends On (UNTIL)
         TestUtil.runThenWaitForPaintPulse( () -> untilRadioButton.setSelected(true));
         {
-            LocalDateTime expectedUntil = LocalDateTime.of(2015, 11, 9, 10, 0).plus(RecurrenceRuleVBox.DEFAULT_UNTIL_PERIOD);
+            LocalDateTime expectedUntil = LocalDateTime.of(2015, 11, 9, 10, 0).plus(EditRecurrenceRuleVBox.DEFAULT_UNTIL_PERIOD);
             List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
             LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
             Iterator<LocalDateTime> i = Stream.iterate(seed, a -> a.plus(1, ChronoUnit.DAYS)).iterator();
@@ -969,7 +969,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
             LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
             List<LocalDateTime> expectedDates = Stream
                     .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
-                    .limit(RecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
+                    .limit(EditRecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
                     .collect(Collectors.toList());
             assertEquals(expectedDates, exceptions);
         }

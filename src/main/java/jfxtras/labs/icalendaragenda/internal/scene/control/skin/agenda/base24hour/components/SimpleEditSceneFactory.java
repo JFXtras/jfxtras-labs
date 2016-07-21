@@ -15,10 +15,10 @@ import jfxtras.labs.icalendarfx.components.VTimeZone;
 import jfxtras.labs.icalendarfx.components.VTodo;
 
 /**
- * Simple factory to create {@link EditVComponentScene} objects.  Two methods to create scenes
- * exist.  One takes only a VComponent as a parameter and builds an empty {@link EditVComponentScene}.
+ * Simple factory to create {@link EditDisplayableScene} objects.  Two methods to create scenes
+ * exist.  One takes only a VComponent as a parameter and builds an empty {@link EditDisplayableScene}.
  * The second takes a VComponent and an array of parameters required to completely
- * initialize the {@link EditVComponentScene}.<br>
+ * initialize the {@link EditDisplayableScene}.<br>
  * <br>
  * The types of objects in the params array are as follows:<br>
  * VComponent - component to edit<br>
@@ -32,7 +32,7 @@ import jfxtras.labs.icalendarfx.components.VTodo;
  */
 public class SimpleEditSceneFactory
 {
-    public static EditVComponentScene newScene (VComponent vComponent, Object[] params)
+    public static EditDisplayableScene newScene (VComponent vComponent, Object[] params)
     {
         if (vComponent instanceof VEvent)
         {
@@ -86,7 +86,7 @@ public class SimpleEditSceneFactory
         }
     }
     
-    public static EditVComponentScene newScene (VComponent vComponent)
+    public static EditDisplayableScene newScene (VComponent vComponent)
     {
         if (vComponent instanceof VEvent)
         {

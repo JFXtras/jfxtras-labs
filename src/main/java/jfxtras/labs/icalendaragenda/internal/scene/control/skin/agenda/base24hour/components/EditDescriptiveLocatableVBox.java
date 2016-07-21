@@ -26,19 +26,19 @@ import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.TemporalUtilities;
 
 /**
- * Added dateTimeEnd or dateTimeDue
+ * Added dateTimeEnd or dateTimeDue to {@link EditDescriptiveVBox}
  * 
  * @author David Bal
  *
- * @param <T> subclass for VEvent or VTodo
+ * @param <T> subclass of {@link VComponentLocatable}
  */
-public abstract class DescriptiveLocatableVBox<T extends VComponentLocatable<?>> extends DescriptiveVBox<T>
+public abstract class EditDescriptiveLocatableVBox<T extends VComponentLocatable<T>> extends EditDescriptiveVBox<T>
 {
     private static final Duration DEFAULT_DURATION = Duration.ofHours(1);
     protected LocalDateTimeTextField endDateTimeTextField = new LocalDateTimeTextField(); // end of recurrence
     protected LocalDateTextField endDateTextField = new LocalDateTextField(); // end of recurrence when wholeDayCheckBox is selected
     
-    public DescriptiveLocatableVBox()
+    public EditDescriptiveLocatableVBox()
     {
         super();
         endDateTimeTextField.setId("endDateTimeTextField");

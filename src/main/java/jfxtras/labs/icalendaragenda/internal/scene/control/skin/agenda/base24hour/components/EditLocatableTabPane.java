@@ -10,10 +10,19 @@ import jfxtras.labs.icalendarfx.components.VComponentLocatable;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.RecurrenceRule2;
 
-public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> extends EditDisplayableTabPane<T, DescriptiveLocatableVBox<T>>
+/** 
+ * TabPane for editing descriptive properties and a {@link RecurrenceRule} for a {@link VComponentLocatable}.
+ * 
+ * @author David Bal
+ * 
+ * @param <T> subclass of {@link VComponentLocatable}
+ * @param <U> subclass of {@link EditDescriptiveVBox} associated with the subclass of {@link VComponentLocatable}
+ */
+public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> extends EditDisplayableTabPane<T, EditDescriptiveLocatableVBox<T>>
 {
     public EditLocatableTabPane( )
     {

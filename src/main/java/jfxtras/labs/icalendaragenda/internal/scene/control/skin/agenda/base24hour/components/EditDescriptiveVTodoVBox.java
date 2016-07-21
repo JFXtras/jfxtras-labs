@@ -3,30 +3,36 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.time.temporal.Temporal;
 import java.util.List;
 
-import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.properties.component.time.DurationProp;
 
-public class DescriptiveVEventVBox extends DescriptiveLocatableVBox<VEvent>
+/** 
+ * Controller for editing descriptive properties in a {@link VTodo}
+ * 
+ * @author David Bal
+ */
+public class EditDescriptiveVTodoVBox extends EditDescriptiveLocatableVBox<VTodo>
 {
-    public DescriptiveVEventVBox()
+    public EditDescriptiveVTodoVBox()
     {
         super();
-        endLabel.setText(getResources().getString("end.time"));
+        endLabel.setText( getResources().getString("due.time") );
     }
     
     @Override
     public void setupData(
-            VEvent vComponent,
+//            Appointment appointment,
+            VTodo vComponent,
             Temporal startRecurrence,
             Temporal endRecurrence,
             List<String> categories)
-    {
+    {        
         // Convert duration to date/time end - this controller can't handle VEvents with duration
         if (vComponent.getDuration() != null)
         {
             Temporal end = vComponent.getDateTimeStart().getValue().plus(vComponent.getDuration().getValue());
             vComponent.setDuration((DurationProp) null);
-            vComponent.setDateTimeEnd(end);
+            vComponent.setDateTimeDue(end);
         }
         
         super.setupData(vComponent, startRecurrence, endRecurrence, categories);

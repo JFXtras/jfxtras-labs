@@ -4,15 +4,21 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import jfxtras.labs.icalendarfx.components.VTodo;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
 
+/** 
+ * TabPane for editing descriptive properties and a {@link RecurrenceRule} for a {@link VTodo}.
+ * 
+ * @author David Bal
+ */
 public class EditVTodoTabPane extends EditLocatableTabPane<VTodo>
 {
     public EditVTodoTabPane( )
     {
         super();
-        editDescriptiveVBox = new DescriptiveVTodoVBox();
+        editDescriptiveVBox = new EditDescriptiveVTodoVBox();
         descriptiveAnchorPane.getChildren().add(0, editDescriptiveVBox);
-        recurrenceRuleVBox = new RecurrenceRuleVTodoVBox();
+        recurrenceRuleVBox = new EditRecurrenceRuleVTodoVBox();
         recurrenceRuleAnchorPane.getChildren().add(0, recurrenceRuleVBox);
     }
     
