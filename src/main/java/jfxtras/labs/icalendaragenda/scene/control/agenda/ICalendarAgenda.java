@@ -25,11 +25,11 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AgendaDateTimeUtilities;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
@@ -167,8 +167,7 @@ public class ICalendarAgenda extends Agenda
     public void setOneAllThisAndFutureDialogCallback(Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> callback) { oneAllThisAndFutureDialogCallback = callback; }
     
     // Default edit popup callback - this callback replaces Agenda's default edit popup
-    // It has controls for repeatable events
-    private Callback<Appointment, Void> iCalendarEditPopupCallback = (Appointment appointment) ->
+    private Callback<Appointment, Void> editAppointmentCallback = (Appointment appointment) ->
     {
         VComponentDisplayable<?> vComponent = appointmentVComponentMap.get(System.identityHashCode(appointment));
         if (vComponent == null)
@@ -178,30 +177,20 @@ public class ICalendarAgenda extends Agenda
             System.out.println("ERROR: no component found - popup can'b be displayed");
         } else
         {
-            // make popup
+            // make popup stage
             Stage popupStage = new Stage();
+            String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());
+            popupStage.setTitle(vComponent.getSummary().getValue() + ":" + appointmentTime);
+
             Object[] params = new Object[] {
                     getVCalendar(),
-                    vComponent,
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
                     getCategories()
                     };
             EditDisplayableScene popupScene = SimpleEditSceneFactory.newScene(vComponent, params);
-
-//            EditVComponentScene popupScene = vComponentClassBehaviorMap
-//                    .get(vComponent.getClass())
-//                    .getEditPopupScene(appointment);
+            popupScene.getStylesheets().addAll(getUserAgentStylesheet(), ICalendarAgenda.ICALENDAR_STYLE_SHEET);
             popupStage.setScene(popupScene);
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.setResizable(false);
-            
-//            EditComponentPopupStage<?> editPopup = editStage(appointment);
-
-            popupStage.getScene().getStylesheets().addAll(getUserAgentStylesheet(), ICalendarAgenda.ICALENDAR_STYLE_SHEET);
-
-            // remove listeners during edit (to prevent creating extra vEvents when making appointments)
-//            popupStage.setOnShowing((windowEvent) -> appointments().removeListener(appointmentsListChangeListener));
             
             /* POSITION POPUP
              * Position popup to left or right of bodyPane, where there is room.
@@ -217,14 +206,12 @@ public class ICalendarAgenda extends Agenda
             popupStage.setY(y);
             popupStage.show();
             
+            // hide when finished
             popupScene.getEditDisplayableTabPane().isFinished().addListener((obs) -> popupStage.hide());
-            // return listener after edit
-//            popupStage.setOnHiding((windowEvent) ->  appointments().addListener(appointmentsListChangeListener));
-//            vComponentClassBehaviorMap.get(vComponent.getClass()).iCalendarEditBehavior(appointment);
         }
         return null;
     };
-    public Callback<Appointment, Void> getICalendarEditPopupCallback() { return iCalendarEditPopupCallback; }
+    public Callback<Appointment, Void> getICalendarEditPopupCallback() { return editAppointmentCallback; }
 
     /** selectOneAppointmentCallback:
      * When one appointment is selected this callback is run.  It can be used to open a popup to provide edit,
@@ -480,7 +467,7 @@ public class ICalendarAgenda extends Agenda
                         {
                             VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
                             getVCalendar().addVComponent(newVComponent);
-                            iCalendarEditPopupCallback.call(vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0));
+                            editAppointmentCallback.call(vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0));
 //                            Platform.runLater(() -> refresh());
                             break;
                         }
@@ -583,7 +570,7 @@ public class ICalendarAgenda extends Agenda
         selectedAppointments().addListener(selectedAppointmentListener);
         
         // CHANGE DEFAULT EDIT POPUP - replace default popup with one with repeat options
-        setEditAppointmentCallback(iCalendarEditPopupCallback);
+        setEditAppointmentCallback(editAppointmentCallback);
 
         // LISTEN FOR AGENDA RANGE CHANGES
         setLocalDateTimeRangeCallback(dateTimeRange ->

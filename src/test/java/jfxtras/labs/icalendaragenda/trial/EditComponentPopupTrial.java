@@ -6,12 +6,12 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jfxtras.labs.icalendaragenda.AgendaTestAbstract;
 import jfxtras.labs.icalendaragenda.ICalendarStaticComponents;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVEventTabPane;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditDisplayableScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.SimpleEditSceneFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
@@ -79,28 +79,23 @@ public class EditComponentPopupTrial extends Application
         recurrenceFactory.setEndRange(LocalDateTime.of(2016, 5, 22, 0, 0));
         List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(2);
-
-        EditVEventTabPane popup = new EditVEventTabPane();
-//        EditVJournalTabPane popup = new EditVJournalTabPane();
-//        EditVTodoTabPane popup = new EditVTodoTabPane();
-
-        popup.setupData(
-                vevent,
-                myCalendar.getVEvents(),
+        
+        Object[] params = new Object[] {
+                myCalendar,
                 appointment.getStartTemporal(),
                 appointment.getEndTemporal(),
                 ICalendarAgendaUtilities.CATEGORIES
-                );
+                };
+        EditDisplayableScene scene = SimpleEditSceneFactory.newScene(vevent, params);
 
         String agendaSheet = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
-        popup.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET, agendaSheet);
-        Scene scene = new Scene(popup);
+        scene.getStylesheets().addAll(ICalendarAgenda.ICALENDAR_STYLE_SHEET, agendaSheet);
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("ICalendar Edit Popup Demo");
         primaryStage.show();
         
-        popup.isFinished().addListener((obs, oldValue, newValue) -> 
+        scene.getEditDisplayableTabPane().isFinished().addListener((obs, oldValue, newValue) -> 
         {
             myCalendar.getVEvents().stream().forEach(System.out::println);
             primaryStage.hide();
