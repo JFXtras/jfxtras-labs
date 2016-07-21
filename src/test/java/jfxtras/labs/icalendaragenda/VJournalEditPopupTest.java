@@ -13,7 +13,7 @@ import org.junit.Test;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditVJournalTabPane;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditVJournalTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors;
 
 import java.time.temporal.Temporal;
 import java.util.List;

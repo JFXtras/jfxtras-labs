@@ -16,6 +16,11 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
  */
 public class OneAppointmentSelectedAlert extends Alert
 {
+    /**
+     * 
+     * @param appointment - selected Appointment
+     * @param resources - for internationalization
+     */
     public OneAppointmentSelectedAlert(Appointment appointment, ResourceBundle resources)
     {
         super(AlertType.CONFIRMATION);

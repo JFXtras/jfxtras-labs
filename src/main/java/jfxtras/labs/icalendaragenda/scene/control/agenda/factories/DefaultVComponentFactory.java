@@ -8,6 +8,12 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
+/**
+ * Default factory to create a {@link VComponentDisplayable} from {@link Appointment}
+ * 
+ * @author David Bal
+ *
+ */
 public class DefaultVComponentFactory extends VComponentFactory<Appointment>
 {
     @Override

@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors;
 
 import java.io.IOException;
 import java.net.URL;
@@ -104,7 +104,6 @@ public abstract class EditDescriptiveVBox<T extends VComponentDisplayable<T>> ex
     /** Update startDateTimeTextField when startDateTextField changes */
     void synchStartDate(LocalDate oldValue, LocalDate newValue)
     {
-//        System.out.println("start date:" + newValue);
         startRecurrenceProperty.set(newValue);
         startDateTimeTextField.localDateTimeProperty().removeListener(startDateTimeTextListener);
         LocalDateTime newDateTime = startDateTimeTextField.getLocalDateTime().with(newValue);
@@ -144,11 +143,19 @@ public abstract class EditDescriptiveVBox<T extends VComponentDisplayable<T>> ex
     T vComponentEdited;
     private String initialCategory;
     Temporal startOriginalRecurrence;
-//    ZoneId originalZoneId;
-    // TODO - MAKE A LOCALDATE AND A LOCALDATETIME VERSION
-    /** Contains the start recurrence Temporal LocalDate or LocalDateTime */
+
+    /** Contains the actual start recurrence value - Temporal LocalDate or LocalDateTime 
+     * depending on wholeDayCheckBox */
     ObjectProperty<Temporal> startRecurrenceProperty;
 
+    /**
+     * Provide necessary data to setup
+     * 
+     * @param vComponent - component to be edited
+     * @param startRecurrence - start of selected recurrence
+     * @param endRecurrence - end of selected recurrence
+     * @param categories - list of category names
+     */
     public void setupData(
             T vComponent,
             Temporal startRecurrence,
@@ -156,7 +163,6 @@ public abstract class EditDescriptiveVBox<T extends VComponentDisplayable<T>> ex
             List<String> categories)
     {
         startOriginalRecurrence = startRecurrence;
-//        originalZoneId = (startRecurrence.isSupported(ChronoField.OFFSET_SECONDS)) ? ZoneId.from(startRecurrence) : null;
         startRecurrenceProperty = new SimpleObjectProperty<>(startRecurrence);
         vComponentEdited = vComponent;
         

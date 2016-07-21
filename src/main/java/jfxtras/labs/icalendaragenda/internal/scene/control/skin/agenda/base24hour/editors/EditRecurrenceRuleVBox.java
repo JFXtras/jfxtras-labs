@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors;
 
 import java.io.IOException;
 import java.net.URL;
@@ -737,10 +737,10 @@ public abstract class EditRecurrenceRuleVBox<T extends VComponentDisplayable<T>>
     }
     
     /**
-     * Add data that was unavailable at initialization time
+     * Provide necessary data to setup
      * 
-     * @param vComponent
-     * @param dateTimeStartRecurrenceNew : start date-time for edited event
+     * @param vComponent - component to be edited
+     * @param dateTimeStartRecurrenceNew - reference to start date or date/time from {@link EditDecriptiveVBox}
      */
     public void setupData(
             T vComponent

@@ -12,7 +12,14 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.scene.control.agenda.Agenda.AppointmentImplTemporal;
 
+/**
+ * Default factory to create {@link AppointmentImplTemporal} for {@link Agenda}
+ * 
+ * @author David Bal
+ *
+ */
 public class DefaultRecurrenceFactory extends RecurrenceFactory<Appointment>
 {
     private Collection<AppointmentGroup> appointmentGroups;

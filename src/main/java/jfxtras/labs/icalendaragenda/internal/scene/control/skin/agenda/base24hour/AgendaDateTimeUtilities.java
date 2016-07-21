@@ -9,8 +9,22 @@ import java.time.temporal.Temporal;
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 
-public class AgendaDateTimeUtilities
+/**
+ * Date and Time utilities
+ * 
+ * @author David Bal
+ *
+ */
+public final class AgendaDateTimeUtilities
 {
+    private AgendaDateTimeUtilities() {}
+    /**
+     * Format start and end of recurrence date or date/time to concisely describe range
+     * 
+     * @param start - start of recurrence
+     * @param end - end of recurrence
+     * @return - formatted date or date/time string
+     */
     public static String formatRange(Temporal start, Temporal end)
     {
         DateTimeFormatter startFormatter = (DateTimeType.of(start) == DateTimeType.DATE) ? Settings.DATE_FORMAT : Settings.DATE_TIME_FORMAT;
@@ -37,9 +51,14 @@ public class AgendaDateTimeUtilities
         return startString + endString;
     }
     
-    public static String formatRange(Pair<Temporal,Temporal> range) //Temporal start, Temporal end)
+    /**
+     * Format start and end of recurrence date or date/time to concisely describe range
+     * 
+     * @param range - a {@link Pair} representing start and end of a recurrence
+     * @return - formatted date or date/time string
+     */
+    public static String formatRange(Pair<Temporal,Temporal> range)
     {
-//        System.out.println("range:" + range);
         Temporal start = range.getKey();
         Temporal end = range.getValue();
         return formatRange(start, end);

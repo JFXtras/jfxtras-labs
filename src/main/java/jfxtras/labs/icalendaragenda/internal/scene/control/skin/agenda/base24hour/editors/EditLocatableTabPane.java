@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

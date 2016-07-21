@@ -25,7 +25,6 @@ import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 public class ComponentChangeDialog extends Dialog<ChangeDialogOption>
 {
     /**
-     * Parent of both edit and delete dialogs
      * 
      * @param choiceMap - map of ChangeDialogOption and StartEndRange pairs representing the choices available
      * @param resources

@@ -35,8 +35,8 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneAppointmentSelectedAlert;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.EditDisplayableScene;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components.SimpleEditSceneFactory;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditDisplayableScene;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.SimpleEditSceneFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultVComponentFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
@@ -44,6 +44,9 @@ import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.VComponentFac
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
+import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.labs.icalendarfx.components.VJournal;
+import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
@@ -51,16 +54,19 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.util.NodeUtil;
+
 /**
- * Extension of JFXtras Agenda that uses iCalendar components to make appointments for
- * Agenda to render.
- * 
- * VComponents contains the iCalendar objects.
- * 
- * Appointment rendering:
- * Appointment rendering is handled by Agenda.  Agenda refreshes its rendering of appointments when changes to the
- * appointments ObservableList occur.
- * ICalendarAgenda handles changes to the vComponents list and refreshes refreshed when Agenda's localDateTimeRangeCallback fires.
+ * Uses a {@link VCalendar} object to make {@link Appointment} objects for rendering by {@link Agenda}
+ * <p>
+ * A {@link RecurrenceFactory} creates the {@link Appointment} objects.  A {@link DefaultRecurrenceFactory default factory}
+ * is provided that produces {@link AppointmentImplTemporal} objects.  If a different {@link Appointment} implementation
+ * is being used then a different {@link RecurrenceFactory} must be provided.
+ * <p>
+ * When an {@link Appointment} is drawn on {@link Agenda} the appropriate
+ * {@link VComponentDisplayable} (e.g. {@link VEvent}, {@link VTodo}, {@link VJournal}) object is created by the
+ * {@link VComponentFactory}.  There is a {@link DefaultVComponentFactory default factory} that produces appropriate
+ * {@link VComponentDisplayable} from a {@link AppointmentImplTemporal} objects.  If a different {@link Appointment} implementation
+ * is used then a different {@link VComponentFactory} must be provided.
  * 
  * @author David Bal
  *

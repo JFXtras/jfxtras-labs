@@ -78,7 +78,7 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
         summaryTextField.setId("summaryTextField");
         appointmentGroupComboBox.setId("appointmentGroupComboBox");
         
-        // TODO - Can't use below map because it results in an error: after clicking on a selection the graphic disappears.  It would be a better implementation without the graphic error
+        // TODO - Can't use below map because it results in an error: after clicking on a selection the graphic disappears.  It would be a better implementation if the graphic error didn't occur
         Map<AppointmentGroup, Node> iconMap = appointmentGroups.stream()
                 .collect(Collectors.toMap(
                         g -> g

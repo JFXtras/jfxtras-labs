@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors;
 
 import java.time.DateTimeException;
 import java.time.Duration;
@@ -146,22 +146,6 @@ public abstract class EditDescriptiveLocatableVBox<T extends VComponentLocatable
         endDateTextField.setLocalDate(end2);
         endDateTimeTextField.localDateTimeProperty().addListener(endDateTimeTextListener);
         endDateTextField.localDateProperty().addListener(endDateTextListener);
-
-        
-//        final LocalDateTime endDateTime;
-//        final LocalDate endDate;
-//        if (endRecurrence.isSupported(ChronoUnit.NANOS))
-//        {
-//            endDateTime = TemporalUtilities.toLocalDateTime(endRecurrence);
-//            endDate = LocalDate.from(endRecurrence).plusDays(1);
-//        } else
-//        {
-//            endDateTime = LocalDate.from(startRecurrence).atTime(DEFAULT_START_TIME);
-//            endDate = LocalDate.from(endRecurrence);
-//        }
-//        endDateTimeTextField.setLocalDateTime(endDateTime);
-//        endDateTextField.setLocalDate(LocalDate.from(endDate));
-
         
         // Ensure end date/time is not before start date/time
         endDateTimeTextField.localDateTimeProperty().addListener((observable, oldSelection, newSelection) ->
@@ -184,18 +168,6 @@ public abstract class EditDescriptiveLocatableVBox<T extends VComponentLocatable
         
         super.setupData(vComponent, startRecurrence, endRecurrence, categories);
     }
-        
-//    // Displays an alert notifying UNTIL date is not an occurrence and changed to 
-//    private void tooEarlyDateAlert(LocalDateTime t1, LocalDateTime t2)
-//    {
-//        Alert alert = new Alert(AlertType.ERROR);
-//        alert.setTitle("Invalid Date Selection");
-//        alert.setHeaderText("End must be after start");
-//        alert.setContentText(Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t1) + " is not after" + System.lineSeparator() + Settings.DATE_FORMAT_AGENDA_EXCEPTION.format(t2));
-//        ButtonType buttonTypeOk = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
-//        alert.getButtonTypes().setAll(buttonTypeOk);
-//        alert.showAndWait();
-//    }
     
     // Displays an alert notifying UNTIL date is not an occurrence and changed to 
     private void tooEarlyDateAlert(Temporal t1, Temporal t2)

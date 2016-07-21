@@ -1,4 +1,4 @@
-package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.components;
+package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,6 +22,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
@@ -50,8 +51,9 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     @FXML private Tab descriptiveTab;
     @FXML private Tab recurrenceRuleTab;
 
-    // Becomes true when control should be closed
     ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
+    /** When property value becomes true the control should be closed
+     * (i.e. Attach a listener to this property, on changing hide the control */
     public ObjectProperty<Boolean> isFinished() { return isFinished; }
     
     public EditDisplayableTabPane( )
@@ -119,6 +121,15 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     T vComponentOriginalCopy;
     List<T> vComponents;
 
+    /**
+     * Provide necessary data to setup
+     * 
+     * @param vComponent - component to be edited
+     * @param vComponents - List of {@link VComponent} that the vComponent parameter is a member
+     * @param startRecurrence - start of selected recurrence
+     * @param endRecurrence - end of selected recurrence
+     * @param categories - list of category names
+     */
     public void setupData(
             T vComponent,
             List<T> vComponents,
