@@ -86,8 +86,8 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     
     @FXML private void handleCancelButton()
     {
-        vComponent.copyChildrenFrom(vComponentOriginalCopy);
-        removeEmptyProperties();
+        vComponents.remove(vComponent);
+        vComponents.add(vComponentOriginalCopy);
         isFinished.set(true);
     }
     
