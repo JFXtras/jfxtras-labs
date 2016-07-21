@@ -89,7 +89,6 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     final public static int EXCEPTION_CHOICE_LIMIT = 50;
     final public static int INITIAL_COUNT = 10;
     final public static Period DEFAULT_UNTIL_PERIOD = Period.ofMonths(1); // amount of time beyond start default for UNTIL (ends on)
-    final private static ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
         
     T vComponent;
     private RecurrenceRule2 rrule;
@@ -140,6 +139,7 @@ public abstract class RecurrenceRuleVBox<T extends VComponentDisplayable<?>> ext
     public RecurrenceRuleVBox( )
     {
         super();
+        loadFxml(DescriptiveVBox.class.getResource("RecurrenceRule.fxml"), this);
     }
         
     private DateTimeFormatter getFormatter(Temporal t)

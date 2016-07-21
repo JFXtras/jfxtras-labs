@@ -4,9 +4,5 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 
 public class RecurrenceRuleVJournalVBox extends RecurrenceRuleVBox<VJournal>
 {
-    public RecurrenceRuleVJournalVBox( )
-    {
-        super();
-        loadFxml(DescriptiveVBox.class.getResource("RecurrenceRule.fxml"), this);
-    }
+
 }

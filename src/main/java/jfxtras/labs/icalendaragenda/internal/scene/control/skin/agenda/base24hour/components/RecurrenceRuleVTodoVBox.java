@@ -8,12 +8,6 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 
 public class RecurrenceRuleVTodoVBox extends RecurrenceRuleVBox<VTodo>
 {
-    public RecurrenceRuleVTodoVBox( )
-    {
-        super();
-        loadFxml(DescriptiveVBox.class.getResource("RecurrenceRule.fxml"), this);
-    }
-    
     @Override
     void synchStartDatePickerAndComponent(LocalDate oldValue, LocalDate newValue)
     {

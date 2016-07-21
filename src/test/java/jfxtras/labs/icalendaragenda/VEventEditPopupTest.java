@@ -153,7 +153,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
     
     // edit one repeating event to make an individual event
     @Test
-    public void canEditDescriptibeProperties()
+    public void canEditDescribableProperties()
     {
         RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS);
         recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));

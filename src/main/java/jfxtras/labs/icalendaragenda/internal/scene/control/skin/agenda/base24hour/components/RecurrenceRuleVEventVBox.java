@@ -8,12 +8,6 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 
 public class RecurrenceRuleVEventVBox extends RecurrenceRuleVBox<VEvent>
 {
-    public RecurrenceRuleVEventVBox( )
-    {
-        super();
-        loadFxml(DescriptiveVBox.class.getResource("RecurrenceRule.fxml"), this);
-    }
-    
     @Override
     void synchStartDatePickerAndComponent(LocalDate oldValue, LocalDate newValue)
     {
