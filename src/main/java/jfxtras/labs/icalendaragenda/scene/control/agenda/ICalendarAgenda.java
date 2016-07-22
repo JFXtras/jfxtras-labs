@@ -1,7 +1,6 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -23,6 +22,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -50,24 +50,127 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
+import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.RecurrenceRule;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Count;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Frequency;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Interval;
+import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.Until;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeEnd;
+import jfxtras.labs.icalendarfx.properties.component.time.DateTimeStart;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities.DateTimeType;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.util.NodeUtil;
 
 /**
- * Uses a {@link VCalendar} object to make {@link Appointment} objects for rendering by {@link Agenda}
- * <p>
- * A {@link RecurrenceFactory} creates the {@link Appointment} objects.  A {@link DefaultRecurrenceFactory default factory}
- * is provided that produces {@link AppointmentImplTemporal} objects.  If a different {@link Appointment} implementation
- * is being used then a different {@link RecurrenceFactory} must be provided.
- * <p>
- * When an {@link Appointment} is drawn on {@link Agenda} the appropriate
- * {@link VComponentDisplayable} (e.g. {@link VEvent}, {@link VTodo}, {@link VJournal}) object is created by the
- * {@link VComponentFactory}.  There is a {@link DefaultVComponentFactory default factory} that produces appropriate
- * {@link VComponentDisplayable} from a {@link AppointmentImplTemporal} objects.  If a different {@link Appointment} implementation
- * is used then a different {@link VComponentFactory} must be provided.
+ * <p>The {@link ICalendarAgenda} control is designed to take a {@link VCalendar VCALENDAR} object,
+ * which is based on the iCalendar RFC 5545 standard, and renders it in {@link Agenda}, which is a calendar
+ * display control. {@link ICalendarAgenda} renders only the {@link VComponentDisplayable displayable}
+ * iCalendar components which are {@link VEvent VEVENT}, {@link VTodo VTODO}, and {@link VJournal VJOURNAL}.
+ * Other calendar components are ignored.</p>
  * 
+ * <p>The {@link ICalendarAgenda} control has a number of features, including:
+ * <ul>
+ * <li>Powerful {@link EditDisplayableScene edit control} to modify calendar components:
+ *   <ul>
+ *   <li>Edits DATE or DATE-TIME properties including:
+ *     <ul>
+ *     <li>{@link DateTimeStart DTSTART} - when the calendar component begins.
+ *     <li>{@link DateTimeEnd DTEND} - when the calendar component ends.
+ *     </ul>
+ *   <li>Can toggle between DATE or DATE-TIME values
+ *   <li>Edits descriptive properties including:
+ *     <ul>
+ *     <li>{@link Summary SUMMARY}
+ *     <li>{@link Description DESCRIPTION}
+ *     <li>{@link Location LOCATION}
+ *     <li>{@link Categories CATEGORIES} - from a color-coded selectable grid (only one category supported)
+ *     </ul>
+ *   <li>Edits {@link RecurrenceRule RRULE}, recurrence rule, elements including:
+ *     <ul>
+ *     <li>{@link Frequency FREQUENCY} - type of recurrence, including Daily, Weekly, Monthly and Yearly 
+ *     <li>{@link Interval INTERVAL} - represents the intervals the recurrence rule repeats
+ *     <li>{@link Count COUNT} - the number of occurrences.
+ *     <li>{@link Until UNTIL} - the DATE or DATE-TIME value that bounds the recurrence rule in an inclusive manner
+ *     <li>{@link ExceptionDates EXDATE} - list of DATE-TIME values that are skipped
+ *     </ul>
+ *   <li>Displays a easy-to-read description of the {@link RecurrenceRule RRULE}, recurrence rule
+ *   </ul>
+ * <li>Automatically synchronizes graphical changes with the {@link VCalendar VCALENDAR} object.
+ * <li>Uses an abstract {@link RecurrenceFactory} to create {@link Appointment} objects that are rendered
+ *  by {@link Agenda}
+ *   <ul>
+ *   <li>A default factory is included that creates the default {@link AppointmentImplTemporal} objects
+ *   <li>A custom factory can be added to create custom {@link Appointment} objects.
+ *   </ul>
+ * <li>Uses an abstract {@link VComponentFactory} to create {@link VComponentDisplayable} objects when new events
+ *  are drawn by clicking and drag-and-drop actions.
+ *   <ul>
+ *   <li>A default factory is included that creates {@link VEvent VEVENT} and {@link VTodo VTODO} components
+ *    from the default {@link AppointmentImplTemporal} object.
+ *   <li>A custom factory can be added to create iCalendar components from custom {@link Appointment} objects.
+ *   </ul>
+ * </ul>
+ * </p>
+ * 
+ * <p>If not using the default {@link AppointmentImplTemporal} implementation, but a different {@link Appointment}
+ * implementation, then use the following setter methods to configure the required factories and callback:
+ * <ul>
+ * <li>{@link #setRecurrenceFactory(RecurrenceFactory)}
+ * <li>{@link #setVComponentFactory(VComponentFactory)} 
+ * <li>{@link #setNewAppointmentCallback(Callback)} 
+ * </ul>
+ * </p>
+ * 
+ * <h2>Creating a ICalendarAgenda</h2>
+ * 
+ * <p>Firstly, a {@link VCalendar VCALENDAR} instance needs to be defined.  For example:
+ * <pre> {@code VCalendar vCalendar = new VCalendar();}</pre>
+ * Optionally, the {@link VCalendar VCALENDAR} instance can be set with calendar components.  This can be done
+ * by reading a .ics file or building the calendar components programmatically through the API.  Please see the
+ * iCalendarFX documentation for more details.  An empty {@link VCalendar VCALENDAR} is also acceptable.</p>
+ * 
+ * <p>Next, the {@link VCalendar VCALENDAR} instance must be provided in the {@link ICalendarAgenda} constructor
+ * as shown below:.
+ * <pre> {@code ICalendarAgenda iCalendarAgenda = new ICalendarAgenda(vCalendar);}</pre>
+ * Nothing else special is required to instantiate {@link ICalendarAgenda} if you use the default factories.</p>
+ * 
+ * <p> A simple example to display a {@link ICalendarAgenda} with an example {@link VEvent VEVENT} is below:
+ * 
+ * <pre>
+ * {@code
+ * public class ICalendarAgendaSimpleTrial extends Application
+ * {        
+ *    public static void main(String[] args) {
+ *       launch(args);       
+ * }
+ *
+ *   public void start(Stage primaryStage) {
+ *       VCalendar vCalendar = new VCalendar();
+ *       VEvent vEvent = new VEvent()
+ *               .withDateTimeStart(LocalDateTime.now().minusMonths(1))
+ *               .withDateTimeEnd(LocalDateTime.now().minusMonths(1).plusHours(1))
+ *               .withSummary("Example Daily Event")
+ *               .withRecurrenceRule("RRULE:FREQ=DAILY")
+ *               .withUniqueIdentifier("exampleuid000jfxtras.org");
+ *       vCalendar.addVComponent(vEvent);
+ *       ICalendarAgenda agenda = new ICalendarAgenda(vCalendar);
+ *       
+ *       BorderPane root = new BorderPane();
+ *       root.setCenter(agenda);
+ *       Scene scene = new Scene(root, 1366, 768);
+ *       primaryStage.setScene(scene);
+ *       primaryStage.setTitle("ICalendar Agenda Simple Demo");
+ *       primaryStage.show();
+ *   }
+ * }}</pre>
+ * </p>
+ * 
+ * @see <a target="_blank" href="https://tools.ietf.org/html/rfc5545#section-3.8.2.2">iCalendar 5545 Specification</a>
  * @author David Bal
  *
  */
@@ -75,34 +178,23 @@ public class ICalendarAgenda extends Agenda
 {   
     public final static String ICALENDAR_STYLE_SHEET = ICalendarAgenda.class.getResource(ICalendarAgenda.class.getSimpleName() + ".css").toExternalForm();
     
-//    private ObjectProperty<LocalDateTime> startRange = new SimpleObjectProperty<>(); // must be updated when range changes
-//    private ObjectProperty<LocalDateTime> endRange = new SimpleObjectProperty<>();
-    private LocalDateTimeRange dateTimeRange; // date range of current skin, set when localDateTimeRangeCallback fires
-
-    public void setDateTimeRange(LocalDateTimeRange dateTimeRange)
-    {
-        this.dateTimeRange = dateTimeRange;
-        getRecurrenceFactory().setStartRange(dateTimeRange.getStartLocalDateTime());
-        getRecurrenceFactory().setEndRange(dateTimeRange.getEndLocalDateTime());
-//        getRecurrenceHelper().setStartRange(dateTimeRange.getStartLocalDateTime());
-//        getRecurrenceHelper().setEndRange(dateTimeRange.getEndLocalDateTime());
-    }
-    public LocalDateTimeRange getDateTimeRange() { return dateTimeRange; }
-    
-//    // Recurrence helper - handles making appointments, edit and delete components
-//    @Deprecated
-//    final private RecurrenceHelper<Appointment> recurrenceHelper;
-//    @Deprecated
-//    public RecurrenceHelper<Appointment> getRecurrenceHelper() { return recurrenceHelper; }
-    
+    /*
+     * Factory to make VComponents from Appointment
+     */
+    /** 
+     * 
+     * @return - 
+     */
     public VComponentFactory<Appointment> getVComponentFactory() { return vComponentFactory; }
     private VComponentFactory<Appointment> vComponentFactory;
     public void setVComponentFactory(VComponentFactory<Appointment> vComponentFactory) { this.vComponentFactory = vComponentFactory; }
-
+TableView t;
+    /*
+     * Factory to make Appointments from VComponents
+     */
     public RecurrenceFactory<Appointment> getRecurrenceFactory() { return recurrenceFactory; }
     private RecurrenceFactory<Appointment> recurrenceFactory;
     public void setRecurrenceFactory(RecurrenceFactory<Appointment> recurrenceFactory) { this.recurrenceFactory = recurrenceFactory; }
-
     
     /** The VCalendar object that contains all scheduling information */
     public VCalendar getVCalendar() { return vCalendar; }
@@ -132,17 +224,17 @@ public class ICalendarAgenda extends Agenda
 //    @Deprecated private final Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap = new HashMap<>();
 //    @Deprecated public Map<Class<? extends VComponent>, AppointmentChangeBehavior> vComponentClassBehaviorMap() { return vComponentClassBehaviorMap; }
 
-    /** Callback for creating unique identifier values
-     * @see VComponent#getUidGeneratorCallback() */
-    public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
-    private static Integer nextKey = 0;
-    private Callback<Void, String> uidGeneratorCallback = (Void) ->
-    { // default UID generator callback
-        String dateTime = DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
-        String domain = "jfxtras.org";
-        return dateTime + "-" + nextKey++ + domain;
-    };
-    public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
+//    /** Callback for creating unique identifier values
+//     * @see VComponent#getUidGeneratorCallback() */
+//    public Callback<Void, String> getUidGeneratorCallback() { return uidGeneratorCallback; }
+//    private static Integer nextKey = 0;
+//    private Callback<Void, String> uidGeneratorCallback = (Void) ->
+//    { // default UID generator callback
+//        String dateTime = DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.now());
+//        String domain = "jfxtras.org";
+//        return dateTime + "-" + nextKey++ + domain;
+//    };
+//    public void setUidGeneratorCallback(Callback<Void, String> uidCallback) { this.uidGeneratorCallback = uidCallback; }
     
     // I/O callbacks, must be set to provide I/O functionality, null by default - TODO - NOT IMPLEMENTED YET
     private Callback<Collection<VComponentDisplayable<?>>, Void> repeatWriteCallback = null;
@@ -380,6 +472,23 @@ public class ICalendarAgenda extends Agenda
         recurrenceFactory = new DefaultRecurrenceFactory(appointmentGroups()); // default recurrence factory - for Appointments, if other implementation is used assign different factory
         vComponentFactory = new DefaultVComponentFactory(); // default VComponent factory - for ppointments
         
+        /*
+         *  Default callback to accept new drawn appointments.
+         *  Note: If a different Appointment implementation is used then custom recurrenceFactory, 
+         *  vComponentFactory and a custom newAppointmentCallback is required
+         */
+        setNewAppointmentCallback((LocalDateTimeRange dateTimeRange) -> 
+        {
+            Temporal s = dateTimeRange.getStartLocalDateTime().atZone(ZoneId.systemDefault());
+            Temporal e = dateTimeRange.getEndLocalDateTime().atZone(ZoneId.systemDefault());
+            return new Agenda.AppointmentImplTemporal()
+                    .withStartTemporal(s)
+                    .withEndTemporal(e)
+                    .withSummary("New")
+                    .withDescription("")
+                    .withAppointmentGroup(appointmentGroups().get(0));
+        });
+        
         // Populate component class to behavior map with required behaviors
 //        vComponentClassBehaviorMap.put(VEvent.class, new VEventBehavior(this));
 //        vComponentClassBehaviorMap.put(VJournal.class, new VJournalBehavior(this));
@@ -521,23 +630,18 @@ public class ICalendarAgenda extends Agenda
                                             v.toContent());
                                 }
                             });
-//                    System.out.println("was added:" + dateTimeRange + " " +  getDateTimeRange());
-                    if (dateTimeRange != null)
-                    {
-//                        Temporal start = getDateTimeRange().getStartLocalDateTime();
-//                        Temporal end = getDateTimeRange().getEndLocalDateTime();
+                    
+//                    if (dateTimeRange != null)
+//                    {
                         List<Appointment> newAppointments = new ArrayList<>();
                         // add new appointments
                         change.getAddedSubList()
                                 .stream()
                                 .forEach(v -> newAppointments.addAll(makeAppointments(v)));
                         appointments().removeListener(appointmentsListChangeListener);
-//                        appointments().clear();
-//                        System.out.println("About to add");
                         appointments().addAll(newAppointments);
                         appointments().addListener(appointmentsListChangeListener);
-//                        refresh();
-                    }
+//                    }
                 } else if (change.wasRemoved())
                 {
                     // remove associated appointments
@@ -582,7 +686,6 @@ public class ICalendarAgenda extends Agenda
         setLocalDateTimeRangeCallback(dateTimeRange ->
         {
             List<Appointment> newAppointments = new ArrayList<>();
-            setDateTimeRange(dateTimeRange);
             getRecurrenceFactory().setStartRange(dateTimeRange.getStartLocalDateTime());
             getRecurrenceFactory().setEndRange(dateTimeRange.getEndLocalDateTime());
             if (dateTimeRange != null)

@@ -33,7 +33,7 @@ public class DefaultVComponentFactory extends VComponentFactory<Appointment>
                     .withLocation(appointment.getLocation())
                     .withDateTimeCreated(dtCreated)
                     .withDateTimeStamp(dtCreated)
-                    .withUniqueIdentifier();
+                    .withUniqueIdentifier(); // using default UID generator
         } else
         {
             newVComponent = new VTodo()

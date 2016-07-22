@@ -15,7 +15,6 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.test.JFXtrasGuiTest;
@@ -75,13 +74,13 @@ public abstract class AgendaTestAbstract extends JFXtrasGuiTest
             }
         });
         
-        // override default UID generator callback 
-        agenda.setUidGeneratorCallback((Void) ->
-        {
-            String dateTime = DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.of(2015, 11, 8, 0, 0));
-            String domain = "jfxtras.org";
-            return dateTime + "-" + "0" + domain;
-        });
+//        // override default UID generator callback 
+//        agenda.setUidGeneratorCallback((Void) ->
+//        {
+//            String dateTime = DateTimeUtilities.LOCAL_DATE_TIME_FORMATTER.format(LocalDateTime.of(2015, 11, 8, 0, 0));
+//            String domain = "jfxtras.org";
+//            return dateTime + "-" + "0" + domain;
+//        });
                 
         vbox.getChildren().add(agenda);
         return vbox;

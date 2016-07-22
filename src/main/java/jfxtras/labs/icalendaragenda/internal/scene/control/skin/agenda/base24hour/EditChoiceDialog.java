@@ -31,8 +31,8 @@ public class EditChoiceDialog extends ComponentChangeDialog
     };
     /**
      * 
-     * @param choicesAndDateRanges - list of ChangeDialogOption representing the date/time range to be affected
-     * @param resources
+     * @param choiceList list of ChangeDialogOption representing the date/time range to be affected
+     * @param resources ResourceBundle for internationalization
      */
     public EditChoiceDialog(Map<ChangeDialogOption, Pair<Temporal,Temporal>> choiceList, ResourceBundle resources)
     {

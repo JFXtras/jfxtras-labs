@@ -37,6 +37,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.CategorySelectionGridPane;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
+import jfxtras.labs.icalendarfx.components.VComponent;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
@@ -54,8 +55,8 @@ import jfxtras.scene.control.agenda.TemporalUtilities;
  * Edits the following properties: {@link DateTimeStart}, {@link DateTimeEnd}, {@link Summary}, {@link Description}
  * {@link Location}, {@link Categories}
  * <p>
- * When a component starts with DTSTART as a date only (no time), but changes to date/time the
- * control uses date/time with {@link DEFAULT_ZONE_ID} time zone.
+ * When a {@link VComponent} has a {@link DateTimeStart }as a date only (no time) and changes to date/time the
+ * control uses {@link ZonedDateTime} date/time with {@link DEFAULT_ZONE_ID} time zone.
  * 
  * @author David Bal
  * 
