@@ -56,12 +56,13 @@ public class ICalendarAgendaTrial1 extends Application
         mainLoader.setLocation(ICalendarAgendaTrial1.class.getResource("view/Calendar.fxml"));
         BorderPane root = mainLoader.load();
         CalendarController controller = mainLoader.getController();
-        controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
         
         Scene scene = new Scene(root, 1366, 768);
         primaryStage.setScene(scene);
         primaryStage.setTitle("ICalendar Agenda Demo");
         primaryStage.show();
         
+        controller.setupData(firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
+
     }
 }

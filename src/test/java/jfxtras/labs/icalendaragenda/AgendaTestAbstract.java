@@ -11,7 +11,6 @@ import java.util.stream.IntStream;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendarfx.VCalendar;
@@ -45,7 +44,7 @@ public abstract class AgendaTestAbstract extends JFXtrasGuiTest
         agenda.setPrefSize(1000, 800);
         agenda.appointmentGroups().clear();
         agenda.appointmentGroups().addAll(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
-        agenda.setOneAllThisAndFutureDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK);
+//        agenda.setOneAllThisAndFutureDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK);
         
 //        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
 //            appointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);

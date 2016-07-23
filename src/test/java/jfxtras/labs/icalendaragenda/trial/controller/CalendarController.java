@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
-import java.util.Collection;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -27,14 +26,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
-import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
-import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Summary;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -56,7 +52,6 @@ public class CalendarController
 {
      VCalendar vCalendar = new VCalendar();
      public ICalendarAgenda agenda = new ICalendarAgenda(vCalendar);
-     private final Callback<Collection<VComponentDisplayable<?>>, Void> repeatWriteCallback = null;
 
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;
@@ -86,9 +81,7 @@ public class CalendarController
         agendaSkinButton.setToggleGroup(skinGroup);
         weekSkinButton.selectedProperty().set(true);
         
-        // Set I/O callbacks // TODO - NOT SUPPORTED YET
-        agenda.setRepeatWriteCallback(repeatWriteCallback);
-        agenda.setOneAllThisAndFutureDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK);
+//        agenda.setOneAllThisAndFutureDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK);
 
         // accept new appointments
         agenda.setNewAppointmentCallback((LocalDateTimeRange dateTimeRange) -> 
@@ -102,12 +95,6 @@ public class CalendarController
                     .withDescription("")
                     .withAppointmentGroup(agenda.appointmentGroups().get(0));
         });
-                
-//        // action
-//        agenda.setActionCallback( (appointment) -> {
-//            System.out.println("Action on " + appointment);
-//            return null;
-//        });
         
         agendaBorderPane.setCenter(agenda);
         dateLabel.textProperty().bind(makeLocalDateBindings(localDatePicker.localDateProperty()));
@@ -132,9 +119,7 @@ public class CalendarController
 
     public void setupData(LocalDate startDate, LocalDate endDate)
     {
-        System.out.println("dates:" + startDate + " " + endDate);
         VEvent vEventSplit = new VEvent()
-//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(8))
                 .withDateTimeEnd(LocalDateTime.of(endDate, LocalTime.of(5, 45)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(endDate.minusDays(1), LocalTime.of(15, 45)))
@@ -145,7 +130,6 @@ public class CalendarController
         agenda.getVCalendar().getVEvents().add(vEventSplit);
         
         VEvent vEventZonedUntil = new VEvent()
-//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(10))
                 .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(10).getDescription())
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(startDate.plusDays(1), LocalTime.of(9, 45)), ZoneId.of("America/Los_Angeles")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 10, 8, 0), ZoneOffset.UTC))
@@ -174,7 +158,6 @@ public class CalendarController
         
         VEvent vEventLocalDate = new VEvent()
                 .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(15).getDescription())
-//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(15))
                 .withDateTimeStart(startDate)
                 .withDateTimeEnd(startDate.plusDays(1))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -188,7 +171,6 @@ public class CalendarController
 
         VEvent vEventLocalDateTime = new VEvent()
                 .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2).getDescription())
-//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(2))
                 .withDateTimeStart(LocalDateTime.of(startDate, LocalTime.of(11, 00)))
                 .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(13, 0)))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -200,7 +182,6 @@ public class CalendarController
         agenda.getVCalendar().getVEvents().add(vEventLocalDateTime); 
         
         VEvent vEventLocalDateTimeMonthly = new VEvent()
-//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(17))
                 .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(17).getDescription())
                 .withDateTimeStart(LocalDateTime.of(startDate, LocalTime.of(14, 00)))
                 .withDateTimeEnd(LocalDateTime.of(startDate, LocalTime.of(15, 0)))
@@ -216,7 +197,6 @@ public class CalendarController
         int ordinalWeekNumber = DateTimeUtilities.weekOrdinalInMonth(startDate.plusDays(2));
         VEvent vEventLocalDateMonthlyOrdinal = new VEvent()
                 .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
-//                .withAppointmentGroup(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5))
                 .withDateTimeStart(startDate.plusDays(2))
                 .withDateTimeEnd(startDate.plusDays(3))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
