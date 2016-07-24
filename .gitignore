@@ -31,3 +31,4 @@ build.xml
 /*.png
 /gradlew_javadoc.cmd
 /gradlew_test.cmd
+/build.gradle~
