@@ -12,7 +12,6 @@ import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -20,10 +19,14 @@ import jfxtras.test.JFXtrasGuiTest;
 
 public abstract class AgendaTestAbstract extends JFXtrasGuiTest
 {
-    final public static List<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS = IntStream.range(0, 24)
+    public final static List<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS = IntStream.range(0, 24)
             .mapToObj(i -> new Agenda.AppointmentGroupImpl()
                   .withStyleClass("group" + i)
                   .withDescription("group" + (i < 10 ? "0" : "") + i))
+            .collect(Collectors.toList());
+    
+    final protected static List<String> CATEGORIES = IntStream.range(0, 24)
+            .mapToObj(i -> new String("group" + (i < 10 ? "0" : "") + i))
             .collect(Collectors.toList());
     
 //    final protected Map<String, Agenda.AppointmentGroup> appointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
@@ -43,7 +46,7 @@ public abstract class AgendaTestAbstract extends JFXtrasGuiTest
 //        agenda.setDisplayedLocalDateTime(LocalDate.of(2014, 1, 1).atStartOfDay());
         agenda.setPrefSize(1000, 800);
         agenda.appointmentGroups().clear();
-        agenda.appointmentGroups().addAll(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS);
+        agenda.appointmentGroups().addAll(DEFAULT_APPOINTMENT_GROUPS);
 //        agenda.setOneAllThisAndFutureDialogCallback(EditChoiceDialog.EDIT_DIALOG_CALLBACK);
         
 //        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {

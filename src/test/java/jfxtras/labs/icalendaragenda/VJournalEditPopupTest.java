@@ -15,7 +15,6 @@ import javafx.scene.control.TextField;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditVJournalTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.components.VJournal;
@@ -67,7 +66,7 @@ public class VJournalEditPopupTest extends JFXtrasGuiTest
                     Arrays.asList(vjournal),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
 
         TextField summary = find("#summaryTextField");

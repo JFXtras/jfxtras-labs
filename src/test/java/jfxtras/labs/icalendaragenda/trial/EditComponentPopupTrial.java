@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -13,7 +15,6 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditDisplayableScene;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.SimpleEditSceneFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
@@ -80,11 +81,14 @@ public class EditComponentPopupTrial extends Application
         List<Appointment> newAppointments = recurrenceFactory.makeRecurrences(vevent);
         Appointment appointment = newAppointments.get(2);
         
+        List<String> categories = IntStream.range(0, 24)
+              .mapToObj(i -> new String("group" + (i < 10 ? "0" : "") + i))
+              .collect(Collectors.toList());
         Object[] params = new Object[] {
                 myCalendar,
                 appointment.getStartTemporal(),
                 appointment.getEndTemporal(),
-                ICalendarAgendaUtilities.CATEGORIES
+                categories
                 };
         EditDisplayableScene scene = SimpleEditSceneFactory.newScene(vevent, params);
 

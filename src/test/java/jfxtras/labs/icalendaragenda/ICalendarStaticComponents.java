@@ -8,7 +8,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
@@ -26,7 +25,7 @@ public final class ICalendarStaticComponents
     protected static VEvent getYearly1()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
                 .withDateTimeCreated(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 29), ZoneOffset.UTC))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 11, 9, 8, 30), ZoneOffset.UTC))
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
@@ -110,7 +109,7 @@ public final class ICalendarStaticComponents
     public static VEvent getDaily1()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDescription("Daily1 Description")
@@ -125,7 +124,7 @@ public final class ICalendarStaticComponents
     protected static VEvent getDaily2()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDuration(Duration.ofMinutes(90))
                 .withDescription("Daily2 Description")
@@ -142,7 +141,7 @@ public final class ICalendarStaticComponents
     protected static VEvent getDaily6()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(3).getDescription())
                 .withDateTimeStart(LocalDateTime.of(2015, 11, 9, 10, 0))
                 .withDateTimeEnd(LocalDateTime.of(2015, 11, 9, 11, 0))
                 .withDescription("Daily6 Description")
@@ -172,7 +171,7 @@ public final class ICalendarStaticComponents
     protected static VEvent getIndividual2()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
                 .withDateTimeStart(LocalDate.of(2015, 11, 11))
                 .withDateTimeEnd(LocalDate.of(2015, 11, 12))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -182,7 +181,7 @@ public final class ICalendarStaticComponents
     public static VEvent getIndividualZoned()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(13).getDescription())
                 .withDateTimeStart(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 10, 0), ZoneId.of("Europe/London")))
                 .withDateTimeEnd(ZonedDateTime.of(LocalDateTime.of(2015, 11, 11, 11, 0), ZoneId.of("Europe/London")))
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
@@ -203,7 +202,7 @@ public final class ICalendarStaticComponents
     public static VEvent getWholeDayDaily3()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-010@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
@@ -218,7 +217,7 @@ public final class ICalendarStaticComponents
     public static VEvent getWholeDayDaily4()
     {
         return new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-010@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()

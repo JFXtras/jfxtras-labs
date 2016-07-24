@@ -46,7 +46,6 @@ import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hou
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditRecurrenceRuleVBox;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors.EditVEventTabPane;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgendaUtilities;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.DefaultRecurrenceFactory;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.factories.RecurrenceFactory;
 import jfxtras.labs.icalendarfx.VCalendar;
@@ -113,7 +112,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     Arrays.asList(vevent),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
 
         TextField summary = find("#summaryTextField");
@@ -141,7 +140,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     Arrays.asList(vevent),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
 //        TestUtil.sleep(3000);
         TextField summary = find("#summaryTextField");
@@ -170,7 +169,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     vEvents,
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
 
         // Get properties
@@ -276,7 +275,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     vEvents,
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
 
         // Get properties
@@ -399,7 +398,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
         click(wholeDayCheckBox);
@@ -438,7 +437,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         CheckBox wholeDayCheckBox = find("#wholeDayCheckBox");
         assertTrue(wholeDayCheckBox.isSelected());
@@ -461,7 +460,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
         click("#changeDialogOkButton");
         
         VEvent veventExpected = new VEvent()
-                .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
+                .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(6).getDescription())
                 .withDateTimeStamp(ZonedDateTime.of(LocalDateTime.of(2015, 1, 10, 8, 0), ZoneOffset.UTC))
                 .withUniqueIdentifier("20150110T080000-010@jfxtras.org")
                 .withRecurrenceRule(new RecurrenceRule2()
@@ -496,7 +495,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         
         // Get properties
@@ -533,7 +532,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         
         // Make whole day
@@ -590,7 +589,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         
         // Go to repeatable tab
@@ -790,7 +789,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
         
@@ -856,7 +855,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
         
@@ -898,7 +897,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
 
@@ -993,7 +992,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
         
@@ -1083,7 +1082,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
         click("#recurrenceRuleTab");
 
@@ -1189,7 +1188,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
 
        // edit property
@@ -1214,7 +1213,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
 
        VEvent v1 = myCalendar.getVEvents().get(1);
        VEvent expectedV1 = new VEvent()
-               .withCategories(ICalendarAgendaUtilities.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
+               .withCategories(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS.get(5).getDescription())
                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0))
                .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0))
                .withDescription("Daily1 Description")
@@ -1269,7 +1268,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
 
         // edit properties
@@ -1307,7 +1306,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
                     myCalendar.getVEvents(),
                     appointment.getStartTemporal(),
                     appointment.getEndTemporal(),
-                    ICalendarAgendaUtilities.CATEGORIES);
+                    AgendaTestAbstract.CATEGORIES);
         });
 
         // delete VComponent
