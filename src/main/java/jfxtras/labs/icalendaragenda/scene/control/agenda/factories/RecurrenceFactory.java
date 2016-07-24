@@ -13,6 +13,7 @@ import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 
 /**
  * Abstract factory to create recurrences from VComponents.
+ * {@link #getStartRange()} and {@link #getEndRange()} must be set before recurrences can be made.
  * 
  * @author David Bal
  *
@@ -35,13 +36,10 @@ public abstract class RecurrenceFactory<R>
     public void setEndRange(LocalDateTime endRange) { this.endRange.set(endRange); }
     /** get end of range to make recurrences */
     public LocalDateTime getEndRange() { return endRange.get(); }
-
-    /** Callback to make Recurrence from VComponent and start Temporal */
-    abstract CallbackTwoParameters<VComponentDisplayable<?>, Temporal, R> recurrenceCallBack();
-
+    
     /**
-     * Makes recurrences for VEVENT, VTODO, and VJOURNAL
-     * Appointments are made between displayed range
+     * Makes recurrences from a {@link VComponentDisplayable}
+     * Recurrences are made between {@link #getStartRange()} and {@link #getEndRange()}
      * 
      * @param vComponent - calendar component
      * @return created appointments
@@ -71,27 +69,12 @@ public abstract class RecurrenceFactory<R>
         vComponent.streamRecurrences(startRange2, endRange2)
             .forEach(startTemporal -> 
             {
-                R recurrence = recurrenceCallBack().call(vComponent, startTemporal);
+                R recurrence = makeRecurrence(vComponent, startTemporal);
                 newRecurrences.add(recurrence);
             });
         return newRecurrences;
     }
     
-    /** Based on {@link Callback<P,R>} */
-    @FunctionalInterface
-    interface CallbackTwoParameters<P1, P2, R> {
-        /**
-         * The <code>call</code> method is called when required, and is given 
-         * two arguments of type P1 and P2, with a requirement that an object of type R
-         * is returned.
-         *
-         * @param param1 The first argument upon which the returned value should be
-         *      determined.
-         * @param param1 The second argument upon which the returned value should be
-         *      determined.
-         * @return An object of type R that may be determined based on the provided
-         *      parameter value.
-         */
-        public R call(P1 param1, P2 param2);
-    }
+    /** Strategy to make Recurrence from VComponent and start Temporal */
+    abstract R makeRecurrence(VComponentDisplayable<?> vComponent, Temporal startTemporal);
 }

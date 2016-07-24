@@ -1,7 +1,5 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -11,30 +9,24 @@ import java.util.ResourceBundle;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.rrule.FrequencyType;
 
-// TODO - MAKE SEPARATE RESOURCE FILE FOR THESE
+/**
+ * This class contains text values for controls.  It contains default values and, when the {@link #setup(ResourceBundle)}
+ * method is executed, replaces those default values with those from a ResourceBundle
+ * 
+ * @author David Bal
+ *
+ */
 public final class Settings
 {
     private Settings() {}
-
-    // below variables are probably obsolete since implementing iCalendar
-    public final static Path APPOINTMENTS_FILE = Paths.get("src/jfxtras.labs.samples.repeatagenda.appointments.xml");
-    public final static Path APPOINTMENT_GROUPS_FILE = Paths.get("data/appointments/appointmentGroups.xml");
-    public final static Path APPOINTMENT_REPEATS_FILE = Paths.get("appointmentRepeats.xml");
-    public static final boolean PRETTY_XML = true;  // true for readable indented XML output, false for small files
     
-    // defaults can be overridden by resource bundle by running setup method
-    public static DateTimeFormatter DATE_FORMAT1 = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // format for output files
-    public static DateTimeFormatter DATE_FORMAT2 = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy"); // fancy format for displaying
-    public static DateTimeFormatter DATE_FORMAT_AGENDA = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("EEE, MMMM d, yyyy");
+    public static DateTimeFormatter DATE_FORMAT_AGENDA_DATEONLY = DateTimeFormatter.ofPattern("MMM d, yyyy");
     public static DateTimeFormatter DATE_FORMAT_AGENDA_EXCEPTION = DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a");
     public static DateTimeFormatter DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY = DateTimeFormatter.ofPattern("EEE, MMMM d, yyyy");
-    public static DateTimeFormatter DATE_FORMAT_AGENDA_DATEONLY = DateTimeFormatter.ofPattern("MMM d, yyyy");
-    public static DateTimeFormatter DATE_FORMAT_AGENDA_MONTHDAY = DateTimeFormatter.ofPattern("MMMM d"); // for yearly summary
     public static DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("EEE, MMMM d, yyyy h:mm a");
+    public static DateTimeFormatter DATE_FORMAT_AGENDA_MONTHDAY = DateTimeFormatter.ofPattern("MMMM d"); // for yearly summary
     public static DateTimeFormatter TIME_FORMAT_END = DateTimeFormatter.ofPattern("hh:mm a");
-    public static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("EEE, MMMM d, yyyy");
-//    public static DateTimeFormatter DATE_AGENDA_END = DateTimeFormatter.ofPattern("-hh:mm a");
-    public static DateTimeFormatter TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern("HH:mm");
 
     public static final Map<FrequencyType, String> REPEAT_FREQUENCIES = defaultRepeatFrequenciesMap();
     private static Map<FrequencyType, String> defaultRepeatFrequenciesMap()
@@ -111,17 +103,11 @@ public final class Settings
         resources = resourcesIn;
         
         DATE_FORMAT = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format"));
-        DATE_FORMAT1 = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format1"));
-        DATE_FORMAT2 = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format2"));
-        DATE_FORMAT_AGENDA = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda"));
         DATE_FORMAT_AGENDA_EXCEPTION = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.exception"));
         DATE_FORMAT_AGENDA_EXCEPTION_DATEONLY = DateTimeFormatter.ofPattern(resources.getString("date.format.agenda.exception.dateonly"));
-
         DATE_FORMAT_AGENDA_DATEONLY = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.dateonly"));
         DATE_FORMAT_AGENDA_MONTHDAY = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.monthday"));
         DATE_TIME_FORMAT = DateTimeFormatter.ofPattern(resourcesIn.getString("date.time.format"));
-//        DATE_FORMAT_AGENDA_END = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.end"));
-        TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern(resourcesIn.getString("time.format.agenda"));
         TIME_FORMAT_END = DateTimeFormatter.ofPattern(resourcesIn.getString("time.format"));
         
         REPEAT_FREQUENCIES.put(FrequencyType.DAILY, resourcesIn.getString("daily"));
