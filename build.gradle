@@ -57,6 +57,7 @@ dependencies {
 javadoc {
     options.docletpath = configurations.asciidoclet.files.asType(List)
     options.doclet = 'org.asciidoctor.Asciidoclet'
+    exclude 'jfxtras/labs/internal/*'
 }
 
 apply {
