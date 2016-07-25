@@ -76,7 +76,10 @@ public interface VComponentDescribable<T> extends VComponent
     {
         if (getSummary() == null)
         {
-            setSummary(summary);
+            if (summary != null)
+            {
+                setSummary(summary);
+            }
             return (T) this;
         } else
         {

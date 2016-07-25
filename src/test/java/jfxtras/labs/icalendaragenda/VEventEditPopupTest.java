@@ -95,7 +95,7 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
     }
     
     @Test
-    public void canDisplayPopupWithVEvent()
+    public void canDisplayEditPopupWithVEvent()
     {
         RecurrenceFactory<Appointment> recurrenceFactory = new DefaultRecurrenceFactory(AgendaTestAbstract.DEFAULT_APPOINTMENT_GROUPS); // default VComponent store - for Appointments, if other implementation used make new store
         recurrenceFactory.setStartRange(LocalDateTime.of(2016, 5, 15, 0, 0));
@@ -504,12 +504,10 @@ public class VEventEditPopupTest extends JFXtrasGuiTest
 
         // Check initial state
         List<Temporal> exceptions = exceptionComboBox.getItems().stream().collect(Collectors.toList());
-//        exceptions.stream().forEach(System.out::println);
         LocalDateTime seed = LocalDateTime.of(2015, 11, 9, 10, 0);
         List<LocalDateTime> expectedDates = Stream
                 .iterate(seed, a -> a.plus(1, ChronoUnit.DAYS))
                 .limit(EditRecurrenceRuleVBox.EXCEPTION_CHOICE_LIMIT)
-//                .peek(System.out::println)
                 .collect(Collectors.toList());
         assertEquals(expectedDates, exceptions);
     }

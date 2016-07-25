@@ -4,21 +4,9 @@ import jfxtras.labs.icalendarfx.VChild;
 import jfxtras.labs.icalendarfx.VParent;
 
 /**
- * iCalendar component
- * Contains the following properties:
- * Non-Standard Properties, IANA Properties
+ * iCalendar component with no properties
  * 
  * @author David Bal
- * @see VComponentBase
- * 
- * @see VComponentPrimary
- * 
- * @see VEventNewInt
- * @see VTodoInt
- * @see VJournalInt
- * @see VFreeBusy
- * @see VTimeZone
- * @see VAlarmInt
  */
 public interface VComponent extends VParent, VChild
 {

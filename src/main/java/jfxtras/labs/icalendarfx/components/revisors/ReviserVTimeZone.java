@@ -10,7 +10,7 @@ public class ReviserVTimeZone implements Reviser
     }
     
     @Override
-    public boolean revise()
+    public Object revise()
     {
         throw new RuntimeException("not implemented");
     }

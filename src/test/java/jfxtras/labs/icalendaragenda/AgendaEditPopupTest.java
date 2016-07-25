@@ -45,9 +45,45 @@ public class AgendaEditPopupTest extends AgendaTestAbstract
         press(MouseButton.SECONDARY);
         release(MouseButton.SECONDARY);
         
-//        TestUtil.sleep(10000);
         Node n = find("#editDisplayableTabPane");
 //        AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);
+        closeCurrentWindow();
+    }
+    
+    @Test
+    public void canProduceEditPopupFromExistingAppointment()
+    {
+        TestUtil.runThenWaitForPaintPulse( () -> agenda.getVCalendar().getVEvents().add(ICalendarStaticComponents.getDaily1()));
+
+        // Open select one popup
+        move("#hourLine11");
+        press(MouseButton.PRIMARY);
+        release(MouseButton.PRIMARY);
+        
+        // click on advanced edit
+        click("#OneAppointmentSelectedEditButton");
+        Node n = find("#editDisplayableTabPane");
+//      AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
+        new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);
+        closeCurrentWindow();
+    }
+    
+    @Test
+    public void canProduceEditPopupFromNewAppointment()
+    {
+        // Draw new appointment
+        move("#hourLine11");
+        press(MouseButton.PRIMARY);
+        move("#hourLine12");
+        release(MouseButton.PRIMARY);
+        
+        find("#AppointmentRegularBodyPane2015-11-11/0"); // validate that the pane has the expected id
+        
+        // click on advanced edit
+        click("#newAppointmentEditButton");
+        Node n = find("#editDisplayableTabPane");
+//      AssertNode.generateSource("n", n, null, false, jfxtras.test.AssertNode.A.XYWH);
         new AssertNode(n).assertXYWH(0.0, 0.0, 400.0, 570.0, 0.01);
         closeCurrentWindow();
     }

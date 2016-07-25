@@ -37,8 +37,10 @@ public class EditVJournalTabPane extends EditDisplayableTabPane<VJournal, EditDe
                 vComponent,
                 vComponentOriginalCopy
         };
-        boolean result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
-        isFinished.set(result);
+//        boolean result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
+        List<VJournal> result = (List<VJournal>) SimpleRevisorFactory.newReviser(vComponent, params).revise();
+        newVComponentsProperty().set(result);
+//        isFinished.set(result);
     }
     
     @Override

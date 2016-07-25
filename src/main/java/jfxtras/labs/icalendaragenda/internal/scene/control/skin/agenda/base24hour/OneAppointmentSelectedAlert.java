@@ -33,6 +33,12 @@ public class OneAppointmentSelectedAlert extends Alert
         getButtonTypes().setAll(editButtonType, deleteButtonType, ButtonType.CANCEL);
         getDialogPane().lookupButton(ButtonType.CANCEL).setId("oneSelectedCancelButton");
         
+        // set id
+        getDialogPane().setId("newAppointmentDialog");
+        getDialogPane().lookupButton(editButtonType).setId("OneAppointmentSelectedEditButton");
+        getDialogPane().lookupButton(deleteButtonType).setId("OneAppointmentSelectedDeleteButton");
+        getDialogPane().lookupButton(ButtonType.CANCEL).setId("OneAppointmentSelectedCancelButton");
+        
         // assign labels
         setTitle(resources.getString("alert.one.appointment.title"));
         String appointmentTime = AgendaDateTimeUtilities.formatRange(appointment.getStartTemporal(), appointment.getEndTemporal());

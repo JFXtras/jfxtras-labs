@@ -54,7 +54,10 @@ public interface VComponentDescribable2<T> extends VComponentDescribable<T>
     {
         if (getDescription() == null)
         {
-            setDescription(description);
+            if (description != null)
+            {
+                setDescription(description);
+            }
             return (T) this;
         } else
         {

@@ -32,7 +32,7 @@ public class SimpleEditSceneFactory
      * (0) VCalendar - parent VCalendar<br>
      * (1) Temporal startRecurrence - start of selected recurrence<br>
      * (2) Temporal endRecurrence - end of selected recurrence<br>
-     * (2) String List categories - available category names<br>
+     * (3) String List categories - available category names<br>
      * 
      * @param vComponent - VComponent to be edited
      * @param params - necessary parameters, packed in an array, to edit the VComponent

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javafx.util.Pair;
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
-import jfxtras.labs.icalendarfx.components.deleters.Deleter;
+import jfxtras.labs.icalendarfx.components.deleters.DeleterBase;
 import jfxtras.labs.icalendarfx.properties.PropertyType;
 import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
 
@@ -61,7 +61,7 @@ public enum ChangeDialogOption
        return choices;
     }
 
-   /** Produce the map of change dialog options and the date range the option affects - {@link Deleter} 
+   /** Produce the map of change dialog options and the date range the option affects - {@link DeleterBase} 
  * @param <U>*/
     public static <U extends VComponentDisplayable<U>> Map<ChangeDialogOption, Pair<Temporal, Temporal>> makeDialogChoices(
             VComponentDisplayable<?> vComponent,

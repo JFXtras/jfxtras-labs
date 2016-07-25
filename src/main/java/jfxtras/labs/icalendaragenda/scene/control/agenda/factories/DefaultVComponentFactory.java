@@ -21,32 +21,37 @@ public class DefaultVComponentFactory extends VComponentFactory<Appointment>
     {
         final VComponentDisplayable<?> newVComponent;
         ZonedDateTime dtCreated = ZonedDateTime.now(ZoneId.of("Z"));
+        String summary = ((appointment.getSummary() == null) || appointment.getSummary().isEmpty()) ? null : appointment.getSummary();
+        String description = ((appointment.getDescription() == null) || appointment.getDescription().isEmpty()) ? null : appointment.getDescription();
+        String category = (appointment.getAppointmentGroup() == null) ? null : appointment.getAppointmentGroup().getDescription();
+        String location = ((appointment.getLocation() == null) || appointment.getLocation().isEmpty()) ? null : appointment.getLocation();
+
         boolean hasEnd = appointment.getEndTemporal() != null;
         if (hasEnd)
         {
             newVComponent = new VEvent()
-                    .withSummary(appointment.getSummary())
-                    .withCategories(appointment.getAppointmentGroup().getDescription())
+                    .withSummary(summary)
+                    .withCategories(category)
                     .withDateTimeStart(appointment.getStartTemporal())
                     .withDateTimeEnd(appointment.getEndTemporal())
-                    .withDescription(appointment.getDescription())
-                    .withLocation(appointment.getLocation())
+                    .withDescription(description)
+                    .withLocation(location)
                     .withDateTimeCreated(dtCreated)
                     .withDateTimeStamp(dtCreated)
                     .withUniqueIdentifier(); // using default UID generator
         } else
         {
             newVComponent = new VTodo()
-                    .withSummary(appointment.getSummary())
-                    .withCategories(appointment.getAppointmentGroup().getDescription())
+                    .withSummary(summary)
+                    .withCategories(category)
                     .withDateTimeStart(appointment.getStartTemporal())
-                    .withDescription(appointment.getDescription())
-                    .withLocation(appointment.getLocation())
+                    .withDescription(description)
+                    .withLocation(location)
                     .withDateTimeCreated(dtCreated)
                     .withDateTimeStamp(dtCreated)
                     .withUniqueIdentifier();
         }
-        /* Note: If other VComponents are to be supported other tests to determine
+        /* Note: If other VComponents are to be supported then other tests to determine
          * which type of VComponent the Appointment represents will need to be created.
          */
         return newVComponent;

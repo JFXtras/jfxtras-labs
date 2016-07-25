@@ -8,6 +8,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +102,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
     
     /** Main method to edit VEvent or VTodo or VJournal */
     @Override
-    public boolean revise()
+    public List<U> revise()
     {
         if (! isValid())
         {
@@ -194,7 +195,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 case CANCEL:
                     getVComponents().remove(getVComponentEdited());
                     getVComponents().add(vComponentOriginalCopy);
-                    return false;
+                    return Arrays.asList(vComponentOriginalCopy);
+//                    return false;
 //                    revisedVComponents.clear(); // remove vComponentEditedCopy
 //                    revisedVComponents.add(vComponentOriginalCopy);
                 case THIS_AND_FUTURE:
@@ -214,6 +216,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         if (incrementSequence)
         {
             vComponentEditedCopy.incrementSequence();
+            System.out.println("increment sequence:");
         }
         if (! vComponentEditedCopy.isValid())
         {
@@ -223,7 +226,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
         getVComponents().remove(getVComponentEdited());
         getVComponents().addAll(revisedVComponents);
-        return true;
+        return Collections.unmodifiableList(revisedVComponents);
+//        return true;
     }
     
     /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and

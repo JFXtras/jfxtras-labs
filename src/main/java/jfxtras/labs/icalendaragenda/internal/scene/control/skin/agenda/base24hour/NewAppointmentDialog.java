@@ -39,6 +39,7 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
      * @param appointmentGroups : categories
      * @param resources : bundle with language-specific strings
      */
+    // TODO - SHOULD APPOINTMENT GROUPS BE REPLACED WITH TEXT CATEGORIES?
     public NewAppointmentDialog(
             Appointment appointment
           , ObservableList<AppointmentGroup> appointmentGroups
@@ -72,9 +73,9 @@ public class NewAppointmentDialog extends Dialog<ButtonData>
         
         // set id
         getDialogPane().setId("newAppointmentDialog");
-        getDialogPane().lookupButton(createButton).setId("createButton");
-        getDialogPane().lookupButton(editButton).setId("editButton");
-        getDialogPane().lookupButton(ButtonType.CANCEL).setId("cancelButton");
+        getDialogPane().lookupButton(createButton).setId("newAppointmentCreateButton");
+        getDialogPane().lookupButton(editButton).setId("newAppointmentEditButton");
+        getDialogPane().lookupButton(ButtonType.CANCEL).setId("newAppointmentCancelButton");
         summaryTextField.setId("summaryTextField");
         appointmentGroupComboBox.setId("appointmentGroupComboBox");
         

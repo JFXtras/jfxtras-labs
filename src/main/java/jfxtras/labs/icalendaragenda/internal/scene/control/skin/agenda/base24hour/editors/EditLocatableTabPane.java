@@ -1,5 +1,7 @@
 package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.editors;
 
+import java.util.List;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -54,8 +56,10 @@ public abstract class EditLocatableTabPane<T extends VComponentLocatable<T>> ext
                 vComponent,
                 vComponentOriginalCopy
         };
-        boolean result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
-        isFinished.set(result);
+//        boolean result = SimpleRevisorFactory.newReviser(vComponent, params).revise();
+        List<T> result = (List<T>) SimpleRevisorFactory.newReviser(vComponent, params).revise();
+        newVComponentsProperty().set(result);
+//        isFinished.set(result);
     }
     
     @Override

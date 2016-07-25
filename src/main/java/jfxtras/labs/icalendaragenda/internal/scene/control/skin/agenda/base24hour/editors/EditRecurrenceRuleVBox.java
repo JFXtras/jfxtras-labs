@@ -245,16 +245,11 @@ public abstract class EditRecurrenceRuleVBox<T extends VComponentDisplayable<T>>
         case YEARLY:
             break;
         case MONTHLY:
-//            ByRule<?> r = rrule.lookupByRule(ByDay.class);
-//            rrule.byRules().remove(r);
             dayOfMonthRadioButton.selectedProperty().set(true);
             dayOfWeekRadioButton.selectedProperty().set(false);
             break;
         case WEEKLY:
-            System.out.println("ADD weekly recurrence listener:");
             dateTimeStartRecurrenceNew.addListener(weeklyRecurrenceListener);
-//            ByRule<?> r2 = rrule.lookupByRule(ByDay.class);
-//            rrule.byRules().remove(r2);
             if (dayOfWeekList.isEmpty())
             {
                 DayOfWeek dayOfWeek = LocalDate.from(dateTimeStartRecurrenceNew.get()).getDayOfWeek();
@@ -335,7 +330,6 @@ public abstract class EditRecurrenceRuleVBox<T extends VComponentDisplayable<T>>
         {
             frequencyLabelText = Settings.REPEAT_FREQUENCIES_SINGULAR.get(frequencyComboBox.valueProperty().get());
             rrule.setInterval((Interval) null); // rely on default value from omitted Interval
-            System.out.println("reset interval:" + rrule.toContent());
         } else
         {
             frequencyLabelText = Settings.REPEAT_FREQUENCIES_PLURAL.get(frequencyComboBox.valueProperty().get());

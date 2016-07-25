@@ -26,7 +26,7 @@ import jfxtras.labs.icalendarfx.utilities.DateTimeUtilities;
  *
  * @param <U> VComponent class
  */
-public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends Deleter
+public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends DeleterBase<U>
 {
     private U vComponent;
 
@@ -74,9 +74,13 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
         return true;   
     }
     
-    /** Main method to delete all or part of a VEvent or VTodo or VJournal */
+    /**
+     *  Main method to delete all or part of a VEvent or VTodo or VJournal
+     *  
+     *  returns empty list
+     */
     @Override
-    public boolean delete()
+    public U delete()
     {
         if (! isValid())
         {
@@ -94,9 +98,11 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
             {
             case ALL:
                 getVComponents().remove(vComponent);
-                return true;
+//                return true;
+                return null;
             case CANCEL:
-                return false;
+                return vComponent;
+//                return false;
             case ONE:
                 // Add recurrence to exception list
                 getVComponents().remove(vComponent);
@@ -132,7 +138,8 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
         } else
         { // delete individual component
             getVComponents().remove(vComponent);
-            return true;
+            return null;
+//            return true;
         }
 
         if (! vComponent.isValid())
@@ -142,6 +149,7 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                     vComponent.toContent());
         }
         getVComponents().add(vComponent);
-        return true;
+        return vComponent;
+//        return true;
     }
 }

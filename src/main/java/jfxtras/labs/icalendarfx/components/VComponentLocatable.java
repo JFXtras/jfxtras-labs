@@ -132,7 +132,10 @@ public interface VComponentLocatable<T> extends VComponentDisplayable<T>, VCompo
     {
         if (getLocation() == null)
         {
-            setLocation(location);
+            if (location != null)
+            {
+                setLocation(location);
+            }
             return (T) this;
         } else
         {

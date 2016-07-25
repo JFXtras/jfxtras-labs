@@ -3,6 +3,7 @@ package jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24ho
 import java.io.IOException;
 import java.net.URL;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
@@ -50,11 +52,23 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     @FXML private TabPane editDisplayableTabPane;
     @FXML private Tab descriptiveTab;
     @FXML private Tab recurrenceRuleTab;
+    
+    @FXML private Button cancelComponentButton;
+    @FXML private Button saveComponentButton;
+    @FXML private Button deleteComponentButton;
+    @FXML private Button cancelRepeatButton;
+    @FXML private Button saveRepeatButton;
 
-    ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
-    /** When property value becomes true the control should be closed
+//    ObjectProperty<Boolean> isFinished = new SimpleObjectProperty<>(false);
+//    /** When property value becomes true the control should be closed
+//     * (i.e. Attach a listener to this property, on changing hide the control */
+//    public ObjectProperty<Boolean> isFinished() { return isFinished; }
+
+    ObjectProperty<List<T>> newVComponents = new SimpleObjectProperty<>();
+    /** This property contains a List of new components resulting from the editing.
+     * When property value becomes non-null the control should be closed.
      * (i.e. Attach a listener to this property, on changing hide the control */
-    public ObjectProperty<Boolean> isFinished() { return isFinished; }
+    public ObjectProperty<List<T>> newVComponentsProperty() { return newVComponents; }
     
     public EditDisplayableTabPane( )
     {
@@ -70,12 +84,15 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
 
     void removeEmptyProperties()
     {
-        if (recurrenceRuleVBox.frequencyComboBox.getValue() == FrequencyType.WEEKLY && recurrenceRuleVBox.dayOfWeekList.isEmpty())
+        if (vComponent.getRecurrenceRule() != null)
         {
-            canNotHaveZeroDaysOfWeek();
-        } else if (! vComponent.getRecurrenceRule().isValid())
-        {
-            throw new RuntimeException("Unhandled component error" + System.lineSeparator() + vComponent.errors());
+            if (recurrenceRuleVBox.frequencyComboBox.getValue() == FrequencyType.WEEKLY && recurrenceRuleVBox.dayOfWeekList.isEmpty())
+            {
+                canNotHaveZeroDaysOfWeek();
+            } else if (! vComponent.getRecurrenceRule().isValid())
+            {
+                throw new RuntimeException("Unhandled component error" + System.lineSeparator() + vComponent.errors());
+            }
         }
         
         if (editDescriptiveVBox.summaryTextField.getText().isEmpty())
@@ -94,7 +111,8 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
     {
         vComponents.remove(vComponent);
         vComponents.add(vComponentOriginalCopy);
-        isFinished.set(true);
+        newVComponentsProperty().set(Arrays.asList(vComponentOriginalCopy)); // indicates control should be hidden
+//        isFinished.set(true);
     }
     
     @FXML private void handleDeleteButton()
@@ -105,8 +123,10 @@ public abstract class EditDisplayableTabPane<T extends VComponentDisplayable<T>,
                 editDescriptiveVBox.startOriginalRecurrence,
                 vComponents
         };
-        boolean result = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
-        isFinished.set(result);
+//        boolean result = SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+        T result = (T) SimpleDeleterFactory.newDeleter(vComponent, params).delete();
+        newVComponentsProperty().set(Arrays.asList(result)); // indicates control should be hidden
+//        isFinished.set(result);
     }
     
     @FXML private void handlePressEnter(KeyEvent e)

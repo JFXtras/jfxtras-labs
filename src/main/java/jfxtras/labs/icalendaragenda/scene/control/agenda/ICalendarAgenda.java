@@ -47,6 +47,7 @@ import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
+import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Description;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Location;
@@ -218,6 +219,8 @@ public class ICalendarAgenda extends Agenda
     private final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>();
     /* Map to match the System.identityHashCode of each VComponent with a List of Appointments it represents */
     private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>();
+    /* When new appointment is drawn, it's added to this map to indicate SEQUENCE shouldn't be incremented when edit popup is used */
+    private final Map<Appointment, Boolean> newAppointmentMap = new HashMap<>();
 
     /** used by default {@link #selectedOneAppointmentCallback} */
     private Alert lastOneAppointmentSelectedAlert;
@@ -288,7 +291,7 @@ public class ICalendarAgenda extends Agenda
      * The callback is initialized to a provide a simple Dialog that allows modification a few properties and
      * buttons to do an advanced edit, cancel or create event.
      * 
-     * This callback is 
+     * This callback is called in the appointmentsListChangeListener.
      */
     private Callback<Appointment, ButtonData> newAppointmentDrawnCallback = (Appointment appointment) ->
     {
@@ -317,6 +320,11 @@ public class ICalendarAgenda extends Agenda
         // Default VComponent factory
         vComponentFactory = new DefaultVComponentFactory();
         
+        // setup i18n resource bundle
+        Locale myLocale = Locale.getDefault();
+        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", myLocale);
+        Settings.setup(resources);
+        
         /*
          * Default New Appointment Callback
          * 
@@ -331,7 +339,7 @@ public class ICalendarAgenda extends Agenda
             return new Agenda.AppointmentImplTemporal()
                     .withStartTemporal(s)
                     .withEndTemporal(e)
-                    .withSummary("New")
+                    .withSummary(resources.getString("New"))
                     .withDescription("")
                     .withAppointmentGroup(appointmentGroups().get(0));
         });
@@ -403,7 +411,17 @@ public class ICalendarAgenda extends Agenda
                 popupStage.show();
                 
                 // hide when finished
-                popupScene.getEditDisplayableTabPane().isFinished().addListener((obs) -> popupStage.hide());
+//                popupScene.getEditDisplayableTabPane().isFinished().addListener((obs) -> popupStage.hide());
+                Boolean isNew = newAppointmentMap.remove(appointment); // false indicates SEQUENCE should be incremented after edit, true means don't increment SEQUENCE
+                System.out.println("isNew:" + isNew);
+                popupScene.getEditDisplayableTabPane().newVComponentsProperty().addListener((obs, oldValue, newValue) ->
+                {
+                    if (isNew)
+                    {
+                        newValue.stream().forEach(v -> v.setSequence((Sequence) null)); // remove SEQUENCE for new components
+                    }
+                    popupStage.hide();
+                });
             }
             return null;
         };
@@ -454,24 +472,42 @@ public class ICalendarAgenda extends Agenda
                         case CANCEL_CLOSE:
                             return;
                         case OK_DONE: // Create VComponent
-                        {
-                            VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
-                            getVCalendar().addVComponent(newVComponent);
-                            break;
-                        }
+                            {
+                                VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
+                                getVCalendar().addVComponent(newVComponent);
+                                break;
+                            }
                         case OTHER: // Advanced Edit
-                        {
-                            VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
-                            getVCalendar().addVComponent(newVComponent);
-                            getEditAppointmentCallback().call(appointment);
-                            break;
-                        }
+                            {
+                                VComponent newVComponent = getVComponentFactory().createVComponent(appointment);
+                                getVCalendar().addVComponent(newVComponent); // when newVComponent is added, the vComponentsChangeListener fires and its associated appointment is made
+                                Appointment newAppointment = vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0);
+                                newAppointmentMap.put(newAppointment, true);
+                                editAppointmentCallback.call(newAppointment);
+                                
+//                                Iterator<Entry<Integer, VComponentDisplayable<?>>> i = appointmentVComponentMap.entrySet().iterator();
+//                                VComponentDisplayable<?> v= null;
+//                                while (i.hasNext())
+//                                {
+//                                    v = i.next().getValue();
+//                                }
+////                                v.setSequence((Sequence) null);
+//                                System.out.println("last v:" + v.getSequence());
+//                                VEvent v2 = vCalendar.getVEvents().get(0);
+//                                System.out.println("vvs:" + vCalendar.getVEvents().size() + " " + (v == v2) + " " + vCalendar.getVEvents().size());
+//                                System.out.println("v:" + v.toContent());
+                                // TODO: get reference to edited VComponent, remove SEQUENCE
+                                break;
+                            }
                         default:
                             throw new RuntimeException("unknown button type:" + button);
                         }
                         // remove drawn appointment - it was replaced by one made when the newVComponent was added
                         appointments().remove(appointment);
-                    } else throw new RuntimeException("Adding multiple appointments at once is not supported (" + change.getAddedSubList().size() + ")");
+                    } else
+                    {
+                        throw new RuntimeException("Adding multiple appointments at once is not supported (" + change.getAddedSubList().size() + ")");
+                    }
                 }
             }
         };
@@ -494,11 +530,6 @@ public class ICalendarAgenda extends Agenda
                 });
             }
         });
-
-        // setup i18n resource bundle
-        Locale myLocale = Locale.getDefault();
-        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.icalendaragenda.ICalendarAgenda", myLocale);
-        Settings.setup(resources);
 
         /*
          * VComponent List Change Listener
@@ -601,8 +632,6 @@ public class ICalendarAgenda extends Agenda
     /** Generate the parameters required for {@link SimpleRevisorFactory} */
     private Object[] reviseParamGenerator(VComponent vComponent, Appointment appointment)
     {
-//        VEvent vComponent = (VEvent) appointmentVComponentMap().get(System.identityHashCode(appointment));
-
         if (vComponent == null)
         {
             // NOTE: Can't throw exception here because in Agenda there is a mouse event that isn't consumed.

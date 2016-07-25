@@ -18,10 +18,10 @@ import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 
 /**
- * Simple factory to create {@link Deleter} objects.  Two methods to create scenes
- * exist.  One takes only a VComponent as a parameter and builds an empty {@link Deleter}.
+ * Simple factory to create {@link DeleterBase} objects.  Two methods to create scenes
+ * exist.  One takes only a VComponent as a parameter and builds an empty {@link DeleterBase}.
  * The second takes a VComponent and an array of parameters required to completely
- * initialize the {@link Deleter}.<br>
+ * initialize the {@link DeleterBase}.<br>
  * <br>
  * The types of objects in the params array are as follows:<br>
  * Callback<Map<ChangeDialogOption, Pair<Temporal, Temporal>>, ChangeDialogOption> - callback for user dialog<br>
@@ -78,7 +78,7 @@ public class SimpleDeleterFactory
         }
     }
     
-    public static Deleter newDeleter (VComponent vComponent)
+    public static DeleterBase newDeleter (VComponent vComponent)
     {
         if (vComponent instanceof VEvent)
         {

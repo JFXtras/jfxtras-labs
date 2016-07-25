@@ -1,13 +1,6 @@
 package jfxtras.labs.icalendarfx.components.deleters;
 
-/**
- * Interface containing the delete behavior of a VComponent
- * 
- * @author David Bal
- *
- */
-public abstract class Deleter
+public interface Deleter
 {
-    /** Executes delete algorithm */
-    public abstract boolean delete();
+    Object delete();
 }
