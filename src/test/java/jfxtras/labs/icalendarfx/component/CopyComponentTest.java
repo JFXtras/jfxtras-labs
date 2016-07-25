@@ -12,7 +12,7 @@ import jfxtras.labs.icalendarfx.ICalendarTestAbstract2;
 import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.properties.component.recurrence.ExceptionDates;
 
-public class ComponentCopyTest extends ICalendarTestAbstract2
+public class CopyComponentTest extends ICalendarTestAbstract2
 {
     @Test
     public void canCopyVEvent1()

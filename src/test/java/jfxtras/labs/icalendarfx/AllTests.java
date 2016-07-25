@@ -6,7 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import jfxtras.labs.icalendarfx.calendar.GeneralCalendarTest;
 import jfxtras.labs.icalendarfx.component.BaseTest;
-import jfxtras.labs.icalendarfx.component.ComponentCopyTest;
+import jfxtras.labs.icalendarfx.component.CopyComponentTest;
 import jfxtras.labs.icalendarfx.component.DaylightSavingsTimeTest;
 import jfxtras.labs.icalendarfx.component.DeleteComponentTest;
 import jfxtras.labs.icalendarfx.component.DisplayableTest;
@@ -86,7 +86,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
                 
         //component tests
         BaseTest.class,
-        ComponentCopyTest.class,
+        CopyComponentTest.class,
         DaylightSavingsTimeTest.class,
         DeleteComponentTest.class,
         DisplayableTest.class,

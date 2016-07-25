@@ -2,6 +2,7 @@ package jfxtras.labs.icalendaragenda;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -26,7 +27,7 @@ public class MakeNewVEventsTest extends AgendaTestAbstract
         release(MouseButton.PRIMARY);
         find("#AppointmentRegularBodyPane2015-11-11/0"); // validate that the pane has the expected id
 
-        // find and edit properties
+        // find and edit properties in simple dialog
         TextField summaryTextField = (TextField) find("#summaryTextField");
         summaryTextField.setText("Edited summary");
         ComboBox<AppointmentGroup> appointmentGroupComboBox = find("#appointmentGroupComboBox");
@@ -82,7 +83,34 @@ public class MakeNewVEventsTest extends AgendaTestAbstract
                 .withLocation("new location")
                 .withRecurrenceRule("RRULE:FREQ=WEEKLY;BYDAY=WE")
                 ;
-        System.out.println(vEvent.toContent());
+        assertEquals(expectedVEvent, vEvent);
+    }
+    
+    @Test
+    public void canCreateSimpleWholeDatVEvent()
+    {
+        // Draw new appointment
+        move("#DayHeader2015-11-12");
+        press(MouseButton.PRIMARY);
+        release(MouseButton.PRIMARY);
+        assertFind("#AppointmentWholedayBodyPane2015-11-12/0");
+        assertFind("#AppointmentWholedayHeaderPane2015-11-12/0");
+        
+        // create event
+        click("#newAppointmentCreateButton");
+        
+        // verify event's creation
+        assertEquals(1, agenda.getVCalendar().getVEvents().size());
+        VEvent vEvent = agenda.getVCalendar().getVEvents().get(0);
+        VEvent expectedVEvent = new VEvent()
+                .withSummary("New")
+                .withCategories("group00")
+                .withDateTimeStart(LocalDate.of(2015, 11, 12))
+                .withDateTimeEnd(LocalDate.of(2015, 11, 13))
+                .withDateTimeCreated(vEvent.getDateTimeCreated())
+                .withDateTimeStamp(vEvent.getDateTimeStamp())
+                .withUniqueIdentifier(vEvent.getUniqueIdentifier())
+                ;
         assertEquals(expectedVEvent, vEvent);
     }
 }

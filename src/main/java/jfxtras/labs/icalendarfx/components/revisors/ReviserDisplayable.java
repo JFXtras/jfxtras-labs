@@ -143,7 +143,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         case WITH_NEW_REPEAT: // no dialog
         case INDIVIDUAL:
             adjustStartAndEnd(vComponentEditedCopy, vComponentOriginalCopy);
-//            adjustDateTime(vComponentEditedCopy);
             break;
         case WITH_EXISTING_REPEAT:
             // Find which properties changed
@@ -196,9 +195,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     getVComponents().remove(getVComponentEdited());
                     getVComponents().add(vComponentOriginalCopy);
                     return Arrays.asList(vComponentOriginalCopy);
-//                    return false;
-//                    revisedVComponents.clear(); // remove vComponentEditedCopy
-//                    revisedVComponents.add(vComponentOriginalCopy);
                 case THIS_AND_FUTURE:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
                     revisedVComponents.add(0, vComponentOriginalCopy);
@@ -216,7 +212,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         if (incrementSequence)
         {
             vComponentEditedCopy.incrementSequence();
-            System.out.println("increment sequence:");
         }
         if (! vComponentEditedCopy.isValid())
         {
@@ -227,7 +222,6 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         getVComponents().remove(getVComponentEdited());
         getVComponents().addAll(revisedVComponents);
         return Collections.unmodifiableList(revisedVComponents);
-//        return true;
     }
     
     /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and

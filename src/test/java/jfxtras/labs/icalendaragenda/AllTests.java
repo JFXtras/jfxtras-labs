@@ -10,6 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
     AgendaStringConverstionTest.class,
     ComponentChangeDialogTest.class,
     MakeAppointmentsTest.class,
+    MakeNewVEventsTest.class,
     RenderVEventsTest.class,
     VEventEditPopupTest.class,
     VJournalEditPopupTest.class,

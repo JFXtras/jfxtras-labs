@@ -8,10 +8,6 @@ package jfxtras.labs.icalendarfx.components.deleters;
  */
 public abstract class DeleterBase<U> implements Deleter
 {
-//    /** Executes delete algorithm */
-//    public abstract boolean delete();
-
-    /** Executes delete algorithm */
     @Override
     public abstract U delete();
 

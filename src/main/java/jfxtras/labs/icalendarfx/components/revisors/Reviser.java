@@ -9,9 +9,8 @@ package jfxtras.labs.icalendarfx.components.revisors;
 public interface Reviser
 {
     /** Revise calendar component based on properties set in subclasses.
-     * Returns true if component was revised (cancel returns false)
+     * Returns component(s) {@code List<T>} that exist after revision
      *      */
-//    boolean revise();
     Object revise();
 
 }

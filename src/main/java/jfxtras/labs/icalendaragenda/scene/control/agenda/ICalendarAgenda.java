@@ -219,7 +219,8 @@ public class ICalendarAgenda extends Agenda
     private final Map<Integer, VComponentDisplayable<?>> appointmentVComponentMap = new HashMap<>();
     /* Map to match the System.identityHashCode of each VComponent with a List of Appointments it represents */
     private final Map<Integer, List<Appointment>> vComponentAppointmentMap = new HashMap<>();
-    /* When new appointment is drawn, it's added to this map to indicate SEQUENCE shouldn't be incremented when edit popup is used */
+    /* When a new appointment is drawn, it's added to this map to indicate SEQUENCE shouldn't be incremented
+     * when editAppointmentCallback is used */
     private final Map<Appointment, Boolean> newAppointmentMap = new HashMap<>();
 
     /** used by default {@link #selectedOneAppointmentCallback} */
@@ -339,8 +340,8 @@ public class ICalendarAgenda extends Agenda
             return new Agenda.AppointmentImplTemporal()
                     .withStartTemporal(s)
                     .withEndTemporal(e)
-                    .withSummary(resources.getString("New"))
-                    .withDescription("")
+                    .withSummary(resources.getString("new"))
+//                    .withDescription("")
                     .withAppointmentGroup(appointmentGroups().get(0));
         });
         
@@ -410,13 +411,15 @@ public class ICalendarAgenda extends Agenda
                 popupStage.setY(y);
                 popupStage.show();
                 
-                // hide when finished
-//                popupScene.getEditDisplayableTabPane().isFinished().addListener((obs) -> popupStage.hide());
-                Boolean isNew = newAppointmentMap.remove(appointment); // false indicates SEQUENCE should be incremented after edit, true means don't increment SEQUENCE
-                System.out.println("isNew:" + isNew);
+                /* Check if Appointment is new
+                 * Add listener to newVComponentsProperty to get resulting VComponents
+                 * Remove SEQUENCE if Appointment is new
+                 */
+                Boolean isNew1 = newAppointmentMap.remove(appointment); // false indicates SEQUENCE should be incremented after edit, true means don't increment SEQUENCE
+                Boolean isNew2 = (isNew1 == null) ? false : isNew1;
                 popupScene.getEditDisplayableTabPane().newVComponentsProperty().addListener((obs, oldValue, newValue) ->
                 {
-                    if (isNew)
+                    if (isNew2)
                     {
                         newValue.stream().forEach(v -> v.setSequence((Sequence) null)); // remove SEQUENCE for new components
                     }
@@ -445,7 +448,6 @@ public class ICalendarAgenda extends Agenda
                     {
                         int index = change.getList().indexOf(c);
                         appointmentGroups().get(index).setDescription(c);
-//                        System.out.println("updated apointmentgroup: " + index + " " + c);
                     });
                 }
             }
@@ -484,19 +486,6 @@ public class ICalendarAgenda extends Agenda
                                 Appointment newAppointment = vComponentAppointmentMap.get(System.identityHashCode(newVComponent)).get(0);
                                 newAppointmentMap.put(newAppointment, true);
                                 editAppointmentCallback.call(newAppointment);
-                                
-//                                Iterator<Entry<Integer, VComponentDisplayable<?>>> i = appointmentVComponentMap.entrySet().iterator();
-//                                VComponentDisplayable<?> v= null;
-//                                while (i.hasNext())
-//                                {
-//                                    v = i.next().getValue();
-//                                }
-////                                v.setSequence((Sequence) null);
-//                                System.out.println("last v:" + v.getSequence());
-//                                VEvent v2 = vCalendar.getVEvents().get(0);
-//                                System.out.println("vvs:" + vCalendar.getVEvents().size() + " " + (v == v2) + " " + vCalendar.getVEvents().size());
-//                                System.out.println("v:" + v.toContent());
-                                // TODO: get reference to edited VComponent, remove SEQUENCE
                                 break;
                             }
                         default:

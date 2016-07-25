@@ -98,11 +98,9 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
             {
             case ALL:
                 getVComponents().remove(vComponent);
-//                return true;
                 return null;
             case CANCEL:
                 return vComponent;
-//                return false;
             case ONE:
                 // Add recurrence to exception list
                 getVComponents().remove(vComponent);
@@ -115,7 +113,6 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                 {
                     exceptionDates = vComponent.getExceptionDates().get(vComponent.getExceptionDates().size()); // get last ExceptionDate
                 }
-//                System.out.println("null check1:" + exceptionDates.getValue() + " " + startOriginalRecurrence);
                 exceptionDates.getValue().add(startOriginalRecurrence);
                 break;
             case THIS_AND_FUTURE:
@@ -139,7 +136,6 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
         { // delete individual component
             getVComponents().remove(vComponent);
             return null;
-//            return true;
         }
 
         if (! vComponent.isValid())
@@ -150,6 +146,5 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
         }
         getVComponents().add(vComponent);
         return vComponent;
-//        return true;
     }
 }

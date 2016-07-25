@@ -4,9 +4,6 @@ import java.util.List;
 
 public abstract class ReviserBase<U> implements Reviser
 {
-//    @Override
-//    public abstract boolean revise();
-
     @Override
     public abstract List<U> revise();
 }

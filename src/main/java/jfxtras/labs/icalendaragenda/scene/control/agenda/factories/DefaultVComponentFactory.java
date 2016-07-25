@@ -1,7 +1,9 @@
 package jfxtras.labs.icalendaragenda.scene.control.agenda.factories;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 
 import jfxtras.labs.icalendarfx.components.VComponentDisplayable;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -25,15 +27,17 @@ public class DefaultVComponentFactory extends VComponentFactory<Appointment>
         String description = ((appointment.getDescription() == null) || appointment.getDescription().isEmpty()) ? null : appointment.getDescription();
         String category = (appointment.getAppointmentGroup() == null) ? null : appointment.getAppointmentGroup().getDescription();
         String location = ((appointment.getLocation() == null) || appointment.getLocation().isEmpty()) ? null : appointment.getLocation();
-
+        Temporal dtstart = (appointment.isWholeDay()) ? LocalDate.from(appointment.getStartTemporal()) : appointment.getStartTemporal();
+        Temporal dtend = (appointment.isWholeDay()) ? LocalDate.from(appointment.getEndTemporal()) : appointment.getEndTemporal();
+        
         boolean hasEnd = appointment.getEndTemporal() != null;
         if (hasEnd)
         {
             newVComponent = new VEvent()
                     .withSummary(summary)
                     .withCategories(category)
-                    .withDateTimeStart(appointment.getStartTemporal())
-                    .withDateTimeEnd(appointment.getEndTemporal())
+                    .withDateTimeStart(dtstart)
+                    .withDateTimeEnd(dtend)
                     .withDescription(description)
                     .withLocation(location)
                     .withDateTimeCreated(dtCreated)
@@ -44,7 +48,7 @@ public class DefaultVComponentFactory extends VComponentFactory<Appointment>
             newVComponent = new VTodo()
                     .withSummary(summary)
                     .withCategories(category)
-                    .withDateTimeStart(appointment.getStartTemporal())
+                    .withDateTimeStart(dtstart)
                     .withDescription(description)
                     .withLocation(location)
                     .withDateTimeCreated(dtCreated)
