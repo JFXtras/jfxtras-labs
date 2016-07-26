@@ -237,6 +237,9 @@ public class ICalendarAgenda extends Agenda
     {
         OneAppointmentSelectedAlert alert = new OneAppointmentSelectedAlert(appointment, Settings.resources);
 
+        VComponentDisplayable<?> vComponent0 = appointmentVComponentMap.get(System.identityHashCode(appointment));
+        System.out.println(vComponent0.toContent());
+
         alert.initOwner(this.getScene().getWindow());
         Pane bodyPane = (Pane) ((AgendaSkin) getSkin()).getNodeForPopup(appointment);
         alert.setX(NodeUtil.screenX(bodyPane) + bodyPane.getWidth()/2);

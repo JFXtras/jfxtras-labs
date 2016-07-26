@@ -216,12 +216,18 @@ public interface VComponentRepeatable<T> extends VComponentPrimary<T>
     default void setRecurrenceRule(RecurrenceRule recurrenceRule) { recurrenceRuleProperty().set(recurrenceRule); }
     default void setRecurrenceRule(RecurrenceRule2 rrule)
     {
-        if (getRecurrenceRule() == null)
+        if (getRecurrenceRule() == null && rrule != null)
         {
             setRecurrenceRule(new RecurrenceRule(rrule));
         } else
         {
-            getRecurrenceRule().setValue(rrule);
+            if (rrule == null)
+            {
+                recurrenceRuleProperty().set(null);
+            } else
+            {
+                getRecurrenceRule().setValue(rrule);                
+            }
         }
     }
     default void setRecurrenceRule(String rrule)

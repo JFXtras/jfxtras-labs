@@ -111,7 +111,7 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                     vComponent.setExceptionDates(FXCollections.observableArrayList(exceptionDates));
                 } else
                 {
-                    exceptionDates = vComponent.getExceptionDates().get(vComponent.getExceptionDates().size()); // get last ExceptionDate
+                    exceptionDates = vComponent.getExceptionDates().get(vComponent.getExceptionDates().size()-1); // get last ExceptionDate
                 }
                 exceptionDates.getValue().add(startOriginalRecurrence);
                 break;

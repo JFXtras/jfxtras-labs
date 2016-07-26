@@ -433,8 +433,7 @@ public class VCalendar extends VParentBase
             if (change.wasAdded())
             {
                 change.getAddedSubList().forEach(vComponent -> 
-                {
-                    
+                {                    
                     vComponent.setChildComponentsListCallBack( (c) ->
                     {
                         if (c.getUniqueIdentifier() == null) return null;

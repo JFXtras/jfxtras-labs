@@ -24,7 +24,7 @@ public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract2
         VCalendar c = new VCalendar()
                 .withVEvents(parent, child);
         assertEquals(2, c.getVEvents().size());
-        assertEquals(1, parent.childComponents().size());
+        assertEquals(1, parent.recurrenceChildren().size());
         List<Temporal> expectedRecurrences = Arrays.asList(
                 LocalDateTime.of(2015, 11, 9, 10, 0),
                 LocalDateTime.of(2017, 11, 9, 10, 0),
@@ -47,9 +47,9 @@ public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract2
         // add components out-of-order
         c.getVEvents().add(child);
         c.getVEvents().add(parent);
-        assertEquals(1, parent.childComponents().size());
+        assertEquals(1, parent.recurrenceChildren().size());
         c.getVEvents().add(child2);
-        assertEquals(2, parent.childComponents().size());
+        assertEquals(2, parent.recurrenceChildren().size());
         {
             List<Temporal> expectedRecurrences = Arrays.asList(
                     LocalDateTime.of(2015, 11, 9, 10, 0),
@@ -64,7 +64,7 @@ public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract2
         
         // remove child
         c.getVEvents().remove(child);
-        assertEquals(1, parent.childComponents().size());
+        assertEquals(1, parent.recurrenceChildren().size());
         {
             List<Temporal> expectedRecurrences = Arrays.asList(
                     LocalDateTime.of(2015, 11, 9, 10, 0),
@@ -88,7 +88,7 @@ public class VCalendarRecurrenceIDTest extends ICalendarTestAbstract2
         
         // add components all at once
         c.getVEvents().addAll(child, parent, child2);
-        assertEquals(2, parent.childComponents().size());
+        assertEquals(2, parent.recurrenceChildren().size());
         {
             List<Temporal> expectedRecurrences = Arrays.asList(
                     LocalDateTime.of(2015, 11, 9, 10, 0),

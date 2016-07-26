@@ -61,6 +61,34 @@ public class DeleteComponentTest
     }
     
     @Test
+    public void canDeleteTwo()
+    {
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
+        VEvent vComponentEdited = ICalendarStaticComponents.getDaily1();
+        vComponents.add(vComponentEdited);
+
+        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+        ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponentEdited))
+                .withDialogCallback((m) -> ChangeDialogOption.ONE)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withVComponents(vComponents)
+                .delete();
+
+        Temporal startOriginalRecurrence2 = LocalDateTime.of(2016, 5, 17, 10, 0);
+        ((DeleterVEvent) SimpleDeleterFactory.newDeleter(vComponentEdited))
+                .withDialogCallback((m) -> ChangeDialogOption.ONE)
+                .withStartOriginalRecurrence(startOriginalRecurrence2)
+                .withVComponents(vComponents)
+                .delete();
+
+        assertEquals(1, vComponents.size());
+        VEvent vComponentExpected = ICalendarStaticComponents.getDaily1()
+                .withExceptionDates(startOriginalRecurrence, startOriginalRecurrence2);
+        assertEquals(vComponentExpected, vComponents.get(0));
+    }
+    
+    @Test
     public void canDeleteThisAndFuture()
     {
         VCalendar vCalendar = new VCalendar();

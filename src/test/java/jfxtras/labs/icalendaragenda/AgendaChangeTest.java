@@ -58,7 +58,7 @@ public class AgendaChangeTest extends AgendaTestAbstract
 //        RecurrenceRule3 r = ICalendarStaticVEvents.getDaily1().childComponentsWithRecurrenceIDs().add(v1);
 //        VEvent expectedV0 = ICalendarStaticVEvents.getDaily1()
 //                .withRRule(r);
-        assertEquals(Arrays.asList(v1), v0.childComponents()); // has recurrence ID in child list
+        assertEquals(Arrays.asList(v1), v0.recurrenceChildren()); // has recurrence ID in child list
         
         VEvent expectedV1 = ICalendarStaticComponents.getDaily1()
                 .withRecurrenceRule((RecurrenceRule2) null)

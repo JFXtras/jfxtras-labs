@@ -67,7 +67,6 @@ public class OrdererBase implements Orderer
         sortOrderChangeListener = (obs, oldValue, newValue) ->
         {
             final int sortOrder;
-//            System.out.println("elementmap:" + elementSortOrderMap.get(oldValue));
             if ((oldValue != null) && (elementSortOrderMap.get(oldValue) != null))
             {
                 sortOrder = elementSortOrderMap.get(oldValue);
@@ -80,8 +79,7 @@ public class OrdererBase implements Orderer
             if (newValue != null)
             {
                 elementSortOrderMap.put(newValue, sortOrder);
-                newValue.setParent(parent);
-//                sortOrderCounter += 100;
+                newValue.setParent(parent);                
             }
         };
     }
@@ -109,9 +107,10 @@ public class OrdererBase implements Orderer
     @Override
     public void unregisterSortOrderProperty(ObservableList<? extends VChild> list)
     {
-        if (list != null)
-        {
-            list.removeListener(sortOrderListChangeListener);
+//        System.out.println("unregistered" + list);
+        if (! list.isEmpty())
+        { // remove existing elements to sort order
+            list.forEach(vChild -> elementSortOrderMap.remove(vChild));
         }
     }
     
@@ -134,7 +133,8 @@ public class OrdererBase implements Orderer
     @Override
     public void unregisterSortOrderProperty(ObjectProperty<? extends VChild> property)
     {
-        property.removeListener(sortOrderChangeListener);
+        elementSortOrderMap.remove(property);
+//        property.removeListener(sortOrderChangeListener); // not needed
     }
     
     @Override

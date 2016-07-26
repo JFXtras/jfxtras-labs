@@ -222,4 +222,26 @@ END:VEVENT
                 "END:VEVENT";
         assertEquals(expectedContent, component2.toContent());
     }
+//    
+//    @Test
+//    public void canCopyVEvent8()
+//    {
+//        VCalendar vCalendar = new VCalendar();
+//        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
+//        VEvent vComponentOriginal = ICalendarStaticComponents.getDaily1();
+//        VEvent vComponentOriginalCopy = new VEvent(vComponentOriginal);
+//        vComponents.add(vComponentOriginal);
+//        // make recurrence
+//        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
+//        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
+//        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
+//        vComponentRecurrence.setSummary("recurrence summary");
+//        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
+//        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+//        vComponents.add(vComponentRecurrence);
+//        System.out.println(vComponentOriginal.childComponents().size());
+//        System.out.println(vComponentOriginalCopy.childComponents().size());
+//        System.out.println(vComponentOriginal.toContent());
+//        System.out.println(vComponentOriginalCopy.toContent());
+//    }
 }

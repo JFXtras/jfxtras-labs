@@ -617,7 +617,7 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
      * 
      * @return - list of child components having RecurrenceIDs
      */
-    List<VComponentDisplayable<?>> childComponents();
+    List<VComponentDisplayable<?>> recurrenceChildren();
 //    /** Returns false if there are no child components currently in list.  Run this method instead of childComponents().size() because
 //     * the latter will generate the list if it doesn't exist which may not be desired.
 //     */

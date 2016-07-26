@@ -105,8 +105,8 @@ public class ReviseComponentTest
         assertEquals("Edited summary", myComponentIndividual.getSummary().getValue());
                 
         // Check child components
-        assertEquals(Arrays.asList(myComponentIndividual), myComponentRepeats.childComponents());
-        assertEquals(Collections.emptyList(), myComponentIndividual.childComponents());
+        assertEquals(Arrays.asList(myComponentIndividual), myComponentRepeats.recurrenceChildren());
+        assertEquals(Collections.emptyList(), myComponentIndividual.recurrenceChildren());
 
         // 2nd edit - edit component with RecurrenceID (individual)
         Temporal startOriginalRecurrence2 = LocalDateTime.of(2016, 5, 16, 9, 0);
@@ -127,8 +127,8 @@ public class ReviseComponentTest
         
         // Check child components
         VEvent myComponentIndividual2 = vComponents.get(1);
-        assertEquals(Arrays.asList(myComponentIndividual2), myComponentRepeats.childComponents());
-        assertEquals(Collections.emptyList(), myComponentIndividual2.childComponents());
+        assertEquals(Arrays.asList(myComponentIndividual2), myComponentRepeats.recurrenceChildren());
+        assertEquals(Collections.emptyList(), myComponentIndividual2.recurrenceChildren());
     }
     
     @Test

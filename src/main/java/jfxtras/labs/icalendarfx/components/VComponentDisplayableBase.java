@@ -244,6 +244,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         } else
         {
             orderer().unregisterSortOrderProperty(this.recurrenceDates);
+            this.recurrenceDates = null;
         }
         this.recurrenceDates = recurrenceDates;
     }
@@ -424,11 +425,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         
         // Handle Recurrence IDs
         final Stream<Temporal> stream2;
-        List<VComponentDisplayable<?>> children = childComponents();
+        List<VComponentDisplayable<?>> children = recurrenceChildren();
         if (children != null)
         {
             // If present, remove recurrence ID original values
-            List<Temporal> recurrenceIDTemporals = childComponents()
+            List<Temporal> recurrenceIDTemporals = recurrenceChildren()
                     .stream()
                     .map(c -> c.getRecurrenceId().getValue())
                     .collect(Collectors.toList());
@@ -487,11 +488,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     }
 
     @Override
-    public List<VComponentDisplayable<?>> childComponents()
+    public List<VComponentDisplayable<?>> recurrenceChildren()
     {
         if ((getRecurrenceId() == null) && (getChildComponentsListCallBack() != null))
         {
-            return getChildComponentsListCallBack().call(this);
+            return Collections.unmodifiableList(getChildComponentsListCallBack().call(this));
         }
         return Collections.emptyList();
     }

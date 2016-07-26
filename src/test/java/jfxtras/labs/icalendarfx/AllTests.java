@@ -4,7 +4,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import jfxtras.labs.icalendarfx.calendar.CalendarScaleTest;
 import jfxtras.labs.icalendarfx.calendar.GeneralCalendarTest;
+import jfxtras.labs.icalendarfx.calendar.VCalendarRecurrenceIDTest;
 import jfxtras.labs.icalendarfx.component.BaseTest;
 import jfxtras.labs.icalendarfx.component.CopyComponentTest;
 import jfxtras.labs.icalendarfx.component.DaylightSavingsTimeTest;
@@ -16,6 +18,7 @@ import jfxtras.labs.icalendarfx.component.ICalendarParseVEventTest;
 import jfxtras.labs.icalendarfx.component.LocatableTest;
 import jfxtras.labs.icalendarfx.component.PersonalTest;
 import jfxtras.labs.icalendarfx.component.PrimaryTest;
+import jfxtras.labs.icalendarfx.component.RecurrenceIDComponentEditTest;
 import jfxtras.labs.icalendarfx.component.RepeatableTest;
 import jfxtras.labs.icalendarfx.component.ReviseComponentTest;
 import jfxtras.labs.icalendarfx.component.StandardOrDaylightTimeTest;
@@ -81,8 +84,13 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
 @RunWith(Suite.class)
 @SuiteClasses({ 
         
+        // general tests
+        OrdererTest.class,
+    
         // calendar tests
+        CalendarScaleTest.class,
         GeneralCalendarTest.class,
+        VCalendarRecurrenceIDTest.class,
                 
         //component tests
         BaseTest.class,
@@ -96,6 +104,7 @@ import jfxtras.labs.icalendarfx.property.rrule.RecurrenceRuleStreamTest;
         LocatableTest.class,
         PrimaryTest.class,
         PersonalTest.class,
+        RecurrenceIDComponentEditTest.class,
         RepeatableTest.class,
         ReviseComponentTest.class,
         StandardOrDaylightTimeTest.class,
