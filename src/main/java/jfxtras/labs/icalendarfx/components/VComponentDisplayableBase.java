@@ -272,6 +272,11 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     @Override
     public RecurrenceId getRecurrenceId() { return (recurrenceId == null) ? null : recurrenceIdProperty().get(); }
     private ObjectProperty<RecurrenceId> recurrenceId;
+    
+//    private VComponentDisplayable<?> recurrenceParent;
+//    void setRecurrenceParent(VComponentDisplayable<?> recurrenceParent) { this.recurrenceParent = recurrenceParent; }
+//    @Override
+//    public VComponentDisplayable<?> recurrenceParent() { return recurrenceParent; }
 
     /**
      * RELATED-TO:
@@ -471,31 +476,55 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
     public RecurrenceRuleCache recurrenceStreamer() { return streamer; }
 
     /*
-     * CHILDREN COMPONENTS - (RECURRENCE-IDs AND MATCHING UID)
+     * RECURRENCE CHILDREN - (RECURRENCE-IDs AND MATCHING UID)
      */
     /**  Callback to make list of child components (those with RECURRENCE-ID and same UID)
      * Callback assigned in {@link VCalendar#displayableListChangeListener } */
-    private Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> makeChildComponentsListCallBack;
+    private Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> makeRecurrenceChildrenListCallBack;
+//    @Override
+//    public Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> getChildComponentsListCallBack()
+//    {
+//        return makeChildComponentsListCallBack;
+//    }
     @Override
-    public Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> getChildComponentsListCallBack()
+    public void setRecurrenceChildrenListCallBack(Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> makeRecurrenceChildrenListCallBack)
     {
-        return makeChildComponentsListCallBack;
-    }
-    @Override
-    public void setChildComponentsListCallBack(Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> makeChildComponentsListCallBack)
-    {
-        this.makeChildComponentsListCallBack = makeChildComponentsListCallBack;
+        this.makeRecurrenceChildrenListCallBack = makeRecurrenceChildrenListCallBack;
     }
 
     @Override
     public List<VComponentDisplayable<?>> recurrenceChildren()
     {
-        if ((getRecurrenceId() == null) && (getChildComponentsListCallBack() != null))
+        if ((getRecurrenceId() == null) && (makeRecurrenceChildrenListCallBack != null))
         {
-            return Collections.unmodifiableList(getChildComponentsListCallBack().call(this));
+            return Collections.unmodifiableList(makeRecurrenceChildrenListCallBack.call(this));
         }
         return Collections.emptyList();
     }
+    
+    /*
+     * RECURRENCE PARENT - (the VComponent with matching UID and no RECURRENCEID)
+     */
+    private Callback<VComponentDisplayable<?>, VComponentDisplayable<?>> recurrenceParentCallBack;
+
+    @Override
+    public void setRecurrenceParentListCallBack(Callback<VComponentDisplayable<?>, VComponentDisplayable<?>> recurrenceParentCallBack)
+    {
+        this.recurrenceParentCallBack = recurrenceParentCallBack;
+    }
+    
+    @Override
+    public VComponentDisplayable<?> recurrenceParent()
+    {
+        if ((getRecurrenceId() != null) && (recurrenceParentCallBack != null))
+        {
+            return recurrenceParentCallBack.call(this);
+        }
+        return null;
+    }
+
+    
+
 
     @Override
     public List<String> errors()

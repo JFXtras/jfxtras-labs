@@ -1,6 +1,7 @@
 package jfxtras.labs.icalendaragenda.trial;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -28,6 +29,7 @@ public class ICalendarAgendaSimpleTrial extends Application
         VEvent vEvent = new VEvent()
                 .withDateTimeStart(LocalDateTime.now().minusMonths(1))
                 .withDateTimeEnd(LocalDateTime.now().minusMonths(1).plusHours(1))
+                .withDateTimeStamp(LocalDateTime.now().atZone(ZoneId.of("Z")))
                 .withSummary("Example Daily Event")
                 .withRecurrenceRule("RRULE:FREQ=DAILY")
                 .withUniqueIdentifier("exampleuid000jfxtras.org");

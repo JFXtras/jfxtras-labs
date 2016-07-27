@@ -97,6 +97,7 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
             switch (changeResponse)
             {
             case ALL:
+                getVComponents().removeAll(vComponent.recurrenceChildren());
                 getVComponents().remove(vComponent);
                 return null;
             case CANCEL:
@@ -127,6 +128,11 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
                     until = LocalDate.from(previous);                    
                 }
                 vComponent.getRecurrenceRule().getValue().setUntil(until);
+                List<VComponentDisplayable<?>> recurrenceChildren = vComponent.recurrenceChildren()
+                        .stream()
+                        .filter(v -> DateTimeUtilities.isAfter(v.getRecurrenceId().getValue(), getStartOriginalRecurrence()))
+                        .collect(Collectors.toList());
+                getVComponents().removeAll(recurrenceChildren);
                 getVComponents().remove(vComponent);
                 break;
             default:
@@ -134,6 +140,18 @@ public class DeleterDisplayable<T, U extends VComponentDisplayable<?>> extends D
             }
         } else
         { // delete individual component
+            if (vComponent.getRecurrenceId() != null)
+            {
+                // add EXDATE to recurrence parent
+                Temporal recurrence = vComponent.getRecurrenceId().getValue();
+                if (vComponent.recurrenceParent().getExceptionDates() == null)
+                {
+                    vComponent.recurrenceParent().withExceptionDates(recurrence);
+                } else
+                {
+                    vComponent.recurrenceParent().getExceptionDates().get(0).getValue().add(recurrence);
+                }
+            }
             getVComponents().remove(vComponent);
             return null;
         }

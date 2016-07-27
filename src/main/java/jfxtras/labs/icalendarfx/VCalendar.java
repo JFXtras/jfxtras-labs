@@ -433,16 +433,27 @@ public class VCalendar extends VParentBase
             if (change.wasAdded())
             {
                 change.getAddedSubList().forEach(vComponent -> 
-                {                    
-                    vComponent.setChildComponentsListCallBack( (c) ->
+                {
+                    // set recurrence children callback (VComponents having RecurrenceIDs and matching UID to a recurrence parent)
+                    vComponent.setRecurrenceChildrenListCallBack( (c) ->
                     {
                         if (c.getUniqueIdentifier() == null) return null;
-                        return uidComponentsMap
-                                .get(c.getUniqueIdentifier().getValue())
+                        return uidComponentsMap.get(c.getUniqueIdentifier().getValue())
                                 .stream()
                                 .filter(v -> v.getRecurrenceId() != null) // keep only children objects
                                 .collect(Collectors.toList());
                     });
+                    // set recurrence parent callback (the VComponent with matching UID and no RECURRENCEID)
+                    vComponent.setRecurrenceParentListCallBack( (c) ->
+                    {
+                        if (c.getUniqueIdentifier() == null) return null;
+                        return uidComponentsMap.get(c.getUniqueIdentifier().getValue())
+                                .stream()
+                                .filter(v -> v.getRecurrenceId() == null) // parents don't have RECURRENCEID
+                                .findAny()
+                                .orElse(null);
+                    });
+                    // add VComponent to map
                     if (vComponent.getUniqueIdentifier() != null)
                     {
                         String uid = vComponent.getUniqueIdentifier().getValue();

@@ -623,9 +623,18 @@ public interface VComponentDisplayable<T> extends VComponentPersonal<T>, VCompon
 //     */
 //    boolean hasChildComponents();
     
-    /** Callback to make list of child components (those with RECURRENCE-ID and same UID) 
-     * Callback assigned in {@link VCalendar#displayableListChangeListener }.  It should not be assigned elsewhere. */
-    Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> getChildComponentsListCallBack();
+//    /** Callback to make list of child components (those with RECURRENCE-ID and same UID) 
+//     * Callback assigned in {@link VCalendar#displayableListChangeListener }.  It should not be assigned outside the API
+//     */
+//    Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> getChildComponentsListCallBack();
     /** Callback to make list of child components (those with RECURRENCE-ID and same UID) */
-    void setChildComponentsListCallBack(Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> childComponentsListCallBack);
+    void setRecurrenceChildrenListCallBack(Callback<VComponentDisplayable<?>, List<VComponentDisplayable<?>>> recurrenceChildrenListCallBack);
+    
+    /** If VComponent has a {@link #getRecurrenceId()} then this variable is the link to the parent 
+     * {@link VComponentDisplayable}, otherwise it is null */
+    VComponentDisplayable<?> recurrenceParent();
+    
+    /** Callback to identify recurrence parent (the VComponent with matching UID and no RECURRENCEID) */
+    void setRecurrenceParentListCallBack(Callback<VComponentDisplayable<?>, VComponentDisplayable<?>> recurrenceParentListCallBack);
+
 }
