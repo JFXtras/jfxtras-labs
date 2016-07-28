@@ -81,7 +81,7 @@ System.out.println("copy childs:" + vComponentOriginalCopy.recurrenceChildren().
         assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
     }
     
-    @Test // with a recurrence in date range
+    @Test // edit ALL with a recurrence in date range
     public void canEditAll()
     {
         VCalendar vCalendar = new VCalendar();
@@ -114,6 +114,49 @@ System.out.println("copy childs:" + vComponentOriginalCopy.recurrenceChildren().
                 .withVComponentOriginal(vComponent1Copy);
         reviser.revise();
 
+        assertEquals(1, vComponents.size());
+        VEvent myComponent1 = vComponents.get(0);
+        
+        VEvent expectedVComponent = ICalendarStaticComponents.getDaily1()
+                .withSequence(1);
+        expectedVComponent.setDateTimeStart(LocalDateTime.of(2015, 11, 9, 9, 0));
+        expectedVComponent.setDateTimeEnd(LocalDateTime.of(2015, 11, 9, 10, 30));
+        assertEquals(expectedVComponent, myComponent1);
+    }
+    
+    @Test // edit ALL with a recurrence in date range
+    public void canEditAllIgnoreRecurrence()
+    {
+        VCalendar vCalendar = new VCalendar();
+        final ObservableList<VEvent> vComponents = vCalendar.getVEvents();
+        
+        VEvent vComponent1 = ICalendarStaticComponents.getDaily1();
+        VEvent vComponent1Copy = new VEvent(vComponent1);
+        vComponents.add(vComponent1);
+        // make recurrence
+        VEvent vComponentRecurrence = ICalendarStaticComponents.getDaily1();
+        vComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
+        vComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
+        vComponentRecurrence.setSummary("recurrence summary");
+        vComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
+        vComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        vComponents.add(vComponentRecurrence);
+
+        // make changes
+        Temporal startOriginalRecurrence = LocalDateTime.of(2016, 5, 16, 10, 0);
+        Temporal startRecurrence = LocalDateTime.of(2016, 5, 16, 9, 0);
+        Temporal endRecurrence = LocalDateTime.of(2016, 5, 16, 10, 30);
+
+        ReviserVEvent reviser = ((ReviserVEvent) SimpleRevisorFactory.newReviser(vComponent1))
+                .withDialogCallback((m) -> ChangeDialogOption.ALL_IGNORE_RECURRENCES)
+                .withEndRecurrence(endRecurrence)
+                .withStartOriginalRecurrence(startOriginalRecurrence)
+                .withStartRecurrence(startRecurrence)
+                .withVComponents(vComponents)
+                .withVComponentEdited(vComponent1)
+                .withVComponentOriginal(vComponent1Copy);
+        reviser.revise();
+
         assertEquals(2, vComponents.size());
         VEvent myComponent1 = vComponents.get(1);
         VEvent myComponentRecurrence = vComponents.get(0);
@@ -125,6 +168,7 @@ System.out.println("copy childs:" + vComponentOriginalCopy.recurrenceChildren().
         assertEquals(expectedVComponent, myComponent1);
         
         assertEquals(vComponentRecurrence, myComponentRecurrence);
+        assertEquals(LocalDateTime.of(2016, 5, 17, 9, 0), vComponentRecurrence.getRecurrenceId().getValue());
     }
     
     @Test // makes sure when recurrence deleted the parent gets an EXDATE

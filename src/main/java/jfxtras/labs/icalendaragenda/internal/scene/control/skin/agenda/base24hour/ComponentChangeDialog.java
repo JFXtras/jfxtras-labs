@@ -24,6 +24,7 @@ import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
  */
 public class ComponentChangeDialog extends Dialog<ChangeDialogOption>
 {
+    ComboBox<ChangeDialogOption> comboBox = new ComboBox<>();
     /**
      * 
      * @param choiceMap - map of ChangeDialogOption and StartEndRange pairs representing the choices available
@@ -47,7 +48,7 @@ public class ComponentChangeDialog extends Dialog<ChangeDialogOption>
         label.textProperty().bind(getDialogPane().contentTextProperty());
         
         // Choices
-        ComboBox<ChangeDialogOption> comboBox = new ComboBox<>();       
+//        ComboBox<ChangeDialogOption> comboBox = new ComboBox<>();
         comboBox.setId("changeDialogComboBox");
         comboBox.getItems().addAll(choiceMap.keySet());
         comboBox.getSelectionModel().select(initialSelection);
@@ -80,7 +81,8 @@ public class ComponentChangeDialog extends Dialog<ChangeDialogOption>
             setHeaderText(Settings.REPEAT_CHANGE_CHOICES.get(newSelection) + ":" + System.lineSeparator() + range2);
         });
         
-        setResultConverter((dialogButton) -> {
+        setResultConverter((dialogButton) ->
+        {
             ButtonData data = (dialogButton == null) ? null : dialogButton.getButtonData();
             return data == ButtonData.OK_DONE ? comboBox.getSelectionModel().getSelectedItem() : null;
         });

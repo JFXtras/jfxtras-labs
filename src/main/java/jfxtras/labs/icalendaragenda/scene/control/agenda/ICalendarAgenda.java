@@ -26,10 +26,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Pair;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.AgendaDateTimeUtilities;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.DeleteChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditChoiceDialog;
+import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.EditWithRecurrencesChoiceDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.NewAppointmentDialog;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.OneAppointmentSelectedAlert;
 import jfxtras.labs.icalendaragenda.internal.scene.control.skin.agenda.base24hour.Settings;
@@ -46,6 +48,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.labs.icalendarfx.components.VJournal;
 import jfxtras.labs.icalendarfx.components.VTodo;
 import jfxtras.labs.icalendarfx.components.deleters.SimpleDeleterFactory;
+import jfxtras.labs.icalendarfx.components.revisors.ChangeDialogOption;
 import jfxtras.labs.icalendarfx.components.revisors.SimpleRevisorFactory;
 import jfxtras.labs.icalendarfx.properties.component.change.Sequence;
 import jfxtras.labs.icalendarfx.properties.component.descriptive.Categories;
@@ -622,7 +625,7 @@ public class ICalendarAgenda extends Agenda
     } // end of constructor
     
     /** Generate the parameters required for {@link SimpleRevisorFactory} */
-    private Object[] reviseParamGenerator(VComponent vComponent, Appointment appointment)
+    private Object[] reviseParamGenerator(VComponentDisplayable<?> vComponent, Appointment appointment)
     {
         if (vComponent == null)
         {
@@ -663,8 +666,9 @@ public class ICalendarAgenda extends Agenda
                 startRecurrence = appointment.getStartTemporal();
                 endRecurrence = appointment.getEndTemporal();            
             }
+            Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> editDialogCallback = (vComponent.recurrenceChildren().isEmpty()) ? EditChoiceDialog.EDIT_DIALOG_CALLBACK : EditWithRecurrencesChoiceDialog.EDIT_DIALOG_CALLBACK;
             return new Object[] {
-                    EditChoiceDialog.EDIT_DIALOG_CALLBACK,
+                    editDialogCallback,
                     endRecurrence,
                     startOriginalRecurrence,
                     startRecurrence,

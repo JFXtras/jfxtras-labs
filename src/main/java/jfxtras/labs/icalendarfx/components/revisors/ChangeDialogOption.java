@@ -22,7 +22,9 @@ public enum ChangeDialogOption
 {
     ONE                  // individual instance
   , ALL                  // entire series
+  , ALL_IGNORE_RECURRENCES     // entire series with recurrences ignored
   , THIS_AND_FUTURE      // selected instance and all in the future
+  , THIS_AND_FUTURE_IGNORE_RECURRENCES      // selected instance and all in the future, with recurrences ignored
   , CANCEL;              // do nothing
     
    /** Produce the map of change dialog options and the date range the option affects - {@link Reviser} */
@@ -40,7 +42,6 @@ public enum ChangeDialogOption
         
        Temporal lastRecurrence = vComponentEdited.lastRecurrence();
        Temporal firstRecurrence = vComponentEdited.streamRecurrences().findFirst().get();
-       System.out.println("first,last:" + lastRecurrence );
        boolean isLastRecurrence = (lastRecurrence == null) ? false : startInstance.equals(lastRecurrence);
        boolean isAfterLastRecurrence = (lastRecurrence == null) ? false : DateTimeUtilities.isAfter(startInstance, lastRecurrence);
        boolean isFirstRecurrence = startInstance.equals(firstRecurrence);
