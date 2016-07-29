@@ -666,6 +666,7 @@ public class ICalendarAgenda extends Agenda
                 startRecurrence = appointment.getStartTemporal();
                 endRecurrence = appointment.getEndTemporal();            
             }
+            // select editDialogCallback depending if there are special recurrence children
             Callback<Map<ChangeDialogOption, Pair<Temporal,Temporal>>, ChangeDialogOption> editDialogCallback = (vComponent.recurrenceChildren().isEmpty()) ? EditChoiceDialog.EDIT_DIALOG_CALLBACK : EditWithRecurrencesChoiceDialog.EDIT_DIALOG_CALLBACK;
             return new Object[] {
                     editDialogCallback,
