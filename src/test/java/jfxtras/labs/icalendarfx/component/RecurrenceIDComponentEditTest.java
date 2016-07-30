@@ -141,29 +141,16 @@ public class RecurrenceIDComponentEditTest
         expectedComponentFuture.setSequence(1);
         expectedComponentFuture.setUniqueIdentifier(new UniqueIdentifier(myComponentFuture.getUniqueIdentifier()));
         expectedComponentFuture.setDateTimeStamp(new DateTimeStamp(myComponentFuture.getDateTimeStamp()));
-        expectedComponentFuture.withExceptionDates(LocalDateTime.of(2016, 5, 17, 10, 0));
         assertEquals(expectedComponentFuture, myComponentFuture);
 
         VEvent expectedvComponentRecurrence = ICalendarStaticComponents.getDaily1();
         expectedvComponentRecurrence.setRecurrenceRule((RecurrenceRule2) null);
-        expectedvComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 10, 0));
+        expectedvComponentRecurrence.setRecurrenceId(LocalDateTime.of(2016, 5, 17, 9, 0));
         expectedvComponentRecurrence.setSummary("recurrence summary");
         expectedvComponentRecurrence.setDateTimeStart(LocalDateTime.of(2016, 5, 17, 8, 30));
         expectedvComponentRecurrence.setDateTimeEnd(LocalDateTime.of(2016, 5, 17, 9, 30));
+        expectedvComponentRecurrence.setUniqueIdentifier(new UniqueIdentifier(expectedComponentFuture.getUniqueIdentifier()));
         assertEquals(expectedvComponentRecurrence, myComponentRecurrence);
-
-        vComponents.stream().forEach(System.out::println);
-        
-//        assertTrue(vComponentOriginalCopy == myComponentOriginal);
-//        assertEquals(LocalDateTime.of(2016, 5, 16, 9, 0), myComponentFuture.getDateTimeStart().getValue());        
-//        assertEquals(LocalDateTime.of(2016, 5, 16, 10, 30), myComponentFuture.getDateTimeEnd().getValue());        
-//        assertEquals("Edited summary", myComponentFuture.getSummary().getValue());
-//        
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 10, 0), myComponentOriginal.getDateTimeStart().getValue());        
-//        assertEquals(LocalDateTime.of(2015, 11, 9, 11, 0), myComponentOriginal.getDateTimeEnd().getValue()); 
-//        Temporal until = ZonedDateTime.of(LocalDateTime.of(2016, 5, 15, 10, 0), ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("Z"));
-//        RecurrenceRule2 expectedRRule = ICalendarStaticComponents.getDaily1().getRecurrenceRule().getValue().withUntil(until);
-//        assertEquals(expectedRRule, myComponentOriginal.getRecurrenceRule().getValue());
     }
     
     @Test // edit ALL with a recurrence in date range

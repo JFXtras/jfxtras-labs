@@ -179,15 +179,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     break;
                 case ALL_IGNORE_RECURRENCES:
                     adjustDateTime(vComponentEditedCopy);
-                    // Adjust children components with RecurrenceIDs
-                    getVComponentEdited().recurrenceChildren()
-                            .stream()
-                            .forEach(v ->
-                            {
-                                TemporalAmount shiftAmount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
-                                Temporal newRecurreneId = v.getRecurrenceId().getValue().plus(shiftAmount);
-                                v.setRecurrenceId(newRecurreneId);
-                            });
+                    adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
                     break;
                 case CANCEL:
                     getVComponents().remove(getVComponentEdited());
@@ -200,8 +192,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                     break;
                 case THIS_AND_FUTURE_IGNORE_RECURRENCES:
                     editThisAndFuture(vComponentEditedCopy, vComponentOriginalCopy);
-                    thisAndFutureIgnoreRecurrences(vComponentEditedCopy);
-                    // change UID for recurrence to new component
+                    adjustRecurrenceChildren(startRecurrence, startOriginalRecurrence);
+                    thisAndFutureIgnoreRecurrences(revisedVComponents, vComponentEditedCopy);
                     revisedVComponents.add(0, vComponentOriginalCopy);
                     break;
                 case ONE:
@@ -227,6 +219,19 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         getVComponents().remove(getVComponentEdited());
         getVComponents().addAll(revisedVComponents);
         return Collections.unmodifiableList(revisedVComponents);
+    }
+
+    // Time shift children recurrence components
+    private void adjustRecurrenceChildren(Temporal startRecurrence, Temporal startOriginalRecurrence)
+    {
+        getVComponentEdited().recurrenceChildren()
+                .stream()
+                .forEach(v ->
+                {
+                    TemporalAmount shiftAmount = DateTimeUtilities.temporalAmountBetween(startOriginalRecurrence, startRecurrence);
+                    Temporal newRecurreneId = v.getRecurrenceId().getValue().plus(shiftAmount);
+                    v.setRecurrenceId(newRecurreneId);
+                });
     }
     
     /** If startRecurrence isn't valid due to a RRULE change, change startRecurrence and
@@ -440,82 +445,8 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 }
             }
         }
-        
-        // remove RECURRENCE-ID components that are out of bounds
-//        if (! vComponentEditedCopy.childComponents().isEmpty())
-//        {
-//            System.out.println("childs" + vComponentEditedCopy.childComponents().size());
-//            final Iterator<Temporal> recurrenceIDIterator = vComponentEditedCopy.childComponents()
-//                    .stream()
-//                    .map(e -> e.getRecurrenceId().getValue())
-//                    .iterator();
-//            while (recurrenceIDIterator.hasNext())
-//            {
-//                Temporal t = recurrenceIDIterator.next();
-//                int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t, getStartRecurrence());
-//                if (result < 0)
-//                {
-//                    System.out.println("remove r-ID");
-//                    recurrenceIDIterator.remove();
-//                }
-//            }
-//        }
-//        System.out.println("childs-orig:" + getVComponentEdited().childComponents().size() + " " + vComponentOriginalCopy.childComponents().isEmpty());
-//        if (! vComponentOriginalCopy.childComponents().isEmpty())
-//        {
-//            System.out.println("childs-orig" + vComponentOriginalCopy.childComponents().size());
-//            final Iterator<Temporal> recurrenceIDIterator = vComponentOriginalCopy.childComponents()
-//                    .stream()
-//                    .map(e -> e.getRecurrenceId().getValue())
-//                    .iterator();
-//            while (recurrenceIDIterator.hasNext())
-//            {
-//                Temporal t = recurrenceIDIterator.next();
-//                int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t, getStartRecurrence());
-//                if (result > 0)
-//                {
-//                    recurrenceIDIterator.remove();
-//                }
-//            }
-//        }
+
         vComponentEditedCopy.setUniqueIdentifier(); // assign new UID
-        
-//        List<VComponentDisplayable<?>> recurrenceChildren = getVComponentEdited().recurrenceChildren();
-//        if (! recurrenceChildren.isEmpty())
-//        {
-////            final Iterator<Temporal> recurrenceIDIterator = recurrenceChildren
-////                    .stream()
-////                    .map(e -> e.getRecurrenceId().getValue())
-////                    .iterator();
-////            while (recurrenceIDIterator.hasNext())
-////            {
-////                Temporal t = recurrenceIDIterator.next();
-////                int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t, getStartRecurrence());
-////                if (result < 0)
-////                {
-////                    System.out.println("before remove r-ID");
-////                    recurrenceIDIterator.remove();
-////                } else
-////                {
-////                    System.out.println("after remove r-ID");    
-////                    
-////                }
-////            }
-//            recurrenceChildren.stream().forEach(c -> 
-//            {
-//                Temporal t = c.getRecurrenceId().getValue();
-//                int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t, getStartRecurrence());
-//                if (result > 0)
-//                { // change UID to match vComponentEditedCopy
-//                    String uniqueIdentifier = vComponentEditedCopy.getUniqueIdentifier().getValue();
-//                    System.out.println("uniqueIdentifier:" + uniqueIdentifier);
-//                    c.setUniqueIdentifier(uniqueIdentifier);
-//                    System.out.println(c.recurrenceChildren().size());
-////                    getVComponents().remove(c);
-//                    getVComponents().add((U) c);
-//                }
-//            });
-//        }
         
         // Modify COUNT for the edited vEvent
         if (vComponentEditedCopy.getRecurrenceRule().getValue().getCount() != null)
@@ -534,7 +465,7 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
         }
     }
     
-    private void thisAndFutureIgnoreRecurrences(U vComponentEditedCopy)
+    private void thisAndFutureIgnoreRecurrences(List<U> revisedVComponents, U vComponentEditedCopy)
     {
         List<VComponentDisplayable<?>> recurrenceChildren = getVComponentEdited().recurrenceChildren();
         if (! recurrenceChildren.isEmpty())
@@ -545,12 +476,16 @@ public abstract class ReviserDisplayable<T, U extends VComponentDisplayable<U>> 
                 int result = DateTimeUtilities.TEMPORAL_COMPARATOR.compare(t, getStartRecurrence());
                 if (result > 0)
                 { // change UID to match vComponentEditedCopy
+//                    System.out.println("start:" + getVComponents().size());
                     getVComponents().remove(c);
+//                    System.out.println("removed:" + getVComponents().size());
+//                    System.out.println("removed:" + c);
                     String uniqueIdentifier = vComponentEditedCopy.getUniqueIdentifier().getValue();
                     System.out.println("uniqueIdentifier:" + uniqueIdentifier);
                     c.setUniqueIdentifier(uniqueIdentifier);
-                    System.out.println(c.recurrenceChildren().size());
-                    getVComponents().add((U) c);
+                    // TODO - SHIFT TIME
+//                    System.out.println(c.recurrenceChildren().size());
+                    revisedVComponents.add((U) c);
                 }
            });
         }
