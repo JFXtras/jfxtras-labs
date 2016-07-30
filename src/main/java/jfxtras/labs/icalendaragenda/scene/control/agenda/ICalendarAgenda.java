@@ -617,6 +617,7 @@ public class ICalendarAgenda extends Agenda
                 getVCalendar().getVEvents().stream().forEach(v -> newAppointments.addAll(makeAppointments(v)));
                 getVCalendar().getVTodos().stream().forEach(v -> newAppointments.addAll(makeAppointments(v)));
                 getVCalendar().getVJournals().stream().forEach(v -> newAppointments.addAll(makeAppointments(v)));
+//                FXCollections.copy(appointments(), newAppointments);
                 appointments().addAll(newAppointments);
                 appointments().addListener(appointmentsListChangeListener); // add back appointmentListener
             }

@@ -499,7 +499,7 @@ public abstract class VComponentDisplayableBase<T> extends VComponentPersonalBas
         {
             return Collections.unmodifiableList(makeRecurrenceChildrenListCallBack.call(this));
         }
-        return Collections.emptyList();
+        return Collections.unmodifiableList(Collections.emptyList());
     }
     
     /*
