@@ -153,18 +153,18 @@ public class MakeNewVEventsTest extends AgendaTestAbstract
         move("#hourLine10");
         release(MouseButton.PRIMARY);
         
-        TestUtil.sleep(3000);
         // verify event's creation
         assertEquals(1, agenda.getVCalendar().getVEvents().size());
         VEvent vEvent = agenda.getVCalendar().getVEvents().get(0);
         VEvent expectedVEvent = new VEvent()
                 .withSummary("New")
                 .withCategories("group00")
-                .withDateTimeStart(LocalDate.of(2015, 11, 12))
-                .withDateTimeEnd(LocalDate.of(2015, 11, 13))
+                .withDateTimeStart(LocalDateTime.of(2015, 11, 11, 10, 0).atZone(ZoneId.systemDefault()))
+                .withDateTimeEnd(LocalDateTime.of(2015, 11, 11, 11, 0).atZone(ZoneId.systemDefault()))
                 .withDateTimeCreated(vEvent.getDateTimeCreated())
                 .withDateTimeStamp(vEvent.getDateTimeStamp())
                 .withUniqueIdentifier(vEvent.getUniqueIdentifier())
+                .withSequence(1)
                 ;
         assertEquals(expectedVEvent, vEvent);
     }
